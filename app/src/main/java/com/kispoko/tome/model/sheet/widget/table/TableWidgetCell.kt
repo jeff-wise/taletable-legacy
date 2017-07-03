@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -446,35 +447,41 @@ data class CellFormat(override val id : UUID,
     companion object : Factory<CellFormat>
     {
 
-        private val defaultTextStyle            = TextStyle.default
+        private val defaultTextStyle            = TextStyle.default()
         private val defaultAlignment            = Alignment.Center
         private val defaultBackgroundColorTheme = ColorTheme.transparent
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<CellFormat> = when (doc)
         {
-            is DocDict -> effApply(::CellFormat,
-                                   // Text Style
-                                   split(doc.maybeAt("text_style"),
-                                         effValue(defaultTextStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Alignment
-                                   split(doc.maybeAt("alignment"),
-                                         effValue<ValueError,Alignment>(defaultAlignment),
-                                         { Alignment.fromDocument(it) }),
-                                   // Background Color
-                                   split(doc.maybeAt("background_color"),
-                                         effValue(defaultBackgroundColorTheme),
-                                         { ColorTheme.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                effApply(::CellFormat,
+                         // Model Id
+                         effValue(UUID.randomUUID()),
+                         // Text Style
+                         split(doc.maybeAt("text_style"),
+                               effValue(Comp.default(defaultTextStyle)),
+                               { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                         // Alignment
+                         split(doc.maybeAt("alignment"),
+                               effValue<ValueError,Prim<Alignment>>(Prim.default(defaultAlignment)),
+                               { effApply(::Prim, Alignment.fromDocument(it)) }),
+                         // Background Color
+                         split(doc.maybeAt("background_color"),
+                               effValue(Prim(defaultBackgroundColorTheme)),
+                               { effApply(::Prim, ColorTheme.fromDocument(it)) })
+                       )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
         val default : CellFormat =
-                CellFormat(defaultTextStyle,
-                           defaultAlignment,
-                           defaultBackgroundColorTheme)
+                CellFormat(UUID.randomUUID(),
+                           Comp.default(defaultTextStyle),
+                           Prim.default(defaultAlignment),
+                           Prim.default(defaultBackgroundColorTheme))
 
     }
 
@@ -527,6 +534,8 @@ object TableWidgetCellView
         } else {
             layout.gravity          = cellFormat.alignment().gravityConstant() or
                                         Gravity.CENTER_VERTICAL
+            layout.layoutGravity          = cellFormat.alignment().gravityConstant() or
+                                                Gravity.CENTER_VERTICAL
         }
 
         if (cellFormat.backgroundColorTheme.isDefault()) {
@@ -537,7 +546,7 @@ object TableWidgetCellView
                                         cellFormat.backgroundColorTheme())
         }
 
-        layout.backgroundResource   = tableRowFormat.cellHeight().resourceId(Corners.None)
+        // layout.backgroundResource   = tableRowFormat.cellHeight().resourceId(Corners.None)
 
         return layout.linearLayout(sheetContext.context)
     }

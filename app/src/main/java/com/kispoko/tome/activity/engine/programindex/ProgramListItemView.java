@@ -69,7 +69,7 @@ public class ProgramListItemView
         header.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        header.font                 = Font.serifFontRegular(context);
+//        header.font                 = Font.serifFontRegular(context);
         header.color                = R.color.gold_light;
         header.sizeSp               = 15f;
 
@@ -88,7 +88,7 @@ public class ProgramListItemView
         description.width               = LinearLayout.LayoutParams.MATCH_PARENT;
         description.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        description.font                = Font.serifFontRegular(context);
+//        description.font                = Font.serifFontRegular(context);
         description.color               = R.color.dark_theme_primary_50;
         description.sizeSp              = 13f;
 
@@ -153,7 +153,7 @@ public class ProgramListItemView
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         type.color              = R.color.dark_theme_primary_30;
-        type.font               = Font.serifFontRegular(context);
+//        type.font               = Font.serifFontRegular(context);
         type.sizeSp             = 11f;
 
         type.backgroundResource = R.drawable.bg_parameter_type;
@@ -196,7 +196,7 @@ public class ProgramListItemView
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         type.color              = R.color.dark_theme_primary_30;
-        type.font               = Font.serifFontRegular(context);
+//        type.font               = Font.serifFontRegular(context);
         type.sizeSp             = 11.5f;
 
         type.backgroundResource = R.drawable.bg_result_type;

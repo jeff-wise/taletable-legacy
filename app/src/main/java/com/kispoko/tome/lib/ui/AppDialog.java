@@ -89,7 +89,7 @@ public class AppDialog
         header.height           = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         header.text             = headerString;
-        header.font             = Font.serifFontRegular(context);
+//        header.font             = Font.serifFontRegular(context);
         header.color            = R.color.dark_blue_hl_9;
         header.size             = R.dimen.sheet_dialog_heading_text_size;
 
@@ -179,7 +179,7 @@ public class AppDialog
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         name.text               = widgetName;
-        name.font               = Font.serifFontRegular(context);
+//        name.font               = Font.serifFontRegular(context);
         name.color              = R.color.gold_light;
         name.size               = R.dimen.sheet_dialog_target_name_text_size;
 
@@ -192,7 +192,7 @@ public class AppDialog
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         type.text               = widgetType;
-        type.font               = Font.serifFontRegular(context);
+//        type.font               = Font.serifFontRegular(context);
         type.color              = R.color.dark_blue_1;
         type.size               = R.dimen.sheet_dialog_target_type_text_size;
 
@@ -272,7 +272,7 @@ public class AppDialog
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.textId                = R.string.rules;
-        label.font                  = Font.serifFontRegular(context);
+//        label.font                  = Font.serifFontRegular(context);
         label.color                 = R.color.dark_blue_hl_6;
         label.size                  = R.dimen.sheet_dialog_action_text_size;
 
@@ -344,7 +344,7 @@ public class AppDialog
         label.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                      = "Private";
-        label.font                      = Font.serifFontRegular(context);
+//        label.font                      = Font.serifFontRegular(context);
         label.color                     = R.color.dark_blue_hl_6;
         label.size                      = R.dimen.sheet_dialog_action_text_size;
 

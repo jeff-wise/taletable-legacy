@@ -8,7 +8,6 @@ import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.Spacing
@@ -16,8 +15,10 @@ import com.kispoko.tome.model.theme.ColorTheme
 import effect.effApply
 import effect.effError
 import effect.effValue
+import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -31,7 +32,7 @@ data class WidgetFormat(override val id : UUID,
                         val width : Prim<WidgetWidth>,
                         val alignment : Prim<Alignment>,
                         val backgroundColorTheme : Prim<ColorTheme>,
-                        val corners : Prim<Corners>,
+                        val corners : Comp<Corners>,
                         val margins : Comp<Spacing>,
                         val padding : Comp<Spacing>) : Model, Serializable
 {
@@ -65,52 +66,60 @@ data class WidgetFormat(override val id : UUID,
                Prim(widget),
                Prim(alignment),
                Prim(backgroundColorTheme),
-               Prim(corners),
+               Comp(corners),
                Comp(margins),
                Comp(padding))
 
     companion object : Factory<WidgetFormat>
     {
+
+        private val defaultWidth                = WidgetWidth.default()
+        private val defaultAlignment            = Alignment.Center
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+        private val defaultCorners              = Corners.default()
+        private val defaultMargins              = Spacing.default()
+        private val defaultPadding              = Spacing.default()
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<WidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::WidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Width
-                                   doc.at("width") ap {
-                                       effApply(::Prim, WidgetWidth.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("width"),
+                                         effValue(defaultWidth),
+                                         { WidgetWidth.fromDocument(it) }),
                                    // Alignment
-                                   doc.at("alignment") ap {
-                                       effApply(::Prim, Alignment.fromDocument(it))
-                                   },
-                                   // Background Color
-                                   doc.at("background_color") ap {
-                                       effApply(::Prim, ColorTheme.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("alignment"),
+                                         effValue<ValueError,Alignment>(defaultAlignment),
+                                         { Alignment.fromDocument(it) }),
+                                   // Background Color Theme
+                                   split(doc.maybeAt("background_color_theme"),
+                                         effValue(defaultBackgroundColorTheme),
+                                         { ColorTheme.fromDocument(it) }),
                                    // Corners
-                                   doc.at("corners") ap {
-                                       effApply(::Prim, Corners.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("corners"),
+                                         effValue<ValueError,Corners>(defaultCorners),
+                                         { Corners.fromDocument(it) }),
                                    // Margins
-                                   doc.at("margins") ap {
-                                       effApply(::Comp, Spacing.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("margins"),
+                                         effValue(defaultMargins),
+                                         { Spacing.fromDocument(it) }),
                                    // Padding
-                                   doc.at("padding") ap {
-                                       effApply(::Comp, Spacing.fromDocument(it))
-                                   })
+                                   split(doc.maybeAt("padding"),
+                                         effValue(defaultPadding),
+                                         { Spacing.fromDocument(it) })
+                                   )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
         fun default() : WidgetFormat =
-                WidgetFormat(WidgetWidth.default,
-                             Alignment.Center,
-                             ColorTheme.transparent,
-                             Corners.None,
-                             Spacing.default(),
-                             Spacing.default())
+                WidgetFormat(defaultWidth,
+                             defaultAlignment,
+                             defaultBackgroundColorTheme,
+                             defaultCorners,
+                             defaultMargins,
+                             defaultPadding)
     }
 
 
@@ -162,7 +171,7 @@ data class WidgetWidth(val value : Int) : SQLSerializable, Serializable
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
 
-        val default = WidgetWidth(1)
+        fun default() = WidgetWidth(1)
     }
 
 

@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -17,12 +18,14 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.FormattedString
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
+import effect.Nothing
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -37,13 +40,16 @@ import java.util.*
  */
 data class NumberWidgetFormat(override val id : UUID,
                               val widgetFormat : Comp<WidgetFormat>,
+                              val height : Prim<Height>,
                               val insideLabel : Maybe<Prim<NumberWidgetLabel>>,
                               val insideLabelFormat : Comp<TextFormat>,
                               val outsideLabel : Maybe<Prim<NumberWidgetLabel>>,
                               val outsideLabelFormat : Comp<TextFormat>,
                               val valueFormat : Comp<TextFormat>,
                               val descriptionStyle : Comp<TextStyle>,
+                              val valuePrefix : Maybe<Prim<NumberWidgetValuePrefix>>,
                               val valuePrefixStyle : Comp<TextStyle>,
+                              val valuePostfix : Maybe<Prim<NumberWidgetValuePostfix>>,
                               val valuePostfixStyle : Comp<TextStyle>,
                               val valueSeparator : Maybe<Prim<ValueSeparator>>,
                               val valueSeparatorFormat : Comp<TextFormat>)
@@ -57,6 +63,8 @@ data class NumberWidgetFormat(override val id : UUID,
     init
     {
         this.widgetFormat.name                          = "widget_format"
+
+        this.height.name                                = "height"
 
         when (this.insideLabel) {
             is Just -> this.insideLabel.value.name      = "inside_label"
@@ -74,7 +82,15 @@ data class NumberWidgetFormat(override val id : UUID,
 
         this.descriptionStyle.name                      = "description_style"
 
+        when (this.valuePrefix) {
+            is Just -> this.valuePrefix.value.name      = "value_prefix"
+        }
+
         this.valuePrefixStyle.name                      = "value_prefix_style"
+
+        when (this.valuePostfix) {
+            is Just -> this.valuePostfix.value.name     = "value_postfix"
+        }
 
         this.valuePostfixStyle.name                     = "value_postfix_style"
 
@@ -91,25 +107,31 @@ data class NumberWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
+                height : Height,
                 insideLabel : Maybe<NumberWidgetLabel>,
                 insideLabelFormat : TextFormat,
                 outsideLabel : Maybe<NumberWidgetLabel>,
                 outsideLabelFormat : TextFormat,
                 valueFormat : TextFormat,
                 descriptionStyle : TextStyle,
+                valuePrefix : Maybe<NumberWidgetValuePrefix>,
                 valuePrefixStyle : TextStyle,
+                valuePostfix : Maybe<NumberWidgetValuePostfix>,
                 valuePostfixStyle : TextStyle,
                 valueSeparator : Maybe<ValueSeparator>,
                 valueSeparatorFormat : TextFormat)
         : this(UUID.randomUUID(),
                Comp(widgetFormat),
+               Prim(height),
                maybeLiftPrim(insideLabel),
                Comp(insideLabelFormat),
                maybeLiftPrim(outsideLabel),
                Comp(outsideLabelFormat),
                Comp(valueFormat),
                Comp(descriptionStyle),
+               maybeLiftPrim(valuePrefix),
                Comp(valuePrefixStyle),
+               maybeLiftPrim(valuePostfix),
                Comp(valuePostfixStyle),
                maybeLiftPrim(valueSeparator),
                Comp(valueSeparatorFormat))
@@ -118,16 +140,17 @@ data class NumberWidgetFormat(override val id : UUID,
     companion object : Factory<NumberWidgetFormat>
     {
 
+        private val defaultHeight               = Height.Wrap
         private val defaultInsideLabel          = Nothing<NumberWidgetLabel>()
-        private val defaultInsideLabelFormat    = TextFormat.default
+        private val defaultInsideLabelFormat    = TextFormat.default()
         private val defaultOutsideLabel         = Nothing<NumberWidgetLabel>()
-        private val defaultOutsideLabelFormat   = TextFormat.default
-        private val defaultValueFormat          = TextFormat.default
-        private val defaultDescriptionStyle     = TextStyle.default
-        private val defaultValuePrefixStyle     = TextStyle.default
-        private val defaultValuePostfixStyle    = TextStyle.default
+        private val defaultOutsideLabelFormat   = TextFormat.default()
+        private val defaultValueFormat          = TextFormat.default()
+        private val defaultDescriptionStyle     = TextStyle.default()
+        private val defaultValuePrefixStyle     = TextStyle.default()
+        private val defaultValuePostfixStyle    = TextStyle.default()
         private val defaultValueSeparator       = Nothing<ValueSeparator>()
-        private val defaultValueSeparatorFormat = TextFormat.default
+        private val defaultValueSeparatorFormat = TextFormat.default()
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberWidgetFormat> = when (doc)
@@ -139,6 +162,10 @@ data class NumberWidgetFormat(override val id : UUID,
                          split(doc.maybeAt("widget_format"),
                                effValue(WidgetFormat.default()),
                                { WidgetFormat.fromDocument(it) }),
+                         // Height
+                         split(doc.maybeAt("height"),
+                               effValue<ValueError,Height>(defaultHeight),
+                               { Height.fromDocument(it) }),
                          // Inside Label
                          split(doc.maybeAt("inside_label"),
                                effValue<ValueError,Maybe<NumberWidgetLabel>>(defaultInsideLabel),
@@ -163,20 +190,28 @@ data class NumberWidgetFormat(override val id : UUID,
                          split(doc.maybeAt("description_style"),
                                effValue(defaultDescriptionStyle),
                                { TextStyle.fromDocument(it) }),
+                         // Value Prefix
+                         split(doc.maybeAt("value_prefix"),
+                               effValue<ValueError,Maybe<NumberWidgetValuePrefix>>(Nothing()),
+                               { effApply(::Just, NumberWidgetValuePrefix.fromDocument(it)) }),
                          // Value Prefix Style
                          split(doc.maybeAt("value_prefix_format"),
                                effValue(defaultValuePrefixStyle),
                                { TextStyle.fromDocument(it) }),
+                        // Value Postfix
+                        split(doc.maybeAt("value_postfix"),
+                                effValue<ValueError,Maybe<NumberWidgetValuePostfix>>(Nothing()),
+                                { effApply(::Just, NumberWidgetValuePostfix.fromDocument(it)) }),
                          // Value Postfix Style
                          split(doc.maybeAt("value_postfix_format"),
                                effValue(defaultValuePostfixStyle),
                                { TextStyle.fromDocument(it) }),
                          // Value Separator
-                         split(doc.maybeAt("outside_label"),
+                         split(doc.maybeAt("value_separator"),
                                effValue<ValueError,Maybe<ValueSeparator>>(defaultValueSeparator),
                                { effApply(::Just, ValueSeparator.fromDocument(it)) }),
-                         // Value Separtaor Format
-                         split(doc.maybeAt("outside_label_format"),
+                         // Value Separator Format
+                         split(doc.maybeAt("value_separator_format"),
                                effValue(defaultValueSeparatorFormat),
                                { TextFormat.fromDocument(it) })
                          )
@@ -187,13 +222,16 @@ data class NumberWidgetFormat(override val id : UUID,
 
         fun default() : NumberWidgetFormat =
                 NumberWidgetFormat(WidgetFormat.default(),
+                                   defaultHeight,
                                    defaultInsideLabel,
                                    defaultInsideLabelFormat,
                                    defaultOutsideLabel,
                                    defaultOutsideLabelFormat,
                                    defaultValueFormat,
                                    defaultDescriptionStyle,
+                                   Nothing(),
                                    defaultValuePrefixStyle,
+                                   Nothing(),
                                    defaultValuePostfixStyle,
                                    defaultValueSeparator,
                                    defaultValueSeparatorFormat)
@@ -205,6 +243,8 @@ data class NumberWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun height() : Height = this.height.value
 
     fun insideLabel() : String? = getMaybePrim(this.insideLabel)?.value
 
@@ -218,7 +258,11 @@ data class NumberWidgetFormat(override val id : UUID,
 
     fun descriptionStyle() : TextStyle = this.descriptionStyle.value
 
+    fun valuePrefix() : String? = getMaybePrim(this.valuePrefix)?.value
+
     fun valuePrefixStyle() : TextStyle = this.valuePrefixStyle.value
+
+    fun valuePostfix() : String? = getMaybePrim(this.valuePostfix)?.value
 
     fun valuePostfixStyle() : TextStyle = this.valuePostfixStyle.value
 
@@ -393,7 +437,7 @@ object NumberWidgetView
              format : NumberWidgetFormat,
              sheetContext : SheetContext) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), sheetContext.context)
+        val layout = WidgetView.layout(format.widgetFormat(), sheetContext)
 
         layout.addView(this.mainView(numberWidget, format, sheetContext))
 
@@ -455,7 +499,8 @@ object NumberWidgetView
         layout.gravity              = format.widgetFormat().alignment().gravityConstant() or
                                         Gravity.CENTER_VERTICAL
 
-        layout.marginSpacing        = format.widgetFormat().margins()
+//        layout.padding.leftDp       = format.widgetFormat().padding().leftDp()
+//        layout.padding.rightDp      = format.widgetFormat().padding().rightDp()
 
         return layout.linearLayout(context)
     }
@@ -510,7 +555,13 @@ object NumberWidgetView
         //layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        val height = format.height()
+        when (height)
+        {
+            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+        }
+
 
 
 //        if (this.data().format().underlineThickness() > 0)
@@ -522,18 +573,23 @@ object NumberWidgetView
 //                 this.data().format().background() != BackgroundColor.NONE)
 //        {
 
-        layout.backgroundColor      = SheetManager.color(
-                                                sheetContext.sheetId,
-                                                format.widgetFormat().backgroundColorTheme())
+//        layout.backgroundColor      = SheetManager.color(
+//                                                sheetContext.sheetId,
+//                                                format.widgetFormat().backgroundColorTheme())
 
-        layout.backgroundResource   = format.valueFormat().height()
-                                            .resourceId(format.widgetFormat().corners())
+//        layout.backgroundResource   = format.valueFormat().height()
+//                                            .resourceId(format.widgetFormat().corners())
+
+//        layout.corners              = format.widgetFormat().corners()
+
 
         if (format.valueFormat().height().isWrap())
         {
             layout.padding.topDp    = format.valueFormat().padding().topDp()
             layout.padding.bottomDp = format.valueFormat().padding().bottomDp()
         }
+
+
 
 //        if (format.widgetFormat.background() == BackgroundColor.EMPTY)
 //            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -557,7 +613,15 @@ object NumberWidgetView
                           format : NumberWidgetFormat,
                           sheetContext : SheetContext) : LinearLayout
     {
-        val layout = this.valueViewLayout(sheetContext.context)
+        val layout = this.valueViewLayout(format, sheetContext.context)
+
+        // > Prefix
+        val prefixString = format.valuePrefix()
+        if (prefixString != null)
+            layout.addView(this.valueFixView(prefixString,
+                                             format.valuePrefixStyle(),
+                                             format.valueFormat(),
+                                             sheetContext))
 
         // > Value
         layout.addView(this.valueTextView(numberWidget, format, sheetContext))
@@ -566,18 +630,35 @@ object NumberWidgetView
 //        if (this.baseValueVariableName() != null)
 //            layout.addView(baseValueView(context));
 
+        // > Postfix
+        val postfixString = format.valuePostfix()
+        if (postfixString != null)
+            layout.addView(this.valueFixView(postfixString,
+                                             format.valuePostfixStyle(),
+                                             format.valueFormat(),
+                                             sheetContext))
+
         return layout
     }
 
 
-    private fun valueViewLayout(context : Context) : LinearLayout
+    private fun valueViewLayout(format : NumberWidgetFormat, context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
         layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        if (format.height().isWrap())
+            layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+        else
+            layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.paddingSpacing   = format.valueFormat().padding()
+
+        layout.gravity = format.valueFormat().alignment().gravityConstant() or
+                                    format.valueFormat().verticalAlignment().gravityConstant()
 
         return layout.linearLayout(context)
     }
@@ -595,9 +676,8 @@ object NumberWidgetView
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        value.layoutGravity = format.valueFormat().alignment().gravityConstant() or
-                                Gravity.CENTER_VERTICAL
-        value.gravity       = format.valueFormat().alignment().gravityConstant()
+        value.gravity       = format.valueFormat().alignment().gravityConstant() or
+                                format.valueFormat().verticalAlignment().gravityConstant()
 
         if (numberWidget.description() != null)
         {
@@ -636,11 +716,33 @@ object NumberWidgetView
         }
         else
         {
-            value.text      = numberWidget.valueString(sheetContext)
+            value.text  = numberWidget.valueString(sheetContext)
             format.valueFormat().style().styleTextViewBuilder(value, sheetContext)
         }
 
         return value.textView(sheetContext.context)
+    }
+
+
+    private fun valueFixView(fixString : String,
+                             style : TextStyle,
+                             valueFormat : TextFormat,
+                             sheetContext : SheetContext) : TextView
+    {
+        val prefix              = TextViewBuilder()
+
+        prefix.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        prefix.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        prefix.layoutGravity    = valueFormat.alignment().gravityConstant() or
+                                        Gravity.CENTER_VERTICAL
+        prefix.gravity          = valueFormat.alignment().gravityConstant()
+
+        prefix.text             = fixString
+
+        style.styleTextViewBuilder(prefix, sheetContext)
+
+        return prefix.textView(sheetContext.context)
     }
 
 

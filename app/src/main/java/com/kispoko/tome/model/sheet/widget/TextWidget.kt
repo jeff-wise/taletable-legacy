@@ -97,11 +97,11 @@ data class TextWidgetFormat(override val id : UUID,
 
         private val defaultWidgetFormat       = WidgetFormat.default()
         private val defaultInsideLabel        = Nothing<TextWidgetLabel>()
-        private val defaultInsideLabelFormat  = TextFormat.default
+        private val defaultInsideLabelFormat  = TextFormat.default()
         private val defaultOutsideLabel       = Nothing<TextWidgetLabel>()
-        private val defaultOutsideLabelFormat = TextFormat.default
-        private val defaultValueFormat        = TextFormat.default
-        private val defaultDescriptionStyle   = TextStyle.default
+        private val defaultOutsideLabelFormat = TextFormat.default()
+        private val defaultValueFormat        = TextFormat.default()
+        private val defaultDescriptionStyle   = TextStyle.default()
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextWidgetFormat> = when (doc)
@@ -253,7 +253,7 @@ object TextWidgetView
              format : TextWidgetFormat,
              sheetContext : SheetContext) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), sheetContext.context)
+        val layout = WidgetView.layout(format.widgetFormat(), sheetContext)
 
         layout.addView(this.mainView(textWidget, format, sheetContext))
 
@@ -362,15 +362,15 @@ object TextWidgetView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.backgroundColor      = SheetManager.color(
-                                                sheetContext.sheetId,
-                                                format.widgetFormat().backgroundColorTheme())
+//        layout.backgroundColor      = SheetManager.color(
+//                                                sheetContext.sheetId,
+//                                                format.widgetFormat().backgroundColorTheme())
 
         layout.gravity              = format.valueFormat().alignment().gravityConstant() or
                                         Gravity.CENTER_VERTICAL
 
-        layout.backgroundResource   = format.valueFormat().height()
-                                            .resourceId(format.widgetFormat().corners())
+//        layout.backgroundResource   = format.valueFormat().height()
+//                                            .resourceId(format.widgetFormat().corners())
 
         if (format.valueFormat().height().isWrap())
         {

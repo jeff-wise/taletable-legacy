@@ -151,7 +151,7 @@ public class TableRowBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            tableRow.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            tableRow.setBackgroundColor(this.backgroundColor);
 
         // > Background Resource
         // --------------------------------------------------------------------------------------

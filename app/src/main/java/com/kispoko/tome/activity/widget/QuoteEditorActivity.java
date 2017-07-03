@@ -237,7 +237,7 @@ public class QuoteEditorActivity extends AppCompatActivity
 //        if (this.quoteWidget != null)
 //            name.text       = this.quoteWidget.data().name();
 
-        name.font           = Font.serifFontRegular(context);
+//        name.font           = Font.serifFontRegular(context);
         name.color          = R.color.dark_blue_hl_5;
         name.sizeSp         = 20f;
 
@@ -314,7 +314,7 @@ public class QuoteEditorActivity extends AppCompatActivity
 
         header.textId           = labelId;
 
-        header.font             = Font.serifFontBold(context);
+//        header.font             = Font.serifFontBold(context);
         header.color            = R.color.dark_blue_hl_5;
         header.sizeSp           = 14f;
 
@@ -334,7 +334,7 @@ public class QuoteEditorActivity extends AppCompatActivity
 
         text.text               = value;
 
-        text.font               = Font.serifFontRegular(context);
+//        text.font               = Font.serifFontRegular(context);
         text.color              = R.color.dark_blue_hl_2;
         text.sizeSp             = 17f;
 
@@ -381,7 +381,7 @@ public class QuoteEditorActivity extends AppCompatActivity
 
         status.text         = "Saved";
         status.color        = R.color.dark_blue_hl_6;
-        status.font         = Font.serifFontItalic(context);
+//        status.font         = Font.serifFontItalic(context);
         status.sizeSp       = 17f;
 
         status.addRule(RelativeLayout.CENTER_IN_PARENT);

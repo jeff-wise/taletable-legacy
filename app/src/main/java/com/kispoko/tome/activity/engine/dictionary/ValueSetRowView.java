@@ -87,7 +87,7 @@ public class ValueSetRowView
         header.id                   = R.id.value_set_row_header;
         header.sizeSp               = 16f;
         header.color                = R.color.gold_light;
-        header.font                 = Font.serifFontRegular(context);
+//        header.font                 = Font.serifFontRegular(context);
 
         header.margin.bottomDp      = 7f;
 
@@ -100,7 +100,7 @@ public class ValueSetRowView
         description.id              = R.id.value_set_row_description;
         description.sizeSp          = 14f;
         description.color           = R.color.dark_blue_hl_8;
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
 
 
         return layout.linearLayout(context);
@@ -116,7 +116,7 @@ public class ValueSetRowView
         count.gravity               = Gravity.CENTER;
 
         count.id                    = R.id.value_set_row_items;
-        count.font                  = Font.serifFontRegular(context);
+//        count.font                  = Font.serifFontRegular(context);
         count.color                 = R.color.dark_blue_hlx_4;
         count.sizeSp                = 15f;
 

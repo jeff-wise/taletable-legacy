@@ -96,7 +96,7 @@ public class Form
         inputText.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
         inputText.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        inputText.font                  = Font.serifFontRegular(context);
+//        inputText.font                  = Font.serifFontRegular(context);
         inputText.color                 = R.color.dark_blue_hlx_5;
         inputText.sizeSp                = 18f;
         inputText.text                  = value;
@@ -165,7 +165,7 @@ public class Form
         label.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                 = buttonLabel.toUpperCase();
-        label.font                 = Font.sansSerifFontBold(context);
+//        label.font                 = Font.sansSerifFontBold(context);
         label.size                 = R.dimen.field_text_input_button_text_size;
         label.color                = R.color.dark_blue_hl_2;
 
@@ -184,7 +184,7 @@ public class Form
         button.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         button.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        button.font                 = Font.sansSerifFontRegular(context);
+//        button.font                 = Font.sansSerifFontRegular(context);
         button.color                = R.color.dark_blue_hl_5;
         button.size                 = R.dimen.field_text_input_text_size;
         button.text                 = buttonLabel;
@@ -254,7 +254,7 @@ public class Form
         inputText.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
         inputText.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        inputText.font                  = Font.sansSerifFontRegular(context);
+//        inputText.font                  = Font.sansSerifFontRegular(context);
         inputText.color                 = R.color.dark_blue_hl_5;
         inputText.size                  = R.dimen.field_text_input_text_size;
         inputText.text                  = value;
@@ -275,7 +275,7 @@ public class Form
         button.width                = TableRow.LayoutParams.MATCH_PARENT;
         button.height               = TableRow.LayoutParams.WRAP_CONTENT;
 
-        button.font                 = Font.sansSerifFontRegular(context);
+//        button.font                 = Font.sansSerifFontRegular(context);
         button.color                = R.color.dark_blue_hl_5;
         button.size                 = R.dimen.field_text_input_text_size;
         button.text                 = buttonLabel;
@@ -327,7 +327,7 @@ public class Form
 
         cell.text                   = header.toUpperCase();
         cell.size                   = R.dimen.field_table_input_header_text_size;
-        cell.font                   = Font.sansSerifFontBold(context);
+//        cell.font                   = Font.sansSerifFontBold(context);
         cell.color                  = R.color.dark_blue_hl_5;
 
         cell.margin.right           = R.dimen.field_table_input_cell_margin_right;
@@ -391,7 +391,7 @@ public class Form
         item.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         item.text               = value;
-        item.font               = Font.sansSerifFontRegular(context);
+//        item.font               = Font.sansSerifFontRegular(context);
         item.color              = R.color.dark_blue_hl_6;
         item.size               = R.dimen.field_list_input_item_text_size;
 
@@ -444,7 +444,7 @@ public class Form
         String buttonLabel          = context.getString(R.string.form_add_list_item)
                                        + " " + itemName;
         label.text                  = buttonLabel.toUpperCase();
-        label.font                  = Font.sansSerifFontBold(context);
+//        label.font                  = Font.sansSerifFontBold(context);
         label.size                  = R.dimen.field_text_input_button_text_size;
         label.color                 = R.color.dark_blue_hl_5;
 
@@ -575,7 +575,7 @@ public class Form
 
         tab.text                    = tabLabel;
         tab.size                    = R.dimen.field_option_input_tab_text_size;
-        tab.font                    = Font.sansSerifFontRegular(context);
+//        tab.font                    = Font.sansSerifFontRegular(context);
 
         if (selected)
             tab.color               = R.color.dark_blue_hlx_7;
@@ -693,7 +693,7 @@ public class Form
 
         button.backgroundResource   = R.drawable.bg_form_variant_button;
         button.text                 = variant;
-        button.font                 = Font.sansSerifFontBold(context);
+//        button.font                 = Font.sansSerifFontBold(context);
         button.size                 = R.dimen.field_variant_input_button_text_size;
 
         return button.textView(context);

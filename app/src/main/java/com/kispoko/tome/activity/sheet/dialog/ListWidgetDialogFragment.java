@@ -300,7 +300,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                  = labelText.toUpperCase();
-        label.font                  = Font.serifFontRegular(context);
+//        label.font                  = Font.serifFontRegular(context);
         label.color                 = R.color.dark_blue_1;
         label.sizeSp                = 14f;
 
@@ -381,7 +381,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         button.text             = this.itemClickedValueString();
-        button.font             = Font.serifFontRegular(context);
+//        button.font             = Font.serifFontRegular(context);
         button.color            = R.color.dark_blue_hl_2;
         button.sizeSp           = 17f;
 
@@ -436,7 +436,7 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         label.text                 = "LANGUAGE";
 
-        label.font                 = Font.serifFontRegular(context);
+//        label.font                 = Font.serifFontRegular(context);
         label.color                = R.color.dark_blue_hl_8;
         label.sizeSp               = 13f;
 
@@ -449,7 +449,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         value.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         value.text                 = this.itemClickedValueString();
-        value.font                 = Font.serifFontRegular(context);
+//        value.font                 = Font.serifFontRegular(context);
         value.color                = R.color.gold_light;
         value.sizeSp               = 18f;
 
@@ -502,7 +502,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.textId                    = R.string.highlight_item;
-        label.font                      = Font.serifFontRegular(context);
+//        label.font                      = Font.serifFontRegular(context);
         label.color                     = R.color.dark_blue_hl_4;
         label.sizeSp                    = 14f;
 
@@ -551,7 +551,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.font              = Font.serifFontRegular(context);
+//        label.font              = Font.serifFontRegular(context);
         label.color             = R.color.dark_blue_hl_4;
         label.sizeSp            = 14f;
 
@@ -657,7 +657,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.text                 = labelText;
         label.sizeSp               = 16.0f;
         label.color                = R.color.dark_blue_1;
-        label.font                 = Font.serifFontRegular(context);
+//        label.font                 = Font.serifFontRegular(context);
 
 
         return layout.linearLayout(context);
@@ -702,7 +702,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.font                  = Font.serifFontRegular(context);
+//        label.font                  = Font.serifFontRegular(context);
         label.color                 = R.color.dark_blue_hl_5;
         label.sizeSp                = 17f;
 

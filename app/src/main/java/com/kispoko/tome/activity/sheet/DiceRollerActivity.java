@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayout;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.widget.ActionWidgetActivity;
@@ -258,7 +259,7 @@ public class DiceRollerActivity extends AppCompatActivity
 
         name.text               = this.rollName;
 
-        name.font               = Font.serifFontRegular(context);
+//        name.font               = Font.serifFontRegular(context);
         name.color              = R.color.dark_theme_primary_27;
         name.sizeSp             = 15f;
 
@@ -320,7 +321,7 @@ public class DiceRollerActivity extends AppCompatActivity
 //        if (this.summation != null && this.summation.diceRoll() != null)
 //            label.text              = this.summation.diceRoll().toString(true);
 
-        label.font                  = Font.serifFontRegular(context);
+//        label.font                  = Font.serifFontRegular(context);
         //label.color                 = R.color.gold_light;
         label.color                 = R.color.dark_theme_primary_10;
         label.sizeSp                = 22f;
@@ -468,7 +469,7 @@ public class DiceRollerActivity extends AppCompatActivity
         value.shadowDx              = 4f;
         value.shadowDy              = 4f;
 
-        value.font                  = Font.serifFontRegular(context);
+//        value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_theme_primary_5;
         value.sizeSp                = 28f;
 
@@ -495,7 +496,7 @@ public class DiceRollerActivity extends AppCompatActivity
 
         description.text            = this.rollDescription;
 
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
         description.color           = R.color.dark_theme_primary_20;
         description.sizeSp          = 18f;
 
@@ -548,7 +549,7 @@ public class DiceRollerActivity extends AppCompatActivity
         layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.wrap             = FlexboxLayout.FLEX_WRAP_WRAP;
+        layout.wrap             = FlexWrap.WRAP;
 
         layout.margin.leftDp    = 14f;
         layout.margin.rightDp   = 14f;
@@ -598,7 +599,7 @@ public class DiceRollerActivity extends AppCompatActivity
         String diceString = "d" + Integer.toString(rollResult.diceSides());
         dice.text                   = diceString;
 
-        dice.font                   = Font.serifFontRegular(context);
+//        dice.font                   = Font.serifFontRegular(context);
         dice.color                  = R.color.dark_theme_primary_60;
         dice.sizeSp                 = 14f;
 
@@ -612,7 +613,7 @@ public class DiceRollerActivity extends AppCompatActivity
 
         value.text                  = Integer.toString(rollResult.value());
 
-        value.font                  = Font.serifFontRegular(context);
+//        value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_theme_primary_35;
         value.sizeSp                = 14f;
 
@@ -659,7 +660,7 @@ public class DiceRollerActivity extends AppCompatActivity
 
  //       name.text                   = rollModifier.name();
 
-        name.font                   = Font.serifFontRegular(context);
+//        name.font                   = Font.serifFontRegular(context);
         name.color                  = R.color.dark_theme_primary_60;
         name.sizeSp                 = 14f;
 
@@ -673,7 +674,7 @@ public class DiceRollerActivity extends AppCompatActivity
 
 //        value.text                  = Integer.toString(rollModifier.value());
 
-        value.font                  = Font.serifFontRegular(context);
+//        value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_theme_primary_35;
         value.sizeSp                = 14f;
 

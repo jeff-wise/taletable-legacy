@@ -13,7 +13,6 @@ import android.view.View;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.function.FunctionEditorActivity;
-import com.kispoko.tome.rts.game.engine.FunctionIndex;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
@@ -81,7 +80,7 @@ public class FunctionIndexActivity extends AppCompatActivity
     /**
      * Initialize the template list view.
      */
-    private void initializeView(FunctionIndex functionIndex)
+    private void initializeView()
     {
         // [1] Configure RECYCLER View
         // -------------------------------------------------------------------------------------
@@ -92,7 +91,7 @@ public class FunctionIndexActivity extends AppCompatActivity
 
         recyclerView.addItemDecoration(
                 new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_86));
-        recyclerView.setAdapter(new FunctionRecyclerViewAdapter(functionIndex.functions(), this));
+        //recyclerView.setAdapter(new FunctionRecyclerViewAdapter(functionIndex.functions(), this));
 
         // [2] Configure FAB
         // -------------------------------------------------------------------------------------

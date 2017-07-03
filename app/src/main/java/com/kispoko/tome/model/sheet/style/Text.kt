@@ -2,8 +2,6 @@
 package com.kispoko.tome.model.sheet.style
 
 
-import android.content.Context
-import android.graphics.Typeface
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -77,7 +75,7 @@ data class TextFormat(override val id : UUID,
     companion object : Factory<TextFormat>
     {
 
-        private val defaultStyle             = TextStyle.default
+        private val defaultStyle             = TextStyle.default()
         private val defaultPosition          = Position.Top
         private val defaultHeight            = Height.Wrap
         private val defaultPadding           = Spacing.default()
@@ -124,14 +122,13 @@ data class TextFormat(override val id : UUID,
         }
 
 
-        val default : TextFormat =
-                TextFormat(defaultStyle,
-                           defaultPosition,
-                           defaultHeight,
-                           defaultPadding,
-                           defaultMargins,
-                           defaultAlignment,
-                           defaultVerticalAlignment)
+        fun default() = TextFormat(defaultStyle,
+                                   defaultPosition,
+                                   defaultHeight,
+                                   defaultPadding,
+                                   defaultMargins,
+                                   defaultAlignment,
+                                   defaultVerticalAlignment)
 
     }
 
@@ -175,6 +172,7 @@ data class TextStyle(override val id : UUID,
                      val colorTheme : Prim<ColorTheme>,
                      val size : Prim<TextSize>,
                      val font : Prim<TextFont>,
+                     val fontStyle : Prim<TextFontStyle>,
                      val isUnderlined : Prim<IsUnderlined>,
                      val alignment: Prim<Alignment>,
                      val backgroundColorTheme : Prim<ColorTheme>) : Model, Serializable
@@ -189,6 +187,7 @@ data class TextStyle(override val id : UUID,
         this.colorTheme.name            = "color_theme"
         this.size.name                  = "size"
         this.font.name                  = "font"
+        this.fontStyle.name             = "font_style"
         this.isUnderlined.name          = "is_underlined"
         this.alignment.name             = "alignment"
         this.backgroundColorTheme.name  = "background_color_theme"
@@ -202,13 +201,15 @@ data class TextStyle(override val id : UUID,
     constructor(colorTheme : ColorTheme,
                 size : TextSize,
                 font : TextFont,
-                isUnderlined: IsUnderlined,
+                fontStyle : TextFontStyle,
+                isUnderlined : IsUnderlined,
                 alignment : Alignment,
                 backgroundColorTheme: ColorTheme)
         : this(UUID.randomUUID(),
                Prim(colorTheme),
                Prim(size),
                Prim(font),
+               Prim(fontStyle),
                Prim(isUnderlined),
                Prim(alignment),
                Prim(backgroundColorTheme))
@@ -219,7 +220,8 @@ data class TextStyle(override val id : UUID,
 
         private val defaultColorTheme           = ColorTheme.black
         private val defaultTextSize             = TextSize(16.0f)
-        private val defaultFont                 = TextFont.Regular()
+        private val defaultFont                 = TextFont.FiraSans
+        private val defaultFontStyle            = TextFontStyle.Regular
         private val defaultIsUnderlined         = IsUnderlined(false)
         private val defaultAlignment            = Alignment.Center
         private val defaultBackgroundColorTheme = ColorTheme.transparent
@@ -242,6 +244,10 @@ data class TextStyle(override val id : UUID,
                          split(doc.maybeAt("font"),
                                 effValue<ValueError,TextFont>(defaultFont),
                                 { TextFont.fromDocument(it) }),
+                         // Font Style
+                         split(doc.maybeAt("font_style"),
+                               effValue<ValueError,TextFontStyle>(defaultFontStyle),
+                              { TextFontStyle.fromDocument(it) }),
                          // Is Underlined?
                          split(doc.maybeAt("is_underlined"),
                                effValue(defaultIsUnderlined),
@@ -260,13 +266,13 @@ data class TextStyle(override val id : UUID,
         }
 
 
-        val default : TextStyle =
-                TextStyle(defaultColorTheme,
-                          defaultTextSize,
-                          defaultFont,
-                          defaultIsUnderlined,
-                          defaultAlignment,
-                          defaultBackgroundColorTheme)
+        fun default() = TextStyle(defaultColorTheme,
+                                  defaultTextSize,
+                                  defaultFont,
+                                  defaultFontStyle,
+                                  defaultIsUnderlined,
+                                  defaultAlignment,
+                                  defaultBackgroundColorTheme)
 
     }
 
@@ -280,6 +286,8 @@ data class TextStyle(override val id : UUID,
     fun sizeSp() : Float = this.size.value.sp
 
     fun font() : TextFont = this.font.value
+
+    fun fontStyle() : TextFontStyle = this.fontStyle.value
 
     fun isUnderlined() : Boolean = this.isUnderlined.value.value
 
@@ -310,7 +318,9 @@ data class TextStyle(override val id : UUID,
     {
         textViewBuilder.color   = SheetManager.color(sheetContext.sheetId, this.colorTheme())
         textViewBuilder.sizeSp  = this.sizeSp()
-        textViewBuilder.font    = this.font().typeface(sheetContext.context)
+        textViewBuilder.font    = Font.typeface(this.font(),
+                                                this.fontStyle(),
+                                                sheetContext.context)
     }
 
 
@@ -384,27 +394,15 @@ data class IsUnderlined(val value : Boolean) : SQLSerializable, Serializable
 sealed class TextFont : SQLSerializable, Serializable
 {
 
-    class Regular : TextFont()
+    object FiraSans : TextFont()
     {
-        override fun asSQLValue() = SQLText({ "regular "})
+        override fun asSQLValue() = SQLText({ "roboto "})
     }
 
 
-    class Bold : TextFont()
+    object Merriweather : TextFont()
     {
-        override fun asSQLValue() = SQLText({ "bold "})
-    }
-
-
-    class Italic : TextFont()
-    {
-        override fun asSQLValue() = SQLText({ "italic "})
-    }
-
-
-    class BoldItalic : TextFont()
-    {
-        override fun asSQLValue() = SQLText({ "bold_italic "})
+        override fun asSQLValue() = SQLText({ "merriweather "})
     }
 
 
@@ -414,24 +412,77 @@ sealed class TextFont : SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "regular"     -> effValue<ValueError,TextFont>(TextFont.Regular())
-                "bold"        -> effValue<ValueError,TextFont>(TextFont.Bold())
-                "italic"      -> effValue<ValueError,TextFont>(TextFont.Italic())
-                "bold_italic" -> effValue<ValueError,TextFont>(TextFont.BoldItalic())
-                else          -> effError<ValueError,TextFont>(
-                                    UnexpectedValue("TextFont", doc.text, doc.path))
+                "roboto"       -> effValue<ValueError,TextFont>(TextFont.FiraSans)
+                "merriweather" -> effValue<ValueError,TextFont>(TextFont.Merriweather)
+                else           -> effError<ValueError,TextFont>(
+                                      UnexpectedValue("TextFont", doc.text, doc.path))
             }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+
+
+        fun default() = TextFont.FiraSans
+
     }
 
 
-    fun typeface(context : Context) : Typeface = when (this)
+}
+
+
+/**
+ * Text Font
+ */
+sealed class TextFontStyle : SQLSerializable, Serializable
+{
+
+    object Regular : TextFontStyle()
     {
-        is Regular    -> Font.serifFontRegular(context)
-        is Bold       -> Font.serifFontBold(context)
-        is Italic     -> Font.serifFontItalic(context)
-        is BoldItalic -> Font.serifFontBoldItalic(context)
+        override fun asSQLValue() = SQLText({ "regular "})
+    }
+
+
+    object Bold : TextFontStyle()
+    {
+        override fun asSQLValue() = SQLText({ "bold "})
+    }
+
+
+    object Italic : TextFontStyle()
+    {
+        override fun asSQLValue() = SQLText({ "italic "})
+    }
+
+
+    object BoldItalic : TextFontStyle()
+    {
+        override fun asSQLValue() = SQLText({ "bold_italic "})
+    }
+
+
+    object Light : TextFontStyle()
+    {
+        override fun asSQLValue() = SQLText({ "light "})
+    }
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<TextFontStyle> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "regular"     -> effValue<ValueError,TextFontStyle>(TextFontStyle.Regular)
+                "bold"        -> effValue<ValueError,TextFontStyle>(TextFontStyle.Bold)
+                "italic"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Italic)
+                "bold_italic" -> effValue<ValueError,TextFontStyle>(TextFontStyle.BoldItalic)
+                "light"       -> effValue<ValueError,TextFontStyle>(TextFontStyle.Light)
+                else          -> effError<ValueError,TextFontStyle>(
+                                    UnexpectedValue("TextFontStyle", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+
+        fun default() = TextFontStyle.Regular
     }
 
 }

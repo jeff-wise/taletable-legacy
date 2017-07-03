@@ -105,7 +105,7 @@ public class DraggableCard
         index.addRule(RelativeLayout.CENTER_VERTICAL);
         index.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
-        index.font               = Font.sansSerifFontRegular(context);
+//        index.font               = Font.sansSerifFontRegular(context);
         index.size               = R.dimen.group_row_list_item_name_text_size;
         index.color              = R.color.dark_blue_hlx_8;
 

@@ -216,7 +216,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     fun loadSheet(officialIndex : OfficialIndex)
     {
-        val officialSheet = officialIndex.sheetById[SheetId("sila_sunia")]
+        val officialSheet = officialIndex.sheetById[SheetId("casmey_beginner")]
         if (officialSheet != null)
         {
             val sheetActivity : AppCompatActivity = this
@@ -250,11 +250,11 @@ class SheetActivity : AppCompatActivity(), SheetUI
                             is Err -> ApplicationLog.error(characterName.error)
                         }
 
-                        SheetManager.sheetRecord(sheet.sheetId()) apDo {
-                            launch(UI) {
-                                it.sheet.saveAsync(true, true)
-                            }
-                        }
+//                        SheetManager.sheetRecord(sheet.sheetId()) apDo {
+//                            launch(UI) {
+//                                it.sheet.saveAsync(true, true)
+//                            }
+//                        }
                     }
                     is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetLoad.userMessage)
                 }

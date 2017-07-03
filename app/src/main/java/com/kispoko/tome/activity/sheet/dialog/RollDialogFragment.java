@@ -20,9 +20,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.model.game.engine.summation.Summation;
 import com.kispoko.tome.model.game.engine.variable.NumberVariable;
-import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -258,7 +258,7 @@ public class RollDialogFragment extends DialogFragment
         roll.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         roll.textId                 = R.string.roll;
-        roll.font                   = Font.serifFontBold(context);
+//        roll.font                   = Font.serifFontBold(context);
         roll.color                  = R.color.dark_blue_hlx_7;
         roll.size                   = R.dimen.dialog_roll_roll_button_roll_text_size;
 
@@ -269,7 +269,7 @@ public class RollDialogFragment extends DialogFragment
         action.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         action.text                 = this.actionName;
-        action.font                 = Font.serifFontRegular(context);
+//        action.font                 = Font.serifFontRegular(context);
         action.color                = R.color.dark_blue_hl_5;
         action.size                 = R.dimen.dialog_roll_roll_button_action_text_size;
 
@@ -370,7 +370,7 @@ public class RollDialogFragment extends DialogFragment
         name.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
         name.text                       = nameText;
-        name.font                       = Font.serifFontRegular(context);
+//        name.font                       = Font.serifFontRegular(context);
         name.size                       = R.dimen.dialog_summ_component_name_text_size;
         name.color                      = R.color.dark_blue_hl_5;
 
@@ -384,7 +384,7 @@ public class RollDialogFragment extends DialogFragment
         value.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
         value.text                      = valueText;
-        value.font                      = Font.serifFontBold(context);
+//        value.font                      = Font.serifFontBold(context);
         value.size                      = R.dimen.dialog_summ_component_value_text_size;
         value.color                     = R.color.dark_blue_hl_5;
 
@@ -401,7 +401,7 @@ public class RollDialogFragment extends DialogFragment
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.text                 = headerText;
-        header.font                 = Font.serifFontRegular(context);
+//        header.font                 = Font.serifFontRegular(context);
         header.color                = R.color.dark_blue_hl_5;
         header.size                 = R.dimen.dialog_summ_component_header_text_size;
 
@@ -457,7 +457,7 @@ public class RollDialogFragment extends DialogFragment
         header.height           = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         header.textId           = R.string.rolls;
-        header.font             = Font.sansSerifFontRegular(context);
+//        header.font             = Font.sansSerifFontRegular(context);
         header.color            = R.color.dark_blue_hl_9;
         header.size             = R.dimen.sheet_dialog_heading_text_size;
 

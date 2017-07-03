@@ -115,7 +115,7 @@ public class ActiveResultView
 
         type.id                 = R.id.search_result_type;
 
-        type.font               = Font.serifFontBoldItalic(context);
+//        type.font               = Font.serifFontBoldItalic(context);
         type.color              = R.color.dark_theme_primary_5;
         type.sizeSp             = 14f;
 
@@ -174,7 +174,7 @@ public class ActiveResultView
 
         name.text                   = fieldNameString;
 
-        name.font                   = Font.serifFontRegular(context);
+//        name.font                   = Font.serifFontRegular(context);
         name.color                  = R.color.dark_theme_primary_40;
         name.sizeSp                 = 15f;
 
@@ -187,7 +187,7 @@ public class ActiveResultView
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.weight                = 3.5f;
 
-        value.font                  = Font.serifFontRegular(context);
+//        value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_theme_primary_25;
         value.sizeSp                = 15f;
 

@@ -146,6 +146,13 @@ types:
     presence: required
     description: >
       Programs allow values on the sheet to be created from complex calculations.
+- name: function_id
+  label: Function Id
+  description: >
+    The function identifier.
+  group: Author
+  type: primitive
+  base_type: string
 - name: function
   label: Function
   description: >
@@ -153,8 +160,8 @@ types:
   group: Function
   type: product
   fields:
-  - name: name
-    type: string
+  - name: function_id
+    type: function_id
     presence: required
     description: >
       The function name. Must be unique and contain only letters, numbers and underscores. The 
@@ -162,35 +169,71 @@ types:
       a sheet. A typical user will not see this value.
   - name: label
     type: string
-    presence: optional
+    presence: required
     description: >
       The function's label is the name or identifier of the function, intended for human 
       consumption. Make it pretty! It does not need to be unique and may contain any letters 
       or characters.
   - name: description
     type: string
-    presence: optional
+    presence: required
     description: >
       A description of the function. The description should be concise and describe the purpose 
       of the function. It will probably be helpful to include as well situations where the 
       function will likely be used.
-  - name: parameter_types
-    type: list
-    of: engine_type
+  - name: type_signature
+    type: function_type_signature
     presence: required
     description: >
-      The types of the input that the function accepts. 
-  - name: result_type
-    type: engine_type
-    presence: required
-    description: >
-      The type of data returned by the function.
+      The function's type signature.
   - name: tuples
     type: list
     of: function_tuple
     presence: required
     description: >
       All of the mappings defined by the function.
+- name: function_type_signature
+  label: Function Type Signature
+  description: >
+    A function type signature.
+  group: Function
+  type: product
+  fields:
+  - name: parameter1_type
+    type: engine_value_type
+    presence: required
+    description: >
+      The first parameter type.
+  - name: parameter2_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The second parameter type.
+  - name: parameter3_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The third parameter type.
+  - name: parameter4_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The fourth parameter type.
+  - name: parameter5_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The fifth parameter type.
+  - name: result_type
+    type: engine_value_type
+    presence: required
+    description: >
+      The result type.
+  - name: result_type
+    type: engine_value_type
+    presence: required
+    description: >
+      The result type.
 - name: function_tuple
   label: Tuple
   description: >
@@ -198,34 +241,85 @@ types:
   group: Function
   type: product
   fields:
-  - name: parameters
-    type: list
-    of: any
+  - name: parameter1
+    type: engine_value
     presence: required
     description: >
-      The input values of the tuple.
+      The first parameter value.
+  - name: parameter2
+    type: engine_value
+    presence: optional
+    description: >
+      The second parameter value.
+  - name: parameter3
+    type: engine_value
+    presence: optional
+    description: >
+      The third parameter value.
+  - name: parameter4
+    type: engine_value
+    presence: optional
+    description: >
+      The fourth parameter value.
+  - name: parameter5
+    type: engine_value
+    presence: optional
+    description: >
+      The fifth parameter value.
   - name: result
-    type: any
+    type: engine_value
     presence: required
     description: >
-      The tuple output value.
-- name: engine_type
-  label: Engine Type
+      The result value
+- name: engine_value_type
+  label: Engine Value type
   description: >
-    A an engine type is a description of an Engine Value.
+    The types of engine values
   group: Engine
-  type: product
-  fields:
-  - name: data_type
-    type: engine_data_type
-    presence: required
+  type: primitive
+  base_type: string
+  constraints:
+  - engine_value_type_set
+- name: engine_value
+  label: Dice Roll
+  description: >
+    A Dice Roll represents one or more dice of differents shapes plus a modifier.
+  group: Engine
+  type: sum
+  cases:
+  - type: engine_value_number 
     description: >
-      The type of data.
-  - name: name
-    type: string
-    presence: required
+      A numeric value.
+  - type: engine_value_text
     description: >
-      A name of the data.
+      A textual value.
+  - type: engine_value_boolean
+    description: >
+      A boolean value.
+  - type: dice_roll
+    description: >
+      A dice roll value.
+- name: engine_value_number
+  label: Engine Value Number
+  description: >
+    Numeric engine value.
+  group: Engine
+  type: primitive
+  base_type: number
+- name: engine_value_text
+  label: Engine Value Text
+  description: >
+    Textual engine value.
+  group: Engine
+  type: primitive
+  base_type: string
+- name: engine_value_boolean
+  label: Engine Value Boolean
+  description: >
+    Boolean engine value.
+  group: Engine
+  type: primitive
+  base_type: boolean
 - name: dice_roll
   label: Dice Roll
   description: >
@@ -286,6 +380,13 @@ types:
     presence: optional
     description: >
       A label for the modifier.
+- name: program_id
+  label: Program Id
+  description: >
+    The program identifier.
+  group: Program
+  type: primitive
+  base_type: string
 - name: program
   label: Program
   description: >
@@ -294,8 +395,8 @@ types:
   group: Program
   type: product
   fields:
-  - name: name
-    type: string
+  - name: program_id
+    type: program_id
     presence: required
     description: >
       A name of the program. Must be unique and contain only letters, numbers, and underscores. 
@@ -303,40 +404,74 @@ types:
       sheet.
   - name: label
     type: string
-    presence: optional
+    presence: required
     description: >
       A program label is the program's name but formatted so it is easy to read. It does not need 
       to be unique and contain contain any letters or characters.
   - name: description
     type: string
-    presence: optional
+    presence: required
     description: >
       A concise description of what the program does, why it exists, and in what situations it 
       could be used.
-  - name: parameter_types
-    type: list
-    of: engine_type
+  - name: type_signature
+    type: program_type_signature
     presence: required
     description: >
       The types of input values that the program accepts.
-    constraints:
-    - nonempty_list
-  - name: result_type
-    type: engine_type
-    presence: required
-    description: >
-      The types of data the program outputs.
   - name: statements
     type: list
     of: program_statement
-    presence: required
+    presence: optional
     description: >
       The program's statements.
-  - name: result_statement
-    type: program_statement
+  - name: result_binding_name
+    type: statement_binding_name
     presence: required
     description: >
       The program statement that calculates the program result value.
+- name: program_type_signature
+  label: Program Type Signature
+  description: >
+    A program type signature.
+  group: Program
+  type: product
+  fields:
+  - name: parameter1_type
+    type: engine_value_type
+    presence: required
+    description: >
+      The first parameter type.
+  - name: parameter2_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The second parameter type.
+  - name: parameter3_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The third parameter type.
+  - name: parameter4_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The fourth parameter type.
+  - name: parameter5_type
+    type: engine_value_type
+    presence: optional
+    description: >
+      The fifth parameter type.
+  - name: result_type
+    type: engine_value_type
+    presence: required
+    description: >
+      The result type.
+  - name: result_type
+    type: engine_value_type
+    presence: required
+    description: >
+      The result type.
 - name: program_statement
   label: Statement
   description: >
@@ -346,22 +481,41 @@ types:
   group: Program
   type: product
   fields:
-  - name: let
-    type: string
+  - name: binding_name
+    type: statement_binding_name
     presence: required
     description: >
       The name of the variable defined by the statement. 
-  - name: function
-    type: string
+  - name: function_id
+    type: function_id
     presence: required
     description: >
       The function called by the statement.
-  - name: parameters
-    type: list
-    of: function_parameter
+  - name: parameter1
+    type: statement_parameter
     presence: required
     description: >
-      The the parameters of the function that the statement calls.
+      The first function parameter value.
+  - name: parameter2
+    type: statement_parameter
+    presence: optional
+    description: >
+      The second function parameter value.
+  - name: parameter3
+    type: statement_parameter
+    presence: optional
+    description: >
+      The third function parameter value.
+  - name: parameter4
+    type: statement_parameter
+    presence: optional
+    description: >
+      The fourth function parameter value.
+  - name: parameter5
+    type: statement_parameter
+    presence: optional
+    description: >
+      The fifth function parameter value.
 - name: program_invocation
   label: Program Invocation
   description: >
@@ -369,34 +523,126 @@ types:
   group: Program
   type: product
   fields:
-  - name: name
-    type: string
+  - name: program_id
+    type: program_id
     presence: required
     description: >
       The unique name of the program to be invoked.
-  - name: parameters
-    type: list
-    of: variable
-    presence: optional
-    description: >
-      The parameters to give to the program.
-- name: function_parameter
-  label: Function Parameter
-  description: >
-    A function parameter describes a piece of input to a function.
-  group: Function
-  type: product
-  fields:
-  - name: type
-    type: function_parameter_type
+  - name: parameter1
+    type: data_reference
     presence: required
     description: >
-      The type of the data to pass to the function.
-  - name: value
-    type: any
+      First parameter.
+  - name: parameter2
+    type: data_reference
     presence: optional
     description: >
-      The value of the parameter.
+      Second parameter.
+  - name: parameter3
+    type: data_reference
+    presence: optional
+    description: >
+      Third parameter.
+  - name: parameter4
+    type: data_reference
+    presence: optional
+    description: >
+      Fourth parameter.
+  - name: parameter5
+    type: data_reference
+    presence: optional
+    description: >
+      Fifth parameter.
+- name: statement_binding_name
+  label: Statement Binding Name
+  description: >
+    A statement binding name.
+  group: Program
+  type: primitive
+  base_type: string
+- name: program_parameter_index
+  label: Program Parameter Index
+  description: >
+    A program parameter index.
+  group: Program
+  type: primitive
+  base_type: number
+- name: statement_parameter
+  label: Statement Parameter
+  description: >
+    A function parameter describes a piece of input to a function.
+  group: Program
+  type: sum
+  cases:
+  - type: statement_binding_name
+    description: Statement binding.
+  - type: program_parameter_index
+    description: A program parameter.
+  - type: data_reference
+    description: Data reference.
+- name: data_reference
+  label: Data Reference
+  description: >
+    A reference to data in the engine.
+  group: Reference
+  type: sum
+  cases:
+  - type: data_reference_boolean
+    description: A boolean data reference.
+  - type: data_reference_dice_roll
+    description: A dice roll reference.
+  - type: data_reference_number
+    description: A number reference.
+  - type: data_reference_text
+    description: A text reference.
+- name: data_reference_boolean
+  label: Boolean Data Reference
+  description: >
+    A reference to boolean data.
+  group: Reference
+  type: sum
+  cases:
+  - type: boolean_literal
+    description: A literal boolean
+  - type: variable_reference
+    description: A boolean variable reference.
+- name: data_reference_dice_roll
+  label: Dice Roll Data Reference
+  description: >
+    A reference to dice roll data.
+  group: Reference
+  type: sum
+  cases:
+  - type: dice_roll
+    description: A literal dice roll
+  - type: variable_reference
+    description: A dice roll variable reference.
+- name: data_reference_number
+  label: Number Data Reference
+  description: >
+    A reference to numeric data.
+  group: Reference
+  type: sum
+  cases:
+  - type: number_literal
+    description: A literal number.
+  - type: variable_reference
+    description: A number variable reference.
+  - type: value_reference
+    description: A number value reference.
+- name: data_reference_text
+  label: Text Data Reference
+  description: >
+    A reference to textual data.
+  group: Reference
+  type: sum
+  cases:
+  - type: text_literal
+    description: A literal text.
+  - type: variable_reference
+    description: A text variable reference.
+  - type: value_reference
+    description: A text value reference.
 - name: mechanic
   label: Mechanic
   description: >
@@ -491,22 +737,28 @@ types:
   group: Variable
   type: sum
   cases: 
-  - name: boolean
-    type: variable_boolean 
+  - type: variable_boolean 
     description: >
       A variable with a true/false value.
-  - name: dice_roll
-    type: variable_dice_roll 
+  - type: variable_dice_roll 
     description: >
       A variable with a dice roll value.
-  - name: number
-    type: variable_number 
+  - type: variable_number 
     description: >
       A variable with a numerical value.
-  - name: text
-    type: variable_text 
+  - type: variable_text 
     description: >
       A variable with a text value.
+- name: variable_reference
+  label: Variable Reference
+  description: A reference to a variable.
+  group: Variable
+  type: sum
+  cases: 
+  - type: variable_id
+    description: A variable id.
+  - type: variable_tag 
+    description: A variable tag
 - name: variable_boolean
   label: Boolean Variable
   description: >
@@ -1032,13 +1284,12 @@ constraints:
     - number
     - text
     - any
-- name: engine_data_type
+- name: engine_value_type_set
   type: string_one_of
   parameters:
     set:
+    - number
+    - text
     - boolean
     - dice_roll
-    - number
-    - set_number
-    - set_text
-    - text
+    - list_text

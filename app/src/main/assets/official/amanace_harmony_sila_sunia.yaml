@@ -20,9 +20,20 @@ sections:
           - theme_id: dark
             color_id: dark_grey_6
       rows:
-      - widgets: 
+      - widgets:
+        - type: widget_quote
+          widget_quote:
+            id: main_quote
+            quote: >
+              Some say I'm naive, but I've gotten wiser. For example, I've learned that
+              everything has a price. The merchant's gold pouch? A ban from the walls of
+              Cyrian. Lord Framil's emerald dagger? A bounty and a dangerous reputation. And a
+              noblewoman's jewelry? A strange curse of sorts. But really, small prices to pay
+              for such beautiful things. I'd say I sleep great at night, except for the strange
+              dreams on occassion...
+      - widgets:
         - type: widget_text
-          widget_text: 
+          widget_text:
             id: name
             value_variable:
               id: name
@@ -39,15 +50,6 @@ sections:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_3
-      - widgets:
-        - type: widget_text
-          widget_text:
-            id: summary
-            value_variable:
-              id: summary
-              value:
-                type: text_literal
-                text_literal: 'Sister of the Singing Sword'
     - rows:
       - widgets:
         - type: widget_number

@@ -2,43 +2,6 @@
 package com.kispoko.tome.activity.sheet.widget.dialog;
 
 
-import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.kispoko.tome.R;
-import com.kispoko.tome.lib.ui.EditDialog;
-import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.lib.ui.ImageViewBuilder;
-import com.kispoko.tome.lib.ui.LayoutType;
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
-import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
-import com.kispoko.tome.lib.ui.TextViewBuilder;
-
-import java.util.List;
-
-import static android.os.Build.VERSION_CODES.BASE;
-
-
 /**
  * Choose Value Dialog Fragment
  */

@@ -5,6 +5,7 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -15,6 +16,7 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.util.ApplicationError
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -101,13 +103,11 @@ data class NumberCellFormat(override val id : UUID,
     // RESOLVERS
     // -----------------------------------------------------------------------------------------
 
-    fun resolveTextStyle(columnFormat : NumberColumnFormat) : TextStyle
-    {
+    fun resolveTextStyle(columnFormat : NumberColumnFormat) : TextStyle =
         if (this.cellFormat().textStyle.isDefault())
-            return this.cellFormat().textStyle()
-
-        return columnFormat.columnFormat().textStyle()
-    }
+            columnFormat.columnFormat().textStyle()
+        else
+            this.cellFormat().textStyle()
 
 
     // -----------------------------------------------------------------------------------------
@@ -186,8 +186,8 @@ object NumberCellView
         value.id    = viewId
 
         // > LAYOUT
-        value.width      = LinearLayout.LayoutParams.WRAP_CONTENT;
-        value.height     = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.width      = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height     = LinearLayout.LayoutParams.WRAP_CONTENT
 
         // > STYLE
         val valueStyle = cellFormat.resolveTextStyle(columnFormat)
@@ -198,6 +198,12 @@ object NumberCellView
         when (maybeValue)
         {
             is Just    -> value.text = maybeValue.value
+        }
+
+        val valueString = cell.valueVariable().valueString(sheetContext)
+        when (valueString) {
+            is Val -> value.text = valueString.value
+            is Err -> ApplicationLog.error(valueString.error)
         }
 
         return value.textView(sheetContext.context)

@@ -90,7 +90,7 @@ public class EditDialog
 
         header.text                 = headerText;
 
-        header.font                 = Font.serifFontRegular(context);
+//        header.font                 = Font.serifFontRegular(context);
         header.color                = R.color.gold_medium_light;
         header.size                 = R.dimen.dialog_edit_header_text_size;
 
@@ -166,7 +166,7 @@ public class EditDialog
         header.height           = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         header.text             = headerString;
-        header.font             = Font.serifFontRegular(context);
+//        header.font             = Font.serifFontRegular(context);
 
         header.size             = R.dimen.sheet_dialog_heading_text_size;
 
@@ -272,7 +272,7 @@ public class EditDialog
         button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         button.text             = buttonLabel.toUpperCase();
-        button.font             = Font.serifFontBold(context);
+//        button.font             = Font.serifFontBold(context);
         button.color            = R.color.dark_blue_hl_8;
         button.size             = R.dimen.dialog_edit_footer_button_text_size;
 
@@ -322,7 +322,7 @@ public class EditDialog
         label.text                  = buttonLabel.toUpperCase();
 
 
-        label.font                  = Font.serifFontBold(context);
+//        label.font                  = Font.serifFontBold(context);
         label.size                  = R.dimen.dialog_edit_footer_button_text_size;
 
         label.color                 = R.color.green_medium;

@@ -121,9 +121,9 @@ data class OptionWidgetFormat(override val id : UUID,
     {
 
         val defaultWidgetFormat     = WidgetFormat.default()
-        val defaultDescriptionStyle = TextStyle.default
-        val defaultValueStyle       = TextStyle.default
-        val defaultValueItemStyle   = TextStyle.default
+        val defaultDescriptionStyle = TextStyle.default()
+        val defaultValueStyle       = TextStyle.default()
+        val defaultValueItemStyle   = TextStyle.default()
         val defaultHeight           = Height.Wrap
 
 

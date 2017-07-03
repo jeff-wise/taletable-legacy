@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.model.sheet.style.TextFont
+import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.rts.sheet.SheetManager
 
 
@@ -41,8 +43,8 @@ fun AppCompatActivity.configureToolbar(title : String)
 
     val titleView = this.findViewById(R.id.toolbar_title) as TextView
 
-    titleView.typeface = Font.serifFontRegular(this)
-    titleView.text    = title
+    titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
+    titleView.text      = title
 
     //titleView.setTextColor(SheetManager)
 

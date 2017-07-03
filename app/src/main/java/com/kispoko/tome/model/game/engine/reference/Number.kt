@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
+import android.util.Log
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.SumModel
@@ -15,13 +16,14 @@ import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import java.io.Serializable
 
 
 
 /**
  * Number Reference
  */
-sealed class NumberReference : SumModel
+sealed class NumberReference : SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -31,13 +33,16 @@ sealed class NumberReference : SumModel
     companion object : Factory<NumberReference>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> =
-            when (doc.case)
+            when (doc.case())
             {
-                "literal"  -> NumberReferenceLiteral.fromDocument(doc)
-                "value"    -> NumberReferenceValue.fromDocument(doc)
-                "variable" -> NumberReferenceVariable.fromDocument(doc)
-                else       -> effError<ValueError,NumberReference>(
-                                        UnknownCase(doc.case, doc.path))
+                "number_literal"     -> NumberReferenceLiteral.fromDocument(doc.nextCase())
+                "value_reference"    -> NumberReferenceValue.fromDocument(doc.nextCase())
+                "variable_reference" -> NumberReferenceVariable.fromDocument(doc.nextCase())
+                else                 -> {
+                    Log.d("***NUMBER", doc.toString())
+                    effError<ValueError,NumberReference>(
+                            UnknownCase(doc.case(), doc.path))
+                }
             }
     }
 

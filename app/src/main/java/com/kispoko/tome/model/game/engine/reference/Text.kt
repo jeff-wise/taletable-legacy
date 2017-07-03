@@ -17,13 +17,13 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-
+import java.io.Serializable
 
 
 /**
  * Text Reference
  */
-sealed class TextReference
+sealed class TextReference : Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -33,13 +33,13 @@ sealed class TextReference
     companion object : Factory<TextReference>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextReference> =
-            when (doc.case)
+            when (doc.case())
             {
                 "literal"  -> TextReferenceLiteral.fromDocument(doc)
                 "value"    -> TextReferenceValue.fromDocument(doc)
                 "variable" -> TextReferenceVariable.fromDocument(doc)
                 else       -> effError<ValueError,TextReference>(
-                                        UnknownCase(doc.case, doc.path))
+                                        UnknownCase(doc.case(), doc.path))
             }
     }
 

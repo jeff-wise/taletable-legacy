@@ -233,7 +233,7 @@ public class TuplesEditorActivity extends AppCompatActivity
 
         cell.text               = label.toUpperCase();
 
-        cell.font               = Font.serifFontRegular(context);
+//        cell.font               = Font.serifFontRegular(context);
         cell.color              = R.color.dark_theme_primary_25;
         cell.sizeSp             = 12.5f;
 
@@ -349,7 +349,7 @@ public class TuplesEditorActivity extends AppCompatActivity
 
         cell.text               = value;
 
-        cell.font               = Font.serifFontRegular(context);
+//        cell.font               = Font.serifFontRegular(context);
         cell.color              = R.color.dark_theme_primary_8;
         cell.sizeSp             = 15f;
 

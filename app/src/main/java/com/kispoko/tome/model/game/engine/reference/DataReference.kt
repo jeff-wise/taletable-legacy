@@ -2,17 +2,17 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
+import android.util.Log
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Sum
 import com.kispoko.tome.lib.model.SumModel
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.*
-import lulo.value.UnexpectedType
+import java.io.Serializable
 
 
 
@@ -20,7 +20,7 @@ import lulo.value.UnexpectedType
  * Value Reference
  */
 @Suppress("UNCHECKED_CAST")
-sealed class DataReference : SumModel
+sealed class DataReference : SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -29,24 +29,21 @@ sealed class DataReference : SumModel
 
     companion object : Factory<DataReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DataReference> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DataReference> =
+            when (doc.case())
             {
-                when (doc.case())
-                {
-                    "boolean"   -> DataReferenceBoolean.fromDocument(doc)
-                                    as ValueParser<DataReference>
-                    "dice_roll" -> DataReferenceDiceRoll.fromDocument(doc)
-                                    as ValueParser<DataReference>
-                    "number"    -> DataReferenceNumber.fromDocument(doc)
-                                    as ValueParser<DataReference>
-                    else        -> effError<ValueError, DataReference>(
-                                            UnknownCase(doc.case(), doc.path))
+                "data_reference_boolean"   -> DataReferenceBoolean.fromDocument(doc.nextCase())
+                                                as ValueParser<DataReference>
+                "data_reference_dice_roll" -> DataReferenceDiceRoll.fromDocument(doc.nextCase())
+                                                as ValueParser<DataReference>
+                "data_reference_number"    -> DataReferenceNumber.fromDocument(doc.nextCase())
+                                                as ValueParser<DataReference>
+                else                        -> {
+                    Log.d("***DATAREF", doc.toString())
+                    effError<ValueError, DataReference>(
+                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
 
 
@@ -155,14 +152,8 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
 
     companion object : Factory<DataReferenceNumber>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<DataReferenceNumber> = when (doc)
-        {
-            is DocDict -> NumberReference.fromDocument(doc) ap {
-                              effValue<ValueError, DataReferenceNumber>(DataReferenceNumber(it))
-                          }
-            else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DataReferenceNumber> =
+                effApply(::DataReferenceNumber, NumberReference.fromDocument(doc))
     }
 
 

@@ -111,7 +111,7 @@ public class PageListItemView
         name.addRule(RelativeLayout.CENTER_VERTICAL);
         name.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
-        name.font               = Font.sansSerifFontRegular(context);
+//        name.font               = Font.sansSerifFontRegular(context);
         name.size               = R.dimen.page_list_item_name_text_size;
         name.color              = R.color.dark_blue_hlx_8;
 
@@ -148,7 +148,7 @@ public class PageListItemView
         count.width                     = LinearLayout.LayoutParams.WRAP_CONTENT;
         count.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        count.font                      = Font.sansSerifFontBold(context);
+//        count.font                      = Font.sansSerifFontBold(context);
         count.size                      = R.dimen.page_list_item_group_count_text_size;
         count.color                     = R.color.dark_blue_hl_8;
 
@@ -161,7 +161,7 @@ public class PageListItemView
         label.width                     = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.font                      = Font.sansSerifFontBold(context);
+//        label.font                      = Font.sansSerifFontBold(context);
         label.size                      = R.dimen.page_list_item_group_label_text_size;
         label.color                     = R.color.dark_blue_hl_8;
 

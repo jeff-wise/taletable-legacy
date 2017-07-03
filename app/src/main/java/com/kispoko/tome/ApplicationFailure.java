@@ -10,8 +10,6 @@ import com.kispoko.tome.model.game.engine.variable.NullVariableException;
 import com.kispoko.tome.model.game.engine.variable.VariableException;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.rts.game.engine.interpreter.InterpreterException;
-import com.kispoko.tome.model.game.engine.function.InvalidFunctionException;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.model.sheet.SheetException;
 import com.kispoko.tome.lib.database.DatabaseException;
@@ -46,12 +44,6 @@ public class ApplicationFailure
 
 
     public static void database(DatabaseException exception)
-    {
-        Log.d("***APP", exception.errorMessage(), exception);
-    }
-
-
-    public static void interpreter(InterpreterException exception)
     {
         Log.d("***APP", exception.errorMessage(), exception);
     }
@@ -96,13 +88,6 @@ public class ApplicationFailure
     public static void invalidEnum(IllegalArgumentException exception)
     {
         Log.d("***APP", "invalid enum");
-        exception.printStackTrace();
-    }
-
-
-    public static void invalidFunction(InvalidFunctionException exception)
-    {
-        Log.d("***APP", "invalid function");
         exception.printStackTrace();
     }
 

@@ -66,7 +66,6 @@ sealed class Alignment : SQLSerializable, Serializable
         is Left   -> Gravity.START
         is Center -> Gravity.CENTER_HORIZONTAL
         is Right  -> Gravity.END
-        else      -> Gravity.CENTER_HORIZONTAL
     }
 
 
@@ -119,7 +118,6 @@ sealed class VerticalAlignment : SQLSerializable, Serializable
         is Top    -> Gravity.TOP
         is Middle -> Gravity.CENTER_VERTICAL
         is Bottom -> Gravity.BOTTOM
-        else      -> Gravity.CENTER_VERTICAL
     }
 
 }

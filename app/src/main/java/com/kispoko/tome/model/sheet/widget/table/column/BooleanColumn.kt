@@ -11,7 +11,6 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
-import com.kispoko.tome.model.sheet.widget.table.cell.TrueText
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -85,8 +84,6 @@ data class BooleanColumnFormat(override val id : UUID,
         private val defaultColumnFormat  = ColumnFormat.default
         private val defaultTrueText      = ColumnTrueText("True")
         private val defaultFalseText     = ColumnFalseText("False")
-        private val defaultTrueStyle     = TextStyle.default
-        private val defaultFalseStyle    = TextStyle.default
         private val defaultShowTrueIcon  = ShowTrueIcon(false)
         private val defaultShowFalseIcon = ShowFalseIcon(false)
 

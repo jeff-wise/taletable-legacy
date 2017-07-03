@@ -4,6 +4,7 @@ package com.kispoko.tome.app
 
 import com.kispoko.tome.rts.game.GameError
 import com.kispoko.tome.rts.game.engine.EngineError
+import com.kispoko.tome.rts.game.engine.interpreter.EvalError
 
 import com.kispoko.tome.rts.sheet.SheetError
 import com.kispoko.tome.rts.sheet.StateError
@@ -47,6 +48,14 @@ class AppThemeError(val error : ThemeError) : AppError()
 
 
 class AppEngineError(val error : EngineError) : AppError()
+{
+    override fun debugMessage(): String = error.debugMessage()
+
+    override fun logMessage(): String = error.userMessage()
+}
+
+
+class AppEvalError(val error : EvalError) : AppError()
 {
     override fun debugMessage(): String = error.debugMessage()
 

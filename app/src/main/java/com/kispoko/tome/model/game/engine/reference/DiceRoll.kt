@@ -17,13 +17,14 @@ import lulo.document.*
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Boolean Reference
  */
-sealed class DiceRollReference : SumModel
+sealed class DiceRollReference : SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -33,12 +34,12 @@ sealed class DiceRollReference : SumModel
     companion object : Factory<DiceRollReference>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<DiceRollReference> =
-            when (doc.case)
+            when (doc.case())
             {
                 "literal"  -> DiceRollReferenceLiteral.fromDocument(doc)
                 "variable" -> DiceRollReferenceVariable.fromDocument(doc)
                 else       -> effError<ValueError,DiceRollReference>(
-                                  UnknownCase(doc.case, doc.path))
+                                  UnknownCase(doc.case(), doc.path))
             }
     }
 

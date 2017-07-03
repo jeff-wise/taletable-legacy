@@ -326,7 +326,7 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
 
         label.text                  = labelString;
 
-        label.font                  = Font.serifFontRegular(context);
+//        label.font                  = Font.serifFontRegular(context);
         label.color                 = R.color.dark_blue_hlx_6;
         label.sizeSp                = 17f;
 
@@ -344,7 +344,7 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
 
         header.text             = headerString.toUpperCase();
 
-        header.font             = Font.serifFontBold(context);
+//        header.font             = Font.serifFontBold(context);
         header.color            = R.color.dark_blue_hl_6;
         header.sizeSp           = 11f;
 

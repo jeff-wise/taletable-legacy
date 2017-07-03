@@ -5,13 +5,13 @@ package com.kispoko.tome.lib.ui;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import android.graphics.drawable.PaintDrawable;
 import android.view.View;
 import android.widget.LinearLayout;
 
-
+import com.kispoko.tome.model.sheet.style.Corners;
 import com.kispoko.tome.model.sheet.style.Spacing;
+import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +60,13 @@ public class LinearLayoutBuilder implements ViewBuilder
     public Padding                  padding;
     public Spacing                  paddingSpacing;
 
+    public Float                    topLeftCornerRadiusDp;
+    public Float                    topRightCornerRadiusDp;
+    public Float                    bottomRightCornerRadiusDp;
+    public Float                    bottomLeftCornerRadiusDp;
+
+    public Corners                  corners;
+
     public View.OnClickListener     onClick;
     public View.OnLongClickListener onLongClick;
 
@@ -107,6 +114,13 @@ public class LinearLayoutBuilder implements ViewBuilder
         this.padding            = new Padding();
         this.paddingSpacing     = null;
 
+        this.topLeftCornerRadiusDp      = null;
+        this.topRightCornerRadiusDp     = null;
+        this.bottomRightCornerRadiusDp  = null;
+        this.bottomLeftCornerRadiusDp   = null;
+
+        this.corners                    = null;
+
         this.onClick            = null;
         this.onLongClick        = null;
 
@@ -153,6 +167,10 @@ public class LinearLayoutBuilder implements ViewBuilder
     public LinearLayout linearLayout(Context context)
     {
         LinearLayout linearLayout = new LinearLayout(context);
+
+        PaintDrawable bgDrawable = new PaintDrawable();
+
+        boolean useDrawableBackground = false;
 
         // [1] Layout
         // --------------------------------------------------------------------------------------
@@ -222,20 +240,63 @@ public class LinearLayoutBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
+        {
             linearLayout.setBackgroundColor(this.backgroundColor);
+            bgDrawable.setColorFilter(
+                    new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
+        }
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null && this.backgroundColor != null) {
-            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
-            //int      color      = ContextCompat.getColor(context, this.backgroundColor);
-            bgDrawable.setColorFilter(
-                    new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
-            linearLayout.setBackground(bgDrawable);
+//            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
+//            //int      color      = ContextCompat.getColor(context, this.backgroundColor);
+//            bgDrawable.setColorFilter(
+//                    new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
+            //linearLayout.setBackground(bgDrawable);
         }
         else if (this.backgroundResource != null) {
             linearLayout.setBackgroundResource(this.backgroundResource);
+        }
+
+        // > Corners
+        // --------------------------------------------------------------------------------------
+
+        if (this.corners != null)
+        {
+            float topLeft     = Util.dpToPixel(this.corners.topLeftCornerRadiusDp());
+            float topRight    = Util.dpToPixel(this.corners.topRightCornerRadiusDp());
+            float bottomRight = Util.dpToPixel(this.corners.bottomRightCornerRadiusDp());
+            float bottomLeft  = Util.dpToPixel(this.corners.bottomLeftCornerRadiusDp());
+
+            float[] radii = {topLeft, topLeft, topRight, topRight,
+                             bottomRight, bottomRight, bottomLeft, bottomLeft};
+
+            bgDrawable.setCornerRadii(radii);
+            useDrawableBackground = true;
+        }
+
+
+        if (this.topLeftCornerRadiusDp != null ||
+            this.topRightCornerRadiusDp != null ||
+            this.bottomRightCornerRadiusDp != null ||
+            this.bottomLeftCornerRadiusDp != null)
+        {
+            float topLeft     = this.topLeftCornerRadiusDp != null ?
+                                        Util.dpToPixel(this.topLeftCornerRadiusDp) : 0f;
+            float topRight    = this.topRightCornerRadiusDp != null ?
+                                        Util.dpToPixel(this.topRightCornerRadiusDp) : 0f;
+            float bottomRight = this.bottomRightCornerRadiusDp != null ?
+                                        Util.dpToPixel(this.bottomRightCornerRadiusDp) : 0f;
+            float bottomLeft  = this.bottomLeftCornerRadiusDp != null ?
+                                        Util.dpToPixel(this.bottomLeftCornerRadiusDp) : 0f;
+
+            float[] radii = {topLeft, topLeft, topRight, topRight,
+                             bottomRight, bottomRight, bottomLeft, bottomLeft};
+
+            bgDrawable.setCornerRadii(radii);
+            useDrawableBackground = true;
         }
 
         // > Elevation
@@ -264,8 +325,10 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
-        else if (this.heightDp != null)
+        else if (this.heightDp != null) {
             layoutParamsBuilder.setHeightDp(this.heightDp);
+            bgDrawable.setIntrinsicHeight(Util.dpToPixel(this.heightDp));
+        }
 
         // > Weight
         // --------------------------------------------------------------------------------------
@@ -304,6 +367,10 @@ public class LinearLayoutBuilder implements ViewBuilder
         {
             linearLayout.addView(childViewBuilder.view(context));
         }
+
+
+        if (useDrawableBackground)
+            linearLayout.setBackground(bgDrawable);
 
 
         return linearLayout;

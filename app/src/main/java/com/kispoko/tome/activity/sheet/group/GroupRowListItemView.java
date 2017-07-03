@@ -111,7 +111,7 @@ public class GroupRowListItemView
         index.addRule(RelativeLayout.CENTER_VERTICAL);
         index.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
-        index.font               = Font.sansSerifFontRegular(context);
+//        index.font               = Font.sansSerifFontRegular(context);
         index.size               = R.dimen.group_row_list_item_name_text_size;
         index.color              = R.color.dark_blue_hlx_8;
 
@@ -148,7 +148,7 @@ public class GroupRowListItemView
         count.width                     = LinearLayout.LayoutParams.WRAP_CONTENT;
         count.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        count.font                      = Font.sansSerifFontBold(context);
+//        count.font                      = Font.sansSerifFontBold(context);
         count.size                      = R.dimen.group_row_list_item_group_count_text_size;
         count.color                     = R.color.dark_blue_hl_8;
 
@@ -161,7 +161,7 @@ public class GroupRowListItemView
         label.width                     = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.font                      = Font.sansSerifFontBold(context);
+//        label.font                      = Font.sansSerifFontBold(context);
         label.size                      = R.dimen.group_row_list_item_group_label_text_size;
         label.color                     = R.color.dark_blue_hl_8;
 

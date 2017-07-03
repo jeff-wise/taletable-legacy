@@ -13,7 +13,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
 
 
-
 /**
  * Common user interface functions
  */
@@ -42,7 +41,7 @@ public class UI
 
         if (titleView != null)
         {
-            titleView.setTypeface(Font.serifFontRegular(activity));
+            //titleView.setTypeface(Font.serifFontRegular(activity));
 
             titleView.setText(title);
         }

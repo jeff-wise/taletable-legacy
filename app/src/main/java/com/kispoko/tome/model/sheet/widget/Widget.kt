@@ -69,6 +69,8 @@ sealed class Widget : Model, SheetComponent, Serializable
                                             as ValueParser<Widget>
                     "widget_quote"    -> QuoteWidget.fromDocument(doc)
                                             as ValueParser<Widget>
+                    "widget_story"    -> StoryWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
                     "widget_table"    -> TableWidget.fromDocument(doc)
                                             as ValueParser<Widget>
                     "widget_tab"      -> TabWidget.fromDocument(doc)
@@ -113,7 +115,7 @@ sealed class Widget : Model, SheetComponent, Serializable
 object WidgetView
 {
 
-    fun layout(widgetFormat : WidgetFormat, context : Context) : LinearLayout
+    fun layout(widgetFormat : WidgetFormat, sheetContext : SheetContext) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -123,10 +125,15 @@ object WidgetView
 
         layout.weight           = widgetFormat.width().toFloat()
 
-//        layout.margin.left      = R.dimen.widget_margin_horz;
-//        layout.margin.right     = R.dimen.widget_margin_horz;
+        layout.marginSpacing    = widgetFormat.margins()
+        layout.paddingSpacing   = widgetFormat.padding()
 
-        return layout.linearLayout(context)
+        layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+                                                     widgetFormat.backgroundColorTheme())
+
+        layout.corners          = widgetFormat.corners()
+
+        return layout.linearLayout(sheetContext.context)
     }
 
 }
@@ -998,8 +1005,6 @@ data class NumberWidget(override val id : UUID,
                         val format : Comp<NumberWidgetFormat>,
                         val valueVariable : Comp<NumberVariable>,
                         val description : Maybe<Prim<NumberWidgetDescription>>,
-                        val valuePrefix : Maybe<Prim<NumberWidgetValuePrefix>>,
-                        val valuePostfix : Maybe<Prim<NumberWidgetValuePostfix>>,
                         val variables : Conj<Variable>) : Widget()
 {
 
@@ -1015,14 +1020,6 @@ data class NumberWidget(override val id : UUID,
 
         when (this.description) {
             is Just -> this.description.value.name = "description"
-        }
-
-        when (this.valuePrefix) {
-            is Just -> this.valuePrefix.value.name = "value_prefix"
-        }
-
-        when (this.valuePostfix) {
-            is Just -> this.valuePostfix.value.name = "value_postfix"
         }
 
         this.variables.name                         = "variables"
@@ -1044,16 +1041,12 @@ data class NumberWidget(override val id : UUID,
                 format : NumberWidgetFormat,
                 valueVariable : NumberVariable,
                 description : Maybe<NumberWidgetDescription>,
-                valuePrefix : Maybe<NumberWidgetValuePrefix>,
-                valuePostfix : Maybe<NumberWidgetValuePostfix>,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Comp(valueVariable),
                maybeLiftPrim(description),
-               maybeLiftPrim(valuePrefix),
-               maybeLiftPrim(valuePostfix),
                Conj(variables))
 
 
@@ -1076,14 +1069,7 @@ data class NumberWidget(override val id : UUID,
                          split(doc.maybeAt("description"),
                                effValue<ValueError,Maybe<NumberWidgetDescription>>(Nothing()),
                                { effApply(::Just, NumberWidgetDescription.fromDocument(it)) }),
-                         // Value Prefix
-                         split(doc.maybeAt("value_prefix"),
-                               effValue<ValueError,Maybe<NumberWidgetValuePrefix>>(Nothing()),
-                               { effApply(::Just, NumberWidgetValuePrefix.fromDocument(it)) }),
-                         // Value Postfix
-                        split(doc.maybeAt("value_postfix"),
-                                effValue<ValueError,Maybe<NumberWidgetValuePostfix>>(Nothing()),
-                                { effApply(::Just, NumberWidgetValuePostfix.fromDocument(it)) }),
+
                          // Variables
                          split(doc.maybeList("tags"),
                                effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
@@ -1106,10 +1092,6 @@ data class NumberWidget(override val id : UUID,
     fun valueVariable() : NumberVariable = this.valueVariable.value
 
     fun description() : String? = getMaybePrim(this.description)?.value
-
-    fun valuePrefix() : String? = getMaybePrim(this.valuePrefix)?.value
-
-    fun valuePostfix() : String? = getMaybePrim(this.valuePostfix)?.value
 
     fun variables() : Set<Variable> = this.variables.set
 
@@ -1289,6 +1271,7 @@ data class OptionWidget(override val id : UUID,
 }
 
 
+
 /**
  * Quote Widget
  */
@@ -1373,6 +1356,12 @@ data class QuoteWidget(override val id : UUID,
 
     fun format() : QuoteWidgetFormat = this.format.value
 
+    fun viewType() : QuoteViewType = this.viewType.value
+
+    fun quoteString() : String = this.quote.value.value
+
+    fun sourceString() : String? = getMaybePrim(this.source)?.value
+
 
     // -----------------------------------------------------------------------------------------
     // WIDGET
@@ -1381,9 +1370,8 @@ data class QuoteWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetContext: SheetContext): View {
-        TODO("not implemented")
-    }
+    override fun view(sheetContext : SheetContext) : View =
+            QuoteWidgetView.widgetView(this, sheetContext)
 
 
     // -----------------------------------------------------------------------------------------
@@ -1401,9 +1389,7 @@ data class QuoteWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext: SheetContext) {
-        TODO("not implemented")
-    }
+    override fun onSheetComponentActive(sheetContext: SheetContext) { }
 
 }
 
@@ -1518,6 +1504,109 @@ data class TableWidget(override val id : UUID,
     override fun view(sheetContext : SheetContext) : View =
             TableWidgetView.view(this, this.format(), sheetContext)
 
+
+}
+
+
+/**
+ * Story Widget
+ */
+data class StoryWidget(override val id : UUID,
+                       val widgetId : Prim<WidgetId>,
+                       val format : Comp<StoryWidgetFormat>,
+                       val story : Coll<StoryPart>) : Widget()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.story.name         = "story"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : StoryWidgetFormat,
+                story : MutableList<StoryPart>)
+        : this(UUID.randomUUID(),
+               Prim(widgetId),
+               Comp(format),
+               Coll(story))
+
+
+    companion object : Factory<StoryWidget>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryWidget>  = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::StoryWidget,
+                         // Widget Id
+                         doc.at("id") ap { WidgetId.fromDocument(it) },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               effValue(StoryWidgetFormat.default()),
+                               { StoryWidgetFormat.fromDocument(it) }),
+                         // Story
+                         doc.list("story") ap {
+                             it.mapMut { StoryPart.fromDocument(it) }
+                         })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : StoryWidgetFormat = this.format.value
+
+    fun story() : List<StoryPart> = this.story.list
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun view(sheetContext : SheetContext) : View =
+            StoryWidgetView.view(this, sheetContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val name : String = "widget_story"
+
+    override val modelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(sheetContext : SheetContext)
+    {
+        this.story().mapNotNull { it.variable() }
+                    .map { this.addVariableToState(sheetContext.sheetId, it) }
+    }
 
 }
 

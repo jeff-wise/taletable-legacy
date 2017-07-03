@@ -161,7 +161,7 @@ data class GroupFormat(override val id : UUID,
                        val backgroundColorTheme : Prim<ColorTheme>,
                        val margins : Comp<Spacing>,
                        val padding : Comp<Spacing>,
-                       val corners : Prim<Corners>,
+                       val corners : Comp<Corners>,
                        val showDivider : Prim<ShowGroupDivider>,
                        val dividerColorTheme: Prim<ColorTheme>,
                        val dividerMargins : Prim<DividerMargin>,
@@ -174,14 +174,14 @@ data class GroupFormat(override val id : UUID,
 
     init
     {
-        this.backgroundColorTheme.name = "background_color_theme"
-        this.margins.name = "margins"
-        this.padding.name = "padding"
-        this.corners.name = "corners"
-        this.showDivider.name = "show_divider"
-        this.dividerColorTheme.name = "divider_color_theme"
-        this.dividerMargins.name = "divider_margins"
-        this.dividerThickness.name = "divider_thickness"
+        this.backgroundColorTheme.name  = "background_color_theme"
+        this.margins.name               = "margins"
+        this.padding.name               = "padding"
+        this.corners.name               = "corners"
+        this.showDivider.name           = "show_divider"
+        this.dividerColorTheme.name     = "divider_color_theme"
+        this.dividerMargins.name        = "divider_margins"
+        this.dividerThickness.name      = "divider_thickness"
     }
 
 
@@ -201,7 +201,7 @@ data class GroupFormat(override val id : UUID,
                Prim(backgroundColorTheme),
                Comp(margins),
                Comp(padding),
-               Prim(corners),
+               Comp(corners),
                Prim(showDivider),
                Prim(dividerColorTheme),
                Prim(dividerMargins),
@@ -214,7 +214,7 @@ data class GroupFormat(override val id : UUID,
         private val defaultBackgroundColorTheme = ColorTheme.transparent
         private val defaultMargins              = Spacing.default()
         private val defaultPadding              = Spacing.default()
-        private val defaultCorners              = Corners.None
+        private val defaultCorners              = Corners.default()
         private val defaultShowDivider          = ShowGroupDivider(false)
         private val defaultDividerColorTheme    = ColorTheme.black
         private val defaultDividerMargins       = DividerMargin.default()
@@ -363,7 +363,7 @@ private fun viewLayout(format : GroupFormat, sheetContext : SheetContext) : Line
 
     layout.backgroundColor      = SheetManager.color(sheetContext.sheetId,
                                                      format.backgroundColorTheme())
-    layout.backgroundResource   = format.corners().resourceId()
+    layout.corners              = format.corners()
 
     return layout.linearLayout(sheetContext.context)
 }

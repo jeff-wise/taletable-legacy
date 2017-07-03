@@ -56,7 +56,7 @@ public class WidgetListItemView
         type.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         type.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        type.font                   = Font.sansSerifFontBold(context);
+//        type.font                   = Font.sansSerifFontBold(context);
         type.size                   = R.dimen.widget_list_item_type_text_size;
         type.color                  = R.color.dark_blue_hl_8;
 

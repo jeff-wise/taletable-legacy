@@ -2,14 +2,26 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
+import android.view.Gravity
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.kispoko.tome.R
+import com.kispoko.tome.R.string.source
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -165,8 +177,8 @@ data class QuoteWidgetFormat(override val id : UUID,
     {
 
         val defaultWidgetFormat   = WidgetFormat.default()
-        val defaultQuoteStyle     = TextStyle.default
-        val defaultSoureStyle     = TextStyle.default
+        val defaultQuoteStyle     = TextStyle.default()
+        val defaultSoureStyle     = TextStyle.default()
         val defaultIconColorTheme = ColorTheme.black
 
 
@@ -209,6 +221,12 @@ data class QuoteWidgetFormat(override val id : UUID,
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
 
+    fun quoteStyle() : TextStyle = this.quoteStyle.value
+
+    fun sourceStyle() : TextStyle = this.sourceStyle.value
+
+    fun iconColorTheme() : ColorTheme = this.iconColorTheme.value
+
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -221,6 +239,229 @@ data class QuoteWidgetFormat(override val id : UUID,
     override val modelObject = this
 
 }
+
+
+
+object QuoteWidgetView
+{
+
+
+    fun widgetView(quoteWidget : QuoteWidget, sheetContext : SheetContext) : View
+    {
+        val layout = WidgetView.layout(quoteWidget.widgetFormat(), sheetContext)
+
+        layout.addView(this.mainView(quoteWidget, sheetContext))
+
+        return layout
+    }
+
+
+
+    private fun mainView(quoteWidget : QuoteWidget, sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.mainViewLayout(quoteWidget.format(), sheetContext)
+
+        // > Quote View
+        layout.addView(this.quoteView(quoteWidget, sheetContext))
+
+        // > Source View
+        val source = quoteWidget.sourceString()
+        if (source != null)
+        {
+            when (quoteWidget.viewType())
+            {
+                is QuoteViewType.Source ->
+                    layout.addView(this.sourceHorizontalView(source,
+                                                             quoteWidget.format(),
+                                                             sheetContext))
+                is QuoteViewType.IconOverSource ->
+                    layout.addView(this.sourceVerticalView(source,
+                                                           quoteWidget.format(),
+                                                           sheetContext))
+                is QuoteViewType.NoIcon ->
+                    layout.addView(this.sourceVerticalView(source,
+                                                           quoteWidget.format(),
+                                                           sheetContext))
+
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun mainViewLayout(format : QuoteWidgetFormat,
+                               sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation      = LinearLayout.VERTICAL
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+                                                     format.widgetFormat().backgroundColorTheme())
+
+        layout.gravity          = format.widgetFormat().alignment().gravityConstant()
+
+        return layout.linearLayout(sheetContext.context)
+    }
+
+
+    private fun quoteView(quoteWidget : QuoteWidget, sheetContext : SheetContext) : TextView
+    {
+        val quote = TextViewBuilder()
+
+        quote.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        quote.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        quote.text          = quoteWidget.quoteString()
+
+        quote.gravity       = quoteWidget.format().quoteStyle().alignment().gravityConstant()
+
+        quoteWidget.format().quoteStyle().styleTextViewBuilder(quote, sheetContext)
+
+        return quote.textView(sheetContext.context)
+    }
+
+
+
+    private fun sourceHorizontalView(sourceText : String,
+                                     format : QuoteWidgetFormat,
+                                     sheetContext : SheetContext) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout  = LinearLayoutBuilder()
+
+        val icon    = ImageViewBuilder()
+        val source  = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation     = LinearLayout.HORIZONTAL
+        layout.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.layoutGravity   = Gravity.CENTER_HORIZONTAL
+        layout.gravity         = Gravity.CENTER_VERTICAL
+
+        layout.margin.top      = R.dimen.widget_text_quote_margin_top
+
+        layout.child(icon)
+              .child(source)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
+        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        icon.image                  = R.drawable.ic_quote
+
+        icon.color                  = SheetManager.color(sheetContext.sheetId,
+                                                         format.iconColorTheme())
+
+        // (3 B) Source
+        // -------------------------------------------------------------------------------------
+
+        source.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        source.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        source.text                 = sourceText
+
+        format.sourceStyle().styleTextViewBuilder(source, sheetContext)
+
+
+        return layout.linearLayout(sheetContext.context)
+    }
+
+
+    private fun sourceVerticalView(sourceText : String,
+                                   format : QuoteWidgetFormat,
+                                   sheetContext : SheetContext) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout  = LinearLayoutBuilder()
+
+        val icon    = ImageViewBuilder()
+        val source  = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation     = LinearLayout.VERTICAL
+
+        layout.width           = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity         = Gravity.CENTER
+
+        layout.margin.top      = R.dimen.widget_text_quote_margin_top
+
+        layout.child(icon)
+              .child(source)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image              = R.drawable.ic_quote_medium;
+
+        icon.color              = SheetManager.color(sheetContext.sheetId,
+                                                     format.iconColorTheme())
+
+        // (3 B) Source
+        // -------------------------------------------------------------------------------------
+
+        source.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        source.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        source.text             = sourceText
+
+        source.gravity          = Gravity.CENTER
+
+        format.sourceStyle().styleTextViewBuilder(source, sheetContext)
+
+
+        return layout.linearLayout(sheetContext.context)
+    }
+
+
+    private fun sourceNoIconView(sourceText : String,
+                                 format : QuoteWidgetFormat,
+                                 sheetContext : SheetContext) : TextView
+    {
+        val source = TextViewBuilder()
+
+        source.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        source.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        source.text             = sourceText
+
+        source.gravity          = Gravity.CENTER
+
+        source.margin.topDp     = 7f
+
+        format.sourceStyle().styleTextViewBuilder(source, sheetContext)
+
+        return source.textView(sheetContext.context)
+    }
+
+
+}
+
+
+
+//
+//    // > Views
+//    // -----------------------------------------------------------------------------------------
+//
 
 
 //
@@ -249,209 +490,7 @@ data class QuoteWidgetFormat(override val id : UUID,
 //
 //    }
 //
-//
-//    // > Views
-//    // -----------------------------------------------------------------------------------------
-//
-//    private View widgetView(boolean rowHasLabel, Context context)
-//    {
-//        LinearLayout layout = this.layout(rowHasLabel, context);
-//
-//        layout.addView(mainView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout mainView(Context context)
-//    {
-//        LinearLayout layout = mainViewLayout(context);
-//
-//        // > Quote View
-//        layout.addView(quoteView(context));
-//
-//        // > Source View
-//        if (this.source() != null)
-//        {
-//            switch (this.viewType())
-//            {
-//                case SOURCE:
-//                    layout.addView(sourceHorizontalView(context));
-//                    break;
-//                case ICON_OVER_SOURCE:
-//                    layout.addView(sourceVerticalView(context));
-//                    break;
-//                case NO_ICON:
-//                    layout.addView(sourceNoIconView(context));
-//                    break;
-//            }
-//        }
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout mainViewLayout(final Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.VERTICAL;
-//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.backgroundColor  = this.data().format().background().colorId();
-//
-//        layout.gravity          = this.data().format().alignment().gravityConstant();
-//
-//        layout.onClick          = new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                onQuoteWidgetShortClick(context);
-//            }
-//        };
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private TextView quoteView(Context context)
-//    {
-//        TextViewBuilder quote = new TextViewBuilder();
-//
-//        quote.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        quote.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        quote.text          = this.quote();
-//
-//        quote.gravity       = this.format().quoteStyle().alignment().gravityConstant();
-//
-//        this.format().quoteStyle().styleTextViewBuilder(quote, context);
-//
-//        return quote.textView(context);
-//    }
-//
-//
-//    private LinearLayout sourceHorizontalView(Context context)
-//    {
-//        // [1] Declarations
-//        // -------------------------------------------------------------------------------------
-//
-//        LinearLayoutBuilder layout  = new LinearLayoutBuilder();
-//
-//        ImageViewBuilder    icon    = new ImageViewBuilder();
-//        TextViewBuilder     source  = new TextViewBuilder();
-//
-//        // [2] Layout
-//        // -------------------------------------------------------------------------------------
-//
-//        layout.orientation     = LinearLayout.HORIZONTAL;
-//        layout.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.layoutGravity   = Gravity.CENTER_HORIZONTAL;
-//        layout.gravity         = Gravity.CENTER_VERTICAL;
-//
-//        layout.margin.top      = R.dimen.widget_text_quote_margin_top;
-//
-//        layout.child(icon)
-//              .child(source);
-//
-//        // [3 A] Icon
-//        // -------------------------------------------------------------------------------------
-//
-//        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        icon.image                  = R.drawable.ic_quote;
-//
-//        icon.color                  = this.format().iconColor().resourceId();
-//
-//        // [3 B] Source
-//        // -------------------------------------------------------------------------------------
-//
-//        source.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        source.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        source.text                 = this.source();
-//
-//        this.format().sourceStyle().styleTextViewBuilder(source, context);
-//
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout sourceVerticalView(Context context)
-//    {
-//        // [1] Declarations
-//        // -------------------------------------------------------------------------------------
-//
-//        LinearLayoutBuilder layout  = new LinearLayoutBuilder();
-//
-//        ImageViewBuilder    icon    = new ImageViewBuilder();
-//        TextViewBuilder     source  = new TextViewBuilder();
-//
-//        // [2] Layout
-//        // -------------------------------------------------------------------------------------
-//
-//        layout.orientation     = LinearLayout.VERTICAL;
-//
-//        layout.width           = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.gravity         = Gravity.CENTER;
-//
-//        layout.margin.top      = R.dimen.widget_text_quote_margin_top;
-//
-//        layout.child(icon)
-//              .child(source);
-//
-//        // [3 A] Icon
-//        // -------------------------------------------------------------------------------------
-//
-//        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        icon.image              = R.drawable.ic_quote_medium;
-//
-//        icon.color                  = this.format().iconColor().resourceId();
-//
-//        // [3 B] Source
-//        // -------------------------------------------------------------------------------------
-//
-//        source.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        source.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        source.text             = this.source();
-//
-//        source.gravity          = Gravity.CENTER;
-//
-//        this.format().sourceStyle().styleTextViewBuilder(source, context);
-//
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private TextView sourceNoIconView(Context context)
-//    {
-//        TextViewBuilder source = new TextViewBuilder();
-//
-//        source.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        source.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        source.text             = this.source();
-//
-//        source.gravity          = Gravity.CENTER;
-//
-//        source.margin.top       = R.dimen.seven_dp;
-//
-//        this.format().sourceStyle().styleTextViewBuilder(source, context);
-//
-//        return source.textView(context);
-//    }
-//
+
 //
 //    // > Clicks
 //    // -----------------------------------------------------------------------------------------

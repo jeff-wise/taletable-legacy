@@ -35,13 +35,13 @@ sealed class TextVariableValue : Serializable
     companion object : Factory<TextVariableValue>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<TextVariableValue> =
-            when (doc.case)
+            when (doc.case())
             {
                 "text_literal"       -> TextVariableLiteralValue.fromDocument(doc)
                 "value_reference"    -> TextVariableValueValue.fromDocument(doc)
                 "program_invocation" -> TextVariableProgramValue.fromDocument(doc)
                 else                 -> effError<ValueError,TextVariableValue>(
-                                            UnknownCase(doc.case, doc.path))
+                                            UnknownCase(doc.case(), doc.path))
             }
     }
 

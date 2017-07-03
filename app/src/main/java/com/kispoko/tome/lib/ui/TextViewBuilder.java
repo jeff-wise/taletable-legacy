@@ -233,20 +233,19 @@ public class TextViewBuilder implements ViewBuilder
         // > Padding
         // --------------------------------------------------------------------------------------
 
-//        if (this.paddingSpacing != null) {
-//            textView.setPadding(this.paddingSpacing.leftPx(),
-//                                this.paddingSpacing.topPx(),
-//                                this.paddingSpacing.rightPx(),
-//                                this.paddingSpacing.bottomPx());
-//        }
-//        else
-//        {
-//            textView.setPadding(this.padding.left(context),
-//                                this.padding.top(context),
-//                                this.padding.right(context),
-//                                this.padding.bottom(context));
-//        }
-
+        if (this.paddingSpacing != null) {
+            textView.setPadding(this.paddingSpacing.leftPx(),
+                                this.paddingSpacing.topPx(),
+                                this.paddingSpacing.rightPx(),
+                                this.paddingSpacing.bottomPx());
+        }
+        else
+        {
+            textView.setPadding(this.padding.left(context),
+                                this.padding.top(context),
+                                this.padding.right(context),
+                                this.padding.bottom(context));
+        }
 
         // > On Click Listener
         // --------------------------------------------------------------------------------------

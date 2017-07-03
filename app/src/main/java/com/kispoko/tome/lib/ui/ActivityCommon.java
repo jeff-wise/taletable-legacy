@@ -79,7 +79,7 @@ public class ActivityCommon
 
         label.textId                = labelId;
 
-        label.font                  = Font.serifFontRegular(context);
+//        label.font                  = Font.serifFontRegular(context);
         label.color                 = R.color.dark_theme_primary_10;
         label.sizeSp                = 17f;
 

@@ -212,8 +212,8 @@ data class ButtonWidgetFormat(override val id : UUID,
 
         private val defaultWidgetFormat        = WidgetFormat.default()
         private val defaultHeight              = Height.Wrap
-        private val defaultLabelStyle          = TextStyle.default
-        private val defaultDescriptionStyle    = TextStyle.default
+        private val defaultLabelStyle          = TextStyle.default()
+        private val defaultDescriptionStyle    = TextStyle.default()
         private val defaultDescriptionPosition = Position.Top
         private val defaultButtonColorTheme    = ColorTheme.black
         private val defaultIconColorTheme      = ColorTheme.black

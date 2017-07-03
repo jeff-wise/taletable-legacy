@@ -272,6 +272,9 @@ types:
   - type: widget_quote
     description: >
       Quote Widget
+  - type: widget_story
+    description: >
+      Story Widget
   - type: widget_tab
     description: >
       Tab Widget
@@ -746,56 +749,120 @@ types:
     presence: optional
     description: >
       Standard widget formatting options.
+  - name: height
+    type: height
+    presence: optional
+    description: >
+      Widget height.
   - name: inside_label
     type: string
     presence: optional
     description: >
       Inside label.
-  - name: inside_label_position
-    type: position
+  - name: inside_label_format
+    type: text_format
     presence: optional
     description: >
-      Inside label position.
-  - name: inside_label_style
-    type: text_style
-    presence: optional
-    description: >
-      Inside label text style.
-  - name: inside_label_margins
-    type: spacing
-    presence: optional
-    description: >
-      Inside label margins.
+      Inside label format.
   - name: outside_label
     type: string
     presence: optional
     description: >
       Outside label.
-  - name: outside_label_position
-    type: position
+  - name: outside_label_format
+    type: text_format
     presence: optional
     description: >
       Outside label position.
-  - name: outside_label_style
-    type: text_style
+  - name: value_format
+    type: text_format
     presence: optional
     description: >
-      Outside label text style.
-  - name: outside_label_margins
-    type: spacing
-    presence: optional
-    description: >
-      Outside label margins.
+      Outside label position.
   - name: description_style
     type: text_style
     presence: optional
     description: >
       Description text style.
-  - name: value_style
+  - name: value_prefix
+    type: string
+    presence: optional
+    description: >
+      Value prefix.
+  - name: value_prefix_format
+    type: text_format
+    presence: optional
+    description: >
+      Value prefix.
+  - name: value_postfix
+    type: string
+    presence: optional
+    description: >
+      Value postfix.
+  - name: value_postfix_format
+    type: text_format
+    presence: optional
+    description: >
+      Value prefix.
+  - name: value_separator
+    type: string
+    presence: optional
+    description: >
+      Base value separator.
+  - name: value_separator_style
     type: text_style
     presence: optional
     description: >
-      Value text style.
+      Base value separator style.
+- name: widget_option
+  label: Option Widget
+  description: >
+    Option Widget
+  group: 'Widget: Option'
+  type: product
+  fields:
+  - name: id
+    type: widget_id
+    presence: required
+    description: >
+      The widget identifier.
+  - name: format
+    type: option_widget_format
+    presence: required
+    description: >
+      The option widget formatting options.
+  - name: view_type
+    type: option_widget_view_type
+    presence: optional
+    description: >
+      The option widget view type.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      The description.
+  - name: value_type
+    type: value_type
+    presence: optional
+    description: >
+      The value type.
+  - name: value
+    type: variable
+    presence: required
+    description: >
+      The value.
+- name: option_widget_format
+  label: Option Widget Format
+  description: >
+    Option Widget formatting options.
+  group: 'Widget: Option'
+  type: product
+  fields:
+  - name: widget_format
+    type: widget_format
+    presence: optional
+    description: >
+      Standard widget formatting options.
   - name: value_height
     type: widget_height
     presence: optional
@@ -924,7 +991,7 @@ types:
       The widget identifier.
   - name: format
     type: quote_widget_format
-    presence: required
+    presence: optional
     description: >
       The quote widget formatting options.
   - name: quote
@@ -969,6 +1036,96 @@ types:
     presence: optional
     description: >
       Quote icon color.
+- name: widget_story
+  label: Story Widget
+  description: >
+    Story Widget
+  group: 'Widget: Story'
+  type: product
+  fields:
+  - name: id
+    type: widget_id
+    presence: required
+    description: >
+      The widget identifier.
+  - name: format
+    type: story_widget_format
+    presence: optional
+    description: >
+      The story widget formatting options.
+  - name: story
+    type: list
+    of: story_part
+    presence: required
+    description: >
+      The story.
+- name: story_part
+  label: Story Part
+  description: >
+    Story Part
+  group: 'Widget: Story'
+  type: sum
+  cases:
+  - type: story_part_span
+    description: story part span
+  - type: story_part_variable
+    description: story part variable
+- name: story_part_span
+  label: Story Part Span
+  description: >
+    Story Part Span
+  group: 'Widget: Story'
+  type: product
+  fields:
+  - name: text
+    type: string
+    presence: required
+    description: >
+      The text.
+  - name: format
+    type: text_format
+    presence: optional
+    description: >
+      The text style.
+- name: story_part_variable
+  label: Story Part Variable
+  description: >
+    Story Part Variable
+  group: 'Widget: Story'
+  type: product
+  fields:
+  - name: format
+    type: text_format
+    presence: optional
+    description: >
+      The text style.
+  - name: variable
+    type: variable
+    presence: optional
+    description: >
+      The value variable.
+- name: story_widget_format
+  label: Story Widget Format
+  description: >
+    Story Widget formatting options.
+  group: 'Widget: Story'
+  type: product
+  fields:
+  - name: widget_format
+    type: widget_format
+    presence: optional
+    description: >
+      Standard widget formatting options.
+  - name: part_alignment
+    type: story_part_alignment
+    presence: optional
+    description: >
+      Standard widget formatting options.
+  - name: line_spacing
+    type: number
+    presence: optional
+    description: >
+      Standard widget formatting options.
 - name: widget_table
   label: Table Widget
   description: >
@@ -1010,8 +1167,18 @@ types:
     presence: optional
     description: >
       Standard widget formatting options.
-  - name: cell_height
-    type: widget_height
+  - name: header_format
+    type: table_widget_row_format
+    presence: optional
+    description: >
+      Standard widget formatting options.
+  - name: row_format
+    type: table_widget_row_format
+    presence: optional
+    description: >
+      Standard widget formatting options.
+  - name: height
+    type: height
     presence: optional
     description: >
       The table cell height.
@@ -1074,36 +1241,31 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: alignment
-    type: alignment
+  - name: column_format
+    type: column_format
     presence: optional
     description: >
-      The column alignment.
-  - name: width
-    type: number
-    presence: optional
-    description: >
-      The column width.
-  - name: background
-    type: color_id
-    presence: optional
-    description: >
-      The column background color.
-  - name: text_style
-    type: text_style
-    presence: optional
-    description: >
-      The column text style.
+      The column format.
   - name: true_style
     type: text_style
     presence: optional
     description: >
-      The text style of true values.
+      The true value text style.
   - name: false_style
-    type: text_style
+    type: false_style
     presence: optional
     description: >
-      The text style of false values.
+      The false value text style.
+  - name: true_text
+    type: string
+    presence: optional
+    description: >
+      The true text.
+  - name: false_text
+    type: string
+    presence: optional
+    description: >
+      The false text.
   - name: show_true_icon
     type: boolean
     presence: optional
@@ -1158,26 +1320,11 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: alignment
-    type: alignment
+  - name: column_format
+    type: column_format
     presence: optional
     description: >
-      The column alignment.
-  - name: width
-    type: number
-    presence: optional
-    description: >
-      The column width.
-  - name: background
-    type: color_id
-    presence: optional
-    description: >
-      The column background color.
-  - name: text_style
-    type: text_style
-    presence: optional
-    description: >
-      The column text style.
+      The column format.
 - name: table_widget_text_column
   label: Text Column
   description: >
@@ -1222,26 +1369,38 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
+  - name: column_format
+    type: column_format
+    presence: optional
+    description: >
+      The column format.
+- name: column_format
+  label: Column Format
+  description: >
+    Column format.
+  group: 'Widget: Table'
+  type: product
+  fields:
+  - name: text_style
+    type: text_style
+    presence: optional
+    description: >
+      The column text style.
   - name: alignment
     type: alignment
     presence: optional
     description: >
       The column alignment.
   - name: width
-    type: number
+    type: number 
     presence: optional
     description: >
       The column width.
-  - name: background
-    type: color_id
+  - name: background_color
+    type: color_theme
     presence: optional
     description: >
       The column background color.
-  - name: text_style
-    type: text_style
-    presence: optional
-    description: >
-      The column text style.
 - name: table_widget_row
   label: Text Widget Row
   description: >
@@ -1267,6 +1426,26 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
+  - name: text_style
+    type: text_style
+    presence: optional
+    description: >
+      The row text style.
+  - name: background_color_theme
+    type: color_theme
+    presence: optional
+    description: >
+      The background color theme.
+  - name: margins
+    type: spacing
+    presence: optional
+    description: >
+      The row margins.
+  - name: padding
+    type: spacing
+    presence: optional
+    description: >
+      The row margins.
   - name: cell_height
     type: widget_height
     presence: optional
@@ -1594,11 +1773,6 @@ types:
   group: Widget
   type: product
   fields:
-  - name: label
-    type: string
-    presence: optional
-    description: >
-      The widget label.
   - name: width
     type: number
     presence: optional
@@ -1609,21 +1783,11 @@ types:
     presence: optional
     description: >
       The widget alignment.
-  - name: label_style
-    type: text_style
+  - name: background_color_theme
+    type: color_theme
     presence: optional
     description: >
-      The widget label text style.
-  - name: background
-    type: color_id
-    presence: optional
-    description: >
-      The widget background color.
-  - name: background
-    type: color_id
-    presence: optional
-    description: >
-      The widget background color.
+      The widget background color theme.
   - name: corners
     type: corners
     presence: optional
@@ -1699,6 +1863,11 @@ types:
     description: >
       The text size.
   - name: font
+    type: text_font
+    presence: optional
+    description: >
+      The text font.
+  - name: font_style
     type: text_font_style
     presence: optional
     description: >
@@ -1718,6 +1887,33 @@ types:
     presence: optional
     description: >
       The text background color theme.
+- name: corners
+  label: Corners
+  description: >
+    The corners of an object.
+  group: Styel
+  type: product
+  fields:
+  - name: top_left_radius
+    type: number
+    presence: optional
+    description:
+      The top-left corner radius.
+  - name: top_right_radius
+    type: number
+    presence: optional
+    description:
+      The top-right corner radius.
+  - name: bottom_right_radius
+    type: number
+    presence: optional
+    description:
+      The bottom-right corner radius.
+  - name: bottom_left_radius
+    type: number
+    presence: optional
+    description:
+      The bottom-left corner radius.
 - name: spacing
   label: Spacing
   description: >
@@ -1745,15 +1941,6 @@ types:
     presence: optional
     description:
       The space on the bottom.
-- name: corners
-  label: Corners
-  description: >
-    The types of corners.
-  group: Style
-  type: primitive
-  base_type: string
-  constraints:
-  - corners_type 
 - name: alignment
   label: Alignment
   description: >
@@ -1772,6 +1959,13 @@ types:
   base_type: string
   constraints:
   - vertical_alignment_set
+- name: text_font
+  label: Text Font
+  description: >
+    Font.
+  group: Style
+  type: primitive
+  base_type: string
 - name: text_font_style
   label: Text Font Style
   description: >
@@ -1781,15 +1975,13 @@ types:
   base_type: string
   constraints:
   - font_style_set
-- name: widget_height
-  label: Widget Height
+- name: height
+  label: Height
   description: >
     The widget height options.
   group: Style
   type: primitive
-  base_type: string
-  constraints:
-  - widget_height_set
+  base_type: number
 - name: position
   label: Position
   description: >
@@ -1842,6 +2034,15 @@ types:
   base_type: string
   constraints:
   - quote_widget_view_type_set
+- name: story_part_alignment
+  label: Story Part Alignment
+  description: >
+    Story part alignment
+  group: 'Widget: Story'
+  type: primitive
+  base_type: string
+  constraints:
+  - story_part_alignment_set
 constraints:
 - name: sheet_theme_type
   type: string_one_of
@@ -1850,14 +2051,6 @@ constraints:
     - dark
     - light
     - custom
-- name: corners_type
-  type: string_one_of
-  parameters:
-    set:
-    - none
-    - small
-    - medium
-    - large
 - name: alignment_set
   type: string_one_of
   parameters:
@@ -1880,18 +2073,16 @@ constraints:
     - italic
     - bold
     - bold_italic
-- name: widget_height_set
+    - light
+- name: story_part_alignment_set
   type: string_one_of
   parameters:
     set:
-    - wrap
-    - very_small
-    - small
-    - medium_small
-    - medium
-    - medium_large
-    - large
-    - very_large
+    - stretch
+    - flex_start
+    - flex_end
+    - center
+    - baseline
 - name: position_set
   type: string_one_of
   parameters:

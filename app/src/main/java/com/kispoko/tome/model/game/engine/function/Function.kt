@@ -5,11 +5,11 @@ package com.kispoko.tome.model.game.engine.function
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.*
+import com.kispoko.tome.rts.game.engine.interpreter.Parameters
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -28,7 +28,7 @@ data class Function(override val id : UUID,
                     val label : Prim<FunctionLabel>,
                     val description : Prim<FunctionDescription>,
                     val typeSignature : Comp<FunctionTypeSignature>,
-                    val variables : Coll<Tuple>) : Model
+                    val tuples : Coll<Tuple>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -41,8 +41,13 @@ data class Function(override val id : UUID,
         this.label.name             = "function_id"
         this.description.name       = "description"
         this.typeSignature.name     = "type_signature"
-        this.variables.name         = "variables"
+        this.tuples.name            = "tuples"
     }
+
+
+    val tupleByParameters : MutableMap<Parameters,Tuple> =
+                                        this.tuples().associateBy { it.parameters() }
+                                                     .toMutableMap()
 
 
     // -----------------------------------------------------------------------------------------
@@ -53,18 +58,18 @@ data class Function(override val id : UUID,
                 label : FunctionLabel,
                 description : FunctionDescription,
                 typeSignature : FunctionTypeSignature,
-                variables : MutableList<Tuple>)
+                tuples : MutableList<Tuple>)
         : this(UUID.randomUUID(),
                Prim(functionId),
                Prim(label),
                Prim(description),
                Comp(typeSignature),
-               Coll(variables))
+               Coll(tuples))
 
 
     companion object : Factory<Function>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Function>  = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Function>  = when (doc)
         {
             is DocDict ->
             {
@@ -88,6 +93,21 @@ data class Function(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun functionId() : FunctionId = this.functionId.value
+
+    fun label() : String = this.label.value.value
+
+    fun description() : String = this.description.value.value
+
+    fun typeSignature() : FunctionTypeSignature = this.typeSignature.value
+
+    fun tuples() : List<Tuple> = this.tuples.list
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -96,6 +116,14 @@ data class Function(override val id : UUID,
     override val name = "function"
 
     override val modelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun tupleWithParameters(parameters : Parameters) : Tuple? =
+            this.tupleByParameters[parameters]
 
 }
 
@@ -109,8 +137,7 @@ data class FunctionTypeSignature(override val id : UUID,
                                  val parameter3Type : Maybe<Prim<EngineValueType>>,
                                  val parameter4Type : Maybe<Prim<EngineValueType>>,
                                  val parameter5Type : Maybe<Prim<EngineValueType>>,
-                                 val resultType : Prim<EngineValueType>,
-                                 val arity : Prim<FunctionArity>)
+                                 val resultType : Prim<EngineValueType>)
                                  : Model, Serializable
 {
 
@@ -139,7 +166,6 @@ data class FunctionTypeSignature(override val id : UUID,
         }
 
         this.resultType.name     = "result_type"
-        this.arity.name          = "arity"
     }
 
 
@@ -152,16 +178,14 @@ data class FunctionTypeSignature(override val id : UUID,
                 parameter3Type : Maybe<EngineValueType>,
                 parameter4Type : Maybe<EngineValueType>,
                 parameter5Type : Maybe<EngineValueType>,
-                resultType : EngineValueType,
-                arity : FunctionArity)
+                resultType : EngineValueType)
         : this(UUID.randomUUID(),
                Prim(parameter1Type),
                maybeLiftPrim(parameter2Type),
                maybeLiftPrim(parameter3Type),
                maybeLiftPrim(parameter4Type),
                maybeLiftPrim(parameter5Type),
-               Prim(resultType),
-               Prim(arity))
+               Prim(resultType))
 
 
     companion object : Factory<FunctionTypeSignature>
@@ -172,27 +196,25 @@ data class FunctionTypeSignature(override val id : UUID,
             {
                 effApply(::FunctionTypeSignature,
                          // Parameter 1 Type
-                         doc.at("parameter_1_type") ap { EngineValueType.fromDocument(it) },
+                         doc.at("parameter1_type") ap { EngineValueType.fromDocument(it) },
                          // Parameter 2 Type
-                         split(doc.maybeAt("parameter_2_type"),
+                         split(doc.maybeAt("parameter2_type"),
                                effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
                                { effApply(::Just, EngineValueType.fromDocument(it)) }),
                          // Parameter 3 Type
-                         split(doc.maybeAt("parameter_3_type"),
+                         split(doc.maybeAt("parameter3_type"),
                                effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
                                { effApply(::Just, EngineValueType.fromDocument(it)) }),
                          // Parameter 4 Type
-                         split(doc.maybeAt("parameter_4_type"),
+                         split(doc.maybeAt("parameter4_type"),
                                effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
                                { effApply(::Just, EngineValueType.fromDocument(it)) }),
                          // Parameter 5 Type
-                         split(doc.maybeAt("parameter_5_type"),
+                         split(doc.maybeAt("parameter5_type"),
                                effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
                                { effApply(::Just, EngineValueType.fromDocument(it)) }),
                          // Result Type
-                         doc.at("result_type") ap { EngineValueType.fromDocument(it) },
-                         // Arity
-                         doc.at("arity") ap { FunctionArity.fromDocument(it) }
+                         doc.at("result_type") ap { EngineValueType.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -210,34 +232,6 @@ data class FunctionTypeSignature(override val id : UUID,
     override val name = "program_type_signature"
 
     override val modelObject = this
-
-}
-
-
-/**
- * Function Arity
- */
-data class FunctionArity(val value : Int) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<FunctionArity>
-    {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<FunctionArity> = when (doc)
-        {
-            is DocNumber -> effValue(FunctionArity(doc.number.toInt()))
-            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLInt({this.value})
 
 }
 
@@ -333,13 +327,12 @@ data class FunctionDescription(val value : String) : SQLSerializable, Serializab
  * Tuple
  */
 data class Tuple(override val id : UUID,
-                 val parameter1 : Func<EngineValue>,
-                 val parameter2 : Maybe<Func<EngineValue>>,
-                 val parameter3 : Maybe<Func<EngineValue>>,
-                 val parameter4 : Maybe<Func<EngineValue>>,
-                 val parameter5 : Maybe<Func<EngineValue>>,
-                 val result : Func<EngineValue>,
-                 val arity : Prim<FunctionArity>) : Model
+                 val parameter1 : Sum<EngineValue>,
+                 val parameter2 : Maybe<Sum<EngineValue>>,
+                 val parameter3 : Maybe<Sum<EngineValue>>,
+                 val parameter4 : Maybe<Sum<EngineValue>>,
+                 val parameter5 : Maybe<Sum<EngineValue>>,
+                 val result : Sum<EngineValue>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -367,8 +360,6 @@ data class Tuple(override val id : UUID,
         }
 
         this.result.name                            = "result"
-
-        this.arity.name                             = "arity"
     }
 
 
@@ -381,47 +372,43 @@ data class Tuple(override val id : UUID,
                 parameter3 : Maybe<EngineValue>,
                 parameter4 : Maybe<EngineValue>,
                 parameter5 : Maybe<EngineValue>,
-                result : EngineValue,
-                arity : FunctionArity)
+                result : EngineValue)
         : this(UUID.randomUUID(),
-               liftEngineValue(parameter1),
-               liftMaybeEngineValue(parameter2),
-               liftMaybeEngineValue(parameter3),
-               liftMaybeEngineValue(parameter4),
-               liftMaybeEngineValue(parameter5),
-               liftEngineValue(result),
-               Prim(arity))
+               Sum(parameter1),
+               maybeLiftSum(parameter2),
+               maybeLiftSum(parameter3),
+               maybeLiftSum(parameter4),
+               maybeLiftSum(parameter5),
+               Sum(result))
 
 
     companion object : Factory<Tuple>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Tuple> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Tuple> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::Tuple,
                          // Parameter 1
                          doc.at("parameter1") ap { EngineValue.fromDocument(it) },
-                         // Parameter 2 Type
-                         split(doc.maybeAt("parameter_2"),
+                         // Parameter 2
+                         split(doc.maybeAt("parameter2"),
                                effValue<ValueError,Maybe<EngineValue>>(Nothing()),
                                { effApply(::Just, EngineValue.fromDocument(it)) }),
-                         // Parameter 3 Type
-                         split(doc.maybeAt("parameter_3"),
+                         // Parameter 3
+                         split(doc.maybeAt("parameter3"),
                                effValue<ValueError,Maybe<EngineValue>>(Nothing()),
                                { effApply(::Just, EngineValue.fromDocument(it)) }),
-                         // Parameter 4 Type
-                         split(doc.maybeAt("parameter_4"),
+                         // Parameter 4
+                         split(doc.maybeAt("parameter4"),
                                effValue<ValueError,Maybe<EngineValue>>(Nothing()),
                                { effApply(::Just, EngineValue.fromDocument(it)) }),
-                         // Parameter 5 Type
-                         split(doc.maybeAt("parameter_5"),
+                         // Parameter 5
+                         split(doc.maybeAt("parameter5"),
                                effValue<ValueError,Maybe<EngineValue>>(Nothing()),
                                { effApply(::Just, EngineValue.fromDocument(it)) }),
                          // Result
-                         doc.at("result") ap { EngineValue.fromDocument(it) },
-                         // Arity
-                         doc.at("arity") ap { FunctionArity.fromDocument(it) }
+                         doc.at("result") ap { EngineValue.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -430,73 +417,43 @@ data class Tuple(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun parameter1() : EngineValue = this.parameter1.value
+
+    fun parameter2() : Maybe<EngineValue> = getMaybeSum(this.parameter2)
+
+    fun parameter3() : Maybe<EngineValue> = getMaybeSum(this.parameter3)
+
+    fun parameter4() : Maybe<EngineValue> = getMaybeSum(this.parameter4)
+
+    fun parameter5() : Maybe<EngineValue> = getMaybeSum(this.parameter5)
+
+    fun result() : EngineValue = this.result.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
-    override val name = "tupel"
+    override val name = "tuple"
 
     override val modelObject = this
 
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun parameters() : Parameters =
+            Parameters(this.parameter1(), this.parameter2(), this.parameter3(),
+                       this.parameter4(), this.parameter5())
+
 }
 
-
-
-fun liftEngineValue(engineValue : EngineValue) : Func<EngineValue> = when (engineValue)
-    {
-        is EngineNumberValue    -> Prim(engineValue, "number")
-        is EngineTextValue      -> Prim(engineValue, "text")
-        is EngineBooleanValue   -> Prim(engineValue, "boolean")
-        is EngineDiceRollValue  -> Comp(engineValue, "dice_roll")
-        is EngineTextListValue  -> Prim(engineValue, "text_list")
-    }
-
-
-@Suppress("UNCHECKED_CAST")
-fun liftMaybeEngineValue(mEngineValue : Maybe<EngineValue>) : Maybe<Func<EngineValue>>
-    = when (mEngineValue)
-    {
-        is Just ->
-        {
-            val engineValue = mEngineValue.value
-            when (engineValue)
-            {
-                is EngineNumberValue    -> Just(Prim(engineValue, "number"))
-                                            as Maybe<Func<EngineValue>>
-                is EngineTextValue      -> Just(Prim(engineValue, "text"))
-                                            as Maybe<Func<EngineValue>>
-                is EngineBooleanValue   -> Just(Prim(engineValue, "boolean"))
-                                            as Maybe<Func<EngineValue>>
-                is EngineDiceRollValue  -> Just(Comp(engineValue, "dice_roll"))
-                                            as Maybe<Func<EngineValue>>
-                is EngineTextListValue  -> Just(Prim(engineValue, "text_list"))
-                                            as Maybe<Func<EngineValue>>
-            }
-        }
-        else  -> Nothing()
-    }
-
-
-
-
-//
-//
-//    // > Execute
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Execute the function. Returns a EngineValueUnion based on the provided parameters. If the
-//     * function does not have a case for the given parameters, it returns null.
-//     * @param parameters
-//     * @return
-//     */
-//    public EngineValueUnion execute(List<EngineValueUnion> parameters)
-//    {
-//        EngineValueUnion result = this.functionMap.get(new Parameters(parameters));
-//        return result;
-//    }
-//
 //
 //    // INTERNAL
 //    // ------------------------------------------------------------------------------------------

@@ -20,7 +20,6 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.model.sheet.Sheet;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.query.CountQuery;
@@ -327,7 +326,7 @@ public class NewCharacterActivity extends AppCompatActivity
 
         label.text              = labelString;
 
-        label.font              = Font.serifFontRegular(context);
+//        label.font              = Font.serifFontRegular(context);
         label.color             = labelColor;
         label.sizeSp            = 17.5f;
 
@@ -394,7 +393,7 @@ public class NewCharacterActivity extends AppCompatActivity
 
         header.text             = context.getString(R.string.random_user_quote).toUpperCase();
 
-        header.font             = Font.serifFontBold(context);
+//        header.font             = Font.serifFontBold(context);
         header.color            = R.color.dark_theme_primary_70;
         header.sizeSp           = 14f;
 
@@ -412,7 +411,7 @@ public class NewCharacterActivity extends AppCompatActivity
         quote.text              = "I know what you are thinking. Because the square moon is in " +
                                   "the sky back in my homeland, you may use \"he\".";
 
-        quote.font              = Font.serifFontItalic(context);
+//        quote.font              = Font.serifFontItalic(context);
         quote.color             = R.color.dark_theme_primary_18;
         quote.sizeSp            = 16.5f;
 
@@ -454,7 +453,7 @@ public class NewCharacterActivity extends AppCompatActivity
 
         source.text                 = "\u2014 Francis, Extra-Dimensional Tentacle Creature";
 
-        source.font                 = Font.serifFontRegular(context);
+//        source.font                 = Font.serifFontRegular(context);
         source.color                = R.color.dark_theme_primary_45;
         source.sizeSp               = 15f;
 

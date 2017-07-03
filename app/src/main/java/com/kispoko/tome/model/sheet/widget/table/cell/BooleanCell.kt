@@ -13,7 +13,6 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LayoutType
@@ -40,8 +39,6 @@ data class BooleanCellFormat(override val id : UUID,
                              val cellFormat : Comp<CellFormat>,
                              val trueStyle : Maybe<Comp<TextStyle>>,
                              val falseStyle : Maybe<Comp<TextStyle>>,
-                             val trueText : Prim<TrueText>,
-                             val falseText : Prim<FalseText>,
                              val showTrueIcon : Prim<ShowTrueIcon>,
                              val showFalseIcon : Prim<ShowFalseIcon>) : Model, Serializable
 {
@@ -62,10 +59,6 @@ data class BooleanCellFormat(override val id : UUID,
             is Just -> this.falseStyle.value.name   = "false_style"
         }
 
-        this.trueText.name                          = "true_text"
-
-        this.falseText.name                         = "false_text"
-
         this.showTrueIcon.name                      = "show_true_icon"
 
         this.showFalseIcon.name                     = "show_false_icon"
@@ -80,8 +73,6 @@ data class BooleanCellFormat(override val id : UUID,
     {
 
         private val defaultCellFormat    = CellFormat.default
-        private val defaultTrueText      = TrueText("True")
-        private val defaultFalseText     = FalseText("False")
         private val defaultShowTrueIcon  = ShowTrueIcon(false)
         private val defaultShowFalseIcon = ShowFalseIcon(false)
 
@@ -107,14 +98,6 @@ data class BooleanCellFormat(override val id : UUID,
                                effValue(Nothing()),
                                { TextStyle.fromDocument(it) ap {
                                     effValue<ValueError,Maybe<Comp<TextStyle>>>(Just(Comp(it)))} }),
-                         // True Text
-                         split(doc.maybeAt("true_text"),
-                               effValue(Prim.default(defaultTrueText)),
-                               { effApply(::Prim, TrueText.fromDocument(it)) }),
-                         // False Text
-                         split(doc.maybeAt("false_text"),
-                               effValue(Prim.default(defaultFalseText)),
-                               { effApply(::Prim, FalseText.fromDocument(it)) }),
                          // Show True Icon?
                          split(doc.maybeAt("show_true_icon"),
                                effValue(Prim.default(defaultShowTrueIcon)),
@@ -134,8 +117,6 @@ data class BooleanCellFormat(override val id : UUID,
                                   Comp.default(defaultCellFormat),
                                   Nothing<Comp<TextStyle>>(),
                                   Nothing<Comp<TextStyle>>(),
-                                  Prim.default(defaultTrueText),
-                                  Prim.default(defaultFalseText),
                                   Prim.default(defaultShowTrueIcon),
                                   Prim.default(defaultShowFalseIcon))
 
@@ -152,10 +133,6 @@ data class BooleanCellFormat(override val id : UUID,
 
     fun falseStyle() : Maybe<TextStyle> = getMaybeComp(this.falseStyle)
 
-    fun trueText() : String = this.trueText.value.value
-
-    fun falseText() : String = this.falseText.value.value
-
     fun showTrueIcon() : Boolean = this.showTrueIcon.value.value
 
     fun showFalseIcon() : Boolean = this.showFalseIcon.value.value
@@ -165,13 +142,11 @@ data class BooleanCellFormat(override val id : UUID,
     // RESOLVERS
     // -----------------------------------------------------------------------------------------
 
-    fun resolveTextStyle(columnFormat : BooleanColumnFormat) : TextStyle
-    {
+    fun resolveTextStyle(columnFormat : BooleanColumnFormat) : TextStyle =
         if (this.cellFormat().textStyle.isDefault())
-            return this.cellFormat().textStyle()
-
-        return columnFormat.columnFormat().textStyle()
-    }
+            columnFormat.columnFormat().textStyle()
+        else
+            this.cellFormat().textStyle()
 
 
     fun resolveTrueStyle(columnFormat : BooleanColumnFormat) : TextStyle?
@@ -269,64 +244,6 @@ data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLInt({ if(this.value) 1 else 0 })
-
-}
-
-
-/**
- * True Text
- */
-data class TrueText(val value : String) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<TrueText>
-    {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TrueText> = when (doc)
-        {
-            is DocText -> effValue(TrueText(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLText({this.value})
-
-}
-
-
-/**
- * False Text
- */
-data class FalseText(val value : String) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<FalseText>
-    {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<FalseText> = when (doc)
-        {
-            is DocText -> effValue(FalseText(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLText({this.value})
 
 }
 

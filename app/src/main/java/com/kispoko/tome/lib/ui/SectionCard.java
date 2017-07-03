@@ -65,7 +65,7 @@ public class SectionCard
         title.height        = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         title.textId        = titleStringId;
-        title.font          = Font.serifFontItalic(context);
+//        title.font          = Font.serifFontItalic(context);
         title.size          = R.dimen.section_card_title_text_size;
         title.color         = R.color.gold_light;
 
@@ -122,7 +122,7 @@ public class SectionCard
 
         description.textId          = descriptionStringId;
         description.size            = R.dimen.section_card_description_text_size;
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
 
         description.gravity         = Gravity.CENTER_HORIZONTAL;
         description.color           = R.color.dark_blue_hl_8;

@@ -8,8 +8,6 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.sheet.widget.FalseText
-import com.kispoko.tome.model.sheet.widget.TrueText
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.DefaultBooleanColumnValue
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
@@ -576,7 +574,7 @@ data class ColumnFormat(override val id : UUID,
     companion object : Factory<ColumnFormat>
     {
 
-        private val defaultTextStyle            = TextStyle.default
+        private val defaultTextStyle            = TextStyle.default()
         private val defaultAlignment            = Alignment.Center
         private val defaultWidth                = ColumnWidth(1.0f)
         private val defaultBackgroundColorTheme = ColorTheme.transparent

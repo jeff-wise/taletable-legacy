@@ -2,36 +2,6 @@
 package com.kispoko.tome.activity.sheet.dialog;
 
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-
-import com.kispoko.tome.R;
-import com.kispoko.tome.activity.sheet.widget.text.TextEditorActivity;
-import com.kispoko.tome.lib.ui.EditDialog;
-import com.kispoko.tome.lib.ui.EditTextBuilder;
-import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.lib.ui.ImageViewBuilder;
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.model.sheet.widget.TextWidget;
-
-import org.greenrobot.eventbus.EventBus;
-
-
-
 /**
  * Text Widget SheetDialog Fragment
  *

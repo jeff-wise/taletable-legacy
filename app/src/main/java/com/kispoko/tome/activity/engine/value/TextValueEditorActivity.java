@@ -2,36 +2,6 @@
 package com.kispoko.tome.activity.engine.value;
 
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.R;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
-import com.kispoko.tome.lib.model.form.Field;
-import com.kispoko.tome.lib.model.form.Form;
-import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.lib.ui.ScrollViewBuilder;
-import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.tuple.Tuple2;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-
-
 /**
  * Value Editor Activity
  */

@@ -11,7 +11,9 @@ import com.kispoko.tome.lib.functor.Sum
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetData
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.effApply
 import effect.effError
@@ -92,7 +94,7 @@ data class SummationNumberTerm(val numberReference : NumberReference) : Summatio
 
 
     override fun value(sheetContext : SheetContext) : AppEff<Double> =
-        SheetManager.State.number(sheetContext, numberReference)
+        SheetData.number(sheetContext, numberReference)
 
 }
 
@@ -125,7 +127,7 @@ data class SummationDiceRollTerm(val diceRollReference: DiceRollReference) : Sum
 
 
     override fun value(sheetContext : SheetContext) : AppEff<Double> =
-            SheetManager.State.diceRoll(sheetContext, diceRollReference)
+            SheetData.diceRoll(sheetContext, diceRollReference)
                     .apply { effValue<AppError,Double>(it.roll().toDouble()) }
 
 }
@@ -201,12 +203,12 @@ data class SummationConditionalTerm(
 
 
     override fun value(sheetContext : SheetContext): AppEff<Double> =
-        SheetManager.State.boolean(sheetContext, conditionalValueReference())
+        SheetData.boolean(sheetContext, conditionalValueReference())
             .apply { condition ->
                 if (condition)
-                    SheetManager.State.number(sheetContext, trueValueReference())
+                    SheetData.number(sheetContext, trueValueReference())
                 else
-                    SheetManager.State.number(sheetContext, falseValueReference())
+                    SheetData.number(sheetContext, falseValueReference())
             }
 
 

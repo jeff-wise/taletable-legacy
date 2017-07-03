@@ -153,7 +153,7 @@ data class TabWidgetFormat(override val id : UUID,
                            val tabPaddingVertical : Prim<TabVerticalPadding>,
                            val tabHeight : Prim<Height>,
                            val backgroundColorTheme : Prim<ColorTheme>,
-                           val tabCorners : Prim<Corners>) : Model, Serializable
+                           val tabCorners : Comp<Corners>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -199,22 +199,22 @@ data class TabWidgetFormat(override val id : UUID,
                Prim(tabPaddingVertical),
                Prim(tabHeight),
                Prim(backgroundColorTheme),
-               Prim(tabCorners))
+               Comp(tabCorners))
 
 
     companion object : Factory<TabWidgetFormat>
     {
 
         private val defaultWidgetFormat         = WidgetFormat.default()
-        private val defaultTabDefaultStyle      = TextStyle.default
-        private val defaultTabSelectedStyle     = TextStyle.default
+        private val defaultTabDefaultStyle      = TextStyle.default()
+        private val defaultTabSelectedStyle     = TextStyle.default()
         private val defaultUnderlineSelected    = TabUnderlineSelected(true)
         private val defaultUnderlineThickness   = TabUnderlineThickness(2)
         private val defaultTabMargins           = Spacing.default()
         private val defaultTabPaddingVertical   = TabVerticalPadding(5)
-        private val defaultTabHeight            = Height.MediumSmall
+        private val defaultTabHeight            = Height.Wrap
         private val defaultBackgroundColorTheme = ColorTheme.transparent
-        private val defaultTabCorners           = Corners.None
+        private val defaultTabCorners           = Corners.default()
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TabWidgetFormat> = when (doc)

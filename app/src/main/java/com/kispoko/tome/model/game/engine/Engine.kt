@@ -6,14 +6,21 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
+import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.function.Function
+import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.program.Program
+import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.value.*
+import com.kispoko.tome.rts.game.engine.FunctionDoesNotExist
+import com.kispoko.tome.rts.game.engine.ProgramDoesNotExist
 import com.kispoko.tome.rts.game.engine.ValueSetDoesNotExist
 import effect.effApply
 import effect.effError
@@ -36,7 +43,7 @@ data class Engine(override val id : UUID,
                   private val mechanics : Coll<Mechanic>,
                   private val functions : Coll<Function>,
                   private val programs : Coll<Program>,
-                  val gameId : GameId) : Model
+                  val gameId : GameId) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -46,6 +53,16 @@ data class Engine(override val id : UUID,
     private val valueSetById : MutableMap<ValueSetId,ValueSet> =
                                             valueSets.list.associateBy { it.valueSetId.value }
                                                 as MutableMap<ValueSetId, ValueSet>
+
+
+    private val programById : MutableMap<ProgramId,Program> =
+                                            programs.list.associateBy { it.programId() }
+                                                    as MutableMap<ProgramId,Program>
+
+
+    private val functionById : MutableMap<FunctionId,Function> =
+                                            functions.list.associateBy { it.functionId() }
+                                                    as MutableMap<FunctionId,Function>
 
     // -----------------------------------------------------------------------------------------
     // INIT
@@ -130,6 +147,20 @@ data class Engine(override val id : UUID,
                     .apply { it.numberValue(valueReference.valueId, this) }
 
 
+    // Engine Data > Functions
+    // -----------------------------------------------------------------------------------------
+
+    fun function(functionId : FunctionId) : AppEff<Function> =
+            note(this.functionById[functionId],
+                    AppEngineError(FunctionDoesNotExist(functionId)))
+
+
+    // Engine Data > Programs
+    // -----------------------------------------------------------------------------------------
+
+    fun program(programId : ProgramId) : AppEff<Program> =
+            note(this.programById[programId],
+                 AppEngineError(ProgramDoesNotExist(programId)))
 
 }
 
@@ -195,55 +226,59 @@ sealed class EngineValueType : SQLSerializable, Serializable
  * Engine Value
  */
 @Suppress("UNCHECKED_CAST")
-sealed class EngineValue : Serializable
+sealed class EngineValue : SumModel, Serializable
 {
 
     companion object : Factory<EngineValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineValue> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc : SpecDoc) : ValueParser<EngineValue> =
+            when (doc.case())
             {
-                when (doc.case())
-                {
-                    "number"    -> EngineNumberValue.fromDocument(doc)
-                                    as ValueParser<EngineValue>
-                    "text"      -> EngineTextValue.fromDocument(doc)
-                                    as ValueParser<EngineValue>
-                    "boolean"   -> EngineBooleanValue.fromDocument(doc)
-                                    as ValueParser<EngineValue>
-                    "dice_roll" -> EngineDiceRollValue.fromDocument(doc)
-                                    as ValueParser<EngineValue>
-                    "list_text" -> EngineTextListValue.fromDocument(doc)
-                                    as ValueParser<EngineValue>
-                    else        -> effError<ValueError,EngineValue>(
-                                    UnknownCase(doc.case(), doc.path))
-                }
+                "engine_value_number"  -> EngineValueNumber.fromDocument(doc)
+                                            as ValueParser<EngineValue>
+                "engine_value_text"    -> EngineValueText.fromDocument(doc)
+                                            as ValueParser<EngineValue>
+                "engine_value_boolean" -> EngineValueBoolean.fromDocument(doc)
+                                            as ValueParser<EngineValue>
+                "dice_roll"            -> EngineValueDiceRoll.fromDocument(doc)
+                                            as ValueParser<EngineValue>
+                "list_text"            -> EngineTextListValue.fromDocument(doc)
+                                            as ValueParser<EngineValue>
+                else                   -> effError<ValueError,EngineValue>(
+                                            UnknownCase(doc.case(), doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
+
+
+    abstract fun type() : EngineValueType
 
 }
 
 /**
  * Engine Number Value
  */
-data class EngineNumberValue(val value : Double) : EngineValue(), SQLSerializable
+data class EngineValueNumber(val value : Double) : EngineValue(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<EngineNumberValue>
+    companion object : Factory<EngineValueNumber>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineNumberValue> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<EngineValueNumber> = when (doc)
         {
-            is DocDict -> effApply(::EngineNumberValue, doc.double("value"))
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            is DocNumber -> effValue(EngineValueNumber(doc.number))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENGINE VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() = EngineValueType.NUMBER
 
 
     // -----------------------------------------------------------------------------------------
@@ -252,26 +287,42 @@ data class EngineNumberValue(val value : Double) : EngineValue(), SQLSerializabl
 
     override fun asSQLValue() : SQLValue = SQLReal({this.value})
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "number")
+
+    override val sumModelObject = this
+
 }
 
 /**
  * Engine Text Value
  */
-data class EngineTextValue(val value : String) : EngineValue(), SQLSerializable
+data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<EngineTextValue>
+    companion object : Factory<EngineValueText>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineTextValue> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<EngineValueText> = when (doc)
         {
-            is DocDict -> effApply(::EngineTextValue, doc.text("value"))
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            is DocText -> effValue(EngineValueText(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENGINE VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() = EngineValueType.TEXT
 
 
     // -----------------------------------------------------------------------------------------
@@ -280,27 +331,43 @@ data class EngineTextValue(val value : String) : EngineValue(), SQLSerializable
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "text")
+
+    override val sumModelObject = this
+
 }
 
 
 /**
  * Engine Boolean Value
  */
-data class EngineBooleanValue(val value : Boolean) : EngineValue(), SQLSerializable
+data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<EngineBooleanValue>
+    companion object : Factory<EngineValueBoolean>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineBooleanValue> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<EngineValueBoolean> = when (doc)
         {
-            is DocDict -> effApply(::EngineBooleanValue, doc.boolean("value"))
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            is DocBoolean -> effValue(EngineValueBoolean(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENGINE VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() = EngineValueType.BOOLEAN
 
 
     // -----------------------------------------------------------------------------------------
@@ -309,29 +376,45 @@ data class EngineBooleanValue(val value : Boolean) : EngineValue(), SQLSerializa
 
     override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "boolean")
+
+    override val sumModelObject = this
+
 }
 
 
 /**
  * Engine Dice Roll Value
  */
-data class EngineDiceRollValue(val value : DiceRoll) : EngineValue(), Model
+data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), Model
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<EngineDiceRollValue>
+    companion object : Factory<EngineValueDiceRoll>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineDiceRollValue> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<EngineValueDiceRoll> = when (doc)
         {
             is DocDict -> doc.at("value") ap {
-                              effApply(::EngineDiceRollValue, DiceRoll.Companion.fromDocument(it))
+                              effApply(::EngineValueDiceRoll, DiceRoll.Companion.fromDocument(it))
                           }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENGINE VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() = EngineValueType.DICE_ROLL
 
 
     // -----------------------------------------------------------------------------------------
@@ -345,6 +428,15 @@ data class EngineDiceRollValue(val value : DiceRoll) : EngineValue(), Model
     override val name = this.value.name
 
     override val modelObject = this.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Comp(this, "dice_roll")
+
+    override val sumModelObject = this
 
 }
 
@@ -371,10 +463,26 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
 
 
     // -----------------------------------------------------------------------------------------
+    // ENGINE VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() = EngineValueType.LIST_TEXT
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this) })
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "list_text")
+
+    override val sumModelObject = this
 
 }
 

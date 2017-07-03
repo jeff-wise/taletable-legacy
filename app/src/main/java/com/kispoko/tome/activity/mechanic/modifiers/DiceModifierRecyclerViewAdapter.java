@@ -179,7 +179,7 @@ public class DiceModifierRecyclerViewAdapter
         quantity.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
         quantity.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        quantity.font               = Font.serifFontRegular(context);
+//        quantity.font               = Font.serifFontRegular(context);
         quantity.color              = R.color.gold_light;
         quantity.sizeSp             = 16f;
 
@@ -196,7 +196,7 @@ public class DiceModifierRecyclerViewAdapter
         quantity.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
         quantity.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        quantity.font               = Font.serifFontItalic(context);
+//        quantity.font               = Font.serifFontItalic(context);
         quantity.color              = R.color.dark_theme_primary_55;
         quantity.sizeSp             = 15f;
 

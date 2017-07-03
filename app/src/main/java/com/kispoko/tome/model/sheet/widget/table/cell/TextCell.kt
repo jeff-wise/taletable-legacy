@@ -83,13 +83,11 @@ data class TextCellFormat(override val id : UUID,
     // RESOLVERS
     // -----------------------------------------------------------------------------------------
 
-    fun resolveTextStyle(columnFormat : TextColumnFormat) : TextStyle
-    {
+    fun resolveTextStyle(columnFormat : TextColumnFormat) : TextStyle =
         if (this.cellFormat().textStyle.isDefault())
-            return this.cellFormat().textStyle()
-
-        return columnFormat.columnFormat().textStyle()
-    }
+            columnFormat.columnFormat().textStyle()
+        else
+            this.cellFormat().textStyle()
 
 
     // -----------------------------------------------------------------------------------------

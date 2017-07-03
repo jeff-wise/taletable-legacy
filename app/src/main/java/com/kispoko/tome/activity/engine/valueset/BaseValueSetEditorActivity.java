@@ -3,16 +3,13 @@ package com.kispoko.tome.activity.engine.valueset;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
@@ -27,11 +24,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
 
 
 /**
@@ -167,7 +161,7 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
         // > Set the Value Set Name
         // -------------------------------------------------------------------------------------
         TextView nameView = (TextView) findViewById(R.id.value_set_name);
-        nameView.setTypeface(Font.serifFontBold(this));
+//        nameView.setTypeface(Font.serifFontBold(this));
 //        if (this.valueSet != null)
 //            nameView.setText(this.valueSet.label());
 

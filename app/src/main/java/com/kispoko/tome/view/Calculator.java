@@ -125,7 +125,7 @@ public class Calculator
         result.padding.bottom       = R.dimen.calculator_result_layout_padding_vert;
 
         result.text                 = Integer.toString(startValue);
-        result.font                 = Font.serifFontRegular(context);
+//        result.font                 = Font.serifFontRegular(context);
         result.color                = R.color.gold_light;
         result.size                 = R.dimen.calculator_result_text_size;
 
@@ -170,7 +170,7 @@ public class Calculator
 
         button.backgroundColor  = R.color.dark_blue_5;
         button.text             = "+ 1";
-        button.font             = Font.serifFontBold(context);
+//        button.font             = Font.serifFontBold(context);
         button.size             = R.dimen.calculator_button_inc_text_size;
         button.color            = R.color.dark_blue_hlx_7;
 
@@ -198,7 +198,7 @@ public class Calculator
 
         button.backgroundColor  = R.color.dark_blue_5;
         button.text             = "- 1";
-        button.font             = Font.serifFontBold(context);
+//        button.font             = Font.serifFontBold(context);
         button.size             = R.dimen.calculator_button_inc_text_size;
         button.color            = R.color.dark_blue_hlx_7;
 
@@ -227,7 +227,7 @@ public class Calculator
         button.backgroundColor  = R.color.dark_blue_5;
         button.text             = "CLEAR";
         button.color            = R.color.dark_blue_hlx_7;
-        button.font             = Font.serifFontBold(context);
+//        button.font             = Font.serifFontBold(context);
         button.size             = R.dimen.calculator_button_clear_text_size;
 
         button.padding.top      = R.dimen.calculator_button_clear_padding_vert;
@@ -254,7 +254,7 @@ public class Calculator
         button.gravity          = Gravity.CENTER_HORIZONTAL;
 
         button.text             = "=";
-        button.font             = Font.serifFontBold(context);
+//        button.font             = Font.serifFontBold(context);
         button.backgroundColor  = R.color.dark_blue_5;
         button.size             = R.dimen.calculator_button_equals_text_size;
         button.color            = R.color.dark_blue_hlx_7;
@@ -382,7 +382,7 @@ public class Calculator
         button.text             = label;
         button.color            = R.color.dark_blue_hlx_7;
         button.size             = R.dimen.calculator_number_pad_text_size;
-        button.font             = Font.serifFontBold(context);
+//        button.font             = Font.serifFontBold(context);
         button.backgroundColor  = R.color.dark_blue_5;
 
         button.padding.top      = R.dimen.calculator_number_pad_button_padding_vert;
@@ -551,7 +551,7 @@ public class Calculator
 
         button.text                 = "d6";
         button.color                = R.color.dark_blue_hlx_7;
-        button.font                 = Font.serifFontBold(context);
+//        button.font                 = Font.serifFontBold(context);
 
         return button.textView(context);
     }
@@ -568,7 +568,7 @@ public class Calculator
 
         button.text                 = "0";
         button.color                = R.color.dark_blue_hlx_7;
-        button.font                 = Font.serifFontBold(context);
+//        button.font                 = Font.serifFontBold(context);
 
         return button.textView(context);
     }
@@ -585,7 +585,7 @@ public class Calculator
 
         button.text                 = "d20";
         button.color                = R.color.dark_blue_hlx_7;
-        button.font                 = Font.serifFontBold(context);
+//        button.font                 = Font.serifFontBold(context);
 
         return button.textView(context);
     }
@@ -627,7 +627,7 @@ public class Calculator
 
         button.text                 = "d4";
         button.color                = R.color.dark_blue_hlx_7;
-        button.font                 = Font.serifFontBold(context);
+//        button.font                 = Font.serifFontBold(context);
 
         return button.textView(context);
     }
@@ -644,7 +644,7 @@ public class Calculator
 
         button.text                 = "d8";
         button.color                = R.color.dark_blue_hlx_7;
-        button.font                 = Font.serifFontBold(context);
+//        button.font                 = Font.serifFontBold(context);
 
         return button.textView(context);
     }
@@ -661,7 +661,7 @@ public class Calculator
 
         button.text                 = "d100";
         button.color                = R.color.dark_blue_hlx_7;
-        button.font                 = Font.serifFontBold(context);
+//        button.font                 = Font.serifFontBold(context);
 
         return button.textView(context);
     }
@@ -678,7 +678,7 @@ public class Calculator
 
         button.text                 = "dXX";
         button.color                = R.color.dark_blue_hlx_7;
-        button.font                 = Font.serifFontBold(context);
+//        button.font                 = Font.serifFontBold(context);
 
         return button.textView(context);
     }

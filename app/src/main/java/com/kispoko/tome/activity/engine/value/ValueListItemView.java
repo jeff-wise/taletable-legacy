@@ -61,7 +61,7 @@ public class ValueListItemView
 
         value.id                = R.id.value_list_item_value;
 
-        value.font              = Font.serifFontRegular(context);
+//        value.font              = Font.serifFontRegular(context);
         value.sizeSp            = 17f;
         value.color             = R.color.gold_light;
 
@@ -78,7 +78,7 @@ public class ValueListItemView
 
         description.id              = R.id.value_list_item_description;
 
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
         description.color           = R.color.dark_blue_hl_8;
         description.sizeSp          = 14f;
 

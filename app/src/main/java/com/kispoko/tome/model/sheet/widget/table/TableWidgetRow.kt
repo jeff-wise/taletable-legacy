@@ -11,10 +11,14 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.style.Spacing
+import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidgetFormat
+import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.CellTypeDoesNotMatchColumnType
 import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
@@ -67,7 +71,7 @@ data class TableWidgetRow(override val id : UUID,
                 effApply(::TableWidgetRow,
                          // Format
                          split(doc.maybeAt("format"),
-                               effValue(TableWidgetRowFormat.default),
+                               effValue(TableWidgetRowFormat.default()),
                                { TableWidgetRowFormat.fromDocument(it) }),
                          // Cells
                          doc.list("cells") ap { docList ->
@@ -116,13 +120,17 @@ data class TableWidgetRow(override val id : UUID,
              format : TableWidgetFormat,
              sheetContext : SheetContext) : View
     {
-        val tableRow = TableRowBuilder()
+        val tableRow                = TableRowBuilder()
 
-        tableRow.layoutType     = LayoutType.TABLE
-        tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
-        tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
+        tableRow.layoutType         = LayoutType.TABLE
+        tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT
+        tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT
 
-        tableRow.paddingSpacing = format.widgetFormat().padding()
+        tableRow.marginSpacing      = format.rowFormat().margins()
+        tableRow.paddingSpacing     = format.rowFormat().padding()
+
+        tableRow.backgroundColor    = SheetManager.color(sheetContext.sheetId,
+                format.rowFormat().backgroundColorTheme())
 
 
         this.cells().forEachIndexed { i, tableWidgetCell ->
@@ -183,6 +191,10 @@ data class TableWidgetRow(override val id : UUID,
  * Table Widget Row Format
  */
 data class TableWidgetRowFormat(override val id : UUID,
+                                val textStyle : Comp<TextStyle>,
+                                val backgroundColorTheme : Prim<ColorTheme>,
+                                val margins : Comp<Spacing>,
+                                val padding : Comp<Spacing>,
                                 val cellHeight : Prim<Height>) : Model, Serializable
 {
 
@@ -192,7 +204,11 @@ data class TableWidgetRowFormat(override val id : UUID,
 
     init
     {
-        this.cellHeight.name        = "cell_height"
+        this.textStyle.name             = "text_style"
+        this.backgroundColorTheme.name  = "background_color_theme"
+        this.margins.name               = "margins"
+        this.padding.name               = "padding"
+        this.cellHeight.name            = "cell_height"
     }
 
 
@@ -200,18 +216,48 @@ data class TableWidgetRowFormat(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(cellHeight : Height)
-        : this(UUID.randomUUID(), Prim(cellHeight))
+    constructor(textStyle : TextStyle,
+                backgroundColorTheme : ColorTheme,
+                margins : Spacing,
+                padding : Spacing,
+                cellHeight : Height)
+        : this(UUID.randomUUID(),
+               Comp(textStyle),
+               Prim(backgroundColorTheme),
+               Comp(margins),
+               Comp(padding),
+               Prim(cellHeight))
 
 
     companion object : Factory<TableWidgetRowFormat>
     {
 
-        private val defaultCellHeight = Height.MediumSmall
+        private val defaultTextStyle            = TextStyle.default()
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+        private val defaultMargins              = Spacing.default()
+        private val defaultPadding              = Spacing.default()
+        private val defaultCellHeight           = Height.Wrap
+
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetRowFormat> = when (doc)
         {
             is DocDict -> effApply(::TableWidgetRowFormat,
+                                   // Text Style
+                                   split(doc.maybeAt("text_style"),
+                                         effValue(defaultTextStyle),
+                                         { TextStyle.fromDocument(it) }),
+                                   // Background Color Theme
+                                   split(doc.maybeAt("background_color_theme"),
+                                         effValue(defaultBackgroundColorTheme),
+                                         { ColorTheme.fromDocument(it) }),
+                                   // Margins
+                                   split(doc.maybeAt("margins"),
+                                         effValue(defaultMargins),
+                                         { Spacing.fromDocument(it) }),
+                                   // Padding
+                                   split(doc.maybeAt("padding"),
+                                         effValue(defaultPadding),
+                                         { Spacing.fromDocument(it) }),
                                    // Cell Height
                                    split(doc.maybeAt("cell_height"),
                                          effValue<ValueError,Height>(defaultCellHeight),
@@ -221,7 +267,11 @@ data class TableWidgetRowFormat(override val id : UUID,
         }
 
 
-        val default : TableWidgetRowFormat = TableWidgetRowFormat(defaultCellHeight)
+        fun default() = TableWidgetRowFormat(defaultTextStyle,
+                                             defaultBackgroundColorTheme,
+                                             defaultMargins,
+                                             defaultPadding,
+                                             defaultCellHeight)
 
     }
 
@@ -231,6 +281,14 @@ data class TableWidgetRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun cellHeight() : Height = this.cellHeight.value
+
+    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+
+    fun margins() : Spacing = this.margins.value
+
+    fun padding() : Spacing = this.padding.value
+
+    fun textStyle() : TextStyle = this.textStyle.value
 
 
     // -----------------------------------------------------------------------------------------

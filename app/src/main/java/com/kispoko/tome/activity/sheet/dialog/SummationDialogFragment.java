@@ -234,7 +234,7 @@ public class SummationDialogFragment extends DialogFragment
         label.text                 = labelText;
         label.sizeSp               = 16.0f;
         label.color                = R.color.dark_blue_1;
-        label.font                 = Font.serifFontRegular(context);
+//        label.font                 = Font.serifFontRegular(context);
 
         label.padding.topDp        = 12f;
         label.padding.bottomDp     = 12f;
@@ -387,7 +387,7 @@ public class SummationDialogFragment extends DialogFragment
         name.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
         name.text                       = nameText;
-        name.font                       = Font.serifFontRegular(context);
+//        name.font                       = Font.serifFontRegular(context);
         name.sizeSp                     = 16f;
         name.color                      = R.color.dark_blue_hlx_9;
 
@@ -401,7 +401,7 @@ public class SummationDialogFragment extends DialogFragment
         value.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
         value.text                      = valueText;
-        value.font                      = Font.serifFontBold(context);
+//        value.font                      = Font.serifFontBold(context);
         value.sizeSp                    = 16f;
         value.color                     = R.color.dark_blue_hlx_9;
 
@@ -421,7 +421,7 @@ public class SummationDialogFragment extends DialogFragment
         header.padding.leftDp       = 10f;
 
         header.text                 = headerText;
-        header.font                 = Font.serifFontRegular(context);
+//        header.font                 = Font.serifFontRegular(context);
         header.color                = R.color.dark_blue_1;
         header.sizeSp               = 12f;
 
@@ -441,7 +441,7 @@ public class SummationDialogFragment extends DialogFragment
         if (this.summationLabel != null)
             name.text           = this.summationLabel.toUpperCase();
 
-        name.font           = Font.serifFontRegular(context);
+//        name.font           = Font.serifFontRegular(context);
         name.color          = R.color.dark_blue_hl_8;
         name.sizeSp         = 11f;
 
@@ -462,7 +462,7 @@ public class SummationDialogFragment extends DialogFragment
 
         //total.text              = this.summation.valueString();
 
-        total.font              = Font.serifFontRegular(context);
+//        total.font              = Font.serifFontRegular(context);
         total.color             = R.color.gold_medium_light;
         total.sizeSp            = 34f;
 
@@ -543,7 +543,7 @@ public class SummationDialogFragment extends DialogFragment
         button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         button.text             = context.getString(R.string.calculator);
-        button.font             = Font.serifFontRegular(context);
+//        button.font             = Font.serifFontRegular(context);
         button.color            = R.color.dark_blue_1;
         button.sizeSp           = 16f;
 
@@ -606,7 +606,7 @@ public class SummationDialogFragment extends DialogFragment
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                  = context.getString(R.string.edit).toUpperCase();
-        label.font                  = Font.serifFontBold(context);
+//        label.font                  = Font.serifFontBold(context);
         label.color                 = R.color.green_medium_dark;
         label.sizeSp                = 14f;
 

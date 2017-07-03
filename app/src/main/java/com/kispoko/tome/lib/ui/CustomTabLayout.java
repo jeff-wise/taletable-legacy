@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kispoko.tome.model.sheet.style.TextFont;
+import com.kispoko.tome.model.sheet.style.TextFontStyle;
 
 
 public class CustomTabLayout extends TabLayout
@@ -33,7 +35,9 @@ public class CustomTabLayout extends TabLayout
 
     private void init(Context context)
     {
-        mTypeface = Font.serifFontRegular(context);
+        mTypeface = Font.INSTANCE.typeface(TextFont.FiraSans.INSTANCE,
+                                           TextFontStyle.Regular.INSTANCE,
+                                           context);
     }
 
     @Override

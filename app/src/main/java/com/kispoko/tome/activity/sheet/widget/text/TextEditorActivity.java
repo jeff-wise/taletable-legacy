@@ -14,10 +14,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.model.sheet.widget.TextWidget;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
-import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
@@ -236,7 +236,7 @@ public class TextEditorActivity extends AppCompatActivity
 //        if (this.textWidget != null)
 //            name.text           = this.textWidget.data().name();
 
-        name.font           = Font.serifFontRegular(context);
+//        name.font           = Font.serifFontRegular(context);
         name.color          = R.color.dark_blue_hl_5;
         name.sizeSp         = 20f;
 
@@ -270,7 +270,7 @@ public class TextEditorActivity extends AppCompatActivity
 //        if (this.textWidget != null)
 //            text.text           = this.textWidget.value();
 
-        text.font               = Font.serifFontRegular(context);
+//        text.font               = Font.serifFontRegular(context);
         text.color              = R.color.dark_blue_hl_2;
         text.sizeSp             = 17f;
 
@@ -317,7 +317,7 @@ public class TextEditorActivity extends AppCompatActivity
 
         status.text         = "Saved";
         status.color        = R.color.dark_blue_hl_6;
-        status.font         = Font.serifFontItalic(context);
+//        status.font         = Font.serifFontItalic(context);
         status.sizeSp       = 17f;
 
         status.addRule(RelativeLayout.CENTER_IN_PARENT);

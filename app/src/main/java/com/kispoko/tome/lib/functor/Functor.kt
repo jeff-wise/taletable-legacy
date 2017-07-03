@@ -2,10 +2,10 @@
 package com.kispoko.tome.lib.functor
 
 
+import android.util.Log
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.ORM
-import com.kispoko.tome.lib.orm.Schema
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.*

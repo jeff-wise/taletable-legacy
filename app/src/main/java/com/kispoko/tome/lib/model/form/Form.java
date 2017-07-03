@@ -3,7 +3,6 @@ package com.kispoko.tome.lib.model.form;
 
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -71,7 +70,7 @@ public class Form
 
         header.text             = headerString.toUpperCase();
 
-        header.font             = Font.serifFontBold(context);
+//        header.font             = Font.serifFontBold(context);
         header.color            = R.color.dark_theme_primary_55;
         header.sizeSp           = 12f;
 
@@ -171,7 +170,7 @@ public class Form
 
         label.textId            = labelId;
 
-        label.font              = Font.serifFontRegular(context);
+//        label.font              = Font.serifFontRegular(context);
         label.color             = R.color.dark_blue_hl_4;
         label.sizeSp            = 10f;
 

@@ -199,7 +199,7 @@ public class NumberValueEditorActivity extends AppCompatActivity
 
         label.textId        = R.string.learn_about_value_sets;
 
-        label.font          = Font.serifFontRegular(context);
+//        label.font          = Font.serifFontRegular(context);
         label.color         = R.color.dark_blue_hlx_9;
         label.sizeSp        = 18f;
 

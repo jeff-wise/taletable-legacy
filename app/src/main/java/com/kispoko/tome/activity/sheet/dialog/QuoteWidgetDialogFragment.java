@@ -28,9 +28,6 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.model.sheet.widget.QuoteWidget;
 
-import org.greenrobot.eventbus.EventBus;
-
-
 
 /**
  * Quote Widget Dialog Fragment
@@ -256,7 +253,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         label.text                 = labelText;
         label.sizeSp               = 16.0f;
         label.color                = R.color.dark_blue_1;
-        label.font                 = Font.serifFontRegular(context);
+//        label.font                 = Font.serifFontRegular(context);
 
         label.padding.topDp        = 12f;
         label.padding.bottomDp     = 12f;
@@ -276,7 +273,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
 //        if (this.quoteWidget != null)
 //            value.text              = this.quoteWidget.quote();
 
-        value.font                  = Font.serifFontRegular(context);
+//        value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_blue_hl_1;
         value.sizeSp                = 20f;
 
@@ -368,7 +365,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         button.text             = context.getString(R.string.full_editor);
-        button.font             = Font.serifFontRegular(context);
+//        button.font             = Font.serifFontRegular(context);
         button.color            = R.color.dark_blue_1;
         button.sizeSp           = 16f;
 
@@ -431,7 +428,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                  = context.getString(R.string.done).toUpperCase();
-        label.font                  = Font.serifFontBold(context);
+//        label.font                  = Font.serifFontBold(context);
         label.color                 = R.color.green_medium_dark;
         label.sizeSp                = 14f;
 

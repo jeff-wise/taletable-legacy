@@ -17,6 +17,7 @@ import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.game.engine.interpreter.Interpreter
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetState
@@ -46,7 +47,7 @@ sealed class NumberVariableValue : Serializable
     companion object : Factory<NumberVariableValue>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<NumberVariableValue> =
-            when (doc.case)
+            when (doc.case())
             {
                 "number_literal"     -> NumberVariableLiteralValue.fromDocument(doc)
                 "variable_id"        -> NumberVariableVariableValue.fromDocument(doc)
@@ -54,7 +55,7 @@ sealed class NumberVariableValue : Serializable
                 "value_reference"    -> NumberVariableValueValue.fromDocument(doc)
                 "summation"          -> NumberVariableSummationValue.fromDocument(doc)
                 else                 -> effError<ValueError,NumberVariableValue>(
-                                            UnknownCase(doc.case, doc.path))
+                                            UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -194,9 +195,8 @@ data class NumberVariableProgramValue(val invocation : Invocation)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext: SheetContext): AppEff<Double> {
-        TODO("not implemented")
-    }
+    override fun value(sheetContext : SheetContext) : AppEff<Double> =
+        Interpreter.evaluateNumber(this.invocation, sheetContext)
 
 
     // -----------------------------------------------------------------------------------------

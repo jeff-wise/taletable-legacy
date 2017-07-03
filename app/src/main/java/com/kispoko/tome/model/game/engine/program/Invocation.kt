@@ -14,6 +14,7 @@ import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import java.io.Serializable
 import java.util.*
 
 
@@ -22,13 +23,40 @@ import java.util.*
  * Program Invocation
  */
 data class Invocation(override val id : UUID,
-                      val programId: Prim<ProgramId>,
+                      val programId : Prim<ProgramId>,
                       val parameter1 : Sum<DataReference>,
                       val parameter2 : Maybe<Sum<DataReference>>,
                       val parameter3 : Maybe<Sum<DataReference>>,
                       val parameter4 : Maybe<Sum<DataReference>>,
-                      val parameter5 : Maybe<Sum<DataReference>>) : Model
+                      val parameter5 : Maybe<Sum<DataReference>>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.programId.name                         = "program_id"
+        this.parameter1.name                        = "parameter1"
+
+        when (this.parameter2) {
+            is Just -> this.parameter2.value.name   = "parameter2"
+        }
+
+        when (this.parameter3) {
+            is Just -> this.parameter3.value.name   = "parameter3"
+        }
+
+        when (this.parameter4) {
+            is Just -> this.parameter4.value.name   = "parameter4"
+        }
+
+        when (this.parameter5) {
+            is Just -> this.parameter5.value.name   = "parameter5"
+        }
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -57,23 +85,23 @@ data class Invocation(override val id : UUID,
             {
                 effApply(::Invocation,
                          // Program Name
-                         doc.at("program_name") ap { ProgramId.fromDocument(it) },
+                         doc.at("program_id") ap { ProgramId.fromDocument(it) },
                          // Parameter 1
-                         doc.at("parameter_1") ap { DataReference.fromDocument(it) },
+                         doc.at("parameter1") ap { DataReference.fromDocument(it) },
                          // Parameter 2
-                         split(doc.maybeAt("parameter_2"),
+                         split(doc.maybeAt("parameter2"),
                                effValue<ValueError,Maybe<DataReference>>(Nothing()),
                                { effApply(::Just, DataReference.fromDocument(it)) }),
                          // Parameter 3
-                         split(doc.maybeAt("parameter_3"),
+                         split(doc.maybeAt("parameter3"),
                                effValue<ValueError,Maybe<DataReference>>(Nothing()),
                                { effApply(::Just, DataReference.fromDocument(it)) }),
                          // Parameter 4
-                         split(doc.maybeAt("parameter_4"),
+                         split(doc.maybeAt("parameter4"),
                                effValue<ValueError,Maybe<DataReference>>(Nothing()),
                                { effApply(::Just, DataReference.fromDocument(it)) }),
                          // Parameter 5
-                         split(doc.maybeAt("parameter_5"),
+                         split(doc.maybeAt("parameter5"),
                                effValue<ValueError,Maybe<DataReference>>(Nothing()),
                                { effApply(::Just, DataReference.fromDocument(it)) })
                          )
@@ -149,87 +177,5 @@ data class Invocation(override val id : UUID,
         return deps
     }
 
-//        this.parameters.value.fold(setOf(), {
-//            accSet, param -> accSet.plus(param.dependencies())
-//        })
-
 }
-
-     //
-//    public List<VariableReference> variableDependencies()
-//    {
-//        List<VariableReference> variableReferences = new ArrayList<>();
-//
-//        for (InvocationParameterUnion parameter : this.parameters())
-//        {
-//            switch (parameter.type())
-//            {
-//                case REFERENCE:
-//                    variableReferences.add(VariableReference.asByName(parameter.reference()));
-//                    break;
-//            }
-//        }
-//
-//        return variableReferences;
-//    }
-
- //   }
-
-//}
-
-//
-///**
-// * Invocation Parameter
-// */
-//data class InvocationParameter(val dataReference : DataReference)
-//{
-//
-//     companion object : Factory<InvocationParameter>
-//    {
-//        override fun fromDocument(doc: SpecDoc) : ValueParser<InvocationParameter> =
-//                effApply(::InvocationParameter, DataReference.fromDocument(doc))
-//
-////                when (doc)
-////        {
-////            is DocDict -> when (doc.case())
-////            {
-////                "variable" -> InvocationParameterVariable.fromDocument(doc)
-////                else       -> effError<ValueError,InvocationParameter>(
-////                                    UnknownCase(doc.case(), doc.path))
-////            }
-////            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-////        }
-//    }
-//}
-
-//
-//data class InvocationParameterVariable(override val id : UUID,
-//                                       val variableReference : Func<VariableReference>)
-//                                       : InvocationParameter()
-//{
-//
-//    companion object : Factory<InvocationParameter>
-//    {
-//        override fun fromDocument(doc: SpecDoc)
-//                      : ValueParser<InvocationParameter> = when (doc)
-//        {
-//            is DocDict -> effApply(::InvocationParameterVariable,
-//                                   // Model Id
-//                                   effValue(UUID.randomUUID()),
-//                                   // Variable Reference
-//                                   doc.at("reference") ap {
-//                                       effApply(::Comp, VariableReference.fromDocument(it))
-//                                   })
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//    override fun onLoad() { }
-//
-//}
-//
-//
-//
-//    // ** Dependencies
-//    // ------------------------------------------------------------------------------------------
 

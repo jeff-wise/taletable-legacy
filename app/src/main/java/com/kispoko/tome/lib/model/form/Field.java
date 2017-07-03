@@ -432,7 +432,7 @@ public class Field implements Serializable
 
         name.text                = this.label();
 
-        name.font                = Font.serifFontRegular(context);
+//        name.font                = Font.serifFontRegular(context);
         name.color               = R.color.gold_light;
         name.sizeSp              = 15f;
 
@@ -455,7 +455,7 @@ public class Field implements Serializable
             value.text      = this.description;
 
         value.color         = R.color.dark_blue_hl_8;
-        value.font          = Font.serifFontRegular(context);
+//        value.font          = Font.serifFontRegular(context);
 
         value.sizeSp        = 14f;
 

@@ -70,10 +70,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.programindex.ProgramIndexActivity"
-            android:label="Programs"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.engine.program.ProgramEditorActivity"
             android:label="Program"
             android:theme="@style/AppTheme.NoActionBar"

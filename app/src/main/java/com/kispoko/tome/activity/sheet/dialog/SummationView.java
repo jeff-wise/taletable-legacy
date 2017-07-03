@@ -8,8 +8,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.game.engine.summation.Summation;
 import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.model.game.engine.summation.Summation;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
@@ -121,7 +121,7 @@ public class SummationView
         name.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
         name.text                       = nameText;
-        name.font                       = Font.serifFontItalic(context);
+//        name.font                       = Font.serifFontItalic(context);
         name.size                       = R.dimen.dialog_summ_component_name_text_size;
         name.color                      = R.color.dark_blue_hl_8;
 
@@ -135,7 +135,7 @@ public class SummationView
         value.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
         value.text                      = valueText;
-        value.font                      = Font.serifFontBold(context);
+//        value.font                      = Font.serifFontBold(context);
         value.size                      = R.dimen.dialog_summ_component_value_text_size;
         value.color                     = R.color.dark_blue_hl_8;
 
@@ -152,7 +152,7 @@ public class SummationView
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.text                 = headerText;
-        header.font                 = Font.serifFontRegular(context);
+//        header.font                 = Font.serifFontRegular(context);
         header.color                = R.color.dark_blue_hl_5;
         header.size                 = R.dimen.dialog_summ_component_header_text_size;
 
@@ -209,7 +209,7 @@ public class SummationView
         label.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
         label.text                      = totalLabel;
-        label.font                      = Font.serifFontItalic(context);
+//        label.font                      = Font.serifFontItalic(context);
         label.size                      = R.dimen.dialog_summ_component_name_text_size;
         label.color                     = R.color.dark_blue_hlx_7;
 
@@ -225,7 +225,7 @@ public class SummationView
         value.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
         value.text                      = totalText;
-        value.font                      = Font.serifFontBold(context);
+//        value.font                      = Font.serifFontBold(context);
         value.size                      = R.dimen.dialog_summ_component_value_text_size;
         value.color                     = R.color.dark_blue_hlx_7;
 

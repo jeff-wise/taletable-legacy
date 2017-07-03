@@ -6,4 +6,149 @@ engine:
   value_sets:
   mechanics:
   functions:
+  - function_id: ability_modifier
+    label: Ability Modifier
+    description:
+      The modifier applied to dice rolls that are relevant to the ability.
+    type_signature:
+      parameter1_type: number
+      result_type: number
+    tuples:
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 1
+      result:
+        type: engine_value_number
+        engine_value_number: 0
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 2
+      result:
+        type: engine_value_number
+        engine_value_number: 1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 3
+      result:
+        type: engine_value_number
+        engine_value_number: 1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 4
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 5
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 6
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 7
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 8
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 9
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 10
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 11
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 12
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 13
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 14
+      result:
+        type: engine_value_number
+        engine_value_number: 7
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 15
+      result:
+        type: engine_value_number
+        engine_value_number: 7
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 16
+      result:
+        type: engine_value_number
+        engine_value_number: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 17
+      result:
+        type: engine_value_number
+        engine_value_number: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 18
+      result:
+        type: engine_value_number
+        engine_value_number: 9
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 19
+      result:
+        type: engine_value_number
+        engine_value_number: 9
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 20
+      result:
+        type: engine_value_number
+        engine_value_number: 10
   programs:
+  - program_id: ability_modifier
+    label: Ability Modifier
+    description: Calcuates the ability modifier of an ability score.
+    type_signature:
+      parameter1_type: number
+      result_type: number
+    statements:
+    - binding_name: result
+      function_id: ability_modifier
+      parameter1:
+        type: program_parameter_index
+        program_parameter_index: 1
+    result_binding_name: result
+
+
+
+

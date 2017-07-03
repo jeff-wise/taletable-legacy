@@ -59,7 +59,7 @@ public class MechanicListItemView
         category.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
         category.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        category.font           = Font.serifFontBoldItalic(context);
+//        category.font           = Font.serifFontBoldItalic(context);
         category.color          = R.color.dark_theme_primary_12;
         category.sizeSp         = 16.5f;
 
@@ -116,7 +116,7 @@ public class MechanicListItemView
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.font              = Font.serifFontRegular(context);
+//        label.font              = Font.serifFontRegular(context);
         label.color             = R.color.gold_light;
         label.sizeSp            = 16f;
 
@@ -147,7 +147,7 @@ public class MechanicListItemView
 
         status.text                 = context.getString(R.string.active).toUpperCase();
 
-        status.font                 = Font.serifFontRegular(context);
+//        status.font                 = Font.serifFontRegular(context);
         status.color                = R.color.green_medium_dark;
         status.sizeSp               = 11.5f;
 
@@ -167,7 +167,7 @@ public class MechanicListItemView
 
         summary.margin.topDp    = 10f;
 
-        summary.font            = Font.serifFontRegular(context);
+//        summary.font            = Font.serifFontRegular(context);
         summary.color           = R.color.dark_theme_primary_55;
         summary.sizeSp          = 14f;
 

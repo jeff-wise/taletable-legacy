@@ -344,7 +344,7 @@ public class TemplateListFragment extends Fragment
         name.width              = LinearLayout.LayoutParams.MATCH_PARENT;
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        name.font               = Font.serifFontRegular(context);
+//        name.font               = Font.serifFontRegular(context);
         name.color              = R.color.dark_theme_primary_18;
         name.sizeSp             = 16f;
 
@@ -361,7 +361,7 @@ public class TemplateListFragment extends Fragment
         description.width           = LinearLayout.LayoutParams.MATCH_PARENT;
         description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
         description.color           = R.color.dark_theme_primary_55;
         description.sizeSp          = 14f;
 

@@ -205,7 +205,7 @@ public class IncrementDialogFragment extends DialogFragment
 
         chooser.textSize            = R.dimen.dialog_increment_value_text_size;
         chooser.textColor           = R.color.dark_blue_hl_1;
-        chooser.textFont            = Font.serifFontRegular(context);
+//        chooser.textFont            = Font.serifFontRegular(context);
 
         chooser.dividerColor        = R.color.dark_blue_2;
 

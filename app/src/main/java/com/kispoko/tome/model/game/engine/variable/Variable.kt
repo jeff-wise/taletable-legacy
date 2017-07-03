@@ -3,6 +3,7 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -45,22 +46,16 @@ sealed class Variable(open val variableId : Prim<VariableId>,
 
     companion object : Factory<Variable>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Variable> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Variable> =
+            when (doc.case())
             {
-                when (doc.case())
-                {
-                    "boolean"   -> BooleanVariable.fromDocument(doc) as ValueParser<Variable>
-                    "dice_roll" -> DiceRollVariable.fromDocument(doc) as ValueParser<Variable>
-                    "number"    -> NumberVariable.fromDocument(doc) as ValueParser<Variable>
-                    "text"      -> TextVariable.fromDocument(doc) as ValueParser<Variable>
-                    else        -> effError<ValueError, Variable>(
+                "variable_boolean"   -> BooleanVariable.fromDocument(doc) as ValueParser<Variable>
+                "variable_dice_roll" -> DiceRollVariable.fromDocument(doc) as ValueParser<Variable>
+                "variable_number"    -> NumberVariable.fromDocument(doc) as ValueParser<Variable>
+                "variable_text"      -> TextVariable.fromDocument(doc) as ValueParser<Variable>
+                else                 -> effError<ValueError, Variable>(
                                             UnknownCase(doc.case(), doc.path))
-                }
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
 
 
@@ -137,6 +132,20 @@ sealed class Variable(open val variableId : Prim<VariableId>,
     fun onUpdate()
     {
         this.onUpdateListener()
+    }
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE STRING
+    // -----------------------------------------------------------------------------------------
+
+    open fun valueString(sheetContext : SheetContext) : AppEff<String> = when (this)
+    {
+        is BooleanVariable  -> this.value() ap { effValue<AppError,String>(it.toString()) }
+        is DiceRollVariable -> effValue(this.value().toString())
+        is NumberVariable   -> this.valueString(sheetContext)
+        is TextVariable     -> this.value(sheetContext)
     }
 
 }
@@ -486,6 +495,19 @@ data class NumberVariable(override val id : UUID,
     fun value(sheetContext : SheetContext) : AppEff<Double> =
             this.variableValue().value(sheetContext)
 
+
+    /**
+     * The string representation of the widget's current value. This method returns 0 when the
+     * value is null for some reason.
+     */
+    override fun valueString(sheetContext : SheetContext) : AppEff<String> =
+        this.value(sheetContext) ap {
+            if ((it == Math.floor(it)))
+                effValue<AppError,String>(it.toInt().toString())
+            else
+                effValue(it.toString())
+        }
+
 }
 
 
@@ -691,13 +713,13 @@ sealed class VariableReference : SQLSerializable, Serializable
 
     companion object : Factory<VariableReference>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableReference> =
-            when (doc.case)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableReference> =
+            when (doc.case())
             {
-                "name" -> VariableName.fromDocument(doc) as ValueParser<VariableReference>
-                "tag"  -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
-                else   -> effError<ValueError,VariableReference>(
-                                    UnknownCase(doc.case, doc.path))
+                "variable_id"  -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_tag" -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
+                else           -> effError<ValueError,VariableReference>(
+                                        UnknownCase(doc.case(), doc.path))
             }
     }
 }

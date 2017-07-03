@@ -179,8 +179,8 @@ data class ActionWidgetFormat(override val id : UUID,
     {
 
         private val defaultWidgetFormat     = WidgetFormat.default()
-        private val defaultDescriptionStyle = TextStyle.default
-        private val defaultActionStyle      = TextStyle.default
+        private val defaultDescriptionStyle = TextStyle.default()
+        private val defaultActionStyle      = TextStyle.default()
         private val defaultHeight           = Height.Wrap
 
 

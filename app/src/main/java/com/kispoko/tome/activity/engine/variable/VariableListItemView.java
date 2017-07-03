@@ -76,7 +76,7 @@ public class VariableListItemView
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        name.font               = Font.serifFontRegular(context);
+//        name.font               = Font.serifFontRegular(context);
         name.color              = R.color.gold_light;
         name.sizeSp             = 16f;
 
@@ -101,7 +101,7 @@ public class VariableListItemView
         description.padding.leftDp  = 1f;
         description.padding.rightDp = 1f;
 
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
         description.color           = R.color.dark_theme_primary_55;
         description.sizeSp          = 14f;
 
@@ -145,7 +145,7 @@ public class VariableListItemView
         type.backgroundResource = R.drawable.bg_variable_type;
         type.backgroundColor    = R.color.dark_theme_primary_81;
 
-        type.font               = Font.serifFontRegular(context);
+//        type.font               = Font.serifFontRegular(context);
         type.color              = R.color.dark_theme_primary_35;
         type.sizeSp             = 11.5f;
 
@@ -167,7 +167,7 @@ public class VariableListItemView
         kind.backgroundResource = R.drawable.bg_variable_type;
         kind.backgroundColor    = R.color.dark_theme_primary_81;
 
-        kind.font               = Font.serifFontRegular(context);
+//        kind.font               = Font.serifFontRegular(context);
         kind.color              = R.color.dark_theme_primary_35;
         kind.sizeSp             = 11.5f;
 
@@ -236,7 +236,7 @@ public class VariableListItemView
         value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        value.font                  = Font.serifFontRegular(context);
+//        value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_theme_primary_35;
         value.sizeSp                = 14.5f;
 

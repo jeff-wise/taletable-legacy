@@ -38,12 +38,12 @@ sealed class BooleanVariableValue : Serializable
     companion object : Factory<BooleanVariableValue>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<BooleanVariableValue> =
-            when (doc.case)
+            when (doc.case())
             {
                 "boolean_literal"    -> BooleanVariableLiteralValue.fromDocument(doc)
                 "program_invocation" -> BooleanVariableProgramValue.fromDocument(doc)
                 else                 -> effError<ValueError,BooleanVariableValue>(
-                                            UnknownCase(doc.case, doc.path))
+                                            UnknownCase(doc.case(), doc.path))
             }
     }
 

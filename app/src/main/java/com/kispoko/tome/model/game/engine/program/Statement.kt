@@ -2,17 +2,16 @@
 package com.kispoko.tome.model.game.engine.program
 
 
+import android.util.Log
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.functor.Sum
+import com.kispoko.tome.lib.functor.getMaybeSum
 import com.kispoko.tome.lib.functor.maybeLiftSum
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.reference.*
 import effect.*
@@ -30,7 +29,7 @@ import java.util.*
  * Statement
  */
 data class Statement(override val id : UUID,
-                     val bindingName : Prim<StatementBinding>,
+                     val bindingName : Prim<StatementBindingName>,
                      val functionId : Prim<FunctionId>,
                      val parameter1 : Sum<StatementParameter>,
                      val parameter2 : Maybe<Sum<StatementParameter>>,
@@ -43,7 +42,7 @@ data class Statement(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(bindingName : StatementBinding,
+    constructor(bindingName : StatementBindingName,
                 functionId : FunctionId,
                 parameter1 : StatementParameter,
                 parameter2 : Maybe<StatementParameter>,
@@ -68,25 +67,25 @@ data class Statement(override val id : UUID,
             {
                 effApply(::Statement,
                          // Binding
-                         doc.at("binding") ap { StatementBinding.fromDocument(it) },
+                         doc.at("binding_name") ap { StatementBindingName.fromDocument(it) },
                          // Function Id
                          doc.at("function_id") ap { FunctionId.fromDocument(it) },
                          // Parameter 1
-                         doc.at("parameter_1") ap { StatementParameter.fromDocument(it) },
+                         doc.at("parameter1") ap { StatementParameter.fromDocument(it) },
                          // Parameter 2
-                         split(doc.maybeAt("parameter_2"),
+                         split(doc.maybeAt("parameter2"),
                                effValue<ValueError,Maybe<StatementParameter>>(Nothing()),
                                { effApply(::Just, StatementParameter.fromDocument(it)) }),
                          // Parameter 3
-                         split(doc.maybeAt("parameter_3"),
+                         split(doc.maybeAt("parameter3"),
                                effValue<ValueError,Maybe<StatementParameter>>(Nothing()),
                                { effApply(::Just, StatementParameter.fromDocument(it)) }),
                          // Parameter 4
-                         split(doc.maybeAt("parameter_4"),
+                         split(doc.maybeAt("parameter4"),
                                effValue<ValueError,Maybe<StatementParameter>>(Nothing()),
                                { effApply(::Just, StatementParameter.fromDocument(it)) }),
                          // Parameter 5
-                         split(doc.maybeAt("parameter_5"),
+                         split(doc.maybeAt("parameter5"),
                                effValue<ValueError,Maybe<StatementParameter>>(Nothing()),
                                { effApply(::Just, StatementParameter.fromDocument(it)) })
                          )
@@ -94,6 +93,25 @@ data class Statement(override val id : UUID,
             else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun bindingName() : String = this.bindingName.value.value
+
+    fun functionId() : FunctionId = this.functionId.value
+
+    fun parameter1() : StatementParameter = this.parameter1.value
+
+    fun parameter2() : Maybe<StatementParameter> = getMaybeSum(this.parameter2)
+
+    fun parameter3() : Maybe<StatementParameter> = getMaybeSum(this.parameter3)
+
+    fun parameter4() : Maybe<StatementParameter> = getMaybeSum(this.parameter4)
+
+    fun parameter5() : Maybe<StatementParameter> = getMaybeSum(this.parameter5)
 
 
     // -----------------------------------------------------------------------------------------
@@ -112,18 +130,18 @@ data class Statement(override val id : UUID,
 /**
  * Statement Binding
  */
-data class StatementBinding(val value : String) : SQLSerializable, Serializable
+data class StatementBindingName(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<StatementBinding>
+    companion object : Factory<StatementBindingName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementBinding> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementBindingName> = when (doc)
         {
-            is DocText -> effValue(StatementBinding(doc.text))
+            is DocText -> effValue(StatementBindingName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
@@ -146,22 +164,23 @@ sealed class StatementParameter : SumModel
 
     companion object : Factory<StatementParameter>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameter> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameter> =
+            when (doc.case())
             {
-                when (doc.case())
+                "statement_binding"       -> StatementParameterBindingName.fromDocument(doc.nextCase())
+                                                as ValueParser<StatementParameter>
+                "program_parameter_index" -> StatementParameterProgramParameter.fromDocument(doc.nextCase())
+                                                as ValueParser<StatementParameter>
+                "data_reference"          -> StatementParameterReference.fromDocument(doc.nextCase())
+                                                as ValueParser<StatementParameter>
+                else                      ->
                 {
-                    "binding"   -> StatementParameterBinding.fromDocument(doc)
-                                    as ValueParser<StatementParameter>
-                    "reference" -> StatementParameterReference.fromDocument(doc)
-                                    as ValueParser<StatementParameter>
-                    else        -> effError<ValueError,StatementParameter>(
-                                            UnknownCase(doc.case(), doc.path))
+
+                    Log.d("***STATEMNET", doc.toString())
+                    effError<ValueError, StatementParameter>(
+                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
 
 }
@@ -170,7 +189,7 @@ sealed class StatementParameter : SumModel
 /**
  * Binding Parameter
  */
-data class StatementParameterBinding(val binding : StatementBinding)
+data class StatementParameterBindingName(val bindingName : StatementBindingName)
             : StatementParameter(), SQLSerializable
 {
 
@@ -178,10 +197,10 @@ data class StatementParameterBinding(val binding : StatementBinding)
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<StatementParameterBinding>
+    companion object : Factory<StatementParameterBindingName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameterBinding> =
-                effApply(::StatementParameterBinding, StatementBinding.fromDocument(doc))
+        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameterBindingName> =
+                effApply(::StatementParameterBindingName, StatementBindingName.fromDocument(doc))
     }
 
 
@@ -189,7 +208,7 @@ data class StatementParameterBinding(val binding : StatementBinding)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "binding")
+    override fun functor() = Prim(this, "bindingName")
 
     override val sumModelObject = this
 
@@ -198,7 +217,38 @@ data class StatementParameterBinding(val binding : StatementBinding)
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() = this.binding.asSQLValue()
+    override fun asSQLValue() = this.bindingName.asSQLValue()
+
+}
+
+
+/**
+ * Program Parameter Reference
+ */
+data class StatementParameterProgramParameter(val index : ProgramParameterIndex)
+    : StatementParameter()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<StatementParameterProgramParameter>
+    {
+        override fun fromDocument(doc : SpecDoc)
+                : ValueParser<StatementParameterProgramParameter> =
+                effApply(::StatementParameterProgramParameter,
+                           ProgramParameterIndex.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this.index)
+
+    override val sumModelObject = this
 
 }
 
@@ -229,3 +279,5 @@ data class StatementParameterReference(val reference : DataReference) : Statemen
     override val sumModelObject = this.reference
 
 }
+
+

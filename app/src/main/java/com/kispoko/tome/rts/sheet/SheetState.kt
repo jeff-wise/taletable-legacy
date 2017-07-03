@@ -44,7 +44,7 @@ class SheetState(val sheet : Sheet) : State
     // -----------------------------------------------------------------------------------------
 
     private val variableById : MutableMap<VariableId,Variable> = mutableMapOf()
-    private val variablesByTag: MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
+    private val variablesByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
 
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()

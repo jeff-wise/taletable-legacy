@@ -157,7 +157,7 @@ public class NewValueDialogFragment extends DialogFragment
         title.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         title.textId                = R.string.value_set_new_value_dialog_title;
-        title.font                  = Font.sansSerifFontBold(context);
+//        title.font                  = Font.sansSerifFontBold(context);
         title.size                  = R.dimen.value_set_new_value_dialog_title_text_size;
         title.color                 = R.color.gold_light;
 
@@ -174,7 +174,7 @@ public class NewValueDialogFragment extends DialogFragment
         input.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
         input.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        input.font                  = Font.sansSerifFontRegular(context);
+//        input.font                  = Font.sansSerifFontRegular(context);
         input.color                 = R.color.dark_blue_hlx_7;
         input.size                  = R.dimen.value_set_new_value_dialog_input_text_size;
         input.backgroundResource    = R.drawable.bg_edit_text;
@@ -214,7 +214,7 @@ public class NewValueDialogFragment extends DialogFragment
         cancelButton.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         cancelButton.textId             = R.string.dialog_cancel;
-        cancelButton.font               = Font.sansSerifFontBold(context);
+//        cancelButton.font               = Font.sansSerifFontBold(context);
         cancelButton.size               = R.dimen.value_set_new_value_dialog_button_text_size;
         cancelButton.color              = R.color.dark_blue_hl_4;
 
@@ -234,7 +234,7 @@ public class NewValueDialogFragment extends DialogFragment
         addButton.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         addButton.textId                = R.string.value_set_new_value_dialog_add;
-        addButton.font                  = Font.sansSerifFontBold(context);
+//        addButton.font                  = Font.sansSerifFontBold(context);
         addButton.size                  = R.dimen.value_set_new_value_dialog_button_text_size;
         addButton.color                 = R.color.dark_blue_hlx_9;
 

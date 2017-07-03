@@ -9,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -215,7 +214,7 @@ public class TextFieldDialogFragment extends DialogFragment
         if (this.field != null)
             name.text           = this.field.label();
 
-        name.font               = Font.serifFontRegular(context);
+//        name.font               = Font.serifFontRegular(context);
         name.color              = R.color.dark_blue_hl_9;
         name.sizeSp             = 19f;
 
@@ -266,7 +265,7 @@ public class TextFieldDialogFragment extends DialogFragment
 
         value.text                  = this.field.value();
 
-        value.font                  = Font.serifFontRegular(context);
+//        value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_blue_hl_1;
         value.sizeSp                = 20f;
 
@@ -327,7 +326,7 @@ public class TextFieldDialogFragment extends DialogFragment
         date.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         date.text               = "03/21/17 14:31";
-        date.font               = Font.serifFontItalic(context);
+//        date.font               = Font.serifFontItalic(context);
         date.color              = R.color.dark_blue_1;
         date.sizeSp             = 16f;
 
@@ -394,7 +393,7 @@ public class TextFieldDialogFragment extends DialogFragment
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                  = context.getString(R.string.save).toUpperCase();
-        label.font                  = Font.serifFontBold(context);
+//        label.font                  = Font.serifFontBold(context);
         label.color                 = R.color.green_medium_dark;
         label.sizeSp                = 14f;
 

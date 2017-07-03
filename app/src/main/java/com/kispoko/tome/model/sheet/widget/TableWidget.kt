@@ -2,29 +2,24 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
-import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TableLayoutBuilder
 import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.DividerType
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.theme.ColorTheme
@@ -45,6 +40,8 @@ import java.util.*
  */
 data class TableWidgetFormat(override val id : UUID,
                              val widgetFormat : Comp<WidgetFormat>,
+                             val headerFormat : Comp<TableWidgetRowFormat>,
+                             val rowFormat : Comp<TableWidgetRowFormat>,
                              val showDivider : Prim<ShowTableDividers>,
                              val dividerColorTheme : Prim<ColorTheme>,
                              val cellHeight : Prim<Height>) : Model, Serializable
@@ -57,6 +54,8 @@ data class TableWidgetFormat(override val id : UUID,
     init
     {
         this.widgetFormat.name      = "widget_format"
+        this.headerFormat.name      = "header_format"
+        this.rowFormat.name         = "row_format"
         this.showDivider.name       = "show_divider"
         this.dividerColorTheme.name = "divider_color_theme"
         this.cellHeight.name        = "cell_height"
@@ -68,11 +67,15 @@ data class TableWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
+                headerFormat : TableWidgetRowFormat,
+                rowFormat : TableWidgetRowFormat,
                 showDivider : ShowTableDividers,
                 dividerColorTheme : ColorTheme,
                 cellHeight : Height)
         : this(UUID.randomUUID(),
                Comp(widgetFormat),
+               Comp(headerFormat),
+               Comp(rowFormat),
                Prim(showDivider),
                Prim(dividerColorTheme),
                Prim(cellHeight))
@@ -82,9 +85,11 @@ data class TableWidgetFormat(override val id : UUID,
     {
 
         private val defaultWidgetFormat      = WidgetFormat.default()
+        private val defaultHeaderFormat      = TableWidgetRowFormat.default()
+        private val defaultRowFormat         = TableWidgetRowFormat.default()
         private val defaultShowDivider       = ShowTableDividers(false)
         private val defaultDividerColorTheme = ColorTheme.black
-        private val defaultCellHeight        = Height.MediumSmall
+        private val defaultCellHeight        = Height.Wrap
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetFormat> = when (doc)
@@ -94,6 +99,14 @@ data class TableWidgetFormat(override val id : UUID,
                                    split(doc.maybeAt("widget_format"),
                                          effValue(defaultWidgetFormat),
                                          { WidgetFormat.fromDocument(it) }),
+                                   // Header Format
+                                   split(doc.maybeAt("header_format"),
+                                         effValue(defaultHeaderFormat),
+                                         { TableWidgetRowFormat.fromDocument(it) }),
+                                   // Row Format
+                                   split(doc.maybeAt("row_format"),
+                                         effValue(defaultRowFormat),
+                                         { TableWidgetRowFormat.fromDocument(it) }),
                                    // Show Divider
                                    split(doc.maybeAt("show_divider"),
                                          effValue(defaultShowDivider),
@@ -113,9 +126,12 @@ data class TableWidgetFormat(override val id : UUID,
 
         val default : TableWidgetFormat =
                 TableWidgetFormat(defaultWidgetFormat,
+                                  defaultHeaderFormat,
+                                  defaultRowFormat,
                                   defaultShowDivider,
                                   defaultDividerColorTheme,
                                   defaultCellHeight)
+
     }
 
 
@@ -124,6 +140,10 @@ data class TableWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun headerFormat() : TableWidgetRowFormat = this.headerFormat.value
+
+    fun rowFormat() : TableWidgetRowFormat = this.rowFormat.value
 
     fun showDivider() : Boolean = this.showDivider.value.value
 
@@ -183,7 +203,7 @@ object TableWidgetView
              format : TableWidgetFormat,
              sheetContext : SheetContext) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), sheetContext.context)
+        val layout = WidgetView.layout(format.widgetFormat(), sheetContext)
 
         val tableLayout = this.tableLayout(format, sheetContext)
 
@@ -249,11 +269,15 @@ object TableWidgetView
         tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
         tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
 
-        tableRow.paddingSpacing = format.widgetFormat().padding()
+        tableRow.paddingSpacing = format.headerFormat().padding()
+        tableRow.marginSpacing  = format.headerFormat().margins()
+
+        tableRow.backgroundColor    = SheetManager.color(sheetContext.sheetId,
+                                        format.headerFormat().backgroundColorTheme())
 
         columns.forEach { column ->
 
-            val cellView = this.headerCellView(TableWidgetRowFormat.default,
+            val cellView = this.headerCellView(format.headerFormat(),
                                                column,
                                                CellFormat.default,
                                                sheetContext)
@@ -281,6 +305,8 @@ object TableWidgetView
         textView.height         = TableRow.LayoutParams.WRAP_CONTENT
 
         textView.text           = column.nameString()
+
+        rowFormat.textStyle().styleTextViewBuilder(textView, sheetContext)
 
         layout.addView(textView.textView(sheetContext.context))
 

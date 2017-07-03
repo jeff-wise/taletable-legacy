@@ -17,11 +17,11 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.official.template.OfficialTemplatesActivity;
+import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.official.game.GameSummary;
 import com.kispoko.tome.official.game.GameSummaryIndex;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.lib.yaml.YamlParseException;
@@ -333,7 +333,7 @@ public class OfficialGamesActivity extends AppCompatActivity
 
         title.sizeSp            = 16f;
         title.color             = R.color.gold_light;
-        title.font              = Font.serifFontRegular(context);
+//        title.font              = Font.serifFontRegular(context);
         title.margin.bottomDp   = 10f;
 
         return title.textView(context);
@@ -349,7 +349,7 @@ public class OfficialGamesActivity extends AppCompatActivity
         description.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
         description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
         description.color           = R.color.dark_theme_primary_60;
         description.sizeSp          = 14f;
 
@@ -402,7 +402,7 @@ public class OfficialGamesActivity extends AppCompatActivity
         nameView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         nameView.text           = factName;
-        nameView.font           = Font.serifFontRegular(this);
+//        nameView.font           = Font.serifFontRegular(this);
         nameView.color          = R.color.dark_blue_hl_3;
         nameView.size           = R.dimen.games_button_fact_text_size;
         nameView.padding.right  = R.dimen.games_button_facts_name_view_padding_right;
@@ -417,8 +417,7 @@ public class OfficialGamesActivity extends AppCompatActivity
 
         factView.color          = R.color.dark_blue_hlx_7;
         factView.size           = R.dimen.games_button_fact_text_size;
-        factView.font           = Font.serifFontRegular(this);
-
+//        factView.font           = Font.serifFontRegular(this);
 
         return layout.linearLayout(context);
     }

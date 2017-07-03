@@ -3,11 +3,9 @@ package com.kispoko.tome.activity.official.template;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -173,7 +171,7 @@ public class OfficialTemplateActivity extends AppCompatActivity
 
         name.text               = this.template.label();
 
-        name.font               = Font.serifFontRegular(context);
+//        name.font               = Font.serifFontRegular(context);
         name.color              = R.color.dark_theme_primary_15;
         name.sizeSp             = 18f;
 
@@ -195,7 +193,7 @@ public class OfficialTemplateActivity extends AppCompatActivity
 
         description.text            = this.template.fullDescription();
 
-        description.font            = Font.serifFontItalic(context);
+//        description.font            = Font.serifFontItalic(context);
         description.color           = R.color.dark_theme_primary_45;
         description.sizeSp          = 13f;
 
@@ -327,7 +325,7 @@ public class OfficialTemplateActivity extends AppCompatActivity
 
         name.text                   = nameString;
 
-        name.font                   = Font.serifFontRegular(context);
+//        name.font                   = Font.serifFontRegular(context);
         name.color                  = R.color.dark_theme_primary_25;
         name.sizeSp                 = 16f;
 
@@ -339,7 +337,7 @@ public class OfficialTemplateActivity extends AppCompatActivity
 
         description.text            = descriptionString;
 
-        description.font            = Font.serifFontRegular(context);
+//        description.font            = Font.serifFontRegular(context);
         description.color           = R.color.dark_theme_primary_55;
         description.sizeSp          = 14f;
 

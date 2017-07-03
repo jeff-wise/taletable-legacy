@@ -139,7 +139,7 @@ public class SearchView
         field.hint                  = context.getString(R.string.search_the_engine);
         field.hintColor             = R.color.dark_theme_primary_65;
 
-        field.font                  = Font.serifFontRegular(context);
+//        field.font                  = Font.serifFontRegular(context);
         field.color                 = R.color.dark_theme_primary_25;
         field.sizeSp                = 16f;
 
