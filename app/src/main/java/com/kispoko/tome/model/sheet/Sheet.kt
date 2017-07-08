@@ -11,7 +11,7 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -116,9 +116,9 @@ data class Sheet(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(sheetContext : SheetContext)
+    fun onActive(sheetUIContext: SheetUIContext)
     {
-        sections.list.forEach { it.onActive(sheetContext) }
+        sections.list.forEach { it.onActive(sheetUIContext) }
     }
 
 }

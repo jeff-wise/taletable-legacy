@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -17,11 +16,10 @@ import com.kispoko.tome.model.game.engine.variable.BooleanVariable
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.sheet.style.Alignment
-import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
@@ -176,8 +174,8 @@ data class TableWidgetBooleanCell(override val id : UUID,
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetBooleanColumn,
-             sheetContext : SheetContext) : View
-        = BooleanCellView.view(this, rowFormat, column, this.format(), sheetContext)
+             sheetUIContext: SheetUIContext) : View
+        = BooleanCellView.view(this, rowFormat, column, this.format(), sheetUIContext)
 
 }
 
@@ -268,9 +266,9 @@ data class TableWidgetNumberCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueString(sheetContext : SheetContext) : Maybe<String>
+    fun valueString(sheetUIContext: SheetUIContext) : Maybe<String>
     {
-        val numberEff = this.valueVariable().value(sheetContext)
+        val numberEff = this.valueVariable().value(sheetUIContext)
 
         when (numberEff)
         {
@@ -286,8 +284,8 @@ data class TableWidgetNumberCell(override val id : UUID,
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetNumberColumn,
-             sheetContext : SheetContext) : View
-            = NumberCellView.view(this, rowFormat, column, this.format(), sheetContext)
+             sheetUIContext: SheetUIContext) : View
+            = NumberCellView.view(this, rowFormat, column, this.format(), sheetUIContext)
 
 }
 
@@ -378,9 +376,9 @@ data class TableWidgetTextCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueString(sheetContext : SheetContext) : Maybe<String>
+    fun valueString(sheetUIContext: SheetUIContext) : Maybe<String>
     {
-        val numberEff = this.valueVariable().value(sheetContext)
+        val numberEff = this.valueVariable().value(sheetUIContext)
 
         when (numberEff)
         {
@@ -396,8 +394,8 @@ data class TableWidgetTextCell(override val id : UUID,
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetTextColumn,
-             sheetContext : SheetContext) : View
-            = TextCellView.view(this, rowFormat, column, this.format(), sheetContext)
+             sheetUIContext: SheetUIContext) : View
+            = TextCellView.view(this, rowFormat, column, this.format(), sheetUIContext)
 
 }
 
@@ -516,7 +514,7 @@ object TableWidgetCellView
     fun layout(tableRowFormat : TableWidgetRowFormat,
                columnFormat : ColumnFormat,
                cellFormat : CellFormat,
-               sheetContext : SheetContext) : LinearLayout
+               sheetUIContext: SheetUIContext) : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -539,16 +537,16 @@ object TableWidgetCellView
         }
 
         if (cellFormat.backgroundColorTheme.isDefault()) {
-            layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+            layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
                                         columnFormat.backgroundColorTheme())
         } else {
-            layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+            layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
                                         cellFormat.backgroundColorTheme())
         }
 
         // layout.backgroundResource   = tableRowFormat.cellHeight().resourceId(Corners.None)
 
-        return layout.linearLayout(sheetContext.context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 

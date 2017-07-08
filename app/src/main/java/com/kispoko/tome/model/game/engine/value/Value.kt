@@ -2,6 +2,8 @@
 package com.kispoko.tome.model.game.engine.value
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -10,10 +12,12 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
 import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import java.io.Serializable
 import java.util.*
 
 
@@ -23,31 +27,33 @@ import java.util.*
  */
 @Suppress("UNCHECKED_CAST")
 sealed class Value(open val valueId : Prim<ValueId>,
-                   open val description : Maybe<Prim<ValueDescription>>) : Model
+                   open val description : Maybe<Prim<ValueDescription>>,
+                   open val variables : Conj<Variable>,
+                   open val valueSetId : ValueSetId)
+                    : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<Value>
+    companion object
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Value> = when (doc)
-        {
-            is DocDict ->
+        fun fromDocument(doc: SpecDoc, valueSetId: ValueSetId): ValueParser<Value> =
+            when (doc)
             {
-                when (doc.case())
+                is DocDict ->
                 {
-                    "number" -> ValueNumber.fromDocument(doc)
-                                    as ValueParser<Value>
-                    "text"   -> ValueText.fromDocument(doc)
-                                    as ValueParser<Value>
-                    else     -> effError<ValueError,Value>(
-                                            UnknownCase(doc.case(), doc.path))
+                    when (doc.case())
+                    {
+                        "value_number" -> ValueNumber.fromDocument(doc, valueSetId) as ValueParser<Value>
+                        "value_text"   -> ValueText.fromDocument(doc, valueSetId) as ValueParser<Value>
+                        else           -> effError<ValueError, Value>(
+                                              UnknownCase(doc.case(), doc.path))
+                    }
                 }
+                else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
 
 
@@ -57,7 +63,11 @@ sealed class Value(open val valueId : Prim<ValueId>,
 
     fun valueId() : ValueId = this.valueId.value
 
-    fun description() : ValueDescription? = getMaybePrim(this.description)
+    fun valueSetId() : ValueSetId = this.valueSetId
+
+    fun description() : String? = getMaybePrim(this.description)?.value
+
+    fun variables() : Set<Variable> = this.variables.set
 
 
     // -----------------------------------------------------------------------------------------
@@ -66,12 +76,39 @@ sealed class Value(open val valueId : Prim<ValueId>,
 
     abstract fun type() : ValueType
 
+    fun isNumber() = this.type() == ValueType.NUMBER
+
+    fun isText() = this.type() == ValueType.TEXT
+
+
+    fun numberValue() : AppEff<ValueNumber> = when (this)
+    {
+        is ValueNumber -> effValue(this)
+        else           -> effError(AppEngineError(
+                                ValueIsOfUnexpectedType(this.valueSetId(),
+                                                        this.valueId(),
+                                                        ValueType.NUMBER,
+                                                        this.type())))
+    }
+
+
+    fun textValue() : AppEff<ValueText> = when (this)
+    {
+        is ValueText -> effValue(this)
+        else         -> effError(AppEngineError(
+                                ValueIsOfUnexpectedType(this.valueSetId(),
+                                                        this.valueId(),
+                                                        ValueType.TEXT,
+                                                        this.type())))
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
 
 }
 
@@ -82,9 +119,10 @@ sealed class Value(open val valueId : Prim<ValueId>,
 data class ValueNumber(override val id : UUID,
                        override val valueId : Prim<ValueId>,
                        override val description: Maybe<Prim<ValueDescription>>,
-                       val value : Prim<NumberValue>,
-                       val variables : Conj<Variable>)
-                        : Value(valueId, description)
+                       override val variables : Conj<Variable>,
+                       override val valueSetId : ValueSetId,
+                       val value : Prim<NumberValue>)
+                        : Value(valueId, description, variables, valueSetId)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -109,18 +147,21 @@ data class ValueNumber(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : Maybe<ValueDescription>,
-                value : NumberValue,
-                variables : MutableSet<Variable>)
+                variables : MutableSet<Variable>,
+                valueSetId : ValueSetId,
+                value : NumberValue)
         : this(UUID.randomUUID(),
                Prim(valueId),
                maybeLiftPrim(description),
-               Prim(value),
-               Conj(variables))
+               Conj(variables),
+               valueSetId,
+               Prim(value))
 
 
-    companion object : Factory<ValueNumber>
+    companion object
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ValueNumber> = when (doc)
+        fun fromDocument(doc : SpecDoc,
+                         valueSetId : ValueSetId) : ValueParser<ValueNumber> = when (doc)
         {
             is DocDict ->
             {
@@ -131,12 +172,15 @@ data class ValueNumber(override val id : UUID,
                          split(doc.maybeAt("description"),
                                effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
                                { effApply(::Just, ValueDescription.fromDocument(it)) }),
-                         // Value
-                         doc.at("value") ap { NumberValue.fromDocument(it) },
                          // Variables
                          doc.list("variables") ap { docList ->
                              docList.mapSetMut { Variable.fromDocument(it) }
-                         })
+                         },
+                         // Value Set Id
+                         effValue(valueSetId),
+                         // Value
+                         doc.at("value") ap { NumberValue.fromDocument(it) }
+                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -167,6 +211,17 @@ data class ValueNumber(override val id : UUID,
 
     override val modelObject = this
 
+
+    // -----------------------------------------------------------------------------------------
+    // EQUALS
+    // -----------------------------------------------------------------------------------------
+
+    override fun equals(other : Any?) : Boolean =
+        if (other is ValueNumber)
+            other.value() == this.value()
+        else
+            false
+
 }
 
 
@@ -176,9 +231,10 @@ data class ValueNumber(override val id : UUID,
 data class ValueText(override val id : UUID,
                      override val valueId : Prim<ValueId>,
                      override val description : Maybe<Prim<ValueDescription>>,
-                     val value : Prim<TextValue>,
-                     val variables : Conj<Variable>)
-                      : Value(valueId, description)
+                     override val variables : Conj<Variable>,
+                     override val valueSetId : ValueSetId,
+                     val value : Prim<TextValue>)
+                      : Value(valueId, description, variables, valueSetId)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -205,18 +261,21 @@ data class ValueText(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : Maybe<ValueDescription>,
-                value : TextValue,
-                variables : MutableSet<Variable>)
+                variables : MutableSet<Variable>,
+                valueSetId : ValueSetId,
+                value : TextValue)
         : this(UUID.randomUUID(),
                Prim(valueId),
                maybeLiftPrim(description),
-               Prim(value),
-               Conj(variables))
+               Conj(variables),
+               valueSetId,
+               Prim(value))
 
 
-    companion object : Factory<ValueText>
+    companion object
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ValueText> = when (doc)
+        fun fromDocument(doc : SpecDoc,
+                         valueSetId : ValueSetId) : ValueParser<ValueText> = when (doc)
         {
             is DocDict -> effApply(::ValueText,
                                    // Value Id
@@ -225,12 +284,15 @@ data class ValueText(override val id : UUID,
                                    split(doc.maybeAt("description"),
                                          effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
                                          { effApply(::Just, ValueDescription.fromDocument(it)) }),
-                                   // Value
-                                   doc.at("value") ap { TextValue.fromDocument(it) },
                                    // Variables
-                                   doc.list("variables") ap { docList ->
-                                       docList.mapSetMut { Variable.fromDocument(it) }
-                                   })
+                                   split(doc.maybeList("variables"),
+                                         effValue(mutableSetOf()),
+                                         { it.mapSetMut { Variable.fromDocument(it) } }),
+                                   // Value Set Id
+                                   effValue(valueSetId),
+                                   // Value
+                                   doc.at("value") ap { TextValue.fromDocument(it) }
+                                   )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -241,6 +303,16 @@ data class ValueText(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun value() : String = this.value.value.value
+
+    fun valueMinusThe() : String
+    {
+        val valueString = this.value()
+
+        if (valueString.startsWith("the ", true))
+            return valueString.drop(4)
+        else
+            return valueString
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -260,6 +332,21 @@ data class ValueText(override val id : UUID,
 
     override val modelObject = this
 
+
+    // -----------------------------------------------------------------------------------------
+    // EQUALS
+    // -----------------------------------------------------------------------------------------
+
+    override fun equals(other : Any?) : Boolean =
+        if (other is ValueText)
+            other.value() == this.value()
+        else
+            false
+
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
 }
 
 
@@ -274,7 +361,7 @@ enum class ValueType
  * Value Reference
  */
 data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
-            : SQLSerializable
+            : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -286,10 +373,10 @@ data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueReference> = when (doc)
         {
             is DocDict -> effApply(::ValueReference,
-                                   // ValueSet Name
-                                   doc.at("value_set_name") ap { ValueSetId.fromDocument(it) },
+                                   // Value Set Name
+                                   doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
                                    // Value Name
-                                   doc.at("value_name") ap { ValueId.fromDocument(it) })
+                                   doc.at("value_id") ap { ValueId.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
@@ -308,7 +395,7 @@ data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
 /**
  * Value Id
  */
-data class ValueId(val value : String) : SQLSerializable
+data class ValueId(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -337,7 +424,7 @@ data class ValueId(val value : String) : SQLSerializable
 /**
  * Value Description
  */
-data class ValueDescription(val value : String) : SQLSerializable
+data class ValueDescription(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -365,7 +452,7 @@ data class ValueDescription(val value : String) : SQLSerializable
 /**
  * Number Value
  */
-data class NumberValue(val value : Double) : SQLSerializable
+data class NumberValue(val value : Double) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -393,7 +480,7 @@ data class NumberValue(val value : Double) : SQLSerializable
 /**
  * Text Value
  */
-data class TextValue(val value : String) : SQLSerializable
+data class TextValue(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------

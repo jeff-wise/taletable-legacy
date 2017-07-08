@@ -2,15 +2,17 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
@@ -53,6 +55,8 @@ sealed class DiceRollVariableValue : Serializable
 
     abstract fun value() : DiceRoll
 
+    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+
 }
 
 
@@ -79,6 +83,9 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll)
     // -----------------------------------------------------------------------------------------
 
     override fun value() : DiceRoll = this.diceRoll
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------

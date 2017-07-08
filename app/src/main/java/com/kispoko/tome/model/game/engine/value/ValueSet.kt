@@ -4,15 +4,18 @@ package com.kispoko.tome.model.game.engine.value
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
+import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.EngineValueType
-import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
+import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.ValueSetDoesNotContainValue
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -34,7 +37,8 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
                       open val label : Prim<ValueSetLabel>,
                       open val labelSingular: Prim<ValueSetLabelSingular>,
                       open val description : Prim<ValueSetDescription>,
-                      open val valueType : Maybe<Prim<EngineValueType>>) : Model
+                      open val valueType : Maybe<Prim<EngineValueType>>)
+                       : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -49,12 +53,12 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
             {
                 when (doc.case())
                 {
-                    "base"     -> ValueSetBase.fromDocument(doc)
-                                    as ValueParser<ValueSet>
-                    "compound" -> ValueSetCompound.fromDocument(doc)
-                                    as ValueParser<ValueSet>
-                    else       -> effError<ValueError,ValueSet>(
-                                            UnknownCase(doc.case(), doc.path))
+                    "value_set_base"     -> ValueSetBase.fromDocument(doc)
+                                                as ValueParser<ValueSet>
+                    "value_set_compound" -> ValueSetCompound.fromDocument(doc)
+                                                as ValueParser<ValueSet>
+                    else                 -> effError<ValueError,ValueSet>(
+                                                UnknownCase(doc.case(), doc.path))
                 }
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -78,7 +82,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     fun valueSetId() : ValueSetId = this.valueSetId.value
 
-    fun label() : ValueSetLabel = this.label.value
+    fun label() : String = this.label.value.value
 
     fun labelSingular() : ValueSetLabelSingular = this.labelSingular.value
 
@@ -90,42 +94,13 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
     // Lookup
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(valueId : ValueId, engine : Engine) : AppEff<Value>
+    abstract fun value(valueId : ValueId, sheetContext : SheetContext) : AppEff<Value>
 
-    abstract fun numberValue(valueId : ValueId, engine : Engine) : AppEff<ValueNumber>
+    abstract fun numberValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueNumber>
 
-    abstract fun textValue(valueId : ValueId, engine : Engine) : AppEff<ValueText>
+    abstract fun textValue(valueId : ValueId, sheetContext: SheetContext) : AppEff<ValueText>
 
-
-    // -----------------------------------------------------------------------------------------
-    // INTERNAL
-    // -----------------------------------------------------------------------------------------
-
-    protected fun maybeNumberValue(gameId : GameId,
-                                   valueId : ValueId,
-                                   value : Value) : AppEff<ValueNumber> = when (value)
-    {
-        is ValueNumber -> effValue(value)
-        else           -> effError(AppEngineError(
-                                ValueIsOfUnexpectedType(gameId,
-                                                        this.valueSetId(),
-                                                        valueId,
-                                                        ValueType.NUMBER,
-                                                        value.type())))
-    }
-
-    protected fun maybeTextValue(gameId : GameId,
-                                 valueId : ValueId,
-                                 value : Value) : AppEff<ValueText> = when (value)
-    {
-        is ValueText -> effValue(value)
-        else         -> effError(AppEngineError(
-                                ValueIsOfUnexpectedType(gameId,
-                                                        this.valueSetId(),
-                                                        valueId,
-                                                        ValueType.TEXT,
-                                                        value.type())))
-    }
+    abstract fun values(sheetContext : SheetContext) : AppEff<Set<Value>>
 
 }
 
@@ -196,23 +171,25 @@ data class ValueSetBase(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::ValueSetBase,
-                         // Value Set Id
-                         doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
-                         // Label
-                         doc.at("label") ap { ValueSetLabel.fromDocument(it) },
-                         // Label Singular
-                         doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
-                         // Description
-                         doc.at("description") ap { ValueSetDescription.fromDocument(it) },
-                         // Value Type
-                         split(doc.maybeAt("value_type"),
-                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
-                         // Values,
-                         doc.list("values") ap { docList ->
-                             docList.mapSetMut { Value.fromDocument(it) }
-                         })
+                doc.at("value_set_id") ap { ValueSetId.fromDocument(it) } ap { valueSetId ->
+                    effApply(::ValueSetBase,
+                             // Value Set Id
+                             effValue(valueSetId),
+                             // Label
+                             doc.at("label") ap { ValueSetLabel.fromDocument(it) },
+                             // Label Singular
+                             doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
+                             // Description
+                             doc.at("description") ap { ValueSetDescription.fromDocument(it) },
+                             // Value Type
+                             split(doc.maybeAt("value_type"),
+                                   effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                                   { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                             // Values,
+                             doc.list("values") ap { docList ->
+                                 docList.mapSetMut { Value.fromDocument(it, valueSetId) }
+                             })
+                }
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -234,22 +211,53 @@ data class ValueSetBase(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    override fun value(valueId: ValueId, engine: Engine) : AppEff<Value> =
+    override fun value(valueId : ValueId, sheetContext : SheetContext) : AppEff<Value> =
             note(this.valuesById[valueId],
-                 AppEngineError(ValueSetDoesNotContainValue(engine.gameId,
-                                                            this.valueSetId(),
-                                                            valueId)))
+                 AppEngineError(ValueSetDoesNotContainValue(this.valueSetId(), valueId)))
 
 
-    override fun textValue(valueId : ValueId, engine : Engine) : AppEff<ValueText> =
-        this.value(valueId, engine)
-            .apply { this.maybeTextValue(engine.gameId, valueId, it) }
+    override fun numberValue(valueId : ValueId,
+                             sheetContext : SheetContext) : AppEff<ValueNumber> =
+            this.value(valueId, sheetContext).apply { it.numberValue() }
 
 
-    override fun numberValue(valueId : ValueId, engine : Engine) : AppEff<ValueNumber> =
-        this.value(valueId, engine)
-            .apply { this.maybeNumberValue(engine.gameId, valueId, it) }
+    override fun textValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueText> =
+        this.value(valueId, sheetContext).apply { it.textValue() }
 
+
+    override fun values(sheetContext : SheetContext) : AppEff<Set<Value>> =
+            effValue(this.values.set.toSet())
+
+
+    fun sortedValues() : List<Value> =
+        when (this.valueType())
+        {
+            is EngineValueType.NUMBER -> numberValues().sortedBy { it.value() }
+            is EngineValueType.TEXT   -> textValues().sortedBy { it.valueMinusThe() }
+            else                      ->
+            {
+                numberValues().sortedBy { it.value() }
+                    .plus(textValues().sortedBy { it.value() })
+            }
+        }
+
+
+    fun numberValues() : List<ValueNumber> =
+        this.values.set.mapNotNull {
+            when (it) {
+                is ValueNumber -> it
+                else           -> null
+            }
+        }
+
+
+    fun textValues() : List<ValueText> =
+        this.values.set.mapNotNull {
+            when (it) {
+                is ValueText -> it
+                else         -> null
+            }
+        }
 
 }
 
@@ -356,38 +364,64 @@ data class ValueSetCompound(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    override fun value(valueId: ValueId, engine: Engine) : AppEff<Value>
+    override fun value(valueId : ValueId, sheetContext : SheetContext) : AppEff<Value>
     {
-        // TODO write utility function for this for Effect pkg
-        for (valueSetId in this.valueSetIds()) {
-            val valueSet = engine.valueSet(valueSetId)
-            when (valueSet) {
-                is Val -> {
-                    val value = valueSet.value.value(valueId, engine)
+        val valueSets = GameManager.engine(sheetContext.gameId) ap { engine ->
+                            this.valueSetIds().toList().mapM { engine.valueSet(it) }
+                        }
+
+        when (valueSets)
+        {
+            is Val ->
+            {
+                for (valueSet in valueSets.value) {
+                    val value = valueSet.value(valueId, sheetContext)
                     when (value) {
                         is Val -> return value
                     }
                 }
             }
+            is Err -> ApplicationLog.error(valueSets.error)
         }
 
-        return effError(
-                   AppEngineError(
-                       ValueSetDoesNotContainValue(engine.gameId, this.valueSetId(), valueId)))
+        return effError(AppEngineError(ValueSetDoesNotContainValue(this.valueSetId(), valueId)))
     }
 
 
-    override fun numberValue(valueId : ValueId, engine : Engine) : AppEff<ValueNumber> =
-        this.value(valueId, engine)
-            .apply { maybeNumberValue(engine.gameId, valueId, it) }
+    override fun numberValue(valueId : ValueId,
+                             sheetContext : SheetContext) : AppEff<ValueNumber> =
+        this.value(valueId, sheetContext).apply { it.numberValue() }
 
-    /**
-     * A text value in one of the value sets in the compound value set that has the given id.
-     */
-    override fun textValue(valueId : ValueId, engine : Engine) : AppEff<ValueText> =
-        this.value(valueId, engine)
-            .apply { maybeTextValue(engine.gameId, valueId, it) }
 
+    override fun textValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueText> =
+        this.value(valueId, sheetContext).apply { it.textValue() }
+
+
+    override fun values(sheetContext : SheetContext) : AppEff<Set<Value>>
+    {
+        fun valueSets(engine : Engine) : AppEff<List<ValueSet>> =
+            this.valueSetIds().toList().mapM { engine.valueSet(it) }
+
+        fun values(valueSets : List<ValueSet>) : AppEff<Set<Value>> =
+                valueSets.mapM { it.values(sheetContext) }
+                         .apply { effValue<AppError,Set<Value>>(it.flatten().toSet()) }
+
+        return GameManager.engine(sheetContext.gameId)
+                          .apply(::valueSets)
+                          .apply(::values)
+    }
+
+
+    fun valueSets(sheetUIContext: SheetUIContext) : AppEff<Set<ValueSet>>
+    {
+        fun valueSets(engine : Engine) : AppEff<Set<ValueSet>> =
+            this.valueSetIds().toList()
+                .mapM  { engine.valueSet(it) }
+                .apply { effValue<AppError,Set<ValueSet>>(it.toSet()) }
+
+        return GameManager.engine(sheetUIContext.gameId)
+                          .apply(::valueSets)
+    }
 
 
 }

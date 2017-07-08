@@ -17,7 +17,7 @@ import com.kispoko.tome.model.sheet.widget.TableWidgetFormat
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.CellTypeDoesNotMatchColumnType
 import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.DocDict
@@ -107,7 +107,7 @@ data class TableWidgetRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext: SheetContext) {
+    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
         TODO("not implemented")
     }
 
@@ -118,7 +118,7 @@ data class TableWidgetRow(override val id : UUID,
 
     fun view(columns : List<TableWidgetColumn>,
              format : TableWidgetFormat,
-             sheetContext : SheetContext) : View
+             sheetUIContext: SheetUIContext) : View
     {
         val tableRow                = TableRowBuilder()
 
@@ -129,7 +129,7 @@ data class TableWidgetRow(override val id : UUID,
         tableRow.marginSpacing      = format.rowFormat().margins()
         tableRow.paddingSpacing     = format.rowFormat().padding()
 
-        tableRow.backgroundColor    = SheetManager.color(sheetContext.sheetId,
+        tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
                 format.rowFormat().backgroundColorTheme())
 
 
@@ -144,7 +144,7 @@ data class TableWidgetRow(override val id : UUID,
                         is TableWidgetBooleanColumn ->
                             tableRow.rows.add(tableWidgetCell.view(this.format(),
                                                                    column,
-                                                                   sheetContext))
+                                    sheetUIContext))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.BOOLEAN,
                                                                    column.type()))
@@ -158,7 +158,7 @@ data class TableWidgetRow(override val id : UUID,
                         is TableWidgetNumberColumn ->
                             tableRow.rows.add(tableWidgetCell.view(this.format(),
                                                                    column,
-                                                                   sheetContext))
+                                    sheetUIContext))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.NUMBER,
                                                                    column.type()))
@@ -172,7 +172,7 @@ data class TableWidgetRow(override val id : UUID,
                         is TableWidgetTextColumn ->
                             tableRow.rows.add(tableWidgetCell.view(this.format(),
                                                                    column,
-                                                                   sheetContext))
+                                    sheetUIContext))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.TEXT,
                                                                    column.type()))
@@ -181,7 +181,7 @@ data class TableWidgetRow(override val id : UUID,
             }
         }
 
-        return tableRow.tableRow(sheetContext.context)
+        return tableRow.tableRow(sheetUIContext.context)
     }
 
 }

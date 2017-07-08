@@ -177,7 +177,7 @@ public class EditTextBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.color != null)
-            editText.setTextColor(ContextCompat.getColor(context, this.color));
+            editText.setTextColor(this.color);
 
         // > Underline Color
         // --------------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ public class EditTextBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            editText.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            editText.setBackgroundColor(this.backgroundColor);
 
         // > Background Resource
         // --------------------------------------------------------------------------------------

@@ -12,6 +12,7 @@ import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
 import effect.Nothing
@@ -65,7 +66,7 @@ object Interpreter
      * Evaluate the program parameters.
      */
     private fun programParameters(invocation : Invocation,
-                          sheetContext : SheetContext) : AppEff<Parameters>
+                                  sheetContext : SheetContext) : AppEff<Parameters>
     {
         // Parameter 1
         val parameter1 = SheetData.referenceEngineValue(invocation.parameter1(), sheetContext)
@@ -108,8 +109,8 @@ object Interpreter
 
     @Suppress("UNCHECKED_CAST")
     private fun programValue(program : Program,
-                     programParameters : Parameters,
-                     sheetContext : SheetContext) : AppEff<EngineValue>
+                             programParameters : Parameters,
+                             sheetContext : SheetContext) : AppEff<EngineValue>
     {
         val bindings : MutableMap<String,EngineValue> = mutableMapOf()
 
@@ -135,10 +136,10 @@ object Interpreter
 
 
     private fun statementValue(statement : Statement,
-                       programParameters : Parameters,
-                       bindings : Map<String,EngineValue>,
-                       programId : ProgramId,
-                       sheetContext : SheetContext) : AppEff<StatementBinding>
+                               programParameters : Parameters,
+                               bindings : Map<String,EngineValue>,
+                               programId : ProgramId,
+                               sheetContext : SheetContext) : AppEff<StatementBinding>
     {
 
         val functionEff   = GameManager.engine(sheetContext.gameId)
@@ -159,10 +160,10 @@ object Interpreter
 
 
     private fun statementParameters(statement : Statement,
-                            programParameters : Parameters,
-                            bindings : Map<String,EngineValue>,
-                            programId : ProgramId,
-                            sheetContext : SheetContext) : AppEff<Parameters>
+                                    programParameters : Parameters,
+                                    bindings : Map<String,EngineValue>,
+                                    programId : ProgramId,
+                                    sheetContext : SheetContext) : AppEff<Parameters>
     {
         val parameter1 = this.statementParameterValue(statement.parameter1(),
                                                       programParameters,
@@ -215,10 +216,10 @@ object Interpreter
 
 
     private fun statementParameterValue(statementParameter : StatementParameter,
-                                programParameters : Parameters,
-                                bindings : Map<String,EngineValue>,
-                                programId : ProgramId,
-                                sheetContext : SheetContext) : AppEff<EngineValue> =
+                                        programParameters : Parameters,
+                                        bindings : Map<String,EngineValue>,
+                                        programId : ProgramId,
+                                        sheetContext : SheetContext) : AppEff<EngineValue> =
         when (statementParameter)
         {
             is StatementParameterBindingName ->

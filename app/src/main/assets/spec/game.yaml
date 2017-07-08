@@ -643,6 +643,13 @@ types:
     description: A text variable reference.
   - type: value_reference
     description: A text value reference.
+- name: mechanic_id
+  label: Mechanic Identifier
+  description: >
+    The unique mechanic identifier.
+  group: Game
+  type: primitive
+  base_type: string
 - name: mechanic
   label: Mechanic
   description: >
@@ -656,8 +663,8 @@ types:
   group: Mechanic
   type: product
   fields:
-  - name: name
-    type: string
+  - name: mechanic_id
+    type: mechanic_id
     presence: required
     description: >
       The name of the Mechanic. The name is used to uniquely identify the mechanic when 
@@ -665,31 +672,31 @@ types:
       only letters, numbers, and underscores.
   - name: label
     type: string
-    presence: optional
+    presence: required
     description: >
       The mechanic label is the name of the Mechanic formatted nicely. It does not need to be 
       unique or contain any specific characters, but should be pleasant to read!
   - name: summary
     type: string
-    presence: optional
+    presence: required
     description: >
       The mechanic summary is a very brief description of the mechanic. The summary is displayed 
       alongside the mechanic label in lists.
   - name: description
     type: string
-    presence: optional
+    presence: required
     description: >
       The description should explain what the mechanic does and how, as well as detail situations 
       when it should be used. The description should relate the mechanic to the game rules that it 
       was created to emulate.
   - name: category
-    type: mechanic_category
+    type: string
     presence: optional
     description: >
       The category of the mechanic should group the mechanic with other related mechanics.
   - name: requirements
     type: list
-    of: string
+    of: variable_id
     presence: required
     description: >
       A list of boolean variables that must be true for the mechanic to be active.
@@ -776,13 +783,13 @@ types:
       the sheet or programming.
   - name: label
     type: string
-    presence: optional
+    presence: required
     description: >
       The Boolean Variable's name in a format that is pleasant to read. The label does not need 
       to be unique and may contain any characters.
   - name: description
     type: string
-    presence: optional
+    presence: required
     description: >
       A description of what the variable represents.
   - name: value
@@ -837,13 +844,13 @@ types:
       the sheet or programming.
   - name: label
     type: string
-    presence: optional
+    presence: required
     description: >
       The Dice Variable's name in a format that is pleasant to read. The label does not need 
       to be unique and may contain any characters.
   - name: description
     type: string
-    presence: optional
+    presence: required
     description: >
       A description of what the variable represents.
   - name: value
@@ -874,10 +881,10 @@ types:
     presence: required
   - name: label
     type: string
-    presence: optional
+    presence: required
   - name: description
     type: string
-    presence: optional
+    presence: required
   - name: value
     type: number_variable_value
     presence: required
@@ -945,13 +952,13 @@ types:
       the sheet or programming.
   - name: label
     type: string
-    presence: optional
+    presence: required
     description: >
       The Text Variable's name in a format that is pleasant to read. The label does not need 
       to be unique and may contain any characters.
   - name: description
     type: string
-    presence: optional
+    presence: required
     description: >
       A description of what the variable represents.
   - name: value
@@ -1021,16 +1028,13 @@ types:
   group: Summation
   type: sum
   cases:
-  - name: literal
-    type: summation_term_integer
+  - type: summation_term_number
     description: >
       A literal number.
-  - name: dice_roll
-    type: summation_term_dice_roll
+  - type: summation_term_dice_roll
     description: >
       A dice roll.
-  - name: conditional
-    type: summation_term_conditional
+  - type: summation_term_conditional
     description: >
       The value depends on if a boolean variable is true or false.
 - name: summation_term_conditional
@@ -1056,15 +1060,26 @@ types:
     presence: required
     description: >
       The number variable to be the result when the conditional term is false.
-- name: summation_term_integer
-  label: Integer Term
+- name: summation_term_name
+  label: Summation Term Name
+  description: >
+    The unique game identifier.
+  group: Summation
+  type: primitive
+  base_type: string
+- name: summation_term_number
+  label: Number Term
   description: >
     An integer term is a number that is part of a summation.
   group: Summation
   type: product
   fields:
-  - name: term_value
-    type: variable_number
+  - name: term_name
+    type: summation_term_name
+    presence: optional
+    description: Term Name
+  - name: value
+    type: data_reference_number
     presence: required
     description: >
       The number variable that is the term value.
@@ -1078,8 +1093,37 @@ types:
   group: Summation
   type: product
   fields:
-  - name: term_value
-    type: variable_dice_roll
+  - name: term_name
+    type: summation_term_name
+    presence: optional
+    description: Term Name
+  - name: value
+    type: data_reference_dice_roll
+    presence: required
+    description: >
+      The dice roll value that is the term value.
+- name: summation_term_conditional
+  label: Conditional Term
+  description: Conditional Term
+  group: Summation
+  type: product
+  fields:
+  - name: term_name
+    type: summation_term_name
+    presence: optional
+    description: Term Name
+  - name: condition
+    type: data_reference_boolean
+    presence: required
+    description: >
+      The dice roll value that is the term value.
+  - name: when_true
+    type: data_reference_number
+    presence: required
+    description: >
+      The dice roll value that is the term value.
+  - name: when_false
+    type: data_reference_number
     presence: required
     description: >
       The dice roll value that is the term value.
@@ -1090,16 +1134,39 @@ types:
   group: Value
   type: product
   fields:
-  - name: value_set_name
-    type: string
+  - name: value_set_id
+    type: value_set_id
     presence: required
     description: >
       The name of the value set.
-  - name: value_name
-    type: string
+  - name: value_id
+    type: value_id
     presence: optional
     description: >
       The name of the value.
+- name: value_set_id
+  label: Value Set Id
+  description: >
+    The unique game identifier.
+  group: ValueSet
+  type: primitive
+  base_type: string
+- name: value_id
+  label: Value Id
+  description: >
+    The unique value identifier.
+  group: Value
+  type: primitive
+  base_type: string
+- name: value_set_value_type
+  label: Value Set Value Type
+  description: >
+    The types of values in a value set.
+  group: ValueSet
+  type: primitive
+  base_type: string
+  constraints:
+  - value_set_value_type_set
 - name: value_set
   label: Value Set
   description: >
@@ -1123,8 +1190,8 @@ types:
   group: Value
   type: product
   fields:
-  - name: name
-    type: string
+  - name: value_set_id
+    type: value_set_id
     presence: required
     description: >
       The name is used to uniquely identify the Base Value Set when customizing or programming. 
@@ -1163,8 +1230,8 @@ types:
   group: Value
   type: product
   fields:
-  - name: name
-    type: string
+  - name: value_set_id
+    type: value_set_id
     presence: required
     description: >
       The name is used to uniquely identify the Base Value Set when customizing or programming. 
@@ -1204,12 +1271,10 @@ types:
   group: Value
   type: sum
   cases:
-  - name: text
-    type: value_text
+  - type: value_text
     description: >
       A text value.
-  - name: number
-    type: value_number
+  - type: value_number
     description: >
       A numerical value.
 - name: value_text
@@ -1219,8 +1284,8 @@ types:
   group: Value
   type: product
   fields:
-  - name: name
-    type: string
+  - name: value_id
+    type: value_id
     presence: required
     description: >
       A unique identifier of the value.
@@ -1247,8 +1312,8 @@ types:
   group: Value
   type: product
   fields:
-  - name: name
-    type: string
+  - name: value_id
+    type: value_id
     presence: required
     description: >
       A unique identifier of the value.
@@ -1277,7 +1342,7 @@ constraints:
     - variable
     - literal_number
     - literal_string
-- name: value_set_value_type
+- name: value_set_value_type_set
   type: string_one_of
   parameters:
     set:

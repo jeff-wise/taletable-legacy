@@ -3,16 +3,10 @@ package com.kispoko.tome.rts.sheet
 
 
 import android.util.Log
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppStateError
-import com.kispoko.tome.app.AppStateEvent
-import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.app.*
+import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.model.sheet.Sheet
-import effect.effApply
-import effect.effError
-import effect.effValue
-import effect.note
+import effect.*
 import org.apache.commons.collections4.trie.PatriciaTrie
 
 
@@ -26,14 +20,12 @@ interface State
 }
 
 
-
-
 /**
  * State
  *
  * Game data for a sheet.
  */
-class SheetState(val sheet : Sheet) : State
+class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : State
 {
 
     // -----------------------------------------------------------------------------------------
@@ -49,11 +41,38 @@ class SheetState(val sheet : Sheet) : State
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
 
+    // Mechanic Indexes
+    // -----------------------------------------------------------------------------------------
+
+    private val mechanicsByReqVariableId : MutableMap<VariableId,MutableSet<MechanicState>> =
+            mutableMapOf()
+
     // Search Indexes
     // -----------------------------------------------------------------------------------------
 
     private val activeVariableIdTrie : PatriciaTrie<Variable> = PatriciaTrie()
     private val activeVariableLabelTrie : PatriciaTrie<Variable> = PatriciaTrie()
+
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        // Index Mechanics
+        for (mechanic in mechanics)
+        {
+            for (variableId in mechanic.requirements())
+            {
+                if (!this.mechanicsByReqVariableId.containsKey(variableId))
+                    this.mechanicsByReqVariableId.put(variableId, mutableSetOf())
+
+                val mechanicState = MechanicState(mechanic)
+                this.mechanicsByReqVariableId[variableId]!!.add(mechanicState)
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -68,8 +87,8 @@ class SheetState(val sheet : Sheet) : State
     override fun addVariable(variable : Variable)
     {
         // TODO add log event for if variable with name already exist
+        // TODO make sure variable does not depend on itself.
         val variableId = variable.variableId.value
-        val variableLabel = variable.label()
 
         // (1) Index variable by name
         // -------------------------------------------------------------------------------------
@@ -80,9 +99,7 @@ class SheetState(val sheet : Sheet) : State
         // -------------------------------------------------------------------------------------
 
         activeVariableIdTrie.put(variableId.toString(), variable)
-
-        if (variableLabel != null)
-            activeVariableLabelTrie.put(variableLabel.value, variable)
+        activeVariableLabelTrie.put(variable.label(), variable)
 
         // (3) Index the variable by tag
         // -------------------------------------------------------------------------------------
@@ -122,13 +139,51 @@ class SheetState(val sheet : Sheet) : State
             }
         }
 
-        // (5) Notify all current listeners of this variable
+        // (5) Update any mechanics which are dependent on this variable
+        // -------------------------------------------------------------------------------------
+
+        when (variable)
+        {
+            is BooleanVariable ->
+            {
+                mechanicsByReqVariableId[variableId]?.forEach {
+                    val isReady = it.update(variable)
+                    if (isReady) this.addMechanic(it.mechanic)
+                }
+            }
+        }
+
+        // (6) Add companion variables to the state
+        // -------------------------------------------------------------------------------------
+
+        val companionVariables = variable.companionVariables(sheetContext)
+        when (companionVariables)
+        {
+            is Val -> companionVariables.value.forEach { this.addVariable(it) }
+            is Err -> ApplicationLog.error(companionVariables.error)
+        }
+
+
+        // (7) Notify all current listeners of this variable
         // -------------------------------------------------------------------------------------
 
         this.updateListeners(variable)
 
 
         ApplicationLog.event(AppStateEvent(VariableAdded(variableId)))
+    }
+
+
+    fun addMechanic(mechanic : Mechanic)
+    {
+        mechanic.variables().forEach { this.addVariable(it) }
+
+        val mechanicAddedEvent =
+                MechanicAdded(mechanic.mechanicId(),
+                              mechanic.variables().map { it.variableId() }.toSet() )
+        val event = AppStateEvent(mechanicAddedEvent)
+
+        ApplicationLog.event(event)
     }
 
 
@@ -178,12 +233,12 @@ class SheetState(val sheet : Sheet) : State
 
     fun variableWithId(variableId : VariableId) : AppEff<Variable> =
             note(this.variableById[variableId],
-                 AppStateError(VariableWithIdDoesNotExist(sheet.sheetId(), variableId)))
+                 AppStateError(VariableWithIdDoesNotExist(sheetContext.sheetId, variableId)))
 
 
     fun variablesWithTag(variableTag : VariableTag) : AppEff<Set<Variable>> =
             note(this.variablesByTag[variableTag],
-                 AppStateError(VariableWithTagDoesNotExist(sheet.sheetId(), variableTag)))
+                 AppStateError(VariableWithTagDoesNotExist(sheetContext.sheetId, variableTag)))
 
 
     fun variables(variableReference : VariableReference) : AppEff<Set<Variable>> =
@@ -198,7 +253,7 @@ class SheetState(val sheet : Sheet) : State
     {
         fun firstVariable(variableSet : Set<Variable>) : AppEff<Variable> =
                 note(variableSet.firstOrNull(),
-                        AppStateError(VariableDoesNotExist(sheet.sheetId(), variableReference)))
+                        AppStateError(VariableDoesNotExist(sheetContext.sheetId, variableReference)))
 
         return this.variables(variableReference).apply(::firstVariable)
     }
@@ -209,7 +264,7 @@ class SheetState(val sheet : Sheet) : State
 
     fun booleanVariable(variableReference : VariableReference) : AppEff<BooleanVariable> =
         this.variable(variableReference)
-            .apply({it.booleanVariable(sheet.sheetId())})
+            .apply({it.booleanVariable(sheetContext.sheetId)})
 
 
     // Variable > Dice Roll
@@ -217,7 +272,7 @@ class SheetState(val sheet : Sheet) : State
 
     fun diceRollVariable(variableReference : VariableReference) : AppEff<DiceRollVariable> =
         this.variable(variableReference)
-            .apply({it.diceRollVariable(sheet.sheetId())})
+            .apply({it.diceRollVariable(sheetContext.sheetId)})
 
 
     // Variable > Number
@@ -225,7 +280,20 @@ class SheetState(val sheet : Sheet) : State
 
     fun numberVariable(variableReference : VariableReference) : AppEff<NumberVariable> =
         this.variable(variableReference)
-            .apply({it.numberVariable(sheet.sheetId())})
+            .apply({it.numberVariable(sheetContext.sheetId)})
+
+
+    fun numberVariables(variableReference : VariableReference) : AppEff<Set<NumberVariable>>
+    {
+
+        val vars = this.variables(variableReference) ap {
+//            Log.d("***SHEETSTATE", "number variables: " + it.toString())
+            it.mapM { it.numberVariable(sheetContext.sheetId) }
+        }
+//        Log.d("***SHEETSTATE", "vars: " + vars.toString())
+
+        return vars
+    }
 
 
     fun numberVariableWithId(variableId : VariableId) : AppEff<NumberVariable>
@@ -234,7 +302,7 @@ class SheetState(val sheet : Sheet) : State
         {
             is NumberVariable -> effValue(variable)
             else              -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheet.sheetId(),
+                                    VariableIsOfUnexpectedType(sheetContext.sheetId,
                                                                variableId,
                                                                VariableType.TEXT,
                                                                variable.type())))
@@ -250,7 +318,7 @@ class SheetState(val sheet : Sheet) : State
 
     fun textVariable(variableReference : VariableReference) : AppEff<TextVariable> =
             this.variable(variableReference)
-                .apply({it.textVariable(sheet.sheetId())})
+                .apply({it.textVariable(sheetContext.sheetId)})
 
 
     fun textVariableWithId(variableId : VariableId) : AppEff<TextVariable>
@@ -259,7 +327,7 @@ class SheetState(val sheet : Sheet) : State
         {
             is TextVariable -> effValue(variable)
             else            -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheet.sheetId(),
+                                    VariableIsOfUnexpectedType(sheetContext.sheetId,
                                                                variableId,
                                                                VariableType.TEXT,
                                                                variable.type())))
@@ -273,97 +341,48 @@ class SheetState(val sheet : Sheet) : State
 }
 
 
-//public class State
-//{
-//
-//    // PROPERTIES
-//    // ------------------------------------------------------------------------------------------
-//
-//    private static Map<String,VariableUnion>      variableByName          = new HashMap<>();
-//
-//    private static Map<String,Set<Variable>>      variableNameToListeners = new HashMap<>();
-//    private static Map<String,Set<Variable>>      variableTagToListeners  = new HashMap<>();
-//
-//    private static Map<String,Set<VariableUnion>> tagIndex                = new HashMap<>();
-//
-//    private static boolean                        mechanicIndexReady      = false;
-//
-//
-//    // > Search Indexes
-//    // ------------------------------------------------------------------------------------------
-//
-//    private static PatriciaTrie<VariableUnion> activeVariableNameTrie;
-//    private static PatriciaTrie<VariableUnion> activeVariableLabelTrie;
-//
-//
-//    // API
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // ------------------------------------------------------------------------------------------
-//
-//    public static void initialize()
-//    {
-//        activeVariableNameTrie  = new PatriciaTrie<>();
-//        activeVariableLabelTrie = new PatriciaTrie<>();
-//
-//        State.initializeMechanics();
-//    }
-//
-//
-//    // > Engine
-//    // ------------------------------------------------------------------------------------------
-//
-//    public static void addVariable(Variable variable)
-//    {
-//        if (variable instanceof TextVariable) {
-//            addVariable(VariableUnion.asText((TextVariable) variable));
-//        }
-//        else if (variable instanceof NumberVariable) {
-//            addVariable(VariableUnion.asNumber((NumberVariable) variable));
-//        }
-//        else if (variable instanceof BooleanVariable) {
-//            addVariable(VariableUnion.asBoolean((BooleanVariable) variable));
-//        }
-//        else if (variable instanceof DiceVariable) {
-//            addVariable(VariableUnion.asDice((DiceVariable) variable));
-//        }
-//    }
-//
-//
-//    /**
-//     * Get the variable from the state that has the given name.
-//     * @param name The variable name.
-//     * @return The variable union with the given name.
-//     */
-//    public static VariableUnion variableWithName(String name)
-//    {
-//        return variableByName.get(name);
-//    }
-//
-//
-//    @Nullable
-//    public static NumberVariable numberVariableWithName(String name)
-//                  throws VariableException
-//    {
-//        if (name == null)
-//            throw VariableException.undefinedVariable(new UndefinedVariableError("__NULL__"));
-//
-//        VariableUnion variableUnion = State.variableWithName(name);
-//
-//        if (variableUnion == null)
-//            throw VariableException.undefinedVariable(new UndefinedVariableError(name));
-//
-//        if (variableUnion.type() != VariableType.NUMBER) {
-//            throw VariableException.unexpectedVariableType(
-//                    new UnexpectedVariableTypeError(name,
-//                                                    VariableType.NUMBER,
-//                                                    variableUnion.type()));
-//        }
-//
-//        return variableUnion.numberVariable();
-//    }
-//
+
+
+data class MechanicState(val state : MutableMap<VariableId,Boolean>,
+                         val mechanic : Mechanic)
+{
+
+    constructor(mechanic : Mechanic)
+        : this(mechanic.requirements().associate { Pair(it, false) }.toMutableMap(),
+               mechanic)
+
+
+    fun update(variable : BooleanVariable) : Boolean
+    {
+        val variableId = variable.variableId()
+        if (state.containsKey(variableId))
+        {
+            val value = variable.value()
+            when (value)
+            {
+                is Val ->
+                {
+                    state[variableId] = value.value
+                    return this.isReady()
+                }
+                is Err ->
+                {
+                    ApplicationLog.error(value.error)
+                    return false
+                }
+            }
+        }
+
+        return false
+    }
+
+
+    private fun isReady() = this.state.values.all { it }
+
+}
+
+
+
 //
 //    /**
 //     * Remove the variable with the given name from the state. Returns true if the variable was
@@ -435,74 +454,7 @@ class SheetState(val sheet : Sheet) : State
 //        return true;
 //    }
 //
-//
-//    /**
-//     * Returns true if the state contains the variable with the given name.
-//     * @param variableName The variable name.
-//     * @return True if the state contains the variable, False otherwise.
-//     */
-//    public static boolean hasVariable(String variableName)
-//    {
-//        return variableByName.containsKey(variableName);
-//    }
-//
-//
-//    public static Set<VariableUnion> variablesWithTag(String tag)
-//    {
-//        if (tagIndex.containsKey(tag))
-//            return tagIndex.get(tag);
-//        else
-//            return new HashSet<>();
-//    }
-//
-//
-//    public static void initializeMechanics()
-//    {
-//        mechanicIndexReady = true;
-//
-//        // TODO casues concurrent mod error
-//        // whole system needs to be more understandable
-//        MechanicIndex mechanicIndex = SheetManagerOld.currentSheet().engine().mechanicIndex();
-//        for (VariableUnion variableUnion : variableByName.values()) {
-//            mechanicIndex.onVariableUpdate(variableUnion.variable().name());
-//        }
-//    }
-//
-//
-//    public static void updateMechanics(String variableName)
-//    {
-//        MechanicIndex mechanicIndex = SheetManagerOld.currentSheet().engine().mechanicIndex();
-//        mechanicIndex.onVariableUpdate(variableName);
-//    }
-//
-//
-//    /**
-//     * Get a variable tuple that consists of the variable name and its string value. This method
-//     * returns null if the variable does not exist or another error occurs.
-//     * @param variableName The variable id.
-//     * @return The variable (name, value) tuple.
-//     */
-//    public static Tuple2<String,String> variableTuple(String variableName)
-//    {
-//        Tuple2<String,String> tuple = null;
-//
-//        VariableUnion variableUnion = State.variableWithName(variableName);
-//
-//        if (variableUnion != null)
-//        {
-//            try {
-//                tuple = new Tuple2<>(variableUnion.variable().label(),
-//                                     variableUnion.variable().valueString());
-//            }
-//            catch (NullVariableException exception) {
-//                ApplicationFailure.nullVariable(exception);
-//            }
-//        }
-//
-//        return tuple;
-//    }
-//
-//
+
 //    // > Search
 //    // ------------------------------------------------------------------------------------------
 //

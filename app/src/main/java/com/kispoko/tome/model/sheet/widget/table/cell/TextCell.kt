@@ -12,7 +12,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.DocDict
@@ -110,14 +110,14 @@ object TextCellView
              rowFormat : TableWidgetRowFormat,
              column : TableWidgetTextColumn,
              cellFormat : TextCellFormat,
-             sheetContext : SheetContext) : View
+             sheetUIContext: SheetUIContext) : View
     {
         val layout = TableWidgetCellView.layout(rowFormat,
                                                 column.format().columnFormat(),
                                                 cellFormat.cellFormat(),
-                                                sheetContext)
+                sheetUIContext)
 
-        layout.addView(this.valueTextView(cell, cellFormat, column, sheetContext))
+        layout.addView(this.valueTextView(cell, cellFormat, column, sheetUIContext))
 
         return layout
     }
@@ -126,7 +126,7 @@ object TextCellView
     private fun valueTextView(cell : TableWidgetTextCell,
                               cellFormat : TextCellFormat,
                               column : TableWidgetTextColumn,
-                              sheetContext : SheetContext) : TextView
+                              sheetUIContext: SheetUIContext) : TextView
     {
         val value           = TextViewBuilder()
 
@@ -140,17 +140,17 @@ object TextCellView
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
         val valueStyle      = cellFormat.resolveTextStyle(column.format())
-        valueStyle.styleTextViewBuilder(value, sheetContext)
+        valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
         // > VALUE
-        val cellValue = cell.valueString(sheetContext)
+        val cellValue = cell.valueString(sheetUIContext)
         when (cellValue)
         {
             is Just -> value.text = cellValue.value
         }
         //value.text = column.defaultValue();
 
-        return value.textView(sheetContext.context)
+        return value.textView(sheetUIContext.context)
     }
 
 

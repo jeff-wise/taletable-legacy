@@ -68,7 +68,7 @@ class PageFragmentIsMissingContext() : SheetError()
 {
     override fun debugMessage(): String =
             """
-            Sheet Error: Page Fragment has a null SheetGameContext
+            Sheet Error: Page Fragment has a null SheetContext
             """
 
     override fun logMessage(): String = userMessage()

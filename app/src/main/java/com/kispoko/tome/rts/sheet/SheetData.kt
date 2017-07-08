@@ -2,6 +2,7 @@
 package com.kispoko.tome.rts.sheet
 
 
+import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.model.game.engine.EngineValue
@@ -13,7 +14,7 @@ import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.rts.game.GameManager
 import effect.effApply
 import effect.effValue
-
+import effect.mapM
 
 
 /**
@@ -80,12 +81,30 @@ object SheetData
             is NumberReferenceLiteral -> effValue(numberReference.value)
             is NumberReferenceValue    ->
                     GameManager.engine(sheetContext.gameId)
-                        .apply({ it.numberValue(numberReference.valueReference) })
+                        .apply({ it.numberValue(numberReference.valueReference, sheetContext) })
                         .apply({ effValue<AppError,Double>(it.value()) })
             is NumberReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
                     .apply( { it.numberVariable(numberReference.variableReference)})
                     .apply( { it.value(sheetContext) })
 
+        }
+
+
+    fun numbers(sheetContext : SheetContext,
+                numberReference : NumberReference) : AppEff<List<Double>> =
+        when (numberReference)
+        {
+            is NumberReferenceLiteral -> effValue(listOf(numberReference.value))
+            is NumberReferenceValue    ->
+                    GameManager.engine(sheetContext.gameId)
+                        .apply({ it.numberValue(numberReference.valueReference, sheetContext) })
+                        .apply({ effValue<AppError,List<Double>>(listOf(it.value())) })
+            is NumberReferenceVariable ->
+            {
+                SheetManager.sheetState(sheetContext.sheetId)
+                        .apply( { it.numberVariables(numberReference.variableReference) })
+                        .apply( { it.toList().mapM { it.value(sheetContext) } })
+            }
         }
 
 
@@ -99,7 +118,7 @@ object SheetData
             is TextReferenceLiteral  -> effValue(reference.value)
             is TextReferenceValue    ->
                     GameManager.engine(sheetContext.gameId)
-                        .apply({ it.textValue(reference.valueReference) })
+                        .apply({ it.textValue(reference.valueReference, sheetContext) })
                         .apply({ effValue<AppError,String>(it.value()) })
             is TextReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
                     .apply( { it.textVariable(reference.variableReference)})

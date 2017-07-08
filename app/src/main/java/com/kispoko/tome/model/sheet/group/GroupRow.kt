@@ -17,7 +17,7 @@ import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.widget.Widget
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
@@ -117,9 +117,9 @@ data class GroupRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext)
+    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
     {
-        this.widgets.list.forEach { it.onSheetComponentActive(sheetContext) }
+        this.widgets.list.forEach { it.onSheetComponentActive(sheetUIContext) }
     }
 
 
@@ -127,16 +127,16 @@ data class GroupRow(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(sheetContext : SheetContext) : View
+    fun view(sheetUIContext: SheetUIContext) : View
     {
-        val layout = this.viewLayout(sheetContext.context)
+        val layout = this.viewLayout(sheetUIContext.context)
 
         // > Widgets
-        layout.addView(widgetsView(sheetContext))
+        layout.addView(widgetsView(sheetUIContext))
 
         // > Divider
         if (this.format().showDividerBool())
-            layout.addView(dividerView(sheetContext))
+            layout.addView(dividerView(sheetUIContext))
 
         return layout
     }
@@ -157,9 +157,9 @@ data class GroupRow(override val id : UUID,
     }
 
 
-    private fun widgetsView(sheetContext : SheetContext) : LinearLayout
+    private fun widgetsView(sheetUIContext: SheetUIContext) : LinearLayout
     {
-        val layout = this.widgetsViewLayout(sheetContext.context)
+        val layout = this.widgetsViewLayout(sheetUIContext.context)
 
 //        var rowHasTopLabel = false
 //
@@ -170,7 +170,7 @@ data class GroupRow(override val id : UUID,
 //            }
 //        }
 
-        this.widgets().forEach { layout.addView(it.view(sheetContext)) }
+        this.widgets().forEach { layout.addView(it.view(sheetUIContext)) }
 
         return layout
     }
@@ -190,17 +190,17 @@ data class GroupRow(override val id : UUID,
     }
 
 
-    private fun dividerView(sheetContext : SheetContext) : LinearLayout
+    private fun dividerView(sheetUIContext: SheetUIContext) : LinearLayout
     {
         val divider = LinearLayoutBuilder()
 
         divider.width           = LinearLayout.LayoutParams.MATCH_PARENT
         divider.heightDp        = 1
 
-        divider.backgroundColor = SheetManager.color(sheetContext.sheetId,
+        divider.backgroundColor = SheetManager.color(sheetUIContext.sheetId,
                                                      this.format().dividerColorTheme())
 
-        return divider.linearLayout(sheetContext.context)
+        return divider.linearLayout(sheetUIContext.context)
     }
 
 }

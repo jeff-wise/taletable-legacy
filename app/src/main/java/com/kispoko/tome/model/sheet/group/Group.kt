@@ -18,7 +18,7 @@ import com.kispoko.tome.model.sheet.style.DividerThickness
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
@@ -112,9 +112,9 @@ data class Group(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext)
+    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
     {
-        this.rows.list.forEach { it.onSheetComponentActive(sheetContext) }
+        this.rows.list.forEach { it.onSheetComponentActive(sheetUIContext) }
     }
 
 
@@ -129,7 +129,7 @@ data class Group(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(sheetContext : SheetContext) = groupView(this, sheetContext)
+    fun view(sheetUIContext: SheetUIContext) = groupView(this, sheetUIContext)
 
 }
 
@@ -336,22 +336,22 @@ data class ShowGroupDivider(val value : Boolean) : SQLSerializable, Serializable
 // ---------------------------------------------------------------------------------------------
 
 
-fun groupView(group : Group, sheetContext : SheetContext) : View
+fun groupView(group : Group, sheetUIContext: SheetUIContext) : View
 {
-    val layout = viewLayout(group.format(), sheetContext)
+    val layout = viewLayout(group.format(), sheetUIContext)
 
     // > Rows
-    layout.addView(rowsView(group, sheetContext))
+    layout.addView(rowsView(group, sheetUIContext))
 
     // > Divider
     if (group.format().showDividerBool())
-        layout.addView(dividerView(group.format(), sheetContext))
+        layout.addView(dividerView(group.format(), sheetUIContext))
 
     return layout
 }
 
 
-private fun viewLayout(format : GroupFormat, sheetContext : SheetContext) : LinearLayout
+private fun viewLayout(format : GroupFormat, sheetUIContext: SheetUIContext) : LinearLayout
 {
     val layout = LinearLayoutBuilder()
 
@@ -361,19 +361,19 @@ private fun viewLayout(format : GroupFormat, sheetContext : SheetContext) : Line
 
     layout.marginSpacing        = format.margins()
 
-    layout.backgroundColor      = SheetManager.color(sheetContext.sheetId,
+    layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId,
                                                      format.backgroundColorTheme())
     layout.corners              = format.corners()
 
-    return layout.linearLayout(sheetContext.context)
+    return layout.linearLayout(sheetUIContext.context)
 }
 
 
-private fun rowsView(group : Group, sheetContext : SheetContext) : View
+private fun rowsView(group : Group, sheetUIContext: SheetUIContext) : View
 {
-    val layout = rowsViewLayout(group.format(), sheetContext.context)
+    val layout = rowsViewLayout(group.format(), sheetUIContext.context)
 
-    group.rows().forEach { layout.addView(it.view(sheetContext)) }
+    group.rows().forEach { layout.addView(it.view(sheetUIContext)) }
 
     return layout
 }
@@ -393,20 +393,20 @@ private fun rowsViewLayout(format : GroupFormat, context : Context) : LinearLayo
 }
 
 
-private fun dividerView(format : GroupFormat, sheetContext : SheetContext) : LinearLayout
+private fun dividerView(format : GroupFormat, sheetUIContext: SheetUIContext) : LinearLayout
 {
     val divider = LinearLayoutBuilder()
 
     divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
     divider.heightDp            = format.dividerThickness()
 
-    divider.backgroundColor     = SheetManager.color(sheetContext.sheetId,
+    divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
                                                      format.dividerColorTheme())
 
     divider.margin.leftDp       = format.dividerMargins()
     divider.margin.rightDp      = format.dividerMargins()
 
-    return divider.linearLayout(sheetContext.context)
+    return divider.linearLayout(sheetUIContext.context)
 }
 
 

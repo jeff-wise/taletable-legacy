@@ -59,6 +59,8 @@ sealed class TextVariableValue : Serializable
 
     abstract fun value(sheetContext : SheetContext) : AppEff<String>
 
+    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+
 }
 
 
@@ -88,6 +90,9 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
     // -----------------------------------------------------------------------------------------
 
     override fun value(sheetContext : SheetContext) : AppEff<String> = effValue(this.value)
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+        effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------
@@ -121,8 +126,14 @@ data class TextVariableValueValue(val valueReference : ValueReference)
 
     override fun value(sheetContext : SheetContext) : AppEff<String> =
         GameManager.engine(sheetContext.gameId)
-                   .apply { it.textValue(this.valueReference) }
+                   .apply { it.textValue(this.valueReference, sheetContext) }
                    .apply { effValue<AppError,String>(it.value()) }
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+        GameManager.engine(sheetContext.gameId)
+                   .apply { it.value(this.valueReference, sheetContext) }
+                   .apply { effValue<AppError,Set<Variable>>(it.variables()) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -155,6 +166,9 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
     override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
 
     override fun value(sheetContext : SheetContext) : AppEff<String> = TODO("Not Implemented")
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------

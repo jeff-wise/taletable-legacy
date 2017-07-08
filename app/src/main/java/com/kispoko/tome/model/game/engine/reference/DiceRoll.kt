@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
@@ -10,7 +11,13 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.SheetManager
+import effect.Err
+import effect.Val
 import effect.effApply
 import effect.effError
 import lulo.document.*
@@ -50,6 +57,13 @@ sealed class DiceRollReference : SumModel, Serializable
 
     open fun dependencies(): Set<VariableReference> = setOf()
 
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun components(sheetContext : SheetContext) : List<TermComponent>
+
 }
 
 
@@ -69,6 +83,13 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference(),
                 effApply(::DiceRollReferenceLiteral, DiceRoll.fromDocument(doc))
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    override fun components(sheetContext : SheetContext) : List<TermComponent> = listOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -111,6 +132,39 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
         override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollReference> =
                 effApply(::DiceRollReferenceVariable, VariableReference.fromDocument(doc))
 
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    override fun components(sheetContext : SheetContext) : List<TermComponent>
+    {
+        // TODO ensure just die roll variables
+        val variables = SheetManager.sheetState(sheetContext.sheetId)
+                                    .apply { it.variables(this.variableReference) }
+
+        when (variables)
+        {
+            is Val ->
+            {
+                return variables.value.mapNotNull {
+                    val valueString = it.valueString(sheetContext)
+                    when (valueString)
+                    {
+                        is Val -> TermComponent(it.label(), valueString.value)
+                        is Err -> {
+                            ApplicationLog.error(valueString.error)
+                            null
+                        }
+                    }
+                }
+            }
+            is Err -> ApplicationLog.error(variables.error)
+        }
+
+        return listOf()
     }
 
 

@@ -4,7 +4,160 @@ description:
   authors:
 engine:
   value_sets:
+  - type: value_set_base
+    value_set_base:
+      value_set_id: races
+      label: Races
+      label_singular: Race
+      description: The cultures and creatures of Amanace.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: soulsin
+          description: 'A city founded by pirates, Soulsin is now a major trading part and home
+                        to the Endless Carnival.'
+          value: Soulsin
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_soulsin
+              label: Is Race Soulsin
+              description: Is Race Soulsin
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: the_snow_sea
+          description: The Snow Sea
+          value: The Snow Sea
+      - type: value_text
+        value_text:
+          value_id: kalan
+          description: Kalan, Kingdom of Gardens
+          value: Kalan
+      - type: value_text
+        value_text:
+          value_id: feya
+          description: Feya
+          value: Feya
+      - type: value_text
+        value_text:
+          value_id: erok
+          description: Erok
+          value: Erok the Ever-Shadowed
+      - type: value_text
+        value_text:
+          value_id: sylandin
+          description: Sylandin
+          value: Sylandin
+      - type: value_text
+        value_text:
+          value_id: isoro
+          description: Isoro
+          value: Isoro
+      - type: value_text
+        value_text:
+          value_id: sea_of_the_wailing_wind
+          description: Sea of the Wailing Wind
+          value: Sea of the Wailing Wind
+      - type: value_text
+        value_text:
+          value_id: the_fanged_land
+          description: 'A land of tall rocky spires that pierce the clouds, the inhabitants
+                  practice an old way of living and are known to bond with birds of prey.'
+          value: The Fanged Land
+  - type: value_set_base
+    value_set_base:
+      value_set_id: classes
+      label: Classes
+      label_singular: Class
+      description: The cultures and creatures of Amanace.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: swashbuckler
+          description: 'With swagger and style, a Swashbuckler dazzles an opponent in combat and
+                       charms them in conversation.'
+          value: Swashbuckler
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_swashbuckler
+              label: Is Class Swashbuckler
+              description: Is Class Swashbuckler
+              value:
+                type: boolean_literal
+                boolean_literal: true
   mechanics:
+  - mechanic_id: soulsin
+    label: Soulsin
+    description: Soulsin
+    summary: Soulsin
+    category: Race
+    requirements:
+    - 'is_race_soulsin'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: soulsin_dexterity_bonus
+        label: Soulsin Dexterity Bonus
+        description: Soulsin Dexterity Bonus
+        tags:
+        - dexterity_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+    - type: variable_number
+      variable_number:
+        id: soulsin_charisma_bonus
+        label: Soulsin Charisma Bonus
+        description: Soulsin Charisma Bonus
+        tags:
+        - charisma_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+    - type: variable_number
+      variable_number:
+        id: soulsin_wisdom_penalty
+        label: Soulsin Wisdom Penalty
+        description: Soulsin Wisdom Penalty
+        tags:
+        - wisdom_modifier
+        value:
+          type: number_literal
+          number_literal: -1
+  - mechanic_id: swashbuckler
+    label: Swashbuckler
+    description: Swashbuckler
+    summary: Swashbuckler
+    category: Class
+    requirements:
+    - 'is_class_swashbuckler'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: swashbuckler_dexterity_bonus
+        label: Swashbuckler Dexterity Bonus
+        description: Swashbuckler Dexterity Bonus
+        tags:
+        - dexterity_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+    - type: variable_number
+      variable_number:
+        id: swashbuckler_charisma_bonus
+        label: Swashbuckler Charisma Bonus
+        description: Swashbuckler Charisma Bonus
+        tags:
+        - charisma_modifier
+        value:
+          type: number_literal
+          number_literal: 2
   functions:
   - function_id: ability_modifier
     label: Ability Modifier

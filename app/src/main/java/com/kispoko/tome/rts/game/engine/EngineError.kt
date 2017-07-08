@@ -22,12 +22,11 @@ sealed class EngineError : ApplicationError
 
 
 
-class ValueSetDoesNotExist(val gameId : GameId, val valueSetId : ValueSetId) : EngineError()
+class ValueSetDoesNotExist(val valueSetId : ValueSetId) : EngineError()
 {
     override fun debugMessage(): String =
             """
             Engine Error: Value Set Does Not Exist
-                Game Id: $gameId
                 Value Set Id: $valueSetId
             """
 
@@ -35,14 +34,12 @@ class ValueSetDoesNotExist(val gameId : GameId, val valueSetId : ValueSetId) : E
 }
 
 
-class ValueSetDoesNotContainValue(val gameId : GameId,
-                                  val valueSetId : ValueSetId,
+class ValueSetDoesNotContainValue(val valueSetId : ValueSetId,
                                   val valueId : ValueId) : EngineError()
 {
     override fun debugMessage(): String =
             """
             Engine Error: Value Set Does Not Contain Value
-                Game Id: $gameId
                 Value Set Id: $valueSetId
                 Value Id: $valueId
             """
@@ -51,8 +48,7 @@ class ValueSetDoesNotContainValue(val gameId : GameId,
 }
 
 
-class ValueIsOfUnexpectedType(val gameId : GameId,
-                              val valueSetId : ValueSetId,
+class ValueIsOfUnexpectedType(val valueSetId : ValueSetId,
                               val valueId : ValueId,
                               val expectedType : ValueType,
                               val actualType : ValueType) : EngineError()
@@ -60,7 +56,6 @@ class ValueIsOfUnexpectedType(val gameId : GameId,
     override fun debugMessage(): String =
             """
             Engine Error: Value Is Of Unexpected Type
-                Game Id: $gameId
                 Value Set Id: $valueSetId
                 Value Id: $valueId
                 Expected Type: $expectedType

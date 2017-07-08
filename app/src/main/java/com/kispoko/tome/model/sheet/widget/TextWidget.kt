@@ -2,12 +2,12 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -19,7 +19,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
@@ -251,11 +251,11 @@ object TextWidgetView
 
     fun view(textWidget : TextWidget,
              format : TextWidgetFormat,
-             sheetContext : SheetContext) : View
+             sheetUIContext: SheetUIContext) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), sheetContext)
+        val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.mainView(textWidget, format, sheetContext))
+        layout.addView(this.mainView(textWidget, format, sheetUIContext))
 
         return layout
     }
@@ -276,26 +276,26 @@ object TextWidgetView
      */
     private fun mainView(textWidget : TextWidget,
                          format : TextWidgetFormat,
-                         sheetContext : SheetContext) : LinearLayout
+                         sheetUIContext: SheetUIContext) : LinearLayout
     {
-        val layout = this.mainLayout(format, sheetContext.context)
+        val layout = this.mainLayout(textWidget, sheetUIContext)
 
         // > Outside Top/Left Label View
         if (format.outsideLabel() != null) {
             if (format.outsideLabelFormat().position().isTop() ||
                 format.outsideLabelFormat().position().isLeft()) {
-                layout.addView(this.outsideLabelView(format, sheetContext))
+                layout.addView(this.outsideLabelView(format, sheetUIContext))
             }
         }
 
         // > Value
-        layout.addView(this.valueMainView(textWidget, format, sheetContext))
+        layout.addView(this.valueMainView(textWidget, format, sheetUIContext))
 
         // > Outside Bottom/Right Label View
         if (format.outsideLabel() != null) {
             if (format.outsideLabelFormat().position().isBottom() ||
                 format.outsideLabelFormat().position().isRight()) {
-                layout.addView(this.outsideLabelView(format, sheetContext))
+                layout.addView(this.outsideLabelView(format, sheetUIContext))
             }
         }
 
@@ -303,21 +303,26 @@ object TextWidgetView
     }
 
 
-    private fun mainLayout(format : TextWidgetFormat, context : Context) : LinearLayout
+    private fun mainLayout(textWidget : TextWidget, sheetUIContext: SheetUIContext) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.orientation          = format.outsideLabelFormat()
+        layout.orientation          = textWidget.format().outsideLabelFormat()
                                             .position().linearLayoutOrientation()
 
-        layout.gravity              = format.widgetFormat().alignment().gravityConstant()
+        layout.gravity              = textWidget.widgetFormat().alignment().gravityConstant()
 
-        layout.marginSpacing        = format.widgetFormat().margins()
+        layout.marginSpacing        = textWidget.widgetFormat().margins()
 
-        return layout.linearLayout(context)
+        layout.onClick              = View.OnClickListener {
+                                          openTextVariableEditorDialog(textWidget.valueVariable(),
+                                                  sheetUIContext)
+                                      }
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -326,25 +331,25 @@ object TextWidgetView
      */
     private fun valueMainView(textWidget : TextWidget,
                               format : TextWidgetFormat,
-                              sheetContext : SheetContext) : LinearLayout
+                              sheetUIContext: SheetUIContext) : LinearLayout
     {
-        val layout = this.valueMainViewLayout(format, sheetContext)
+        val layout = this.valueMainViewLayout(format, sheetUIContext)
 
         // > Inside Top/Left Label View
         if (format.insideLabel() != null && textWidget.description() == null) {
             if (format.insideLabelFormat().position().isTop() ||
                 format.insideLabelFormat().position().isLeft()) {
-                layout.addView(this.insideLabelView(format, sheetContext))
+                layout.addView(this.insideLabelView(format, sheetUIContext))
             }
         }
 
-        layout.addView(valueTextView(textWidget, format, sheetContext))
+        layout.addView(valueTextView(textWidget, format, sheetUIContext))
 
         // > Inside Bottom/Right Label View
         if (format.insideLabel() != null && textWidget.description() == null) {
             if (format.insideLabelFormat().position().isBottom() ||
                 format.insideLabelFormat().position().isRight()) {
-                layout.addView(this.insideLabelView(format, sheetContext))
+                layout.addView(this.insideLabelView(format, sheetUIContext))
             }
         }
 
@@ -353,7 +358,7 @@ object TextWidgetView
 
 
     private fun valueMainViewLayout(format : TextWidgetFormat,
-                                    sheetContext : SheetContext) : LinearLayout
+                                    sheetUIContext: SheetUIContext) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -363,7 +368,7 @@ object TextWidgetView
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
 //        layout.backgroundColor      = SheetManager.color(
-//                                                sheetContext.sheetId,
+//                                                sheetUIContext.sheetId,
 //                                                format.widgetFormat().backgroundColorTheme())
 
         layout.gravity              = format.valueFormat().alignment().gravityConstant() or
@@ -391,13 +396,13 @@ object TextWidgetView
 //                 this.data().format().background() != BackgroundColor.NONE)
 //        {
 
-        return layout.linearLayout(sheetContext.context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
     private fun valueTextView(textWidget : TextWidget,
                               format : TextWidgetFormat,
-                              sheetContext : SheetContext) : TextView
+                              sheetUIContext: SheetUIContext) : TextView
     {
         val value = TextViewBuilder()
 
@@ -413,22 +418,22 @@ object TextWidgetView
 
         if (textWidget.description() != null)
         {
-            format.descriptionStyle().styleTextViewBuilder(value, sheetContext)
+            format.descriptionStyle().styleTextViewBuilder(value, sheetUIContext)
 
             val spans = mutableListOf<FormattedString.Span>()
 
             val labelSpan =
                 FormattedString.Span(
                         format.insideLabel(),
-                        SheetManager.color(sheetContext.sheetId,
+                        SheetManager.color(sheetUIContext.sheetId,
                                            format.insideLabelFormat().style().colorTheme()),
                         format.insideLabelFormat().style().sizeSp(),
                         format.insideLabelFormat().style().font())
 
             val valueSpan =
-                FormattedString.Span(textWidget.valueString(sheetContext),
-                                     sheetContext.context.getString(R.string.placeholder_value),
-                                     SheetManager.color(sheetContext.sheetId,
+                FormattedString.Span(textWidget.valueString(sheetUIContext),
+                                     sheetUIContext.context.getString(R.string.placeholder_value),
+                                     SheetManager.color(sheetUIContext.sheetId,
                                                         format.valueFormat().style().colorTheme()),
                                      format.valueFormat().style().sizeSp(),
                                      format.valueFormat().style().font())
@@ -444,17 +449,17 @@ object TextWidgetView
         }
         else
         {
-            value.text      = textWidget.valueString(sheetContext)
+            value.text      = textWidget.valueString(sheetUIContext)
 
-            format.valueFormat().style().styleTextViewBuilder(value, sheetContext)
+            format.valueFormat().style().styleTextViewBuilder(value, sheetUIContext)
         }
 
-        return value.textView(sheetContext.context)
+        return value.textView(sheetUIContext.context)
     }
 
 
     private fun outsideLabelView(format : TextWidgetFormat,
-                                 sheetContext : SheetContext) : TextView
+                                 sheetUIContext: SheetUIContext) : TextView
     {
         val label = TextViewBuilder()
 
@@ -465,16 +470,16 @@ object TextWidgetView
 
         label.text              = format.outsideLabel()
 
-        format.outsideLabelFormat().style().styleTextViewBuilder(label, sheetContext)
+        format.outsideLabelFormat().style().styleTextViewBuilder(label, sheetUIContext)
 
         label.marginSpacing     = format.outsideLabelFormat().margins()
 
-        return label.textView(sheetContext.context)
+        return label.textView(sheetUIContext.context)
     }
 
 
     private fun insideLabelView(format : TextWidgetFormat,
-                                sheetContext : SheetContext) : TextView
+                                sheetUIContext: SheetUIContext) : TextView
     {
         val label               = TextViewBuilder()
 
@@ -483,16 +488,15 @@ object TextWidgetView
 
         label.text              = format.insideLabel()
 
-        format.insideLabelFormat().style().styleTextViewBuilder(label, sheetContext)
+        format.insideLabelFormat().style().styleTextViewBuilder(label, sheetUIContext)
 
         label.marginSpacing     = format.insideLabelFormat().margins()
 
-        return label.textView(sheetContext.context)
+        return label.textView(sheetUIContext.context)
     }
 
 
 }
-
 
 
 
@@ -532,37 +536,7 @@ object TextWidgetView
 //            // OPEN the Choose Value Set Dialog
 //            case VALUE:
 //
-//                Dictionary dictionary         = SheetManagerOld.dictionary();
-//
-//                if (this.valueVariable() == null || dictionary == null)
-//                    break;
-//
-//                String         valueSetId   = this.valueVariable().valueSetId();
-//                DataReference valueReference = this.valueVariable().valueReference();
-//
-//                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetId);
-//                ValueUnion valueUnion    = dictionary.valueUnion(valueReference);
-//
-//                if (valueSetUnion == null) {
-//                    ApplicationFailure.sheet(
-//                            SheetException.undefinedValueSet(
-//                                    new UndefinedValueSetError("Text Widget", valueSetId)));
-//                    break;
-//                }
-//
-//                if (valueUnion == null) {
-//                    ApplicationFailure.value(
-//                            ValueException.undefinedValue(
-//                                    new UndefinedValueError(valueSetId,
-//                                                            valueReference.valueId())));
-//                    break;
-//                }
-//
-//                ChooseValueDialogFragment chooseDialog =
-//                        ChooseValueDialogFragment.newInstance(valueSetUnion, valueUnion);
-//                chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
-//                break;
-//
+
 //            case PROGRAM:
 //                break;
 //        }

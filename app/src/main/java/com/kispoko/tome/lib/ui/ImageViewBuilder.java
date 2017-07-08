@@ -162,7 +162,7 @@ public class ImageViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.color != null)
-            imageView.setColorFilter(ContextCompat.getColor(context, this.color));
+            imageView.setColorFilter(this.color);
 
         // > Adjust View Bounds
         // --------------------------------------------------------------------------------------

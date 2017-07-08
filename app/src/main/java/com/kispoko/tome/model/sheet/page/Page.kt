@@ -16,7 +16,7 @@ import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
@@ -126,26 +126,26 @@ data class Page(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext)
+    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
     {
-        this.groups.list.forEach { it.onSheetComponentActive(sheetContext) }
+        this.groups.list.forEach { it.onSheetComponentActive(sheetUIContext) }
     }
 
 
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(sheetContext : SheetContext) : View
+    fun view(sheetUIContext: SheetUIContext) : View
     {
-        val layout = this.viewLayout(sheetContext)
+        val layout = this.viewLayout(sheetUIContext)
 
-        this.groups.list.forEach { layout.addView(it.view(sheetContext)) }
+        this.groups.list.forEach { layout.addView(it.view(sheetUIContext)) }
 
         return layout
     }
 
 
-    private fun viewLayout(sheetContext : SheetContext) : LinearLayout
+    private fun viewLayout(sheetUIContext: SheetUIContext) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -156,12 +156,12 @@ data class Page(override val id : UUID,
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
                                                      this.format().backgroundColorTheme())
 
         layout.paddingSpacing   = this.format().padding()
 
-        return layout.linearLayout(sheetContext.context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 }

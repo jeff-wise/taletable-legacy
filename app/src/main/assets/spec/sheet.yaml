@@ -1059,6 +1059,11 @@ types:
     presence: required
     description: >
       The story.
+  - name: variables
+    type: list
+    of: variable
+    presence: optional
+    description: Variables
 - name: story_part
   label: Story Part
   description: >

@@ -169,7 +169,6 @@ public class LinearLayoutBuilder implements ViewBuilder
         LinearLayout linearLayout = new LinearLayout(context);
 
         PaintDrawable bgDrawable = new PaintDrawable();
-
         boolean useDrawableBackground = false;
 
         // [1] Layout

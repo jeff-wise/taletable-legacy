@@ -2,17 +2,19 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
-import android.util.Log
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import effect.effApply
-import effect.effError
-import effect.effValue
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.SheetManager
+import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -38,11 +40,8 @@ sealed class NumberReference : SumModel, Serializable
                 "number_literal"     -> NumberReferenceLiteral.fromDocument(doc.nextCase())
                 "value_reference"    -> NumberReferenceValue.fromDocument(doc.nextCase())
                 "variable_reference" -> NumberReferenceVariable.fromDocument(doc.nextCase())
-                else                 -> {
-                    Log.d("***NUMBER", doc.toString())
-                    effError<ValueError,NumberReference>(
-                            UnknownCase(doc.case(), doc.path))
-                }
+                else                 -> effError<ValueError,NumberReference>(
+                                            UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -52,6 +51,14 @@ sealed class NumberReference : SumModel, Serializable
     // -----------------------------------------------------------------------------------------
 
     open fun dependencies(): Set<VariableReference> = setOf()
+
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun components(sheetContext : SheetContext) : List<TermComponent>
+
 }
 
 
@@ -90,6 +97,13 @@ data class NumberReferenceLiteral(val value : Double) : NumberReference(), SQLSe
 
     override fun asSQLValue() = SQLReal({ this.value })
 
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    override fun components(sheetContext : SheetContext) : List<TermComponent> = listOf()
+
 }
 
 
@@ -126,6 +140,13 @@ data class NumberReferenceValue(val valueReference : ValueReference)
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() = this.valueReference.asSQLValue()
+
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    override fun components(sheetContext : SheetContext) : List<TermComponent> = listOf()
 
 }
 
@@ -169,6 +190,38 @@ data class NumberReferenceVariable(val variableReference : VariableReference)
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() = this.variableReference.asSQLValue()
+
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    override fun components(sheetContext : SheetContext) : List<TermComponent>
+    {
+        val variables = SheetManager.sheetState(sheetContext.sheetId)
+                                    .apply { it.variables(this.variableReference) }
+
+        when (variables)
+        {
+            is Val ->
+            {
+                return variables.value.mapNotNull {
+                    val valueString = it.valueString(sheetContext)
+                    when (valueString)
+                    {
+                        is Val -> TermComponent(it.label(), valueString.value)
+                        is Err -> {
+                            ApplicationLog.error(valueString.error)
+                            null
+                        }
+                    }
+                }
+            }
+            is Err -> ApplicationLog.error(variables.error)
+        }
+
+        return listOf()
+    }
 
 }
 

@@ -69,6 +69,8 @@ data class Campaign(override val id : UUID,
 
     fun campaignId() : CampaignId = this.campaignId.value
 
+    fun gameId() : GameId = this.gameId.value
+
 
     // -----------------------------------------------------------------------------------------
     // MODEL

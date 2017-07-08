@@ -9,7 +9,7 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
@@ -314,13 +314,13 @@ data class TextStyle(override val id : UUID,
     /**
      * Set the TextViewBuilder style options according the values in the TextStyle.
      */
-    fun styleTextViewBuilder(textViewBuilder : TextViewBuilder, sheetContext : SheetContext)
+    fun styleTextViewBuilder(textViewBuilder : TextViewBuilder, sheetUIContext: SheetUIContext)
     {
-        textViewBuilder.color   = SheetManager.color(sheetContext.sheetId, this.colorTheme())
+        textViewBuilder.color   = SheetManager.color(sheetUIContext.sheetId, this.colorTheme())
         textViewBuilder.sizeSp  = this.sizeSp()
         textViewBuilder.font    = Font.typeface(this.font(),
                                                 this.fontStyle(),
-                                                sheetContext.context)
+                                                sheetUIContext.context)
     }
 
 

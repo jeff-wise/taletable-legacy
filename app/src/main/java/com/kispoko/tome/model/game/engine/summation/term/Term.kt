@@ -2,25 +2,29 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
+import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.functor.Sum
+import com.kispoko.tome.lib.functor.getMaybePrim
+import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetData
-import com.kispoko.tome.rts.sheet.SheetManager
-import effect.effApply
-import effect.effError
-import effect.effValue
+import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import java.io.Serializable
 import java.util.*
 
 
@@ -28,7 +32,7 @@ import java.util.*
 /**
  * Summation Term
  */
-sealed class SummationTerm
+sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -37,23 +41,23 @@ sealed class SummationTerm
 
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<SummationTerm> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> =
+            when (doc.case())
             {
-                when (doc.case())
-                {
-                    "integer"     -> SummationNumberTerm.fromDocument(doc)
-                    "dice"        -> SummationDiceRollTerm.fromDocument(doc)
-                    "conditional" -> SummationConditionalTerm.fromDocument(doc)
-                    else          -> effError<ValueError,SummationTerm>(
-                                            UnknownCase(doc.case(), doc.path))
-                }
+                "summation_term_number"      -> SummationTermNumber.fromDocument(doc)
+                "summation_term_dice_roll"   -> SummationDiceRollTerm.fromDocument(doc)
+                "summation_term_conditional" -> SummationConditionalTerm.fromDocument(doc)
+                else                         -> effError<ValueError,SummationTerm>(
+                                                    UnknownCase(doc.case(), doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun termName() : String? = getMaybePrim(this.termName)?.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -64,58 +68,142 @@ sealed class SummationTerm
 
     abstract fun value(sheetContext : SheetContext) : AppEff<Double>
 
+    abstract fun summary(sheetContext : SheetContext) : TermSummary?
+
 }
 
 
-data class SummationNumberTerm(val numberReference : NumberReference) : SummationTerm()
+data class SummationTermNumber(override val id : UUID,
+                               override val termName : Maybe<Prim<TermName>>,
+                               val numberReference : Sum<NumberReference>)
+                                : SummationTerm(termName)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+    constructor(termName : Maybe<TermName>,
+                numberReference : NumberReference)
+        : this(UUID.randomUUID(),
+               maybeLiftPrim(termName),
+               Sum(numberReference))
+
 
     companion object : Factory<SummationTerm>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
-            is DocDict -> effApply(::SummationNumberTerm,
+            is DocDict -> effApply(::SummationTermNumber,
+                                   // Term Name
+                                   split(doc.maybeAt("term_name"),
+                                         effValue<ValueError,Maybe<TermName>>(Nothing()),
+                                         { effApply(::Just, TermName.fromDocument(it)) }),
                                    // Value
-                                   doc.at("reference") ap { NumberReference.fromDocument(it) })
+                                   doc.at("value") ap { NumberReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
     // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun numberReference() = this.numberReference.value
+
+    // -----------------------------------------------------------------------------------------
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> = this.numberReference.dependencies()
+    override fun dependencies(): Set<VariableReference> = this.numberReference().dependencies()
 
 
     override fun value(sheetContext : SheetContext) : AppEff<Double> =
-        SheetData.number(sheetContext, numberReference)
+        SheetData.numbers(sheetContext, this.numberReference()) ap {
+            effValue<AppError,Double>(it.sum())
+        }
+
+
+    override fun summary(sheetContext : SheetContext) : TermSummary?
+    {
+        val components = this.numberReference().components(sheetContext)
+
+        if (components.isNotEmpty())
+        {
+            return TermSummary(this.termName(), components)
+        }
+        else
+        {
+            val termName = this.termName()
+            if (termName != null)
+            {
+                val value = SheetData.number(sheetContext, this.numberReference())
+                when (value)
+                {
+                    is Val -> {
+                        return TermSummary(termName(),
+                                           listOf(TermComponent(termName, value.value.toString())))
+                    }
+                    is Err -> ApplicationLog.error(value.error)
+                }
+            }
+        }
+
+        return null
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val name = "summation_term_number"
+
+    override val modelObject = this
 
 }
 
 
-data class SummationDiceRollTerm(val diceRollReference: DiceRollReference) : SummationTerm()
+data class SummationDiceRollTerm(override val id : UUID,
+                                 override val termName : Maybe<Prim<TermName>>,
+                                 val diceRollReference : Sum<DiceRollReference>)
+                                  : SummationTerm(termName)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
+    constructor(termName : Maybe<TermName>,
+                diceRollReference : DiceRollReference)
+        : this(UUID.randomUUID(),
+               maybeLiftPrim(termName),
+               Sum(diceRollReference))
+
 
     companion object : Factory<SummationTerm>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationDiceRollTerm,
+                                   // Term Name
+                                   split(doc.maybeAt("term_name"),
+                                         effValue<ValueError,Maybe<TermName>>(Nothing()),
+                                         { effApply(::Just, TermName.fromDocument(it)) }),
                                    // Value
-                                   doc.at("reference") ap { DiceRollReference.fromDocument(it) })
+                                   doc.at("value") ap { DiceRollReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun diceRollReference() = this.diceRollReference.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -123,32 +211,74 @@ data class SummationDiceRollTerm(val diceRollReference: DiceRollReference) : Sum
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> =
-            this.diceRollReference.dependencies()
+            this.diceRollReference().dependencies()
 
 
     override fun value(sheetContext : SheetContext) : AppEff<Double> =
-            SheetData.diceRoll(sheetContext, diceRollReference)
+            SheetData.diceRoll(sheetContext, diceRollReference())
                     .apply { effValue<AppError,Double>(it.roll().toDouble()) }
+
+
+    override fun summary(sheetContext : SheetContext) : TermSummary?
+    {
+        val components = this.diceRollReference().components(sheetContext)
+
+        if (components.isNotEmpty())
+        {
+            return TermSummary(this.termName(), components)
+        }
+        else
+        {
+            val termName = this.termName()
+            if (termName != null)
+            {
+                val value = SheetData.diceRoll(sheetContext, this.diceRollReference())
+                when (value)
+                {
+                    is Val -> {
+                        return TermSummary(termName(),
+                                           listOf(TermComponent(termName, value.value.toString())))
+                    }
+                    is Err -> ApplicationLog.error(value.error)
+                }
+            }
+        }
+
+        return null
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val name = "summation_term_dice_roll"
+
+    override val modelObject = this
 
 }
 
 
-data class SummationConditionalTerm(
-                            override val id : UUID,
-                            val conditionalValueReference : Sum<BooleanReference>,
-                            val trueValueReference : Sum<NumberReference>,
-                            val falseValueReference: Sum<NumberReference>)
-                             : SummationTerm(), Model
+data class SummationConditionalTerm(override val id : UUID,
+                                    override val termName : Maybe<Prim<TermName>>,
+                                    val conditionalValueReference : Sum<BooleanReference>,
+                                    val trueValueReference : Sum<NumberReference>,
+                                    val falseValueReference: Sum<NumberReference>)
+                                      : SummationTerm(termName)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(conditionalValueReference: BooleanReference,
+    constructor(termName : Maybe<TermName>,
+                conditionalValueReference: BooleanReference,
                 trueValueReference: NumberReference,
                 falseValueReference: NumberReference)
         : this(UUID.randomUUID(),
+               maybeLiftPrim(termName),
                Sum(conditionalValueReference),
                Sum(trueValueReference),
                Sum(falseValueReference))
@@ -159,8 +289,12 @@ data class SummationConditionalTerm(
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationConditionalTerm,
-                                   // Conditional
-                                   doc.at("conditional") ap { BooleanReference.fromDocument(it) },
+                                   // Term Name
+                                   split(doc.maybeAt("term_name"),
+                                         effValue<ValueError,Maybe<TermName>>(Nothing()),
+                                         { effApply(::Just, TermName.fromDocument(it)) }),
+                                   // Condition
+                                   doc.at("condition") ap { BooleanReference.fromDocument(it) },
                                    // When True
                                    doc.at("when_true") ap { NumberReference.fromDocument(it) },
                                    // When False
@@ -187,7 +321,7 @@ data class SummationConditionalTerm(
 
     override fun onLoad() { }
 
-    override val name = "summation_conditional_term"
+    override val name = "summation_term_conditional"
 
     override val modelObject = this
 
@@ -212,39 +346,87 @@ data class SummationConditionalTerm(
             }
 
 
-    //
-//
-//    // > Value
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the value of the conditional term. If the condition variable is true
-//     * @return
-//     * @throws com.kispoko.tome.rts.game.engine.definition.variable.VariableException
-//     */
-//    public Integer value()
-//           throws SummationException
-//    {
-//        try
-//        {
-//            Boolean cond = conditionalTermValue().value();
-//
-//            if (cond) {
-//                return whenTrueTermValue().value();
-//            }
-//            else {
-//                return whenFalseTermValue().value();
-//            }
-//        }
-//        catch (VariableException exception)
-//        {
-//            throw SummationException.variable(new SummationVariableError(exception));
-//        }
-//
-//    }
-//
+    override fun summary(sheetContext : SheetContext) : TermSummary?
+    {
+        val isTrueEff = SheetData.boolean(sheetContext, this.conditionalValueReference())
+
+        when (isTrueEff)
+        {
+            is Val ->
+            {
+                val valueRef = if (isTrueEff.value) this.trueValueReference()
+                                    else this.falseValueReference()
+
+                val components = valueRef.components(sheetContext)
+
+                if (components.isNotEmpty())
+                {
+                    return TermSummary(this.termName(), components)
+                }
+                else
+                {
+                    val termName = this.termName()
+                    if (termName != null)
+                    {
+                        val value = SheetData.number(sheetContext, valueRef)
+                        when (value)
+                        {
+                            is Val -> {
+                                return TermSummary(termName(),
+                                                   listOf(TermComponent(termName,
+                                                                        value.value.toString())))
+                            }
+                            is Err -> ApplicationLog.error(value.error)
+                        }
+                    }
+                }
+
+
+            }
+            is Err -> ApplicationLog.error(isTrueEff.error)
+        }
+
+        return null
+    }
 
 }
+
+
+
+/**
+ * Term Name
+ */
+data class TermName(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TermName>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<TermName> = when (doc)
+        {
+            is DocText -> effValue(TermName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+
+data class TermSummary(val name : String?, val components : List<TermComponent>)
+
+
+data class TermComponent(val name : String, val value : String)
 
 
 //    // > Summary

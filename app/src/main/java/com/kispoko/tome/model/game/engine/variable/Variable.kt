@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
@@ -12,6 +13,7 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
 import effect.*
 import lulo.document.*
@@ -28,8 +30,8 @@ import java.util.*
  */
 @Suppress("UNCHECKED_CAST")
 sealed class Variable(open val variableId : Prim<VariableId>,
-                      open val label : Maybe<Prim<VariableLabel>>,
-                      open val description : Maybe<Prim<VariableDescription>>,
+                      open val label : Prim<VariableLabel>,
+                      open val description : Prim<VariableDescription>,
                       open val tags : Prim<VariableTagSet>) : Model, Serializable
 {
 
@@ -65,9 +67,9 @@ sealed class Variable(open val variableId : Prim<VariableId>,
 
     fun variableId() : VariableId = this.variableId.value
 
-    fun label() : VariableLabel? = getMaybePrim(this.label)
+    fun label() : String = this.label.value.value
 
-    fun description() : VariableDescription? = getMaybePrim(this.description)
+    fun description() : String = this.description.value.value
 
     fun tags() : Set<VariableTag> = this.tags.value.variables
 
@@ -124,6 +126,8 @@ sealed class Variable(open val variableId : Prim<VariableId>,
 
     abstract fun type() : VariableType
 
+    abstract fun companionVariables(sheetontext : SheetContext) : AppEff<Set<Variable>>
+
 
     /**
      * This method is called when one of the variable's dependencies has been updated, and this
@@ -156,8 +160,8 @@ sealed class Variable(open val variableId : Prim<VariableId>,
  */
 data class BooleanVariable(override val id : UUID,
                            override val variableId : Prim<VariableId>,
-                           override val label : Maybe<Prim<VariableLabel>>,
-                           override val description : Maybe<Prim<VariableDescription>>,
+                           override val label : Prim<VariableLabel>,
+                           override val description : Prim<VariableDescription>,
                            override val tags : Prim<VariableTagSet>,
                            val variableValue : Func<BooleanVariableValue>)
                             : Variable(variableId, label, description, tags)
@@ -170,15 +174,8 @@ data class BooleanVariable(override val id : UUID,
     init
     {
         this.variableId.name    = "variable_id"
-
-        when (this.label) {
-            is Just -> this.label.value.name = "label"
-        }
-
-        when (this.description) {
-            is Just -> this.description.value.name = "description"
-        }
-
+        this.label.name         = "label"
+        this.description.name   = "description"
         this.tags.name          = "tags"
     }
 
@@ -188,14 +185,14 @@ data class BooleanVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(variableId : VariableId,
-                label : Maybe<VariableLabel>,
-                description : Maybe<VariableDescription>,
+                label : VariableLabel,
+                description : VariableDescription,
                 tags : VariableTagSet,
                 value : BooleanVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
-               maybeLiftPrim(label),
-               maybeLiftPrim(description),
+               Prim(label),
+               Prim(description),
                Prim(tags),
                liftBooleanVariableValue(value))
 
@@ -210,13 +207,9 @@ data class BooleanVariable(override val id : UUID,
                          // Variable Id
                          doc.at("id") ap { VariableId.fromDocument(it) },
                          // Label
-                         split(doc.maybeAt("label"),
-                               effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
-                               { effApply(::Just, VariableLabel.fromDocument(it)) }),
+                         doc.at("label") ap { VariableLabel.fromDocument(it) },
                          // Description
-                         split(doc.maybeAt("description"),
-                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
-                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
+                         doc.at("description") ap { VariableDescription.fromDocument(it) },
                          // Tags
                          split(doc.maybeAt("tags"),
                                effValue(VariableTagSet.empty()),
@@ -256,6 +249,9 @@ data class BooleanVariable(override val id : UUID,
 
     override fun dependencies() : Set<VariableReference> = this.variableValue().dependencies()
 
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(sheetContext)
+
 
     // -----------------------------------------------------------------------------------------
     // VALUE
@@ -271,8 +267,8 @@ data class BooleanVariable(override val id : UUID,
  */
 data class DiceRollVariable(override val id : UUID,
                             override val variableId : Prim<VariableId>,
-                            override val label : Maybe<Prim<VariableLabel>>,
-                            override val description : Maybe<Prim<VariableDescription>>,
+                            override val label : Prim<VariableLabel>,
+                            override val description : Prim<VariableDescription>,
                             override val tags : Prim<VariableTagSet>,
                             val variableValue: Func<DiceRollVariableValue>)
                             : Variable(variableId, label, description, tags)
@@ -285,15 +281,8 @@ data class DiceRollVariable(override val id : UUID,
     init
     {
         this.variableId.name    = "variable_id"
-
-        when (this.label) {
-            is Just -> this.label.value.name = "label"
-        }
-
-        when (this.description) {
-            is Just -> this.description.value.name = "description"
-        }
-
+        this.label.name         = "label"
+        this.description.name   = "description"
         this.tags.name          = "tags"
     }
 
@@ -303,14 +292,14 @@ data class DiceRollVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(variableId : VariableId,
-                label : Maybe<VariableLabel>,
-                description : Maybe<VariableDescription>,
+                label : VariableLabel,
+                description : VariableDescription,
                 tags : VariableTagSet,
                 value : DiceRollVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
-               maybeLiftPrim(label),
-               maybeLiftPrim(description),
+               Prim(label),
+               Prim(description),
                Prim(tags),
                liftDiceRollVariableValue(value))
 
@@ -325,13 +314,9 @@ data class DiceRollVariable(override val id : UUID,
                          // Variable Id
                          doc.at("id") ap { VariableId.fromDocument(it) },
                          // Label
-                         split(doc.maybeAt("label"),
-                               effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
-                               { effApply(::Just, VariableLabel.fromDocument(it)) }),
+                         doc.at("label") ap { VariableLabel.fromDocument(it) },
                          // Description
-                         split(doc.maybeAt("description"),
-                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
-                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
+                         doc.at("description") ap { VariableDescription.fromDocument(it) },
                          // Tags
                          split(doc.maybeAt("tags"),
                                effValue(VariableTagSet.empty()),
@@ -369,7 +354,12 @@ data class DiceRollVariable(override val id : UUID,
 
     override fun dependencies() : Set<VariableReference> = this.variableValue.value.dependencies()
 
+
     override fun type(): VariableType = VariableType.DICE_ROLL
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(sheetContext)
 
 
     // -----------------------------------------------------------------------------------------
@@ -386,8 +376,8 @@ data class DiceRollVariable(override val id : UUID,
  */
 data class NumberVariable(override val id : UUID,
                           override val variableId : Prim<VariableId>,
-                          override val label : Maybe<Prim<VariableLabel>>,
-                          override val description : Maybe<Prim<VariableDescription>>,
+                          override val label : Prim<VariableLabel>,
+                          override val description : Prim<VariableDescription>,
                           override val tags : Prim<VariableTagSet>,
                           val variableValue : Func<NumberVariableValue>)
                           : Variable(variableId, label, description, tags)
@@ -400,15 +390,8 @@ data class NumberVariable(override val id : UUID,
     init
     {
         this.variableId.name    = "variable_id"
-
-        when (this.label) {
-            is Just -> this.label.value.name = "label"
-        }
-
-        when (this.description) {
-            is Just -> this.description.value.name = "description"
-        }
-
+        this.label.name         = "label"
+        this.description.name   = "description"
         this.tags.name          = "tags"
     }
 
@@ -418,14 +401,14 @@ data class NumberVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(variableId : VariableId,
-                label : Maybe<VariableLabel>,
-                description : Maybe<VariableDescription>,
+                label : VariableLabel,
+                description : VariableDescription,
                 tags : VariableTagSet,
                 value : NumberVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
-               maybeLiftPrim(label),
-               maybeLiftPrim(description),
+               Prim(label),
+               Prim(description),
                Prim(tags),
                liftNumberVariableValue(value))
 
@@ -440,13 +423,9 @@ data class NumberVariable(override val id : UUID,
                          // Variable Id
                          doc.at("id") ap { VariableId.fromDocument(it) },
                          // Label
-                         split(doc.maybeAt("label"),
-                               effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
-                               { effApply(::Just, VariableLabel.fromDocument(it)) }),
+                         doc.at("label") ap { VariableLabel.fromDocument(it) },
                          // Description
-                         split(doc.maybeAt("label"),
-                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
-                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
+                         doc.at("description") ap { VariableDescription.fromDocument(it) },
                          // Tags
                          split(doc.maybeAt("tags"),
                                effValue(VariableTagSet.empty()),
@@ -485,7 +464,12 @@ data class NumberVariable(override val id : UUID,
     override fun dependencies() : Set<VariableReference> =
             this.variableValue.value.dependencies()
 
+
     override fun type(): VariableType = VariableType.NUMBER
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(sheetContext)
 
 
     // -----------------------------------------------------------------------------------------
@@ -516,8 +500,8 @@ data class NumberVariable(override val id : UUID,
  */
 data class TextVariable(override val id : UUID,
                         override val variableId : Prim<VariableId>,
-                        override val label : Maybe<Prim<VariableLabel>>,
-                        override val description : Maybe<Prim<VariableDescription>>,
+                        override val label : Prim<VariableLabel>,
+                        override val description : Prim<VariableDescription>,
                         override val tags : Prim<VariableTagSet>,
                         val variableValue : Func<TextVariableValue>,
                         val definesNamespace : Prim<DefinesNamespace>)
@@ -530,19 +514,11 @@ data class TextVariable(override val id : UUID,
 
     init
     {
-        this.variableId.name                        = "variable_id"
-
-        when (this.label) {
-            is Just -> this.label.value.name        = "label"
-        }
-
-        when (this.description) {
-            is Just -> this.description.value.name  = "description"
-        }
-
-        this.tags.name                              = "tags"
-
-        this.definesNamespace.name                  = "defines_namespace"
+        this.variableId.name        = "variable_id"
+        this.label.name             = "variable_id"
+        this.description.name       = "variable_id"
+        this.tags.name              = "tags"
+        this.definesNamespace.name  = "defines_namespace"
     }
 
 
@@ -551,15 +527,15 @@ data class TextVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(variableId : VariableId,
-                label : Maybe<VariableLabel>,
-                description : Maybe<VariableDescription>,
+                label : VariableLabel,
+                description : VariableDescription,
                 tags : VariableTagSet,
                 variableValue : TextVariableValue,
                 definesNamespace : DefinesNamespace)
         : this(UUID.randomUUID(),
                Prim(variableId),
-               maybeLiftPrim(label),
-               maybeLiftPrim(description),
+               Prim(label),
+               Prim(description),
                Prim(tags),
                liftTextVariableValue(variableValue),
                Prim(definesNamespace))
@@ -575,13 +551,9 @@ data class TextVariable(override val id : UUID,
                          // Variable Id
                          doc.at("id") ap { VariableId.fromDocument(it) },
                          // Label
-                        split(doc.maybeAt("label"),
-                              effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
-                              { effApply(::Just, VariableLabel.fromDocument(it)) }),
+                         doc.at("label") ap { VariableLabel.fromDocument(it) },
                          // Description
-                        split(doc.maybeAt("label"),
-                              effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
-                              { effApply(::Just, VariableDescription.fromDocument(it)) }),
+                         doc.at("description") ap { VariableDescription.fromDocument(it) },
                          // Tags
                          split(doc.maybeAt("tags"),
                                effValue(VariableTagSet.empty()),
@@ -625,6 +597,9 @@ data class TextVariable(override val id : UUID,
 
     override fun type(): VariableType = VariableType.TEXT
 
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(sheetContext)
+
 
     // -----------------------------------------------------------------------------------------
     // VALUE
@@ -632,6 +607,17 @@ data class TextVariable(override val id : UUID,
 
     fun value(sheetContext : SheetContext) : AppEff<String> =
             this.variableValue().value(sheetContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // OPEN EDIT DIALOG
+    // -----------------------------------------------------------------------------------------
+
+    fun openEditDialog(sheetActivity : SheetActivity)
+    {
+
+
+    }
 
 }
 

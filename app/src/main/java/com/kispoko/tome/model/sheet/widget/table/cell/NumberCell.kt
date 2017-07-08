@@ -15,8 +15,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.util.ApplicationError
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -160,14 +159,14 @@ object NumberCellView
              rowFormat : TableWidgetRowFormat,
              column : TableWidgetNumberColumn,
              cellFormat : NumberCellFormat,
-             sheetContext : SheetContext) : View
+             sheetUIContext: SheetUIContext) : View
     {
         val layout = TableWidgetCellView.layout(rowFormat,
                                                 column.format().columnFormat(),
                                                 cellFormat.cellFormat(),
-                                                sheetContext)
+                sheetUIContext)
 
-        layout.addView(this.valueTextView(cell, column.format(), cellFormat, sheetContext))
+        layout.addView(this.valueTextView(cell, column.format(), cellFormat, sheetUIContext))
 
         return layout
     }
@@ -176,7 +175,7 @@ object NumberCellView
     private fun valueTextView(cell : TableWidgetNumberCell,
                               columnFormat : NumberColumnFormat,
                               cellFormat : NumberCellFormat,
-                              sheetContext : SheetContext) : TextView
+                              sheetUIContext: SheetUIContext) : TextView
     {
         val value = TextViewBuilder()
 
@@ -191,22 +190,22 @@ object NumberCellView
 
         // > STYLE
         val valueStyle = cellFormat.resolveTextStyle(columnFormat)
-        valueStyle.styleTextViewBuilder(value, sheetContext)
+        valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
         // > VALUE
-        val maybeValue = cell.valueString(sheetContext)
+        val maybeValue = cell.valueString(sheetUIContext)
         when (maybeValue)
         {
             is Just    -> value.text = maybeValue.value
         }
 
-        val valueString = cell.valueVariable().valueString(sheetContext)
+        val valueString = cell.valueVariable().valueString(sheetUIContext)
         when (valueString) {
             is Val -> value.text = valueString.value
             is Err -> ApplicationLog.error(valueString.error)
         }
 
-        return value.textView(sheetContext.context)
+        return value.textView(sheetUIContext.context)
     }
 
 

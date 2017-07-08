@@ -4,8 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/dark_blue_7">
-    </solid>
+    <!--<solid android:color="@color/dark_blue_7">-->
+    <!--</solid>-->
 
     <!--<padding-->
         <!--android:left="8dp"-->

@@ -20,7 +20,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
@@ -255,13 +255,13 @@ object BooleanCellView
              rowFormat : TableWidgetRowFormat,
              column : TableWidgetBooleanColumn,
              cellFormat : BooleanCellFormat,
-             sheetContext : SheetContext) : View
+             sheetUIContext: SheetUIContext) : View
     {
 
         val layout = TableWidgetCellView.layout(rowFormat,
                                                 column.format().columnFormat(),
                                                 cellFormat.cellFormat(),
-                                                sheetContext)
+                sheetUIContext)
 
 //        if (cellFormat.showTrueIcon() || columnFormat.showTrueIcon())
 //        {
@@ -271,7 +271,7 @@ object BooleanCellView
         // > Text View
         // -------------------------------------------------------------------------------------
 
-        val valueView = this.valueTextView(cell, column, cellFormat, sheetContext)
+        val valueView = this.valueTextView(cell, column, cellFormat, sheetUIContext)
         layout.addView(valueView)
 
 //        valueView.setOnClickListener(new View.OnClickListener()
@@ -320,7 +320,7 @@ object BooleanCellView
     private fun valueIconView(cell : TableWidgetBooleanCell,
                               columnFormat : BooleanColumnFormat,
                               cellFormat : BooleanCellFormat,
-                              sheetContext : SheetContext) : ImageView
+                              sheetUIContext: SheetUIContext) : ImageView
     {
         val icon = ImageViewBuilder()
 
@@ -343,18 +343,18 @@ object BooleanCellView
         val normalStyle = cellFormat.resolveTextStyle(columnFormat)
         if (cell.value() && trueStyle != null)
         {
-            icon.color      = SheetManager.color(sheetContext.sheetId, trueStyle.colorTheme())
+            icon.color      = SheetManager.color(sheetUIContext.sheetId, trueStyle.colorTheme())
         }
         else if (!cell.value() && falseStyle != null)
         {
-            icon.color      = SheetManager.color(sheetContext.sheetId, falseStyle.colorTheme())
+            icon.color      = SheetManager.color(sheetUIContext.sheetId, falseStyle.colorTheme())
         }
         else
         {
-            icon.color      = SheetManager.color(sheetContext.sheetId, normalStyle.colorTheme())
+            icon.color      = SheetManager.color(sheetUIContext.sheetId, normalStyle.colorTheme())
         }
 
-        return icon.imageView(sheetContext.context)
+        return icon.imageView(sheetUIContext.context)
     }
 
 
@@ -363,7 +363,7 @@ object BooleanCellView
     private fun valueTextView(cell : TableWidgetBooleanCell,
                               column : TableWidgetBooleanColumn,
                               cellFormat : BooleanCellFormat,
-                              sheetContext : SheetContext) : TextView
+                              sheetUIContext: SheetUIContext) : TextView
     {
         val value = TextViewBuilder()
 
@@ -383,13 +383,13 @@ object BooleanCellView
         val falseStyle    = cellFormat.resolveFalseStyle(column.format())
 
         if (cell.value() && trueStyle != null)
-            trueStyle.styleTextViewBuilder(value, sheetContext)
+            trueStyle.styleTextViewBuilder(value, sheetUIContext)
         else if (!cell.value() && falseStyle != null)
-            falseStyle.styleTextViewBuilder(value, sheetContext)
+            falseStyle.styleTextViewBuilder(value, sheetUIContext)
         else
-            defaultStyle.styleTextViewBuilder(value, sheetContext)
+            defaultStyle.styleTextViewBuilder(value, sheetUIContext)
 
-        return value.textView(sheetContext.context)
+        return value.textView(sheetUIContext.context)
     }
 
 

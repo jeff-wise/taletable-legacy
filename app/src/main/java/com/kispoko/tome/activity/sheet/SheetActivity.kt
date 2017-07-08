@@ -238,11 +238,10 @@ class SheetActivity : AppCompatActivity(), SheetUI
                         SheetManager.setNewSheet(sheet, sheetUI)
 
                         val characterName =
-                                SheetManager.sheetRecord(sheet.sheetId()) apply { sheetRecord ->
-                                    val sheetContext = sheetRecord.context(sheetActivity)
-                                    sheetRecord.state.textVariableWithId(VariableId("name"))
-                                            .applyWith({ textVar, ctx -> textVar.value(ctx)}, sheetContext)
-                                }
+                                SheetManager.sheetRecord(sheet.sheetId())    ap { (_, sheetContext, state) ->
+                                state.textVariableWithId(VariableId("name")) ap { textVar ->
+                                    textVar.value(sheetContext)
+                                } }
 
                         when (characterName)
                         {

@@ -14,8 +14,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import com.kispoko.tome.lib.ui.ScrollViewBuilder
 import com.kispoko.tome.model.sheet.page.Page
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetGameContext
 
 
 
@@ -33,7 +33,7 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
     // -----------------------------------------------------------------------------------------
 
     private var pages            : List<Page> = listOf()
-    private var sheetGameContext : SheetGameContext? = null
+    private var sheetContext: SheetContext? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
     // -----------------------------------------------------------------------------------------
 
     override fun getItem(position: Int) : Fragment =
-        PageFragment.newInstance(this.pages[position], this.sheetGameContext)
+        PageFragment.newInstance(this.pages[position], this.sheetContext)
 
 
     override fun getCount() : Int = this.pages.size
@@ -64,10 +64,10 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun setPages(pages : List<Page>, sheetGameContext: SheetGameContext)
+    fun setPages(pages : List<Page>, sheetContext: SheetContext)
     {
         this.pages = pages
-        this.sheetGameContext = sheetGameContext
+        this.sheetContext = sheetContext
 
         this.notifyDataSetChanged()
     }
@@ -79,8 +79,8 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
 class PageFragment : Fragment()
 {
 
-    var page             : Page? = null
-    var sheetGameContext : SheetGameContext? = null
+    var page         : Page?         = null
+    var sheetContext : SheetContext? = null
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -88,13 +88,13 @@ class PageFragment : Fragment()
 
     companion object
     {
-        fun newInstance(page : Page, sheetGameContext : SheetGameContext?) : PageFragment
+        fun newInstance(page : Page, sheetContext : SheetContext?) : PageFragment
         {
             val pageFragment = PageFragment()
 
             val args = Bundle()
             args.putSerializable("page", page)
-            args.putSerializable("sheet_game_context", sheetGameContext)
+            args.putSerializable("sheet_context", sheetContext)
 
             pageFragment.arguments = args
 
@@ -113,9 +113,8 @@ class PageFragment : Fragment()
 
         if (arguments != null)
         {
-            this.page             = arguments.getSerializable("page") as Page
-            this.sheetGameContext = arguments.getSerializable("sheet_game_context")
-                                        as SheetGameContext
+            this.page         = arguments.getSerializable("page") as Page
+            this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
         }
     }
 
@@ -127,11 +126,11 @@ class PageFragment : Fragment()
         val fragmentView = this.view()
 
 
-        val currentSheetGameContext = this.sheetGameContext
+        val currentSheetGameContext = this.sheetContext
 
         if (currentSheetGameContext != null)
         {
-            val sheetContext = SheetContext(currentSheetGameContext.sheetId,
+            val sheetContext = SheetUIContext(currentSheetGameContext.sheetId,
                                             currentSheetGameContext.campaignId,
                                             currentSheetGameContext.gameId,
                                             context)

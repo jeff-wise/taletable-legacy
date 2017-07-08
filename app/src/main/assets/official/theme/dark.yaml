@@ -52,6 +52,14 @@ palette:
   color: '#818181'
 - color_id: light_grey_26
   color: '#7C7C7C'
+- color_id: light_grey_27
+  color: '#797979'
+- color_id: light_grey_28
+  color: '#747474'
+- color_id: light_grey_29
+  color: '#6F6F6F'
+- color_id: light_grey_30
+  color: '#6A6A6A'
 - color_id: dark_grey
   color: '#282828'
 - color_id: dark_grey_5
@@ -70,20 +78,56 @@ palette:
   color: '#202224'
 - color_id: dark_grey_12
   color: '#1E1F21'
+- color_id: dark_grey_13
+  color: '#1C1D1F'
+- color_id: dark_grey_14
+  color: '#191A1C'
+- color_id: dark_grey_15
+  color: '#171819'
 - color_id: light_blue_1
-  color: '#8FB7BF'
+  color: '#CEF0FF'
+- color_id: light_blue_2
+  color: '#C8E9F7'
+- color_id: light_blue_3
+  color: '#C4E4F2'
+- color_id: light_blue_4
+  color: '#BEDDEB'
+- color_id: light_blue_5
+  color: '#B8D5E3'
 - color_id: light_blue_7
-  color: '#889EA8'
+  color: '#B2CEDB'
 - color_id: light_blue_8
-  color: '#849AA3'
+  color: '#ADC9D6'
 - color_id: light_blue_9
-  color: '#80959E'
+  color: '#A9C5D1'
 - color_id: light_blue_10
-  color: '#7C9099'
+  color: '#A5C0CC'
+- color_id: light_blue_11
+  color: '#A1BBC7'
+- color_id: light_blue_12
+  color: '#9BB4BF'
+- color_id: light_blue_13
+  color: '#97AFBA'
+- color_id: light_blue_14
+  color: '#93AAB5'
+- color_id: light_blue_15
+  color: '#8EA5B0'
+- color_id: light_blue_16
+  color: '#8AA1AB'
+- color_id: light_blue_17
+  color: '#869CA6'
+- color_id: light_blue_18
+  color: '#8297A1'
+- color_id: light_blue_19
+  color: '#7E929C'
+- color_id: light_blue_20
+  color: '#7A8D96'
 - color_id: gold_1
-  color: '#DBD5A1'
+  color: '#D6CAA3'
+- color_id: gold_2
+  color: '#E0D1AE'
 - color_id: green_1
-  color: '#9EAD93'
+  color: '#9FAD8B'
 ui_colors:
   toolbar_background: dark_grey_12
   toolbar_icons: light_grey_6
@@ -94,4 +138,4 @@ ui_colors:
   tab_underline: light_grey_6
   bottom_bar_background: dark_grey_12
   bottom_bar_active: light_grey_9
-  bottom_bar_inactive: light_grey_25
+  bottom_bar_inactive: light_grey_28

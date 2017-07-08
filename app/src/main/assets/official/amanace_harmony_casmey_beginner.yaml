@@ -18,10 +18,10 @@ sections:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
-            color_id: dark_grey_9
+            color_id: dark_grey_10
         padding:
-          top: 20
-          bottom: 20
+          top: 25
+          bottom: 25
           left: 8
           right: 8
       rows:
@@ -31,14 +31,12 @@ sections:
             id: name
             value_variable:
               id: name
+              label: Name
+              description: Name
               value:
                 type: text_literal
                 text_literal: 'Casmey Dalseya'
             format:
-              widget_format:
-                margins:
-                  bottom: 8
-                  top: 4
               value_format:
                 style:
                   color_theme:
@@ -46,8 +44,19 @@ sections:
                     - theme_id: dark
                       color_id: gold_1
                   font: merriweather
-                  font_style: light
+                  font_style: regular
                   size: 25
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          top: 15
+          bottom: 20
+          left: 8
+          right: 8
+      rows:
       - widgets:
         - type: widget_story
           widget_story:
@@ -73,15 +82,19 @@ sections:
                   type: variable_text
                   variable_text:
                     id: race
+                    label: Race
+                    description: Race
                     value:
-                      type: text_literal
-                      text_literal: Soulsin
+                      type: value_reference
+                      value_reference:
+                        value_set_id: races
+                        value_id: soulsin
                 format:
                   style:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: green_1
+                        color_id: light_blue_15
                     font_style: bold
                     size: 16
             - type: story_part_span
@@ -100,16 +113,20 @@ sections:
                 variable:
                   type: variable_text
                   variable_text:
-                    id: race
+                    id: class
+                    label: Class
+                    description: Class
                     value:
-                      type: text_literal
-                      text_literal: Swashbuckler
+                      type: value_reference
+                      value_reference:
+                        value_set_id: classes
+                        value_id: swashbuckler
                 format:
                   style:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: green_1
+                        color_id: light_blue_12
                     font_style: bold
                     size: 16
             - type: story_part_span
@@ -129,6 +146,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: age
+                    label: Age
+                    description: Age
                     value:
                       type: number_literal
                       number_literal: 21
@@ -137,7 +156,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: green_1
+                        color_id: light_blue_12
                     font_style: bold
                     size: 16
             - type: story_part_span
@@ -156,6 +175,8 @@ sections:
                   type: variable_text
                   variable_text:
                     id: race
+                    label: Eye Color
+                    description: Eye Color
                     value:
                       type: text_literal
                       text_literal: green
@@ -164,7 +185,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: green_1
+                        color_id: light_blue_12
                     font_style: bold
                     size: 16
             - type: story_part_span
@@ -183,6 +204,8 @@ sections:
                   type: variable_text
                   variable_text:
                     id: hair_color
+                    label: Hair Color
+                    description: Hair Color
                     value:
                       type: text_literal
                       text_literal: brown
@@ -191,18 +214,29 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: green_1
+                        color_id: light_blue_12
                     font_style: bold
                     size: 16
             - type: story_part_span
               story_part_span:
-                text: ' hair, as well as for a few posters that may or may not say "WANTED".'
+                text: ' hair, as well as for a few posters that may or may not say '
                 format:
                   style:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
                         color_id: light_grey_20
+                    size: 15
+            - type: story_part_span
+              story_part_span:
+                text: 'WANTED.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    font_style: bold_italic
                     size: 15
     - format:
         background_color_theme:
@@ -242,6 +276,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: strength
+                    label: Strength
+                    description: Strength
                     value:
                       type: number_literal
                       number_literal: 12
@@ -270,6 +306,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: strength_modifier
+                    label: Strength Modifier
+                    description: Strength Modifier
                     value:
                       type: program_invocation
                       program_invocation:
@@ -319,9 +357,27 @@ sections:
                   type: variable_number
                   variable_number:
                     id: dexterity
+                    label: Dexterity
+                    description: Dexterity
                     value:
-                      type: number_literal
-                      number_literal: 20
+                      type: summation
+                      summation:
+                        terms:
+                        - type: summation_term_number
+                          summation_term_number:
+                            value:
+                              type: variable_reference
+                              variable_reference:
+                                type: variable_id
+                                variable_id: base_dexterity
+                        - type: summation_term_number
+                          summation_term_number:
+                            term_name: Bonuses
+                            value:
+                              type: variable_reference
+                              variable_reference:
+                                type: variable_tag
+                                variable_tag: dexterity_modifier
                 format:
                   style:
                     color_theme:
@@ -347,6 +403,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: dexterity_modifier
+                    label: Dexterity Modifier
+                    description: Dexterity Modifier
                     value:
                       type: program_invocation
                       program_invocation:
@@ -367,6 +425,15 @@ sections:
                     size: 15
                   padding:
                     top: 1
+            variables:
+            - type: variable_number
+              variable_number:
+                id: base_dexterity
+                label: Base Dexterity
+                description: Base Dexterity
+                value:
+                  type: number_literal
+                  number_literal: 16
         - type: widget_story
           widget_story:
             id: constitution
@@ -396,6 +463,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: constitution
+                    label: Constitution
+                    description: Constitution
                     value:
                       type: number_literal
                       number_literal: 11
@@ -424,6 +493,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: constitution_modifier
+                    label: Constitution Modifier
+                    description: Constitution Modifier
                     value:
                       type: program_invocation
                       program_invocation:
@@ -458,10 +529,12 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
             value_variable:
               id: strength_label
+              label: Strength Label
+              description: Strength Label
               value:
                 type: text_literal
                 text_literal: 'strength'
@@ -474,10 +547,12 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
             value_variable:
               id: dexterity_label
+              label: Dexterity Label
+              description: Dexterity Label
               value:
                 type: text_literal
                 text_literal: 'dexterity'
@@ -490,10 +565,12 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
             value_variable:
               id: constitution_label
+              label: Constitution Label
+              description: Constitution Label
               value:
                 type: text_literal
                 text_literal: 'constitution'
@@ -527,6 +604,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: intelligence
+                    label: Intelligence
+                    description: Intelligence
                     value:
                       type: number_literal
                       number_literal: 15
@@ -555,6 +634,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: intelligence_modifier
+                    label: Intelligence Modifier
+                    description: Intelligence Modifier
                     value:
                       type: program_invocation
                       program_invocation:
@@ -604,6 +685,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: wisdom
+                    label: Wisdom
+                    description: Wisdom
                     value:
                       type: number_literal
                       number_literal: 8
@@ -632,6 +715,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: wisdom_modifier
+                    label: Wisdom Modifier
+                    description: Wisdom Modifier
                     value:
                       type: program_invocation
                       program_invocation:
@@ -681,6 +766,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: charisma
+                    label: Charisma
+                    description: Charisma
                     value:
                       type: number_literal
                       number_literal: 14
@@ -709,6 +796,8 @@ sections:
                   type: variable_number
                   variable_number:
                     id: charisma_modifier
+                    label: Charisma Modifier
+                    description: Charisma Modifier
                     value:
                       type: program_invocation
                       program_invocation:
@@ -743,10 +832,12 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
             value_variable:
               id: intelligence_label
+              label: Intelligence Label
+              description: Intelligence Label
               value:
                 type: text_literal
                 text_literal: 'intelligence'
@@ -759,10 +850,12 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
             value_variable:
               id: wisdom_label
+              label: Wisdom Label
+              description: Wisdom Label
               value:
                 type: text_literal
                 text_literal: 'wisdom'
@@ -775,10 +868,12 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
             value_variable:
               id: charisma_label
+              label: Charisma Label
+              description: Charisma Label
               value:
                 type: text_literal
                 text_literal: 'charisma'
@@ -801,7 +896,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
               widget_format:
                 margins:
@@ -809,6 +904,8 @@ sections:
                   left: 8
             value_variable:
               id: armor_table_label
+              label: Armor Table Label
+              description: Armor Table Label
               value:
                 type: text_literal
                 text_literal: 'armor & shields'
@@ -897,6 +994,8 @@ sections:
                 table_widget_text_cell:
                   value_variable:
                     id: chainmail
+                    label: Chainmail
+                    description: Chainmail
                     value:
                       type: text_literal
                       text_literal: 'Chainmail'
@@ -904,6 +1003,8 @@ sections:
                 table_widget_number_cell:
                   value_variable:
                     id: chainmail_quantity
+                    label: Chainmail Quantity
+                    description: Chainmail Quantity
                     value:
                       type: number_literal
                       number_literal: 1
@@ -911,6 +1012,8 @@ sections:
                 table_widget_boolean_cell:
                   value_variable:
                     id: chainmail_is_equipped
+                    label: Is equipped
+                    description: Is equipped
                     value:
                       type: boolean_literal
                       boolean_literal: true
@@ -923,7 +1026,7 @@ sections:
       - widgets:
         - type: widget_text
           widget_text:
-            id: armor_table_label
+            id: weapon_table_label
             format:
               value_format:
                 alignment: left
@@ -931,14 +1034,16 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_7
+                      color_id: light_blue_18
                   size: 12
               widget_format:
                 margins:
                   bottom: 5
                   left: 8
             value_variable:
-              id: armor_table_label
+              id: weapon_table_label
+              label: Armor Table Label
+              description: Armor Table Label
               value:
                 type: text_literal
                 text_literal: 'weapons'
@@ -1026,6 +1131,8 @@ sections:
                 table_widget_text_cell:
                   value_variable:
                     id: cutlass
+                    label: Cutlass
+                    description: Cutlass
                     value:
                       type: text_literal
                       text_literal: 'Cutlass'
@@ -1033,6 +1140,8 @@ sections:
                 table_widget_number_cell:
                   value_variable:
                     id: sword_quantity
+                    label: Sword Quantity
+                    description: Sword Quantity
                     value:
                       type: number_literal
                       number_literal: 1
@@ -1040,6 +1149,8 @@ sections:
                 table_widget_boolean_cell:
                   value_variable:
                     id: sword_is_equipped
+                    label: Is Equipped
+                    description: Is Equipped
                     value:
                       type: boolean_literal
                       boolean_literal: true
@@ -1048,13 +1159,17 @@ sections:
                 table_widget_text_cell:
                   value_variable:
                     id: crossbow
+                    label: Crossbow
+                    description: Crossbow
                     value:
                       type: text_literal
                       text_literal: 'Crossbow'
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   value_variable:
-                    id: sword_quantity
+                    id: crossbow_quantity
+                    label: Crossbow Quantity
+                    description: Crossbow Quantity
                     value:
                       type: number_literal
                       number_literal: 1
@@ -1062,6 +1177,8 @@ sections:
                 table_widget_boolean_cell:
                   value_variable:
                     id: sword_is_equipped
+                    label: Is equipped
+                    description: Is equipped
                     value:
                       type: boolean_literal
                       boolean_literal: true

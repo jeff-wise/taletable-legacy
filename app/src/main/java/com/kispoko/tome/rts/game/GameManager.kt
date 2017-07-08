@@ -154,7 +154,6 @@ object GameManager
     // API
     // -----------------------------------------------------------------------------------------
 
-
     fun engine(gameId : GameId) : AppEff<Engine> =
             note(this.gameById[gameId]?.engine(),
                  AppGameError(GameDoesNotExist(gameId)))

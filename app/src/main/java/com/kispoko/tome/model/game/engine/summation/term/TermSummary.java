@@ -25,7 +25,7 @@ public class TermSummary
 
 
     // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
+    // --------------- -------------------------------------------------------------------------
 
     public TermSummary(String name, List<Tuple2<String,String>> components)
     {

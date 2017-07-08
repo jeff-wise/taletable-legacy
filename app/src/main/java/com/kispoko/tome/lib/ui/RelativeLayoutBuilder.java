@@ -6,9 +6,13 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import com.kispoko.tome.model.sheet.style.Corners;
+import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +54,8 @@ public class RelativeLayoutBuilder
     public Margins                  margin;
     public Padding                  padding;
 
+    public Corners corners;
+
     public View.OnClickListener     onClick;
 
     public List<Integer>            rules;
@@ -89,6 +95,8 @@ public class RelativeLayoutBuilder
         this.margin             = new Margins();
         this.padding            = new Padding();
 
+        this.corners            = null;
+
         this.onClick            = null;
 
         this.children           = new ArrayList<>();
@@ -124,6 +132,9 @@ public class RelativeLayoutBuilder
     {
         RelativeLayout relativeLayout = new RelativeLayout(context);
 
+        PaintDrawable bgDrawable = new PaintDrawable();
+        boolean useDrawableBackground = false;
+
         // [1] Layout
         // --------------------------------------------------------------------------------------
 
@@ -158,21 +169,39 @@ public class RelativeLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null) {
-            relativeLayout.setBackgroundColor(
-                    ContextCompat.getColor(context, this.backgroundColor));
+            relativeLayout.setBackgroundColor(this.backgroundColor);
+            bgDrawable.setColorFilter(
+                    new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
         }
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null && this.backgroundColor != null) {
-            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
-            int      color      = ContextCompat.getColor(context, this.backgroundColor);
-            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-            relativeLayout.setBackground(bgDrawable);
+//            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
+//            int      color      = ContextCompat.getColor(context, this.backgroundColor);
+//            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+//            relativeLayout.setBackground(bgDrawable);
         }
         else if (this.backgroundResource != null) {
             relativeLayout.setBackgroundResource(this.backgroundResource);
+        }
+
+        // > Corners
+        // --------------------------------------------------------------------------------------
+
+        if (this.corners != null)
+        {
+            float topLeft     = Util.dpToPixel(this.corners.topLeftCornerRadiusDp());
+            float topRight    = Util.dpToPixel(this.corners.topRightCornerRadiusDp());
+            float bottomRight = Util.dpToPixel(this.corners.bottomRightCornerRadiusDp());
+            float bottomLeft  = Util.dpToPixel(this.corners.bottomLeftCornerRadiusDp());
+
+            float[] radii = {topLeft, topLeft, topRight, topRight,
+                             bottomRight, bottomRight, bottomLeft, bottomLeft};
+
+            bgDrawable.setCornerRadii(radii);
+            useDrawableBackground = true;
         }
 
         // [2] Layout Parameters
@@ -195,8 +224,10 @@ public class RelativeLayoutBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
-        else if (this.heightDp != null)
+        else if (this.heightDp != null) {
             layoutParamsBuilder.setHeightDp(this.heightDp);
+            bgDrawable.setIntrinsicHeight(Util.dpToPixel(this.heightDp));
+        }
 
         // > Weight
         // --------------------------------------------------------------------------------------
@@ -234,6 +265,9 @@ public class RelativeLayoutBuilder
 
         relativeLayout.setLayoutParams(layoutParamsBuilder.layoutParams());
 
+
+        if (useDrawableBackground)
+            relativeLayout.setBackground(bgDrawable);
 
         return relativeLayout;
     }

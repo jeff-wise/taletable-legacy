@@ -3,6 +3,7 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
@@ -18,10 +19,7 @@ import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.interpreter.Interpreter
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetState
-import com.kispoko.tome.rts.sheet.fromSheetEff
+import com.kispoko.tome.rts.sheet.*
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -73,6 +71,8 @@ sealed class NumberVariableValue : Serializable
 
     abstract fun value(sheetContext : SheetContext) : AppEff<Double>
 
+    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+
 }
 
 
@@ -102,6 +102,9 @@ data class NumberVariableLiteralValue(val value : Double)
     // -----------------------------------------------------------------------------------------
 
     override fun value(sheetContext : SheetContext) : AppEff<Double> = effValue(this.value)
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------
@@ -156,6 +159,10 @@ data class NumberVariableVariableValue(val variableId : VariableId)
     }
 
 
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -199,6 +206,10 @@ data class NumberVariableProgramValue(val invocation : Invocation)
         Interpreter.evaluateNumber(this.invocation, sheetContext)
 
 
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -236,10 +247,10 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext: SheetContext): AppEff<Double>
+    override fun value(sheetContext : SheetContext) : AppEff<Double>
     {
         fun numberValue(engine : Engine) : AppEff<ValueNumber> =
-            engine.numberValue(valueReference)
+            engine.numberValue(valueReference, sheetContext)
 
         fun doubleValue(numberValue : ValueNumber) : AppEff<Double> =
             effValue(numberValue.value())
@@ -248,6 +259,12 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
                           .apply(::numberValue)
                           .apply(::doubleValue)
     }
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+        GameManager.engine(sheetContext.gameId)
+                .apply { it.value(this.valueReference, sheetContext) }
+                .apply { effValue<AppError,Set<Variable>>(it.variables()) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -284,8 +301,12 @@ data class NumberVariableSummationValue(val summation : Summation)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext): AppEff<Double>
+    override fun value(sheetContext : SheetContext) : AppEff<Double>
             = summation.value(sheetContext)
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------

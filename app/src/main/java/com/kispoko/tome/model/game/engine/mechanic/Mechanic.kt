@@ -27,13 +27,13 @@ import kotlin.collections.ArrayList
  * Mechanic
  */
 data class Mechanic(override val id : UUID,
-                    val mechanicName : Prim<MechanicName>,
+                    val mechanicId : Prim<MechanicId>,
                     val label : Prim<MechanicLabel>,
                     val description : Prim<MechanicDescription>,
                     val summary : Prim<MechanicSummary>,
                     val category : Maybe<Prim<MechanicCategory>>,
                     val requirements : Prim<MechanicRequirements>,
-                    val variables : Coll<Variable>) : Model
+                    val variables : Conj<Variable>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ data class Mechanic(override val id : UUID,
 
     init
     {
-        this.mechanicName.name                  = "mechanic_name"
+        this.mechanicId.name                    = "mechanic_name"
         this.label.name                         = "label"
         this.description.name                   = "description"
         this.summary.name                       = "summary"
@@ -60,21 +60,21 @@ data class Mechanic(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(mechanicName : MechanicName,
+    constructor(mechanicId: MechanicId,
                 label : MechanicLabel,
                 description : MechanicDescription,
                 summary : MechanicSummary,
                 category : Maybe<MechanicCategory>,
                 requirements : MechanicRequirements,
-                variables : MutableList<Variable>)
+                variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
-               Prim(mechanicName),
+               Prim(mechanicId),
                Prim(label),
                Prim(description),
                Prim(summary),
                maybeLiftPrim(category),
                Prim(requirements),
-               Coll(variables))
+               Conj(variables))
 
 
     companion object : Factory<Mechanic>
@@ -84,8 +84,8 @@ data class Mechanic(override val id : UUID,
             is DocDict ->
             {
                 effApply(::Mechanic,
-                         // Name
-                         doc.at("name") ap { MechanicName.fromDocument(it) },
+                         // Mechanic Id
+                         doc.at("mechanic_id") ap { MechanicId.fromDocument(it) },
                          // Label
                          doc.at("label") ap { MechanicLabel.fromDocument(it) },
                          // Description
@@ -100,12 +100,31 @@ data class Mechanic(override val id : UUID,
                          doc.at("requirements") ap { MechanicRequirements.fromDocument(it) },
                          // Variables
                          doc.list("variables") ap { docList ->
-                             docList.mapMut { Variable.fromDocument(it) }
+                             docList.mapSetMut { Variable.fromDocument(it) }
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun mechanicId() : MechanicId = this.mechanicId.value
+
+    fun label() : String = this.label.value.value
+
+    fun description() : String = this.description.value.value
+
+    fun summary() : String = this.summary.value.value
+
+    fun category() : MechanicCategory? = getMaybePrim(this.category)
+
+    fun requirements() : Set<VariableId> = this.requirements.value.variables.toSet()
+
+    fun variables() : Set<Variable> = this.variables.set
 
 
     // -----------------------------------------------------------------------------------------
@@ -122,20 +141,20 @@ data class Mechanic(override val id : UUID,
 
 
 /**
- * Mechanic Name
+ * Mechanic Id
  */
-data class MechanicName(val value : String) : SQLSerializable, Serializable
+data class MechanicId(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<MechanicName>
+    companion object : Factory<MechanicId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicName> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicId> = when (doc)
         {
-            is DocText -> effValue(MechanicName(doc.text))
+            is DocText -> effValue(MechanicId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
@@ -246,7 +265,7 @@ data class MechanicCategory(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<MechanicCategory>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategory> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<MechanicCategory> = when (doc)
         {
             is DocText -> effValue(MechanicCategory(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

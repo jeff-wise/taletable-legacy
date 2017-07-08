@@ -11,9 +11,6 @@ import com.kispoko.tome.load.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.EngineValue
-import com.kispoko.tome.model.game.engine.dice.DiceRoll
-import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.section.SectionName
@@ -71,6 +68,24 @@ object SheetManager
             note(this.sheetById[sheetId]?.state, SheetDoesNotExist(sheetId))
 
 
+    fun sheetContext(sheet : Sheet) : AppEff<SheetContext>
+    {
+        fun campaign(sheet : Sheet) : AppEff<Campaign> =
+                note(CampaignManager.campaignWithId(sheet.campaignId()),
+                        AppSheetError(CampaignDoesNotExist(sheet.sheetId(), sheet.campaignId())))
+
+
+        fun gameId(campaign : Campaign) : AppEff<GameId> = effValue(campaign.gameId())
+
+        fun context(gameId : GameId) : AppEff<SheetContext> =
+            effValue(SheetContext(sheet.sheetId(), sheet.campaignId(), gameId))
+
+        return campaign(sheet)
+                .apply { gameId(it) }
+                .apply { context(it) }
+    }
+
+
     fun sheetState(sheetId : SheetId) : AppEff<SheetState> =
             note(this.sheetById[sheetId]?.state,
                     AppSheetError(SheetDoesNotExist(sheetId)))
@@ -78,23 +93,28 @@ object SheetManager
 
     fun setNewSheet(sheet : Sheet, sheetUI : SheetUI)
     {
-        // Create & Index Sheet Record
-        val sheetRecord = SheetRecord.withDefaultView(sheet, SheetState(sheet))
-        this.sheetById.put(sheet.sheetId(), sheetRecord)
+        SheetManager.sheetContext(sheet)        apDo { sheetContext ->
+        GameManager.engine(sheetContext.gameId) apDo { engine ->
+            val sheetRecord = SheetRecord.withDefaultView(sheet, sheetContext,
+                                        SheetState(sheetContext, engine.mechanics()))
 
-        // Initialize Sheet
-        sheetRecord.onActive(sheetUI.context())
+            // Create & Index Sheet Record
+            this.sheetById.put(sheet.sheetId(), sheetRecord)
 
-        // Theme UI
-        val theme = ThemeManager.theme(sheet.settings().themeId())
-        when (theme)
-        {
-            is Val -> sheetUI.applyTheme(sheet.sheetId(), theme.value.uiColors())
-            is Err -> ApplicationLog.error(theme.error)
-        }
+            // Initialize Sheet
+            sheetRecord.onActive(sheetUI.context())
 
-        // Render
-        this.render(sheet.sheetId(), sheetUI.pagePagerAdatper())
+            // Theme UI
+            val theme = ThemeManager.theme(sheet.settings().themeId())
+            when (theme)
+            {
+                is Val -> sheetUI.applyTheme(sheet.sheetId(), theme.value.uiColors())
+                is Err -> ApplicationLog.error(theme.error)
+            }
+
+            // Render
+            SheetManager.render(sheet.sheetId(), sheetUI.pagePagerAdatper())
+        } }
     }
 
 
@@ -248,11 +268,11 @@ object SheetManager
                 val section = sheetRecord.sheet().sectionWithName(selectedSectionName)
                 if (section != null)
                 {
-                    val gameContext = sheetRecord.gameContext()
-                    when (gameContext)
+                    val sheetContext = SheetManager.sheetContext(sheetRecord.sheet())
+                    when (sheetContext)
                     {
-                        is Val -> pagePagerAdapter.setPages(section.pages(), gameContext.value)
-                        is Err -> ApplicationLog.error(gameContext.error)
+                        is Val -> pagePagerAdapter.setPages(section.pages(), sheetContext.value)
+                        is Err -> ApplicationLog.error(sheetContext.error)
                     }
                 }
                 else
@@ -272,6 +292,20 @@ object SheetManager
     fun color(sheetId : SheetId, colorTheme : ColorTheme) : Int
     {
         val color = this.themeColor(sheetId, colorTheme)
+
+        when (color)
+        {
+            is Val -> return color.value
+            is Err -> ApplicationLog.error(color.error)
+        }
+
+        return Color.BLACK
+    }
+
+
+    fun uiColor(sheetId : SheetId, colorTheme : ColorTheme) : Int
+    {
+        val color = this.uiThemeColor(sheetId, colorTheme)
 
         when (color)
         {
@@ -310,9 +344,37 @@ object SheetManager
         } } }
 
 
+    /**
+     * The color value for an object in a sheet based on some color theme.
+     */
+    fun uiThemeColor(sheetId : SheetId, colorTheme : ColorTheme) : AppEff<Int> =
+        uiSheetThemeId(sheetId)               ap { themeId ->
+        colorId(sheetId, themeId, colorTheme) ap { colorId ->
+        ThemeManager.theme(themeId)           ap { theme   ->
+        color(theme, colorId)
+        } } }
+
+
     private fun sheetThemeId(sheetId : SheetId) : AppEff<ThemeId> =
             note(this.sheetById[sheetId]?.sheet()?.settings()?.themeId(),
                  AppSheetError(SheetDoesNotExist(sheetId)))
+
+
+    private fun uiSheetThemeId(sheetId : SheetId) : AppEff<ThemeId>
+    {
+        val themeId = this.sheetById[sheetId]?.sheet()?.settings()?.themeId()
+
+        if (themeId != null) {
+            when (themeId) {
+                is ThemeId.Custom -> return effValue(ThemeId.Dark)
+                else              -> return effValue(themeId)
+            }
+        }
+        else {
+            return effError(AppSheetError(SheetDoesNotExist(sheetId)))
+        }
+    }
+
 
     private fun colorId(sheetId : SheetId,
                         themeId : ThemeId,
@@ -345,6 +407,7 @@ data class SheetViewState(val selectedSection : SectionName)
 
 
 data class SheetRecord(val sheet : Comp<Sheet>,
+                       val sheetContext : SheetContext,
                        val state : SheetState,
                        val viewState : SheetViewState)
 {
@@ -355,7 +418,9 @@ data class SheetRecord(val sheet : Comp<Sheet>,
 
     companion object
     {
-        fun withDefaultView(sheet : Sheet, state : SheetState) : SheetRecord
+        fun withDefaultView(sheet : Sheet,
+                            sheetContext : SheetContext,
+                            state : SheetState) : SheetRecord
         {
             val sections = sheet.sections()
 
@@ -363,7 +428,7 @@ data class SheetRecord(val sheet : Comp<Sheet>,
                                                          else SectionName("NA")
 
             val viewState = SheetViewState(sectionName)
-            return SheetRecord(Comp(sheet), state, viewState)
+            return SheetRecord(Comp(sheet), sheetContext, state, viewState)
         }
     }
 
@@ -381,67 +446,79 @@ data class SheetRecord(val sheet : Comp<Sheet>,
 
     fun onActive(context : Context)
     {
-        val sheetContext = this.context(context)
+        val sheetContext = SheetManager.sheetContext(this.sheet())
 
         when (sheetContext)
         {
-            is Val -> this.sheet().onActive(sheetContext.value)
+            is Val -> this.sheet().onActive(SheetUIContext(sheetContext.value, context))
             is Err -> ApplicationLog.error(sheetContext.error)
         }
     }
 
-
-    fun context(context : Context) : AppEff<SheetContext>
-    {
-        val sheetId    = sheet().sheetId.value
-        val campaignId = sheet().campaignId.value
-
-        val campaign : AppEff<Campaign> =
-                note(CampaignManager.campaignWithId(campaignId),
-                     AppSheetError(CampaignDoesNotExist(sheetId, campaignId)))
-
-        val gameId = campaign.apply { effValue<AppError,GameId>(it.gameId.value) }
-
-        return effApply(::SheetContext, effValue(sheetId),
-                                        effValue(campaignId),
-                                        gameId,
-                                        effValue(context))
-    }
-
-
-    fun gameContext() : SheetEff<SheetGameContext>
-    {
-        val sheetId    = sheet().sheetId.value
-        val campaignId = sheet().campaignId.value
-
-        val campaign : SheetEff<Campaign> = note(CampaignManager.campaignWithId(campaignId),
-                                                 CampaignDoesNotExist(sheetId, campaignId))
-        val gameId = campaign.apply { effValue<SheetError,GameId>(it.gameId.value) }
-
-        return effApply(::SheetGameContext, effValue(sheetId),
-                                            effValue(campaignId),
-                                            gameId)
-    }
+//
+//    fun context(context : Context) : AppEff<SheetUIContext>
+//    {
+//        val sheetId    = sheet().sheetId.value
+//        val campaignId = sheet().campaignId.value
+//
+//        val campaign : AppEff<Campaign> =
+//                note(CampaignManager.campaignWithId(campaignId),
+//                     AppSheetError(CampaignDoesNotExist(sheetId, campaignId)))
+//
+//        val gameId = campaign.apply { effValue<AppError,GameId>(it.gameId.value) }
+//
+//        return effApply(::SheetUIContext, effValue(sheetId),
+//                                        effValue(campaignId),
+//                                        gameId,
+//                                        effValue(context))
+//    }
+//
+//
+//    fun gameContext() : AppEff<SheetContext>
+//    {
+//        val sheetId    = sheet().sheetId.value
+//        val campaignId = sheet().campaignId.value
+//
+//        val campaign : AppEff<Campaign> =
+//                    note(CampaignManager.campaignWithId(campaignId),
+//                         AppSheetError(CampaignDoesNotExist(sheetId, campaignId)))
+//
+//        val gameId = campaign.apply { effValue<AppError,GameId>(it.gameId.value) }
+//
+//        return effApply(::SheetContext, effValue(sheetId),
+//                                            effValue(campaignId),
+//                                            gameId)
+//    }
 
 }
 
 
-data class SheetGameContext(val sheetId : SheetId,
-                            val campaignId : CampaignId,
-                            val gameId : GameId) : Serializable
+open class SheetContext(open val sheetId : SheetId,
+                        open val campaignId : CampaignId,
+                        open val gameId : GameId) : Serializable
 
 
-data class SheetContext(val sheetId : SheetId,
-                        val campaignId : CampaignId,
-                        val gameId : GameId,
-                        val context : Context)
+data class SheetUIContext(override val sheetId : SheetId,
+                          override val campaignId : CampaignId,
+                          override val gameId : GameId,
+                          val context : Context)
+                           : SheetContext(sheetId, campaignId, gameId), Serializable
+{
+
+    constructor(sheetContext : SheetContext, context : Context)
+        : this(sheetContext.sheetId,
+               sheetContext.campaignId,
+               sheetContext.gameId,
+               context)
+
+}
 
 
 interface SheetComponent
 {
-    fun onSheetComponentActive(sheetContext : SheetContext)
+    fun onSheetComponentActive(sheetUIContext: SheetUIContext)
 
-//     fun view(sheetContext : SheetContext) : View
+//     fun view(sheetUIContext : SheetUIContext) : View
 }
 
 

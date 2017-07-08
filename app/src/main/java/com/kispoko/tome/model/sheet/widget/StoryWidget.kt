@@ -5,6 +5,7 @@ package com.kispoko.tome.model.sheet.widget
 import android.view.View
 import android.widget.LinearLayout
 import com.google.android.flexbox.*
+import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
@@ -19,7 +20,7 @@ import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -224,12 +225,12 @@ sealed class StoryPart(open val format : Comp<TextFormat>) : Model, Serializable
     fun format() : TextFormat = this.format.value
 
 
-    fun valueString(sheetContext : SheetContext) : String = when (this)
+    fun valueString(sheetUIContext: SheetUIContext) : String = when (this)
     {
         is StoryPartSpan     -> this.text()
         is StoryPartVariable ->
         {
-            val str = this.variable().valueString(sheetContext)
+            val str = this.variable().valueString(sheetUIContext)
             when (str)
             {
                 is Val -> str.value
@@ -422,29 +423,29 @@ object StoryWidgetView
 {
 
 
-    fun view(storyWidget : StoryWidget, sheetContext : SheetContext) : View
+    fun view(storyWidget : StoryWidget, sheetUIContext: SheetUIContext) : View
     {
-        val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetContext)
+        val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.storyView(storyWidget, sheetContext))
+        layout.addView(this.storyView(storyWidget, sheetUIContext))
 
         return layout
     }
 
 
-    fun storyView(storyWidget : StoryWidget, sheetContext : SheetContext) : FlexboxLayout
+    fun storyView(storyWidget : StoryWidget, sheetUIContext: SheetUIContext) : FlexboxLayout
     {
-        val layout = this.storyViewLayout(storyWidget.format(), sheetContext)
+        val layout = this.storyViewLayout(storyWidget.format(), sheetUIContext)
 
         val storyParts = storyWidget.story()
 
         storyParts.forEach { storyPart ->
-            val words = storyPart.valueString(sheetContext).split(" ")
+            val words = storyPart.valueString(sheetUIContext).split(" ")
             words.forEachIndexed { index, word ->
                 var w = word
                 if (index != 0)
                     w = " " + word
-                val partView = this.storyPartView(w, storyWidget.format(), storyPart, sheetContext)
+                val partView = this.storyPartView(w, storyWidget.format(), storyPart, sheetUIContext)
                 layout.addView(partView)
             }
         }
@@ -454,7 +455,7 @@ object StoryWidgetView
     }
 
 
-    fun storyViewLayout(format : StoryWidgetFormat, sheetContext : SheetContext) : FlexboxLayout
+    fun storyViewLayout(format : StoryWidgetFormat, sheetUIContext: SheetUIContext) : FlexboxLayout
     {
         val layout = FlexboxLayoutBuilder()
 
@@ -468,7 +469,7 @@ object StoryWidgetView
             is Alignment.Center -> layout.justification = JustifyContent.CENTER
         }
 
-//        layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+//        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
 //                                                     format.backgroundColorTheme())
 
 //        layout.corners          = format.corners()
@@ -478,7 +479,7 @@ object StoryWidgetView
         layout.itemAlignment    = format.partAlignment().alignItems()
 
 
-        return layout.flexboxLayout(sheetContext.context)
+        return layout.flexboxLayout(sheetUIContext.context)
 
     }
 
@@ -486,7 +487,7 @@ object StoryWidgetView
     fun storyPartView(word : String,
                       format : StoryWidgetFormat,
                       storyPart : StoryPart,
-                      sheetContext : SheetContext) : View
+                      sheetUIContext: SheetUIContext) : View
     {
         val text = TextViewBuilder()
 
@@ -506,9 +507,18 @@ object StoryWidgetView
         text.paddingSpacing = padding
         text.marginSpacing  = storyPart.format().margins()
 
-        storyPart.format().style().styleTextViewBuilder(text, sheetContext)
+        storyPart.format().style().styleTextViewBuilder(text, sheetUIContext)
 
-        return text.textView(sheetContext.context)
+
+        val variable = storyPart.variable()
+        if (variable != null)
+        {
+            text.onClick        = View.OnClickListener {
+                openVariableEditorDialog(variable, sheetUIContext)
+            }
+        }
+
+        return text.textView(sheetUIContext.context)
     }
 
 }

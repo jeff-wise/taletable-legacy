@@ -12,6 +12,8 @@ import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.Invocation
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -56,6 +58,8 @@ sealed class BooleanVariableValue : Serializable
 
     abstract fun value() : AppEff<Boolean>
 
+    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+
 }
 
 
@@ -86,6 +90,9 @@ data class BooleanVariableLiteralValue(val value : Boolean)
     // -----------------------------------------------------------------------------------------
 
     override fun value() : AppEff<Boolean> = effValue(this.value)
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------
@@ -128,6 +135,10 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
     override fun value(): AppEff<Boolean> {
         TODO("not implemented")
     }
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------

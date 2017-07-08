@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.kispoko.tome.R.string.variable;
 
 
 /**
@@ -24,7 +25,6 @@ public class Util
 
 
     /**
-     * Generate a value suitable for use in {@link #setId(int)}.
      * This value will not collide with ID values generated at build time by aapt for R.id.
      *
      * @return a generated ID value
@@ -61,6 +61,16 @@ public class Util
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);
+    }
+
+
+    public static String doubleString(Double d)
+    {
+        if ((d == Math.floor(d)) && !Double.isInfinite(d)) {
+            return Integer.toString(d.intValue());
+        } else {
+            return d.toString();
+        }
     }
 
 

@@ -2,13 +2,11 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.source
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -20,7 +18,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
@@ -246,23 +244,23 @@ object QuoteWidgetView
 {
 
 
-    fun widgetView(quoteWidget : QuoteWidget, sheetContext : SheetContext) : View
+    fun widgetView(quoteWidget : QuoteWidget, sheetUIContext: SheetUIContext) : View
     {
-        val layout = WidgetView.layout(quoteWidget.widgetFormat(), sheetContext)
+        val layout = WidgetView.layout(quoteWidget.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.mainView(quoteWidget, sheetContext))
+        layout.addView(this.mainView(quoteWidget, sheetUIContext))
 
         return layout
     }
 
 
 
-    private fun mainView(quoteWidget : QuoteWidget, sheetContext : SheetContext) : LinearLayout
+    private fun mainView(quoteWidget : QuoteWidget, sheetUIContext: SheetUIContext) : LinearLayout
     {
-        val layout = this.mainViewLayout(quoteWidget.format(), sheetContext)
+        val layout = this.mainViewLayout(quoteWidget.format(), sheetUIContext)
 
         // > Quote View
-        layout.addView(this.quoteView(quoteWidget, sheetContext))
+        layout.addView(this.quoteView(quoteWidget, sheetUIContext))
 
         // > Source View
         val source = quoteWidget.sourceString()
@@ -273,15 +271,15 @@ object QuoteWidgetView
                 is QuoteViewType.Source ->
                     layout.addView(this.sourceHorizontalView(source,
                                                              quoteWidget.format(),
-                                                             sheetContext))
+                            sheetUIContext))
                 is QuoteViewType.IconOverSource ->
                     layout.addView(this.sourceVerticalView(source,
                                                            quoteWidget.format(),
-                                                           sheetContext))
+                            sheetUIContext))
                 is QuoteViewType.NoIcon ->
                     layout.addView(this.sourceVerticalView(source,
                                                            quoteWidget.format(),
-                                                           sheetContext))
+                            sheetUIContext))
 
             }
         }
@@ -291,7 +289,7 @@ object QuoteWidgetView
 
 
     private fun mainViewLayout(format : QuoteWidgetFormat,
-                               sheetContext : SheetContext) : LinearLayout
+                               sheetUIContext: SheetUIContext) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -299,16 +297,16 @@ object QuoteWidgetView
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
                                                      format.widgetFormat().backgroundColorTheme())
 
         layout.gravity          = format.widgetFormat().alignment().gravityConstant()
 
-        return layout.linearLayout(sheetContext.context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    private fun quoteView(quoteWidget : QuoteWidget, sheetContext : SheetContext) : TextView
+    private fun quoteView(quoteWidget : QuoteWidget, sheetUIContext: SheetUIContext) : TextView
     {
         val quote = TextViewBuilder()
 
@@ -319,16 +317,16 @@ object QuoteWidgetView
 
         quote.gravity       = quoteWidget.format().quoteStyle().alignment().gravityConstant()
 
-        quoteWidget.format().quoteStyle().styleTextViewBuilder(quote, sheetContext)
+        quoteWidget.format().quoteStyle().styleTextViewBuilder(quote, sheetUIContext)
 
-        return quote.textView(sheetContext.context)
+        return quote.textView(sheetUIContext.context)
     }
 
 
 
     private fun sourceHorizontalView(sourceText : String,
                                      format : QuoteWidgetFormat,
-                                     sheetContext : SheetContext) : LinearLayout
+                                     sheetUIContext: SheetUIContext) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -360,7 +358,7 @@ object QuoteWidgetView
 
         icon.image                  = R.drawable.ic_quote
 
-        icon.color                  = SheetManager.color(sheetContext.sheetId,
+        icon.color                  = SheetManager.color(sheetUIContext.sheetId,
                                                          format.iconColorTheme())
 
         // (3 B) Source
@@ -371,16 +369,16 @@ object QuoteWidgetView
 
         source.text                 = sourceText
 
-        format.sourceStyle().styleTextViewBuilder(source, sheetContext)
+        format.sourceStyle().styleTextViewBuilder(source, sheetUIContext)
 
 
-        return layout.linearLayout(sheetContext.context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
     private fun sourceVerticalView(sourceText : String,
                                    format : QuoteWidgetFormat,
-                                   sheetContext : SheetContext) : LinearLayout
+                                   sheetUIContext: SheetUIContext) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -413,7 +411,7 @@ object QuoteWidgetView
 
         icon.image              = R.drawable.ic_quote_medium;
 
-        icon.color              = SheetManager.color(sheetContext.sheetId,
+        icon.color              = SheetManager.color(sheetUIContext.sheetId,
                                                      format.iconColorTheme())
 
         // (3 B) Source
@@ -426,16 +424,16 @@ object QuoteWidgetView
 
         source.gravity          = Gravity.CENTER
 
-        format.sourceStyle().styleTextViewBuilder(source, sheetContext)
+        format.sourceStyle().styleTextViewBuilder(source, sheetUIContext)
 
 
-        return layout.linearLayout(sheetContext.context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
     private fun sourceNoIconView(sourceText : String,
                                  format : QuoteWidgetFormat,
-                                 sheetContext : SheetContext) : TextView
+                                 sheetUIContext: SheetUIContext) : TextView
     {
         val source = TextViewBuilder()
 
@@ -448,9 +446,9 @@ object QuoteWidgetView
 
         source.margin.topDp     = 7f
 
-        format.sourceStyle().styleTextViewBuilder(source, sheetContext)
+        format.sourceStyle().styleTextViewBuilder(source, sheetUIContext)
 
-        return source.textView(sheetContext.context)
+        return source.textView(sheetUIContext.context)
     }
 
 

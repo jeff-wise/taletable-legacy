@@ -5,8 +5,8 @@ package com.kispoko.tome.model.game.engine
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Conj
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
@@ -22,6 +22,8 @@ import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.rts.game.engine.FunctionDoesNotExist
 import com.kispoko.tome.rts.game.engine.ProgramDoesNotExist
 import com.kispoko.tome.rts.game.engine.ValueSetDoesNotExist
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -39,10 +41,10 @@ import java.util.*
  * Engine
  */
 data class Engine(override val id : UUID,
-                  private val valueSets : Coll<ValueSet>,
-                  private val mechanics : Coll<Mechanic>,
-                  private val functions : Coll<Function>,
-                  private val programs : Coll<Program>,
+                  private val valueSets : Conj<ValueSet>,
+                  private val mechanics : Conj<Mechanic>,
+                  private val functions : Conj<Function>,
+                  private val programs : Conj<Program>,
                   val gameId : GameId) : Model, Serializable
 {
 
@@ -51,17 +53,17 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     private val valueSetById : MutableMap<ValueSetId,ValueSet> =
-                                            valueSets.list.associateBy { it.valueSetId.value }
+                                            valueSets.set.associateBy { it.valueSetId.value }
                                                 as MutableMap<ValueSetId, ValueSet>
 
 
     private val programById : MutableMap<ProgramId,Program> =
-                                            programs.list.associateBy { it.programId() }
+                                            programs.set.associateBy { it.programId() }
                                                     as MutableMap<ProgramId,Program>
 
 
     private val functionById : MutableMap<FunctionId,Function> =
-                                            functions.list.associateBy { it.functionId() }
+                                            functions.set.associateBy { it.functionId() }
                                                     as MutableMap<FunctionId,Function>
 
     // -----------------------------------------------------------------------------------------
@@ -92,19 +94,19 @@ data class Engine(override val id : UUID,
                          effValue(UUID.randomUUID()),
                          // Value Sets
                          doc.list("value_sets") apply {
-                             effApply(::Coll, it.mapMut { ValueSet.fromDocument(it) })
+                             effApply(::Conj, it.mapSetMut { ValueSet.fromDocument(it) })
                          },
                          // Mechanics
                          doc.list("mechanics") apply {
-                             effApply(::Coll, it.mapMut { Mechanic.fromDocument(it) })
+                             effApply(::Conj, it.mapSetMut { Mechanic.fromDocument(it) })
                          },
                          // Functions
                          doc.list("functions") apply {
-                             effApply(::Coll, it.mapMut { Function.fromDocument(it) })
+                             effApply(::Conj, it.mapSetMut { Function.fromDocument(it) })
                          },
                          // Programs
                          doc.list("programs") apply {
-                             effApply(::Coll, it.mapMut { Program.fromDocument(it) })
+                             effApply(::Conj, it.mapSetMut { Program.fromDocument(it) })
                          },
                          effValue(gameId)
                          )
@@ -134,17 +136,23 @@ data class Engine(override val id : UUID,
 
     fun valueSet(valueSetId : ValueSetId) : AppEff<ValueSet> =
             note(this.valueSetById[valueSetId],
-                 AppEngineError(ValueSetDoesNotExist(this.gameId, valueSetId)))
+                 AppEngineError(ValueSetDoesNotExist(valueSetId)))
 
 
-    fun textValue(valueReference : ValueReference) : AppEff<ValueText> =
-        this.valueSet(valueReference.valueSetId)
-                .apply { it.textValue(valueReference.valueId, this) }
-
-
-    fun numberValue(valueReference : ValueReference) : AppEff<ValueNumber> =
+    fun value(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<Value> =
             this.valueSet(valueReference.valueSetId)
-                    .apply { it.numberValue(valueReference.valueId, this) }
+                    .apply { it.value(valueReference.valueId, sheetContext) }
+
+
+    fun textValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueText> =
+        this.valueSet(valueReference.valueSetId)
+                .apply { it.textValue(valueReference.valueId, sheetContext) }
+
+
+    fun numberValue(valueReference : ValueReference,
+                    sheetContext : SheetContext) : AppEff<ValueNumber> =
+        this.valueSet(valueReference.valueSetId)
+                .apply { it.numberValue(valueReference.valueId, sheetContext) }
 
 
     // Engine Data > Functions
@@ -161,6 +169,12 @@ data class Engine(override val id : UUID,
     fun program(programId : ProgramId) : AppEff<Program> =
             note(this.programById[programId],
                  AppEngineError(ProgramDoesNotExist(programId)))
+
+
+    // Engine Data > Mechanics
+    // -----------------------------------------------------------------------------------------
+
+    fun mechanics() : Set<Mechanic> = this.mechanics.set
 
 }
 
