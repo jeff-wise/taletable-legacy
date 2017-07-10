@@ -15,6 +15,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 import effect.*
@@ -199,7 +200,7 @@ object NumberCellView
             is Just    -> value.text = maybeValue.value
         }
 
-        val valueString = cell.valueVariable().valueString(sheetUIContext)
+        val valueString = cell.valueVariable().valueString(SheetContext(sheetUIContext))
         when (valueString) {
             is Val -> value.text = valueString.value
             is Err -> ApplicationLog.error(valueString.error)

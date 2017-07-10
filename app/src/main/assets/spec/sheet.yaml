@@ -1075,6 +1075,8 @@ types:
     description: story part span
   - type: story_part_variable
     description: story part variable
+  - type: story_part_icon
+    description: story part icon
 - name: story_part_span
   label: Story Part Span
   description: >
@@ -1109,6 +1111,21 @@ types:
     presence: optional
     description: >
       The value variable.
+- name: story_part_icon
+  label: Story Part Icon
+  description: >
+    Story Part Icon
+  group: 'Widget: Story'
+  type: product
+  fields:
+  - name: icon
+    type: icon
+    presence: required
+    description: The icon
+  - name: icon_format
+    type: icon_format
+    presence: optional
+    description: The icon format.
 - name: story_widget_format
   label: Story Widget Format
   description: >
@@ -1121,8 +1138,8 @@ types:
     presence: optional
     description: >
       Standard widget formatting options.
-  - name: part_alignment
-    type: story_part_alignment
+  - name: vertical_alignment
+    type: vertical_alignment
     presence: optional
     description: >
       Standard widget formatting options.
@@ -1919,6 +1936,42 @@ types:
     presence: optional
     description:
       The bottom-left corner radius.
+- name: icon_format
+  label: Icon Format
+  description: Icon Format
+  group: Style
+  type: product
+  fields:
+  - name: color_theme
+    type: color_theme
+    presence: optional
+    description: The icon color.
+  - name: size
+    type: icon_size
+    presence: optional
+    description: The icon width x height.
+- name: icon_size
+  label: Icon Size
+  description: The icon width x height.
+  group: Style
+  type: product
+  fields:
+  - name: width
+    type: number
+    presence: required
+    description: The width.
+  - name: height
+    type: number
+    presence: required
+    description: The height.
+- name: icon
+  label: Icon
+  description: An icon.
+  group: Style
+  type: primitive
+  base_type: string
+  constraints:
+  - icon_set
 - name: spacing
   label: Spacing
   description: >
@@ -2039,15 +2092,6 @@ types:
   base_type: string
   constraints:
   - quote_widget_view_type_set
-- name: story_part_alignment
-  label: Story Part Alignment
-  description: >
-    Story part alignment
-  group: 'Widget: Story'
-  type: primitive
-  base_type: string
-  constraints:
-  - story_part_alignment_set
 constraints:
 - name: sheet_theme_type
   type: string_one_of
@@ -2079,15 +2123,6 @@ constraints:
     - bold
     - bold_italic
     - light
-- name: story_part_alignment_set
-  type: string_one_of
-  parameters:
-    set:
-    - stretch
-    - flex_start
-    - flex_end
-    - center
-    - baseline
 - name: position_set
   type: string_one_of
   parameters:
@@ -2117,3 +2152,9 @@ constraints:
     - source
     - icon_over_source
     - no_icon
+- name: icon_set
+  type: string_one_of
+  parameters:
+    set:
+    - sword
+    - shield

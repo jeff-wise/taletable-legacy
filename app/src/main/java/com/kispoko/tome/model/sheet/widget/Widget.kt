@@ -20,6 +20,7 @@ import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
 import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
@@ -1217,7 +1218,7 @@ data class NumberWidget(override val id : UUID,
      */
     fun valueString(sheetUIContext: SheetUIContext) : String
     {
-        val numberEff = this.valueVariable().value(sheetUIContext)
+        val numberEff = this.valueVariable().value(SheetContext(sheetUIContext))
         when (numberEff)
         {
             is Val ->
@@ -1982,7 +1983,7 @@ data class TextWidget(override val id : UUID,
      */
     fun valueString(sheetUIContext: SheetUIContext) : String
     {
-        val stringEff = this.valueVariable().value(sheetUIContext)
+        val stringEff = this.valueVariable().value(SheetContext(sheetUIContext))
         when (stringEff)
         {
             is Val -> return stringEff.value

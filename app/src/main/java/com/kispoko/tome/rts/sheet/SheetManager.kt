@@ -4,6 +4,11 @@ package com.kispoko.tome.rts.sheet
 
 import android.content.Context
 import android.graphics.Color
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
+import android.util.Log
+import android.view.View
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
 import com.kispoko.tome.app.*
 import com.kispoko.tome.lib.functor.Comp
@@ -113,7 +118,7 @@ object SheetManager
             }
 
             // Render
-            SheetManager.render(sheet.sheetId(), sheetUI.pagePagerAdatper())
+            SheetManager.render(sheet.sheetId(), sheetUI)
         } }
     }
 
@@ -255,30 +260,42 @@ object SheetManager
     // RENDER
     // -----------------------------------------------------------------------------------------
 
-    fun render(sheetId : SheetId, pagePagerAdapter : PagePagerAdapter)
+    fun render(sheetId : SheetId, sheetUI : SheetUI)
     {
         val sheetRecordEff = this.sheetRecord(sheetId)
 
         when (sheetRecordEff)
         {
-            is Val ->
-            {
+            is Val -> {
                 val sheetRecord = sheetRecordEff.value
                 val selectedSectionName = sheetRecord.viewState.selectedSection
                 val section = sheetRecord.sheet().sectionWithName(selectedSectionName)
-                if (section != null)
-                {
-                    val sheetContext = SheetManager.sheetContext(sheetRecord.sheet())
-                    when (sheetContext)
-                    {
-                        is Val -> pagePagerAdapter.setPages(section.pages(), sheetContext.value)
-                        is Err -> ApplicationLog.error(sheetContext.error)
-                    }
+
+                val start = System.currentTimeMillis()
+
+                val sheetUIContext = SheetUIContext(sheetRecord.sheetContext, sheetUI.context())
+
+                if (section != null) {
+                    sheetUI.pagePagerAdatper()
+                           .setPages(section.pages(), sheetRecord.sheetContext)
                 }
-                else
-                {
+                else {
                     ApplicationLog.error(SectionDoesNotExist(sheetId, selectedSectionName))
                 }
+
+                // Configure bottom nav
+                sheetUI.bottomNavigation().setOnTabSelectedListener { position, _ ->
+                    val selectedSection = sheetRecord.sheet().sectionWithIndex(position)
+                    if (selectedSection != null) {
+                        sheetUI.pagePagerAdatper()
+                                .setPages(selectedSection.pages(), sheetRecord.sheetContext)
+                    }
+                    true
+                }
+
+                val end = System.currentTimeMillis()
+
+                Log.d("***SHEETMAN", "time to render ms: " + (end - start).toString())
             }
             is Err -> ApplicationLog.error(sheetRecordEff.error)
         }
@@ -455,54 +472,26 @@ data class SheetRecord(val sheet : Comp<Sheet>,
         }
     }
 
-//
-//    fun context(context : Context) : AppEff<SheetUIContext>
-//    {
-//        val sheetId    = sheet().sheetId.value
-//        val campaignId = sheet().campaignId.value
-//
-//        val campaign : AppEff<Campaign> =
-//                note(CampaignManager.campaignWithId(campaignId),
-//                     AppSheetError(CampaignDoesNotExist(sheetId, campaignId)))
-//
-//        val gameId = campaign.apply { effValue<AppError,GameId>(it.gameId.value) }
-//
-//        return effApply(::SheetUIContext, effValue(sheetId),
-//                                        effValue(campaignId),
-//                                        gameId,
-//                                        effValue(context))
-//    }
-//
-//
-//    fun gameContext() : AppEff<SheetContext>
-//    {
-//        val sheetId    = sheet().sheetId.value
-//        val campaignId = sheet().campaignId.value
-//
-//        val campaign : AppEff<Campaign> =
-//                    note(CampaignManager.campaignWithId(campaignId),
-//                         AppSheetError(CampaignDoesNotExist(sheetId, campaignId)))
-//
-//        val gameId = campaign.apply { effValue<AppError,GameId>(it.gameId.value) }
-//
-//        return effApply(::SheetContext, effValue(sheetId),
-//                                            effValue(campaignId),
-//                                            gameId)
-//    }
-
 }
 
 
 open class SheetContext(open val sheetId : SheetId,
                         open val campaignId : CampaignId,
                         open val gameId : GameId) : Serializable
+{
+
+    constructor(sheetUIContext : SheetUIContext) :
+            this(sheetUIContext.sheetId,
+                 sheetUIContext.campaignId,
+                 sheetUIContext.gameId)
+
+}
 
 
-data class SheetUIContext(override val sheetId : SheetId,
-                          override val campaignId : CampaignId,
-                          override val gameId : GameId,
+data class SheetUIContext(val sheetId : SheetId,
+                          val campaignId : CampaignId,
+                          val gameId : GameId,
                           val context : Context)
-                           : SheetContext(sheetId, campaignId, gameId), Serializable
 {
 
     constructor(sheetContext : SheetContext, context : Context)
@@ -538,6 +527,8 @@ interface SheetUI
 {
 
     fun pagePagerAdatper() : PagePagerAdapter
+
+    fun bottomNavigation() : AHBottomNavigation
 
     fun applyTheme(sheetId : SheetId, uiColors : UIColors)
 

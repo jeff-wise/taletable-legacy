@@ -2,10 +2,12 @@
 package com.kispoko.tome.util;
 
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
@@ -61,6 +63,11 @@ public class Util
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);
+    }
+
+    public static int spToPx(float sp, Context context) {
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
+        return px;
     }
 
 

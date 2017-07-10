@@ -19,6 +19,7 @@ import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
@@ -268,7 +269,7 @@ data class TableWidgetNumberCell(override val id : UUID,
 
     fun valueString(sheetUIContext: SheetUIContext) : Maybe<String>
     {
-        val numberEff = this.valueVariable().value(sheetUIContext)
+        val numberEff = this.valueVariable().value(SheetContext(sheetUIContext))
 
         when (numberEff)
         {
@@ -378,7 +379,7 @@ data class TableWidgetTextCell(override val id : UUID,
 
     fun valueString(sheetUIContext: SheetUIContext) : Maybe<String>
     {
-        val numberEff = this.valueVariable().value(sheetUIContext)
+        val numberEff = this.valueVariable().value(SheetContext(sheetUIContext))
 
         when (numberEff)
         {

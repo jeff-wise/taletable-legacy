@@ -169,7 +169,7 @@ object SummationView
 
         // Header
         layout.addView(this.nameView(summationLabel, sheetUIContext))
-        val totalString = summation.value(sheetUIContext)
+        val totalString = summation.value(SheetContext(sheetUIContext))
         when (totalString) {
             is Val -> layout.addView(this.totalView(Util.doubleString(totalString.value),
                                                     sheetUIContext))

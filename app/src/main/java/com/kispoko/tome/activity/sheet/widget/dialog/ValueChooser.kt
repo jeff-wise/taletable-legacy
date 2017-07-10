@@ -429,7 +429,7 @@ object ValueChooserView
     private fun valueSetIndexList(valueSets : Set<ValueSet>,
                                   sheetUIContext: SheetUIContext) : List<Any> =
         valueSets.sortedBy { it.label() }
-                .flatMap { listOf(it.label()).plus(it.values(sheetUIContext)) }
+                .flatMap { listOf(it.label()).plus(it.values(SheetContext(sheetUIContext))) }
 
 
     // -----------------------------------------------------------------------------------------

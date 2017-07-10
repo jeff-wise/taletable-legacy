@@ -81,7 +81,7 @@ data class TextFormat(override val id : UUID,
         private val defaultPadding           = Spacing.default()
         private val defaultMargins           = Spacing.default()
         private val defaultAlignment         = Alignment.Center
-        private val defaultVerticalAlignment = VerticalAlignment.Middle()
+        private val defaultVerticalAlignment = VerticalAlignment.Middle
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextFormat> = when (doc)
         {

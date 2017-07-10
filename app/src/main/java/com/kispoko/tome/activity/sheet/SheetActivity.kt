@@ -48,7 +48,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var pagePagerAdapter : PagePagerAdapter? = null
+    var pagePagerAdapter : PagePagerAdapter?   = null
+
+    var bottomNavigation : AHBottomNavigation? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -93,11 +95,11 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun initializeViews()
     {
-        val sheetPagePagerAdapter = PagePagerAdapter(supportFragmentManager)
-        this.pagePagerAdapter = sheetPagePagerAdapter
+        val pagePagerAdapter = PagePagerAdapter(supportFragmentManager)
+        this.pagePagerAdapter = pagePagerAdapter
 
         val viewPager = this.findViewById(R.id.page_pager) as ViewPager
-        viewPager.adapter = sheetPagePagerAdapter
+        viewPager.adapter = pagePagerAdapter
 
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
@@ -107,6 +109,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
     private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
     {
         val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
+
+        this.bottomNavigation = bottomNavigation
 
         val sheetEff = SheetManager.sheet(sheetId)
 
@@ -148,6 +152,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // -----------------------------------------------------------------------------------------
 
     override fun pagePagerAdatper() : PagePagerAdapter = this.pagePagerAdapter!!
+
+    override fun bottomNavigation() : AHBottomNavigation = this.bottomNavigation!!
 
 
     override fun applyTheme(sheetId : SheetId, uiColors : UIColors)
@@ -216,7 +222,28 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     fun loadSheet(officialIndex : OfficialIndex)
     {
-        val officialSheet = officialIndex.sheetById[SheetId("casmey_beginner")]
+        val sheetId = SheetId("casmey_beginner")
+
+        val sheetRecord = SheetManager.sheetRecord(sheetId)
+        when (sheetRecord)
+        {
+            is Val -> {
+                val start = System.currentTimeMillis()
+                SheetManager.render(sheetId, this)
+                val end = System.currentTimeMillis()
+
+                Log.d("***SHEETACTIVITY", "time to render ms: " + (end - start).toString())
+            }
+            is Err -> this.loadTemplateSheet(officialIndex, sheetId)
+        }
+
+    }
+
+
+    fun loadTemplateSheet(officialIndex : OfficialIndex, sheetId : SheetId)
+    {
+        val officialSheet = officialIndex.sheetById[sheetId]
+
         if (officialSheet != null)
         {
             val sheetActivity : AppCompatActivity = this
@@ -226,8 +253,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
                 ThemeManager.loadOfficialThemes(officialIndex.themes, sheetActivity)
 
                 val sheetLoad = SheetManager.loadOfficialSheet(officialSheet,
-                                                                     officialIndex,
-                                                                     sheetActivity)
+                                                               officialIndex,
+                                                               sheetActivity)
 
                 when (sheetLoad)
                 {
@@ -249,11 +276,11 @@ class SheetActivity : AppCompatActivity(), SheetUI
                             is Err -> ApplicationLog.error(characterName.error)
                         }
 
-//                        SheetManager.sheetRecord(sheet.sheetId()) apDo {
-//                            launch(UI) {
-//                                it.sheet.saveAsync(true, true)
-//                            }
-//                        }
+    //                        SheetManager.sheetRecord(sheet.sheetId()) apDo {
+    //                            launch(UI) {
+    //                                it.sheet.saveAsync(true, true)
+    //                            }
+    //                        }
                     }
                     is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetLoad.userMessage)
                 }
@@ -261,6 +288,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
             }
 
         }
+
     }
 
 }

@@ -3,10 +3,18 @@ package com.kispoko.tome.lib.ui;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.ScaleDrawable;
+import android.graphics.drawable.VectorDrawable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.kispoko.tome.R;
+import com.kispoko.tome.model.sheet.style.IconSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +35,9 @@ public class ImageViewBuilder implements ViewBuilder
     public LayoutType               layoutType;
 
     public Integer                  height;
+    public Integer                  heightDp;
     public Integer                  width;
+    public Integer                  widthDp;
     public Float                    weight;
 
     public Integer                  layoutGravity;
@@ -37,6 +47,8 @@ public class ImageViewBuilder implements ViewBuilder
     public Margins                  margin;
 
     public Integer                  image;
+
+    public IconSize                 iconSize;
 
     public ImageView.ScaleType      scaleType;
     public Boolean                  adjustViewBounds;
@@ -117,6 +129,7 @@ public class ImageViewBuilder implements ViewBuilder
     {
         ImageView imageView = new ImageView(context);
 
+
         // [1] Image View
         // --------------------------------------------------------------------------------------
 
@@ -139,6 +152,25 @@ public class ImageViewBuilder implements ViewBuilder
 
         if (this.image != null)
             imageView.setImageDrawable(ContextCompat.getDrawable(context, this.image));
+
+        // > Icon Size
+        // --------------------------------------------------------------------------------------
+
+        if (this.iconSize != null && this.image != null)
+        {
+//            ScaleDrawable scaleDrawable = new ScaleDrawable(imageView.getDrawable(),
+//                                                            0,
+//                                                            iconSize.getWidth(),
+//                                                            iconSize.getHeight());
+//            VectorDrawableCompat vectorDrawable = VectorDrawableCompat.create(context.getResources(), R.drawable.icon_sword, null);
+//
+//            vectorDrawable.setBounds(0, 0, Math.round(iconSize.getWidth()),
+//                                          Math.round(iconSize.getHeight()));
+////            imageView.setImageDrawable(scaleDrawable);
+//            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+//            imageView.setImageDrawable(vectorDrawable);
+        }
 
         // > Scale Type
         // --------------------------------------------------------------------------------------
@@ -200,12 +232,16 @@ public class ImageViewBuilder implements ViewBuilder
 
         if (this.width != null)
             layoutParamsBuilder.setWidth(this.width);
+        else if (this.widthDp != null)
+            layoutParamsBuilder.setWidthDp(this.widthDp);
 
         // > Height
         // --------------------------------------------------------------------------------------
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+        else if (this.heightDp != null)
+            layoutParamsBuilder.setHeightDp(this.heightDp);
 
         // > Weight
         // --------------------------------------------------------------------------------------
@@ -229,39 +265,10 @@ public class ImageViewBuilder implements ViewBuilder
 
         layoutParamsBuilder.setRules(this.rules);
 
-
-        switch (this.layoutType)
-        {
-            case LINEAR:
-                imageView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-                break;
-            case RELATIVE:
-                imageView.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
-                break;
-            case TABLE:
-                imageView.setLayoutParams(layoutParamsBuilder.tableLayoutParams());
-                break;
-            case TABLE_ROW:
-                imageView.setLayoutParams(layoutParamsBuilder.tableRowLayoutParams());
-                break;
-        }
+        imageView.setLayoutParams(layoutParamsBuilder.layoutParams());
 
 
         return imageView;
-    }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    private boolean isLayoutConstant(Integer constant)
-    {
-        if (constant == LinearLayout.LayoutParams.MATCH_PARENT ||
-                constant == LinearLayout.LayoutParams.WRAP_CONTENT) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 

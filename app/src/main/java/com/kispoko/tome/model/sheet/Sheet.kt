@@ -99,6 +99,8 @@ data class Sheet(override val id : UUID,
         this.sections().filter { it.name().equals(sectionName) }
                        .firstOrNull()
 
+    fun sectionWithIndex(index : Int) : Section? = this.sections()[index]
+
     fun settings() : Settings = this.settings.value
 
 

@@ -78,19 +78,19 @@ sealed class Alignment : SQLSerializable, Serializable
 sealed class VerticalAlignment : SQLSerializable, Serializable
 {
 
-    class Top : VerticalAlignment()
+    object Top : VerticalAlignment()
     {
         override fun asSQLValue() : SQLValue = SQLText({"top"})
     }
 
 
-    class Middle : VerticalAlignment()
+    object Middle : VerticalAlignment()
     {
         override fun asSQLValue() : SQLValue = SQLText({"middle"})
     }
 
 
-    class Bottom : VerticalAlignment()
+    object Bottom : VerticalAlignment()
     {
         override fun asSQLValue() : SQLValue = SQLText({"bottom"})
     }
@@ -102,9 +102,9 @@ sealed class VerticalAlignment : SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "top"    -> effValue<ValueError,VerticalAlignment>(VerticalAlignment.Top())
-                "middle" -> effValue<ValueError,VerticalAlignment>(VerticalAlignment.Middle())
-                "bottom" -> effValue<ValueError,VerticalAlignment>(VerticalAlignment.Bottom())
+                "top"    -> effValue<ValueError,VerticalAlignment>(VerticalAlignment.Top)
+                "middle" -> effValue<ValueError,VerticalAlignment>(VerticalAlignment.Middle)
+                "bottom" -> effValue<ValueError,VerticalAlignment>(VerticalAlignment.Bottom)
                 else     -> effError<ValueError,VerticalAlignment>(
                                     UnexpectedValue("VerticalAlignment", doc.text, doc.path))
             }

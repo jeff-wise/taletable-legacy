@@ -20,8 +20,8 @@ sections:
           - theme_id: dark
             color_id: dark_grey_10
         padding:
-          top: 25
-          bottom: 25
+          top: 20
+          bottom: 20
           left: 8
           right: 8
       rows:
@@ -62,8 +62,7 @@ sections:
           widget_story:
             id: summary
             format:
-              line_spacing: 10
-              part_alignment: flex_end
+              line_spacing: 1.3
             story:
             - type: story_part_span
               story_part_span:
@@ -238,20 +237,80 @@ sections:
                         color_id: light_grey_20
                     font_style: bold_italic
                     size: 15
+
     - format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
             color_id: dark_grey_10
         padding:
-          top: 25
+          bottom: 25
       rows:
+      - format:
+          margins:
+            top: 20
+            bottom: 3
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: strength_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable:
+              id: strength_label
+              label: Strength Label
+              description: Strength Label
+              value:
+                type: text_literal
+                text_literal: 'strength'
+        - type: widget_text
+          widget_text:
+            id: dexterity_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable:
+              id: dexterity_label
+              label: Dexterity Label
+              description: Dexterity Label
+              value:
+                type: text_literal
+                text_literal: 'dexterity'
+        - type: widget_text
+          widget_text:
+            id: constitution_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable:
+              id: constitution_label
+              label: Constitution Label
+              description: Constitution Label
+              value:
+                type: text_literal
+                text_literal: 'constitution'
       - widgets:
         - type: widget_story
           widget_story:
             id: strength
             format:
-              part_alignment: center
+              vertical_alignment: middle
               widget_format:
                 alignment: center
                 background_color_theme:
@@ -332,7 +391,7 @@ sections:
           widget_story:
             id: dexterity
             format:
-              part_alignment: center
+              vertical_alignment: middle
               widget_format:
                 alignment: center
                 background_color_theme:
@@ -438,7 +497,7 @@ sections:
           widget_story:
             id: constitution
             format:
-              part_alignment: center
+              vertical_alignment: middle
               widget_format:
                 alignment: center
                 background_color_theme:
@@ -517,12 +576,12 @@ sections:
                     top: 1
       - format:
           margins:
-            top: 3
-            bottom: 20
+            top: 20
+            bottom: 3
         widgets:
         - type: widget_text
           widget_text:
-            id: strength_label
+            id: intelligence_label
             format:
               value_format:
                 style:
@@ -532,15 +591,15 @@ sections:
                       color_id: light_blue_18
                   size: 12
             value_variable:
-              id: strength_label
-              label: Strength Label
-              description: Strength Label
+              id: intelligence_label
+              label: Intelligence Label
+              description: Intelligence Label
               value:
                 type: text_literal
-                text_literal: 'strength'
+                text_literal: 'intelligence'
         - type: widget_text
           widget_text:
-            id: dexterity_label
+            id: wisdom_label
             format:
               value_format:
                 style:
@@ -550,15 +609,15 @@ sections:
                       color_id: light_blue_18
                   size: 12
             value_variable:
-              id: dexterity_label
-              label: Dexterity Label
-              description: Dexterity Label
+              id: wisdom_label
+              label: Wisdom Label
+              description: Wisdom Label
               value:
                 type: text_literal
-                text_literal: 'dexterity'
+                text_literal: 'wisdom'
         - type: widget_text
           widget_text:
-            id: constitution_label
+            id: charisma_label
             format:
               value_format:
                 style:
@@ -568,18 +627,18 @@ sections:
                       color_id: light_blue_18
                   size: 12
             value_variable:
-              id: constitution_label
-              label: Constitution Label
-              description: Constitution Label
+              id: charisma_label
+              label: Charisma Label
+              description: Charisma Label
               value:
                 type: text_literal
-                text_literal: 'constitution'
+                text_literal: 'charisma'
       - widgets:
         - type: widget_story
           widget_story:
             id: intelligence
             format:
-              part_alignment: center
+              vertical_alignment: middle
               widget_format:
                 alignment: center
                 background_color_theme:
@@ -660,7 +719,7 @@ sections:
           widget_story:
             id: wisdom
             format:
-              part_alignment: center
+              vertical_alignment: middle
               widget_format:
                 alignment: center
                 background_color_theme:
@@ -741,7 +800,7 @@ sections:
           widget_story:
             id: charisma
             format:
-              part_alignment: center
+              vertical_alignment: middle
               widget_format:
                 alignment: center
                 background_color_theme:
@@ -818,72 +877,14 @@ sections:
                     size: 15
                   padding:
                     top: 1
-      - format:
-          margins:
-            top: 3
-            bottom: 20
-        widgets:
-        - type: widget_text
-          widget_text:
-            id: intelligence_label
-            format:
-              value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_18
-                  size: 12
-            value_variable:
-              id: intelligence_label
-              label: Intelligence Label
-              description: Intelligence Label
-              value:
-                type: text_literal
-                text_literal: 'intelligence'
-        - type: widget_text
-          widget_text:
-            id: wisdom_label
-            format:
-              value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_18
-                  size: 12
-            value_variable:
-              id: wisdom_label
-              label: Wisdom Label
-              description: Wisdom Label
-              value:
-                type: text_literal
-                text_literal: 'wisdom'
-        - type: widget_text
-          widget_text:
-            id: charisma_label
-            format:
-              value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_18
-                  size: 12
-            value_variable:
-              id: charisma_label
-              label: Charisma Label
-              description: Charisma Label
-              value:
-                type: text_literal
-                text_literal: 'charisma'
+
     - format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
             color_id: dark_grey_9
         padding:
-          top: 20
+          top: 17
       rows:
       - widgets:
         - type: widget_text
@@ -900,7 +901,7 @@ sections:
                   size: 12
               widget_format:
                 margins:
-                  bottom: 5
+                  bottom: 2
                   left: 8
             value_variable:
               id: armor_table_label
@@ -1038,7 +1039,7 @@ sections:
                   size: 12
               widget_format:
                 margins:
-                  bottom: 5
+                  bottom: 2
                   left: 8
             value_variable:
               id: weapon_table_label
@@ -1184,5 +1185,184 @@ sections:
                       boolean_literal: true
 - name: Encounter
   pages:
+  - name: Combat
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_10
+      padding:
+        bottom: 400
+    groups:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_10
+        padding:
+          top: 20
+          bottom: 25
+          left: 14
+          right: 14
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: defense
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  right: 7
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: shield
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_18
+                  size:
+                    width: 24
+                    height: 24
+            - type: story_part_variable
+              story_part_variable:
+                variable:
+                  type: variable_number
+                  variable_number:
+                    id: defense
+                    label: Defense
+                    description: Defense
+                    value:
+                      type: number_literal
+                      number_literal: 9
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_12
+                    font_style: regular
+                    size: 27
+        - type: widget_story
+          widget_story:
+            id: attack
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 7
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: sword
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_18
+                  size:
+                    width: 23
+                    height: 23
+            - type: story_part_span
+              story_part_span:
+                text: '+'
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_15
+                    size: 27
+            - type: story_part_variable
+              story_part_variable:
+                variable:
+                  type: variable_number
+                  variable_number:
+                    id: attack
+                    label: Attack
+                    description: Attack
+                    value:
+                      type: number_literal
+                      number_literal: 6
+                format:
+                  margins:
+                    left: 2
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_12
+                    font_style: regular
+                    size: 27
+      - format:
+          margins:
+            top: 2
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: defense_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable:
+              id: defense_label
+              label: Defense Label
+              description: Defense Label
+              value:
+                type: text_literal
+                text_literal: 'defense'
+        - type: widget_text
+          widget_text:
+            id: attack_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable:
+              id: attack_label
+              label: Attack Label
+              description: Attack Label
+              value:
+                type: text_literal
+                text_literal: 'attack'
 - name: Campaign
   pages:

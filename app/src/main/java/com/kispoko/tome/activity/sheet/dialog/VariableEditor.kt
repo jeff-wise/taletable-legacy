@@ -8,6 +8,7 @@ import com.kispoko.tome.activity.sheet.widget.dialog.ValueChooserDialogFragment
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.Err
 import effect.Val
@@ -41,7 +42,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
             val sheetActivity = sheetUIContext.context as SheetActivity
             val dialog = SummationDialogFragment.newInstance(variableValue.summation,
                                                              numberVariable.label(),
-                                                             sheetUIContext)
+                                                             SheetContext(sheetUIContext))
             dialog.show(sheetActivity.supportFragmentManager, "")
         }
     }
@@ -64,7 +65,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val sheetActivity = sheetUIContext.context as SheetActivity
             val dialog = TextEditorDialogFragment.newInstance(title,
                                                               text,
-                                                              sheetUIContext)
+                                                              SheetContext(sheetUIContext))
             dialog.show(sheetActivity.supportFragmentManager, "")
         }
         is TextVariableValueValue ->
@@ -75,7 +76,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val valueSet = GameManager.engine(sheetUIContext.gameId)
                                       .apply { it.valueSet(valueSetId) }
             val value    = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.value(valueReference, sheetUIContext) }
+                                      .apply { it.value(valueReference, SheetContext(sheetUIContext)) }
 
             when (valueSet)
             {
@@ -90,7 +91,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                                     ValueChooserDialogFragment.newInstance(
                                                     valueSet.value,
                                                     value.value,
-                                                    sheetUIContext)
+                                                    SheetContext(sheetUIContext))
                             chooseDialog.show(sheetActivity.supportFragmentManager, "")
                         }
                         is Err -> ApplicationLog.error(value.error)

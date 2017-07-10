@@ -109,7 +109,7 @@ data class Summation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun summary(sheetUIContext: SheetUIContext) : List<TermSummary> =
-            this.terms().mapNotNull { it.summary(sheetUIContext) }
+            this.terms().mapNotNull { it.summary(SheetContext(sheetUIContext)) }
 
 }
 

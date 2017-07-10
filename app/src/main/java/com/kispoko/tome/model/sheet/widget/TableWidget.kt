@@ -5,6 +5,7 @@ package com.kispoko.tome.model.sheet.widget
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
