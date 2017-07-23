@@ -14,7 +14,6 @@ import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.Err
 import effect.Val
@@ -43,10 +42,10 @@ sealed class DiceRollReference : SumModel, Serializable
         override fun fromDocument(doc: SpecDoc): ValueParser<DiceRollReference> =
             when (doc.case())
             {
-                "literal"  -> DiceRollReferenceLiteral.fromDocument(doc)
-                "variable" -> DiceRollReferenceVariable.fromDocument(doc)
-                else       -> effError<ValueError,DiceRollReference>(
-                                  UnknownCase(doc.case(), doc.path))
+                "dice_roll"          -> DiceRollReferenceLiteral.fromDocument(doc)
+                "variable_reference" -> DiceRollReferenceVariable.fromDocument(doc)
+                else                 -> effError<ValueError,DiceRollReference>(
+                                            UnknownCase(doc.case(), doc.path))
             }
     }
 

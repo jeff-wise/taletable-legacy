@@ -18,12 +18,14 @@ import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.program.ProgramId
+import com.kispoko.tome.model.game.engine.summation.Summation
+import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.rts.game.engine.FunctionDoesNotExist
 import com.kispoko.tome.rts.game.engine.ProgramDoesNotExist
+import com.kispoko.tome.rts.game.engine.SummationDoesNotExist
 import com.kispoko.tome.rts.game.engine.ValueSetDoesNotExist
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -45,6 +47,7 @@ data class Engine(override val id : UUID,
                   private val mechanics : Conj<Mechanic>,
                   private val functions : Conj<Function>,
                   private val programs : Conj<Program>,
+                  private val summations : Conj<Summation>,
                   val gameId : GameId) : Model, Serializable
 {
 
@@ -66,6 +69,11 @@ data class Engine(override val id : UUID,
                                             functions.set.associateBy { it.functionId() }
                                                     as MutableMap<FunctionId,Function>
 
+
+    private val summationById : MutableMap<SummationId,Summation> =
+                                            summations.set.associateBy { it.summationId() }
+                                                    as MutableMap<SummationId,Summation>
+
     // -----------------------------------------------------------------------------------------
     // INIT
     // -----------------------------------------------------------------------------------------
@@ -76,6 +84,7 @@ data class Engine(override val id : UUID,
         this.mechanics.name     = "mechanics"
         this.functions.name     = "functions"
         this.programs.name      = "programs"
+        this.summations.name    = "summations"
     }
 
 
@@ -107,6 +116,10 @@ data class Engine(override val id : UUID,
                          // Programs
                          doc.list("programs") apply {
                              effApply(::Conj, it.mapSetMut { Program.fromDocument(it) })
+                         },
+                         // Summations
+                         doc.list("summations") apply {
+                             effApply(::Conj, it.mapSetMut { Summation.fromDocument(it) })
                          },
                          effValue(gameId)
                          )
@@ -175,6 +188,14 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun mechanics() : Set<Mechanic> = this.mechanics.set
+
+
+    // Engine Data > Summations
+    // -----------------------------------------------------------------------------------------
+
+    fun summation(summationid : SummationId) : AppEff<Summation> =
+            note(this.summationById[summationid],
+                    AppEngineError(SummationDoesNotExist(summationid)))
 
 }
 

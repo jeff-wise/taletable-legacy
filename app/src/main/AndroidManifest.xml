@@ -179,11 +179,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.sheet.DiceRollerActivity"
-            android:label="Dice Roller"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".activity.mechanic.DiceRollEditorActivity"
             android:label="Dice Roll Editor"
             android:theme="@style/AppTheme.NoActionBar"

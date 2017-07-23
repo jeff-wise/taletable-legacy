@@ -301,6 +301,59 @@ engine:
         type: program_parameter_index
         program_parameter_index: 1
     result_binding_name: result
+  summations:
+  - summation_id: strength
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_dexterity
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: dexterity_modifier
+  - summation_id: dexterity
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_dexterity
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: dexterity_modifier
+  - summation_id: flurry_attack
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
 
 
 

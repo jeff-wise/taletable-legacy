@@ -25,6 +25,7 @@ public class ScrollViewBuilder implements ViewBuilder
     public Integer                  id;
 
     public Integer                  height;
+    public Integer                  heightDp;
     public Integer                  width;
     public Float                    weight;
 
@@ -130,6 +131,8 @@ public class ScrollViewBuilder implements ViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+        else if (this.heightDp != null)
+            layoutParamsBuilder.setHeightDp(this.heightDp);
 
         // > Weight
         // --------------------------------------------------------------------------------------

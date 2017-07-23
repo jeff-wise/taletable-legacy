@@ -4,22 +4,25 @@ package com.kispoko.tome.model.game.engine.summation
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Conj
+import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.game.engine.dice.*
 import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
+import com.kispoko.tome.model.game.engine.summation.term.SummationTermDiceRoll
+import com.kispoko.tome.model.game.engine.summation.term.SummationTermNumber
 import com.kispoko.tome.model.game.engine.summation.term.TermSummary
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetData
 import com.kispoko.tome.rts.sheet.SheetUIContext
-import effect.effApply
-import effect.effError
-import effect.effValue
-import effect.sequenceI
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SpecDoc
-import lulo.document.docType
+import effect.*
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
@@ -31,6 +34,7 @@ import java.util.*
  * Summation
  */
 data class Summation(override val id : UUID,
+                     val summationId : Prim<SummationId>,
                      val terms : Conj<SummationTerm>) : Model, Serializable
 {
 
@@ -40,7 +44,8 @@ data class Summation(override val id : UUID,
 
     init
     {
-        this.terms.name = "terms"
+        this.summationId.name = "summation_id"
+        this.terms.name       = "terms"
     }
 
 
@@ -48,16 +53,20 @@ data class Summation(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(terms : MutableSet<SummationTerm>)
-        : this(UUID.randomUUID(), Conj(terms))
+    constructor(summationId : SummationId,
+                terms : MutableSet<SummationTerm>)
+        : this(UUID.randomUUID(),
+               Prim(summationId),
+               Conj(terms))
 
 
     companion object : Factory<Summation>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<Summation> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Summation> = when (doc)
         {
             is DocDict -> effApply(::Summation,
+                                   // Summation Id
+                                   doc.at("summation_id") ap { SummationId.fromDocument(it) },
                                    // Terms
                                    doc.list("terms") ap { docList ->
                                        docList.mapSetMut { SummationTerm.fromDocument(it) }
@@ -70,6 +79,8 @@ data class Summation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+    fun summationId() : SummationId = this.summationId.value
 
     fun terms() : Set<SummationTerm> = this.terms.set
 
@@ -111,65 +122,86 @@ data class Summation(override val id : UUID,
     fun summary(sheetUIContext: SheetUIContext) : List<TermSummary> =
             this.terms().mapNotNull { it.summary(SheetContext(sheetUIContext)) }
 
+
+    fun diceRoll(rollName : DiceRollName?, sheetContext : SheetContext) : DiceRoll?
+    {
+        val quantities : MutableSet<DiceQuantity> = mutableSetOf()
+        val modifiers  : MutableSet<RollModifier> = mutableSetOf()
+
+        for (term in this.terms())
+        {
+            when (term)
+            {
+                // Add dice quantity
+                is SummationTermDiceRoll ->
+                {
+                    val diceRoll = SheetData.diceRoll(sheetContext, term.diceRollReference())
+                    when (diceRoll) {
+                        is Val -> {
+                            quantities.addAll(diceRoll.value.quantities())
+                            modifiers.addAll(diceRoll.value.modifiers())
+                        }
+                        is Err -> ApplicationLog.error(diceRoll.error)
+                    }
+                }
+                // Add dice modifier
+                is SummationTermNumber ->
+                {
+                    val modValue = SheetData.number(sheetContext, term.numberReference())
+                    when (modValue) {
+                        is Val -> {
+                            val termName = term.termName()
+                            val maybeTermName = if (termName != null)
+                                                    Just(RollModifierName(termName))
+                                                    else Nothing<RollModifierName>()
+                            modifiers.add(RollModifier(RollModifierValue(modValue.value),
+                                                       maybeTermName))
+                        }
+                    }
+
+                }
+            }
+        }
+
+
+        val maybeRollName = if (rollName != null) Just(rollName)
+                                else Nothing<DiceRollName>()
+
+        if (quantities.isEmpty())
+            return null
+        else
+            return DiceRoll(quantities, modifiers, maybeRollName)
+    }
+
 }
 
 
+/**
+ * Summation Id
+ */
+data class SummationId(val value : String) : SQLSerializable, Serializable
+{
 
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeDiceRoll()
-//    {
-//        this.diceRoll = null;
-//
-//        // [1] Check if there is a dice roll in the summation
-//        // -------------------------------------------------------------------------------------
-//        boolean hasDiceRoll = false;
-//        for (TermUnion termUnion : this.terms())
-//        {
-//            if (termUnion.type() == TermType.DICE_ROLL) {
-//                hasDiceRoll = true;
-//                break;
-//            }
-//        }
-//
-//        if (!hasDiceRoll)
-//            return;
-//
-//
-//        // [2] Calculate Dice Roll
-//        // -------------------------------------------------------------------------------------
-//
-//        DiceRoll diceRoll = DiceRoll.empty();
-//
-//        for (TermUnion termUnion : this.terms())
-//        {
-//            if (termUnion.type() == TermType.DICE_ROLL)
-//            {
-//                try {
-//                    diceRoll.addDiceRoll(termUnion.diceRollTerm().diceRoll());
-//                }
-//                catch (SummationException exception) {
-//                    ApplicationFailure.summation(exception);
-//                }
-//            }
-//            else if (termUnion.type() == TermType.INTEGER)
-//            {
-//                IntegerTerm integerTerm = termUnion.integerTerm();
-//                try
-//                {
-//                    RollModifier rollModifier = new RollModifier(integerTerm.value(),
-//                                                                 integerTerm.name());
-//                    diceRoll.addModifier(rollModifier);
-//                }
-//                catch (SummationException exception)
-//                {
-//                    ApplicationFailure.summation(exception);
-//                }
-//            }
-//        }
-//
-//        this.diceRoll = diceRoll;
-//    }
-//
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<SummationId>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationId> = when (doc)
+        {
+            is DocText -> effValue(SummationId(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
 

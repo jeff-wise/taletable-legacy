@@ -1077,6 +1077,8 @@ types:
     description: story part variable
   - type: story_part_icon
     description: story part icon
+  - type: story_part_roll
+    description: story part roll
 - name: story_part_span
   label: Story Part Span
   description: >
@@ -1122,6 +1124,37 @@ types:
     type: icon
     presence: required
     description: The icon
+  - name: icon_format
+    type: icon_format
+    presence: optional
+    description: The icon format.
+- name: story_part_roll
+  label: Story Part Roll
+  description: >
+    Story Part Roll
+  group: 'Widget: Story'
+  type: product
+  fields:
+  - name: text
+    type: string
+    presence: required
+    description: >
+      The text.
+  - name: summation_id
+    type: summation_id
+    presence: required
+    description: >
+      The roll summation id.
+  - name: roll_name
+    type: string
+    presence: required
+    description: >
+      The roll name.
+  - name: text_format
+    type: text_format
+    presence: optional
+    description: >
+      The text style.
   - name: icon_format
     type: icon_format
     presence: optional

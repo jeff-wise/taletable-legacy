@@ -1361,6 +1361,118 @@ data class OptionWidget(override val id : UUID,
 }
 
 
+/**
+ * Points Widget
+ */
+data class PointsWidget(override val id : UUID,
+                        val widgetId : Prim<WidgetId>,
+                        val format : Comp<PointsWidgetFormat>,
+                        val limitValueVariable : Comp<NumberVariable>,
+                        val currentValueVariable : Comp<NumberVariable>,
+                        override val variables : Conj<Variable>) : Widget(variables)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name                  = "widget_id"
+        this.format.name                    = "format"
+        this.limitValueVariable.name        = "limit_value_variable"
+        this.currentValueVariable.name      = "current_value_variable"
+        this.variables.name                 = "variables"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : PointsWidgetFormat,
+                limitValueVariable : NumberVariable,
+                currentValueVariable : NumberVariable,
+                variables : MutableSet<Variable>)
+        : this(UUID.randomUUID(),
+               Prim(widgetId),
+               Comp(format),
+               Comp(limitValueVariable),
+               Comp(currentValueVariable),
+               Conj(variables))
+
+
+    companion object : Factory<PointsWidget>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<PointsWidget>  = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::PointsWidget,
+                         // Widget Id
+                         doc.at("name") ap { WidgetId.fromDocument(it) },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               effValue(PointsWidgetFormat.default()),
+                               { PointsWidgetFormat.fromDocument(it) }),
+                        // TODO number variable reference
+                         // Limit Value Variable
+                         doc.at("limit_value_variable") ap { NumberVariable.fromDocument(it) },
+                         // Current Value Variable
+                         doc.at("current_value_variable") ap { NumberVariable.fromDocument(it) },
+                         // Variables
+                         split(doc.maybeList("variables"),
+                             effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
+                             { it.mapSetMut { Variable.fromDocument(it)} })
+                         )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : PointsWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetUIContext: SheetUIContext): View {
+        TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val name : String = "widget_option"
+
+    override val modelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+        TODO("not implemented")
+    }
+
+}
+
 
 /**
  * Quote Widget

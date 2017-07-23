@@ -146,6 +146,12 @@ types:
     presence: required
     description: >
       Programs allow values on the sheet to be created from complex calculations.
+  - name: summations
+    type: list
+    of: summation
+    presence: required
+    description: >
+      The summations.
 - name: function_id
   label: Function Id
   description: >
@@ -349,19 +355,15 @@ types:
   type: product
   fields:
   - name: sides
-    type: integer
+    type: number
     presence: required  
     description: >
       The number of sides of the die.
-    constraints:
-    - positive_integer
   - name: quantity
-    type: positive_integer
+    type: number
     presence: required  
     description: >
       The number of times to roll the die.
-    constraints:
-    - positive_integer
 - name: roll_modifier
   label: Roll Modifier
   description: >
@@ -919,7 +921,7 @@ types:
   - type: value_reference
     description: >
       A value from the Dictionary.
-  - type: summation
+  - type: summation_id
     description: >
       The value of a summation.
 - name: number_literal
@@ -1008,6 +1010,13 @@ types:
   group: Variable
   type: primitive
   base_type: string
+- name: summation_id
+  label: Summation Id
+  description: >
+    A summation identifier.
+  group: Summation
+  type: primitive
+  base_type: string
 - name: summation
   label: Summation
   description: >
@@ -1015,6 +1024,10 @@ types:
   group: Summation
   type: product
   fields:
+  - name: summation_id
+    type: summation_id
+    presence: required
+    description: The summation id.
   - name: terms
     type: list
     of: summation_term

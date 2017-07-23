@@ -13,7 +13,6 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
 import effect.*
 import lulo.document.*
@@ -122,7 +121,7 @@ sealed class Variable(open val variableId : Prim<VariableId>,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    abstract fun dependencies() : Set<VariableReference>
+    abstract fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
 
     abstract fun type() : VariableType
 
@@ -247,7 +246,7 @@ data class BooleanVariable(override val id : UUID,
 
     override fun type(): VariableType = VariableType.BOOLEAN
 
-    override fun dependencies() : Set<VariableReference> = this.variableValue().dependencies()
+    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             this.variableValue().companionVariables(sheetContext)
@@ -352,7 +351,8 @@ data class DiceRollVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.variableValue.value.dependencies()
+    override fun dependencies(sheetContext : SheetContext) =
+            this.variableValue.value.dependencies()
 
 
     override fun type(): VariableType = VariableType.DICE_ROLL
@@ -379,7 +379,7 @@ data class NumberVariable(override val id : UUID,
                           override val label : Prim<VariableLabel>,
                           override val description : Prim<VariableDescription>,
                           override val tags : Prim<VariableTagSet>,
-                          val variableValue : Func<NumberVariableValue>)
+                          val variableValue : Sum<NumberVariableValue>)
                           : Variable(variableId, label, description, tags)
 {
 
@@ -410,7 +410,7 @@ data class NumberVariable(override val id : UUID,
                Prim(label),
                Prim(description),
                Prim(tags),
-               liftNumberVariableValue(value))
+               Sum(value))
 
 
     companion object : Factory<NumberVariable>
@@ -461,8 +461,8 @@ data class NumberVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> =
-            this.variableValue.value.dependencies()
+    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference> =
+            this.variableValue.value.dependencies(sheetContext)
 
 
     override fun type(): VariableType = VariableType.NUMBER
@@ -593,7 +593,7 @@ data class TextVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.variableValue().dependencies()
+    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
 
     override fun type(): VariableType = VariableType.TEXT
 

@@ -11,6 +11,8 @@ import com.kispoko.tome.model.game.engine.EngineValueDiceRoll
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.reference.*
+import com.kispoko.tome.model.game.engine.summation.Summation
+import com.kispoko.tome.model.game.engine.variable.NumberVariableSummationValue
 import com.kispoko.tome.rts.game.GameManager
 import effect.effApply
 import effect.effValue

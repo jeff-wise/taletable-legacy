@@ -7,7 +7,6 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.lib.ui.SectionCard
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.effApply
 import effect.effError
@@ -35,10 +34,19 @@ sealed class Icon : SQLSerializable, Serializable
         override fun asSQLValue() : SQLValue = SQLText({ "sword" })
     }
 
-
     object Shield : Icon()
     {
         override fun asSQLValue() : SQLValue = SQLText({ "shield" })
+    }
+
+    object DiceRoll : Icon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "dice_roll" })
+    }
+
+    object DiceRollFilled : Icon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "dice_roll_filled" })
     }
 
 
@@ -48,19 +56,23 @@ sealed class Icon : SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "sword"  -> effValue<ValueError,Icon>(Icon.Sword)
-                "shield" -> effValue<ValueError,Icon>(Icon.Shield)
-                else     -> effError<ValueError,Icon>(UnexpectedValue("Icon", doc.text, doc.path))
+                "sword"             -> effValue<ValueError,Icon>(Icon.Sword)
+                "shield"            -> effValue<ValueError,Icon>(Icon.Shield)
+                "dice_roll"         -> effValue<ValueError,Icon>(Icon.DiceRoll)
+                "dice_roll_filled"  -> effValue<ValueError,Icon>(Icon.DiceRollFilled)
+                else                -> effError<ValueError,Icon>(UnexpectedValue("Icon", doc.text, doc.path))
             }
-            else         -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+            else            -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 
 
     fun drawableResId() : Int = when (this)
     {
-        is Shield -> R.drawable.icon_shield
-        is Sword  -> R.drawable.icon_sword
+        is Shield           -> R.drawable.icon_shield
+        is Sword            -> R.drawable.icon_sword
+        is DiceRoll         -> R.drawable.icon_dice_roll
+        is DiceRollFilled   -> R.drawable.icon_dice_roll_filled
     }
 
 }

@@ -118,7 +118,7 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
         //     when the dependency variable is updated it can update this variable as well.
         // -------------------------------------------------------------------------------------
 
-        for (variableRef in variable.dependencies())
+        for (variableRef in variable.dependencies(this.sheetContext))
         {
             when (variableRef)
             {

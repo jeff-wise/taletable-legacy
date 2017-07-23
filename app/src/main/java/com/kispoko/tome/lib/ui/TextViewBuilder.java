@@ -12,6 +12,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.method.MovementMethod;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -92,6 +93,7 @@ public class TextViewBuilder implements ViewBuilder
     public View.OnLongClickListener onLongClick;
 
     public Boolean                  hapticFeedback;
+    public MovementMethod           movementMethod;
 
     public List<Integer>            rules;
 
@@ -158,6 +160,7 @@ public class TextViewBuilder implements ViewBuilder
         this.onLongClick        = null;
 
         this.hapticFeedback     = null;
+        this.movementMethod     = null;
 
         this.rules              = new ArrayList<>();
     }
@@ -274,6 +277,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.hapticFeedback != null)
             textView.setHapticFeedbackEnabled(this.hapticFeedback);
+
+        // > Movement Method
+        // --------------------------------------------------------------------------------------
+
+        if (this.movementMethod != null)
+            textView.setMovementMethod(this.movementMethod);
 
         // > Elevation
         // --------------------------------------------------------------------------------------

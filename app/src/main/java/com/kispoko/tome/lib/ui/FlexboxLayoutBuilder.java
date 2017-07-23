@@ -59,6 +59,7 @@ public class FlexboxLayoutBuilder
     public Integer                  direction;
     public Integer                  justification;
     public Integer                  itemAlignment;
+    public Integer                  contentAlignment;
 
     public View.OnClickListener     onClick;
     public View.OnLongClickListener onLongClick;
@@ -192,6 +193,12 @@ public class FlexboxLayoutBuilder
 
         if (this.wrap != null)
             flexboxLayout.setFlexWrap(this.wrap);
+
+        // > Content Alignment
+        // --------------------------------------------------------------------------------------
+
+        if (this.contentAlignment != null)
+            flexboxLayout.setAlignContent(this.contentAlignment);
 
         // > Flexbox Justification
         // --------------------------------------------------------------------------------------

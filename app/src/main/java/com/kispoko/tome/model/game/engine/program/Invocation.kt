@@ -146,7 +146,7 @@ data class Invocation(override val id : UUID,
     /**
      * The set of variables that the program depends on.
      */
-    fun dependencies(): Set<VariableReference>
+    fun dependencies() : Set<VariableReference>
     {
         // TODO use maybe monad?
 

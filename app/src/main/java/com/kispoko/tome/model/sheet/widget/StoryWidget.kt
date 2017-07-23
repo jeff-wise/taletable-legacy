@@ -2,15 +2,25 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.flexbox.*
+import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.dialog.DiceRollerDialogFragment
 import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
@@ -22,8 +32,11 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.engine.dice.DiceRollName
+import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.style.*
+import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
@@ -77,7 +90,7 @@ data class StoryWidgetFormat(override val id : UUID,
 
         private val defaultWidgetFormat         = WidgetFormat.default()
         private val defaultVerticalAlignment    = VerticalAlignment.Bottom
-        private val defaultLineSpacing          = LineSpacing(0.0f)
+        private val defaultLineSpacing          = LineSpacing.default()
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<StoryWidgetFormat> = when (doc)
@@ -147,6 +160,7 @@ sealed class StoryPart : Model, Serializable
                 "story_part_span"     -> StoryPartSpan.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_variable" -> StoryPartVariable.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_icon"     -> StoryPartIcon.fromDocument(doc) as ValueParser<StoryPart>
+                "story_part_roll"     -> StoryPartRoll.fromDocument(doc) as ValueParser<StoryPart>
                 else                  -> effError<ValueError,StoryPart>(
                                             UnknownCase(doc.case(), doc.path))
             }
@@ -155,7 +169,7 @@ sealed class StoryPart : Model, Serializable
 
 
     // -----------------------------------------------------------------------------------------
-    // VARIABLE
+    // APi
     // -----------------------------------------------------------------------------------------
 
     open fun variable() : Variable? = when (this)
@@ -163,6 +177,9 @@ sealed class StoryPart : Model, Serializable
         is StoryPartVariable -> this.variable()
         else                 -> null
     }
+
+
+    abstract fun wordCount() : Int
 
 }
 
@@ -209,6 +226,11 @@ data class StoryPartSpan(override val id : UUID,
     fun format() : TextFormat = this.format.value
 
 
+    // -----------------------------------------------------------------------------------------
+    // STORY PART
+    // -----------------------------------------------------------------------------------------
+
+    override fun wordCount() = this.text().split(' ').size
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -280,6 +302,13 @@ data class StoryPartVariable(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // STORY PART
+    // -----------------------------------------------------------------------------------------
+
+    override fun wordCount() = 0
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -332,10 +361,16 @@ data class StoryPartIcon(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-
     fun icon() : Icon = this.icon.value
 
     fun iconFormat() : IconFormat = this.iconFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // STORY PART
+    // -----------------------------------------------------------------------------------------
+
+    override fun wordCount() = 0
 
 
     // -----------------------------------------------------------------------------------------
@@ -347,6 +382,95 @@ data class StoryPartIcon(override val id : UUID,
     override val modelObject = this
 
     override val name = "story_part_variable"
+
+}
+
+
+/**
+ * Story Part Roll
+ */
+data class StoryPartRoll(override val id : UUID,
+                         val text : Prim<StoryPartText>,
+                         val summationId : Prim<SummationId>,
+                         val rollName : Prim<DiceRollName>,
+                         val textFormat : Comp<TextFormat>,
+                         val iconFormat : Comp<IconFormat>) : StoryPart(), Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(text : StoryPartText,
+                summationId : SummationId,
+                rollName : DiceRollName,
+                textFormat : TextFormat,
+                iconFormat : IconFormat)
+        : this(UUID.randomUUID(),
+               Prim(text),
+               Prim(summationId),
+               Prim(rollName),
+               Comp(textFormat),
+               Comp(iconFormat))
+
+
+    companion object : Factory<StoryPartRoll>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartRoll> = when (doc)
+        {
+            is DocDict -> effApply(::StoryPartRoll,
+                                   // Text
+                                   doc.at("text") ap { StoryPartText.fromDocument(it) },
+                                   // Summation Id
+                                   doc.at("summation_id") ap { SummationId.fromDocument(it) },
+                                   // Roll Name
+                                   doc.at("roll_name") ap { DiceRollName.fromDocument(it) },
+                                   // Text Format
+                                   split(doc.maybeAt("text_format"),
+                                         effValue(TextFormat.default()),
+                                         { TextFormat.fromDocument(it) }),
+                                   // Icon Format
+                                   split(doc.maybeAt("icon_format"),
+                                         effValue(IconFormat.default()),
+                                         { IconFormat.fromDocument(it) })
+                                   )
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+
+    fun summationId() : SummationId = this.summationId.value
+
+    fun rollName() : DiceRollName = this.rollName.value
+
+    fun text() : String = this.text.value.value
+
+    fun textFormat() : TextFormat = this.textFormat.value
+
+    fun iconFormat() : IconFormat = this.iconFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // STORY PART
+    // -----------------------------------------------------------------------------------------
+
+    override fun wordCount() = this.text().split(' ').size
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val modelObject = this
+
+    override val name = "story_part_roll"
 
 }
 
@@ -397,6 +521,8 @@ data class LineSpacing(val value : Float) : SQLSerializable, Serializable
             is DocNumber -> effValue(LineSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        fun default() = LineSpacing(1.0f)
     }
 
 
@@ -417,7 +543,8 @@ object StoryWidgetView
     {
         val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
 
-        if (storyWidget.story().size <= 3)
+        val wc = storyWidget.story().map { it.wordCount() }.sum()
+        if (wc <= 5)
             layout.addView(this.storyFlexView(storyWidget, sheetUIContext))
         else
             layout.addView(this.storySpannableView(storyWidget, sheetUIContext))
@@ -433,8 +560,7 @@ object StoryWidgetView
         story.width         = LinearLayout.LayoutParams.MATCH_PARENT
         story.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        story.textSpan      = this.spannableStringBuilder(storyWidget.story(),
-                                    sheetUIContext)
+        story.textSpan      = this.spannableStringBuilder(storyWidget.story(), sheetUIContext)
 
         story.lineSpacingAdd    = 0f
         story.lineSpacingMult   = storyWidget.format().lineSpacing()
@@ -451,6 +577,7 @@ object StoryWidgetView
             }
         }
 
+        story.movementMethod    = LinkMovementMethod.getInstance()
 
         return story.textView(sheetUIContext.context)
     }
@@ -493,7 +620,17 @@ object StoryWidgetView
                 }
                 is StoryPartIcon ->
                 {
-                  //   layout.addView(this.iconView(storyPart, sheetUIContext))
+                    builder.append(" ")
+                    phrases.add(Phrase(storyPart, " ", index, index + 1))
+                    index += 1
+                }
+                is StoryPartRoll ->
+                {
+                    val text = storyPart.text()
+                    builder.append(" " + text)
+                    val textLen = text.length + 1
+                    phrases.add(Phrase(storyPart, text, index, index + textLen))
+                    index += textLen
                 }
             }
         }
@@ -513,6 +650,86 @@ object StoryWidgetView
                     this.formatSpans(storyPart.format(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
+                }
+                is StoryPartIcon ->
+                {
+                    val vectorDrawable =
+                            VectorDrawableCompat.create(sheetUIContext.context.resources,
+                                                        storyPart.icon().drawableResId(), null)
+
+                    vectorDrawable?.setBounds(
+                            0,
+                            0,
+                            Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
+                            Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
+
+                    val color = SheetManager.color(sheetUIContext.sheetId,
+                                                   storyPart.iconFormat().colorTheme())
+                    vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
+                                                                        PorterDuff.Mode.SRC_IN)
+
+                    val imageSpan = CenteredImageSpan(vectorDrawable)
+                    builder.setSpan(imageSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+                is StoryPartRoll ->
+                {
+                    val vectorDrawable =
+                            VectorDrawableCompat.create(sheetUIContext.context.resources,
+                                                        R.drawable.icon_dice_roll_filled,
+                                                        null)
+
+                    vectorDrawable?.setBounds(
+                            0,
+                            0,
+                            Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
+                            Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
+
+                    val color = SheetManager.color(sheetUIContext.sheetId,
+                                                   storyPart.iconFormat().colorTheme())
+                    vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
+                                                                        PorterDuff.Mode.SRC_IN)
+
+                    val imageSpan = CenteredImageSpan(vectorDrawable)
+                    builder.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    val summation = GameManager.engine(sheetUIContext.gameId)
+                                               .apply{ it.summation(storyPart.summationId())}
+                    when (summation)
+                    {
+                        is Val ->
+                        {
+                            val diceRoll = summation.value.diceRoll(storyPart.rollName(),
+                                                                    SheetContext(sheetUIContext))
+
+                            if (diceRoll != null)
+                            {
+                                val clickSpan = object: ClickableSpan() {
+                                    override fun onClick(view : View?) {
+                                        val sheetActivity = sheetUIContext.context as SheetActivity
+                                        val dialog = DiceRollerDialogFragment.newInstance(diceRoll,
+                                                                              SheetContext(sheetUIContext))
+                                        dialog.show(sheetActivity.supportFragmentManager, "")
+                                    }
+
+                                    override fun updateDrawState(ds: TextPaint?) {
+                                        val color = SheetManager.color(sheetUIContext.sheetId,
+                                                        storyPart.textFormat().style().colorTheme())
+                                        ds?.linkColor = color
+                                    }
+                                }
+
+                                builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                            }
+
+
+                        }
+                        is Err -> ApplicationLog.error(summation.error)
+                    }
+
+                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
+                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                    }
+
                 }
             }
         }
@@ -537,8 +754,6 @@ object StoryWidgetView
 
         return listOf(sizeSpan, typefaceSpan, colorSpan)
     }
-
-
 
 
     fun storyFlexView(storyWidget : StoryWidget, sheetUIContext : SheetUIContext) : FlexboxLayout

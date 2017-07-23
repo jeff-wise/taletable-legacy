@@ -2,9 +2,7 @@
 package com.kispoko.tome.activity.sheet.dialog
 
 
-import android.util.Log
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.widget.dialog.ValueChooserDialogFragment
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.rts.game.GameManager
@@ -40,10 +38,20 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
         is NumberVariableSummationValue ->
         {
             val sheetActivity = sheetUIContext.context as SheetActivity
-            val dialog = SummationDialogFragment.newInstance(variableValue.summation,
-                                                             numberVariable.label(),
-                                                             SheetContext(sheetUIContext))
-            dialog.show(sheetActivity.supportFragmentManager, "")
+            val summation = GameManager.engine(sheetUIContext.gameId)
+                                       .apply{ it.summation(variableValue.summationId) }
+            when (summation)
+            {
+                is Val ->
+                {
+                    val dialog = SummationDialogFragment.newInstance(
+                                            summation.value,
+                                            numberVariable.label(),
+                                            SheetContext(sheetUIContext))
+                    dialog.show(sheetActivity.supportFragmentManager, "")
+                }
+                is Err -> ApplicationLog.error(summation.error)
+            }
         }
     }
 

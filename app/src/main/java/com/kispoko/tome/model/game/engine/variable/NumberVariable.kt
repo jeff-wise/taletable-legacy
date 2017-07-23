@@ -4,25 +4,25 @@ package com.kispoko.tome.model.game.engine.variable
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.program.Invocation
-import com.kispoko.tome.model.game.engine.summation.Summation
+import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.interpreter.Interpreter
 import com.kispoko.tome.rts.sheet.*
-import effect.effApply
-import effect.effError
-import effect.effValue
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
@@ -35,7 +35,7 @@ import java.io.Serializable
 /**
  * Number Variable
  */
-sealed class NumberVariableValue : Serializable
+sealed class NumberVariableValue : SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ sealed class NumberVariableValue : Serializable
                 "variable_id"        -> NumberVariableVariableValue.fromDocument(doc)
                 "program_invocation" -> NumberVariableProgramValue.fromDocument(doc)
                 "value_reference"    -> NumberVariableValueValue.fromDocument(doc)
-                "summation"          -> NumberVariableSummationValue.fromDocument(doc)
+                "summation_id"       -> NumberVariableSummationValue.fromDocument(doc)
                 else                 -> effError<ValueError,NumberVariableValue>(
                                             UnknownCase(doc.case(), doc.path))
             }
@@ -62,7 +62,7 @@ sealed class NumberVariableValue : Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies() : Set<VariableReference> = setOf()
+    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -108,6 +108,14 @@ data class NumberVariableLiteralValue(val value : Double)
 
 
     // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "literal")
+
+    override val sumModelObject = this
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -138,7 +146,7 @@ data class NumberVariableVariableValue(val variableId : VariableId)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = setOf(variableId)
+    override fun dependencies(sheetContext : SheetContext) = setOf(variableId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -161,6 +169,15 @@ data class NumberVariableVariableValue(val variableId : VariableId)
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             effValue(setOf())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "variable")
+
+    override val sumModelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -195,7 +212,7 @@ data class NumberVariableProgramValue(val invocation : Invocation)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = invocation.dependencies()
+    override fun dependencies(sheetContext : SheetContext) = invocation.dependencies()
 
 
     // -----------------------------------------------------------------------------------------
@@ -208,6 +225,15 @@ data class NumberVariableProgramValue(val invocation : Invocation)
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             effValue(setOf())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Comp(this, "program")
+
+    override val sumModelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -268,6 +294,15 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
 
 
     // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "value")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -279,14 +314,14 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
 /**
  * Summation Value
  */
-data class NumberVariableSummationValue(val summation : Summation)
-            : NumberVariableValue(), Model
+data class NumberVariableSummationValue(val summationId : SummationId)
+            : NumberVariableValue(), SQLSerializable
 {
 
     companion object : Factory<NumberVariableValue>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
-                effApply(::NumberVariableSummationValue, Summation.fromDocument(doc))
+                effApply(::NumberVariableSummationValue, SummationId.fromDocument(doc))
     }
 
 
@@ -294,7 +329,19 @@ data class NumberVariableSummationValue(val summation : Summation)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = summation.dependencies()
+    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    {
+        val deps = GameManager.engine(sheetContext.gameId)
+                         .apply { it.summation(summationId) }
+                         .apply { effValue<AppError,Set<VariableReference>>(it.dependencies()) }
+
+        when (deps) {
+            is Val -> return deps.value
+            is Err -> ApplicationLog.error(deps.error)
+        }
+
+        return setOf()
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -302,7 +349,9 @@ data class NumberVariableSummationValue(val summation : Summation)
     // -----------------------------------------------------------------------------------------
 
     override fun value(sheetContext : SheetContext) : AppEff<Double>
-            = summation.value(sheetContext)
+            = GameManager.engine(sheetContext.gameId)
+                    .apply { it.summation(summationId) }
+                    .apply { it.value(sheetContext) }
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
@@ -310,29 +359,21 @@ data class NumberVariableSummationValue(val summation : Summation)
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() = this.summation.onLoad()
+    override fun functor() = Prim(this, "summation")
 
-    override val id = this.summation.id
+    override val sumModelObject = this
 
-    override val name = this.summation.name
 
-    override val modelObject : Model = this.summation
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = this.summationId.asSQLValue()
 
 }
-
-
-fun liftNumberVariableValue(varValue : NumberVariableValue) : Func<NumberVariableValue>
-    = when (varValue)
-    {
-        is NumberVariableLiteralValue   -> Prim(varValue, "literal")
-        is NumberVariableProgramValue   -> Comp(varValue, "program")
-        is NumberVariableVariableValue  -> Prim(varValue, "variable")
-        is NumberVariableValueValue     -> Prim(varValue, "value")
-        is NumberVariableSummationValue -> Comp(varValue, "summation")
-    }
 
 
 //    // INTERNAL

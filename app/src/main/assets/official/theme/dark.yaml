@@ -94,33 +94,33 @@ palette:
   color: '#BEDDEB'
 - color_id: light_blue_5
   color: '#B8D5E3'
-- color_id: light_blue_7
+- color_id: light_blue_6
   color: '#B2CEDB'
-- color_id: light_blue_8
+- color_id: light_blue_7
   color: '#ADC9D6'
-- color_id: light_blue_9
+- color_id: light_blue_8
   color: '#A9C5D1'
-- color_id: light_blue_10
+- color_id: light_blue_9
   color: '#A5C0CC'
-- color_id: light_blue_11
+- color_id: light_blue_10
   color: '#A1BBC7'
-- color_id: light_blue_12
+- color_id: light_blue_11
   color: '#9BB4BF'
-- color_id: light_blue_13
+- color_id: light_blue_12
   color: '#97AFBA'
-- color_id: light_blue_14
+- color_id: light_blue_13
   color: '#93AAB5'
-- color_id: light_blue_15
+- color_id: light_blue_14
   color: '#8EA5B0'
-- color_id: light_blue_16
+- color_id: light_blue_15
   color: '#8AA1AB'
-- color_id: light_blue_17
+- color_id: light_blue_16
   color: '#869CA6'
-- color_id: light_blue_18
+- color_id: light_blue_17
   color: '#8297A1'
-- color_id: light_blue_19
+- color_id: light_blue_18
   color: '#7E929C'
-- color_id: light_blue_20
+- color_id: light_blue_19
   color: '#7A8D96'
 - color_id: gold_1
   color: '#D6CAA3'
@@ -128,6 +128,8 @@ palette:
   color: '#E0D1AE'
 - color_id: green_1
   color: '#9FAD8B'
+- color_id: green_15
+  color: '#424739'
 ui_colors:
   toolbar_background: dark_grey_12
   toolbar_icons: light_grey_6

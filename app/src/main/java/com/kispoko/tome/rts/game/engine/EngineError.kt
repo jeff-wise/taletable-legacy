@@ -6,6 +6,7 @@ import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.program.ProgramId
+import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.game.engine.value.ValueType
@@ -84,6 +85,18 @@ class FunctionDoesNotExist(val functionId : FunctionId) : EngineError()
             """
             Engine Error: Function Does Not Exist
                 Function Id: $functionId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class SummationDoesNotExist(val summationId : SummationId) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Summation Does Not Exist
+                Summation Id: $summationId
             """
 
     override fun logMessage(): String = userMessage()

@@ -5,13 +5,14 @@ package com.kispoko.tome.model.game.engine.dice
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Conj
 import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.getMaybePrim
+import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
-import effect.effApply
-import effect.effError
-import effect.effValue
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -23,7 +24,8 @@ import java.util.*
  */
 data class DiceRoll(override val id : UUID,
                     val quantities : Conj<DiceQuantity>,
-                    val modifiers : Conj<RollModifier>) : Model
+                    val modifiers : Conj<RollModifier>,
+                    val rollName : Maybe<Prim<DiceRollName>>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -31,8 +33,12 @@ data class DiceRoll(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(quantities : MutableSet<DiceQuantity>,
-                modifiers : MutableSet<RollModifier>)
-        : this(UUID.randomUUID(), Conj(quantities), Conj(modifiers))
+                modifiers : MutableSet<RollModifier>,
+                rollName : Maybe<DiceRollName>)
+        : this(UUID.randomUUID(),
+               Conj(quantities),
+               Conj(modifiers),
+               maybeLiftPrim(rollName))
 
 
     companion object : Factory<DiceRoll>
@@ -40,15 +46,23 @@ data class DiceRoll(override val id : UUID,
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<DiceRoll> = when (doc)
         {
-            is DocDict -> effApply(::DiceRoll,
-                                   // Quantity
-                                   doc.list("quantity") ap { docList ->
-                                       docList.mapSetMut { DiceQuantity.fromDocument(it) }
-                                   },
-                                   // Modifier
-                                   doc.list("modifier") ap { docList ->
-                                       docList.mapSetMut { RollModifier.fromDocument(it) }
-                                   })
+            is DocDict ->
+            {
+                effApply(::DiceRoll,
+                         // Quantity
+                         doc.list("quantities") ap { docList ->
+                             docList.mapSetMut { DiceQuantity.fromDocument(it) }
+                         },
+                         // Modifier
+                         split(doc.maybeList("modiiers"),
+                               effValue(mutableSetOf<RollModifier>()),
+                              { it.mapSetMut { RollModifier.fromDocument(it) } }),
+                         // Name
+                         split(doc.maybeAt("name"),
+                               effValue<ValueError,Maybe<DiceRollName>>(Nothing()),
+                               { effApply(::Just, DiceRollName.fromDocument(it))}
+                         ))
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -61,6 +75,8 @@ data class DiceRoll(override val id : UUID,
     fun quantities() : Set<DiceQuantity> = this.quantities.set
 
     fun modifiers() : Set<RollModifier> = this.modifiers.set
+
+    fun rollName() : String? = getMaybePrim(this.rollName)?.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -84,6 +100,40 @@ data class DiceRoll(override val id : UUID,
 
     fun modifierValues() : List<Int> = this.modifiers().map { it.valueInt() }
 
+
+    fun rollSummary() : RollSummary
+    {
+        val quantitySummaries = this.quantities()
+                                    .sortedByDescending { it.quantityInt() }
+                                    .map { RollPartSummary(it.roll(), it.toString(), "") }
+
+        val modifierSummaries = this.modifiers()
+                                    .sortedByDescending { it.valueInt() }
+                                    .map { RollPartSummary(it.valueInt(), "", it.nameString() ?: "") }
+
+        val total = quantitySummaries.map { it.value }.sum() +
+                    modifierSummaries.map { it.value }.sum()
+
+
+        return RollSummary(total, quantitySummaries.plus(modifierSummaries))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() : String
+    {
+        val diceString = this.quantities().sortedByDescending { it.sidesInt() }
+                                          .map { it.toString() }
+                                          .joinToString(" + ")
+
+        val modifierString = this.modifierValues().sum().toString()
+
+        return diceString + " + " + modifierString
+    }
+
 }
 
 
@@ -92,7 +142,7 @@ data class DiceRoll(override val id : UUID,
  */
 data class DiceQuantity(override val id : UUID,
                         val sides : Prim<DiceSides>,
-                        val quantity : Prim<DiceRollQuantity>) : Model
+                        val quantity : Prim<DiceRollQuantity>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -150,6 +200,42 @@ data class DiceQuantity(override val id : UUID,
         val random = Random()
         return  (1..quantityInt()).map { random.nextInt(sidesInt()) + 1 }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() : String =
+            this.quantityInt().toString() + "d" + this.sidesInt().toString()
+}
+
+
+/**
+ * Dice Roll Name
+ */
+data class DiceRollName(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DiceRollName>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollName> = when (doc)
+        {
+            is DocText -> effValue(DiceRollName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 
 }
 
@@ -217,15 +303,19 @@ data class DiceRollQuantity(val value : Int) : SQLSerializable, Serializable
  */
 data class RollModifier(override val id : UUID,
                         val value : Prim<RollModifierValue>,
-                        val modifierName : Prim<RollModifierName>) : Model
+                        val modifierName : Maybe<Prim<RollModifierName>>)
+                         : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(value : RollModifierValue, name : RollModifierName)
-        : this(UUID.randomUUID(), Prim(value), Prim(name))
+    constructor(value : RollModifierValue,
+                name : Maybe<RollModifierName>)
+        : this(UUID.randomUUID(),
+               Prim(value),
+               maybeLiftPrim(name))
 
 
     companion object : Factory<RollModifier>
@@ -236,7 +326,9 @@ data class RollModifier(override val id : UUID,
                                    // Value
                                    doc.at("value") ap { RollModifierValue.fromDocument(it) },
                                    // Name
-                                   doc.at("name") ap { RollModifierName.fromDocument(it) }
+                                   split(doc.maybeAt("name"),
+                                         effValue<ValueError,Maybe<RollModifierName>>(Nothing()),
+                                         { effApply(::Just, RollModifierName.fromDocument(it)) } )
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -249,7 +341,7 @@ data class RollModifier(override val id : UUID,
 
     fun valueInt() : Int = this.value.value.value.toInt()
 
-    fun nameString() : String = this.modifierName.value.value
+    fun nameString() : String? = getMaybePrim(this.modifierName)?.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -323,47 +415,13 @@ data class RollModifierName(val value : String) : SQLSerializable, Serializable
 }
 
 
+data class RollSummary(val value : Int, val parts : List<RollPartSummary>)
 
 
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the sides of the dice in the quantity.
-//     * @return The dice type.
-//     */
-//    public int diceSides()
-//    {
-//        return this.diceSides.getValue();
-//    }
-//
-//
-//    /**
-//     * Set the quantity of dice to be rolled. If quantity is null, then the default quantity of
-//     * one is used.
-//     *
-//     * @param quantity The dice quantity.
-//     */
-//    public void setQuantity(Integer quantity)
-//    {
-//        if (quantity != null)
-//            this.quantity.setValue(quantity);
-//        else
-//            this.quantity.setValue(1);
-//    }
-//
-//
-//    /**
-//     * Get the number of times the dice is to be rolled.
-//     * @return The roll quantity.
-//     */
-//    public int quantity()
-//    {
-//        return this.quantity.getValue();
-//    }
-//
-//
+data class RollPartSummary(val value : Int, val dice : String, val tag : String)
+
+
+
 //    // > Description
 //    // ------------------------------------------------------------------------------------------
 //
@@ -413,7 +471,7 @@ data class RollModifierName(val value : String) : SQLSerializable, Serializable
 //     * Roll the dice and return a summary of the values of each die in the roll.
 //     * @return The randomly generated roll summary.
 //     */
-//    public RollSummary rollAsSummary()
+//    public RollPartSummary rollAsSummary()
 //    {
 //        List<DieRollResult> results = new ArrayList<>();
 //
@@ -421,7 +479,7 @@ data class RollModifierName(val value : String) : SQLSerializable, Serializable
 //            results.add(DieRollResult.generate(this.diceSides()));
 //        }
 //
-//        return new RollSummary(results);
+//        return new RollPartSummary(results);
 //    }
 //
 //
@@ -446,133 +504,4 @@ data class RollModifierName(val value : String) : SQLSerializable, Serializable
 //
 //}
 
-
-
-//
-//    // > Value Plus String
-//    // ------------------------------------------------------------------------------------------
-//
-//    public String valuePlusString()
-//    {
-//        return "+" + Integer.toString(this.value());
-//    }
-//
-//
-//    // INTERNAL
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // -----------------------------------------------------------------------------------------
-//
-//    private void initializeFunctors()
-//    {
-//        // Value
-//        this.value.setName("value");
-//        this.value.setLabelId(R.string.roll_modifier_field_value_label);
-//        this.value.setDescriptionId(R.string.roll_modifier_field_value_description);
-//
-//        // Name
-//        this.name.setName("name");
-//        this.name.setLabelId(R.string.roll_modifier_field_name_label);
-//        this.name.setDescriptionId(R.string.roll_modifier_field_name_description);
-   //  }
-
-
-//
-//    // > To String
-//    // ------------------------------------------------------------------------------------------
-//
-//    @Override
-//    public String toString()
-//    {
-//        return this.toString(true);
-//    }
-//
-//
-//    public String toString(boolean withModifier)
-//    {
-//        StringBuilder diceRoll = new StringBuilder();
-//
-//        String sep = "";
-//        for (DiceQuantity diceQuantity : this.quantities()) {
-//            diceRoll.append(sep);
-//            diceRoll.append(diceQuantity.toString());
-//            sep = " + ";
-//        }
-//
-//
-//        int totalModifier = 0;
-//
-//        for (RollModifier modifier : this.modifiers()) {
-//            totalModifier += modifier.value();
-//        }
-//
-//        Log.d("***DICEROLL", "modifier " + Integer.toString(totalModifier));
-//        if (totalModifier > 0 && withModifier)
-//        {
-//            diceRoll.append(" + ");
-//            diceRoll.append(Integer.toString(totalModifier));
-//        }
-//
-//        return diceRoll.toString();
-//    }
-//
-//
-//    /**
-//     * Roll the dice.
-//     * @return The result of rolling the dice.
-//     */
-//    public Integer roll()
-//    {
-//        return this.rollAsSummary().rollValue();
-//    }
-//
-//
-//    public RollSummary rollAsSummary()
-//    {
-//        RollSummary rollSummary = new RollSummary(new ArrayList<DieRollResult>());
-//
-//        for (DiceQuantity quantity : this.quantities()) {
-//            rollSummary = rollSummary.addSummary(quantity.rollAsSummary());
-//        }
-//
-//        return new RollSummary(rollSummary.rollResults(), this.modifiers());
-//    }
-//
-//
-//    // > Add Roll
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * Add another dice roll to this dice roll.
-//     * @param diceRoll The dice to roll to add to this roll.
-//     */
-//    public void addDiceRoll(DiceRoll diceRoll)
-//    {
-//        if (diceRoll != null)
-//        {
-//            this.quantitiesMutable().addAll(diceRoll.quantities());
-//            this.modifiersMutable().addAll(diceRoll.modifiers());
-//        }
-//    }
-//
-//
-//    // INTERNAL
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // -----------------------------------------------------------------------------------------
-//
-//    private void initializeFunctors()
-//    {
-//        // Quantities
-//        this.quantities.setName("quantities");
-//        this.quantities.setLabelId(R.string.dice_roll_field_quantities_label);
-//        this.quantities.setDescriptionId(R.string.dice_roll_field_quantities_description);
-//
-//        // Modifiers
-//        this.modifiers.setName("modifiers");
-//        this.modifiers.setLabelId(R.string.dice_roll_field_modifiers_label);
-//        this.modifiers.setDescriptionId(R.string.dice_roll_field_modifiers_description);
-//    }
 

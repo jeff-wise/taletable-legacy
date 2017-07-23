@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.sheet.widget.dialog
+package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.app.Dialog
@@ -177,14 +177,14 @@ object ValueChooserView
              selectedValue : Value,
              sheetUIContext: SheetUIContext) : View
     {
-        val layout = this.viewLayout(sheetUIContext)
+        val layout = viewLayout(sheetUIContext)
 
         // (1) Views
         // -------------------------------------------------------------------
-        val chooserView     = this.chooserView(valueSet, selectedValue, sheetUIContext)
-        val optionsMenuView = this.optionsMenuView(sheetUIContext.context)
-        val headerView      = this.headerView(valueSet.label(), chooserView,
-                                              optionsMenuView, sheetUIContext)
+        val chooserView     = chooserView(valueSet, selectedValue, sheetUIContext)
+        val optionsMenuView = optionsMenuView(sheetUIContext.context)
+        val headerView      = headerView(valueSet.label(), chooserView,
+                optionsMenuView, sheetUIContext)
 
         // (2) Initialize
         // -------------------------------------------------------------------
@@ -240,10 +240,10 @@ object ValueChooserView
                    menuView : View,
                    sheetUIContext: SheetUIContext) : RelativeLayout
     {
-        val layout = this.headerViewLayout(sheetUIContext)
+        val layout = headerViewLayout(sheetUIContext)
 
-        val titleView = this.headerTitleView(title, sheetUIContext)
-        val iconView  = this.headerIconView(sheetUIContext)
+        val titleView = headerTitleView(title, sheetUIContext)
+        val iconView  = headerIconView(sheetUIContext)
 
         layout.addView(titleView)
         layout.addView(iconView)
@@ -391,7 +391,7 @@ object ValueChooserView
             is ValueSetBase ->
             {
                 recyclerView.adapter = BaseValueSetRecyclerViewAdapter(valueSet.sortedValues(),
-                                                                       selectedValue,
+                        selectedValue,
                         sheetUIContext)
             }
             is ValueSetCompound ->
@@ -401,10 +401,10 @@ object ValueChooserView
                 {
                     is Val ->
                     {
-                        val items = this.valueSetIndexList(valueSets.value, sheetUIContext)
+                        val items = valueSetIndexList(valueSets.value, sheetUIContext)
                         recyclerView.adapter =
                                 CompoundValueSetRecyclerViewAdapter(items,
-                                                                    selectedValue,
+                                        selectedValue,
                                         sheetUIContext)
                     }
                     is Err -> ApplicationLog.error(valueSets.error)
@@ -438,10 +438,10 @@ object ValueChooserView
 
     fun valueView(sheetUIContext: SheetUIContext) : LinearLayout
     {
-        val layout = this.valueViewLayout(sheetUIContext)
+        val layout = valueViewLayout(sheetUIContext)
 
-        layout.addView(this.valueHeaderView(sheetUIContext))
-        layout.addView(this.valueSummaryView(sheetUIContext))
+        layout.addView(valueHeaderView(sheetUIContext))
+        layout.addView(valueSummaryView(sheetUIContext))
         // layout.addView(this.valueDividerView(context))
 
         return layout
@@ -595,47 +595,47 @@ object ValueChooserView
 
     private fun optionsMenuView(context : Context) : LinearLayout
     {
-        val layout = this.optionsMenuViewLayout(context)
+        val layout = optionsMenuViewLayout(context)
 
         // Sort Asc Button
         val sortAscButtonView =
-                this.optionsMenuButtonView(R.string.sort_values_ascending,
-                                           R.drawable.ic_dialog_chooser_sort_asc,
-                                           context)
+                optionsMenuButtonView(R.string.sort_values_ascending,
+                        R.drawable.ic_dialog_chooser_sort_asc,
+                        context)
         layout.addView(sortAscButtonView)
 
         // Sort Desc Button
         val sortDescButtonView =
-                this.optionsMenuButtonView(R.string.sort_values_descending,
-                                           R.drawable.ic_dialog_chooser_sort_desc,
-                                           context)
+                optionsMenuButtonView(R.string.sort_values_descending,
+                        R.drawable.ic_dialog_chooser_sort_desc,
+                        context)
         layout.addView(sortDescButtonView)
 
         // --- Divider
-        layout.addView(this.optionsMenuDividerView(context))
+        layout.addView(optionsMenuDividerView(context))
 
         // Edit Values
         val editValuesButton =
-                this.optionsMenuButtonView(R.string.edit_values,
-                                           R.drawable.ic_dialog_chooser_edit_values,
-                                           context)
+                optionsMenuButtonView(R.string.edit_values,
+                        R.drawable.ic_dialog_chooser_edit_values,
+                        context)
         layout.addView(editValuesButton)
 
         // --- Divider
-        layout.addView(this.optionsMenuDividerView(context))
+        layout.addView(optionsMenuDividerView(context))
 
         // Edit Values
         val styleWidgetButton =
-                this.optionsMenuButtonView(R.string.style_widget,
-                                           R.drawable.ic_dialog_chooser_style_widget,
-                                           context)
+                optionsMenuButtonView(R.string.style_widget,
+                        R.drawable.ic_dialog_chooser_style_widget,
+                        context)
         layout.addView(styleWidgetButton)
 
         // Edit Widget
         val editWidgetButton =
-                this.optionsMenuButtonView(R.string.edit_widget,
-                                           R.drawable.ic_dialog_chooser_widget,
-                                           context)
+                optionsMenuButtonView(R.string.edit_widget,
+                        R.drawable.ic_dialog_chooser_widget,
+                        context)
         layout.addView(editWidgetButton)
 
         return layout

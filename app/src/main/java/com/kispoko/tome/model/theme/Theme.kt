@@ -386,6 +386,9 @@ data class ColorTheme(val themeColorIds : Set<ThemeColorId>) : SQLSerializable, 
 
         val black = ColorTheme(setOf(ThemeColorId(ThemeId.Light, ColorId.Black),
                                      ThemeColorId(ThemeId.Dark, ColorId.Black)))
+
+        val white = ColorTheme(setOf(ThemeColorId(ThemeId.Light, ColorId.White),
+                                     ThemeColorId(ThemeId.Dark, ColorId.White)))
     }
 
 

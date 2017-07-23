@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
-import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
@@ -18,7 +17,6 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
 import lulo.document.*
@@ -45,8 +43,8 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>) : Model, S
             when (doc.case())
             {
                 "summation_term_number"      -> SummationTermNumber.fromDocument(doc)
-                "summation_term_dice_roll"   -> SummationDiceRollTerm.fromDocument(doc)
-                "summation_term_conditional" -> SummationConditionalTerm.fromDocument(doc)
+                "summation_term_dice_roll"   -> SummationTermDiceRoll.fromDocument(doc)
+                "summation_term_conditional" -> SummationTermConditional.fromDocument(doc)
                 else                         -> effError<ValueError,SummationTerm>(
                                                     UnknownCase(doc.case(), doc.path))
             }
@@ -166,7 +164,7 @@ data class SummationTermNumber(override val id : UUID,
 }
 
 
-data class SummationDiceRollTerm(override val id : UUID,
+data class SummationTermDiceRoll(override val id : UUID,
                                  override val termName : Maybe<Prim<TermName>>,
                                  val diceRollReference : Sum<DiceRollReference>)
                                   : SummationTerm(termName)
@@ -187,7 +185,7 @@ data class SummationDiceRollTerm(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
-            is DocDict -> effApply(::SummationDiceRollTerm,
+            is DocDict -> effApply(::SummationTermDiceRoll,
                                    // Term Name
                                    split(doc.maybeAt("term_name"),
                                          effValue<ValueError,Maybe<TermName>>(Nothing()),
@@ -261,7 +259,7 @@ data class SummationDiceRollTerm(override val id : UUID,
 }
 
 
-data class SummationConditionalTerm(override val id : UUID,
+data class SummationTermConditional(override val id : UUID,
                                     override val termName : Maybe<Prim<TermName>>,
                                     val conditionalValueReference : Sum<BooleanReference>,
                                     val trueValueReference : Sum<NumberReference>,
@@ -288,7 +286,7 @@ data class SummationConditionalTerm(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
-            is DocDict -> effApply(::SummationConditionalTerm,
+            is DocDict -> effApply(::SummationTermConditional,
                                    // Term Name
                                    split(doc.maybeAt("term_name"),
                                          effValue<ValueError,Maybe<TermName>>(Nothing()),
