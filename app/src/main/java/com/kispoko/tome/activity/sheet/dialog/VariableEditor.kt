@@ -2,9 +2,11 @@
 package com.kispoko.tome.activity.sheet.dialog
 
 
+import android.util.Log
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
@@ -31,13 +33,37 @@ fun openVariableEditorDialog(variable : Variable, sheetUIContext: SheetUIContext
 fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                                    sheetUIContext : SheetUIContext)
 {
+    openNumberVariableEditorDialog(numberVariable, NumericEditorType.Calculator, sheetUIContext)
+}
+
+
+fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
+                                   editorType : NumericEditorType,
+                                   sheetUIContext : SheetUIContext)
+{
     val variableValue = numberVariable.variableValue()
+
+    val sheetActivity = sheetUIContext.context as SheetActivity
 
     when (variableValue)
     {
+        is NumberVariableLiteralValue ->
+        {
+            Log.d("***VAREDITOR", editorType.toString())
+            when (editorType)
+            {
+                is NumericEditorType.Adder ->
+                {
+                     val adderDialog = AdderDialogFragment.newInstance(
+                                                variableValue.value,
+                                                numberVariable.label(),
+                                                SheetContext(sheetUIContext))
+                    adderDialog.show(sheetActivity.supportFragmentManager, "")
+                }
+            }
+        }
         is NumberVariableSummationValue ->
         {
-            val sheetActivity = sheetUIContext.context as SheetActivity
             val summation = GameManager.engine(sheetUIContext.gameId)
                                        .apply{ it.summation(variableValue.summationId) }
             when (summation)
@@ -110,3 +136,6 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
         }
     }
 }
+
+
+

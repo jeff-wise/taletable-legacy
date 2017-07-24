@@ -18,6 +18,16 @@
 
     <string name="actions">Actions</string>
 
+    <string name="plus_one">+1</string>
+    <string name="plus_ten">+10</string>
+    <string name="minus_one">-1</string>
+    <string name="minus_ten">-10</string>
+
+    <string name="plus_num">+X</string>
+    <string name="plus_dice">+ndX</string>
+    <string name="minus_num">-X</string>
+    <string name="minus_dice">-ndX</string>
+
     <string name="name">Name</string>
     <string name="label">Label</string>
 

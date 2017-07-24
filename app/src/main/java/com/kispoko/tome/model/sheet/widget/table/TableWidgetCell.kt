@@ -16,6 +16,7 @@ import com.kispoko.tome.model.game.engine.variable.BooleanVariable
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.sheet.style.Alignment
+import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.model.theme.ColorTheme
@@ -186,7 +187,8 @@ data class TableWidgetBooleanCell(override val id : UUID,
  */
 data class TableWidgetNumberCell(override val id : UUID,
                                  val format : Comp<NumberCellFormat>,
-                                 val valueVariable : Comp<NumberVariable>)
+                                 val valueVariable : Comp<NumberVariable>,
+                                 val editorType : Prim<NumericEditorType>)
                                   : TableWidgetCell(), Model
 {
 
@@ -205,6 +207,7 @@ data class TableWidgetNumberCell(override val id : UUID,
     {
         this.format.name            = "format"
         this.valueVariable.name     = "value_variable"
+        this.editorType.name        = "editor_type"
     }
 
 
@@ -212,23 +215,32 @@ data class TableWidgetNumberCell(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : NumberCellFormat, valueVariable : NumberVariable)
-        : this(UUID.randomUUID(), Comp(format), Comp(valueVariable))
-
 
     companion object : Factory<TableWidgetNumberCell>
     {
+
+        private val defaultNumberCellFormat = NumberCellFormat.default()
+        private val defaultEditorType       = NumericEditorType.Calculator
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetNumberCell> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::TableWidgetNumberCell,
+                         // Model Id
+                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               effValue(NumberCellFormat.default),
-                               { NumberCellFormat.fromDocument(it) }),
+                               effValue(Comp.default(defaultNumberCellFormat)),
+                               { effApply(::Comp, NumberCellFormat.fromDocument(it)) }),
                          // Value
-                         doc.at("value_variable") ap { NumberVariable.fromDocument(it) }
+                         doc.at("value_variable") ap {
+                             effApply(::Comp, NumberVariable.fromDocument(it))
+                         },
+                         // Editor Type
+                         split(doc.maybeAt("editor_type"),
+                               effValue<ValueError,Prim<NumericEditorType>>(Prim.default(defaultEditorType)),
+                               { effApply(::Prim, NumericEditorType.fromDocument(it)) })
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -243,6 +255,15 @@ data class TableWidgetNumberCell(override val id : UUID,
     fun format() : NumberCellFormat = this.format.value
 
     fun valueVariable() : NumberVariable = this.valueVariable.value
+
+    fun editorType() : NumericEditorType = this.editorType.value
+
+
+    fun resolveEditorType(column : TableWidgetNumberColumn) : NumericEditorType =
+        if (this.editorType.isDefault())
+            column.editorType()
+        else
+            this.editorType()
 
 
     // -----------------------------------------------------------------------------------------
@@ -467,7 +488,7 @@ data class CellFormat(override val id : UUID,
                                effValue<ValueError,Prim<Alignment>>(Prim.default(defaultAlignment)),
                                { effApply(::Prim, Alignment.fromDocument(it)) }),
                          // Background Color
-                         split(doc.maybeAt("background_color"),
+                         split(doc.maybeAt("background_color_theme"),
                                effValue(Prim(defaultBackgroundColorTheme)),
                                { effApply(::Prim, ColorTheme.fromDocument(it)) })
                        )

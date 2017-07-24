@@ -1433,6 +1433,11 @@ types:
     presence: optional
     description: >
       Are cell in this column namespaced?
+  - name: editor_type
+    type: numeric_editor_type
+    presence: optional
+    description: >
+      The editor type.
 - name: table_widget_number_column_format
   label: Number Column Format
   description: >
@@ -1445,6 +1450,11 @@ types:
     presence: optional
     description: >
       The column format.
+  - name: value_prefix
+    type: string
+    presence: optional
+    description: >
+      The column value prefix.
 - name: table_widget_text_column
   label: Text Column
   description: >
@@ -1581,6 +1591,28 @@ types:
   - type: table_widget_boolean_cell
   - type: table_widget_number_cell
   - type: table_widget_text_cell
+- name: table_widget_cell_format
+  label: Table Widget Cell Format
+  description: >
+    Table widget cell format.
+  group: 'Widget: Table'
+  type: product
+  fields:
+  - name: text_style
+    type: text_style
+    presence: optional
+    description: >
+      The cell text style
+  - name: alignment
+    type: alignment
+    presence: optional
+    description: >
+      The cell alignment
+  - name: background_color_theme
+    type: color_theme
+    presence: optional
+    description: >
+      The cell background color.
 - name: table_widget_boolean_cell
   label: Text Widget Boolean Cell
   description: >
@@ -1657,6 +1689,11 @@ types:
     presence: optional
     description: >
       The cell format.
+  - name: editor_type
+    type: numeric_editor_type
+    presence: optional
+    description: >
+      The cell value prefix.
 - name: table_widget_number_cell_format
   label: Text Widget Number Cell Format
   description: >
@@ -1664,21 +1701,11 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: alignment
-    type: alignment
+  - name: cell_format
+    type: table_widget_cell_format
     presence: optional
     description: >
-      The cell alignment
-  - name: background
-    type: color_id
-    presence: optional
-    description: >
-      The cell background color.
-  - name: text_style
-    type: text_style
-    presence: optional
-    description: >
-      The cell text style
+      The standard cell formatting options.
   - name: value_prefix
     type: string
     presence: optional
@@ -2097,6 +2124,15 @@ types:
     presence: optional
     description:
       The space on the bottom.
+- name: numeric_editor_type
+  label: Numeric Editor Type
+  description: >
+    Numeric Editor Type
+  group: Style
+  type: primitive
+  base_type: string
+  constraints:
+  - numeric_editor_type_set
 - name: alignment
   label: Alignment
   description: >
@@ -2256,3 +2292,9 @@ constraints:
     set:
     - sword
     - shield
+- name: numeric_editor_type_set
+  type: string_one_of
+  parameters:
+    set:
+    - calculator
+    - adder

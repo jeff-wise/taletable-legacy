@@ -7,7 +7,7 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
 import effect.Nothing
@@ -25,7 +25,8 @@ import java.util.*
  */
 data class NumberColumnFormat(override val id : UUID,
                               val columnFormat : Comp<ColumnFormat>,
-                              val valuePrefix : Maybe<Prim<ValuePrefix>>) : Model, Serializable
+                              val valuePrefix : Maybe<Prim<ValuePrefix>>,
+                              val editorType : Prim<NumericEditorType>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -39,6 +40,8 @@ data class NumberColumnFormat(override val id : UUID,
         when (this.valuePrefix) {
             is Just -> this.valuePrefix.value.name  = "value_prefix"
         }
+
+        this.editorType.name                        = "editor_type"
     }
 
 
@@ -47,14 +50,19 @@ data class NumberColumnFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(columnFormat : ColumnFormat,
-                valuePrefix : Maybe<ValuePrefix>)
-        : this(UUID.randomUUID(), Comp(columnFormat), maybeLiftPrim(valuePrefix))
+                valuePrefix : Maybe<ValuePrefix>,
+                editorType : NumericEditorType)
+        : this(UUID.randomUUID(),
+               Comp(columnFormat),
+               maybeLiftPrim(valuePrefix),
+               Prim(editorType))
 
 
     companion object : Factory<NumberColumnFormat>
     {
 
         private val defaultColumnFormat = ColumnFormat.default
+        private val defaultEditorType   = NumericEditorType.Calculator
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberColumnFormat> = when (doc)
@@ -69,15 +77,20 @@ data class NumberColumnFormat(override val id : UUID,
                         // Default Value Prefix
                         split(doc.maybeAt("default_value_prefix"),
                                 effValue<ValueError,Maybe<ValuePrefix>>(Nothing()),
-                                { effApply(::Just, ValuePrefix.fromDocument(it)) })
+                                { effApply(::Just, ValuePrefix.fromDocument(it)) }),
+                        // Editor Type
+                        split(doc.maybeAt("editor_type"),
+                              effValue<ValueError,NumericEditorType>(defaultEditorType),
+                              { NumericEditorType.fromDocument(it) })
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        val default : NumberColumnFormat =
-                NumberColumnFormat(defaultColumnFormat, Nothing<ValuePrefix>())
+        val default = NumberColumnFormat(defaultColumnFormat,
+                                         Nothing<ValuePrefix>(),
+                                         defaultEditorType)
     }
 
 
@@ -88,6 +101,8 @@ data class NumberColumnFormat(override val id : UUID,
     fun columnFormat() : ColumnFormat = this.columnFormat.value
 
     fun valuePrefixString() : String? = getMaybePrim(this.valuePrefix)?.value
+
+    fun editorType() : NumericEditorType = this.editorType.value
 
 
     // -----------------------------------------------------------------------------------------

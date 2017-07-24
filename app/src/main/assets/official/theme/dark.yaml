@@ -146,6 +146,34 @@ palette:
   color: '#D6CAA3'
 - color_id: gold_2
   color: '#E0D1AE'
+- color_id: light_green_1
+  color: '#EAFFCD'
+- color_id: light_green_2
+  color: '#E6FAC9'
+- color_id: light_green_3
+  color: '#DFF2C3'
+- color_id: light_green_4
+  color: '#D8EBBC'
+- color_id: light_green_5
+  color: '#D3E5B8'
+- color_id: light_green_6
+  color: '#CCDEB2'
+- color_id: light_green_7
+  color: '#C7D9AE'
+- color_id: light_green_8
+  color: '#C3D4AA'
+- color_id: light_green_9
+  color: '#BECFA6'
+- color_id: light_green_10
+  color: '#B9C9A2'
+- color_id: light_green_11
+  color: '#B4C49E'
+- color_id: light_green_12
+  color: '#ADBD98'
+- color_id: light_green_13
+  color: '#A9B894'
+- color_id: light_green_14
+  color: '#A4B28F'
 - color_id: green_1
   color: '#9FAD8B'
 - color_id: green_15

@@ -2,9 +2,11 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -12,6 +14,7 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
@@ -75,18 +78,16 @@ data class NumberCellFormat(override val id : UUID,
                          // Value Prefix
                          split(doc.maybeAt("value_prefix"),
                                effValue<ValueError,Maybe<Prim<NumberCellValuePrefix>>>(Nothing()),
-                               { effApply({x -> Just(Prim(x)) },
-                                          NumberCellValuePrefix.fromDocument(it)) })
+                               { effApply({x -> Just(Prim(x))}, NumberCellValuePrefix.fromDocument(it)) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        val default : NumberCellFormat =
-                NumberCellFormat(UUID.randomUUID(),
-                                 Comp.default(defaultCellFormat),
-                                 Nothing())
+        fun default() = NumberCellFormat(UUID.randomUUID(),
+                                         Comp(defaultCellFormat),
+                                         Nothing())
     }
 
 
@@ -168,6 +169,14 @@ object NumberCellView
                 sheetUIContext)
 
         layout.addView(this.valueTextView(cell, column.format(), cellFormat, sheetUIContext))
+
+
+        layout.setOnClickListener {
+            Log.d("***NUMBERCELL", "on click")
+            openNumberVariableEditorDialog(cell.valueVariable(),
+                                           cell.resolveEditorType(column),
+                                           sheetUIContext)
+        }
 
         return layout
     }

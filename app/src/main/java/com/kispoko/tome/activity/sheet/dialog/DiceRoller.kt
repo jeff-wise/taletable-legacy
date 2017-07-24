@@ -14,9 +14,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.google.android.flexbox.AlignContent
-import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayout
-import com.google.android.flexbox.JustifyContent
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
@@ -90,9 +88,7 @@ class DiceRollerDialogFragment : DialogFragment()
         val sheetContext = this.sheetContext
         if (sheetContext != null)
         {
-            val sheetUIContext = SheetUIContext(sheetContext, context)
-
-            val dialogLayout = this.dialogLayout(sheetUIContext)
+            val dialogLayout = this.dialogLayout(context)
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -136,7 +132,7 @@ class DiceRollerDialogFragment : DialogFragment()
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
 
-    fun dialogLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    fun dialogLayout(context : Context) : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -144,11 +140,8 @@ class DiceRollerDialogFragment : DialogFragment()
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-
-
         return layout.linearLayout(context)
     }
-
 
 }
 

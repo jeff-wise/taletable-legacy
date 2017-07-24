@@ -7,6 +7,7 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.sheet.style.Alignment
+import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.DefaultBooleanColumnValue
@@ -196,7 +197,8 @@ data class TableWidgetNumberColumn(
                         override val defaultValueLabel : Prim<DefaultValueLabel>,
                         override val isColumnNamespaced: Prim<IsColumnNamespaced>,
                         val defaultValue : Prim<DefaultNumberColumnValue>,
-                        val format : Comp<NumberColumnFormat>)
+                        val format : Comp<NumberColumnFormat>,
+                        val editorType : Prim<NumericEditorType>)
                         : TableWidgetColumn(columnName, defaultValueLabel, isColumnNamespaced)
 {
 
@@ -211,6 +213,7 @@ data class TableWidgetNumberColumn(
         this.isColumnNamespaced.name    = "is_column_namespaced"
         this.defaultValue.name          = "default_value"
         this.format.name                = "format"
+        this.editorType.name            = "editor_type"
     }
 
 
@@ -222,17 +225,23 @@ data class TableWidgetNumberColumn(
                 defaultValueLabel : DefaultValueLabel,
                 isColumnNamespaced : IsColumnNamespaced,
                 defaultValue : DefaultNumberColumnValue,
-                format : NumberColumnFormat)
+                format : NumberColumnFormat,
+                editorType : NumericEditorType)
         : this(UUID.randomUUID(),
                Prim(columnName),
                Prim(defaultValueLabel),
                Prim(isColumnNamespaced),
                Prim(defaultValue),
-               Comp(format))
+               Comp(format),
+               Prim(editorType))
 
 
     companion object : Factory<TableWidgetNumberColumn>
     {
+
+        private val defaultEditorType = NumericEditorType.Adder
+
+
         override fun fromDocument(doc : SpecDoc)
                         : ValueParser<TableWidgetNumberColumn> = when (doc)
         {
@@ -254,7 +263,11 @@ data class TableWidgetNumberColumn(
                          // Format
                          split(doc.maybeAt("format"),
                                effValue(NumberColumnFormat.default),
-                               { NumberColumnFormat.fromDocument(it) })
+                               { NumberColumnFormat.fromDocument(it) }),
+                         // Editor Type
+                         split(doc.maybeAt("editor_type"),
+                               effValue<ValueError,NumericEditorType>(defaultEditorType),
+                               { NumericEditorType.fromDocument(it) })
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -269,6 +282,8 @@ data class TableWidgetNumberColumn(
     fun defaultValueDouble() : Double = this.defaultValue.value.value
 
     fun format() : NumberColumnFormat = this.format.value
+
+    fun editorType() : NumericEditorType = this.editorType.value
 
 
     // -----------------------------------------------------------------------------------------

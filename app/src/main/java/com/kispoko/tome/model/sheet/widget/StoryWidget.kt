@@ -12,7 +12,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -650,6 +649,22 @@ object StoryWidgetView
                     this.formatSpans(storyPart.format(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
+
+                    val clickSpan = object: ClickableSpan()
+                    {
+                        override fun onClick(view : View?)
+                        {
+                            openVariableEditorDialog(storyPart.variable(), sheetUIContext)
+                        }
+
+                        override fun updateDrawState(ds: TextPaint?) {
+//                            val color = SheetManager.color(sheetUIContext.sheetId,
+//                                            storyPart.textFormat().style().colorTheme())
+//                            ds?.linkColor = color
+                        }
+                    }
+
+                    builder.setSpan(clickSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
                 is StoryPartIcon ->
                 {
