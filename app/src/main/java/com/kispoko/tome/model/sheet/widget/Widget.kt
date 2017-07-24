@@ -67,6 +67,8 @@ sealed class Widget(open val variables : Conj<Variable>) : Model, SheetComponent
                                             as ValueParser<Widget>
                     "widget_option"   -> OptionWidget.fromDocument(doc)
                                             as ValueParser<Widget>
+                    "widget_points"   -> PointsWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
                     "widget_quote"    -> QuoteWidget.fromDocument(doc)
                                             as ValueParser<Widget>
                     "widget_story"    -> StoryWidget.fromDocument(doc)
@@ -323,7 +325,7 @@ data class ActionWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext : SheetContext) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
@@ -428,7 +430,7 @@ data class BooleanWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext : SheetContext) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -548,7 +550,7 @@ data class ButtonWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -658,7 +660,7 @@ data class ExpanderWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext : SheetContext) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -756,7 +758,7 @@ data class ImageWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented")
     }
 
@@ -868,7 +870,7 @@ data class ListWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented")
     }
 
@@ -972,7 +974,7 @@ data class LogWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -1076,7 +1078,7 @@ data class MechanicWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -1204,8 +1206,8 @@ data class NumberWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) =
-        this.addVariableToState(sheetUIContext.sheetId, this.valueVariable())
+    override fun onSheetComponentActive(sheetContext : SheetContext) =
+        this.addVariableToState(sheetContext.sheetId, this.valueVariable())
 
 
     // -----------------------------------------------------------------------------------------
@@ -1354,7 +1356,7 @@ data class OptionWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext : SheetContext) {
         TODO("not implemented")
     }
 
@@ -1367,8 +1369,8 @@ data class OptionWidget(override val id : UUID,
 data class PointsWidget(override val id : UUID,
                         val widgetId : Prim<WidgetId>,
                         val format : Comp<PointsWidgetFormat>,
-                        val limitValueVariable : Comp<NumberVariable>,
-                        val currentValueVariable : Comp<NumberVariable>,
+                        val limitValueVariableId : Prim<VariableId>,
+                        val currentValueVariableId : Prim<VariableId>,
                         override val variables : Conj<Variable>) : Widget(variables)
 {
 
@@ -1380,8 +1382,8 @@ data class PointsWidget(override val id : UUID,
     {
         this.widgetId.name                  = "widget_id"
         this.format.name                    = "format"
-        this.limitValueVariable.name        = "limit_value_variable"
-        this.currentValueVariable.name      = "current_value_variable"
+        this.limitValueVariableId.name      = "limit_value_variable"
+        this.currentValueVariableId.name    = "current_value_variable"
         this.variables.name                 = "variables"
     }
 
@@ -1392,14 +1394,14 @@ data class PointsWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : PointsWidgetFormat,
-                limitValueVariable : NumberVariable,
-                currentValueVariable : NumberVariable,
+                limitValueVariableId : VariableId,
+                currentValueVariableId : VariableId,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
-               Comp(limitValueVariable),
-               Comp(currentValueVariable),
+               Prim(limitValueVariableId),
+               Prim(currentValueVariableId),
                Conj(variables))
 
 
@@ -1411,16 +1413,15 @@ data class PointsWidget(override val id : UUID,
             {
                 effApply(::PointsWidget,
                          // Widget Id
-                         doc.at("name") ap { WidgetId.fromDocument(it) },
+                         doc.at("id") ap { WidgetId.fromDocument(it) },
                          // Format
                          split(doc.maybeAt("format"),
                                effValue(PointsWidgetFormat.default()),
                                { PointsWidgetFormat.fromDocument(it) }),
-                        // TODO number variable reference
-                         // Limit Value Variable
-                         doc.at("limit_value_variable") ap { NumberVariable.fromDocument(it) },
-                         // Current Value Variable
-                         doc.at("current_value_variable") ap { NumberVariable.fromDocument(it) },
+                         // Limit Value Variable Id
+                         doc.at("limit_value_variable_id") ap { VariableId.fromDocument(it) },
+                         // Current Value Variable Id
+                         doc.at("current_value_variable_id") ap { VariableId.fromDocument(it) },
                          // Variables
                          split(doc.maybeList("variables"),
                              effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
@@ -1440,6 +1441,10 @@ data class PointsWidget(override val id : UUID,
 
     fun format() : PointsWidgetFormat = this.format.value
 
+    fun limitValueVariableId() : VariableId = this.limitValueVariableId.value
+
+    fun currentValueVariableId() : VariableId = this.currentValueVariableId.value
+
 
     // -----------------------------------------------------------------------------------------
     // WIDGET
@@ -1447,8 +1452,73 @@ data class PointsWidget(override val id : UUID,
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
-    override fun view(sheetUIContext: SheetUIContext): View {
-        TODO("not implemented")
+    override fun view(sheetUIContext : SheetUIContext) : View =
+            PointsWidgetView.view(this, sheetUIContext)
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+
+    fun limitValue(sheetContext : SheetContext) : Double?
+    {
+        val valueString = SheetManager.sheetState(sheetContext.sheetId)
+                            .apply { it.numberVariableWithId(this.limitValueVariableId()) }
+                            .apply { it.value(sheetContext) }
+
+        when (valueString) {
+            is Val -> return valueString.value
+            is Err -> ApplicationLog.error(valueString.error)
+        }
+
+        return null
+    }
+
+
+    fun limitValueString(sheetContext : SheetContext) : String?
+    {
+        val valueString = SheetManager.sheetState(sheetContext.sheetId)
+                            .apply { it.variableWithId(this.limitValueVariableId()) }
+                            .apply { it.valueString(sheetContext) }
+
+        when (valueString) {
+            is Val -> return valueString.value
+            is Err -> ApplicationLog.error(valueString.error)
+        }
+
+        return null
+    }
+
+
+    fun currentValue(sheetContext : SheetContext) : Double?
+    {
+        val valueString = SheetManager.sheetState(sheetContext.sheetId)
+                            .apply { it.numberVariableWithId(this.currentValueVariableId()) }
+                            .ap { it.value(sheetContext) }
+
+        when (valueString) {
+            is Val -> return valueString.value
+            is Err -> ApplicationLog.error(valueString.error)
+        }
+
+        return null
+    }
+
+
+    fun currentValueString(sheetContext : SheetContext) : String?
+    {
+        val valueString = SheetManager.sheetState(sheetContext.sheetId)
+                            .apply { it.variableWithId(this.currentValueVariableId()) }
+                            .ap { it.valueString(sheetContext) }
+
+        when (valueString) {
+            is Val -> return valueString.value
+            is Err -> ApplicationLog.error(valueString.error)
+        }
+
+        return null
     }
 
 
@@ -1467,8 +1537,9 @@ data class PointsWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
-        TODO("not implemented")
+    override fun onSheetComponentActive(sheetContext : SheetContext) {
+        SheetManager.addVariable(sheetContext.sheetId, this.limitValueVariableId())
+        SheetManager.addVariable(sheetContext.sheetId, this.currentValueVariableId())
     }
 
 }
@@ -1600,7 +1671,7 @@ data class QuoteWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) { }
 
 }
 
@@ -1708,12 +1779,12 @@ data class StoryWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(sheetContext : SheetContext)
     {
         this.story().mapNotNull { it.variable() }
-                    .forEach { this.addVariableToState(sheetUIContext.sheetId, it) }
+                    .forEach { this.addVariableToState(sheetContext.sheetId, it) }
 
-        this.variables().forEach { this.addVariableToState(sheetUIContext.sheetId, it) }
+        this.variables().forEach { this.addVariableToState(sheetContext.sheetId, it) }
     }
 
 }
@@ -1828,7 +1899,7 @@ data class TabWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented")
     }
 
@@ -1943,7 +2014,7 @@ data class TableWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
         // TODO("not implemented")
 
         // this.addVariableToState(sheetUIContext.sheetId, this.valueVariable())
@@ -2081,8 +2152,8 @@ data class TextWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) =
-        this.addVariableToState(sheetUIContext.sheetId, this.valueVariable())
+    override fun onSheetComponentActive(sheetContext : SheetContext) =
+        this.addVariableToState(sheetContext.sheetId, this.valueVariable())
 
 
     // -----------------------------------------------------------------------------------------

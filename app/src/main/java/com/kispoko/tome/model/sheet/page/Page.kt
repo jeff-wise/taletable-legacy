@@ -16,6 +16,7 @@ import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.util.Util
@@ -126,9 +127,9 @@ data class Page(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
+    override fun onSheetComponentActive(sheetContext : SheetContext)
     {
-        this.groups.list.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.groups.list.forEach { it.onSheetComponentActive(sheetContext) }
     }
 
 

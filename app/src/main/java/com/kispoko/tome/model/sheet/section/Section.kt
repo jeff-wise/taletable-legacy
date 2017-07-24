@@ -10,6 +10,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.page.Page
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
@@ -94,9 +95,9 @@ data class Section(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(sheetUIContext: SheetUIContext)
+    fun onActive(sheetContext : SheetContext)
     {
-        this.pages.list.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.pages.list.forEach { it.onSheetComponentActive(sheetContext) }
     }
 
 }

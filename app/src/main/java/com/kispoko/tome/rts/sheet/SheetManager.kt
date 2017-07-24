@@ -16,6 +16,7 @@ import com.kispoko.tome.load.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.section.SectionName
@@ -109,18 +110,19 @@ object SheetManager
             // Initialize Sheet
             sheetRecord.onActive(sheetUI.context())
 
-            // Theme UI
-            val theme = ThemeManager.theme(sheet.settings().themeId())
-            when (theme)
-            {
-                is Val -> sheetUI.applyTheme(sheet.sheetId(), theme.value.uiColors())
-                is Err -> ApplicationLog.error(theme.error)
-            }
 
             // Render
             SheetManager.render(sheet.sheetId(), sheetUI)
         } }
     }
+
+
+    fun addVariable(sheetId : SheetId, variableId : VariableId) =
+        SheetManager.sheetRecord(sheetId) apDo {
+            val variable = it.sheet().variableWithId(variableId)
+            if (variable != null)
+                it.state.addVariable(variable)
+        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -271,9 +273,15 @@ object SheetManager
                 val selectedSectionName = sheetRecord.viewState.selectedSection
                 val section = sheetRecord.sheet().sectionWithName(selectedSectionName)
 
-                val start = System.currentTimeMillis()
+                // Theme UI
+                val theme = ThemeManager.theme(sheetRecord.sheet.value.settings().themeId())
+                when (theme)
+                {
+                    is Val -> sheetUI.applyTheme(sheetId, theme.value.uiColors())
+                    is Err -> ApplicationLog.error(theme.error)
+                }
 
-                val sheetUIContext = SheetUIContext(sheetRecord.sheetContext, sheetUI.context())
+                val start = System.currentTimeMillis()
 
                 if (section != null) {
                     sheetUI.pagePagerAdatper()
@@ -467,7 +475,7 @@ data class SheetRecord(val sheet : Comp<Sheet>,
 
         when (sheetContext)
         {
-            is Val -> this.sheet().onActive(SheetUIContext(sheetContext.value, context))
+            is Val -> this.sheet().onActive(sheetContext.value)
             is Err -> ApplicationLog.error(sheetContext.error)
         }
     }
@@ -505,9 +513,8 @@ data class SheetUIContext(val sheetId : SheetId,
 
 interface SheetComponent
 {
-    fun onSheetComponentActive(sheetUIContext: SheetUIContext)
+    fun onSheetComponentActive(sheetContext : SheetContext)
 
-//     fun view(sheetUIContext : SheetUIContext) : View
 }
 
 

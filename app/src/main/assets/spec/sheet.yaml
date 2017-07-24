@@ -39,6 +39,12 @@ types:
     presence: required
     description: >
       The sections.
+  - name: variables
+    type: list
+    of: variable
+    presence: optional
+    description: >
+      The variables.
   - name: settings
     type: settings
     presence: optional
@@ -269,6 +275,9 @@ types:
   - type: widget_option
     description: >
       Option Widget
+  - type: widget_points
+    description: >
+      Points Widget
   - type: widget_quote
     description: >
       Quote Widget
@@ -977,6 +986,62 @@ types:
     presence: optional
     description: >
       The widget height.
+- name: widget_points
+  label: Points Widget
+  description: Points Widget
+  group: 'Widget: Points'
+  type: product
+  fields:
+  - name: id
+    type: widget_id
+    presence: required
+    description: >
+      The widget identifier.
+  - name: format
+    type: points_widget_format
+    presence: optional
+    description: >
+      The points widget formatting options.
+  - name: limit_value_variable_id
+    type: variable_id
+    presence: required
+    description: Limit Value Variable Id
+  - name: current_value_variable_id
+    type: variable_id
+    presence: required
+    description: Current Value Variable Id
+- name: points_widget_format
+  label: Points Widget Format
+  description: >
+    Points Widget formatting options.
+  group: 'Widget: Points'
+  type: product
+  fields:
+  - name: widget_format
+    type: widget_format
+    presence: optional
+    description: >
+      Standard widget formatting options.
+  - name: limit_text_format
+    type: text_format
+    presence: optional
+    description: Limit Text Format
+  - name: current_text_format
+    type: text_format
+    presence: optional
+    description: Current Text Format
+  - name: limit_color_theme
+    type: color_theme
+    presence: optional
+    description: Limit Color Theme
+  - name: current_color_theme
+    type: color_theme
+    presence: optional
+    description: Current Color Theme
+  - name: bar_height
+    type: number
+    presence: optional
+    description: Bar Height Dp
 - name: widget_quote
   label: Quote Widget
   description: >

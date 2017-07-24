@@ -18,6 +18,7 @@ import com.kispoko.tome.model.sheet.style.DividerThickness
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
@@ -112,9 +113,9 @@ data class Group(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
+    override fun onSheetComponentActive(sheetContext : SheetContext)
     {
-        this.rows.list.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.rows.list.forEach { it.onSheetComponentActive(sheetContext) }
     }
 
 

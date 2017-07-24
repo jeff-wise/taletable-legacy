@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet.style
 
 
 import android.view.Gravity
+import android.widget.RelativeLayout
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -118,6 +119,14 @@ sealed class VerticalAlignment : SQLSerializable, Serializable
         is Top    -> Gravity.TOP
         is Middle -> Gravity.CENTER_VERTICAL
         is Bottom -> Gravity.BOTTOM
+    }
+
+
+    fun relativeLayoutRule() : Int = when (this)
+    {
+        is Top    -> RelativeLayout.ALIGN_TOP
+        is Middle -> RelativeLayout.CENTER_VERTICAL
+        is Bottom -> RelativeLayout.ALIGN_BOTTOM
     }
 
 }

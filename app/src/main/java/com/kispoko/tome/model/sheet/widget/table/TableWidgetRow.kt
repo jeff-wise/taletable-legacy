@@ -15,10 +15,7 @@ import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidgetFormat
 import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.rts.sheet.CellTypeDoesNotMatchColumnType
-import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.*
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
@@ -107,7 +104,7 @@ data class TableWidgetRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetContext : SheetContext) {
         TODO("not implemented")
     }
 

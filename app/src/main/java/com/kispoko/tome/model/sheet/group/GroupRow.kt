@@ -17,6 +17,7 @@ import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.widget.Widget
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
@@ -117,9 +118,9 @@ data class GroupRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
+    override fun onSheetComponentActive(sheetContext : SheetContext)
     {
-        this.widgets.list.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.widgets.list.forEach { it.onSheetComponentActive(sheetContext) }
     }
 
 

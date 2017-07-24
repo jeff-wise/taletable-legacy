@@ -9,12 +9,15 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.campaign.CampaignId
+import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -28,6 +31,7 @@ data class Sheet(override val id : UUID,
                  val sheetId : Prim<SheetId>,
                  val campaignId: Prim<CampaignId>,
                  val sections : Coll<Section>,
+                 val variables : Conj<Variable>,
                  val settings : Comp<Settings>) : Model, Serializable
 {
 
@@ -40,8 +44,13 @@ data class Sheet(override val id : UUID,
         this.sheetId.name       = "sheet_id"
         this.campaignId.name    = "campaign_id"
         this.sections.name      = "sections"
+        this.variables.name     = "variables"
         this.settings.name      = "settings"
     }
+
+
+    private val variableById : Map<VariableId,Variable> =
+                                this.variables().associateBy { it.variableId() }
 
 
     // -----------------------------------------------------------------------------------------
@@ -51,11 +60,13 @@ data class Sheet(override val id : UUID,
     constructor(sheetId : SheetId,
                 campaignId : CampaignId,
                 sections : MutableList<Section>,
+                variables : MutableSet<Variable>,
                 settings : Settings)
         : this(UUID.randomUUID(),
                Prim(sheetId),
                Prim(campaignId),
                Coll(sections),
+               Conj(variables),
                Comp(settings))
 
 
@@ -74,6 +85,10 @@ data class Sheet(override val id : UUID,
                          doc.list("sections") ap { docList ->
                              docList.mapMut { Section.fromDocument(it) }
                          },
+                         // Variables
+                         split(doc.maybeList("variables"),
+                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
+                               { it.mapSetMut { Variable.fromDocument(it) } }),
                          // Sheet Settings
                          split(doc.maybeAt("settings"),
                                effValue(Settings.default()),
@@ -103,6 +118,8 @@ data class Sheet(override val id : UUID,
 
     fun settings() : Settings = this.settings.value
 
+    fun variables() : Set<Variable> = this.variables.set
+
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -115,12 +132,19 @@ data class Sheet(override val id : UUID,
     override val modelObject = this
 
 
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun variableWithId(variableId : VariableId) : Variable? = this.variableById[variableId]
+
+    // -----------------------------------------------------------------------------------------
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(sheetUIContext: SheetUIContext)
+    fun onActive(sheetContext : SheetContext)
     {
-        sections.list.forEach { it.onActive(sheetUIContext) }
+        sections.list.forEach { it.onActive(sheetContext) }
     }
 
 }

@@ -2,6 +2,23 @@ id: casmey_beginner
 campaign_id: harmony
 settings:
   theme_id: dark
+variables:
+- type: variable_number
+  variable_number:
+    id: max_health
+    label: Max Health
+    description: Max Health
+    value:
+      type: number_literal
+      number_literal: 20
+- type: variable_number
+  variable_number:
+    id: current_health
+    label: Current Health
+    description: Current Health
+    value:
+      type: number_literal
+      number_literal: 14
 sections:
 - name: Profile
   pages:
@@ -1403,5 +1420,40 @@ sections:
                       - theme_id: dark
                         color_id: light_grey_20
                     size: 16
+      - format:
+          margins:
+            top: 20
+        widgets:
+        - type: widget_points
+          widget_points:
+            id: health
+            format:
+              bar_height: 26
+              limit_text_format:
+                margins:
+                  right: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_2
+              current_text_format:
+                margins:
+                  left: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_2
+              limit_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: medium_grey_8
+              current_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_22
+            limit_value_variable_id: max_health
+            current_value_variable_id: current_health
 - name: Campaign
   pages:
