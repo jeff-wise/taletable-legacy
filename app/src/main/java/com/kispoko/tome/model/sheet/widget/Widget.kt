@@ -4,6 +4,7 @@ package com.kispoko.tome.model.sheet.widget
 
 import android.view.View
 import android.widget.LinearLayout
+import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -2036,7 +2037,7 @@ data class TextWidget(override val id : UUID,
                       val widgetId : Prim<WidgetId>,
                       val format : Comp<TextWidgetFormat>,
                       val description : Maybe<Prim<TextWidgetDescription>>,
-                      val valueVariable : Comp<TextVariable>,
+                      val valueVariableId : Prim<VariableId>,
                       override val variables : Conj<Variable>) : Widget(variables)
 {
 
@@ -2053,7 +2054,7 @@ data class TextWidget(override val id : UUID,
             is Just -> this.description.value.name  = "description"
         }
 
-        this.valueVariable.name                     = "value_variable"
+        this.valueVariableId.name                   = "value_variable_id"
 
         this.variables.name                         = "variables"
     }
@@ -2073,13 +2074,13 @@ data class TextWidget(override val id : UUID,
     constructor(widgetId: WidgetId,
                 format : TextWidgetFormat,
                 description : Maybe<TextWidgetDescription>,
-                valueVariable : TextVariable,
+                valueVariableId : VariableId,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                maybeLiftPrim(description),
-               Comp(valueVariable),
+               Prim(valueVariableId),
                Conj(variables))
 
 
@@ -2101,7 +2102,7 @@ data class TextWidget(override val id : UUID,
                                effValue<ValueError,Maybe<TextWidgetDescription>>(Nothing()),
                                { effApply(::Just, TextWidgetDescription.fromDocument(it)) }),
                          // Value
-                         doc.at("value_variable") ap { TextVariable.fromDocument(it) },
+                         doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
                          // Variables
                          split(doc.maybeList("variables"),
                                effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
@@ -2123,7 +2124,7 @@ data class TextWidget(override val id : UUID,
 
     fun description() : TextWidgetDescription? = getMaybePrim(this.description)
 
-    fun valueVariable() : TextVariable = this.valueVariable.value
+    fun valueVariableId() : VariableId = this.valueVariableId.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -2135,6 +2136,15 @@ data class TextWidget(override val id : UUID,
 
     override fun view(sheetUIContext: SheetUIContext) : View =
         TextWidgetView.view(this, this.format(), sheetUIContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun valueVariable(sheetContext : SheetContext) : AppEff<TextVariable> =
+        SheetManager.sheetState(sheetContext.sheetId)
+                    .apply { it.textVariableWithId(this.valueVariableId()) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -2152,8 +2162,10 @@ data class TextWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext) =
-        this.addVariableToState(sheetContext.sheetId, this.valueVariable())
+    override fun onSheetComponentActive(sheetContext : SheetContext)
+    {
+        SheetManager.addVariable(sheetContext.sheetId, this.valueVariableId())
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -2164,14 +2176,18 @@ data class TextWidget(override val id : UUID,
      * The string representation of the widget's current value. This method returns 0 when the
      * value is null for some reason.
      */
-    fun valueString(sheetUIContext: SheetUIContext) : String
+    fun valueString(sheetContext : SheetContext) : String
     {
-        val stringEff = this.valueVariable().value(SheetContext(sheetUIContext))
-        when (stringEff)
+        val str = this.valueVariable(sheetContext)
+                      .apply { it.value(sheetContext) }
+
+        when (str)
         {
-            is Val -> return stringEff.value
-            is Err -> return ""
+            is Val -> return str.value
+            is Err -> ApplicationLog.error(str.error)
         }
+
+        return ""
     }
 
 }

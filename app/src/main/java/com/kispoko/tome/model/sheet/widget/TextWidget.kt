@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -19,6 +20,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.util.Util
@@ -318,9 +320,12 @@ object TextWidgetView
         layout.marginSpacing        = textWidget.widgetFormat().margins()
 
         layout.onClick              = View.OnClickListener {
-                                          openTextVariableEditorDialog(textWidget.valueVariable(),
-                                                  sheetUIContext)
-                                      }
+            val valueVar = textWidget.valueVariable(SheetContext(sheetUIContext))
+            when (valueVar) {
+                is Val -> openTextVariableEditorDialog(valueVar.value, sheetUIContext)
+                is Err -> ApplicationLog.error(valueVar.error)
+            }
+        }
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -431,7 +436,7 @@ object TextWidgetView
                         format.insideLabelFormat().style().font())
 
             val valueSpan =
-                FormattedString.Span(textWidget.valueString(sheetUIContext),
+                FormattedString.Span(textWidget.valueString(SheetContext(sheetUIContext)),
                                      sheetUIContext.context.getString(R.string.placeholder_value),
                                      SheetManager.color(sheetUIContext.sheetId,
                                                         format.valueFormat().style().colorTheme()),
@@ -449,7 +454,7 @@ object TextWidgetView
         }
         else
         {
-            value.text      = textWidget.valueString(sheetUIContext)
+            value.text      = textWidget.valueString(SheetContext(sheetUIContext))
 
             format.valueFormat().style().styleTextViewBuilder(value, sheetUIContext)
         }

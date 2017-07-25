@@ -1830,11 +1830,11 @@ types:
     presence: optional
     description: >
       The text widget formatting options.
-  - name: value_variable
-    type: variable_text
+  - name: value_variable_id
+    type: variable_id
     presence: required
     description: >
-      The text value.
+      The text value variable id.
   - name: description
     type: string
     presence: optional

@@ -3,6 +3,94 @@ campaign_id: harmony
 settings:
   theme_id: dark
 variables:
+- type: variable_text
+  variable_text:
+    id: name
+    label: Name
+    description: Name
+    value:
+      type: text_literal
+      text_literal: 'Casmey Dalseya'
+- type: variable_text
+  variable_text:
+    id: strength_label
+    label: Strength Label
+    description: Strength Label
+    value:
+      type: text_literal
+      text_literal: 'strength'
+- type: variable_text
+  variable_text:
+    id: dexterity_label
+    label: Dexterity Label
+    description: Dexterity Label
+    value:
+      type: text_literal
+      text_literal: 'dexterity'
+- type: variable_text
+  variable_text:
+    id: constitution_label
+    label: Constitution Label
+    description: Constitution Label
+    value:
+      type: text_literal
+      text_literal: 'constitution'
+- type: variable_text
+  variable_text:
+    id: intelligence_label
+    label: Intelligence Label
+    description: Intelligence Label
+    value:
+      type: text_literal
+      text_literal: 'intelligence'
+- type: variable_text
+  variable_text:
+    id: wisdom_label
+    label: Wisdom Label
+    description: Wisdom Label
+    value:
+      type: text_literal
+      text_literal: 'wisdom'
+- type: variable_text
+  variable_text:
+    id: charisma_label
+    label: Charisma Label
+    description: Charisma Label
+    value:
+      type: text_literal
+      text_literal: 'charisma'
+- type: variable_text
+  variable_text:
+    id: armor_table_label
+    label: Armor Table Label
+    description: Armor Table Label
+    value:
+      type: text_literal
+      text_literal: 'armor & shields'
+- type: variable_text
+  variable_text:
+    id: weapon_table_label
+    label: Armor Table Label
+    description: Armor Table Label
+    value:
+      type: text_literal
+      text_literal: 'weapons'
+- type: variable_text
+  variable_text:
+    id: defense_label
+    label: Defense Label
+    description: Defense Label
+    value:
+      type: text_literal
+      text_literal: 'defense'
+- type: variable_text
+  variable_text:
+    id: attack_label
+    label: Attack Label
+    description: Attack Label
+    value:
+      type: text_literal
+      text_literal: 'attack'
 - type: variable_number
   variable_number:
     id: max_health
@@ -45,13 +133,7 @@ sections:
         - type: widget_text
           widget_text:
             id: name
-            value_variable:
-              id: name
-              label: Name
-              description: Name
-              value:
-                type: text_literal
-                text_literal: 'Casmey Dalseya'
+            value_variable_id: name
             format:
               value_format:
                 style:
@@ -278,13 +360,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: strength_label
-              label: Strength Label
-              description: Strength Label
-              value:
-                type: text_literal
-                text_literal: 'strength'
+            value_variable_id: strength_label
         - type: widget_text
           widget_text:
             id: dexterity_label
@@ -296,13 +372,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: dexterity_label
-              label: Dexterity Label
-              description: Dexterity Label
-              value:
-                type: text_literal
-                text_literal: 'dexterity'
+            value_variable_id: dexterity_label
         - type: widget_text
           widget_text:
             id: constitution_label
@@ -314,13 +384,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: constitution_label
-              label: Constitution Label
-              description: Constitution Label
-              value:
-                type: text_literal
-                text_literal: 'constitution'
+            value_variable_id: constitution_label
       - widgets:
         - type: widget_story
           widget_story:
@@ -590,13 +654,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: intelligence_label
-              label: Intelligence Label
-              description: Intelligence Label
-              value:
-                type: text_literal
-                text_literal: 'intelligence'
+            value_variable_id: intelligence_label
         - type: widget_text
           widget_text:
             id: wisdom_label
@@ -608,13 +666,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: wisdom_label
-              label: Wisdom Label
-              description: Wisdom Label
-              value:
-                type: text_literal
-                text_literal: 'wisdom'
+            value_variable_id: wisdom_label
         - type: widget_text
           widget_text:
             id: charisma_label
@@ -626,13 +678,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: charisma_label
-              label: Charisma Label
-              description: Charisma Label
-              value:
-                type: text_literal
-                text_literal: 'charisma'
+            value_variable_id: charisma_label
       - widgets:
         - type: widget_story
           widget_story:
@@ -903,13 +949,7 @@ sections:
                 margins:
                   bottom: 2
                   left: 8
-            value_variable:
-              id: armor_table_label
-              label: Armor Table Label
-              description: Armor Table Label
-              value:
-                type: text_literal
-                text_literal: 'armor & shields'
+            value_variable_id: armor_table_label
       - widgets:
         - type: widget_table
           widget_table:
@@ -1041,13 +1081,7 @@ sections:
                 margins:
                   bottom: 2
                   left: 8
-            value_variable:
-              id: weapon_table_label
-              label: Armor Table Label
-              description: Armor Table Label
-              value:
-                type: text_literal
-                text_literal: 'weapons'
+            value_variable_id: weapon_table_label
       - widgets:
         - type: widget_table
           widget_table:
@@ -1221,13 +1255,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: defense_label
-              label: Defense Label
-              description: Defense Label
-              value:
-                type: text_literal
-                text_literal: 'defense'
+            value_variable_id: defense_label
         - type: widget_text
           widget_text:
             id: attack_label
@@ -1239,13 +1267,7 @@ sections:
                     - theme_id: dark
                       color_id: light_blue_18
                   size: 12
-            value_variable:
-              id: attack_label
-              label: Attack Label
-              description: Attack Label
-              value:
-                type: text_literal
-                text_literal: 'attack'
+            value_variable_id: attack_label
       - widgets:
         - type: widget_story
           widget_story:
