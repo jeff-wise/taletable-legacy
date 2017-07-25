@@ -7,27 +7,37 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
+import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.lib.ui.CustomTabLayout
+import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.model.theme.UIColors
+import com.kispoko.tome.model.sheet.style.*
+import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialIndex
+import com.kispoko.tome.rts.campaign.CampaignManager
+import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.configureToolbar
@@ -106,6 +116,43 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
+    /**
+     * Initialize the side drawers.
+     */
+    override fun updateSwitcherView(sheetContext : SheetContext)
+    {
+        val sheetUIContext = SheetUIContext(sheetContext, this)
+        val drawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
+
+        // Right Sidebar
+        // -------------------------------------------------------------------------------------
+        val menuRight = findViewById(R.id.menuRight) as ImageButton
+
+        val rightNavView = findViewById(R.id.right_nav_view) as NavigationView
+        rightNavView.addView(SwitcherSidebarView.view(sheetUIContext))
+
+        menuRight.setOnClickListener {
+            if (drawerLayout.isDrawerOpen(GravityCompat.END))
+                drawerLayout.closeDrawer(GravityCompat.END)
+            else
+                drawerLayout.openDrawer(GravityCompat.END)
+        }
+
+        //
+//        menuLeft.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+//                    drawerLayout.closeDrawer(GravityCompat.START);
+//                } else {
+//                    drawerLayout.openDrawer(GravityCompat.START);
+//                }
+//            }
+//        });
+    }
+
+
+
     private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
     {
         val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
@@ -152,6 +199,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // -----------------------------------------------------------------------------------------
 
     override fun pagePagerAdatper() : PagePagerAdapter = this.pagePagerAdapter!!
+
 
     override fun bottomNavigation() : AHBottomNavigation = this.bottomNavigation!!
 
@@ -290,6 +338,411 @@ class SheetActivity : AppCompatActivity(), SheetUI
         }
 
     }
+
+}
+
+
+
+object SwitcherSidebarView
+{
+
+    fun view(sheetUIContext : SheetUIContext) : View
+    {
+        val layout = this.viewLayout(sheetUIContext)
+
+        layout.addView(this.sheetSwitcherView(sheetUIContext))
+
+        layout.addView(this.campaignSwitcherView(sheetUIContext))
+
+        layout.addView(this.gameSwitcherView(sheetUIContext))
+
+        return layout
+    }
+
+
+    fun viewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.padding.topDp    = 40f
+
+        val labelCcolorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, labelCcolorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GENERAL VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    fun switcherViewLayout(context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.margin.bottomDp  = 25f
+
+        return layout.linearLayout(context)
+    }
+
+
+    fun switcherHeaderView(labelId : Int,
+                           sheetUIContext : SheetUIContext) : LinearLayout
+    {
+
+        val layout          = this.switcherHeaderViewLayout(sheetUIContext)
+
+        layout.addView(this.switcherLabelView(labelId, sheetUIContext))
+
+        layout.addView(this.newButtonView(sheetUIContext))
+
+        return layout
+    }
+
+
+    private fun switcherHeaderViewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 54
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.margin.leftDp    = 5f
+        layout.margin.rightDp   = 5f
+
+        layout.padding.leftDp   = 5f
+
+        val labelBgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, labelBgColorTheme)
+
+        layout.corners          = Corners(TopLeftCornerRadius(1f),
+                                          TopRightCornerRadius(1f),
+                                          BottomRightCornerRadius(1f),
+                                          BottomLeftCornerRadius(1f))
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun switcherLabelView(labelId : Int, sheetUIContext : SheetUIContext) : TextView
+    {
+        val label               = TextViewBuilder()
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.weight            = 4f
+
+        label.text              = sheetUIContext.context.getString(labelId).toUpperCase()
+
+        label.font              = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        label.layoutGravity     = Gravity.CENTER_VERTICAL
+
+        val labelCcolorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_14")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        label.color             = SheetManager.color(sheetUIContext.sheetId, labelCcolorTheme)
+
+
+        label.sizeSp            = 13f
+
+        return label.textView(sheetUIContext.context)
+    }
+
+
+    private fun newButtonView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout  = LinearLayoutBuilder()
+        val icon    = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp           = 25
+        icon.heightDp          = 25
+        icon.weight            = 1f
+
+        icon.image             = R.drawable.ic_switcher_new
+
+        icon.layoutGravity     = Gravity.CENTER_VERTICAL
+
+        val buttonColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        icon.color             = SheetManager.color(sheetUIContext.sheetId, buttonColorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    fun switcherCardHeaderView(nameString : String, sheetUIContext : SheetUIContext) : TextView
+    {
+        val header              = TextViewBuilder()
+
+        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        header.font             = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        header.text             = nameString
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        header.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+
+        header.sizeSp           = 15.5f
+
+        return header.textView(sheetUIContext.context)
+    }
+
+
+    fun switcherCardSummaryView(summaryString : String,
+                                sheetUIContext : SheetUIContext) : TextView
+    {
+        val summary             = TextViewBuilder()
+
+        summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        summary.font            = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        summary.text            = summaryString
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        summary.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        summary.sizeSp          = 13f
+
+        return summary.textView(sheetUIContext.context)
+    }
+
+
+    fun switcherListViewLayout(context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.padding.leftDp   = 5f
+        layout.padding.rightDp  = 5f
+
+        layout.margin.topDp     = 5f
+
+        return layout.linearLayout(context)
+    }
+
+
+    fun switcherCardViewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.padding.leftDp   = 6f
+        layout.padding.rightDp  = 6f
+        layout.padding.topDp    = 7f
+        layout.padding.bottomDp = 7f
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.corners          = Corners(TopLeftCornerRadius(1f),
+                                          TopRightCornerRadius(1f),
+                                          BottomRightCornerRadius(1f),
+                                          BottomLeftCornerRadius(1f))
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GAME SWITCHER VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun gameSwitcherView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherViewLayout(sheetUIContext.context)
+
+        layout.addView(this.switcherHeaderView(R.string.open_games, sheetUIContext))
+
+        layout.addView(this.openGamesView(sheetUIContext))
+
+        return layout
+    }
+
+
+    fun openGamesView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherListViewLayout(sheetUIContext.context)
+
+        GameManager.openGames().forEach {
+            layout.addView(this.openGameView(it.description().gameName(),
+                                             it.description().summary(),
+                                             sheetUIContext))
+        }
+
+        return layout
+    }
+
+
+    fun openGameView(gameName : String,
+                     gameSummary : String,
+                     sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherCardViewLayout(sheetUIContext)
+
+        layout.addView(this.switcherCardHeaderView(gameName, sheetUIContext))
+
+        layout.addView(this.switcherCardSummaryView(gameSummary, sheetUIContext))
+
+        return layout
+    }
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // CAMPAIGN SWITCHER VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun campaignSwitcherView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherViewLayout(sheetUIContext.context)
+
+        layout.addView(this.switcherHeaderView(R.string.open_campaigns, sheetUIContext))
+
+        layout.addView(this.openCampaignsView(sheetUIContext))
+
+        return layout
+    }
+
+
+    fun openCampaignsView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherListViewLayout(sheetUIContext.context)
+
+        CampaignManager.openCampaigns().forEach {
+            layout.addView(this.openCampaignView(it.campaignName(),
+                                                 it.campaignSummary(),
+                                                 sheetUIContext))
+        }
+
+        return layout
+    }
+
+
+    fun openCampaignView(campaignName : String,
+                         campaignSummary : String,
+                         sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherCardViewLayout(sheetUIContext)
+
+        layout.addView(this.switcherCardHeaderView(campaignName, sheetUIContext))
+
+        layout.addView(this.switcherCardSummaryView(campaignSummary, sheetUIContext))
+
+        return layout
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET SWITCHER VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun sheetSwitcherView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherViewLayout(sheetUIContext.context)
+
+        layout.addView(this.switcherHeaderView(R.string.open_sheets, sheetUIContext))
+
+        layout.addView(this.openSheetsView(sheetUIContext))
+
+        return layout
+    }
+
+
+    fun openSheetsView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherListViewLayout(sheetUIContext.context)
+
+        SheetManager.openSheets().forEach {
+            val sheetName = SheetManager.evalSheetName(sheetUIContext.sheetId,
+                                                       it.settings().sheetName())
+            val sheetSummary = SheetManager.evalSheetSummary(sheetUIContext.sheetId,
+                                                             it.settings().sheetSummary())
+            layout.addView(this.openSheetView(sheetName, sheetSummary, sheetUIContext))
+        }
+
+        return layout
+    }
+
+
+    fun openSheetView(sheetName : String,
+                      sheetSummary : String,
+                      sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.switcherCardViewLayout(sheetUIContext)
+
+        layout.addView(this.switcherCardHeaderView(sheetName, sheetUIContext))
+
+        layout.addView(this.switcherCardSummaryView(sheetSummary, sheetUIContext))
+
+        return layout
+    }
+
 
 }
 
@@ -482,42 +935,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
 //
 //    // > Initialization Methods
 //    // -------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Initialize the drawer ComponentUtil components.
-//     */
-//    private void initializeDrawers()
-//    {
-//        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//
-//        ImageButton menuLeft = (ImageButton) findViewById(R.id.menuLeft);
-//        ImageButton menuRight = (ImageButton) findViewById(R.id.menuRight);
-//
-//        menuLeft.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-//                    drawerLayout.closeDrawer(GravityCompat.START);
-//                } else {
-//                    drawerLayout.openDrawer(GravityCompat.START);
-//                }
-//            }
-//        });
-//
-//        menuRight.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-//                    drawerLayout.closeDrawer(GravityCompat.END);
-//                } else {
-//                    drawerLayout.openDrawer(GravityCompat.END);
-//                }
-//            }
-//        });
-//
-//    }
-//
-//
+
 //    /**
 //     * Initialize the navigation menu.
 //     */
@@ -888,348 +1306,4 @@ class SheetActivity : AppCompatActivity(), SheetUI
 //        return layout;
 //    }
 //
-//
-//    // ** SHEET Navigation View
-//    // -----------------------------------------------------------------------------------------
-//
-//    private ScrollView sheetNavigationView(Context context)
-//    {
-//        ScrollView scrollView = this.navigationScrollView(context);
-//
-//        LinearLayout layout = this.sheetNavigationLayout(context);
-//
-//        // > Character View
-//        layout.addView(this.characterView(context));
-//
-//        // --- Divider
-//        layout.addView(this.dividerView(context));
-//
-//        // > Programming Options
-//        layout.addView(this.programmingButtonsView(context));
-//
-//        // --- Divider
-//        layout.addView(this.dividerView(context));
-//
-//        // > Style Options
-//        layout.addView(this.styleButtonsView(context));
-//
-//        scrollView.addView(layout);
-//
-//        return scrollView;
-//    }
-//
-//
-//    private LinearLayout sheetNavigationLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.VERTICAL;
-//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
-//
-//        layout.padding.topDp    = 27f;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout characterView(Context context)
-//    {
-//        LinearLayout layout = this.characterViewLayout(context);
-//
-//        // > Avatar
-//        layout.addView(characterAvatarView(context));
-//
-//        // > Name
-//        this.sheetNavCharacterNameView = this.characterNameView(context);
-//        layout.addView(this.sheetNavCharacterNameView);
-//
-//        // > Description
-//        layout.addView(characterDescriptionView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout characterViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = LinearLayout.VERTICAL;
-//
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.gravity              = Gravity.CENTER_HORIZONTAL;
-//
-//        layout.padding.topDp        = 15f;
-//        layout.padding.bottomDp     = 20f;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private ImageView characterAvatarView(Context context)
-//    {
-//        ImageViewBuilder avatar = new ImageViewBuilder();
-//
-//        avatar.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        avatar.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        avatar.image                = R.drawable.ic_sheet_menu_default_avatar;
-//
-//        avatar.color                = R.color.dark_blue_hl_2;
-//
-//        return avatar.imageView(context);
-//    }
-//
-//
-//    private TextView characterNameView(Context context)
-//    {
-//        TextViewBuilder name = new TextViewBuilder();
-//
-//        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        name.text               = this.characterName;
-//
-//        name.font               = Font.serifFontRegular(context);
-//        name.color              = R.color.gold_light;
-//        name.sizeSp             = 24f;
-//
-//        name.margin.topDp       = 8f;
-//
-//        return name.textView(context);
-//    }
-//
-//
-//    private TextView characterDescriptionView(Context context)
-//    {
-//        TextViewBuilder description = new TextViewBuilder();
-//
-//        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        description.text            = "Level 1 Human Fighter";
-//
-//        description.font            = Font.serifFontRegular(context);
-//        description.color           = R.color.dark_blue_hl_6;
-//        description.sizeSp          = 14f;
-//
-//        description.margin.topDp    = 8f;
-//
-//        return description.textView(context);
-//    }
-//
-//
-//    private LinearLayout programmingButtonsView(Context context)
-//    {
-//        LinearLayout layout = this.buttonsLayout(context);
-//
-//        // > Dictionary
-//        // -------------------------------------------------------------------------------------
-//
-//        LinearLayout dictionaryButton = this.buttonView(R.string.dictionary,
-//                                                        R.drawable.ic_sheet_nav_dictionary,
-//                                                        context);
-//
-//        dictionaryButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(SheetActivityOld.this, DictionaryActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        layout.addView(dictionaryButton);
-//
-//        // > Functions
-//        // -------------------------------------------------------------------------------------
-//        LinearLayout functionsButton = this.buttonView(R.string.functions,
-//                                                      R.drawable.ic_sheet_nav_functions,
-//                                                      context);
-//        functionsButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(SheetActivityOld.this, FunctionIndexActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//        layout.addView(functionsButton);
-//
-//        // > Programs
-//        // -------------------------------------------------------------------------------------
-//        LinearLayout programsButton = this.buttonView(R.string.programs,
-//                                                      R.drawable.ic_sheet_nav_programs,
-//                                                      context);
-//        programsButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(SheetActivityOld.this, ProgramIndexActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//        layout.addView(programsButton);
-//
-//        // > Mechanics
-//        // -------------------------------------------------------------------------------------
-//        LinearLayout mechanicsButton = this.buttonView(R.string.mechanics,
-//                                                       R.drawable.ic_sheet_nav_mechanics,
-//                                                       context);
-//        mechanicsButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(SheetActivityOld.this, MechanicIndexActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//        layout.addView(mechanicsButton);
-//
-//        // > Engine
-//        // -------------------------------------------------------------------------------------
-//        LinearLayout engineButton = this.buttonView(R.string.engine,
-//                                                    R.drawable.ic_sheet_nav_debugger,
-//                                                    context);
-//        engineButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(SheetActivityOld.this, EngineActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//        layout.addView(engineButton);
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout styleButtonsView(Context context)
-//    {
-//        LinearLayout layout = this.buttonsLayout(context);
-//
-//        // > Layout
-//        LinearLayout layoutButton = this.buttonView(R.string.layout,
-//                                                    R.drawable.ic_sheet_nav_layout,
-//                                                    context);
-//        layout.addView(layoutButton);
-//
-//        // > Theme
-//        LinearLayout themeButton = this.buttonView(R.string.theme,
-//                                                   R.drawable.ic_sheet_nav_theme,
-//                                                   context);
-//        layout.addView(themeButton);
-//
-//        return layout;
-//    }
-//
-//
-//    // ** SHARED views & layouts
-//    // -----------------------------------------------------------------------------------------
-//
-//    private ScrollView navigationScrollView(Context context)
-//    {
-//        ScrollViewBuilder scrollView = new ScrollViewBuilder();
-//
-//        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT;
-//        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT;
-//
-//        return scrollView.scrollView(context);
-//    }
-//
-//
-//    private LinearLayout buttonsLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = LinearLayout.VERTICAL;
-//
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.gravity              = Gravity.CENTER_VERTICAL;
-//
-//        layout.padding.leftDp       = 15f;
-//        layout.padding.topDp        = 10f;
-//        layout.padding.bottomDp     = 10f;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout buttonView(int labelId, int iconId, Context context)
-//    {
-//        // [1] Declarations
-//        // -------------------------------------------------------------------------------------
-//
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//        ImageViewBuilder    icon   = new ImageViewBuilder();
-//        TextViewBuilder     label  = new TextViewBuilder();
-//
-//        // [2] Layout
-//        // -------------------------------------------------------------------------------------
-//
-//        layout.orientation          = LinearLayout.HORIZONTAL;
-//
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.gravity              = Gravity.CENTER_VERTICAL;
-//
-//        layout.padding.topDp        = 15f;
-//        layout.padding.bottomDp     = 15f;
-//
-//        layout.child(icon)
-//              .child(label);
-//
-//        // [3 A] Icon
-//        // -------------------------------------------------------------------------------------
-//
-//        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        icon.image                  = iconId;
-//
-//        icon.color                  = R.color.dark_blue_hl_2;
-//
-//        icon.margin.rightDp         = 20f;
-//
-//        // [3 B] Button
-//        // -------------------------------------------------------------------------------------
-//
-//        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        label.textId                = labelId;
-//
-//        label.font                  = Font.serifFontRegular(context);
-//        label.color                 = R.color.dark_blue_hlx_10;
-//        label.sizeSp                = 17f;
-//
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout dividerView(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.heightDp         = 1;
-//
-//        layout.backgroundColor  = R.color.dark_blue_7;
 
-//        return layout.linearLayout(context);
-//    }
-//
-//}

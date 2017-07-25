@@ -154,6 +154,9 @@ object GameManager
     // API
     // -----------------------------------------------------------------------------------------
 
+    fun openGames() : List<Game> = this.gameById.values.toList()
+
+
     fun engine(gameId : GameId) : AppEff<Engine> =
             note(this.gameById[gameId]?.engine(),
                  AppGameError(GameDoesNotExist(gameId)))

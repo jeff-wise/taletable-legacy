@@ -69,6 +69,16 @@ types:
     presence: optional
     description: >
       The type of theme for the sheet.
+  - name: sheet_name
+    type: string
+    presence: optional
+    description: >
+      The sheet name.
+  - name: sheet_summary
+    type: string
+    presence: optional
+    description: >
+      The sheet summary.
 - name: theme_id
   label: theme_id
   description: >

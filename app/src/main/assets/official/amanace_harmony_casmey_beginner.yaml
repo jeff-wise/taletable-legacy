@@ -2,6 +2,8 @@ id: casmey_beginner
 campaign_id: harmony
 settings:
   theme_id: dark
+  sheet_name: 'Casmey Dalseya'
+  sheet_summary: 'Level 3 Soulsin Swashbuckler'
 variables:
 - type: variable_text
   variable_text:

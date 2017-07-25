@@ -25,6 +25,8 @@ import java.util.*
  */
 data class Campaign(override val id : UUID,
                     val campaignId : Prim<CampaignId>,
+                    val campaignName : Prim<CampaignName>,
+                    val campaignSummary : Prim<CampaignSummary>,
                     val gameId : Prim<GameId>) : Model, Serializable
 {
 
@@ -34,8 +36,10 @@ data class Campaign(override val id : UUID,
 
     init
     {
-        this.campaignId.name    = "campaign_id"
-        this.gameId.name        = "game_id"
+        this.campaignId.name        = "campaign_id"
+        this.campaignName.name      = "campaign_name"
+        this.campaignSummary.name   = "campaign_summary"
+        this.gameId.name            = "game_id"
     }
 
 
@@ -43,21 +47,34 @@ data class Campaign(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(campaignId : CampaignId,
+                campaignName : CampaignName,
+                campaignSummary : CampaignSummary,
+                gameId : GameId)
+        : this(UUID.randomUUID(),
+               Prim(campaignId),
+               Prim(campaignName),
+               Prim(campaignSummary),
+               Prim(gameId))
+
+
     companion object : Factory<Campaign>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Campaign> = when (doc)
         {
-            is DocDict -> effApply(::Campaign,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Campaign Id
-                                   doc.at("id") ap {
-                                       effApply(::Prim, CampaignId.fromDocument(it))
-                                   },
-                                   // Game Id
-                                   doc.at("game_id") ap {
-                                       effApply(::Prim, GameId.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::Campaign,
+                         // Campaign Id
+                         doc.at("id") ap { CampaignId.fromDocument(it) },
+                         // Campaign Name
+                         doc.at("campaign_name") ap { CampaignName.fromDocument(it) },
+                         // Campaign Summary
+                         doc.at("campaign_summary") ap { CampaignSummary.fromDocument(it) },
+                         // Game Id
+                         doc.at("game_id") ap { GameId.fromDocument(it) }
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -68,6 +85,10 @@ data class Campaign(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun campaignId() : CampaignId = this.campaignId.value
+
+    fun campaignName() : String = this.campaignName.value.value
+
+    fun campaignSummary() : String = this.campaignSummary.value.value
 
     fun gameId() : GameId = this.gameId.value
 
@@ -106,6 +127,64 @@ data class CampaignId(val value : String) : SQLSerializable, Serializable
     }
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Campaign Name
+ */
+data class CampaignName(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<CampaignName>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<CampaignName> = when (doc)
+        {
+            is DocText -> effValue(CampaignName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText( {this.value} )
+
+}
+
+
+/**
+ * Campaign Summary
+ */
+data class CampaignSummary(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<CampaignSummary>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<CampaignSummary> = when (doc)
+        {
+            is DocText -> effValue(CampaignSummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText( {this.value} )
 
 }
 

@@ -23,6 +23,16 @@ types:
     presence: required
     description: >
       The id of the campaign.
+  - name: campaign_name
+    type: string
+    presence: required
+    description: >
+      The name of the campaign.
+  - name: campaign_summary
+    type: string
+    presence: required
+    description: >
+      The summary of the campaign.
   - name: game_id
     type: game_id
     presence: required

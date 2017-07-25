@@ -16,6 +16,10 @@
     <string name="save">Save</string>
     <string name="engine">Engine</string>
 
+    <string name="open_games">Games</string>
+    <string name="open_campaigns">Campaigns</string>
+    <string name="open_sheets">Sheets</string>
+
     <string name="actions">Actions</string>
 
     <string name="plus_one">+1</string>

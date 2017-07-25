@@ -5,12 +5,16 @@ package com.kispoko.tome.model.sheet
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.theme.ThemeId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -19,7 +23,9 @@ import java.util.*
  * Sheet Settings
  */
 data class Settings(override val id : UUID,
-                    val themeId : Prim<ThemeId>) : Model
+                    val themeId : Prim<ThemeId>,
+                    val sheetName : Prim<SheetName>,
+                    val sheetSummary: Prim<SheetSummary>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -29,6 +35,8 @@ data class Settings(override val id : UUID,
     init
     {
         this.themeId.name       = "theme_id"
+        this.sheetName.name     = "sheet_name"
+        this.sheetSummary.name  = "sheet_summary"
     }
 
 
@@ -36,26 +44,49 @@ data class Settings(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(themeId : ThemeId,
+                sheetName : SheetName,
+                sheetSummary: SheetSummary)
+        : this(UUID.randomUUID(),
+               Prim(themeId),
+               Prim(sheetName),
+               Prim(sheetSummary))
+
+
     companion object : Factory<Settings>
     {
 
-        private val defaultThemeId = ThemeId.Dark
+        private val defaultThemeId      = ThemeId.Dark
+        private val defaultSheetName    = SheetName("")
+        private val defaultSheetSummary = SheetSummary("")
+
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<Settings> = when (doc)
         {
-            is DocDict -> effApply(::Settings,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Theme Id
-                                   split(doc.maybeAt("theme_id"),
-                                         effValue<ValueError,Prim<ThemeId>>(Prim(defaultThemeId)),
-                                         { effApply(::Prim, ThemeId.fromDocument(it)) })
-                                   )
+            is DocDict ->
+            {
+                effApply(::Settings,
+                         // Theme Id
+                         split(doc.maybeAt("theme_id"),
+                               effValue<ValueError,ThemeId>(defaultThemeId),
+                               { ThemeId.fromDocument(it) }),
+                         // Sheet Name
+                         split(doc.maybeAt("sheet_name"),
+                               effValue(defaultSheetName),
+                               { SheetName.fromDocument(it) }),
+                         // Sheet Summary
+                         split(doc.maybeAt("sheet_summary"),
+                               effValue(defaultSheetSummary),
+                               { SheetSummary.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() : Settings = Settings(UUID.randomUUID(), Prim(defaultThemeId))
+        fun default() = Settings(defaultThemeId,
+                                 defaultSheetName,
+                                 defaultSheetSummary)
 
     }
 
@@ -65,6 +96,10 @@ data class Settings(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun themeId() : ThemeId = this.themeId.value
+
+    fun sheetName() : SheetName = this.sheetName.value
+
+    fun sheetSummary() : SheetSummary = this.sheetSummary.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -78,6 +113,48 @@ data class Settings(override val id : UUID,
     override val modelObject = this
 
 }
+
+
+/**
+ * Sheet Name
+ */
+data class SheetName(val value : String) : SQLSerializable, Serializable
+{
+
+    companion object : Factory<SheetName>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<SheetName> = when (doc)
+        {
+            is DocText -> effValue(SheetName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Sheet Summary
+ */
+data class SheetSummary(val value : String) : SQLSerializable, Serializable
+{
+
+    companion object : Factory<SheetSummary>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<SheetSummary> = when (doc)
+        {
+            is DocText -> effValue(SheetSummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
 
 //public class Settings extends Model
 //                      implements ToYaml, Serializable

@@ -57,6 +57,11 @@ types:
     presence: required
     description: >
       A brief description of the game.
+  - name: game_name
+    type: string
+    presence: required
+    description: >
+      The game name.
   - name: authors
     type: list
     of: author

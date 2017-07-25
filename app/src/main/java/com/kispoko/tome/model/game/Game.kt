@@ -5,7 +5,6 @@ package com.kispoko.tome.model.game
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -104,7 +103,7 @@ data class Game(override val id : UUID,
 
 
 /**
- * Game Name
+ * Game Id
  */
 data class GameId(val value : String) : SQLSerializable, Serializable
 {
@@ -136,6 +135,7 @@ data class GameId(val value : String) : SQLSerializable, Serializable
  * Game Description
  */
 data class GameDescription(override val id : UUID,
+                           val gameName : Prim<GameName>,
                            val summary : Prim<GameSummary>,
                            val authors : Coll<Author>) : Model, Serializable
 {
@@ -146,6 +146,7 @@ data class GameDescription(override val id : UUID,
 
     init
     {
+        this.gameName.name      = "game_name"
         this.summary.name       = "summary"
         this.authors.name       = "authors"
     }
@@ -155,24 +156,41 @@ data class GameDescription(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(gameName : GameName,
+                summary : GameSummary,
+                authors : MutableList<Author>)
+        : this(UUID.randomUUID(),
+               Prim(gameName),
+               Prim(summary),
+               Coll(authors))
+
+
     companion object : Factory<GameDescription>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<GameDescription> = when (doc)
         {
-            is DocDict -> effApply(::GameDescription,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Summary
-                                   doc.at("summary") apply {
-                                       effApply(::Prim, GameSummary.fromDocument(it))
-                                   },
-                                   // Authors
-                                   doc.list("authors") apply {
-                                       effApply(::Coll, it.mapMut { Author.fromDocument(it) })
-                                   })
+            is DocDict ->
+            {
+                effApply(::GameDescription,
+                         // Game Name
+                         doc.at("game_name") ap { GameName.fromDocument(it) },
+                         // Summary
+                         doc.at("summary") ap { GameSummary.fromDocument(it) },
+                         // Authors
+                         doc.list("authors") ap { it.mapMut { Author.fromDocument(it) } })
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun gameName() : String = this.gameName.value.value
+
+    fun summary() : String = this.summary.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -184,6 +202,35 @@ data class GameDescription(override val id : UUID,
     override val name : String = "game_description"
 
     override val modelObject = this
+
+}
+
+
+/**
+ * Game Name
+ */
+data class GameName(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<GameName>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<GameName> = when (doc)
+        {
+            is DocText -> effValue(GameName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText( {this.value} )
 
 }
 

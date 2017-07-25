@@ -4,10 +4,7 @@ package com.kispoko.tome.rts.sheet
 
 import android.content.Context
 import android.graphics.Color
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
 import android.util.Log
-import android.view.View
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
 import com.kispoko.tome.app.*
@@ -19,6 +16,8 @@ import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.SheetName
+import com.kispoko.tome.model.sheet.SheetSummary
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialIndex
@@ -61,6 +60,9 @@ object SheetManager
     // -----------------------------------------------------------------------------------------
     // SHEET
     // -----------------------------------------------------------------------------------------
+
+    fun openSheets() : List<Sheet> = this.sheetById.values.map { it.sheet() }
+
 
     fun sheetRecord(sheetId : SheetId) : AppEff<SheetRecord> =
             note(this.sheetById[sheetId], AppSheetError(SheetDoesNotExist(sheetId)))
@@ -123,6 +125,18 @@ object SheetManager
             if (variable != null)
                 it.state.addVariable(variable)
         }
+
+
+    fun evalSheetName(sheetId : SheetId, sheetName : SheetName) : String
+    {
+        return sheetName.value
+    }
+
+
+    fun evalSheetSummary(sheetId : SheetId, sheetSummary : SheetSummary) : String
+    {
+        return sheetSummary.value
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -301,6 +315,8 @@ object SheetManager
                     true
                 }
 
+                sheetUI.updateSwitcherView(sheetRecord.sheetContext)
+
                 val end = System.currentTimeMillis()
 
                 Log.d("***SHEETMAN", "time to render ms: " + (end - start).toString())
@@ -411,14 +427,6 @@ object SheetManager
     private fun color(theme : Theme, colorId : ColorId) : AppEff<Int> =
             note(theme.color(colorId),
                  AppThemeError(ThemeDoesNotHaveColor(theme.themeId(), colorId)))
-
-
-
-
-    // -----------------------------------------------------------------------------------------
-    // STATE
-    // -----------------------------------------------------------------------------------------
-
 
 
 }
@@ -536,6 +544,8 @@ interface SheetUI
     fun pagePagerAdatper() : PagePagerAdapter
 
     fun bottomNavigation() : AHBottomNavigation
+
+    fun updateSwitcherView(sheetContext : SheetContext)
 
     fun applyTheme(sheetId : SheetId, uiColors : UIColors)
 

@@ -3,17 +3,10 @@ package com.kispoko.tome.lib.ui;
 
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.ScaleDrawable;
-import android.graphics.drawable.VectorDrawable;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.kispoko.tome.R;
 import com.kispoko.tome.model.sheet.style.IconSize;
 
 import java.util.ArrayList;
@@ -182,7 +175,7 @@ public class ImageViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            imageView.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            imageView.setBackgroundColor(this.backgroundColor);
 
         // > Background Resource
         // --------------------------------------------------------------------------------------

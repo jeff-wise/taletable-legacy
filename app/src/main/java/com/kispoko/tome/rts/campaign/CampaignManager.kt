@@ -174,6 +174,9 @@ object CampaignManager
     // API
     // -----------------------------------------------------------------------------------------
 
+    fun openCampaigns() : List<Campaign> = this.campaignById.values.toList()
+
+
     fun hasCampaignWithId(campaignId : CampaignId) : Boolean =
             this.campaignById.containsKey(campaignId)
 

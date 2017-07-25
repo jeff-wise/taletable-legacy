@@ -1,6 +1,7 @@
 id: amanace
 description:
-  summary: A simple game.
+  summary: 'A low-magic fantasy game with creative combat mechanics'
+  game_name: 'Amanace'
   authors:
 engine:
   value_sets:
