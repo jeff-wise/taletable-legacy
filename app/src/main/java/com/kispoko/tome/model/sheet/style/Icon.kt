@@ -49,6 +49,10 @@ sealed class Icon : SQLSerializable, Serializable
         override fun asSQLValue() : SQLValue = SQLText({ "dice_roll_filled" })
     }
 
+    object Coins : Icon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "coins" })
+    }
 
     companion object
     {
@@ -60,7 +64,9 @@ sealed class Icon : SQLSerializable, Serializable
                 "shield"            -> effValue<ValueError,Icon>(Icon.Shield)
                 "dice_roll"         -> effValue<ValueError,Icon>(Icon.DiceRoll)
                 "dice_roll_filled"  -> effValue<ValueError,Icon>(Icon.DiceRollFilled)
-                else                -> effError<ValueError,Icon>(UnexpectedValue("Icon", doc.text, doc.path))
+                "coins"             -> effValue<ValueError,Icon>(Icon.Coins)
+                else                -> effError<ValueError,Icon>(
+                                            UnexpectedValue("Icon", doc.text, doc.path))
             }
             else            -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
@@ -73,6 +79,7 @@ sealed class Icon : SQLSerializable, Serializable
         is Sword            -> R.drawable.icon_sword
         is DiceRoll         -> R.drawable.icon_dice_roll
         is DiceRollFilled   -> R.drawable.icon_dice_roll_filled
+        is Coins            -> R.drawable.icon_coins
     }
 
 }

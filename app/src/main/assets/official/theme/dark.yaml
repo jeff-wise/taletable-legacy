@@ -82,6 +82,12 @@ palette:
   color: '#454545'
 - color_id: dark_grey
   color: '#282828'
+- color_id: dark_grey_2
+  color: '#2E2F33'
+- color_id: dark_grey_3
+  color: '#2E2F33'
+- color_id: dark_grey_4
+  color: '#303136'
 - color_id: dark_grey_5
   color: '#2E2F33'
 - color_id: dark_grey_6

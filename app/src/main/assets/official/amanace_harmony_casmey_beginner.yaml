@@ -77,6 +77,30 @@ variables:
       text_literal: 'weapons'
 - type: variable_text
   variable_text:
+    id: gold_label
+    label: Gold Label
+    description: Gold Label
+    value:
+      type: text_literal
+      text_literal: 'gold'
+- type: variable_text
+  variable_text:
+    id: silver_label
+    label: Silver Label
+    description: Silver Label
+    value:
+      type: text_literal
+      text_literal: 'silver'
+- type: variable_text
+  variable_text:
+    id: copper_label
+    label: Copper Label
+    description: Copper Label
+    value:
+      type: text_literal
+      text_literal: 'copper'
+- type: variable_text
+  variable_text:
     id: defense_label
     label: Defense Label
     description: Defense Label
@@ -1218,6 +1242,240 @@ sections:
                     value:
                       type: boolean_literal
                       boolean_literal: true
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          top: 20
+          bottom: 25
+          left: 8
+          right: 8
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: gold_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_right_radius: 2
+                  top_left_radius: 2
+                margins:
+                  right: 6
+                padding:
+                  top: 5
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable_id: gold_label
+        - type: widget_text
+          widget_text:
+            id: silver_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_right_radius: 2
+                  top_left_radius: 2
+                padding:
+                  top: 5
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable_id: silver_label
+        - type: widget_text
+          widget_text:
+            id: copper_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_right_radius: 2
+                  top_left_radius: 2
+                margins:
+                  left: 6
+                padding:
+                  top: 5
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+            value_variable_id: copper_label
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: gold
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  right: 6
+                padding:
+                  top: 3
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: coins
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size:
+                    width: 21
+                    height: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable:
+                  type: variable_number
+                  variable_number:
+                    id: gold
+                    label: Gold
+                    description: Gold
+                    value:
+                      type: number_literal
+                      number_literal: 107
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_10
+                    font_style: regular
+                    size: 19
+        - type: widget_story
+          widget_story:
+            id: silver
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                padding:
+                  top: 3
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: coins
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size:
+                    width: 21
+                    height: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable:
+                  type: variable_number
+                  variable_number:
+                    id: silver
+                    label: Silver
+                    description: Silver
+                    value:
+                      type: number_literal
+                      number_literal: 12
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_10
+                    font_style: regular
+                    size: 19
+        - type: widget_story
+          widget_story:
+            id: copper
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 6
+                padding:
+                  top: 3
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: coins
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size:
+                    width: 21
+                    height: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable:
+                  type: variable_number
+                  variable_number:
+                    id: copper
+                    label: Copper
+                    description: Copper
+                    value:
+                      type: number_literal
+                      number_literal: 30
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_10
+                    font_style: regular
+                    size: 19
 - name: Encounter
   pages:
   - name: Combat

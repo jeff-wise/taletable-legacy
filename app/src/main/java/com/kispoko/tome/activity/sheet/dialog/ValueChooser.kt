@@ -216,12 +216,12 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
     //    layout.backgroundResource   = R.drawable.bg_dialog
 
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_14")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.corners              = Corners(TopLeftCornerRadius(0f),
                                               TopRightCornerRadius(0f),
@@ -303,7 +303,7 @@ object ValueChooserView
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_11")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
@@ -311,6 +311,8 @@ object ValueChooserView
         layout.padding.rightDp      = 10f
         layout.padding.topDp        = 12f
         layout.padding.bottomDp     = 12f
+
+        layout.margin.bottomDp      = 3f
 
 
         layout.corners              = Corners(TopLeftCornerRadius(2f),
@@ -333,15 +335,15 @@ object ValueChooserView
         title.text              = titleString
 
         title.font              = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Bold,
+                                                TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         title.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        title.sizeSp            = 16f
+        title.sizeSp            = 15f
 
         title.addRule(RelativeLayout.ALIGN_PARENT_START)
         title.addRule(RelativeLayout.CENTER_VERTICAL)
@@ -355,8 +357,8 @@ object ValueChooserView
         val icon = ImageViewBuilder()
 
         icon.layoutType     = LayoutType.RELATIVE
-        icon.width          = RelativeLayout.LayoutParams.WRAP_CONTENT
-        icon.height         = RelativeLayout.LayoutParams.WRAP_CONTENT
+        icon.widthDp        = 19
+        icon.heightDp       = 19
 
         icon.image          = R.drawable.ic_dialog_chooser_menu
 
@@ -386,6 +388,11 @@ object ValueChooserView
 
         recyclerView.layoutManager  = LinearLayoutManager(sheetUIContext.context)
 
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_11")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        recyclerView.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
         when (valueSet)
         {
             is ValueSetBase ->
@@ -412,7 +419,7 @@ object ValueChooserView
             }
         }
 
-        recyclerView.divider            = ValueDividerItemDecoration(sheetUIContext)
+//        recyclerView.divider            = ValueDividerItemDecoration(sheetUIContext)
 
 //        recyclerView.margin.leftDp      = 5f
 //        recyclerView.margin.rightDp     = 5f
@@ -456,14 +463,19 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.leftDp       = 10f
-        layout.padding.rightDp      = 10f
+        layout.padding.leftDp       = 9f
+        layout.padding.rightDp      = 9f
 
-        layout.padding.topDp        = 12f
-        layout.padding.bottomDp     = 12f
+        layout.padding.topDp        = 10f
+        layout.padding.bottomDp     = 10f
+
+        layout.margin.leftDp        = 3f
+        layout.margin.rightDp       = 3f
+
+        layout.margin.topDp         = 3f
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
@@ -496,8 +508,8 @@ object ValueChooserView
 
         icon.id                     = R.id.choose_value_dialog_item_icon
 
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        icon.widthDp                = 18
+        icon.heightDp               = 18
 
         icon.image                  = R.drawable.ic_dialog_chooser_selected
 
@@ -530,7 +542,7 @@ object ValueChooserView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         name.color                  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        name.sizeSp                 = 16f
+        name.sizeSp                 = 15f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -554,9 +566,9 @@ object ValueChooserView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         summary.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        summary.sizeSp          = 13.5f
+        summary.sizeSp          = 13f
 
-        summary.margin.topDp    = 6f
+        summary.margin.topDp    = 3f
         summary.margin.leftDp   = 0.5f
 
         return summary.textView(sheetUIContext.context)
@@ -1002,7 +1014,7 @@ class ValueDividerItemDecoration(sheetUIContext: SheetUIContext) : RecyclerView.
     init {
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_14")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         val color = SheetManager.color(sheetUIContext.sheetId, colorTheme)
         dividerDrawable.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
