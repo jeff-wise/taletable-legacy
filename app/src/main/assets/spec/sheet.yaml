@@ -1203,10 +1203,10 @@ types:
     type: icon_format
     presence: optional
     description: The icon format.
-- name: story_part_roll
-  label: Story Part Roll
+- name: story_part_action
+  label: Story Part Action
   description: >
-    Story Part Roll
+    Story Part Action
   group: 'Widget: Story'
   type: product
   fields:
@@ -1215,16 +1215,16 @@ types:
     presence: required
     description: >
       The text.
-  - name: summation_id
+  - name: roll_summation_id
     type: summation_id
-    presence: required
+    presence: optional
     description: >
       The roll summation id.
-  - name: roll_name
-    type: string
-    presence: required
+  - name: procedure_id
+    type: summation_id
+    presence: optional
     description: >
-      The roll name.
+      The procedure id.
   - name: text_format
     type: text_format
     presence: optional

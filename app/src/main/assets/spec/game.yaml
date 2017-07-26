@@ -387,6 +387,28 @@ types:
     presence: optional
     description: >
       A label for the modifier.
+- name: procedure_id
+  label: Procedure Id
+  description: >
+    The procedure identifier.
+  group: Procedure
+  type: primitive
+  base_type: string
+- name: procedure
+  label: Procedure
+  description: A set of programs to execute.
+  group: Procedure
+  type: product
+  fields:
+  - name: procedure_id
+    type: procedure_id
+    presence: required
+    description: The procedure id.
+  - name: program_ids
+    type: list
+    of: program_id
+    presence: required
+    description: The programs to be executed.
 - name: program_id
   label: Program Id
   description: >

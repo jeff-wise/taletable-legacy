@@ -25,6 +25,8 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.getMaybePrim
+import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -32,6 +34,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.DiceRollName
+import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.style.*
@@ -159,7 +162,7 @@ sealed class StoryPart : Model, Serializable
                 "story_part_span"     -> StoryPartSpan.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_variable" -> StoryPartVariable.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_icon"     -> StoryPartIcon.fromDocument(doc) as ValueParser<StoryPart>
-                "story_part_roll"     -> StoryPartRoll.fromDocument(doc) as ValueParser<StoryPart>
+                "story_part_roll"     -> StoryPartAction.fromDocument(doc) as ValueParser<StoryPart>
                 else                  -> effError<ValueError,StoryPart>(
                                             UnknownCase(doc.case(), doc.path))
             }
@@ -388,12 +391,12 @@ data class StoryPartIcon(override val id : UUID,
 /**
  * Story Part Roll
  */
-data class StoryPartRoll(override val id : UUID,
-                         val text : Prim<StoryPartText>,
-                         val summationId : Prim<SummationId>,
-                         val rollName : Prim<DiceRollName>,
-                         val textFormat : Comp<TextFormat>,
-                         val iconFormat : Comp<IconFormat>) : StoryPart(), Serializable
+data class StoryPartAction(override val id : UUID,
+                           val text : Prim<StoryPartText>,
+                           val rollSummationId : Maybe<Prim<SummationId>>,
+                           val procedureId : Maybe<Prim<ProcedureId>>,
+                           val textFormat : Comp<TextFormat>,
+                           val iconFormat : Comp<IconFormat>) : StoryPart(), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -401,38 +404,45 @@ data class StoryPartRoll(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(text : StoryPartText,
-                summationId : SummationId,
-                rollName : DiceRollName,
+                rollSummationId : Maybe<SummationId>,
+                procedureId : Maybe<ProcedureId>,
                 textFormat : TextFormat,
                 iconFormat : IconFormat)
         : this(UUID.randomUUID(),
                Prim(text),
-               Prim(summationId),
-               Prim(rollName),
+               maybeLiftPrim(rollSummationId),
+               maybeLiftPrim(procedureId),
                Comp(textFormat),
                Comp(iconFormat))
 
 
-    companion object : Factory<StoryPartRoll>
+    companion object : Factory<StoryPartAction>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartRoll> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartAction> = when (doc)
         {
-            is DocDict -> effApply(::StoryPartRoll,
-                                   // Text
-                                   doc.at("text") ap { StoryPartText.fromDocument(it) },
-                                   // Summation Id
-                                   doc.at("summation_id") ap { SummationId.fromDocument(it) },
-                                   // Roll Name
-                                   doc.at("roll_name") ap { DiceRollName.fromDocument(it) },
-                                   // Text Format
-                                   split(doc.maybeAt("text_format"),
-                                         effValue(TextFormat.default()),
-                                         { TextFormat.fromDocument(it) }),
-                                   // Icon Format
-                                   split(doc.maybeAt("icon_format"),
-                                         effValue(IconFormat.default()),
-                                         { IconFormat.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                effApply(::StoryPartAction,
+                         // Text
+                         doc.at("text") ap { StoryPartText.fromDocument(it) },
+                         // Roll Summation Id
+                         split(doc.maybeAt("roll_summation_id"),
+                               effValue<ValueError,Maybe<SummationId>>(Nothing()),
+                               { effApply(::Just, SummationId.fromDocument(it)) }),
+                         // Procedure Id
+                         split(doc.maybeAt("procedure_id"),
+                               effValue<ValueError,Maybe<ProcedureId>>(Nothing()),
+                               { effApply(::Just, ProcedureId.fromDocument(it)) }),
+                         // Text Format
+                         split(doc.maybeAt("text_format"),
+                               effValue(TextFormat.default()),
+                               { TextFormat.fromDocument(it) }),
+                         // Icon Format
+                         split(doc.maybeAt("icon_format"),
+                               effValue(IconFormat.default()),
+                               { IconFormat.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -442,10 +452,9 @@ data class StoryPartRoll(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun rollSummationId() : SummationId? = getMaybePrim(this.rollSummationId)
 
-    fun summationId() : SummationId = this.summationId.value
-
-    fun rollName() : DiceRollName = this.rollName.value
+    fun procedureId() : ProcedureId? = getMaybePrim(this.procedureId)
 
     fun text() : String = this.text.value.value
 
@@ -469,7 +478,7 @@ data class StoryPartRoll(override val id : UUID,
 
     override val modelObject = this
 
-    override val name = "story_part_roll"
+    override val name = "story_part_action"
 
 }
 
@@ -623,7 +632,7 @@ object StoryWidgetView
                     phrases.add(Phrase(storyPart, " ", index, index + 1))
                     index += 1
                 }
-                is StoryPartRoll ->
+                is StoryPartAction ->
                 {
                     val text = storyPart.text()
                     builder.append(" " + text)
@@ -686,7 +695,7 @@ object StoryWidgetView
                     val imageSpan = CenteredImageSpan(vectorDrawable)
                     builder.setSpan(imageSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
-                is StoryPartRoll ->
+                is StoryPartAction ->
                 {
                     val vectorDrawable =
                             VectorDrawableCompat.create(sheetUIContext.context.resources,
@@ -706,6 +715,10 @@ object StoryWidgetView
 
                     val imageSpan = CenteredImageSpan(vectorDrawable)
                     builder.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
+                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                    }
 
                     val summation = GameManager.engine(sheetUIContext.gameId)
                                                .apply{ it.summation(storyPart.summationId())}
@@ -727,9 +740,9 @@ object StoryWidgetView
                                     }
 
                                     override fun updateDrawState(ds: TextPaint?) {
-                                        val color = SheetManager.color(sheetUIContext.sheetId,
-                                                        storyPart.textFormat().style().colorTheme())
-                                        ds?.linkColor = color
+//                                        val color = SheetManager.color(sheetUIContext.sheetId,
+//                                                        storyPart.textFormat().style().colorTheme())
+//                                        ds?.linkColor = color
                                     }
                                 }
 
@@ -741,9 +754,6 @@ object StoryWidgetView
                         is Err -> ApplicationLog.error(summation.error)
                     }
 
-                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
-                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
 
                 }
             }
