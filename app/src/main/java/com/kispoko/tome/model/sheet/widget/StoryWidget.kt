@@ -33,7 +33,6 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.dice.DiceRollName
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
@@ -162,7 +161,7 @@ sealed class StoryPart : Model, Serializable
                 "story_part_span"     -> StoryPartSpan.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_variable" -> StoryPartVariable.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_icon"     -> StoryPartIcon.fromDocument(doc) as ValueParser<StoryPart>
-                "story_part_roll"     -> StoryPartAction.fromDocument(doc) as ValueParser<StoryPart>
+                "story_part_action"   -> StoryPartAction.fromDocument(doc) as ValueParser<StoryPart>
                 else                  -> effError<ValueError,StoryPart>(
                                             UnknownCase(doc.case(), doc.path))
             }
@@ -720,41 +719,42 @@ object StoryWidgetView
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
 
-                    val summation = GameManager.engine(sheetUIContext.gameId)
-                                               .apply{ it.summation(storyPart.summationId())}
-                    when (summation)
+                    val rollSummationId = storyPart.rollSummationId()
+                    if (rollSummationId != null)
                     {
-                        is Val ->
+                        val summation = GameManager.engine(sheetUIContext.gameId)
+                                                   .apply{ it.summation(rollSummationId)}
+                        when (summation)
                         {
-                            val diceRoll = summation.value.diceRoll(storyPart.rollName(),
-                                                                    SheetContext(sheetUIContext))
-
-                            if (diceRoll != null)
+                            is Val ->
                             {
-                                val clickSpan = object: ClickableSpan() {
-                                    override fun onClick(view : View?) {
-                                        val sheetActivity = sheetUIContext.context as SheetActivity
-                                        val dialog = DiceRollerDialogFragment.newInstance(diceRoll,
-                                                                              SheetContext(sheetUIContext))
-                                        dialog.show(sheetActivity.supportFragmentManager, "")
+                                val diceRoll = summation.value.diceRoll(SheetContext(sheetUIContext))
+
+                                if (diceRoll != null)
+                                {
+                                    val clickSpan = object: ClickableSpan() {
+                                        override fun onClick(view : View?) {
+                                            val sheetActivity = sheetUIContext.context as SheetActivity
+                                            val dialog = DiceRollerDialogFragment.newInstance(diceRoll,
+                                                                                  SheetContext(sheetUIContext))
+                                            dialog.show(sheetActivity.supportFragmentManager, "")
+                                        }
+
+                                        override fun updateDrawState(ds: TextPaint?) {
+    //                                        val color = SheetManager.color(sheetUIContext.sheetId,
+    //                                                        storyPart.textFormat().style().colorTheme())
+    //                                        ds?.linkColor = color
+                                        }
                                     }
 
-                                    override fun updateDrawState(ds: TextPaint?) {
-//                                        val color = SheetManager.color(sheetUIContext.sheetId,
-//                                                        storyPart.textFormat().style().colorTheme())
-//                                        ds?.linkColor = color
-                                    }
+                                    builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                                 }
 
-                                builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+
                             }
-
-
+                            is Err -> ApplicationLog.error(summation.error)
                         }
-                        is Err -> ApplicationLog.error(summation.error)
                     }
-
-
                 }
             }
         }

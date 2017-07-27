@@ -5,15 +5,13 @@ package com.kispoko.tome.model.game.engine.variable
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -23,14 +21,13 @@ import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Boolean Variable
  */
-sealed class BooleanVariableValue : Serializable
+sealed class BooleanVariableValue : SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -66,7 +63,7 @@ sealed class BooleanVariableValue : Serializable
 /**
  * Literal Value
  */
-data class BooleanVariableLiteralValue(val value : Boolean)
+data class BooleanVariableLiteralValue(var value : Boolean)
                 : BooleanVariableValue(), SQLSerializable
 {
 
@@ -91,8 +88,18 @@ data class BooleanVariableLiteralValue(val value : Boolean)
 
     override fun value() : AppEff<Boolean> = effValue(this.value)
 
+
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             effValue(setOf())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "literal")
+
+    override val sumModelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -107,13 +114,9 @@ data class BooleanVariableLiteralValue(val value : Boolean)
 /**
  * Program Value
  */
-data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVariableValue(), Model
+data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVariableValue()
 {
 
-
-    override fun onLoad() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -132,6 +135,7 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
 
     override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
 
+
     override fun value(): AppEff<Boolean> {
         TODO("not implemented")
     }
@@ -142,23 +146,12 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override val id : UUID = this.invocation.id
+    override fun functor() = Comp(this.invocation, "program")
 
-    override val name : String = this.invocation.name
-
-    override val modelObject : Model = this.invocation
+    override val sumModelObject = this
 
 }
-
-
-fun liftBooleanVariableValue(varValue : BooleanVariableValue) : Func<BooleanVariableValue>
-    = when (varValue)
-    {
-        is BooleanVariableLiteralValue -> Prim(varValue, "literal")
-        is BooleanVariableProgramValue -> Comp(varValue, "program")
-    }
-
 

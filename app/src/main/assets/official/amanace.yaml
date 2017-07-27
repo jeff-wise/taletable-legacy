@@ -304,6 +304,7 @@ engine:
     result_binding_name: result
   summations:
   - summation_id: strength
+    summation_name: Strength
     terms:
     - type: summation_term_number
       summation_term_number:
@@ -321,6 +322,7 @@ engine:
             type: variable_tag
             variable_tag: dexterity_modifier
   - summation_id: dexterity
+    summation_name: Dexterity
     terms:
     - type: summation_term_number
       summation_term_number:
@@ -338,6 +340,7 @@ engine:
             type: variable_tag
             variable_tag: dexterity_modifier
   - summation_id: flurry_attack
+    summation_name: Flurry Attack
     terms:
     - type: summation_term_dice_roll
       summation_term_dice_roll:

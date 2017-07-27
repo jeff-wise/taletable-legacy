@@ -261,55 +261,51 @@ object BooleanCellView
         val layout = TableWidgetCellView.layout(rowFormat,
                                                 column.format().columnFormat(),
                                                 cellFormat.cellFormat(),
-                sheetUIContext)
+                                                sheetUIContext)
 
-//        if (cellFormat.showTrueIcon() || columnFormat.showTrueIcon())
-//        {
-//            layout.addView(this.valueIconView(context))
-//        }
-
-        // > Text View
+        // Text View
         // -------------------------------------------------------------------------------------
 
         val valueView = this.valueTextView(cell, column, cellFormat, sheetUIContext)
         layout.addView(valueView)
 
-//        valueView.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                if (value())
-//                {
-//                    valueVariable().setValue(false);
-//                    valueView.setText(falseText);
-//
-//                    // No false style, but need to undo true style
-//                    if (falseStyle == null && trueStyle != null && defaultStyle != null) {
-//                        defaultStyle.styleTextView(valueView, context);
-//                    }
-//                    // Set false style
-//                    else if (falseStyle != null) {
-//                        falseStyle.styleTextView(valueView, context);
-//                    }
-//
-//                }
-//                else
-//                {
-//                    valueVariable().setValue(true);
-//                    valueView.setText(trueText);
-//
-//                    // No true style, but need to undo false style
-//                    if (trueStyle == null && falseStyle != null && defaultStyle != null) {
-//                        defaultStyle.styleTextView(valueView, context);
-//                    }
-//                    // Set true style
-//                    else if (trueStyle != null) {
-//                        trueStyle.styleTextView(valueView, context);
-//                    }
-//                }
-//            }
-//        });
+        // On Click
+        // -------------------------------------------------------------------------------------
+
+        layout.setOnClickListener {
+
+            val trueStyle    = cellFormat.resolveTrueStyle(column.format())
+            val falseStyle   = cellFormat.resolveFalseStyle(column.format())
+            val defaultStyle = cellFormat.resolveTextStyle(column.format())
+
+            if (cell.value())
+            {
+                cell.valueVariable().updateValue(false)
+
+                valueView.text = column.format().falseText()
+
+                // No false style, but need to undo true style
+                if (falseStyle == null && trueStyle != null)
+                    defaultStyle.styleTextView(valueView, sheetUIContext)
+                else
+                    falseStyle?.styleTextView(valueView, sheetUIContext)
+
+            }
+            else
+            {
+                cell.valueVariable().updateValue(true)
+
+                valueView.text = column.format().trueText()
+
+                // No true style, but need to undo false style
+                if (trueStyle == null && falseStyle != null)
+                    defaultStyle.styleTextView(valueView, sheetUIContext)
+                // Set true style
+                else
+                    trueStyle?.styleTextView(valueView, sheetUIContext)
+            }
+
+        }
 
 
         return layout

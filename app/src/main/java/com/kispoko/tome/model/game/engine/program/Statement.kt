@@ -35,7 +35,7 @@ data class Statement(override val id : UUID,
                      val parameter2 : Maybe<Sum<StatementParameter>>,
                      val parameter3 : Maybe<Sum<StatementParameter>>,
                      val parameter4 : Maybe<Sum<StatementParameter>>,
-                     val parameter5 : Maybe<Sum<StatementParameter>>) : Model
+                     val parameter5 : Maybe<Sum<StatementParameter>>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ data class StatementBindingName(val value : String) : SQLSerializable, Serializa
  * Statement Parameter
  */
 @Suppress("UNCHECKED_CAST")
-sealed class StatementParameter : SumModel
+sealed class StatementParameter : SumModel, Serializable
 {
 
     companion object : Factory<StatementParameter>

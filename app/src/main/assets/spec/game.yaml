@@ -1044,6 +1044,13 @@ types:
   group: Summation
   type: primitive
   base_type: string
+- name: summation_name
+  label: Summation Name
+  description: >
+    A summation identifier.
+  group: Summation
+  type: primitive
+  base_type: string
 - name: summation
   label: Summation
   description: >
@@ -1055,6 +1062,10 @@ types:
     type: summation_id
     presence: required
     description: The summation id.
+  - name: summation_name
+    type: summation_name
+    presence: required
+    description: The summation name.
   - name: terms
     type: list
     of: summation_term

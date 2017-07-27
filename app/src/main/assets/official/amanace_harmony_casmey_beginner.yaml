@@ -133,10 +133,54 @@ variables:
     value:
       type: number_literal
       number_literal: 14
+- type: variable_text
+  variable_text:
+    id: my_story_part_1
+    label: My Story Part 1
+    description: My Story Part 1
+    value:
+      type: text_literal
+      text_literal: >
+        Hi, my name is Casmey. Some call me Cass. To be honest, you can call me whatever you want
+        -- I probably won't mind. I'm used to using a lot of aliases, and quite often I can't remember
+        what they are. A man once called me Amalyn once, but I thought he had been shouting at the
+        woman in front of me until he confronted me about a "stolen necklace". I had remembered
+        then that Amalyn was not a very good person.
+
+        I grew up in Soulsin. My father was a performer in the Endless Carnival. As early as I can
+        remember he was teaching me card tricks, acrobatics, and musical instruments. When I was
+        six I was allowed to perform with my father. I started playing the fiddle. Then I played
+        the fiddle while balancing on a ball. I played the fiddle while walking on a tightrope. I
+        even got to play the fiddle while riding on the back of an elephant when I turned seven. I
+        fell a few times, but I always landed on my feet. I heard my father often complimented on
+        his brave little girl. That made me smile. I wasn't afraid of anything.
+
+        When I turned ten my father let me start participating in the dangerous performances.
+
+        I fell a few times, but I always landed on my feet, only it hurt a bit more. Still, I
+        wasn't afriad. The bigger, the higher, the more dangerous...the more fun!
+- type: variable_text
+  variable_text:
+    id: my_story_part_2
+    label: My Story Part 2
+    description: My Story Part 2
+    value:
+      type: text_literal
+      text_literal: >
+        When I was high on the tightrope I looked down at the crowd below me. I could see how
+        little they had, the dirt on the faces, the sorrow in their posture. Soulsin was not kind
+        to those without money. And as talented as we were, my father and I, we didn't make much
+        from the carnival. The owners and the patrons kept the money for themselves.
+
+        I thought I could have fun and help the people at the same time.
+
+        Well, eventually I got caught. It wasn't my fault, of course. My partner slipped and fell
+        gets caught
+        joins pirates
 sections:
 - name: Profile
   pages:
-  - name: Overview
+  - name: My Stats
     format:
       background_color_theme:
         theme_color_ids:
@@ -949,7 +993,8 @@ sections:
                     size: 15
                   padding:
                     top: 1
-
+  - name: My Stuff
+    groups:
     - format:
         background_color_theme:
           theme_color_ids:
@@ -1478,6 +1523,15 @@ sections:
                         color_id: light_grey_10
                     font_style: regular
                     size: 19
+                    pages:
+  - name: My Story
+    groups:
+    - rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: my_story_part_1
+            value_variable_id: my_story_part_1
 - name: Encounter
   pages:
   - name: Combat
@@ -1673,8 +1727,8 @@ sections:
                       - theme_id: dark
                         color_id: light_grey_20
                     size: 16
-            - type: story_part_roll
-              story_part_roll:
+            - type: story_part_action
+              story_part_action:
                 text: ' flurry of jabs '
                 roll_name: 'Flurry of Jabs Attack Bonus'
                 summation_id: flurry_attack

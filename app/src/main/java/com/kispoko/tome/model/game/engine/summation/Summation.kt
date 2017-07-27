@@ -35,6 +35,7 @@ import java.util.*
  */
 data class Summation(override val id : UUID,
                      val summationId : Prim<SummationId>,
+                     val summationName : Prim<SummationName>,
                      val terms : Conj<SummationTerm>) : Model, Serializable
 {
 
@@ -44,8 +45,9 @@ data class Summation(override val id : UUID,
 
     init
     {
-        this.summationId.name = "summation_id"
-        this.terms.name       = "terms"
+        this.summationId.name   = "summation_id"
+        this.summationName.name = "summation_name"
+        this.terms.name         = "terms"
     }
 
 
@@ -54,9 +56,11 @@ data class Summation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(summationId : SummationId,
+                summationName : SummationName,
                 terms : MutableSet<SummationTerm>)
         : this(UUID.randomUUID(),
                Prim(summationId),
+               Prim(summationName),
                Conj(terms))
 
 
@@ -64,13 +68,18 @@ data class Summation(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Summation> = when (doc)
         {
-            is DocDict -> effApply(::Summation,
-                                   // Summation Id
-                                   doc.at("summation_id") ap { SummationId.fromDocument(it) },
-                                   // Terms
-                                   doc.list("terms") ap { docList ->
-                                       docList.mapSetMut { SummationTerm.fromDocument(it) }
-                                   })
+            is DocDict ->
+            {
+                effApply(::Summation,
+                         // Summation Id
+                         doc.at("summation_id") ap { SummationId.fromDocument(it) },
+                         // Summation Name
+                         doc.at("summation_name") ap { SummationName.fromDocument(it) },
+                         // Terms
+                         doc.list("terms") ap { docList ->
+                             docList.mapSetMut { SummationTerm.fromDocument(it) }
+                         })
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -81,6 +90,8 @@ data class Summation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun summationId() : SummationId = this.summationId.value
+
+    fun summationName() : String = this.summationName.value.value
 
     fun terms() : Set<SummationTerm> = this.terms.set
 
@@ -123,7 +134,7 @@ data class Summation(override val id : UUID,
             this.terms().mapNotNull { it.summary(SheetContext(sheetUIContext)) }
 
 
-    fun diceRoll(rollName : DiceRollName?, sheetContext : SheetContext) : DiceRoll?
+    fun diceRoll(sheetContext : SheetContext) : DiceRoll?
     {
         val quantities : MutableSet<DiceQuantity> = mutableSetOf()
         val modifiers  : MutableSet<RollModifier> = mutableSetOf()
@@ -163,14 +174,10 @@ data class Summation(override val id : UUID,
             }
         }
 
-
-        val maybeRollName = if (rollName != null) Just(rollName)
-                                else Nothing<DiceRollName>()
-
         if (quantities.isEmpty())
             return null
         else
-            return DiceRoll(quantities, modifiers, maybeRollName)
+            return DiceRoll(quantities, modifiers, Just(DiceRollName(this.summationName())))
     }
 
 }
@@ -191,6 +198,35 @@ data class SummationId(val value : String) : SQLSerializable, Serializable
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationId> = when (doc)
         {
             is DocText -> effValue(SummationId(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Summation Name
+ */
+data class SummationName(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<SummationName>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationName> = when (doc)
+        {
+            is DocText -> effValue(SummationName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

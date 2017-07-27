@@ -16,7 +16,7 @@ import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
 import effect.Nothing
-
+import java.io.Serializable
 
 
 /**
@@ -266,7 +266,7 @@ data class Parameters(val parameter1 : EngineValue,
                       val parameter2 : Maybe<EngineValue>,
                       val parameter3 : Maybe<EngineValue>,
                       val parameter4 : Maybe<EngineValue>,
-                      val parameter5 : Maybe<EngineValue>)
+                      val parameter5 : Maybe<EngineValue>) : Serializable
 {
 
         fun atIndex(index : Int) : Maybe<EngineValue> =

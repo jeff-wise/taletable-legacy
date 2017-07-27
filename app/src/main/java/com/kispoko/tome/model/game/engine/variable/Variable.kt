@@ -162,7 +162,7 @@ data class BooleanVariable(override val id : UUID,
                            override val label : Prim<VariableLabel>,
                            override val description : Prim<VariableDescription>,
                            override val tags : Prim<VariableTagSet>,
-                           val variableValue : Func<BooleanVariableValue>)
+                           var variableValue : Sum<BooleanVariableValue>)
                             : Variable(variableId, label, description, tags)
 {
 
@@ -193,7 +193,7 @@ data class BooleanVariable(override val id : UUID,
                Prim(label),
                Prim(description),
                Prim(tags),
-               liftBooleanVariableValue(value))
+               Sum(value))
 
 
     companion object : Factory<BooleanVariable>
@@ -257,6 +257,16 @@ data class BooleanVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun value() : AppEff<Boolean> = this.variableValue().value()
+
+
+    fun updateValue(value : Boolean)
+    {
+        when (this.variableValue())
+        {
+            is BooleanVariableLiteralValue ->
+                    this.variableValue = Sum(BooleanVariableLiteralValue(value))
+        }
+    }
 
 }
 

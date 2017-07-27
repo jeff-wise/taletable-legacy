@@ -2,6 +2,8 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import android.content.Context
+import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -11,6 +13,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -324,6 +327,19 @@ data class TextStyle(override val id : UUID,
     }
 
 
+    /**
+     * format a text view with this style.
+     * @param textview the text view.
+     */
+    fun styleTextView(textView : TextView, sheetUIContext : SheetUIContext)
+    {
+        textView.setTextColor(SheetManager.color(sheetUIContext.sheetId, this.colorTheme()))
+        textView.textSize = Util.spToPx(this.sizeSp(), sheetUIContext.context).toFloat()
+        textView.typeface = Font.typeface(this.font(), this.fontStyle(), sheetUIContext.context)
+    }
+
+
+
 
 
 }
@@ -599,23 +615,4 @@ sealed class TextFontStyle : SQLSerializable, Serializable
 //
 //    }
 
-//    // > style text view
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * format a text view with this style.
-//     * @param textview the text view.
-//     */
-//    public void styletextview(textview textview, context context)
-//    {
-//        // ** color
-//        textview.settextcolor(contextcompat.getcolor(context, this.color().resourceid()));
-//
-//        // ** size
-//        textview.settextsize(context.getresources().getdimension(this.size().resourceid()));
-//
-//        // ** font
-//        textview.settypeface(this.typeface(context));
-//    }
-//
 

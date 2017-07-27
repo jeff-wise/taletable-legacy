@@ -33,7 +33,7 @@ data class Mechanic(override val id : UUID,
                     val summary : Prim<MechanicSummary>,
                     val category : Maybe<Prim<MechanicCategory>>,
                     val requirements : Prim<MechanicRequirements>,
-                    val variables : Conj<Variable>) : Model
+                    val variables : Conj<Variable>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ data class Function(override val id : UUID,
                     val label : Prim<FunctionLabel>,
                     val description : Prim<FunctionDescription>,
                     val typeSignature : Comp<FunctionTypeSignature>,
-                    val tuples : Coll<Tuple>) : Model
+                    val tuples : Coll<Tuple>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -332,7 +332,7 @@ data class Tuple(override val id : UUID,
                  val parameter3 : Maybe<Sum<EngineValue>>,
                  val parameter4 : Maybe<Sum<EngineValue>>,
                  val parameter5 : Maybe<Sum<EngineValue>>,
-                 val result : Sum<EngineValue>) : Model
+                 val result : Sum<EngineValue>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------

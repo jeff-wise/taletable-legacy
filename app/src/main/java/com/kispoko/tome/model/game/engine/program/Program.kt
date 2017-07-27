@@ -29,7 +29,7 @@ data class Program(override val id : UUID,
                    val description : Prim<ProgramDescription>,
                    val typeSignature : Comp<ProgramTypeSignature>,
                    val statements : Coll<Statement>,
-                   val resultBindingName: Prim<StatementBindingName>) : Model
+                   val resultBindingName: Prim<StatementBindingName>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------

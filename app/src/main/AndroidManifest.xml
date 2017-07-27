@@ -124,8 +124,8 @@
             android:label="Groups"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.PageActivity"
-            android:label="Groups"
+            android:name=".activity.game.GameActivity"
+            android:label="Game"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
