@@ -13,7 +13,6 @@ import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.model.sheet.SheetException;
 import com.kispoko.tome.lib.database.DatabaseException;
-import com.kispoko.tome.lib.yaml.YamlParseException;
 
 
 
@@ -34,12 +33,6 @@ public class ApplicationFailure
     public static void templateFile(TemplateFileException exception)
     {
         Log.d("***APP", "template file exception", exception);
-    }
-
-
-    public static void yaml(YamlParseException exception)
-    {
-        Log.d("***APP", exception.errorMessage(), exception);
     }
 
 

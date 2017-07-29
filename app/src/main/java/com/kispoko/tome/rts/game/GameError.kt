@@ -4,9 +4,6 @@ package com.kispoko.tome.rts.game
 
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.value.ValueId
-import com.kispoko.tome.model.game.engine.value.ValueSetId
-import com.kispoko.tome.model.game.engine.value.ValueType
 
 
 
@@ -25,6 +22,17 @@ class GameDoesNotExist(val gameId : GameId) : GameError()
             """
             Game Error: Game Not Found
                 Game Id: $gameId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class GameManifestParseError(val errorString : String) : GameError()
+{
+    override fun debugMessage() : String = """
+            |Game Manifest Parse Error:
+            |    $errorString
             """
 
     override fun logMessage(): String = userMessage()

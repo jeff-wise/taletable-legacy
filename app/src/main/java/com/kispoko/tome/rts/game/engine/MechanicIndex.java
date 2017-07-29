@@ -3,7 +3,6 @@ package com.kispoko.tome.rts.game.engine;
 
 
 import com.kispoko.tome.lib.functor.CollectionFunctor;
-import com.kispoko.tome.lib.yaml.YamlParseException;
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;

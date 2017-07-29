@@ -5,6 +5,7 @@ package com.kispoko.tome.rts.theme
 import android.content.Context
 import com.kispoko.tome.app.*
 import com.kispoko.tome.load.*
+import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialTheme
 import effect.*
@@ -169,6 +170,26 @@ object ThemeManager
     fun theme(themeId : ThemeId) : AppEff<Theme> =
             note(this.themeById[themeId],
                  AppThemeError(ThemeDoesNotExist(themeId)))
+
+
+    fun color(themeId : ThemeId, colorTheme: ColorTheme) : Int?
+    {
+        fun colorId(themeId : ThemeId, colorTheme : ColorTheme) : AppEff<ColorId> =
+            note(colorTheme.themeColorId(themeId),
+                 AppThemeError(AppThemeNotSupported(themeId)))
+
+        val colorInt = colorId(themeId, colorTheme) ap { colorId ->
+                       ThemeManager.theme(themeId)  ap { theme   ->
+                            effValue<AppError,Int?>(theme.color(colorId))
+                       } }
+
+        when (colorInt) {
+            is Val -> return colorInt.value
+            is Err -> ApplicationLog.error(colorInt.error)
+        }
+
+        return null
+    }
 
 }
 

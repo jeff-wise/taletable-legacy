@@ -24,24 +24,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.NewCharacterActivity"
-            android:label="New Character"
+            android:name=".activity.sheet.OpenSheetActivity"
+            android:label="Open Sheet"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.engine.EngineActivity"
             android:label="Engine"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.official.template.OfficialTemplatesActivity"
-            android:label="Templates"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.official.template.OfficialTemplateActivity"
-            android:label="Template"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.official.OfficialGamesActivity"
-            android:label="Choose Template"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.NumberActivity"
@@ -119,10 +107,6 @@
             android:label="Groups"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activity.SectionsActivity"
-            android:label="Groups"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.game.GameActivity"
             android:label="Game"

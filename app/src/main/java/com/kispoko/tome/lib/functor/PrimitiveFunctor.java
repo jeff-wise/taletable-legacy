@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.kispoko.tome.lib.model.form.Field;
-import com.kispoko.tome.model.sheet.DividerType;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.lib.database.DatabaseException;
@@ -262,12 +261,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
                 this.setValue(null);
             }
         }
-        else if (this.valueClass.isAssignableFrom(DividerType.class))
-        {
-            DividerType dividerType = DividerType.fromSQLValue(sqlValue);
-            this.setValue((A) dividerType);
-        }
-
 //        else if (this.valueClass.isAssignableFrom(EngineDataType[].class))
 //        {
 //            String arrayString = sqlValue.getText();

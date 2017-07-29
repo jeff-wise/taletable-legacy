@@ -618,17 +618,6 @@ data class TextVariable(override val id : UUID,
     fun value(sheetContext : SheetContext) : AppEff<String> =
             this.variableValue().value(sheetContext)
 
-
-    // -----------------------------------------------------------------------------------------
-    // OPEN EDIT DIALOG
-    // -----------------------------------------------------------------------------------------
-
-    fun openEditDialog(sheetActivity : SheetActivity)
-    {
-
-
-    }
-
 }
 
 

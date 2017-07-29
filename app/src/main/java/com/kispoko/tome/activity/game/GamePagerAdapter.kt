@@ -6,13 +6,15 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import com.kispoko.tome.model.game.Game
-
+import com.kispoko.tome.model.theme.ThemeId
 
 
 /**
  * Game Pager Adapter
  */
-class GamePagerAdapter(fragmentManager : FragmentManager, val game : Game)
+class GamePagerAdapter(fragmentManager : FragmentManager,
+                       val game : Game,
+                       val appThemeId : ThemeId)
                         : FragmentStatePagerAdapter(fragmentManager)
 {
 
@@ -30,9 +32,9 @@ class GamePagerAdapter(fragmentManager : FragmentManager, val game : Game)
     override fun getItem(position : Int) : Fragment =
         when (position)
         {
-            0    -> DescriptionFragment.newInstance(game.description())
-            1    -> EngineFragment.newInstance(game.engine())
-            else -> EngineFragment.newInstance(game.engine())
+            0    -> DescriptionFragment.newInstance(this.game.description())
+            1    -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
+            else -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
         }
 
 

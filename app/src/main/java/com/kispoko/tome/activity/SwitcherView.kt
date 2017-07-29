@@ -24,7 +24,9 @@ import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import android.content.Intent
 import com.kispoko.tome.activity.game.GameActivity
+import com.kispoko.tome.activity.sheet.OpenSheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivity
+
 
 
 /**
@@ -37,13 +39,13 @@ object SwitcherView
     {
         val layout = this.viewLayout(sheetUIContext)
 
-        layout.addView(this.dividerView(sheetUIContext))
+//        layout.addView(this.dividerView(sheetUIContext))
         layout.addView(this.sheetSwitcherView(sheetUIContext))
 
-        layout.addView(this.dividerView(sheetUIContext))
+//        layout.addView(this.dividerView(sheetUIContext))
         layout.addView(this.campaignSwitcherView(sheetUIContext))
 
-        layout.addView(this.dividerView(sheetUIContext))
+        //layout.addView(this.dividerView(sheetUIContext))
         layout.addView(this.gameSwitcherView(sheetUIContext))
 
         return layout
@@ -102,11 +104,14 @@ object SwitcherView
 
         layout.orientation      = LinearLayout.VERTICAL
 
+        layout.margin.topDp     = 20f
+
         return layout.linearLayout(context)
     }
 
 
     fun switcherHeaderView(labelId : Int,
+                           onNewButtonClick : View.OnClickListener,
                            sheetUIContext : SheetUIContext) : LinearLayout
     {
 
@@ -114,7 +119,10 @@ object SwitcherView
 
         layout.addView(this.switcherLabelView(labelId, sheetUIContext))
 
-        layout.addView(this.newButtonView(sheetUIContext))
+        val newButton = this.newButtonView(sheetUIContext)
+        newButton.setOnClickListener(onNewButtonClick)
+
+        layout.addView(newButton)
 
         return layout
     }
@@ -192,11 +200,6 @@ object SwitcherView
 
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 15f
-
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-//        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.child(icon)
 
@@ -324,7 +327,11 @@ object SwitcherView
     {
         val layout = this.switcherViewLayout(sheetUIContext.context)
 
-        layout.addView(this.switcherHeaderView(R.string.open_games, sheetUIContext))
+        val onNewGameClick = View.OnClickListener {  }
+
+        layout.addView(this.switcherHeaderView(R.string.open_games,
+                                               onNewGameClick,
+                                               sheetUIContext))
 
         layout.addView(this.openGamesView(sheetUIContext))
 
@@ -373,7 +380,11 @@ object SwitcherView
     {
         val layout = this.switcherViewLayout(sheetUIContext.context)
 
-        layout.addView(this.switcherHeaderView(R.string.open_campaigns, sheetUIContext))
+        val onNewCampaignClick = View.OnClickListener {  }
+
+        layout.addView(this.switcherHeaderView(R.string.open_campaigns,
+                                               onNewCampaignClick,
+                                               sheetUIContext))
 
         layout.addView(this.openCampaignsView(sheetUIContext))
 
@@ -417,7 +428,15 @@ object SwitcherView
     {
         val layout = this.switcherViewLayout(sheetUIContext.context)
 
-        layout.addView(this.switcherHeaderView(R.string.open_sheets, sheetUIContext))
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val onNewSheetClick = View.OnClickListener {
+            val intent = Intent(sheetActivity, OpenSheetActivity::class.java)
+            sheetActivity.startActivity(intent)
+        }
+
+        layout.addView(this.switcherHeaderView(R.string.open_sheets,
+                                               onNewSheetClick,
+                                               sheetUIContext))
 
         layout.addView(this.openSheetsView(sheetUIContext))
 

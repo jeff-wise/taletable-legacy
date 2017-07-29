@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.model.sheet.style.TextFont;
+import com.kispoko.tome.model.sheet.style.TextFontStyle;
 
 
 /**
@@ -41,8 +43,9 @@ public class UI
 
         if (titleView != null)
         {
-            //titleView.setTypeface(Font.serifFontRegular(activity));
-
+            titleView.setTypeface(Font.INSTANCE.typeface(TextFont.FiraSans.INSTANCE,
+                                                         TextFontStyle.Regular.INSTANCE,
+                                                         activity));
             titleView.setText(title);
         }
 

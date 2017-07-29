@@ -3,17 +3,19 @@ package com.kispoko.tome.rts.game
 
 
 import android.content.Context
+import com.kispoko.culebra.*
+import com.kispoko.tome.ApplicationAssets
+import com.kispoko.culebra.Parser as YamlParser
+import com.kispoko.culebra.Result as YamlResult
+import com.kispoko.culebra.Error as YamlError
 import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.AppGameError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.game.engine.value.*
-import com.kispoko.tome.official.OfficialGame
-import com.kispoko.tome.rts.game.engine.EngineError
+import com.kispoko.tome.official.*
 import effect.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
@@ -35,6 +37,7 @@ object GameManager
     // -----------------------------------------------------------------------------------------
 
     private var specification : Spec? = null
+    private var manifest : GameManifest? = null
 
     private val game = "game"
 
@@ -151,6 +154,57 @@ object GameManager
 
 
     // -----------------------------------------------------------------------------------------
+    // MANIFEST
+    // -----------------------------------------------------------------------------------------
+
+    fun manifest(context : Context) : GameManifest?
+    {
+        if (this.manifest == null)
+        {
+            val manifest = this.loadManifest(context)
+            when (manifest) {
+                is Val -> return manifest.value
+                is Err -> {
+                    ApplicationLog.error(manifest.error)
+                    return null
+                }
+            }
+        }
+        else
+        {
+            return null
+        }
+    }
+
+
+    private fun loadManifest(context : Context) : AppEff<GameManifest>
+    {
+        val manifestFilePath = ApplicationAssets.officialDirectoryPath + "/game_manifest.yaml"
+
+        val parse = YamlString.parse(context.assets.open(manifestFilePath))
+        when (parse)
+        {
+            is StringResult ->
+            {
+                val yamlParse = GameManifest.fromYaml(parse.value)
+                when (yamlParse)
+                {
+                    is YamlResult -> return effValue(yamlParse.value)
+                    is YamlError -> {
+                        return effError(AppGameError(GameManifestParseError(yamlParse.toString())))
+                    }
+                }
+            }
+            is StringErrors ->
+            {
+                val errorString = parse.errors.map { it.toString() }.joinToString("\n")
+                return effError(AppGameError(GameManifestParseError(errorString)))
+            }
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
 
@@ -168,39 +222,61 @@ object GameManager
 
 
 // ---------------------------------------------------------------------------------------------
-// INTERFACES
+// Game Manifest
 // ---------------------------------------------------------------------------------------------
 
-// Game Data
-// ---------------------------------------------------------------------------------------------
 
-/**
- * Game Data
- */
-interface GameData
+data class GameManifest(val gameSummaries : List<GameSummary>)
 {
-    fun valueSet(gameId : GameId, valueSetId : ValueSetId) : ValueSet?
 
-    fun textValue(gameId : GameId, valueReference : ValueReference) : ValueText?
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<GameManifest> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                parserApply(::GameManifest,
+                            // Summaries
+                            yamlValue.array("sheets") ap { yamlList ->
+                                yamlList.map { GameSummary.fromYaml(it) }}
+                            )
+            }
+            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
+        }
+
+    }
 
 }
 
 
-typealias EngineEff<A> = Eff<EngineError, Identity, A>
-
-
-fun <A> fromEngineEff(engineEff : EngineEff<A>) : AppEff<A> = when (engineEff)
+data class GameSummary(val name : String,
+                       val description : String,
+                       val genre : String,
+                       val players : Int)
 {
-    is Val -> effValue(engineEff.value)
-    is Err -> effError(AppEngineError(engineEff.error))
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<GameSummary> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                parserApply4(::GameSummary,
+                             // Name
+                             yamlValue.text("name"),
+                             // Description
+                             yamlValue.text("description"),
+                             // Genre
+                             yamlValue.text("genre"),
+                             // Players
+                             yamlValue.integer("players")
+                             )
+            }
+            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
+        }
+
+    }
+
 }
 
 
-typealias GameEff<A> = Eff<GameError, Identity, A>
-
-
-fun <A> fromGameEff(gameEff : GameEff<A>) : AppEff<A> = when (gameEff)
-{
-    is Val -> effValue(gameEff.value)
-    is Err -> effError(AppGameError(gameEff.error))
-}

@@ -21,7 +21,14 @@
     <string name="open_campaigns">Campaigns</string>
     <string name="open_sheets">Sheets</string>
 
+    <string name="open_sheet">Open Sheet</string>
+    <string name="official">Official</string>
+
     <string name="actions">Actions</string>
+    <string name="new_s">New</string>
+    <string name="blank">Blank</string>
+
+    <string name="import_s">Import</string>
 
     <string name="plus_one">+1</string>
     <string name="plus_ten">+10</string>
@@ -185,6 +192,30 @@
     <string name="edit_text_value">Edit text value</string>
 
 
+    <!-- ENGINE -->
+    <!-- ==================================================================================== -->
+
+    <string name="engine_value_sets">Value Sets</string>
+    <string name="engine_value_sets_description">
+        Sets of values that represent collections of objects in the game.
+    </string>
+
+    <string name="engine_mechanics">Mechanics</string>
+    <string name="engine_mechanics_description">
+        A mechanic is a collection of variables that are active when a condition is true.
+    </string>
+
+    <string name="engine_functions">Functions</string>
+    <string name="engine_functions_description">
+        Map sets of values to other values e.g. ability scores to their modifiers.
+    </string>
+
+    <string name="engine_programs">Programs</string>
+    <string name="engine_programs_description">
+        A program is a value that is composed of other values and is updated dynamically when
+        its variables are updated.
+    </string>
+
     <!-- WIDGET -->
     <!-- ==================================================================================== -->
 
@@ -253,41 +284,33 @@
     <!-- ACTIVITY: NEW CHARACTER -->
     <!-- ==================================================================================== -->
 
-    <string name="from_template">Official Template</string>
-    <string name="from_template_description">
-        Create a character based from curated templates for multiple roleplaying games
-        and classes.
+    <string name="sheet_from_official_template">Official Template</string>
+    <string name="sheet_from_official_template_description">
+        Choose a pre-made, ready-to-use sheet for your game of choice.
+        Everything is customizable.
     </string>
 
-    <string name="from_hub">Community Hub</string>
-    <string name="from_hub_description">
-        Browse through shared templates created by other users in the character hub.
+    <string name="sheet_from_community">Community</string>
+    <string name="sheet_from_community_description">
+        Search for or browse for sheets created by others (or yourself) in public and private
+        communities
     </string>
 
-    <string name="from_file">Local File</string>
-    <string name="from_file_description">
-        Upload a character or character template from a local file.
+    <string name="sheet_from_file">Local File</string>
+    <string name="sheet_from_file_description">
+        Upload a sheet from a file saved on your device.
     </string>
 
-    <!-- ACTIVITY: SECTIONS -->
-    <!-- ==================================================================================== -->
-
-    <string name="sections_button_profile_label">PROFILE</string>
-    <string name="sections_button_profile_description">
-        The character\'s attributes and abilities. Information that changes slowly.
+    <string name="sheet_from_duplicate">Duplicate Current Sheet</string>
+    <string name="sheet_from_duplicate_description">
+        Create a new sheet that is a copy of the currently opened sheet.
     </string>
 
-    <string name="sections_button_encounter_label">ENCOUNTER</string>
-    <string name="sections_button_encounter_description">
-        Information that changes rapidly e.g. hit points. Also dice rolls and abilities that are
-        relevant during an encounter.
+    <string name="sheet_from_blank">New Blank Sheet</string>
+    <string name="sheet_from_blank_description">
+        Start creating a new sheet from scratch.
     </string>
 
-    <string name="sections_button_campaign_label">CAMPAIGN</string>
-    <string name="sections_button_campaign_description">
-        Campaign level information that is relevant across multiple play sessions such as logs
-        and stats.
-    </string>
 
     <!-- NAVIGATION VIEW -->
     <!-- ==================================================================================== -->
@@ -305,26 +328,6 @@
     <string name="nav_view_button_layout_label">LAYOUT</string>
     <string name="nav_view_button_layout_description">
         Customize the structure of the sheet &#8212; add widgets, groups and pages.
-    </string>
-
-    <string name="nav_view_button_functions_label">FUNCTIONS</string>
-    <string name="nav_view_button_functions_description">
-        Value mappings e.g. Level to Proficiency Bonus
-    </string>
-
-    <string name="nav_view_button_programs_label">PROGRAMS</string>
-    <string name="nav_view_button_programs_description">
-        Values calculated from other values e.g. Ability Score Modifiers.
-    </string>
-
-    <string name="nav_view_button_mechanics_label">MECHANICS</string>
-    <string name="nav_view_button_mechanics_description">
-        Groups of variables active under specific conditions e.g. powers from a class ability.
-    </string>
-
-    <string name="nav_view_button_dictionary_label">DICTIONARY</string>
-    <string name="nav_view_button_dictionary_description">
-        Value sets e.g. classes, skills, weapons.
     </string>
 
     <string name="button_manage_sheets">MANAGE SHEETS</string>

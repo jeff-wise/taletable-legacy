@@ -103,6 +103,14 @@ variables:
       text_literal: 'copper'
 - type: variable_text
   variable_text:
+    id: backpack_table_label
+    label: Backpack Table Label
+    description: Backpack Table Label
+    value:
+      type: text_literal
+      text_literal: 'backpack'
+- type: variable_text
+  variable_text:
     id: defense_label
     label: Defense Label
     description: Defense Label
@@ -1523,7 +1531,133 @@ sections:
                         color_id: light_grey_10
                     font_style: regular
                     size: 19
-                    pages:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: backpack_table_label
+            format:
+              value_format:
+                alignment: left
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_18
+                  size: 12
+              widget_format:
+                margins:
+                  bottom: 2
+                  left: 8
+            value_variable_id: backpack_table_label
+      - widgets:
+        - type: widget_table
+          widget_table:
+            id: backpack
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              header_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                padding:
+                  left: 8
+                  top: 8
+                  bottom: 8
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                  size: 12.5
+              row_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                margins:
+                  top: 2
+                padding:
+                  left: 8
+                  top: 12
+                  bottom: 12
+            columns:
+            - type: table_widget_text_column
+              table_widget_text_column:
+                name: Name
+                default_value_label: Name
+                format:
+                  column_format:
+                    alignment: left
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_5
+                      size: 15
+                    width: 3
+            - type: table_widget_number_column
+              table_widget_number_column:
+                name: Quantity
+                default_value_label: Quantity
+                format:
+                  column_format:
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_7
+                      size: 15
+                    width: 2
+                  editor_type: adder
+            rows:
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  value_variable:
+                    id: fiddle
+                    label: Fiddle
+                    description: Fiddle
+                    value:
+                      type: text_literal
+                      text_literal: 'Fiddle'
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  value_variable:
+                    id: fiddle_quantity
+                    label: Fiddle Quantity
+                    description: Fiddle Quantity
+                    value:
+                      type: number_literal
+                      number_literal: 1
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  value_variable:
+                    id: deck_of_cards
+                    label: Deck of Cards
+                    description: Deck of Cards
+                    value:
+                      type: text_literal
+                      text_literal: 'Deck of Cards'
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  value_variable:
+                    id: deck_of_cards_quantity
+                    label: Deck of Cards Quantity
+                    description: Deck of Cards Quantity
+                    value:
+                      type: number_literal
+                      number_literal: 1
   - name: My Story
     groups:
     - rows:

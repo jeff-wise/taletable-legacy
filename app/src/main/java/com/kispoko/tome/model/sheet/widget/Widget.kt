@@ -615,7 +615,7 @@ data class ExpanderWidget(override val id : UUID,
                          doc.at("label") ap { ExpanderLabel.fromDocument(it) },
                          // Groups
                          doc.list("groups") ap { docList ->
-                             docList.mapIndexed { doc,index -> Group.fromDocument(doc,index) }
+                             docList.mapIndexed { d,index -> Group.fromDocument(d,index) }
                          },
                          // Variables
                          split(doc.maybeList("variables"),

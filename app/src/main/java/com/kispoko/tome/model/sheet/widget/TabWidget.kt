@@ -61,7 +61,7 @@ data class Tab(override val id : UUID,
                          // Groups
                          doc.list("groups") ap { docList ->
                              effApply(::Coll, docList.mapIndexed {
-                                 doc,index -> Group.fromDocument(doc,index) })
+                                 d,index -> Group.fromDocument(d,index) })
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))

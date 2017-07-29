@@ -36,6 +36,19 @@ class ThemeNotSupported(val sheetId : SheetId, val themeId : ThemeId) : ThemeErr
 
 
 /**
+ */
+class AppThemeNotSupported(val themeId : ThemeId) : ThemeError()
+{
+    override fun debugMessage(): String = """
+            |AppTheme Not Supported
+            |    Theme Id: $themeId
+            """.trim()
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+/**
  * A theme with the given id does not exist.
  */
 class ThemeDoesNotExist(val themeId : ThemeId) : ThemeError()
