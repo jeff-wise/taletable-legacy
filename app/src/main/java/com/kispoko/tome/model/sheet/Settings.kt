@@ -97,9 +97,9 @@ data class Settings(override val id : UUID,
 
     fun themeId() : ThemeId = this.themeId.value
 
-    fun sheetName() : SheetName = this.sheetName.value
+    fun sheetName() : String = this.sheetName.value.value
 
-    fun sheetSummary() : SheetSummary = this.sheetSummary.value
+    fun sheetSummary() : String = this.sheetSummary.value.value
 
 
     // -----------------------------------------------------------------------------------------

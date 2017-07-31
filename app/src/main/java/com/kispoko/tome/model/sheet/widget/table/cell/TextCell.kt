@@ -5,13 +5,16 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 import effect.*
@@ -79,6 +82,7 @@ data class TextCellFormat(override val id : UUID,
     fun cellFormat() : CellFormat = this.cellFormat.value
 
 
+
     // -----------------------------------------------------------------------------------------
     // RESOLVERS
     // -----------------------------------------------------------------------------------------
@@ -110,7 +114,7 @@ object TextCellView
              rowFormat : TableWidgetRowFormat,
              column : TableWidgetTextColumn,
              cellFormat : TextCellFormat,
-             sheetUIContext: SheetUIContext) : View
+             sheetUIContext : SheetUIContext) : View
     {
         val layout = TableWidgetCellView.layout(rowFormat,
                                                 column.format().columnFormat(),
@@ -119,6 +123,13 @@ object TextCellView
 
         layout.addView(this.valueTextView(cell, cellFormat, column, sheetUIContext))
 
+        layout.setOnClickListener {
+            val maybeValueVariable = cell.valueVariable(SheetContext(sheetUIContext))
+            when (maybeValueVariable) {
+                is Just -> openTextVariableEditorDialog(maybeValueVariable.value, sheetUIContext)
+            }
+        }
+
         return layout
     }
 
@@ -126,7 +137,7 @@ object TextCellView
     private fun valueTextView(cell : TableWidgetTextCell,
                               cellFormat : TextCellFormat,
                               column : TableWidgetTextColumn,
-                              sheetUIContext: SheetUIContext) : TextView
+                              sheetUIContext : SheetUIContext) : TextView
     {
         val value           = TextViewBuilder()
 
@@ -143,7 +154,7 @@ object TextCellView
         valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
         // > VALUE
-        val cellValue = cell.valueString(sheetUIContext)
+        val cellValue = cell.valueString(SheetContext(sheetUIContext))
         when (cellValue)
         {
             is Just -> value.text = cellValue.value

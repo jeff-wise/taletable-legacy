@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.sheet
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -16,20 +17,24 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.SwitcherView
+import com.kispoko.tome.activity.nav.NavigationActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.style.TextFont
+import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.rts.theme.ThemeManager
@@ -107,23 +112,28 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
+
+        val navButtonView = this.findViewById(R.id.toolbar_nav_button) as ImageButton
+        navButtonView.setOnClickListener {
+            val intent = Intent(this, NavigationActivity::class.java)
+            this.startActivity(intent)
+        }
     }
 
 
     /**
-     * Initialize the side drawers.
+     * Initialize the sidebars.
      */
-    override fun updateSwitcherView(sheetContext : SheetContext)
+    override fun initializeSidebars(sheetContext : SheetContext)
     {
-        val sheetUIContext = SheetUIContext(sheetContext, this)
         val drawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
 
         // Right Sidebar
         // -------------------------------------------------------------------------------------
-        val menuRight = findViewById(R.id.menuRight) as ImageButton
+        val menuRight = findViewById(R.id.toolbar_options_button) as ImageButton
 
         val rightNavView = findViewById(R.id.right_nav_view) as NavigationView
-        rightNavView.addView(SwitcherView.view(sheetUIContext))
+        rightNavView.addView(SheetOptionsView.view(SheetUIContext(sheetContext, this)))
 
         menuRight.setOnClickListener {
             if (drawerLayout.isDrawerOpen(GravityCompat.END))
@@ -188,6 +198,34 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
+    fun showActionBar(sheetContext : SheetContext)
+    {
+        val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
+        tabLayout.visibility = View.GONE
+
+        val toolbar = this.findViewById(R.id.toolbar) as Toolbar
+        toolbar.visibility = View.GONE
+
+        val actionBarView = this.findViewById(R.id.sheet_action_bar) as LinearLayout
+        actionBarView.visibility = View.VISIBLE
+        actionBarView.removeAllViews()
+        actionBarView.addView(TableActionBarView.view(SheetUIContext(sheetContext, this)))
+    }
+
+
+    fun hideActionBar()
+    {
+         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
+        tabLayout.visibility = View.VISIBLE
+
+        val toolbar = this.findViewById(R.id.toolbar) as Toolbar
+        toolbar.visibility = View.VISIBLE
+
+        val actionBarView = this.findViewById(R.id.sheet_action_bar) as LinearLayout
+        actionBarView.visibility = View.GONE
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // SHEET UI
     // -----------------------------------------------------------------------------------------
@@ -225,8 +263,11 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val menuLeftButton = this.findViewById(R.id.menuLeft) as ImageButton
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val menuRightButton = this.findViewById(R.id.menuRight) as ImageButton
-        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+        val navButton = this.findViewById(R.id.toolbar_nav_button) as ImageButton
+        navButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        val optionsButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+        optionsButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
@@ -333,8 +374,112 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    private fun optionsView(sheetUIContext : SheetUIContext) : View
+    {
+        val layout          = this.optionsViewLayout(sheetUIContext)
+
+        return layout
+    }
+
+
+    private fun optionsViewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
 }
 
+
+object SheetOptionsView
+{
+
+
+    fun view(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = this.viewLayout(sheetUIContext.context)
+
+        // Edit Mode
+
+        return layout
+    }
+
+
+    private fun viewLayout(context : Context) : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun editModeView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val label                   = TextViewBuilder()
+        val switch                  = SwitchBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.child(label)
+              .child(switch)
+
+        // (3 A) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId                = R.string.edit_mode
+
+        label.font                  = Font.typeface(TextFont.FiraSans,
+                                                    TextFontStyle.Regular,
+                                                    sheetUIContext.context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        label.color                 = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        label.sizeSp                = 15f
+
+        // (3 B) Switcher
+        // -------------------------------------------------------------------------------------
+
+        switch.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        switch.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        switch.checked              = false
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+
+}
 
 
 

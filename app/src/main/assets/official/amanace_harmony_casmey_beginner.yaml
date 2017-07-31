@@ -1069,7 +1069,7 @@ sections:
             - type: table_widget_text_column
               table_widget_text_column:
                 name: Name
-                default_value_label: Name
+                variable_prefix: armor
                 format:
                   column_format:
                     alignment: left
@@ -1083,7 +1083,7 @@ sections:
             - type: table_widget_number_column
               table_widget_number_column:
                 name: Quantity
-                default_value_label: Quantity
+                variable_prefix: armor_quantity
                 format:
                   column_format:
                     text_style:
@@ -1096,7 +1096,7 @@ sections:
             - type: table_widget_boolean_column
               table_widget_boolean_column:
                 name: Is Equipped?
-                default_value_label: Is Equipped
+                variable_prefix: is_armor_equipped
                 format:
                   column_format:
                     text_style:
@@ -1112,13 +1112,11 @@ sections:
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
-                  value_variable:
-                    id: chainmail
-                    label: Chainmail
-                    description: Chainmail
-                    value:
-                      type: text_literal
-                      text_literal: 'Chainmail'
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: armor
+                      value_id: chainmail
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   value_variable:
@@ -1200,7 +1198,7 @@ sections:
             - type: table_widget_text_column
               table_widget_text_column:
                 name: Name
-                default_value_label: Name
+                variable_prefix: weapon
                 format:
                   column_format:
                     alignment: left
@@ -1214,7 +1212,7 @@ sections:
             - type: table_widget_number_column
               table_widget_number_column:
                 name: Quantity
-                default_value_label: Quantity
+                variable_prefix: weapon_quantity
                 format:
                   column_format:
                     text_style:
@@ -1228,7 +1226,7 @@ sections:
             - type: table_widget_boolean_column
               table_widget_boolean_column:
                 name: Is Equipped?
-                default_value_label: Is Equipped
+                variable_prefix: is_weapon_equipped
                 format:
                   column_format:
                     text_style:
@@ -1244,13 +1242,11 @@ sections:
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
-                  value_variable:
-                    id: cutlass
-                    label: Cutlass
-                    description: Cutlass
-                    value:
-                      type: text_literal
-                      text_literal: 'Cutlass'
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: swords
+                      value_id: cutlass
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   value_variable:
@@ -1272,13 +1268,11 @@ sections:
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
-                  value_variable:
-                    id: crossbow
-                    label: Crossbow
-                    description: Crossbow
-                    value:
-                      type: text_literal
-                      text_literal: 'Crossbow'
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: pole_weapons
+                      value_id: pike
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   value_variable:
@@ -1594,7 +1588,7 @@ sections:
             - type: table_widget_text_column
               table_widget_text_column:
                 name: Name
-                default_value_label: Name
+                variable_prefix: backpack_item
                 format:
                   column_format:
                     alignment: left
@@ -1608,7 +1602,7 @@ sections:
             - type: table_widget_number_column
               table_widget_number_column:
                 name: Quantity
-                default_value_label: Quantity
+                variable_prefix: backpack_item_quantity
                 format:
                   column_format:
                     text_style:
@@ -1623,13 +1617,11 @@ sections:
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
-                  value_variable:
-                    id: fiddle
-                    label: Fiddle
-                    description: Fiddle
-                    value:
-                      type: text_literal
-                      text_literal: 'Fiddle'
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: musical_instruments
+                      value_id: fiddle
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   value_variable:
@@ -1642,13 +1634,11 @@ sections:
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
-                  value_variable:
-                    id: deck_of_cards
-                    label: Deck of Cards
-                    description: Deck of Cards
-                    value:
-                      type: text_literal
-                      text_literal: 'Deck of Cards'
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: mundane_items
+                      value_id: deck_of_cards
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   value_variable:

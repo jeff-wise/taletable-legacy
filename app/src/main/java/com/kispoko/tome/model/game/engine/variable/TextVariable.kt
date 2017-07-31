@@ -9,6 +9,7 @@ import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -29,7 +30,7 @@ import java.io.Serializable
 /**
  * Text Variable Value
  */
-sealed class TextVariableValue : Serializable
+sealed class TextVariableValue : SumModel, Serializable
 {
 
     companion object : Factory<TextVariableValue>
@@ -96,6 +97,15 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
 
 
     // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "literal")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -137,6 +147,15 @@ data class TextVariableValueValue(val valueReference : ValueReference)
 
 
     // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "value")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -169,6 +188,15 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             effValue(setOf())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Comp(this, "program")
+
+    override val sumModelObject = this
 
 
     // -----------------------------------------------------------------------------------------

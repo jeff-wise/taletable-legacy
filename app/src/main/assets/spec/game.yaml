@@ -1308,9 +1308,9 @@ types:
     presence: optional
     description: >
       The type of values in the value set.
-  - name: value_sets
+  - name: value_set_ids
     type: list
-    of: string
+    of: value_set_id
     presence: required
     description: >
       The names of the value sets in the compound value set.

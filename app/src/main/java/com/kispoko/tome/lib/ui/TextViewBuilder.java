@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
@@ -77,6 +76,7 @@ public class TextViewBuilder implements ViewBuilder
     public Integer                  color;
     public Typeface                 font;
     public Boolean                  underlined;
+    public Boolean                  singleLine;
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
@@ -144,6 +144,7 @@ public class TextViewBuilder implements ViewBuilder
         this.color              = null;
         this.font               = null;
         this.underlined         = null;
+        this.singleLine         = null;
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
@@ -236,6 +237,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.lineSpacingAdd != null && this.lineSpacingMult != null)
             textView.setLineSpacing(this.lineSpacingAdd, this.lineSpacingMult);
+
+        // > Single Line
+        // --------------------------------------------------------------------------------------
+
+        if (this.singleLine != null)
+            textView.setSingleLine(this.singleLine);
 
         // > Visibility
         // --------------------------------------------------------------------------------------

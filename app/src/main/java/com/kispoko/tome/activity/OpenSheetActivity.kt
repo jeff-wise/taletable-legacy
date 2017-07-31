@@ -1,8 +1,9 @@
 
-package com.kispoko.tome.activity.sheet
+package com.kispoko.tome.activity
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -10,20 +11,21 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.official.OpenSheetOfficialGamesActivity
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.TextFont
-import com.kispoko.tome.model.sheet.style.TextFontStyle
+import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
@@ -129,10 +131,15 @@ class OpenSheetActivity : AppCompatActivity()
         // Template Section
         // -------------------------------------------------------------------------------------
 
+        val onTemplateButtonClick = View.OnClickListener {
+            val intent = Intent(this, OpenSheetOfficialGamesActivity::class.java)
+            this.startActivity(intent)
+        }
         val fromTemplateButtonView =
                 this.buttonView(R.drawable.icon_new_file,
                                 R.string.sheet_from_official_template,
                                 R.string.sheet_from_official_template_description,
+                                onTemplateButtonClick,
                                 context)
         layout.addView(fromTemplateButtonView)
 
@@ -147,17 +154,23 @@ class OpenSheetActivity : AppCompatActivity()
 
         // > File
         // -------------------------------------------------------------------------------------
+
+        val onFileButtonClick = View.OnClickListener {  }
         val fromFileButtonView = this.buttonView(R.drawable.icon_upload_file,
                                                  R.string.sheet_from_file,
                                                  R.string.sheet_from_file_description,
+                                                 onFileButtonClick,
                                                  context)
         layout.addView(fromFileButtonView)
 
         // > Community
         // -------------------------------------------------------------------------------------
+
+        val onCommunityButtonClick = View.OnClickListener {  }
         val communityButtonView = this.buttonView(R.drawable.icon_cloud_download,
                                                   R.string.sheet_from_community,
                                                   R.string.sheet_from_community_description,
+                                                  onCommunityButtonClick,
                                                   context)
         layout.addView(communityButtonView)
 
@@ -170,15 +183,19 @@ class OpenSheetActivity : AppCompatActivity()
 
         layout.addView(this.headerView(R.string.new_s, context))
 
+        val onDuplicateButtonClick = View.OnClickListener {  }
         val duplicateButtonView = this.buttonView(R.drawable.icon_copy,
                                                   R.string.sheet_from_duplicate,
                                                   R.string.sheet_from_duplicate_description,
+                                                  onDuplicateButtonClick,
                                                   context)
         layout.addView(duplicateButtonView)
 
+        val onEmptyButtonClick = View.OnClickListener {  }
         val emptyButtonView = this.buttonView(R.drawable.icon_add_file,
                                               R.string.sheet_from_blank,
                                               R.string.sheet_from_blank_description,
+                                              onEmptyButtonClick,
                                               context)
         layout.addView(emptyButtonView)
 
@@ -221,7 +238,7 @@ class OpenSheetActivity : AppCompatActivity()
         layout.backgroundColor  = this.appSettings.color(colorTheme)
 
         layout.margin.topDp     = 15f
-        layout.margin.bottomDp  = 15f
+        layout.margin.bottomDp  = 10f
 
         return layout.linearLayout(context)
     }
@@ -256,9 +273,10 @@ class OpenSheetActivity : AppCompatActivity()
     private fun buttonView(iconId : Int,
                            labelId : Int,
                            descriptionId : Int,
+                           onClick : View.OnClickListener,
                            context : Context) : LinearLayout
     {
-        val layout              = this.buttonViewLayout(context)
+        val layout              = this.buttonViewLayout(onClick, context)
 
         // Header
         layout.addView(this.buttonHeaderView(iconId, labelId, context))
@@ -270,7 +288,8 @@ class OpenSheetActivity : AppCompatActivity()
     }
 
 
-    private fun buttonViewLayout(context : Context) : LinearLayout
+    private fun buttonViewLayout(onClick: View.OnClickListener,
+                                 context : Context) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -281,7 +300,24 @@ class OpenSheetActivity : AppCompatActivity()
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.margin.topDp     = 15f
+        layout.margin.topDp     = 10f
+
+        layout.onClick          = onClick
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor  = this.appSettings.color(colorTheme)
+
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+
+        layout.corners          = Corners(TopLeftCornerRadius(2f),
+                                          TopRightCornerRadius(2f),
+                                          BottomRightCornerRadius(2f),
+                                          BottomLeftCornerRadius(2f))
 
         return layout.linearLayout(context)
     }
@@ -319,7 +355,7 @@ class OpenSheetActivity : AppCompatActivity()
                                                     TextFontStyle.Regular,
                                                     context)
 
-        description.sizeSp          = 14f
+        description.sizeSp          = 13f
 
         return description.textView(context)
 
@@ -351,7 +387,7 @@ class OpenSheetActivity : AppCompatActivity()
         label.textId            = labelId
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_14")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         label.color             = this.appSettings.color(colorTheme)
 
@@ -359,7 +395,7 @@ class OpenSheetActivity : AppCompatActivity()
                                                 TextFontStyle.Regular,
                                                 context)
 
-        label.sizeSp            = 18f
+        label.sizeSp            = 17f
 
         return label.textView(context)
     }
@@ -369,13 +405,13 @@ class OpenSheetActivity : AppCompatActivity()
     {
         val icon                = ImageViewBuilder()
 
-        icon.widthDp            = 17
-        icon.heightDp           = 17
+        icon.widthDp            = 16
+        icon.heightDp           = 16
 
         icon.image              = iconId
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_19")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         icon.color              = this.appSettings.color(colorTheme)
 

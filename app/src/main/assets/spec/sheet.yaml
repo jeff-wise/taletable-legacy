@@ -1285,6 +1285,33 @@ types:
     presence: required
     description: >
       The table rows.
+  - name: sort
+    type: table_sort
+    presence: optional
+    description: How the rows are sorted (if at all).
+- name: table_sort_order
+  label: Table Sort Order
+  description: Table Sort ORder
+  group: 'Widget: Table'
+  type: primitive
+  base_type: string
+  constraints:
+  - table_sort_order_set
+- name: table_sort
+  label: Table Sort
+  description: >
+    Table Widget formatting options.
+  group: 'Widget: Table'
+  type: product
+  fields:
+  - name: column_index
+    type: number
+    presence: required
+    description: Index of column to sort on.
+  - name: sort_order
+    type: table_sort_order
+    presence: required
+    description: The sorting order.
 - name: table_widget_format
   label: Table Widget Format
   description: >
@@ -1322,6 +1349,12 @@ types:
   - type: table_widget_boolean_column
   - type: table_widget_number_column
   - type: table_widget_text_column
+- name: column_variable_prefix
+  label: column_variable_prefix
+  description: Prefix of all generated variables in this column.
+  group: 'Widget: Table'
+  type: primitive
+  base_type: string
 - name: table_widget_boolean_column
   label: Boolean Column
   description: >
@@ -1344,11 +1377,10 @@ types:
     presence: optional
     description: >
       The column default value.
-  - name: default_value_label
-    type: string
-    presence: optional
-    description: >
-      The column default label.
+  - name: variable_prefix
+    type: column_variable_prefix
+    presence: required
+    description: Variable prefix
   - name: true_text
     type: string
     presence: optional
@@ -1428,11 +1460,10 @@ types:
     presence: optional
     description: >
       The column default value.
-  - name: default_value_label
-    type: string
-    presence: optional
-    description: >
-      The column default label.
+  - name: variable_prefix
+    type: column_variable_prefix
+    presence: required
+    description: Variable prefix
   - name: defines_namespaced
     type: boolean
     presence: optional
@@ -1482,16 +1513,15 @@ types:
     presence: optional
     description: >
       The column format.
+  - name: variable_prefix
+    type: column_variable_prefix
+    presence: required
+    description: Variable prefix
   - name: default_value
     type: string
     presence: optional
     description: >
       The column default value.
-  - name: default_value_label
-    type: string
-    presence: optional
-    description: >
-      The column default label.
   - name: defines_namespaced
     type: boolean
     presence: optional
@@ -1728,11 +1758,11 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: value_variable
-    type: variable_text
+  - name: variable_value
+    type: variable_text_value
     presence: required
     description: >
-      The cell value.
+      The cell variable value.
   - name: format
     type: table_widget_text_cell_format
     presence: optional

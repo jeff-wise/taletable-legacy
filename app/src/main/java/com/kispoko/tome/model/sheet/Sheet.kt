@@ -29,7 +29,7 @@ import java.util.*
  */
 data class Sheet(override val id : UUID,
                  val sheetId : Prim<SheetId>,
-                 val campaignId: Prim<CampaignId>,
+                 val campaignId : Prim<CampaignId>,
                  val sections : Coll<Section>,
                  val variables : Conj<Variable>,
                  val settings : Comp<Settings>) : Model, Serializable

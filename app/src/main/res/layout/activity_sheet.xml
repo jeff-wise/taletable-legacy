@@ -36,30 +36,48 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="15dp"
                         android:layout_centerVertical="true"
+                        android:layout_marginEnd="15dp"
                         android:background="#00000000"
                         android:src="@drawable/ic_toolbar_sheet_app_menu"
                         android:tint="@color/dark_theme_primary_15" />
 
                     <TextView
                         android:id="@+id/toolbar_title"
-                        android:layout_gravity="center"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textColor="@color/dark_theme_primary_15"
-                        android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/menuLeft"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <ImageButton
-                        android:id="@+id/menuRight"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="#00000000"
-                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_marginEnd="15dp"
-                        android:src="@drawable/ic_toolbar_options"
-                        android:tint="@color/dark_theme_primary_15" />
+                        >
+                        <ImageButton
+                            android:id="@+id/toolbar_nav_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#00000000"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginTop="1dp"
+                            android:src="@drawable/icon_toolbar_nav"
+                            android:tint="@color/dark_theme_primary_15" />
+
+                        <ImageButton
+                            android:id="@+id/toolbar_options_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#00000000"
+                            android:src="@drawable/ic_toolbar_options"
+                            android:tint="@color/dark_theme_primary_15" />
+
+
+                    </LinearLayout>
+
 
                 </RelativeLayout>
 
@@ -75,6 +93,14 @@
                 app:tabTextColor="@color/dark_blue_hl_8"
                 app:tabSelectedTextColor="@color/dark_blue_hlx_5"
                 app:tabIndicatorColor="@color/dark_blue_hl_1" />
+
+            <LinearLayout
+                android:id="@+id/sheet_action_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="7dp"
+                android:orientation="vertical">
+            </LinearLayout>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/page_pager"

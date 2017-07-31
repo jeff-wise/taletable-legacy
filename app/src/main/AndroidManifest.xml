@@ -24,7 +24,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.sheet.OpenSheetActivity"
+            android:name=".activity.OpenSheetActivity"
             android:label="Open Sheet"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -205,6 +205,14 @@
         <activity
             android:name=".activity.sheet.SheetActivity"
             android:label="@string/title_activity_sheet"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.nav.NavigationActivity"
+            android:label="Navigate"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.official.OpenSheetOfficialGamesActivity"
+            android:label="Games"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

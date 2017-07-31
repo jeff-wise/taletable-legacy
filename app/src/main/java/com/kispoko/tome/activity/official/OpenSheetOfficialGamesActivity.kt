@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
+import android.view.Gravity
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -15,12 +17,8 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.lib.ui.Font
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.lib.ui.ScrollViewBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.TextFont
-import com.kispoko.tome.model.sheet.style.TextFontStyle
+import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.GameManifest
@@ -35,7 +33,7 @@ import effect.Val
 /**
  * Open Sheet Activity
  */
-class OpenSheetGamesActivity : AppCompatActivity()
+class OpenSheetOfficialGamesActivity : AppCompatActivity()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -56,12 +54,12 @@ class OpenSheetGamesActivity : AppCompatActivity()
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
 
-        setContentView(R.layout.activity_open_sheet)
+        setContentView(R.layout.activity_open_sheet_official_games)
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.open_sheet))
+        this.configureToolbar(getString(R.string.open_official_sheet))
 
         val theme = ThemeManager.theme(this.appSettings.themeId())
         when (theme) {
@@ -140,6 +138,11 @@ class OpenSheetGamesActivity : AppCompatActivity()
         scrollView.width            = LinearLayout.LayoutParams.MATCH_PARENT
         scrollView.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        scrollView.backgroundColor  = this.appSettings.color(colorTheme)
+
         return scrollView.scrollView(context)
 
     }
@@ -166,6 +169,9 @@ class OpenSheetGamesActivity : AppCompatActivity()
 
         layout.orientation      = LinearLayout.VERTICAL
 
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+
         return layout.linearLayout(context)
     }
 
@@ -183,23 +189,39 @@ class OpenSheetGamesActivity : AppCompatActivity()
         // Description
         layout.addView(this.gameDescriptionView(gameSummary.description, context))
 
+        // Info
+        layout.addView(this.infoRowView(gameSummary.players, gameSummary.likes, context))
+
         return layout
     }
 
 
     private fun gameViewLayout(context : Context) : LinearLayout
     {
-        val layout          = LinearLayoutBuilder()
+        val layout              = LinearLayoutBuilder()
 
-        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.orientation  = LinearLayout.VERTICAL
+        layout.orientation      = LinearLayout.VERTICAL
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = this.appSettings.color(colorTheme)
+
+        layout.margin.topDp     = 8f
+
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+
+
+        layout.corners          = Corners(TopLeftCornerRadius(2f),
+                                          TopRightCornerRadius(2f),
+                                          BottomRightCornerRadius(2f),
+                                          BottomLeftCornerRadius(2f))
 
         return layout.linearLayout(context)
     }
@@ -223,7 +245,7 @@ class OpenSheetGamesActivity : AppCompatActivity()
                                             TextFontStyle.Regular,
                                             context)
 
-        header.sizeSp       = 16f
+        header.sizeSp       = 18f
 
         return header.textView(context)
     }
@@ -239,7 +261,7 @@ class OpenSheetGamesActivity : AppCompatActivity()
         description.text        = descriptionString
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         description.color        = this.appSettings.color(colorTheme)
 
@@ -248,6 +270,8 @@ class OpenSheetGamesActivity : AppCompatActivity()
                                                  context)
 
         description.sizeSp       = 14f
+
+        description.margin.topDp = 4f
 
         return description.textView(context)
     }
@@ -263,7 +287,7 @@ class OpenSheetGamesActivity : AppCompatActivity()
         genre.text          = genreString
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         genre.color         = this.appSettings.color(colorTheme)
 
@@ -273,9 +297,26 @@ class OpenSheetGamesActivity : AppCompatActivity()
 
         genre.sizeSp        = 14f
 
+        genre.margin.topDp  = 4f
+
         return genre.textView(context)
     }
 
+
+    private fun infoRowView(players : Int,
+                            likes : Int,
+                            context : Context) : LinearLayout
+    {
+        val layout = this.infoRowViewLayout(context)
+
+        // Players
+        layout.addView(this.infoView(R.drawable.icon_account, players.toString(), context))
+
+        // Likes
+        layout.addView(this.infoView(R.drawable.icon_heart, likes.toString(), context))
+
+        return layout
+    }
 
 
     private fun infoRowViewLayout(context : Context) : LinearLayout
@@ -287,11 +328,13 @@ class OpenSheetGamesActivity : AppCompatActivity()
 
         layout.orientation  = LinearLayout.HORIZONTAL
 
+        layout.margin.topDp = 8f
+
         return layout.linearLayout(context)
     }
 
 
-    private fun infoView(labelId : Int,
+    private fun infoView(iconId : Int,
                          descriptionString : String,
                          context : Context) : LinearLayout
     {
@@ -299,7 +342,7 @@ class OpenSheetGamesActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         val layout              = LinearLayoutBuilder()
-        val label               = TextViewBuilder()
+        val icon                = ImageViewBuilder()
         val info                = TextViewBuilder()
 
         // (2) Layout
@@ -311,27 +354,25 @@ class OpenSheetGamesActivity : AppCompatActivity()
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.child(label)
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.child(icon)
               .child(info)
 
-        // (3 A) Label
+        // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+        icon.widthDp            = 16
+        icon.heightDp           = 16
 
-        label.textId            = labelId
+        icon.image              = iconId
 
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        label.color             = this.appSettings.color(labelColorTheme)
+        icon.color              = this.appSettings.color(iconColorTheme)
 
-        label.font              = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                context)
-
-        label.sizeSp            = 14f
+        icon.margin.rightDp     = 5f
 
         // (3 B) Info
         // -------------------------------------------------------------------------------------
@@ -342,7 +383,7 @@ class OpenSheetGamesActivity : AppCompatActivity()
         info.text        = descriptionString
 
         val infoColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         info.color        = this.appSettings.color(infoColorTheme)
 
@@ -350,7 +391,7 @@ class OpenSheetGamesActivity : AppCompatActivity()
                                           TextFontStyle.Regular,
                                           context)
 
-        info.sizeSp       = 14f
+        info.sizeSp       = 15f
 
         return layout.linearLayout(context)
     }

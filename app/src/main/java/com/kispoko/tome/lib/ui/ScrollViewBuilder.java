@@ -103,7 +103,7 @@ public class ScrollViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            scrollView.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            scrollView.setBackgroundColor(this.backgroundColor);
 
         // > Background Resource
         // --------------------------------------------------------------------------------------

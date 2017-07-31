@@ -21,6 +21,17 @@
     <string name="open_campaigns">Campaigns</string>
     <string name="open_sheets">Sheets</string>
 
+    <string name="choose_game">Choose Game&#8230;</string>
+    <string name="open_official_sheet">Open Official Sheet</string>
+
+    <string name="edit_mode">Edit Mode</string>
+
+    <string name="table_editor">Table Editor</string>
+
+    <string name="insert_row_below">Insert Below</string>
+    <string name="insert_row_above">Insert Above</string>
+    <string name="sort_table">Sort Table</string>
+
     <string name="open_sheet">Open Sheet</string>
     <string name="official">Official</string>
 
@@ -42,6 +53,9 @@
 
     <string name="name">Name</string>
     <string name="label">Label</string>
+
+    <string name="navigate">Navigate</string>
+
 
     <string name="variable">Variable</string>
     <string name="variables">Variables</string>

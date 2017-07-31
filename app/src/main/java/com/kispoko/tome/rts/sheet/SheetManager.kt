@@ -13,6 +13,7 @@ import com.kispoko.tome.load.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
@@ -125,6 +126,13 @@ object SheetManager
             if (variable != null)
                 it.state.addVariable(variable)
         }
+
+
+    fun addVariable(sheetId : SheetId, variable : Variable) =
+        SheetManager.sheetRecord(sheetId) apDo {
+                it.state.addVariable(variable)
+        }
+
 
 
     fun evalSheetName(sheetId : SheetId, sheetName : SheetName) : String
@@ -315,7 +323,7 @@ object SheetManager
                     true
                 }
 
-                sheetUI.updateSwitcherView(sheetRecord.sheetContext)
+                sheetUI.initializeSidebars(sheetRecord.sheetContext)
 
                 val end = System.currentTimeMillis()
 
@@ -519,6 +527,9 @@ data class SheetUIContext(val sheetId : SheetId,
 }
 
 
+data class SheetSummary(val name : String, val description : String)
+
+
 interface SheetComponent
 {
     fun onSheetComponentActive(sheetContext : SheetContext)
@@ -545,9 +556,9 @@ interface SheetUI
 
     fun bottomNavigation() : AHBottomNavigation
 
-    fun updateSwitcherView(sheetContext : SheetContext)
-
     fun applyTheme(sheetId : SheetId, uiColors : UIColors)
+
+    fun initializeSidebars(sheetContext : SheetContext)
 
     fun context() : Context
 

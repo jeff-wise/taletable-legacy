@@ -92,6 +92,203 @@ engine:
               value:
                 type: boolean_literal
                 boolean_literal: true
+  - type: value_set_base
+    value_set_base:
+      value_set_id: hand_fist_weapons
+      label: Hand or Fist Weapons
+      label_singular: Hand or Fist Weapon
+      description: 'Single-handed weapons, often used without wrist movement and meant to protect
+                    the forearm'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: bagh_naka
+          description: 'Attachable claws that are worn over the knuckles.'
+          value: 'Bagh Naka'
+      - type: value_text
+        value_text:
+          value_id: brass_knuckles
+          description: 'Hard metallic attachment worn over the knuckles for bone-crunching punches.'
+          value: 'Brass Knuckles'
+      - type: value_text
+        value_text:
+          value_id: push_dagger
+          description: 'When grasped with a fist the blade protrudes through the fingers.'
+          value: 'Push Dagger'
+  - type: value_set_base
+    value_set_base:
+      value_set_id: swords
+      label: Swords
+      label_singular: Sword
+      description: 'Bladed weapons meant for thrusting and slicing in close quarter combat'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: cutlass
+          description: 'A broad sabre with a curve blade meant for slashing.'
+          value: 'Cutlass'
+      - type: value_text
+        value_text:
+          value_id: ninjato
+          description: 'A thick, straight short sword with a square hilt.'
+          value: 'Ninjato'
+      - type: value_text
+        value_text:
+          value_id: scimitar
+          description: 'A long, thin curved sabre.'
+          value: 'Scimitar'
+      - type: value_text
+        value_text:
+          value_id: falchion
+          description: 'A very wide, single-edged swort sword'
+          value: 'Falchion'
+      - type: value_text
+        value_text:
+          value_id: rapier
+          description: 'A thin sword designed for thrusting characterized by a protective hilt.'
+          value: 'Rapier'
+      - type: value_text
+        value_text:
+          value_id: longsword
+          description: 'A versatile, straight, double-edged sword about 1 meter in length.'
+          value: 'Longsword'
+      - type: value_text
+        value_text:
+          value_id: katana
+          description: 'A two-handed sword with a curved, single-edged blade.'
+          value: 'Katana'
+      - type: value_text
+        value_text:
+          value_id: greatsword
+          description: 'An emormous, two-handed sword.'
+          value: 'Greatsword'
+  - type: value_set_base
+    value_set_base:
+      value_set_id: axes
+      label: Axes
+      label_singular: Axe
+      description: 'Axes designed for use in melee combat.'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: handaxe
+          description: 'An axe that can be held in one hand and thrown a short distance.'
+          value: 'Handaxe'
+      - type: value_text
+        value_text:
+          value_id: battle_axe
+          description: 'A short-hafted axe that can be held in one-hand.'
+          value: 'Battle Axe'
+      - type: value_text
+        value_text:
+          value_id: great_axe
+          description: 'An enormous, short-hafted axe meant to be wielded in two-hands.'
+          value: 'Great Axe'
+  - type: value_set_base
+    value_set_base:
+      value_set_id: trauma_weapons
+      label: Trauma Weapons
+      label_singular: Trauma Weapon
+      description: 'Weapons intended to be swung at an opponent.'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: club
+          description: 'A thick, hardened piece of wood.'
+          value: 'Club'
+      - type: value_text
+        value_text:
+          value_id: morning_star
+          description: 'A metal club with a spiked ball on the end.'
+          value: 'Morning Star'
+      - type: value_text
+        value_text:
+          value_id: flail
+          description: 'A spiked ball that is swung from a chain attached to a short, wooden haft.'
+          value: 'Flail'
+      - type: value_text
+        value_text:
+          value_id: war_hammer
+          description: 'A heavy metal hammer designed to be swung with one hand.'
+          value: 'War Hammer'
+      - type: value_text
+        value_text:
+          value_id: great_hammer
+          description: 'An enormous, heavy metal hammer designed to be swung with two hands.'
+          value: 'Great Hammer'
+  - type: value_set_base
+    value_set_base:
+      value_set_id: pole_weapons
+      label: Pole Weapons
+      label_singular: Pole Weapon
+      description: 'Two-handed melee weapons designed primarily for thrusting or sweeping motions.'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: quarterstaff
+          description: 'A simple hardwood staff at least two meters in length.'
+          value: 'Quarterstaff'
+      - type: value_text
+        value_text:
+          value_id: pike
+          description: 'A very long thrusting spear.'
+          value: 'Pike'
+  - type: value_set_compound
+    value_set_compound:
+      value_set_id: weapons
+      label: Weapons
+      label_singular: Weapon
+      description: 'Weapons'
+      value_set_ids:
+      - hand_fist_weapons
+      - swords
+      - axes
+      - trauma_weapons
+      - pole_weapons
+  - type: value_set_base
+    value_set_base:
+      value_set_id: musical_instruments
+      label: 'Musical Instruments'
+      label_singular: Musical Instrument
+      description: 'Musical Instruments'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: fiddle
+          description: 'Fiddle'
+          value: 'Fiddle'
+  - type: value_set_base
+    value_set_base:
+      value_set_id: mundane_items
+      label: 'Mundane Items'
+      label_singular: Mundane Item
+      description: 'Mundane Items'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: deck_of_cards
+          description: 'Deck of Cards'
+          value: 'Deck of Cards'
+  - type: value_set_base
+    value_set_base:
+      value_set_id: armor
+      label: 'Armor'
+      label_singular: Armor
+      description: 'Armor'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: chainmail
+          description: 'Chainmail'
+          value: 'Chainmail'
   mechanics:
   - mechanic_id: soulsin
     label: Soulsin

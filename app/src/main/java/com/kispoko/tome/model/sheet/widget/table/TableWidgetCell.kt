@@ -6,15 +6,14 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableRow
+import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.engine.variable.BooleanVariable
-import com.kispoko.tome.model.game.engine.variable.NumberVariable
-import com.kispoko.tome.model.game.engine.variable.TextVariable
+import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
@@ -317,7 +316,8 @@ data class TableWidgetNumberCell(override val id : UUID,
  */
 data class TableWidgetTextCell(override val id : UUID,
                                val format : Comp<TextCellFormat>,
-                               val valueVariable : Comp<TextVariable>)
+                               val variableValue : Sum<TextVariableValue>,
+                               var variableId : Maybe<VariableId>)
                                 : TableWidgetCell(), Model
 {
 
@@ -335,7 +335,7 @@ data class TableWidgetTextCell(override val id : UUID,
     init
     {
         this.format.name        = "format"
-        this.valueVariable.name = "value_variable"
+        this.variableValue.name = "variable_value"
     }
 
 
@@ -343,8 +343,12 @@ data class TableWidgetTextCell(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : TextCellFormat, valueVariable : TextVariable)
-            : this(UUID.randomUUID(), Comp(format), Comp(valueVariable))
+    constructor(format : TextCellFormat,
+                variableValue : TextVariableValue)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Sum(variableValue),
+               Nothing())
 
 
     companion object : Factory<TableWidgetTextCell>
@@ -358,8 +362,8 @@ data class TableWidgetTextCell(override val id : UUID,
                          split(doc.maybeAt("format"),
                                effValue(TextCellFormat.default),
                                 { TextCellFormat.fromDocument(it) }),
-                         // Value
-                         doc.at("value_variable") ap { TextVariable.fromDocument(it) }
+                         // Variable Value
+                         doc.at("variable_value") ap { TextVariableValue.fromDocument(it) }
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -373,7 +377,22 @@ data class TableWidgetTextCell(override val id : UUID,
 
     fun format() : TextCellFormat = this.format.value
 
-    fun valueVariable() : TextVariable = this.valueVariable.value
+
+    fun variableValue() : TextVariableValue = this.variableValue.value
+
+
+    fun valueVariable(sheetContext : SheetContext) : Maybe<TextVariable> =
+        this.variableId ap { variableId ->
+            val variable = SheetManager.sheetState(sheetContext.sheetId)
+                                           .apply { it.textVariableWithId(variableId) }
+            when (variable) {
+                is Val -> Just(variable.value)
+                is Err -> {
+                    ApplicationLog.error(variable.error)
+                    Nothing<TextVariable>()
+                }
+            }
+        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -381,6 +400,15 @@ data class TableWidgetTextCell(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun type() : TableWidgetCellType = TableWidgetCellType.TEXT
+
+
+    /**
+     * Update the id of the variable that holds the cell data.
+     */
+    fun setVariableId(variableId : VariableId)
+    {
+        this.variableId = Just(variableId)
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -398,16 +426,18 @@ data class TableWidgetTextCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueString(sheetUIContext: SheetUIContext) : Maybe<String>
-    {
-        val numberEff = this.valueVariable().value(SheetContext(sheetUIContext))
-
-        when (numberEff)
-        {
-            is Val -> return Just(numberEff.value)
-            is Err -> return Nothing()
+    fun valueString(sheetContext : SheetContext) : Maybe<String> =
+        this.valueVariable(sheetContext) ap { variable ->
+            val str = variable.valueString(sheetContext)
+            when (str) {
+                is Val -> Just(str.value)
+                is Err -> {
+                    ApplicationLog.error(str.error)
+                    Nothing<String>()
+                }
+            }
         }
-    }
+
 
 
     // -----------------------------------------------------------------------------------------

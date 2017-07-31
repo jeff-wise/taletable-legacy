@@ -28,7 +28,7 @@ import java.util.*
  */
 @Suppress("UNCHECKED_CAST")
 sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
-                               open val defaultValueLabel : Prim<DefaultValueLabel>,
+                               open val variablePrefix : Prim<ColumnVariablePrefix>,
                                open val isColumnNamespaced: Prim<IsColumnNamespaced>)
                                 : Model, Serializable
 {
@@ -66,7 +66,7 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
 
     fun nameString() : String = this.columnName.value.value
 
-    fun defaultValueLabelString() : String = this.defaultValueLabel.value.value
+    fun variablePrefix() : String = this.variablePrefix.value.value
 
     fun isColumnNamespaced() : Boolean = this.isColumnNamespaced.value.value
 
@@ -88,11 +88,11 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
 data class TableWidgetBooleanColumn(
         override val id : UUID,
         override val columnName : Prim<ColumnName>,
-        override val defaultValueLabel : Prim<DefaultValueLabel>,
+        override val variablePrefix : Prim<ColumnVariablePrefix>,
         override val isColumnNamespaced: Prim<IsColumnNamespaced>,
         val defaultValue : Prim<DefaultBooleanColumnValue>,
         val format : Comp<BooleanColumnFormat>)
-                    : TableWidgetColumn(columnName, defaultValueLabel, isColumnNamespaced)
+          : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ data class TableWidgetBooleanColumn(
     init
     {
         this.columnName.name            = "column_name"
-        this.defaultValueLabel.name     = "default_value_label"
+        this.variablePrefix.name        = "variable_prefix"
         this.isColumnNamespaced.name    = "is_column_namespaced"
         this.defaultValue.name          = "default_value"
         this.format.name                = "format"
@@ -114,13 +114,13 @@ data class TableWidgetBooleanColumn(
     // -----------------------------------------------------------------------------------------
 
     constructor(columnName : ColumnName,
-                defaultValueLabel : DefaultValueLabel,
+                variablePrefix : ColumnVariablePrefix,
                 isColumnNamespaced : IsColumnNamespaced,
                 defaultValue : DefaultBooleanColumnValue,
                 format : BooleanColumnFormat)
         : this(UUID.randomUUID(),
                Prim(columnName),
-               Prim(defaultValueLabel),
+               Prim(variablePrefix),
                Prim(isColumnNamespaced),
                Prim(defaultValue),
                Comp(format))
@@ -136,8 +136,8 @@ data class TableWidgetBooleanColumn(
                 effApply(::TableWidgetBooleanColumn,
                          // Name
                          doc.at("name") ap { ColumnName.fromDocument(it) },
-                         // Default Value Label
-                         doc.at("default_value_label") ap { DefaultValueLabel.fromDocument(it) },
+                         // Variable Prefix
+                         doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
                          // Is Column Namespaced
                          split(doc.maybeAt("is_namespaced"),
                                effValue(IsColumnNamespaced(false)),
@@ -192,14 +192,14 @@ data class TableWidgetBooleanColumn(
  * Table Widget Number Column
  */
 data class TableWidgetNumberColumn(
-                        override val id : UUID,
-                        override val columnName : Prim<ColumnName>,
-                        override val defaultValueLabel : Prim<DefaultValueLabel>,
-                        override val isColumnNamespaced: Prim<IsColumnNamespaced>,
-                        val defaultValue : Prim<DefaultNumberColumnValue>,
-                        val format : Comp<NumberColumnFormat>,
-                        val editorType : Prim<NumericEditorType>)
-                        : TableWidgetColumn(columnName, defaultValueLabel, isColumnNamespaced)
+            override val id : UUID,
+            override val columnName : Prim<ColumnName>,
+            override val variablePrefix : Prim<ColumnVariablePrefix>,
+            override val isColumnNamespaced: Prim<IsColumnNamespaced>,
+            val defaultValue : Prim<DefaultNumberColumnValue>,
+            val format : Comp<NumberColumnFormat>,
+            val editorType : Prim<NumericEditorType>)
+             : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ data class TableWidgetNumberColumn(
     init
     {
         this.columnName.name            = "column_name"
-        this.defaultValueLabel.name     = "default_value_label"
+        this.variablePrefix.name        = "variable_prefix"
         this.isColumnNamespaced.name    = "is_column_namespaced"
         this.defaultValue.name          = "default_value"
         this.format.name                = "format"
@@ -222,14 +222,14 @@ data class TableWidgetNumberColumn(
     // -----------------------------------------------------------------------------------------
 
     constructor(columnName : ColumnName,
-                defaultValueLabel : DefaultValueLabel,
+                variablePrefix : ColumnVariablePrefix,
                 isColumnNamespaced : IsColumnNamespaced,
                 defaultValue : DefaultNumberColumnValue,
                 format : NumberColumnFormat,
                 editorType : NumericEditorType)
         : this(UUID.randomUUID(),
                Prim(columnName),
-               Prim(defaultValueLabel),
+               Prim(variablePrefix),
                Prim(isColumnNamespaced),
                Prim(defaultValue),
                Comp(format),
@@ -250,8 +250,8 @@ data class TableWidgetNumberColumn(
                 effApply(::TableWidgetNumberColumn,
                          // Name
                          doc.at("name") ap { ColumnName.fromDocument(it) },
-                         // Default Value Label
-                         doc.at("default_value_label") ap { DefaultValueLabel.fromDocument(it) },
+                         // Variable Prefix
+                         doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
                          // Is Column Namespaced
                          split(doc.maybeAt("is_namespaced"),
                                effValue(IsColumnNamespaced(false)),
@@ -315,12 +315,12 @@ data class TableWidgetNumberColumn(
 data class TableWidgetTextColumn(
                         override val id : UUID,
                         override val columnName : Prim<ColumnName>,
-                        override val defaultValueLabel : Prim<DefaultValueLabel>,
+                        override val variablePrefix : Prim<ColumnVariablePrefix>,
                         override val isColumnNamespaced: Prim<IsColumnNamespaced>,
                         val defaultValue : Prim<DefaultTextColumnValue>,
                         val format : Comp<TextColumnFormat>,
                         val definesNamespace : Prim<DefinesNamespace>)
-                        : TableWidgetColumn(columnName, defaultValueLabel, isColumnNamespaced)
+                        : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -330,7 +330,7 @@ data class TableWidgetTextColumn(
     init
     {
         this.columnName.name            = "column_name"
-        this.defaultValueLabel.name     = "default_value_label"
+        this.variablePrefix.name        = "variable_prefix"
         this.isColumnNamespaced.name    = "is_column_namespaced"
         this.defaultValue.name          = "default_value"
         this.format.name                = "format"
@@ -343,14 +343,14 @@ data class TableWidgetTextColumn(
     // -----------------------------------------------------------------------------------------
 
     constructor(columnName : ColumnName,
-                defaultValueLabel : DefaultValueLabel,
+                variablePrefix : ColumnVariablePrefix,
                 isColumnNamespaced : IsColumnNamespaced,
                 defaultValue : DefaultTextColumnValue,
                 format : TextColumnFormat,
                 definesNamespace: DefinesNamespace)
         : this(UUID.randomUUID(),
                Prim(columnName),
-               Prim(defaultValueLabel),
+               Prim(variablePrefix),
                Prim(isColumnNamespaced),
                Prim(defaultValue),
                Comp(format),
@@ -368,8 +368,8 @@ data class TableWidgetTextColumn(
                 effApply(::TableWidgetTextColumn,
                          // Name
                          doc.at("name") ap { ColumnName.fromDocument(it) },
-                         // Default Value Label
-                         doc.at("default_value_label") ap { DefaultValueLabel.fromDocument(it) },
+                         // Variable Prefix
+                         doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
                          // Is Column Namespaced
                          split(doc.maybeAt("is_namespaced"),
                                effValue(IsColumnNamespaced(false)),
@@ -446,6 +446,30 @@ data class ColumnName(val value : String) : SQLSerializable, Serializable
         override fun fromDocument(doc: SpecDoc): ValueParser<ColumnName> = when (doc)
         {
             is DocText -> effValue(ColumnName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue(): SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Column Variable Prefix
+ */
+data class ColumnVariablePrefix(val value : String) : SQLSerializable, Serializable
+{
+
+    companion object : Factory<ColumnVariablePrefix>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ColumnVariablePrefix> = when (doc)
+        {
+            is DocText -> effValue(ColumnVariablePrefix(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

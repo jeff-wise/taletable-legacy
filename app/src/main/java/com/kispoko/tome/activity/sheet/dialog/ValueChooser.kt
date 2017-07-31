@@ -419,16 +419,6 @@ object ValueChooserView
             }
         }
 
-//        recyclerView.divider            = ValueDividerItemDecoration(sheetUIContext)
-
-//        recyclerView.margin.leftDp      = 5f
-//        recyclerView.margin.rightDp     = 5f
-
-//        recyclerView.padding.bottomDp   = 20f
-
-
-
-
         return recyclerView.recyclerView(sheetUIContext.context)
     }
 
@@ -508,10 +498,10 @@ object ValueChooserView
 
         icon.id                     = R.id.choose_value_dialog_item_icon
 
-        icon.widthDp                = 18
-        icon.heightDp               = 18
+        icon.widthDp                = 17
+        icon.heightDp               = 17
 
-        icon.image                  = R.drawable.ic_dialog_chooser_selected
+        icon.image                  = R.drawable.icon_check
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("green_1")),
@@ -526,9 +516,6 @@ object ValueChooserView
         // -------------------------------------------------------------------------------------
 
         name.id                     = R.id.choose_value_dialog_item_value
-
-        name.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
-        name.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
 
         name.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height                 = LinearLayout.LayoutParams.WRAP_CONTENT

@@ -5,17 +5,15 @@ package com.kispoko.tome.activity.game
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.lib.ui.Font
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
@@ -94,7 +92,7 @@ class EngineFragment : Fragment()
     // INTERNAL
     // -----------------------------------------------------------------------------------------
 
-    private fun view(engine : Engine, themeId : ThemeId, context : Context) : LinearLayout
+    private fun view(engine : Engine, themeId : ThemeId, context : Context) : View
     {
         val layout          = this.viewLayout(themeId, context)
 
@@ -152,7 +150,7 @@ class EngineFragment : Fragment()
     private fun buttonView(headerId : Int,
                            descriptionId : Int,
                            themeId : ThemeId,
-                           context : Context) : LinearLayout
+                           context : Context) : RelativeLayout
     {
         val layout          = this.buttonViewLayout(themeId, context)
 
@@ -160,15 +158,21 @@ class EngineFragment : Fragment()
         layout.addView(this.buttonHeaderView(headerId, themeId, context))
 
         // Description
-        layout.addView(this.buttonDescriptionView(descriptionId, themeId, context))
+        val descriptionView = this.buttonDescriptionView(descriptionId, themeId, context)
+        val layoutParams = descriptionView.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.addRule(RelativeLayout.BELOW, R.id.top_element)
+        layout.addView(descriptionView)
+
+        // Buttons
+        layout.addView(this.buttonRowView(themeId, context))
 
         return layout
     }
 
 
-    private fun buttonViewLayout(themeId : ThemeId, context : Context) : LinearLayout
+    private fun buttonViewLayout(themeId : ThemeId, context : Context) : RelativeLayout
     {
-        val layout              = LinearLayoutBuilder()
+        val layout              = RelativeLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = 0
@@ -194,7 +198,7 @@ class EngineFragment : Fragment()
                                           BottomRightCornerRadius(1f),
                                           BottomLeftCornerRadius(1f))
 
-        return layout.linearLayout(context)
+        return layout.relativeLayout(context)
     }
 
 
@@ -204,8 +208,11 @@ class EngineFragment : Fragment()
     {
         val header              = TextViewBuilder()
 
-        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        header.id               = R.id.top_element
+
+        header.layoutType       = LayoutType.RELATIVE
+        header.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        header.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
         header.textId           = headerId
 
@@ -230,8 +237,9 @@ class EngineFragment : Fragment()
     {
         val description             = TextViewBuilder()
 
-        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT
-        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+        description.layoutType      = LayoutType.RELATIVE
+        description.width           = RelativeLayout.LayoutParams.WRAP_CONTENT
+        description.height          = RelativeLayout.LayoutParams.WRAP_CONTENT
 
         description.textId          = descriptionId
 
@@ -247,6 +255,95 @@ class EngineFragment : Fragment()
         description.sizeSp          = 14f
 
         return description.textView(context)
+    }
+
+
+    private fun buttonRowView(themeId : ThemeId, context : Context) : LinearLayout
+    {
+        val layout = this.buttonRowViewLayout(context)
+
+        layout.addView(this.helpButtonView(themeId, context))
+
+        return layout
+    }
+
+
+    private fun buttonRowViewLayout(context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.MATCH_PARENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.bottomDp  = 8f
+        layout.margin.rightDp   = 3f
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+
+        layout.gravity          = Gravity.END
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun helpButtonView(themeId : ThemeId, context : Context) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+        val label               = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 17
+        icon.heightDp           = 17
+
+        icon.image              = R.drawable.icon_ask_question
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_27")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        icon.color              = ThemeManager.color(themeId, iconColorTheme)
+
+        icon.margin.rightDp     = 5f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId           = R.string.help
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_27")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color            = ThemeManager.color(themeId, labelColorTheme)
+
+        label.font             = Font.typeface(TextFont.FiraSans,
+                                                    TextFontStyle.Regular,
+                                                    context)
+
+        label.sizeSp           = 16f
+
+        return layout.linearLayout(context)
     }
 
 }

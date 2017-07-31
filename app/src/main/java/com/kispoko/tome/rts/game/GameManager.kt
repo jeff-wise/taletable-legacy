@@ -237,7 +237,7 @@ data class GameManifest(val gameSummaries : List<GameSummary>)
             {
                 parserApply(::GameManifest,
                             // Summaries
-                            yamlValue.array("sheets") ap { yamlList ->
+                            yamlValue.array("summaries") ap { yamlList ->
                                 yamlList.map { GameSummary.fromYaml(it) }}
                             )
             }
@@ -252,7 +252,8 @@ data class GameManifest(val gameSummaries : List<GameSummary>)
 data class GameSummary(val name : String,
                        val description : String,
                        val genre : String,
-                       val players : Int)
+                       val players : Int,
+                       val likes : Int)
 {
 
     companion object
@@ -261,7 +262,7 @@ data class GameSummary(val name : String,
         {
             is YamlDict ->
             {
-                parserApply4(::GameSummary,
+                parserApply5(::GameSummary,
                              // Name
                              yamlValue.text("name"),
                              // Description
@@ -269,7 +270,9 @@ data class GameSummary(val name : String,
                              // Genre
                              yamlValue.text("genre"),
                              // Players
-                             yamlValue.integer("players")
+                             yamlValue.integer("players"),
+                             // Likes
+                             yamlValue.integer("likes")
                              )
             }
             else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))

@@ -233,4 +233,15 @@
     <!-- ORANGE -->
     <color name="orange_light">#D19D6E</color>
 
+
+
+
+    <!-- DARK THEME -->
+    <!-- ================================================================ -->
+    <color name="dark_theme_green_1">#9FAD8B</color>
+
+    <color name="dark_theme_light_grey_12">#B5B5B5</color>
+    <color name="dark_theme_light_grey_17">#A1A1A1</color>
+
+
 </resources>

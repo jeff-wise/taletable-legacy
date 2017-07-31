@@ -5,17 +5,18 @@ package com.kispoko.tome.model.sheet.widget
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TableLayoutBuilder
@@ -24,11 +25,13 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
@@ -195,6 +198,73 @@ data class ShowTableDividers(val value : Boolean) : SQLSerializable, Serializabl
 }
 
 
+/**
+ * Table Sort
+ */
+data class TableSort(val columnIndex : Int,
+                     val sortOrder : TableSortOrder) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TableSort>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TableSort> = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::TableSort,
+                         // Column Index
+                         doc.int("column_index"),
+                         // Sort Order
+                         doc.at("sort_order") ap { TableSortOrder.fromDocument(it) }
+                         )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ columnIndex.toString() + " " +  sortOrder })
+
+}
+
+
+sealed class TableSortOrder : SQLSerializable, Serializable
+{
+
+    object Asc : TableSortOrder()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "asc" })
+    }
+
+    object Desc : TableSortOrder()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "desc" })
+    }
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<TableSortOrder> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "asc"  -> effValue<ValueError,TableSortOrder>(TableSortOrder.Asc)
+                "desc" -> effValue<ValueError,TableSortOrder>(TableSortOrder.Desc)
+                else   -> effError<ValueError,TableSortOrder>(
+                                    UnexpectedValue("TableSortOrder", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
 
 object TableWidgetView
 {
@@ -226,7 +296,7 @@ object TableWidgetView
 
 
     private fun tableLayout(format : TableWidgetFormat,
-                            sheetUIContext: SheetUIContext) : TableLayout
+                            sheetUIContext : SheetUIContext) : TableLayout
     {
         val layout = TableLayoutBuilder()
 
@@ -253,6 +323,16 @@ object TableWidgetView
             dividerDrawable.colorFilter =
                     PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
             layout.divider = dividerDrawable
+        }
+
+
+        // On Long Click
+        layout.onLongClick = View.OnLongClickListener {
+            val sheetActivity = sheetUIContext.context as SheetActivity
+            sheetActivity.showActionBar(SheetContext(sheetUIContext))
+//            val dialog = TableDialogFragment.newInstance(SheetContext(sheetUIContext))
+//            dialog.show(sheetActivity.supportFragmentManager, "")
+            true
         }
 
 

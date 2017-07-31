@@ -44,6 +44,7 @@ public class TableLayoutBuilder
     public Drawable                 divider;
 
     public View.OnClickListener     onClick;
+    public View.OnLongClickListener onLongClick;
 
 
     // CONSTRUCTORS
@@ -73,6 +74,7 @@ public class TableLayoutBuilder
         this.divider            = null;
 
         this.onClick            = null;
+        this.onLongClick        = null;
     }
 
 
@@ -123,6 +125,12 @@ public class TableLayoutBuilder
 
         if (this.onClick != null)
             tableLayout.setOnClickListener(this.onClick);
+
+        // > On Long Click Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onLongClick != null)
+            tableLayout.setOnLongClickListener(this.onLongClick);
 
         // > Background Color
         // --------------------------------------------------------------------------------------

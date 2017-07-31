@@ -20,6 +20,7 @@ import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetTextCell
 import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
@@ -1915,6 +1916,7 @@ data class TableWidget(override val id : UUID,
                        val format : Comp<TableWidgetFormat>,
                        val columns : Coll<TableWidgetColumn>,
                        val rows : Coll<TableWidgetRow>,
+                       val sort : Maybe<Prim<TableSort>>,
                        override val variables : Conj<Variable>) : Widget(variables)
 {
 
@@ -1928,6 +1930,11 @@ data class TableWidget(override val id : UUID,
         this.format.name        = "format"
         this.columns.name       = "columns"
         this.rows.name          = "rows"
+
+        when (this.sort) {
+            is Just -> this.sort.value.name = "sort"
+        }
+
     }
 
 
@@ -1939,12 +1946,14 @@ data class TableWidget(override val id : UUID,
                 format : TableWidgetFormat,
                 columns : MutableList<TableWidgetColumn>,
                 rows : MutableList<TableWidgetRow>,
+                sort : Maybe<TableSort>,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Coll(columns),
                Coll(rows),
+               maybeLiftPrim(sort),
                Conj(variables))
 
 
@@ -1969,6 +1978,10 @@ data class TableWidget(override val id : UUID,
                          doc.list("rows") ap { docList ->
                              docList.mapMut { TableWidgetRow.fromDocument(it) }
                          },
+                         // Table Sort
+                         split(doc.maybeAt("sort"),
+                               effValue<ValueError,Maybe<TableSort>>(Nothing()),
+                               { effApply(::Just, TableSort.fromDocument(it)) }),
                          // Variables
                          split(doc.maybeList("variables"),
                                effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
@@ -2015,10 +2028,27 @@ data class TableWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext: SheetContext) {
-        // TODO("not implemented")
+    override fun onSheetComponentActive(sheetContext : SheetContext)
+    {
+        this.rows().forEachIndexed { rowIndex, row ->
+            row.cells().forEachIndexed { cellIndex, cell ->
+                when (cell) {
+                    is TableWidgetTextCell -> {
+                        val column = this.columns()[cellIndex]
+                        val variableId = VariableId(column.variablePrefix() + "_row_" + rowIndex.toString())
+                        val variable = TextVariable(variableId,
+                                                    VariableLabel(column.nameString()),
+                                                    VariableDescription(column.nameString()),
+                                                    VariableTagSet(mutableSetOf()),
+                                                    cell.variableValue(),
+                                                    DefinesNamespace(false))
+                        SheetManager.addVariable(sheetContext.sheetId, variable)
+                        cell.setVariableId(variableId)
+                    }
+                }
 
-        // this.addVariableToState(sheetUIContext.sheetId, this.valueVariable())
+            }
+        }
     }
 
 
