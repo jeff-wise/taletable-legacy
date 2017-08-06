@@ -154,57 +154,6 @@ object GameManager
 
 
     // -----------------------------------------------------------------------------------------
-    // MANIFEST
-    // -----------------------------------------------------------------------------------------
-
-    fun manifest(context : Context) : GameManifest?
-    {
-        if (this.manifest == null)
-        {
-            val manifest = this.loadManifest(context)
-            when (manifest) {
-                is Val -> return manifest.value
-                is Err -> {
-                    ApplicationLog.error(manifest.error)
-                    return null
-                }
-            }
-        }
-        else
-        {
-            return null
-        }
-    }
-
-
-    private fun loadManifest(context : Context) : AppEff<GameManifest>
-    {
-        val manifestFilePath = ApplicationAssets.officialDirectoryPath + "/game_manifest.yaml"
-
-        val parse = YamlString.parse(context.assets.open(manifestFilePath))
-        when (parse)
-        {
-            is StringResult ->
-            {
-                val yamlParse = GameManifest.fromYaml(parse.value)
-                when (yamlParse)
-                {
-                    is YamlResult -> return effValue(yamlParse.value)
-                    is YamlError -> {
-                        return effError(AppGameError(GameManifestParseError(yamlParse.toString())))
-                    }
-                }
-            }
-            is StringErrors ->
-            {
-                val errorString = parse.errors.map { it.toString() }.joinToString("\n")
-                return effError(AppGameError(GameManifestParseError(errorString)))
-            }
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
 
@@ -217,68 +166,6 @@ object GameManager
 
 
     fun hasGameWithId(gameId : GameId) : Boolean = this.gameById.containsKey(gameId)
-
-}
-
-
-// ---------------------------------------------------------------------------------------------
-// Game Manifest
-// ---------------------------------------------------------------------------------------------
-
-
-data class GameManifest(val gameSummaries : List<GameSummary>)
-{
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<GameManifest> = when (yamlValue)
-        {
-            is YamlDict ->
-            {
-                parserApply(::GameManifest,
-                            // Summaries
-                            yamlValue.array("summaries") ap { yamlList ->
-                                yamlList.map { GameSummary.fromYaml(it) }}
-                            )
-            }
-            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
-        }
-
-    }
-
-}
-
-
-data class GameSummary(val name : String,
-                       val description : String,
-                       val genre : String,
-                       val players : Int,
-                       val likes : Int)
-{
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<GameSummary> = when (yamlValue)
-        {
-            is YamlDict ->
-            {
-                parserApply5(::GameSummary,
-                             // Name
-                             yamlValue.text("name"),
-                             // Description
-                             yamlValue.text("description"),
-                             // Genre
-                             yamlValue.text("genre"),
-                             // Players
-                             yamlValue.integer("players"),
-                             // Likes
-                             yamlValue.integer("likes")
-                             )
-            }
-            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
-        }
-
-    }
 
 }
 

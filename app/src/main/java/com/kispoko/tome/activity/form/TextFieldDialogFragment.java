@@ -24,14 +24,11 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
-import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.UUID;
 
@@ -128,7 +125,6 @@ public class TextFieldDialogFragment extends DialogFragment
         Field.TextUpdateEvent event =
                 new Field.TextUpdateEvent(this.modelId, this.field.name(), valueString);
 
-        EventBus.getDefault().post(event);
     }
 
 

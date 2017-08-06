@@ -33,6 +33,14 @@ data class DiceRoll(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(quantities : MutableSet<DiceQuantity>,
+                modifiers : MutableSet<RollModifier>)
+        : this(UUID.randomUUID(),
+               Conj(quantities),
+               Conj(modifiers),
+               Nothing())
+
+
+    constructor(quantities : MutableSet<DiceQuantity>,
                 modifiers : MutableSet<RollModifier>,
                 rollName : Maybe<DiceRollName>)
         : this(UUID.randomUUID(),
@@ -125,13 +133,16 @@ data class DiceRoll(override val id : UUID,
 
     override fun toString() : String
     {
-        val diceString = this.quantities().sortedByDescending { it.sidesInt() }
+        val diceString = this.quantities().sortedBy { it.sidesInt() }
                                           .map { it.toString() }
                                           .joinToString(" + ")
 
-        val modifierString = this.modifierValues().sum().toString()
+        val modifierSum = this.modifierValues().sum()
+        var modifierString = ""
+        if (modifierSum != 0)
+            modifierString = " + " + modifierSum.toString()
 
-        return diceString + " + " + modifierString
+        return diceString + modifierString
     }
 
 }
@@ -419,6 +430,23 @@ data class RollSummary(val value : Int, val parts : List<RollPartSummary>)
 
 
 data class RollPartSummary(val value : Int, val dice : String, val tag : String)
+
+
+/**
+ * Dice Roll Modifier Function
+ */
+sealed class DiceRollModifierFunction : Serializable
+{
+    object DropHighest : DiceRollModifierFunction()
+    {
+        override fun toString() = "Drop the Highest Roll"
+    }
+
+    object DropLowest : DiceRollModifierFunction()
+    {
+        override fun toString() = "Drop the Lowest Roll"
+    }
+}
 
 
 

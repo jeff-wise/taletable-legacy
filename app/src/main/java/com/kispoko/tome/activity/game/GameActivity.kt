@@ -7,6 +7,9 @@ import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -163,4 +166,48 @@ class GameActivity : AppCompatActivity()
     }
 
 }
+
+
+/**
+ * Game Pager Adapter
+ */
+class GamePagerAdapter(fragmentManager : FragmentManager,
+                       val game : Game,
+                       val appThemeId : ThemeId)
+                        : FragmentStatePagerAdapter(fragmentManager)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTEIS
+    // -----------------------------------------------------------------------------------------
+
+    private val pageCount = 2
+
+
+    // -----------------------------------------------------------------------------------------
+    // PAGER ADAPTER
+    // -----------------------------------------------------------------------------------------
+
+    override fun getItem(position : Int) : Fragment =
+        when (position)
+        {
+            0    -> DescriptionFragment.newInstance(this.game.description())
+            1    -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
+            else -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
+        }
+
+
+    override fun getCount() : Int = this.pageCount
+
+
+    override fun getPageTitle(position : Int) : CharSequence =
+        when (position)
+        {
+            0    -> "Description"
+            1    -> "Engine"
+            else -> "Other"
+        }
+
+}
+
 

@@ -243,5 +243,9 @@
     <color name="dark_theme_light_grey_12">#B5B5B5</color>
     <color name="dark_theme_light_grey_17">#A1A1A1</color>
 
+    <color name="dark_theme_dark_grey_3">#333438</color>
+    <color name="dark_theme_dark_grey_10">#232427</color>
+
+    <color name="dark_theme_medium_grey_10">#454545</color>
 
 </resources>

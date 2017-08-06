@@ -36,14 +36,9 @@
             android:label="Edit Number"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.engine.dictionary.DictionaryActivity"
-            android:label="Dictionary"
+            android:name=".activity.engine.valueset.ValueSetsActivity"
+            android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.engine.valueset.BaseValueSetEditorActivity"
-            android:label="Value Set"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.engine.value.NumberValueEditorActivity"
             android:label="Values"
@@ -213,6 +208,10 @@
         <activity
             android:name=".activity.official.OpenSheetOfficialGamesActivity"
             android:label="Games"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.official.sheets.OpenSheetOfficialSheetsActivity"
+            android:label="Official Sheets"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

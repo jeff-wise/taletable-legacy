@@ -38,9 +38,7 @@ import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -253,6 +251,13 @@ data class StoryPartVariable(override val id : UUID,
                              val format : Comp<TextFormat>,
                              val variable : Comp<Variable>) : StoryPart(), Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var viewId : Int? = null
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -546,7 +551,8 @@ object StoryWidgetView
 {
 
 
-    fun view(storyWidget : StoryWidget, sheetUIContext : SheetUIContext) : View
+    fun view(storyWidget : StoryWidget,
+             sheetUIContext : SheetUIContext) : View
     {
         val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
 
@@ -556,18 +562,40 @@ object StoryWidgetView
         else
             layout.addView(this.storySpannableView(storyWidget, sheetUIContext))
 
+
+        // Layout on click
+        val variableParts = storyWidget.variableParts()
+        if (variableParts.size == 1)
+        {
+            var variablePartIndex = 0
+            storyWidget.story().forEachIndexed { index, storyPart ->
+                when (storyPart) {
+                    is StoryPartVariable -> variablePartIndex = index
+                }
+            }
+            layout.setOnClickListener {
+                openVariableEditorDialog(
+                        variableParts.first().variable(),
+                        UpdateTargetStoryWidgetPart(storyWidget.id, variablePartIndex),
+                        sheetUIContext)
+            }
+        }
+
         return layout
     }
 
 
-    fun storySpannableView(storyWidget : StoryWidget, sheetUIContext : SheetUIContext) : TextView
+    fun storySpannableView(storyWidget : StoryWidget,
+                           sheetUIContext : SheetUIContext) : TextView
     {
         val story = TextViewBuilder()
 
         story.width         = LinearLayout.LayoutParams.MATCH_PARENT
         story.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        story.textSpan      = this.spannableStringBuilder(storyWidget.story(), sheetUIContext)
+        story.textSpan      = this.spannableStringBuilder(storyWidget.story(),
+                                                          storyWidget.id,
+                                                          sheetUIContext)
 
         story.lineSpacingAdd    = 0f
         story.lineSpacingMult   = storyWidget.format().lineSpacing()
@@ -592,11 +620,13 @@ object StoryWidgetView
 
     data class Phrase(val storyPart : StoryPart,
                       val text : String,
+                      val partIndex : Int,
                       val start : Int,
                       val end : Int)
 
 
     fun spannableStringBuilder(storyParts : List<StoryPart>,
+                               storyWidgetId : UUID,
                                sheetUIContext : SheetUIContext) : SpannableStringBuilder
     {
 
@@ -605,7 +635,7 @@ object StoryWidgetView
         val phrases : MutableList<Phrase> = mutableListOf()
 
         var index = 0
-        storyParts.forEach { storyPart ->
+        storyParts.forEachIndexed { partIndex, storyPart ->
 
             when (storyPart)
             {
@@ -614,7 +644,7 @@ object StoryWidgetView
                     val text = storyPart.text()
                     builder.append(text)
                     val textLen = text.length
-                    phrases.add(Phrase(storyPart, text, index, index + textLen))
+                    phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
                     index += textLen
                 }
                 is StoryPartVariable ->
@@ -622,13 +652,13 @@ object StoryWidgetView
                     val text = storyPart.valueString(sheetUIContext)
                     builder.append(text)
                     val textLen = text.length
-                    phrases.add(Phrase(storyPart, text, index, index + textLen))
+                    phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
                     index += textLen
                 }
                 is StoryPartIcon ->
                 {
                     builder.append(" ")
-                    phrases.add(Phrase(storyPart, " ", index, index + 1))
+                    phrases.add(Phrase(storyPart, " ", partIndex, index, index + 1))
                     index += 1
                 }
                 is StoryPartAction ->
@@ -636,13 +666,13 @@ object StoryWidgetView
                     val text = storyPart.text()
                     builder.append(" " + text)
                     val textLen = text.length + 1
-                    phrases.add(Phrase(storyPart, text, index, index + textLen))
+                    phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
                     index += textLen
                 }
             }
         }
 
-        phrases.forEach { (storyPart, _, start, end) ->
+        phrases.forEach { (storyPart, _, partIndex, start, end) ->
 
             when (storyPart)
             {
@@ -662,7 +692,10 @@ object StoryWidgetView
                     {
                         override fun onClick(view : View?)
                         {
-                            openVariableEditorDialog(storyPart.variable(), sheetUIContext)
+                            openVariableEditorDialog(
+                                    storyPart.variable(),
+                                    UpdateTargetStoryWidgetPart(storyWidgetId, partIndex),
+                                    sheetUIContext)
                         }
 
                         override fun updateDrawState(ds: TextPaint?) {
@@ -781,13 +814,14 @@ object StoryWidgetView
     }
 
 
-    fun storyFlexView(storyWidget : StoryWidget, sheetUIContext : SheetUIContext) : FlexboxLayout
+    fun storyFlexView(storyWidget : StoryWidget,
+                      sheetUIContext : SheetUIContext) : FlexboxLayout
     {
         val layout = this.storyViewLayout(storyWidget.format(), sheetUIContext)
 
         val storyParts = storyWidget.story()
 
-        storyParts.forEach { storyPart ->
+        storyParts.forEachIndexed { partIndex, storyPart ->
             when (storyPart)
             {
                 is StoryPartSpan ->
@@ -800,8 +834,12 @@ object StoryWidgetView
                 is StoryPartVariable ->
                 {
                     this.words(storyPart.valueString(sheetUIContext)).forEach {
-                        layout.addView(this.wordVariableView(it, storyWidget.format(),
-                                                            storyPart, sheetUIContext))
+                        layout.addView(this.wordVariableView(it,
+                                                             storyWidget.format(),
+                                                             storyPart,
+                                                             partIndex,
+                                                             storyWidget.id,
+                                                             sheetUIContext))
                     }
                 }
                 is StoryPartIcon ->
@@ -886,6 +924,8 @@ object StoryWidgetView
     fun wordVariableView(word : String,
                          format : StoryWidgetFormat,
                          storyPart : StoryPartVariable,
+                         partIndex : Int,
+                         widgetId : UUID,
                          sheetUIContext : SheetUIContext) : View
     {
         val text = TextViewBuilder()
@@ -896,6 +936,8 @@ object StoryWidgetView
 
         text.text           = word
 
+        storyPart.viewId   = Util.generateViewId()
+        text.id            = storyPart.viewId
 
         val formatPadding   = storyPart.format().padding()
         val padding         = Spacing(LeftSpacing(formatPadding.leftDp()),
@@ -910,7 +952,9 @@ object StoryWidgetView
 
         val variable = storyPart.variable()
         text.onClick        = View.OnClickListener {
-            openVariableEditorDialog(variable, sheetUIContext)
+            openVariableEditorDialog(variable,
+                                     UpdateTargetStoryWidgetPart(widgetId, partIndex),
+                                     sheetUIContext)
         }
 
         return text.textView(sheetUIContext.context)

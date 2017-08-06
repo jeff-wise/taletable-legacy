@@ -115,6 +115,7 @@ data class TableWidgetRow(override val id : UUID,
 
     fun view(columns : List<TableWidgetColumn>,
              format : TableWidgetFormat,
+             tableWidgetId : UUID,
              sheetUIContext: SheetUIContext) : View
     {
         val tableRow                = TableRowBuilder()
@@ -155,7 +156,8 @@ data class TableWidgetRow(override val id : UUID,
                         is TableWidgetNumberColumn ->
                             tableRow.rows.add(tableWidgetCell.view(this.format(),
                                                                    column,
-                                    sheetUIContext))
+                                                                   tableWidgetId,
+                                                                   sheetUIContext))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.NUMBER,
                                                                    column.type()))
@@ -169,7 +171,8 @@ data class TableWidgetRow(override val id : UUID,
                         is TableWidgetTextColumn ->
                             tableRow.rows.add(tableWidgetCell.view(this.format(),
                                                                    column,
-                                    sheetUIContext))
+                                                                   tableWidgetId,
+                                                                   sheetUIContext))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.TEXT,
                                                                    column.type()))

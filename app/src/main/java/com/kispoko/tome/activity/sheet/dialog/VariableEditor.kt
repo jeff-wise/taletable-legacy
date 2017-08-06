@@ -10,35 +10,44 @@ import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.UpdateTarget
 import effect.Err
 import effect.Val
+import java.util.*
 
 
 
 /**
  * Variable Editor Dialog
  */
-fun openVariableEditorDialog(variable : Variable, sheetUIContext: SheetUIContext)
+fun openVariableEditorDialog(variable : Variable,
+                             updateTarget : UpdateTarget,
+                             sheetUIContext : SheetUIContext)
 {
 
     when (variable)
     {
-        is TextVariable   -> openTextVariableEditorDialog(variable, sheetUIContext)
-        is NumberVariable -> openNumberVariableEditorDialog(variable, sheetUIContext)
+        is TextVariable   -> openTextVariableEditorDialog(variable,
+                                                          updateTarget,
+                                                          sheetUIContext)
+        is NumberVariable -> openNumberVariableEditorDialog(variable, updateTarget, sheetUIContext)
     }
 
 }
 
 
 fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
-                                   sheetUIContext : SheetUIContext)
-{
-    openNumberVariableEditorDialog(numberVariable, NumericEditorType.Calculator, sheetUIContext)
-}
+                                   updateTarget : UpdateTarget,
+                                   sheetUIContext : SheetUIContext) =
+    openNumberVariableEditorDialog(numberVariable,
+                                   NumericEditorType.Adder,
+                                   updateTarget,
+                                   sheetUIContext)
 
 
 fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                                    editorType : NumericEditorType,
+                                   updateTarget : UpdateTarget,
                                    sheetUIContext : SheetUIContext)
 {
     val variableValue = numberVariable.variableValue()
@@ -54,10 +63,12 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
             {
                 is NumericEditorType.Adder ->
                 {
-                     val adderDialog = AdderDialogFragment.newInstance(
-                                                variableValue.value,
+                    val adderState = AdderState(variableValue.value,
+                                                setOf(),
                                                 numberVariable.label(),
-                                                SheetContext(sheetUIContext))
+                                                updateTarget)
+                    val adderDialog = AdderDialogFragment.newInstance(adderState,
+                                                                      SheetContext(sheetUIContext))
                     adderDialog.show(sheetActivity.supportFragmentManager, "")
                 }
             }
@@ -85,6 +96,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
 
 
 fun openTextVariableEditorDialog(textVariable : TextVariable,
+                                 updateTarget : UpdateTarget,
                                  sheetUIContext : SheetUIContext)
 {
     val variableValue = textVariable.variableValue()
@@ -99,6 +111,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val sheetActivity = sheetUIContext.context as SheetActivity
             val dialog = TextEditorDialogFragment.newInstance(title,
                                                               text,
+                                                              updateTarget,
                                                               SheetContext(sheetUIContext))
             dialog.show(sheetActivity.supportFragmentManager, "")
         }

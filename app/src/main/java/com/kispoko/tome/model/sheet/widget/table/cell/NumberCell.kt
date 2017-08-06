@@ -20,6 +20,7 @@ import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.UpdateTargetNumberCell
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -153,28 +154,29 @@ data class NumberCellValuePrefix(val value : String) : SQLSerializable, Serializ
 }
 
 
-object NumberCellView
+class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
+                            val rowFormat : TableWidgetRowFormat,
+                            val column : TableWidgetNumberColumn,
+                            val tableWidgetId : UUID,
+                            val sheetUIContext : SheetUIContext)
 {
 
 
-    fun view(cell : TableWidgetNumberCell,
-             rowFormat : TableWidgetRowFormat,
-             column : TableWidgetNumberColumn,
-             cellFormat : NumberCellFormat,
-             sheetUIContext: SheetUIContext) : View
+    fun view() : View
     {
         val layout = TableWidgetCellView.layout(rowFormat,
                                                 column.format().columnFormat(),
-                                                cellFormat.cellFormat(),
-                sheetUIContext)
+                                                cell.format().cellFormat(),
+                                                sheetUIContext)
 
-        layout.addView(this.valueTextView(cell, column.format(), cellFormat, sheetUIContext))
+        layout.addView(this.valueTextView())
 
 
         layout.setOnClickListener {
             Log.d("***NUMBERCELL", "on click")
             openNumberVariableEditorDialog(cell.valueVariable(),
                                            cell.resolveEditorType(column),
+                                           UpdateTargetNumberCell(tableWidgetId, cell.id),
                                            sheetUIContext)
         }
 
@@ -182,10 +184,7 @@ object NumberCellView
     }
 
 
-    private fun valueTextView(cell : TableWidgetNumberCell,
-                              columnFormat : NumberColumnFormat,
-                              cellFormat : NumberCellFormat,
-                              sheetUIContext: SheetUIContext) : TextView
+    private fun valueTextView() : TextView
     {
         val value = TextViewBuilder()
 
@@ -199,7 +198,7 @@ object NumberCellView
         value.height     = LinearLayout.LayoutParams.WRAP_CONTENT
 
         // > STYLE
-        val valueStyle = cellFormat.resolveTextStyle(columnFormat)
+        val valueStyle = this.cell.format().resolveTextStyle(this.column.format())
         valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
         // > VALUE

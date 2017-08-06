@@ -27,14 +27,3 @@ class GameDoesNotExist(val gameId : GameId) : GameError()
     override fun logMessage(): String = userMessage()
 }
 
-
-class GameManifestParseError(val errorString : String) : GameError()
-{
-    override fun debugMessage() : String = """
-            |Game Manifest Parse Error:
-            |    $errorString
-            """
-
-    override fun logMessage(): String = userMessage()
-}
-

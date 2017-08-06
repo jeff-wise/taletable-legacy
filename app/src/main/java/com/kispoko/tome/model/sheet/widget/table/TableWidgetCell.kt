@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableRow
-import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -299,14 +298,28 @@ data class TableWidgetNumberCell(override val id : UUID,
     }
 
 
+    fun updateValue(newValue : Double, sheetContext : SheetContext)
+    {
+        this.valueVariable().updateValue(newValue)
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // VIEW
     // -----------------------------------------------------------------------------------------
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetNumberColumn,
-             sheetUIContext: SheetUIContext) : View
-            = NumberCellView.view(this, rowFormat, column, this.format(), sheetUIContext)
+             tableWidgetId : UUID,
+             sheetUIContext : SheetUIContext) : View
+    {
+        val viewBuilder = NumberCellViewBuilder(this,
+                                                rowFormat,
+                                                column,
+                                                tableWidgetId,
+                                                sheetUIContext)
+        return viewBuilder.view()
+    }
 
 }
 
@@ -446,8 +459,16 @@ data class TableWidgetTextCell(override val id : UUID,
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetTextColumn,
+             tableWidgetId : UUID,
              sheetUIContext: SheetUIContext) : View
-            = TextCellView.view(this, rowFormat, column, this.format(), sheetUIContext)
+    {
+        val viewBuilder = TextCellViewBuilder(this,
+                                              rowFormat,
+                                              column,
+                                              tableWidgetId,
+                                              sheetUIContext)
+        return viewBuilder.view()
+    }
 
 }
 

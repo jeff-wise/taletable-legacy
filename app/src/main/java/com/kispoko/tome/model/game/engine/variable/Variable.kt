@@ -502,6 +502,16 @@ data class NumberVariable(override val id : UUID,
                 effValue(it.toString())
         }
 
+
+    fun updateValue(value : Double)
+    {
+        when (this.variableValue())
+        {
+            is NumberVariableLiteralValue ->
+                    this.variableValue.value = NumberVariableLiteralValue(value)
+        }
+    }
+
 }
 
 
@@ -513,7 +523,7 @@ data class TextVariable(override val id : UUID,
                         override val label : Prim<VariableLabel>,
                         override val description : Prim<VariableDescription>,
                         override val tags : Prim<VariableTagSet>,
-                        val variableValue : Func<TextVariableValue>,
+                        var variableValue : Sum<TextVariableValue>,
                         val definesNamespace : Prim<DefinesNamespace>)
                         : Variable(variableId, label, description, tags)
 {
@@ -547,7 +557,7 @@ data class TextVariable(override val id : UUID,
                Prim(label),
                Prim(description),
                Prim(tags),
-               liftTextVariableValue(variableValue),
+               Sum(variableValue),
                Prim(definesNamespace))
 
 
@@ -618,6 +628,15 @@ data class TextVariable(override val id : UUID,
     fun value(sheetContext : SheetContext) : AppEff<String> =
             this.variableValue().value(sheetContext)
 
+
+    fun updateValue(value : String)
+    {
+        when (this.variableValue())
+        {
+            is TextVariableLiteralValue ->
+                    this.variableValue = Sum(TextVariableLiteralValue(value))
+        }
+    }
 }
 
 

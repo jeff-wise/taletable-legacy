@@ -2,8 +2,10 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
@@ -16,15 +18,12 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.game.engine.variable.DefinesNamespace
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.Group
-import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
-import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
-import com.kispoko.tome.model.sheet.widget.table.TableWidgetTextCell
-import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.model.sheet.widget.table.*
+import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
 import effect.*
 import effect.Nothing
 import lulo.document.*
@@ -95,7 +94,7 @@ sealed class Widget(open val variables : Conj<Variable>) : Model, SheetComponent
 
     abstract fun widgetFormat() : WidgetFormat
 
-    abstract fun view(sheetUIContext: SheetUIContext) : View
+    abstract fun view(sheetUIContext : SheetUIContext) : View
 
     fun variables() : Set<Variable> = this.variables.value
 
@@ -1689,7 +1688,7 @@ data class StoryWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
-    // INIT
+    // SCHEMA
     // -----------------------------------------------------------------------------------------
 
     init
@@ -1762,8 +1761,17 @@ data class StoryWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext: SheetUIContext) : View =
+    override fun view(sheetUIContext : SheetUIContext) : View =
             StoryWidgetView.view(this, sheetUIContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    @Suppress("UNCHECKED_CAST")
+    fun variableParts() : List<StoryPartVariable> =
+            this.story().filter { it is StoryPartVariable } as List<StoryPartVariable>
 
 
     // -----------------------------------------------------------------------------------------
@@ -1775,6 +1783,53 @@ data class StoryWidget(override val id : UUID,
     override val name : String = "widget_story"
 
     override val modelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    fun update(storyWidgetUpdate : WidgetUpdateStoryWidget,
+               sheetContext : SheetContext,
+               rootView : View)
+    {
+        when (storyWidgetUpdate)
+        {
+            is StoryWidgetUpdateNumberPart ->
+                this.updateNumberPart(storyWidgetUpdate, sheetContext, rootView)
+        }
+    }
+
+
+    private fun updateNumberPart(partUpdate : StoryWidgetUpdateNumberPart,
+                                 sheetContext : SheetContext,
+                                 rootView : View)
+    {
+        val part = this.story()[partUpdate.partIndex]
+        when (part)
+        {
+            is StoryPartVariable ->
+            {
+                // Update Value
+                val variable = part.variable()
+                when (variable) {
+                    is NumberVariable ->
+                    {
+                        variable.updateValue(partUpdate.newNumber)
+                    }
+                }
+
+                // Update View
+                val viewId = part.viewId
+                if (viewId != null) {
+                    val textView = rootView.findViewById(viewId) as TextView
+                    textView?.text = Util.doubleString(partUpdate.newNumber)
+                }
+            }
+        }
+    }
+
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -1917,19 +1972,17 @@ data class TableWidget(override val id : UUID,
                        val columns : Coll<TableWidgetColumn>,
                        val rows : Coll<TableWidgetRow>,
                        val sort : Maybe<Prim<TableSort>>,
-                       override val variables : Conj<Variable>) : Widget(variables)
-{
+                       override val variables : Conj<Variable>) : Widget(variables) {
 
     // -----------------------------------------------------------------------------------------
-    // INIT
+    // SCHEMA
     // -----------------------------------------------------------------------------------------
 
-    init
-    {
-        this.widgetId.name      = "widget_id"
-        this.format.name        = "format"
-        this.columns.name       = "columns"
-        this.rows.name          = "rows"
+    init {
+        this.widgetId.name = "widget_id"
+        this.format.name = "format"
+        this.columns.name = "columns"
+        this.rows.name = "rows"
 
         when (this.sort) {
             is Just -> this.sort.value.name = "sort"
@@ -1939,56 +1992,71 @@ data class TableWidget(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // INDEXES
+    // -----------------------------------------------------------------------------------------
+
+    private val numberCellById: MutableMap<UUID, TableWidgetNumberCell> = mutableMapOf()
+
+
+    init {
+        this.rows().forEach { row ->
+            row.cells().forEach { cell ->
+                when (cell) {
+                    is TableWidgetNumberCell -> this.numberCellById.put(cell.id, cell)
+                }
+            }
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : TableWidgetFormat,
-                columns : MutableList<TableWidgetColumn>,
-                rows : MutableList<TableWidgetRow>,
-                sort : Maybe<TableSort>,
-                variables : MutableSet<Variable>)
-        : this(UUID.randomUUID(),
-               Prim(widgetId),
-               Comp(format),
-               Coll(columns),
-               Coll(rows),
-               maybeLiftPrim(sort),
-               Conj(variables))
+    constructor(widgetId: WidgetId,
+                format: TableWidgetFormat,
+                columns: MutableList<TableWidgetColumn>,
+                rows: MutableList<TableWidgetRow>,
+                sort: Maybe<TableSort>,
+                variables: MutableSet<Variable>)
+            : this(UUID.randomUUID(),
+            Prim(widgetId),
+            Comp(format),
+            Coll(columns),
+            Coll(rows),
+            maybeLiftPrim(sort),
+            Conj(variables))
 
 
-    companion object : Factory<TableWidget>
-    {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TableWidget>  = when (doc)
-        {
-            is DocDict ->
-            {
+    companion object : Factory<TableWidget> {
+        override fun fromDocument(doc: SpecDoc): ValueParser<TableWidget> = when (doc) {
+            is DocDict -> {
                 effApply(::TableWidget,
-                         // Widget Id
-                         doc.at("id") ap { WidgetId.fromDocument(it) },
-                         // Format
-                         split(doc.maybeAt("format"),
-                               effValue(TableWidgetFormat.default),
-                               { TableWidgetFormat.fromDocument(it) }),
-                         // Columns
-                         doc.list("columns") ap { docList ->
-                             docList.mapMut { TableWidgetColumn.fromDocument(it) }
-                         },
-                         // Rows
-                         doc.list("rows") ap { docList ->
-                             docList.mapMut { TableWidgetRow.fromDocument(it) }
-                         },
-                         // Table Sort
-                         split(doc.maybeAt("sort"),
-                               effValue<ValueError,Maybe<TableSort>>(Nothing()),
-                               { effApply(::Just, TableSort.fromDocument(it)) }),
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
-                        )
+                        // Widget Id
+                        doc.at("id") ap { WidgetId.fromDocument(it) },
+                        // Format
+                        split(doc.maybeAt("format"),
+                                effValue(TableWidgetFormat.default),
+                                { TableWidgetFormat.fromDocument(it) }),
+                        // Columns
+                        doc.list("columns") ap { docList ->
+                            docList.mapMut { TableWidgetColumn.fromDocument(it) }
+                        },
+                        // Rows
+                        doc.list("rows") ap { docList ->
+                            docList.mapMut { TableWidgetRow.fromDocument(it) }
+                        },
+                        // Table Sort
+                        split(doc.maybeAt("sort"),
+                                effValue<ValueError, Maybe<TableSort>>(Nothing()),
+                                { effApply(::Just, TableSort.fromDocument(it)) }),
+                        // Variables
+                        split(doc.maybeList("variables"),
+                                effValue<ValueError, MutableSet<Variable>>(mutableSetOf()),
+                                { it.mapSetMut { Variable.fromDocument(it) } })
+                )
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -1997,20 +2065,59 @@ data class TableWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId.value
+    fun widgetId(): WidgetId = this.widgetId.value
 
-    fun format() : TableWidgetFormat = this.format.value
+    fun format(): TableWidgetFormat = this.format.value
 
-    fun columns() : List<TableWidgetColumn> = this.columns.list
+    fun columns(): List<TableWidgetColumn> = this.columns.list
 
-    fun rows() : List<TableWidgetRow> = this.rows.list
+    fun rows(): List<TableWidgetRow> = this.rows.list
 
 
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
 
-    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+    override fun widgetFormat(): WidgetFormat = this.format().widgetFormat()
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun update(tableWidgetUpdate : WidgetUpdateTableWidget,
+               sheetContext : SheetContext,
+               rootView: View) =
+        when (tableWidgetUpdate) {
+            is TableWidgetUpdateSetNumberCell -> {
+                this.updateNumberCellView(tableWidgetUpdate, rootView)
+                this.updateNumberCellValue(tableWidgetUpdate, sheetContext)
+            }
+        }
+
+
+    private fun updateNumberCellView(numberCellUpdate: TableWidgetUpdateSetNumberCell,
+                                     rootView: View) {
+        val numberCell = this.numberCellById[numberCellUpdate.cellId]
+        if (numberCell != null) {
+            val numberCellViewId = numberCell.viewId
+            when (numberCellViewId) {
+                is Just -> {
+                    val textView = rootView.findViewById(numberCellViewId.value) as TextView?
+                    textView?.text = Util.doubleString(numberCellUpdate.newNumber)
+                }
+            }
+        }
+    }
+
+
+    private fun updateNumberCellValue(numberCellUpdate : TableWidgetUpdateSetNumberCell,
+                                      sheetContext : SheetContext)
+    {
+        val numberCell = this.numberCellById[numberCellUpdate.cellId]
+        numberCell?.updateValue(numberCellUpdate.newNumber, sheetContext)
+    }
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -2168,6 +2275,39 @@ data class TextWidget(override val id : UUID,
         TextWidgetView.view(this, this.format(), sheetUIContext)
 
 
+    fun update(textWidgetUpdate : WidgetUpdateTextWidget,
+               sheetContext : SheetContext,
+               rootView : View) =
+        when (textWidgetUpdate)
+        {
+            is TextWidgetUpdateSetText ->
+            {
+                this.updateTextView(textWidgetUpdate.newText, rootView)
+                this.updateTextValue(textWidgetUpdate.newText, sheetContext)
+            }
+        }
+
+
+    private fun updateTextView(newText : String, rootView : View)
+    {
+        val viewId = this.viewId
+        if (viewId != null) {
+            val textView = rootView.findViewById(viewId) as TextView?
+            textView?.text = newText
+        }
+    }
+
+
+    fun updateTextValue(newText : String, sheetContext : SheetContext)
+    {
+        val textVariable = this.valueVariable(sheetContext)
+        when (textVariable) {
+            is Val -> textVariable.value.updateValue(newText)
+            is Err -> ApplicationLog.error(textVariable.error)
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
@@ -2175,6 +2315,7 @@ data class TextWidget(override val id : UUID,
     fun valueVariable(sheetContext : SheetContext) : AppEff<TextVariable> =
         SheetManager.sheetState(sheetContext.sheetId)
                     .apply { it.textVariableWithId(this.valueVariableId()) }
+
 
 
     // -----------------------------------------------------------------------------------------

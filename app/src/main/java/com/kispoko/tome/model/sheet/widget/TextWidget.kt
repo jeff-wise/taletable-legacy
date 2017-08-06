@@ -20,9 +20,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -251,9 +249,13 @@ data class TextWidgetLabel(val value : String) : SQLSerializable, Serializable
 object TextWidgetView
 {
 
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
     fun view(textWidget : TextWidget,
              format : TextWidgetFormat,
-             sheetUIContext: SheetUIContext) : View
+             sheetUIContext : SheetUIContext) : View
     {
         val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
 
@@ -301,11 +303,34 @@ object TextWidgetView
             }
         }
 
+        // On Click
+        // -------------------------------------------------------------------------------------
+
+        layout.setOnClickListener {
+            val valueVar = textWidget.valueVariable(SheetContext(sheetUIContext))
+            when (valueVar) {
+                is Val ->
+                {
+                    val textWidgetViewId = textWidget.viewId
+                    if (textWidgetViewId != null)
+                    {
+                        val widgetReference = WidgetReference(textWidget.id, textWidgetViewId)
+                        openTextVariableEditorDialog(valueVar.value,
+                                                     UpdateTargetTextWidget(textWidget.id),
+                                                     sheetUIContext)
+                    }
+                }
+                is Err -> ApplicationLog.error(valueVar.error)
+            }
+        }
+
+
         return layout
     }
 
 
-    private fun mainLayout(textWidget : TextWidget, sheetUIContext: SheetUIContext) : LinearLayout
+    private fun mainLayout(textWidget : TextWidget,
+                           sheetUIContext : SheetUIContext) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -319,13 +344,6 @@ object TextWidgetView
 
         layout.marginSpacing        = textWidget.widgetFormat().margins()
 
-        layout.onClick              = View.OnClickListener {
-            val valueVar = textWidget.valueVariable(SheetContext(sheetUIContext))
-            when (valueVar) {
-                is Val -> openTextVariableEditorDialog(valueVar.value, sheetUIContext)
-                is Err -> ApplicationLog.error(valueVar.error)
-            }
-        }
 
         return layout.linearLayout(sheetUIContext.context)
     }

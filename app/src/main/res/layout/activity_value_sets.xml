@@ -13,11 +13,10 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/dictionary_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/dark_theme_primary_84">
+            android:background="@color/dark_theme_dark_grey_10">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -45,7 +44,7 @@
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_gravity="center"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
                         android:textColor="@color/dark_blue_hlx_5"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"

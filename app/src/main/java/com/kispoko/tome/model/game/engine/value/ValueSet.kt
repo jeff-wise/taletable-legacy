@@ -10,6 +10,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.rts.game.GameManager
@@ -100,7 +101,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     abstract fun textValue(valueId : ValueId, sheetContext: SheetContext) : AppEff<ValueText>
 
-    abstract fun values(sheetContext : SheetContext) : AppEff<Set<Value>>
+    abstract fun values(gameId : GameId) : AppEff<Set<Value>>
 
 }
 
@@ -225,7 +226,7 @@ data class ValueSetBase(override val id : UUID,
         this.value(valueId, sheetContext).apply { it.textValue() }
 
 
-    override fun values(sheetContext : SheetContext) : AppEff<Set<Value>> =
+    override fun values(gameId : GameId) : AppEff<Set<Value>> =
             effValue(this.values.set.toSet())
 
 
@@ -397,16 +398,16 @@ data class ValueSetCompound(override val id : UUID,
         this.value(valueId, sheetContext).apply { it.textValue() }
 
 
-    override fun values(sheetContext : SheetContext) : AppEff<Set<Value>>
+    override fun values(gameId : GameId) : AppEff<Set<Value>>
     {
         fun valueSets(engine : Engine) : AppEff<List<ValueSet>> =
             this.valueSetIds().toList().mapM { engine.valueSet(it) }
 
         fun values(valueSets : List<ValueSet>) : AppEff<Set<Value>> =
-                valueSets.mapM { it.values(sheetContext) }
+                valueSets.mapM { it.values(gameId) }
                          .apply { effValue<AppError,Set<Value>>(it.flatten().toSet()) }
 
-        return GameManager.engine(sheetContext.gameId)
+        return GameManager.engine(gameId)
                           .apply(::valueSets)
                           .apply(::values)
     }

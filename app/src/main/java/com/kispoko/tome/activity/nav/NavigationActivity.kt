@@ -34,7 +34,7 @@ import effect.Val
 
 
 /**
- * Switcher Activity
+ * Navigation Activity
  */
 class NavigationActivity : AppCompatActivity()
 {
@@ -211,7 +211,6 @@ class NavigationPagerAdapter(fragmentManager : FragmentManager,
             2    -> "Games"
             else -> "Other"
         }
-
 
 }
 

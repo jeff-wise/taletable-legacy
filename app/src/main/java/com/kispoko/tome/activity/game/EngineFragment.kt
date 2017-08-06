@@ -3,16 +3,20 @@ package com.kispoko.tome.activity.game
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.engine.valueset.ValueSetsActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.sheet.style.*
@@ -94,33 +98,86 @@ class EngineFragment : Fragment()
 
     private fun view(engine : Engine, themeId : ThemeId, context : Context) : View
     {
-        val layout          = this.viewLayout(themeId, context)
+        val scrollView = this.scrollView(context)
+
+        val layout     = this.viewLayout(themeId, context)
+        scrollView.addView(layout)
+
+        val activity = context as AppCompatActivity
 
         // Value Sets
+        val valueSetsOnClick = View.OnClickListener {
+            val intent = Intent(activity, ValueSetsActivity::class.java)
+            intent.putExtra("game_id", engine.gameId)
+            activity.startActivity(intent)
+        }
+
         layout.addView(this.buttonView(R.string.engine_value_sets,
                                        R.string.engine_value_sets_description,
+                                       valueSetsOnClick,
                                        themeId,
                                        context))
 
         // Mechanics
+        val mechanicsOnClick = View.OnClickListener {  }
         layout.addView(this.buttonView(R.string.engine_mechanics,
                                        R.string.engine_mechanics_description,
+                                       mechanicsOnClick,
                                        themeId,
                                        context))
 
         // Functions
+        val functionsOnClick = View.OnClickListener {  }
         layout.addView(this.buttonView(R.string.engine_functions,
                                        R.string.engine_functions_description,
+                                       functionsOnClick,
                                        themeId,
                                        context))
 
         // Programs
+        val programsOnClick = View.OnClickListener {  }
         layout.addView(this.buttonView(R.string.engine_programs,
                                        R.string.engine_programs_description,
+                                       programsOnClick,
                                        themeId,
                                        context))
 
-        return layout
+        // Summations
+        val summationsOnClick = View.OnClickListener {  }
+        layout.addView(this.buttonView(R.string.engine_summations,
+                                       R.string.engine_summations_description,
+                                       summationsOnClick,
+                                       themeId,
+                                       context))
+
+        // Procedures
+        val proceduresOnClick = View.OnClickListener {  }
+        layout.addView(this.buttonView(R.string.engine_procedures,
+                                       R.string.engine_procedures_description,
+                                       proceduresOnClick,
+                                       themeId,
+                                       context))
+
+        // Variables
+        val variablesOnClick = View.OnClickListener {  }
+        layout.addView(this.buttonView(R.string.engine_variables,
+                                       R.string.engine_variables_description,
+                                       variablesOnClick,
+                                       themeId,
+                                       context))
+
+        return scrollView
+    }
+
+
+    private fun scrollView(context : Context) : ScrollView
+    {
+        val scrollView = ScrollViewBuilder()
+
+        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        return scrollView.scrollView(context)
     }
 
 
@@ -149,10 +206,13 @@ class EngineFragment : Fragment()
 
     private fun buttonView(headerId : Int,
                            descriptionId : Int,
+                           onClick : View.OnClickListener,
                            themeId : ThemeId,
                            context : Context) : RelativeLayout
     {
         val layout          = this.buttonViewLayout(themeId, context)
+
+        layout.setOnClickListener(onClick)
 
         // Header
         layout.addView(this.buttonHeaderView(headerId, themeId, context))
@@ -164,7 +224,7 @@ class EngineFragment : Fragment()
         layout.addView(descriptionView)
 
         // Buttons
-        layout.addView(this.buttonRowView(themeId, context))
+        // layout.addView(this.buttonRowView(themeId, context))
 
         return layout
     }
@@ -192,11 +252,12 @@ class EngineFragment : Fragment()
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
         layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
 
-        layout.corners          = Corners(TopLeftCornerRadius(1f),
-                                          TopRightCornerRadius(1f),
-                                          BottomRightCornerRadius(1f),
-                                          BottomLeftCornerRadius(1f))
+        layout.corners          = Corners(TopLeftCornerRadius(2f),
+                                          TopRightCornerRadius(2f),
+                                          BottomRightCornerRadius(2f),
+                                          BottomLeftCornerRadius(2f))
 
         return layout.relativeLayout(context)
     }

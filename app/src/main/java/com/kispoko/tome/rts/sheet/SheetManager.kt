@@ -5,6 +5,7 @@ package com.kispoko.tome.rts.sheet
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import android.view.View
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
 import com.kispoko.tome.app.*
@@ -29,6 +30,7 @@ import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.theme.ThemeDoesNotHaveColor
 import com.kispoko.tome.rts.theme.ThemeNotSupported
 import effect.*
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
 import lulo.document.SpecDoc
@@ -56,6 +58,9 @@ object SheetManager
     private val sheet = "sheet"
 
     private val sheetById : MutableMap<SheetId,SheetRecord> = hashMapOf()
+
+    private var currentSheet : SheetId? = null
+    private var currentSheetUI : SheetUI? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -109,6 +114,8 @@ object SheetManager
 
             // Create & Index Sheet Record
             this.sheetById.put(sheet.sheetId(), sheetRecord)
+            this.currentSheet = sheet.sheetId()
+            this.currentSheetUI = sheetUI
 
             // Initialize Sheet
             sheetRecord.onActive(sheetUI.context())
@@ -330,6 +337,39 @@ object SheetManager
                 Log.d("***SHEETMAN", "time to render ms: " + (end - start).toString())
             }
             is Err -> ApplicationLog.error(sheetRecordEff.error)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    fun updateSheet(sheetId : SheetId, sheetUpdate : SheetUpdate)
+    {
+        val sheetRecordEff = SheetManager.sheetRecord(sheetId)
+        when (sheetRecordEff)
+        {
+            is Val ->
+            {
+                val sheetRecord = sheetRecordEff.value
+                val sheetUpdateEvent = SheetUpdateEvent(sheetUpdate, sheetId)
+                ApplicationLog.event(sheetUpdateEvent)
+
+                when (sheetUpdate)
+                {
+                    is WidgetUpdate ->
+                    {
+                        val rootView = this.currentSheetUI?.rootSheetView()
+                        if (rootView != null)
+                        {
+                            sheetRecord.sheet().update(sheetUpdate,
+                                                       sheetRecord.sheetContext,
+                                                       rootView)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -561,6 +601,8 @@ interface SheetUI
     fun initializeSidebars(sheetContext : SheetContext)
 
     fun context() : Context
+
+    fun rootSheetView() : View?
 
 }
 

@@ -3,26 +3,28 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
+import java.io.Serializable
 
 
 
@@ -36,9 +38,8 @@ class AdderDialogFragment : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var value           : Double? = null
-    private var valueName       : String? = null
-    private var sheetContext    : SheetContext? = null
+    private var adderState   : AdderState? = null
+    private var sheetContext : SheetContext? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -47,15 +48,13 @@ class AdderDialogFragment : DialogFragment()
 
     companion object
     {
-        fun newInstance(value : Double,
-                        valueName : String?,
+        fun newInstance(adderState : AdderState,
                         sheetContext : SheetContext) : AdderDialogFragment
         {
             val dialog = AdderDialogFragment()
 
             val args = Bundle()
-            args.putDouble("value", value)
-            args.putString("value_name", valueName)
+            args.putSerializable("adder_state", adderState)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
 
@@ -73,8 +72,7 @@ class AdderDialogFragment : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.value        = arguments.getDouble("value")
-        this.valueName    = arguments.getString("value_name")
+        this.adderState   = arguments.getSerializable("adder_state") as AdderState
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
 
 
@@ -92,6 +90,8 @@ class AdderDialogFragment : DialogFragment()
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            dialog.window.attributes.windowAnimations = R.style.DialogAnimation
 
             dialog.setContentView(dialogLayout)
 
@@ -120,12 +120,19 @@ class AdderDialogFragment : DialogFragment()
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
-            val value = this.value
+            val adderState = this.adderState
 
-            if (value != null)
-                return AdderEditorView.view(value.toInt(), this.valueName, sheetUIContext)
+            if (adderState != null)
+            {
+                val adderEditorView = AdderEditorViewBuilder(adderState,
+                                                             sheetUIContext,
+                                                             this)
+                return adderEditorView.view()
+            }
             else
+            {
                 return super.onCreateView(inflater, container, savedInstanceState)
+            }
         }
         else
         {
@@ -157,26 +164,116 @@ class AdderDialogFragment : DialogFragment()
 }
 
 
-object AdderEditorView
+// ---------------------------------------------------------------------------------------------
+// ADDER STATE
+// ---------------------------------------------------------------------------------------------
+
+data class AdderState(val value : Double,
+                      val diceRolls : Set<DiceRoll>,
+                      val valueName : String?,
+                      val updateTarget : UpdateTarget) : Serializable
+
+
+// ---------------------------------------------------------------------------------------------
+// ADDER EDITOR VIEW
+// ---------------------------------------------------------------------------------------------
+
+class AdderEditorViewBuilder(val adderState : AdderState,
+                             val sheetUIContext : SheetUIContext,
+                             val dialog : DialogFragment)
 {
 
-    fun view(value : Int, valueName : String?, sheetUIContext : SheetUIContext) : View
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+
+    private var delta : Double = 0.0
+    private var currentValue : Double = adderState.value
+    private val history : MutableList<Double> = mutableListOf()
+
+    private var valueView : FlexboxLayout? = null
+    private var singleValueTextView : TextView? = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    private fun update(delta : Double)
     {
-        val layout = this.viewLayout(sheetUIContext)
+        this.delta += delta
+        this.history.add(delta)
 
-        layout.addView(this.valueView(value, valueName, sheetUIContext))
+        this.currentValue = adderState.value + this.delta
 
-        layout.addView(this.dynamicAddView(sheetUIContext))
+        this.updateValueView()
+    }
 
-        layout.addView(this.staticAddView(sheetUIContext))
 
-        layout.addView(this.bottomRowView(sheetUIContext))
+    private fun undo()
+    {
+        if (this.history.size > 0)
+        {
+            val lastDelta = this.history.last()
+            this.history.removeAt(this.history.size -1)
+            this.currentValue -= lastDelta
+            this.updateValueView()
+        }
+    }
+
+
+    private fun updateValueView()
+    {
+        // Number
+        val singleValueTextView = this.singleValueTextView
+        if (singleValueTextView != null)
+        {
+            singleValueTextView.text = Util.doubleString(this.currentValue)
+        }
+        else
+        {
+            val valuePartView = this.valuePartView(Util.doubleString(this.currentValue))
+            this.singleValueTextView = valuePartView
+            this.valueView?.addView(valuePartView)
+        }
+    }
+
+
+    private fun createValueView()
+    {
+        this.updateValueView()
+
+        // Dice
+        adderState.diceRolls.forEach {
+            this.valueView?.addView(this.valuePartView(" + " + it.toString()))
+        }
+    }
+
+
+    private fun currentAdderState() : AdderState =
+            adderState.copy(value = this.currentValue)
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun view() : View
+    {
+        val layout = this.viewLayout()
+
+        layout.addView(this.screenView())
+
+        layout.addView(this.buttonsView())
+
+        this.createValueView()
 
         return layout
     }
 
 
-    private fun viewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    private fun viewLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -196,22 +293,24 @@ object AdderEditorView
     }
 
 
-    private fun valueView(intValue : Int,
-                          valueName : String?,
-                          sheetUIContext : SheetUIContext) : LinearLayout
+    // -----------------------------------------------------------------------------------------
+    // SCREEN VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun screenView() : LinearLayout
     {
-        val layout = this.valueViewLayout(sheetUIContext.context)
+        val layout = this.screenViewLayout()
 
-        if (valueName != null)
-            layout.addView(this.valueNameView(valueName, sheetUIContext))
+        if (adderState.valueName != null)
+            layout.addView(this.valueNameView(adderState.valueName))
 
-        layout.addView(this.valueMainView(intValue, sheetUIContext))
+        layout.addView(this.valueRowView())
 
         return layout
     }
 
 
-    private fun valueViewLayout(context : Context) : LinearLayout
+    private fun screenViewLayout() : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -220,12 +319,14 @@ object AdderEditorView
 
         layout.orientation  = LinearLayout.VERTICAL
 
-        return layout.linearLayout(context)
+        return layout.linearLayout(this.sheetUIContext.context)
     }
 
 
-    private fun valueNameView(valueName : String,
-                              sheetUIContext : SheetUIContext) : TextView
+    // Name
+    // -----------------------------------------------------------------------------------------
+
+    private fun valueNameView(valueName : String) : TextView
     {
         val name                = TextViewBuilder()
 
@@ -248,21 +349,32 @@ object AdderEditorView
 
         name.sizeSp             = 11f
 
-        return name.textView(sheetUIContext.context)
+        return name.textView(this.sheetUIContext.context)
     }
 
 
-    private fun valueMainView(intValue : Int, sheetUIContext : SheetUIContext) : LinearLayout
+    // Name
+    // -----------------------------------------------------------------------------------------
+
+    private fun valueRowView() : LinearLayout
     {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
+        val layout = this.valueRowViewLayout()
 
-        val layout          = LinearLayoutBuilder()
-        val value           = TextViewBuilder()
-        val undoButton      = ImageViewBuilder()
+        // Value
+        val valueView = this.valueView()
+        this.valueView = valueView
+        layout.addView(valueView)
 
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
+        // Undo
+        layout.addView(this.undoButtonView())
+
+        return layout
+    }
+
+
+    private fun valueRowViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp         = 70
@@ -272,20 +384,39 @@ object AdderEditorView
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 20f
 
-        layout.child(value)
-              .child(undoButton)
+        return layout.linearLayout(this.sheetUIContext.context)
+    }
 
-        // (3 A) Value
-        // -------------------------------------------------------------------------------------
 
-        value.width             = LinearLayout.LayoutParams.MATCH_PARENT
+    // Name
+    // -----------------------------------------------------------------------------------------
+
+    private fun valueView() : FlexboxLayout
+    {
+        val layout = FlexboxLayoutBuilder()
+
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.weight           = 5f
+
+        layout.wrap             = FlexWrap.WRAP
+
+        return layout.flexboxLayout(sheetUIContext.context)
+    }
+
+
+    private fun valuePartView(valueString : String) : TextView
+    {
+        val value               = TextViewBuilder()
+
+        value.layoutType        = LayoutType.FLEXBOX
+        value.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-        value.weight            = 5f
 
-        value.text              = intValue.toString()
+        value.text              = valueString
 
         val valueColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         value.color             = SheetManager.color(sheetUIContext.sheetId, valueColorTheme)
 
@@ -295,317 +426,253 @@ object AdderEditorView
 
         value.sizeSp            = 32f
 
-        value.addRule(RelativeLayout.ALIGN_START)
+        return value.textView(sheetUIContext.context)
+    }
 
-        // (3 B) Undo Button
+
+    private fun undoButtonView() : LinearLayout
+    {
+        // (1) Declarations
         // -------------------------------------------------------------------------------------
 
-        undoButton.widthDp          = 32
-        undoButton.heightDp         = 32
-        undoButton.weight           = 1f
+        val layout          = LinearLayoutBuilder()
+        val icon            = ImageViewBuilder()
 
-        undoButton.image            = R.drawable.icon_undo
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.onClick      = View.OnClickListener {
+            this.undo()
+        }
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp          = 26
+        icon.heightDp         = 26
+        icon.weight           = 1f
+
+        icon.image            = R.drawable.icon_undo
 
         val undoColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        undoButton.color            = SheetManager.color(sheetUIContext.sheetId, undoColorTheme)
-
-        undoButton.addRule(RelativeLayout.ALIGN_END)
+        icon.color            = SheetManager.color(sheetUIContext.sheetId, undoColorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    private fun dynamicAddView(sheetUIContext : SheetUIContext) : LinearLayout
+    // -----------------------------------------------------------------------------------------
+    // BUTTONS VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun buttonsView() : LinearLayout
     {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
+        val layout  = this.buttonsViewLayout()
 
-        val layout          = LinearLayoutBuilder()
-        val plusNum         = TextViewBuilder()
-        val plusDice        = TextViewBuilder()
-        val minusNum        = TextViewBuilder()
-        val minusDice       = TextViewBuilder()
+        layout.addView(this.dynamicAddView())
 
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
+        layout.addView(this.staticAddView())
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 60
-
-        layout.margin.bottomDp  = 5f
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
-
-        layout.child(minusNum)
-              .child(minusDice)
-              .child(plusDice)
-              .child(plusNum)
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-
-        val textColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-
-        // (3 A) Plus One
-        // -------------------------------------------------------------------------------------
-
-        plusNum.width               = 0
-        plusNum.height              = LinearLayout.LayoutParams.MATCH_PARENT
-        plusNum.weight              = 1f
-
-        plusNum.gravity             = Gravity.CENTER
-
-        plusNum.margin.leftDp       = 2f
-        plusNum.margin.rightDp      = 2f
-
-        plusNum.textId              = R.string.plus_num
-
-        plusNum.sizeSp              = 16f
-        plusNum.color               = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        plusNum.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        plusNum.corners             = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        // (3 B) Plus Ten
-        // -------------------------------------------------------------------------------------
-
-        plusDice.width               = 0
-        plusDice.height              = LinearLayout.LayoutParams.MATCH_PARENT
-        plusDice.weight              = 1f
-
-        plusDice.gravity             = Gravity.CENTER
-
-        plusDice.margin.leftDp       = 2f
-        plusDice.margin.rightDp      = 2f
-
-        plusDice.textId              = R.string.plus_dice
-
-        plusDice.sizeSp              = 16f
-        plusDice.color               = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        plusDice.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        plusDice.corners             = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        // (3 C) Minus One
-        // -------------------------------------------------------------------------------------
-
-        minusNum.width              = 0
-        minusNum.height             = LinearLayout.LayoutParams.MATCH_PARENT
-        minusNum.weight             = 1f
-
-        minusNum.gravity            = Gravity.CENTER
-
-        minusNum.margin.leftDp      = 2f
-        minusNum.margin.rightDp     = 2f
-
-        minusNum.textId             = R.string.minus_num
-
-        minusNum.sizeSp             = 16f
-        minusNum.color              = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        minusNum.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        minusNum.corners            = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        // (3 C) Minus One
-        // -------------------------------------------------------------------------------------
-
-        minusDice.width              = 0
-        minusDice.height             = LinearLayout.LayoutParams.MATCH_PARENT
-        minusDice.weight             = 1f
-
-        minusDice.gravity            = Gravity.CENTER
-
-        minusDice.margin.rightDp     = 2f
-        minusDice.margin.leftDp      = 2f
-
-        minusDice.textId             = R.string.minus_dice
-
-        minusDice.sizeSp             = 16f
-        minusDice.color              = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        minusDice.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        minusDice.corners            = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-
-    private fun staticAddView(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout          = LinearLayoutBuilder()
-        val plusOne         = TextViewBuilder()
-        val plusTen         = TextViewBuilder()
-        val minusOne        = TextViewBuilder()
-        val minusTen        = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 60
-
-        layout.margin.bottomDp  = 5f
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
-
-        layout.child(minusOne)
-              .child(minusTen)
-              .child(plusTen)
-              .child(plusOne)
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-
-        val textColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-
-        // (3 A) Plus One
-        // -------------------------------------------------------------------------------------
-
-        plusOne.width               = 0
-        plusOne.height              = LinearLayout.LayoutParams.MATCH_PARENT
-        plusOne.weight              = 1f
-
-        plusOne.gravity             = Gravity.CENTER
-
-        plusOne.margin.leftDp       = 2f
-        plusOne.margin.rightDp      = 2f
-
-        plusOne.textId              = R.string.plus_one
-
-        plusOne.sizeSp              = 16f
-        plusOne.color               = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        plusOne.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        plusOne.corners             = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        // (3 B) Plus Ten
-        // -------------------------------------------------------------------------------------
-
-        plusTen.width               = 0
-        plusTen.height              = LinearLayout.LayoutParams.MATCH_PARENT
-        plusTen.weight              = 1f
-
-        plusTen.gravity             = Gravity.CENTER
-
-        plusTen.margin.leftDp       = 2f
-        plusTen.margin.rightDp      = 2f
-
-        plusTen.textId              = R.string.plus_ten
-
-        plusTen.sizeSp              = 16f
-        plusTen.color               = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        plusTen.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        plusTen.corners             = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        // (3 C) Minus One
-        // -------------------------------------------------------------------------------------
-
-        minusOne.width              = 0
-        minusOne.height             = LinearLayout.LayoutParams.MATCH_PARENT
-        minusOne.weight             = 1f
-
-        minusOne.gravity            = Gravity.CENTER
-
-        minusOne.margin.leftDp      = 2f
-        minusOne.margin.rightDp     = 2f
-
-        minusOne.textId             = R.string.minus_one
-
-        minusOne.sizeSp             = 16f
-        minusOne.color              = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        minusOne.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        minusOne.corners            = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        // (3 C) Minus One
-        // -------------------------------------------------------------------------------------
-
-        minusTen.width              = 0
-        minusTen.height             = LinearLayout.LayoutParams.MATCH_PARENT
-        minusTen.weight             = 1f
-
-        minusTen.gravity            = Gravity.CENTER
-
-        minusTen.margin.rightDp     = 2f
-        minusTen.margin.leftDp      = 2f
-
-        minusTen.textId             = R.string.minus_ten
-
-        minusTen.sizeSp             = 16f
-        minusTen.color              = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-        minusTen.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        minusTen.corners            = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-
-    private fun bottomRowView(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        val layout = this.bottomRowViewLayout(sheetUIContext.context)
-
-        layout.addView(this.calcButtonView(sheetUIContext))
-
-        layout.addView(this.doneButtonView(sheetUIContext))
+        layout.addView(this.bottomRowView())
 
         return layout
     }
 
 
-    private fun bottomRowViewLayout(context : Context) : LinearLayout
+    private fun buttonsViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun textButtonView(labelId : Int,
+                               onClick : View.OnClickListener) : TextView
+    {
+        val button                  = TextViewBuilder()
+
+        button.width                = 0
+        button.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        button.weight               = 1f
+
+        button.gravity              = Gravity.CENTER
+
+        button.margin.leftDp        = 2f
+        button.margin.rightDp       = 2f
+
+        button.textId               = labelId
+
+        button.sizeSp               = 16f
+
+        val textColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        button.color                = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        button.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        button.corners              = Corners(TopLeftCornerRadius(1f),
+                                              TopRightCornerRadius(1f),
+                                              BottomRightCornerRadius(1f),
+                                              BottomLeftCornerRadius(1f))
+
+        button.onClick              = onClick
+
+        return button.textView(sheetUIContext.context)
+    }
+
+
+    private fun buttonsRowView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 60
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.margin.bottomDp  = 5f
+        layout.margin.leftDp    = 2f
+        layout.margin.rightDp   = 2f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun dynamicAddView() : LinearLayout
+    {
+        val layout          = this.buttonsRowView()
+
+        val activity = sheetUIContext.context as AppCompatActivity
+
+        // -X
+        val minusNumOnClick = View.OnClickListener {
+            val dialog = AddAmountDialogFragment.newInstance(AddOperation.SUBTRACT,
+                                                             SheetContext(sheetUIContext))
+            dialog.show(activity.supportFragmentManager, "")
+            this.dialog.dismiss()
+        }
+        layout.addView(this.textButtonView(R.string.minus_num, minusNumOnClick))
+
+        // -ndX
+        val minusDiceOnClick = View.OnClickListener {
+            val dialog = DiceDialogFragment.newInstance(DiceOperation.SUBTRACT,
+                                                        this.currentAdderState(),
+                                                        SheetContext(sheetUIContext))
+            dialog.show(activity.supportFragmentManager, "")
+            this.dialog.dismiss()
+        }
+        layout.addView(this.textButtonView(R.string.minus_dice, minusDiceOnClick))
+
+        // +ndX
+        val plusDiceOnClick = View.OnClickListener {
+            val dialog = DiceDialogFragment.newInstance(DiceOperation.ADD,
+                                                        this.currentAdderState(),
+                                                        SheetContext(sheetUIContext))
+            dialog.show(activity.supportFragmentManager, "")
+            this.dialog.dismiss()
+        }
+        layout.addView(this.textButtonView(R.string.plus_dice, plusDiceOnClick))
+
+        // +X
+        val plusNumOnClick = View.OnClickListener {
+            val dialog = AddAmountDialogFragment.newInstance(AddOperation.ADD,
+                                                             SheetContext(sheetUIContext))
+            dialog.show(activity.supportFragmentManager, "")
+            this.dialog.dismiss()
+        }
+        layout.addView(this.textButtonView(R.string.plus_num, plusNumOnClick))
+
+        return layout
+    }
+
+
+    private fun staticAddView() : LinearLayout
+    {
+        val layout          = this.buttonsRowView()
+
+        // -1
+        val minusOneOnClick = View.OnClickListener {
+            this.update(-1.0)
+        }
+        layout.addView(this.textButtonView(R.string.minus_one, minusOneOnClick))
+
+        // -10
+        val minusTenOnClick = View.OnClickListener {
+            this.update(-10.0)
+        }
+        layout.addView(this.textButtonView(R.string.minus_ten, minusTenOnClick))
+
+        // +10
+        val plusTenOnClick = View.OnClickListener {
+            this.update(10.0)
+        }
+        layout.addView(this.textButtonView(R.string.plus_ten, plusTenOnClick))
+
+        // +1
+        val plusOneOnClick = View.OnClickListener {
+            this.update(1.0)
+        }
+        layout.addView(this.textButtonView(R.string.plus_one, plusOneOnClick))
+
+        return layout
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // BOTTOM ROW VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun bottomRowView() : LinearLayout
+    {
+        val layout = this.bottomRowViewLayout()
+
+        // History Button
+        layout.addView(this.historyButtonView())
+
+        // Calculator Button
+        layout.addView(this.calcButtonView())
+
+        // Done Button
+        layout.addView(this.doneButtonView())
+
+        return layout
+    }
+
+
+    private fun bottomRowViewLayout() : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp         = 60
 
-        layout.margin.rightDp   = 2f
-        layout.margin.leftDp    = 2f
+        layout.margin.rightDp   = 4f
+        layout.margin.leftDp    = 4f
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        return layout.linearLayout(context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    private fun calcButtonView(sheetUIContext : SheetUIContext) : LinearLayout
+    private fun historyButtonView() : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -619,14 +686,14 @@ object AdderEditorView
 
         layout.width            = 0
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.weight           = 1f
+        layout.weight           = 2f
 
-        layout.orientation      = LinearLayout.HORIZONTAL
+        layout.orientation      = LinearLayout.VERTICAL
 
         layout.gravity          = Gravity.CENTER
 
-        layout.margin.rightDp   = 2f
-        layout.margin.leftDp    = 2f
+        layout.margin.rightDp   = 4f
+//        layout.margin.leftDp    = 2f
 
         val bgColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
@@ -644,17 +711,87 @@ object AdderEditorView
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp        = 18
-        icon.heightDp       = 19
+        icon.widthDp        = 22
+        icon.heightDp       = 22
 
-        icon.image          = R.drawable.icon_dialog_adder_calculator
+        icon.image          = R.drawable.icon_history
 
         val iconColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
-        icon.margin.rightDp = 5f
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId        = R.string.use_previous
+
+        val labelColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.font          = Font.typeface(TextFont.FiraSans,
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
+
+        label.sizeSp        = 12f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun calcButtonView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout      = LinearLayoutBuilder()
+        val icon        = ImageViewBuilder()
+        val label       = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight           = 2f
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.gravity          = Gravity.CENTER
+
+        layout.margin.rightDp   = 4f
+//        layout.margin.leftDp    = 2f
+
+        val bgColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.corners           = Corners(TopLeftCornerRadius(1f),
+                                           TopRightCornerRadius(1f),
+                                           BottomRightCornerRadius(1f),
+                                           BottomLeftCornerRadius(1f))
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp        = 22
+        icon.heightDp       = 22
+
+        icon.image          = R.drawable.icon_calculator
+
+        val iconColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
@@ -673,13 +810,13 @@ object AdderEditorView
                                             TextFontStyle.Regular,
                                             sheetUIContext.context)
 
-        label.sizeSp        = 17f
+        label.sizeSp        = 12f
 
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    private fun doneButtonView(sheetUIContext : SheetUIContext) : LinearLayout
+    private fun doneButtonView() : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -691,26 +828,50 @@ object AdderEditorView
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = 0
-        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.weight           = 1f
+        layout.width                = 0
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight               = 3f
 
-        layout.orientation      = LinearLayout.HORIZONTAL
+        layout.orientation          = LinearLayout.HORIZONTAL
 
-        layout.gravity          = Gravity.CENTER
+        layout.gravity              = Gravity.CENTER
 
-        layout.margin.rightDp   = 2f
-        layout.margin.leftDp    = 2f
+//        layout.margin.rightDp   = 2f
+//        layout.margin.leftDp    = 2f
 
         val bgColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("green_15")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners           = Corners(TopLeftCornerRadius(1f),
+        layout.corners              = Corners(TopLeftCornerRadius(1f),
                                            TopRightCornerRadius(1f),
                                            BottomRightCornerRadius(1f),
                                            BottomLeftCornerRadius(1f))
+
+        layout.onClick              = View.OnClickListener {
+            when (this.adderState.updateTarget)
+            {
+                is UpdateTargetNumberCell ->
+                {
+                    val numberCellUpdate =
+                            TableWidgetUpdateSetNumberCell(adderState.updateTarget.tableWidgetId,
+                                                           adderState.updateTarget.cellId,
+                                                           this.currentValue)
+                    SheetManager.updateSheet(sheetUIContext.sheetId, numberCellUpdate)
+                    dialog.dismiss()
+                }
+                is UpdateTargetStoryWidgetPart ->
+                {
+                    val numberPartUpdate =
+                            StoryWidgetUpdateNumberPart(adderState.updateTarget.storyWidgetId,
+                                                        adderState.updateTarget.partIndex,
+                                                        this.currentValue)
+                    SheetManager.updateSheet(sheetUIContext.sheetId, numberPartUpdate)
+                    dialog.dismiss()
+                }
+            }
+        }
 
         layout.child(icon)
               .child(label)
@@ -718,10 +879,10 @@ object AdderEditorView
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp        = 19
-        icon.heightDp       = 19
+        icon.widthDp        = 18
+        icon.heightDp       = 18
 
-        icon.image          = R.drawable.icon_dialog_adder_done
+        icon.image          = R.drawable.icon_check
 
         val iconColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -736,7 +897,8 @@ object AdderEditorView
         label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
+//        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
+        label.textId        = R.string.done
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -747,7 +909,7 @@ object AdderEditorView
                                             TextFontStyle.Regular,
                                             sheetUIContext.context)
 
-        label.sizeSp        = 17f
+        label.sizeSp        = 17.5f
 
         return layout.linearLayout(sheetUIContext.context)
     }

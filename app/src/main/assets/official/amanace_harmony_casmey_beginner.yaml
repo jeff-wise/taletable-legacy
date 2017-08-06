@@ -1245,7 +1245,7 @@ sections:
                   variable_value:
                     type: value_reference
                     value_reference:
-                      value_set_id: swords
+                      value_set_id: weapons
                       value_id: cutlass
               - type: table_widget_number_cell
                 table_widget_number_cell:

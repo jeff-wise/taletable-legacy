@@ -1,6 +1,9 @@
+
 package com.kispoko.tome.activity.official
 
+
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -9,20 +12,23 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.official.sheets.OpenSheetOfficialSheetsActivity
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.game.GameManifest
-import com.kispoko.tome.rts.game.GameSummary
+import com.kispoko.tome.official.GameManifest
+import com.kispoko.tome.official.GameSummary
+import com.kispoko.tome.official.OfficialManager
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -67,7 +73,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
             is Err -> ApplicationLog.error(theme.error)
         }
 
-        val gameManifest = GameManager.manifest(this)
+        val gameManifest = OfficialManager.gameManifest(this)
         if (gameManifest != null)
         {
             val contentLayout = this.findViewById(R.id.content) as LinearLayout
@@ -178,7 +184,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
     private fun gameView(gameSummary : GameSummary, context : Context) : LinearLayout
     {
-        val layout          = this.gameViewLayout(context)
+        val layout          = this.gameViewLayout(gameSummary.gameId, context)
 
         // Name
         layout.addView(this.gameHeaderView(gameSummary.name, context))
@@ -196,7 +202,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
     }
 
 
-    private fun gameViewLayout(context : Context) : LinearLayout
+    private fun gameViewLayout(gameId : GameId, context : Context) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -217,11 +223,17 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
 
-
         layout.corners          = Corners(TopLeftCornerRadius(2f),
                                           TopRightCornerRadius(2f),
                                           BottomRightCornerRadius(2f),
                                           BottomLeftCornerRadius(2f))
+
+        val activity = this
+        layout.onClick          = View.OnClickListener {
+            val intent = Intent(activity, OpenSheetOfficialSheetsActivity::class.java)
+            intent.putExtra("game_id", gameId)
+            activity.startActivity(intent)
+        }
 
         return layout.linearLayout(context)
     }

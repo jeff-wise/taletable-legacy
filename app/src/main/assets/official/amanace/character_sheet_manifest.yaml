@@ -1,0 +1,16 @@
+summaries:
+- name: Casmey Dalseya
+  description: >
+    An acrobat as a kid and a pirate as a young adult, Casmey is looking for a new adventure. That
+    shouldn't be hard though. She's always been quite talented at finding trouble. She feels
+    most relaxed in precarious situations, where one mistake means a long fall. And even when she
+    has fallen, she's always landed on her feet, already looking back up.
+  race: Soulsin
+  class: Swashbuckler
+  variants:
+  - id: level_1
+    label: 'Level 1'
+  - id: level_8
+    label: 'Level 8'
+  - id: level_15
+    label: 'Level 15'

@@ -288,7 +288,8 @@ object TableWidgetView
         {
             tableLayout.addView(row.view(tableWidget.columns(),
                                          tableWidget.format(),
-                    sheetUIContext))
+                                         tableWidget.id,
+                                         sheetUIContext))
         }
 
         return layout

@@ -30,14 +30,14 @@ public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration
     }
 
 
-    public SimpleDividerItemDecoration(Context context, int colorId)
+    public SimpleDividerItemDecoration(Context context, int color)
     {
         Drawable dividerDrawable = ContextCompat.getDrawable(context, R.drawable.line_divider);
-        int color = ContextCompat.getColor(context, colorId);
         dividerDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
 
         this.divider = dividerDrawable;
     }
+
 
     public SimpleDividerItemDecoration(Context context, int colorId, float width)
     {

@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
@@ -58,7 +59,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // -----------------------------------------------------------------------------------------
 
     var pagePagerAdapter : PagePagerAdapter?   = null
-
+    var viewPager : ViewPager? = null
     var bottomNavigation : AHBottomNavigation? = null
 
 
@@ -107,8 +108,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val pagePagerAdapter = PagePagerAdapter(supportFragmentManager)
         this.pagePagerAdapter = pagePagerAdapter
 
-        val viewPager = this.findViewById(R.id.page_pager) as ViewPager
-        viewPager.adapter = pagePagerAdapter
+        this.viewPager = this.findViewById(R.id.page_pager) as ViewPager
+        this.viewPager?.adapter = pagePagerAdapter
 
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
@@ -154,7 +155,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
 //            }
 //        });
     }
-
 
 
     private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
@@ -236,6 +236,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
     override fun bottomNavigation() : AHBottomNavigation = this.bottomNavigation!!
 
 
+    override fun rootSheetView() : View? = this.viewPager
+
+
     override fun applyTheme(sheetId : SheetId, uiColors : UIColors)
     {
         // STATUS BAR
@@ -311,11 +314,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
         when (sheetRecord)
         {
             is Val -> {
-                val start = System.currentTimeMillis()
                 SheetManager.render(sheetId, this)
-                val end = System.currentTimeMillis()
-
-                Log.d("***SHEETACTIVITY", "time to render ms: " + (end - start).toString())
             }
             is Err -> this.loadTemplateSheet(officialIndex, sheetId)
         }
@@ -329,7 +328,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         if (officialSheet != null)
         {
-            val sheetActivity : AppCompatActivity = this
+            val sheetActivity : SheetActivity = this
             val sheetUI : SheetUI = this
             launch(UI) {
 
@@ -344,7 +343,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
                     is LoadResultValue ->
                     {
                         val sheet = sheetLoad.value
-
                         SheetManager.setNewSheet(sheet, sheetUI)
 
                         val characterName =
@@ -411,6 +409,10 @@ object SheetOptionsView
         val layout = this.viewLayout(sheetUIContext.context)
 
         // Edit Mode
+        layout.addView(this.editModeView(sheetUIContext))
+
+        // Programming
+        layout.addView(this.programmingView(sheetUIContext))
 
         return layout
     }
@@ -418,16 +420,117 @@ object SheetOptionsView
 
     private fun viewLayout(context : Context) : LinearLayout
     {
-        val layout          = LinearLayoutBuilder()
+        val layout              = LinearLayoutBuilder()
 
-        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.orientation  = LinearLayout.VERTICAL
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.padding.topDp    = 40f
 
         return layout.linearLayout(context)
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GENERAL
+    // -----------------------------------------------------------------------------------------
+
+    private fun headerView(headerStringId : Int,
+                           sheetUIContext : SheetUIContext) : TextView
+    {
+        val header               = TextViewBuilder()
+
+        header.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        header.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        header.textId            = headerStringId
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_blue_17")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        header.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        header.font              = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        header.sizeSp             = 13f
+
+        return header.textView(sheetUIContext.context)
+    }
+
+
+    private fun buttonView(iconId : Int,
+                           labelId : Int,
+                           sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout          = LinearLayoutBuilder()
+        val icon            = ImageViewBuilder()
+        val label           = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.padding.topDp    = 7f
+        layout.padding.bottomDp = 7f
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp        = 20
+        icon.heightDp       = 20
+
+        icon.image          = iconId
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        icon.margin.rightDp = 5f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId        = labelId
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color         = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        label.font          = Font.typeface(TextFont.FiraSans,
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
+
+        label.sizeSp         = 18f
+
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // EDIT MODE
+    // -----------------------------------------------------------------------------------------
 
     private fun editModeView(sheetUIContext : SheetUIContext) : LinearLayout
     {
@@ -443,6 +546,13 @@ object SheetOptionsView
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.margin.leftDp        = 10f
+
+        layout.padding.topDp        = 5f
+        layout.padding.bottomDp     = 5f
 
         layout.child(label)
               .child(switch)
@@ -474,7 +584,50 @@ object SheetOptionsView
 
         switch.checked              = false
 
+        switch.scaleX               = 0.9f
+        switch.scaleY               = 0.9f
+
         return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // PROGRAMMING
+    // -----------------------------------------------------------------------------------------
+
+    private fun programmingView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout      = this.programmingViewLayout(sheetUIContext.context)
+
+        // Header
+        layout.addView(this.headerView(R.string.programming, sheetUIContext))
+
+        // Variables Button
+        layout.addView(this.buttonView(R.drawable.icon_variable,
+                                       R.string.variables,
+                                       sheetUIContext))
+
+        // Procedures Button
+        layout.addView(this.buttonView(R.drawable.icon_procedure,
+                                       R.string.procedures,
+                                       sheetUIContext))
+
+        return layout
+    }
+
+
+    private fun programmingViewLayout(context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.margin.leftDp    = 10f
+
+        return layout.linearLayout(context)
     }
 
 

@@ -86,7 +86,7 @@ object CampaignManager
     // OFFICIAL
     // -----------------------------------------------------------------------------------------
 
-    suspend fun loadOfficialCampaign(officialCampaign: OfficialCampaign,
+    suspend fun loadOfficialCampaign(officialCampaign : OfficialCampaign,
                                      officialIndex : OfficialIndex,
                                      context : Context) : LoadResult<Campaign> = run(CommonPool,
     {

@@ -19,9 +19,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.*
+import java.util.*
 
 
 
@@ -38,7 +37,8 @@ class TextEditorDialogFragment : DialogFragment()
 
     private var title            : String? = null
     private var text             : String? = null
-    private var sheetContext: SheetContext? = null
+    private var updateTarget     : UpdateTarget? = null
+    private var sheetContext     : SheetContext? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -49,6 +49,7 @@ class TextEditorDialogFragment : DialogFragment()
     {
         fun newInstance(title : String,
                         text : String,
+                        updateTarget : UpdateTarget,
                         sheetContext : SheetContext) : TextEditorDialogFragment
         {
             val dialog = TextEditorDialogFragment()
@@ -56,6 +57,7 @@ class TextEditorDialogFragment : DialogFragment()
             val args = Bundle()
             args.putString("text", text)
             args.putString("title", title)
+            args.putSerializable("update_target", updateTarget)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
 
@@ -75,6 +77,7 @@ class TextEditorDialogFragment : DialogFragment()
 
         this.title        = arguments.getString("title")
         this.text         = arguments.getString("text")
+        this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
 
 
@@ -114,11 +117,19 @@ class TextEditorDialogFragment : DialogFragment()
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
-            val title      = this.title
-            val text = this.text
+            val title        = this.title
+            val text         = this.text
+            val updateTarget = this.updateTarget
 
-            if (title != null && text != null)
-                return TextEditorView.view(title, text, sheetUIContext)
+            if (title != null && text != null && updateTarget != null)
+            {
+                val viewBuilder = TextEditorViewBuilder(title,
+                                                        text,
+                                                        updateTarget,
+                                                        sheetUIContext,
+                                                        this)
+                return viewBuilder.view()
+            }
             else
                 return super.onCreateView(inflater, container, savedInstanceState)
         }
@@ -141,11 +152,6 @@ class TextEditorDialogFragment : DialogFragment()
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        val colorTheme = ColorTheme(setOf(
-                            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
         return layout.linearLayout(context)
     }
 
@@ -154,30 +160,48 @@ class TextEditorDialogFragment : DialogFragment()
 }
 
 
-object TextEditorView
+class TextEditorViewBuilder(val title : String,
+                            val text : String,
+                            val updateTarget : UpdateTarget,
+                            val sheetUIContext : SheetUIContext,
+                            val dialog : DialogFragment)
 {
 
-    fun view(title : String, text : String, sheetUIContext: SheetUIContext) : View
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var valueView : TextView? = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun view() : View
     {
-        val layout = this.viewLayout(sheetUIContext)
+        val layout = this.viewLayout()
 
         // Header
-        layout.addView(this.headerView(title, sheetUIContext))
+        layout.addView(this.headerView())
 
-        layout.addView(this.dividerView(sheetUIContext))
+        layout.addView(this.dividerView())
 
         // Edit Field
-        val editValueView = this.editValueView(text, sheetUIContext)
+        val editValueView = this.editValueView()
+        this.valueView = editValueView
         layout.addView(editValueView)
 
+//        layout.addView(this.dividerView(sheetUIContext))
+
         // Footer View
-        layout.addView(this.footerView(editValueView, sheetUIContext))
+        layout.addView(this.footerView())
 
         return layout
     }
 
 
-    private fun viewLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun viewLayout() : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -202,12 +226,12 @@ object TextEditorView
     // Header
     // -----------------------------------------------------------------------------------------
 
-    private fun headerView(nameString : String, sheetUIContext: SheetUIContext) : LinearLayout
+    private fun headerView() : LinearLayout
     {
-        val layout = this.headerViewLayout(sheetUIContext)
+        val layout = this.headerViewLayout()
 
         // Name
-        layout.addView(this.nameView(nameString, sheetUIContext))
+        layout.addView(this.nameView())
 
         // Full Editor Button
 
@@ -215,7 +239,7 @@ object TextEditorView
     }
 
 
-    private fun headerViewLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun headerViewLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -223,8 +247,8 @@ object TextEditorView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.topDp        = 8f
-        layout.padding.bottomDp     = 8f
+        layout.padding.topDp        = 10f
+        layout.padding.bottomDp     = 10f
 
         layout.padding.leftDp       = 12f
         layout.padding.rightDp      = 12f
@@ -240,17 +264,17 @@ object TextEditorView
     }
 
 
-    private fun nameView(nameString : String, sheetUIContext: SheetUIContext) : TextView
+    private fun nameView() : TextView
     {
         val name            = TextViewBuilder()
 
         name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.text           = nameString
+        name.text           = this.title.toUpperCase()
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         name.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
@@ -258,57 +282,13 @@ object TextEditorView
                                             TextFontStyle.Regular,
                                             sheetUIContext.context)
 
-        name.sizeSp         = 15f
+        name.sizeSp         = 13f
 
         return name.textView(sheetUIContext.context)
     }
 
 
-    private fun fullEditorButton(sheetUIContext: SheetUIContext) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout = LinearLayoutBuilder()
-        val button = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.margin.rightDp   = 15f
-        layout.margin.topDp     = 2f
-
-        layout.onClick          = View.OnClickListener {
-//            val intent = Intent(context, TextEditorActivity.class)
-//            intent.putExtra("text_widget", textWidget)
-//            context.dismiss()
-//            context.startActivity(intent)
-        }
-
-        layout.child(button)
-
-        // (3) Button
-        // -------------------------------------------------------------------------------------
-
-        button.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        button.text             = sheetUIContext.context.getString(R.string.full_editor)
-
-//        button.font             = Font.type
-//
-//        button.color            = R.color.dark_blue_1
-
-        button.sizeSp           = 16f
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-
-    private fun dividerView(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun dividerView() : LinearLayout
     {
         val divider             = LinearLayoutBuilder()
 
@@ -327,7 +307,7 @@ object TextEditorView
     // Value
     // -----------------------------------------------------------------------------------------
 
-    private fun editValueView(valueString : String, sheetUIContext: SheetUIContext) : EditText
+    private fun editValueView() : EditText
     {
         val value = EditTextBuilder()
 
@@ -364,8 +344,7 @@ object TextEditorView
         value.margin.rightDp        = 12f
         value.padding.leftDp        = 12f
 
-        value.text                  = valueString
-
+        value.text                  = this.text
 
         return value.editText(sheetUIContext.context)
     }
@@ -374,18 +353,21 @@ object TextEditorView
     // Footer
     // -----------------------------------------------------------------------------------------
 
-    private fun footerView(editValueView : EditText, sheetUIContext: SheetUIContext) : LinearLayout
+    private fun footerView() : LinearLayout
     {
-        val layout = footerViewLayout(sheetUIContext.context)
+        val layout = footerViewLayout()
+
+        // Full Editor Button
+        layout.addView(this.fullEditorButtonView())
 
         // Done Button
-        layout.addView(this.doneButton(editValueView, sheetUIContext))
+        layout.addView(this.doneButtonView())
 
         return layout
     }
 
 
-    private fun footerViewLayout(context : Context) : LinearLayout
+    private fun footerViewLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -395,120 +377,186 @@ object TextEditorView
 
         layout.gravity          = Gravity.CENTER_VERTICAL or Gravity.END
 
-        layout.margin.bottomDp  = 10f
-
-        return layout.linearLayout(context)
-    }
-
-
-
-    private fun doneButton(editValueView : EditText, sheetUIContext: SheetUIContext) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout = LinearLayoutBuilder()
-        val icon   = ImageViewBuilder()
-        val label  = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-//        layout.padding.topDp        = 6f
-//        layout.padding.bottomDp     = 6f
-//        layout.padding.leftDp       = 6f
-//        layout.padding.rightDp      = 10f
-
-        layout.margin.rightDp       = 13f
-
-//        layout.onClick              = View.OnClickListener {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                sendTextWidgetUpdate(editValueView.getText().toString());
-//                dismiss();
-//            }
-//        };
-
-        layout//.child(icon)
-              .child(label)
-
-        // (3 A) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        icon.image                  = R.drawable.ic_dialog_done
-
-//        icon.color                  = R.color.green_medium_dark
-
-        icon.margin.rightDp         = 3f
-
-        // [3 B] Label
-        // -------------------------------------------------------------------------------------
-
-        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.text                  = sheetUIContext.context.getString(R.string.done).toUpperCase()
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("green_1")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        label.color                 = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
-
-        label.font                  = Font.typeface(TextFont.FiraSans,
-                                                    TextFontStyle.Bold,
-                                                    sheetUIContext.context)
-
-        label.sizeSp                = 16f
+        layout.margin.bottomDp  = 2f
+        layout.margin.rightDp   = 1f
+        layout.margin.leftDp    = 1f
 
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
+    private fun doneButtonView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout      = LinearLayoutBuilder()
+        val icon        = ImageViewBuilder()
+        val label       = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight           = 3f
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER
+
+        val bgColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("green_15")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.corners          = Corners(TopLeftCornerRadius(0f),
+                                           TopRightCornerRadius(0f),
+                                           BottomRightCornerRadius(2f),
+                                           BottomLeftCornerRadius(0f))
+
+        layout.margin.rightDp   = 1f
+        layout.margin.leftDp    = 1f
+
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
+
+        layout.onClick          = View.OnClickListener {
+            val currentValue = this.valueView?.text?.toString()
+            if (currentValue != null)
+            {
+                when (updateTarget)
+                {
+                    is UpdateTargetTextWidget ->
+                    {
+                        val textWidgetUpdate = TextWidgetUpdateSetText(updateTarget.textWidgetId,
+                                                                       currentValue)
+                        SheetManager.updateSheet(sheetUIContext.sheetId, textWidgetUpdate)
+                        dialog.dismiss()
+                    }
+                }
+            }
+        }
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp        = 16
+        icon.heightDp       = 16
+
+        icon.image          = R.drawable.icon_check
+
+        val iconColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_14")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        icon.margin.rightDp = 5f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
+        label.textId        = R.string.done
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_14")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.font          = Font.typeface(TextFont.FiraSans,
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
+
+        label.sizeSp        = 15f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun fullEditorButtonView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout      = LinearLayoutBuilder()
+//        val icon        = ImageViewBuilder()
+        val label       = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight           = 3f
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER
+
+        val bgColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.corners           = Corners(TopLeftCornerRadius(0f),
+                                           TopRightCornerRadius(0f),
+                                           BottomRightCornerRadius(0f),
+                                           BottomLeftCornerRadius(2f))
+
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
+
+        layout.margin.rightDp   = 1f
+        layout.margin.leftDp    = 1f
+
+        layout//.child(icon)
+              .child(label)
+
+//        // (3 A) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        icon.widthDp        = 18
+//        icon.heightDp       = 18
+//
+//        icon.image          = R.drawable.icon_check
+//
+//        val iconColorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//
+//        icon.margin.rightDp = 5f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
+        label.textId        = R.string.full_editor
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.font          = Font.typeface(TextFont.FiraSans,
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
+
+        label.sizeSp        = 15f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
 
 }
 
-//    // > Update
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void sendTextWidgetUpdate(String newValue)
-//    {
-//        TextWidget.UpdateLiteralEvent event =
-//                new TextWidget.UpdateLiteralEvent(this.textWidget.getId(), newValue);
-//
-//        EventBus.getDefault().post(event);
-//    }
-//
-//
-//    private void sendTextCellUpdate(String newValue)
-//    {
-//        TextCell.UpdateLiteralEvent event =
-//                new TextCell.UpdateLiteralEvent(this.textCell.parentTableWidgetId(),
-//                                                this.textCell.getId(),
-//                                                newValue);
-//
-//        EventBus.getDefault().post(event);
-//    }
-//
-
-//    // TARGET
-//    // ------------------------------------------------------------------------------------------
-//
-//    private enum Target
-//    {
-//        TEXT_WIDGET,
-//        TEXT_CELL
-//    }
-
-//}

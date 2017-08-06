@@ -98,7 +98,6 @@
                 android:id="@+id/sheet_action_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="7dp"
                 android:orientation="vertical">
             </LinearLayout>
 
