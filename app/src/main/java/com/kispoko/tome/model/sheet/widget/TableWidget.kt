@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -25,7 +24,6 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
@@ -170,6 +168,35 @@ data class TableWidgetFormat(override val id : UUID,
 
 
 /**
+ * Table Widget Name
+ */
+data class TableWidgetName(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TableWidgetName>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetName> = when (doc)
+        {
+            is DocText -> effValue(TableWidgetName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
  * Show Table Dividers
  */
 data class ShowTableDividers(val value : Boolean) : SQLSerializable, Serializable
@@ -284,12 +311,10 @@ object TableWidgetView
                                                tableWidget.format(),
                 sheetUIContext))
 
-        for (row in tableWidget.rows())
-        {
-            tableLayout.addView(row.view(tableWidget.columns(),
-                                         tableWidget.format(),
-                                         tableWidget.id,
-                                         sheetUIContext))
+        tableWidget.rows().forEachIndexed { rowIndex, tableWidgetRow ->
+            tableLayout.addView(tableWidgetRow.view(tableWidget,
+                                                    rowIndex,
+                                                    sheetUIContext))
         }
 
         return layout
@@ -326,15 +351,16 @@ object TableWidgetView
             layout.divider = dividerDrawable
         }
 
-
-        // On Long Click
-        layout.onLongClick = View.OnLongClickListener {
-            val sheetActivity = sheetUIContext.context as SheetActivity
-            sheetActivity.showActionBar(SheetContext(sheetUIContext))
-//            val dialog = TableDialogFragment.newInstance(SheetContext(sheetUIContext))
-//            dialog.show(sheetActivity.supportFragmentManager, "")
-            true
-        }
+//
+//        // On Long Click
+//        layout.onLongClick = View.OnLongClickListener {
+//            val sheetActivity = sheetUIContext.context as SheetActivity
+//            val tableRowAction = SheetAction.TableRow()
+//            sheetActivity.showActionBar(SheetContext(sheetUIContext))
+//
+//
+//            true
+//        }
 
 
         return layout.tableLayout(sheetUIContext.context)

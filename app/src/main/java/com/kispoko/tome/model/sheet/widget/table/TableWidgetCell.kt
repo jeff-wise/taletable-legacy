@@ -16,6 +16,7 @@ import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -310,13 +311,15 @@ data class TableWidgetNumberCell(override val id : UUID,
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetNumberColumn,
-             tableWidgetId : UUID,
+             rowIndex : Int,
+             tableWidget : TableWidget,
              sheetUIContext : SheetUIContext) : View
     {
         val viewBuilder = NumberCellViewBuilder(this,
                                                 rowFormat,
                                                 column,
-                                                tableWidgetId,
+                                                rowIndex,
+                                                tableWidget,
                                                 sheetUIContext)
         return viewBuilder.view()
     }
@@ -459,13 +462,15 @@ data class TableWidgetTextCell(override val id : UUID,
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetTextColumn,
-             tableWidgetId : UUID,
+             rowIndex : Int,
+             tableWidget : TableWidget,
              sheetUIContext: SheetUIContext) : View
     {
         val viewBuilder = TextCellViewBuilder(this,
                                               rowFormat,
                                               column,
-                                              tableWidgetId,
+                                              rowIndex,
+                                              tableWidget,
                                               sheetUIContext)
         return viewBuilder.view()
     }

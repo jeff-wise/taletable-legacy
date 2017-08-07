@@ -4,6 +4,7 @@ package com.kispoko.tome.model.game.engine
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Conj
@@ -21,10 +22,7 @@ import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.*
-import com.kispoko.tome.rts.game.engine.FunctionDoesNotExist
-import com.kispoko.tome.rts.game.engine.ProgramDoesNotExist
-import com.kispoko.tome.rts.game.engine.SummationDoesNotExist
-import com.kispoko.tome.rts.game.engine.ValueSetDoesNotExist
+import com.kispoko.tome.rts.game.engine.*
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.effApply
 import effect.effError
@@ -150,12 +148,23 @@ data class Engine(override val id : UUID,
     fun valueSets() : Set<ValueSet> = this.valueSets.value
 
 
-    // Engine Data > Values
-    // -----------------------------------------------------------------------------------------
-
     fun valueSet(valueSetId : ValueSetId) : AppEff<ValueSet> =
             note(this.valueSetById[valueSetId],
-                 AppEngineError(ValueSetDoesNotExist(valueSetId)))
+                    AppEngineError(ValueSetDoesNotExist(valueSetId)))
+
+
+    fun baseValueSet(valueSetId : ValueSetId) : AppEff<ValueSetBase> =
+        this.valueSet(valueSetId) ap {
+            when (it) {
+                is ValueSetBase -> effValue(it)
+                else            -> effError<AppError,ValueSetBase>(
+                                            AppEngineError(ValueSetIsNotBase(valueSetId)))
+            }
+        }
+
+
+    // Engine Data > Values
+    // -----------------------------------------------------------------------------------------
 
 
     fun value(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<Value> =

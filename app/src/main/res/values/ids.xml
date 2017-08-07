@@ -17,10 +17,8 @@
 
 
     <!-- VALUE LIST ITEM -->
-    <item name="value_list_item_layout" type="id"/>
     <item name="value_list_item_value" type="id"/>
     <item name="value_list_item_description" type="id"/>
-    <item name="value_list_header_text" type="id"/>
 
     <!-- FUNCTION LIST ITEM -->
     <item name="function_list_item_layout" type="id"/>
@@ -108,13 +106,16 @@
 
 
     <!-- CHOOSE VALUE DIALOG -->
-    <item name="choose_value_dialog_item_value" type="id"/>
-    <item name="choose_value_dialog_item_summary" type="id"/>
-    <item name="choose_value_dialog_item_icon" type="id"/>
+    <item name="choose_value_header" type="id"/>
+    <item name="choose_value_item_value" type="id"/>
+    <item name="choose_value_item_summary" type="id"/>
+    <item name="choose_value_item_icon" type="id"/>
 
     <!-- SHEET NAVIGATION FRAGMENT -->
     <item name="sheet_nav_item_header" type="id"/>
     <item name="sheet_nav_item_summary" type="id"/>
+    <item name="sheet_nav_item_campaign" type="id"/>
+    <item name="sheet_nav_item_game" type="id"/>
 
     <!-- CAMPAIGN NAVIGATION FRAGMENT -->
     <item name="campaign_nav_item_header" type="id"/>
@@ -133,11 +134,10 @@
     <item name="amanace_chars_item_class" type="id"/>
 
     <!-- VALUE SETS ACTIVITY -->
-    <item name="value_set_item_layout" type="id"/>
-    <item name="value_set_item_header" type="id"/>
-    <item name="value_set_item_description" type="id"/>
-    <item name="value_set_item_count" type="id"/>
-
+    <item name="value_set_list_item_layout" type="id"/>
+    <item name="value_set_list_item_header" type="id"/>
+    <item name="value_set_list_item_description" type="id"/>
+    <item name="value_set_list_item_count" type="id"/>
 
     <!-- SHEET SUMMARY LIST ITEM -->
     <item name="sheet_summary_list_item_layout" type="id"/>

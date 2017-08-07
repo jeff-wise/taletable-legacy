@@ -1033,6 +1033,7 @@ sections:
         - type: widget_table
           widget_table:
             id: armor_and_shields
+            table_name: 'Armor and Shields'
             format:
               widget_format:
                 margins:
@@ -1163,6 +1164,7 @@ sections:
         - type: widget_table
           widget_table:
             id: weapons
+            table_name: 'Weapons'
             format:
               widget_format:
                 margins:
@@ -1530,6 +1532,8 @@ sections:
           theme_color_ids:
           - theme_id: dark
             color_id: dark_grey_9
+        padding:
+          bottom: 20
       rows:
       - widgets:
         - type: widget_text
@@ -1553,6 +1557,7 @@ sections:
         - type: widget_table
           widget_table:
             id: backpack
+            table_name: 'Backpack'
             format:
               widget_format:
                 margins:

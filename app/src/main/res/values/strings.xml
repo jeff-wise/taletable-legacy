@@ -288,7 +288,20 @@
     <string name="test_roll">Test Roll</string>
     <string name="roll_options">Roll Options</string>
 
+    <string name="to">To</string>
+    <string name="add_more_rows">Add More Rows</string>
+
+    <string name="base_value_set">Base Value Set</string>
+    <string name="my">My</string>
+    <string name="description">Description</string>
+    <string name="value">Value</string>
+    <string name="add_value">Add Value</string>
+    <string name="add_more_values">Add More Values</string>
+
     <string name="use_previous">Use Previous</string>
+
+    <string name="campaign">Campaign</string>
+    <string name="game">Game</string>
 
     <string name="conditional_value">Conditional Value</string>
     <string name="dice_roll">Dice Roll</string>

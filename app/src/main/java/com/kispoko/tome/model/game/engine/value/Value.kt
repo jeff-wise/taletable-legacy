@@ -13,6 +13,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -76,6 +77,8 @@ sealed class Value(open val valueId : Prim<ValueId>,
 
     abstract fun type() : ValueType
 
+    abstract fun valueString() : String
+
     fun isNumber() = this.type() == ValueType.NUMBER
 
     fun isText() = this.type() == ValueType.TEXT
@@ -108,7 +111,6 @@ sealed class Value(open val valueId : Prim<ValueId>,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
-
 
 }
 
@@ -199,6 +201,8 @@ data class ValueNumber(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun type() : ValueType = ValueType.NUMBER
+
+    override fun valueString() : String = Util.doubleString(this.value())
 
 
     // -----------------------------------------------------------------------------------------
@@ -320,6 +324,8 @@ data class ValueText(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun type() : ValueType = ValueType.TEXT
+
+    override fun valueString() : String = this.value()
 
 
     // -----------------------------------------------------------------------------------------

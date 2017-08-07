@@ -14,6 +14,7 @@ import com.kispoko.tome.model.sheet.widget.table.column.DefaultBooleanColumnValu
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -78,6 +79,8 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
     abstract fun type() : TableWidgetColumnType
 
     abstract fun columnFormat() : ColumnFormat
+
+    abstract fun defaultValueString() : String
 
 }
 
@@ -173,6 +176,8 @@ data class TableWidgetBooleanColumn(
     override fun type() : TableWidgetColumnType = TableWidgetColumnType.BOOLEAN
 
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
+
+    override fun defaultValueString() = this.defaultValueBoolean().toString()
 
 
     // -----------------------------------------------------------------------------------------
@@ -292,8 +297,9 @@ data class TableWidgetNumberColumn(
 
     override fun type() : TableWidgetColumnType = TableWidgetColumnType.NUMBER
 
-
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
+
+    override fun defaultValueString() = Util.doubleString(this.defaultValueDouble())
 
 
     // -----------------------------------------------------------------------------------------
@@ -397,7 +403,6 @@ data class TableWidgetTextColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun defaultValueString() : String = this.defaultValue.value.value
 
     fun format() : TextColumnFormat = this.format.value
 
@@ -410,8 +415,9 @@ data class TableWidgetTextColumn(
 
     override fun type() : TableWidgetColumnType = TableWidgetColumnType.TEXT
 
-
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
+
+    override fun defaultValueString() : String = this.defaultValue.value.value
 
 
     // -----------------------------------------------------------------------------------------

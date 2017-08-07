@@ -164,6 +164,10 @@ object GameManager
             note(this.gameById[gameId]?.engine(),
                  AppGameError(GameDoesNotExist(gameId)))
 
+    fun gameWithId(gameId : GameId) : AppEff<Game> =
+            note(this.gameById[gameId],
+                 AppGameError(GameDoesNotExist(gameId)))
+
 
     fun hasGameWithId(gameId : GameId) : Boolean = this.gameById.containsKey(gameId)
 

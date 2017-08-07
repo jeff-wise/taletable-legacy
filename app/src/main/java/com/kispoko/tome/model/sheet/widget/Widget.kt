@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -1968,6 +1967,7 @@ data class TabWidget(override val id : UUID,
  */
 data class TableWidget(override val id : UUID,
                        val widgetId : Prim<WidgetId>,
+                       val tableName : Prim<TableWidgetName>,
                        val format : Comp<TableWidgetFormat>,
                        val columns : Coll<TableWidgetColumn>,
                        val rows : Coll<TableWidgetRow>,
@@ -1979,15 +1979,15 @@ data class TableWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     init {
-        this.widgetId.name = "widget_id"
-        this.format.name = "format"
-        this.columns.name = "columns"
-        this.rows.name = "rows"
+        this.widgetId.name      = "widget_id"
+        this.tableName.name     = "table_name"
+        this.format.name        = "format"
+        this.columns.name       = "columns"
+        this.rows.name =        "rows"
 
         when (this.sort) {
             is Just -> this.sort.value.name = "sort"
         }
-
     }
 
 
@@ -2014,18 +2014,20 @@ data class TableWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetId: WidgetId,
+                tableName : TableWidgetName,
                 format: TableWidgetFormat,
                 columns: MutableList<TableWidgetColumn>,
                 rows: MutableList<TableWidgetRow>,
                 sort: Maybe<TableSort>,
                 variables: MutableSet<Variable>)
-            : this(UUID.randomUUID(),
-            Prim(widgetId),
-            Comp(format),
-            Coll(columns),
-            Coll(rows),
-            maybeLiftPrim(sort),
-            Conj(variables))
+        : this(UUID.randomUUID(),
+               Prim(widgetId),
+               Prim(tableName),
+               Comp(format),
+               Coll(columns),
+               Coll(rows),
+               maybeLiftPrim(sort),
+               Conj(variables))
 
 
     companion object : Factory<TableWidget> {
@@ -2034,6 +2036,8 @@ data class TableWidget(override val id : UUID,
                 effApply(::TableWidget,
                         // Widget Id
                         doc.at("id") ap { WidgetId.fromDocument(it) },
+                        // Table Name
+                        doc.at("table_name") ap { TableWidgetName.fromDocument(it) },
                         // Format
                         split(doc.maybeAt("format"),
                                 effValue(TableWidgetFormat.default),
@@ -2065,7 +2069,9 @@ data class TableWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId(): WidgetId = this.widgetId.value
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun tableName() : String = this.tableName.value.value
 
     fun format(): TableWidgetFormat = this.format.value
 

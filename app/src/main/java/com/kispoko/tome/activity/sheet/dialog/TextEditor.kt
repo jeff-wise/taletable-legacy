@@ -185,8 +185,6 @@ class TextEditorViewBuilder(val title : String,
         // Header
         layout.addView(this.headerView())
 
-        layout.addView(this.dividerView())
-
         // Edit Field
         val editValueView = this.editValueView()
         this.valueView = editValueView
@@ -210,14 +208,14 @@ class TextEditorViewBuilder(val title : String,
         layout.heightDp             = LinearLayout.LayoutParams.MATCH_PARENT
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(2f),
-                                              TopRightCornerRadius(2f),
-                                              BottomRightCornerRadius(2f),
-                                              BottomLeftCornerRadius(2f))
+        layout.corners              = Corners(TopLeftCornerRadius(3f),
+                                              TopRightCornerRadius(3f),
+                                              BottomRightCornerRadius(3f),
+                                              BottomLeftCornerRadius(3f))
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -232,8 +230,6 @@ class TextEditorViewBuilder(val title : String,
 
         // Name
         layout.addView(this.nameView())
-
-        // Full Editor Button
 
         return layout
     }
@@ -250,15 +246,25 @@ class TextEditorViewBuilder(val title : String,
         layout.padding.topDp        = 10f
         layout.padding.bottomDp     = 10f
 
-        layout.padding.leftDp       = 12f
-        layout.padding.rightDp      = 12f
+        layout.padding.leftDp       = 8f
+        layout.padding.rightDp      = 8f
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        layout.margin.bottomDp      = 2f
+        layout.margin.topDp         = 2f
+        layout.margin.leftDp        = 2f
+        layout.margin.rightDp       = 2f
 
         layout.gravity              = Gravity.CENTER_VERTICAL
+
+        layout.corners              = Corners(TopLeftCornerRadius(3f),
+                                              TopRightCornerRadius(3f),
+                                              BottomRightCornerRadius(0f),
+                                              BottomLeftCornerRadius(0f))
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -271,7 +277,7 @@ class TextEditorViewBuilder(val title : String,
         name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.text           = this.title.toUpperCase()
+        name.text           = this.title
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
@@ -282,26 +288,26 @@ class TextEditorViewBuilder(val title : String,
                                             TextFontStyle.Regular,
                                             sheetUIContext.context)
 
-        name.sizeSp         = 13f
+        name.sizeSp         = 15f
 
         return name.textView(sheetUIContext.context)
     }
 
-
-    private fun dividerView() : LinearLayout
-    {
-        val divider             = LinearLayoutBuilder()
-
-        divider.width           = LinearLayout.LayoutParams.MATCH_PARENT
-        divider.heightDp        = 1
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_11")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        divider.backgroundColor = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        return divider.linearLayout(sheetUIContext.context)
-    }
+//
+//    private fun dividerView() : LinearLayout
+//    {
+//        val divider             = LinearLayoutBuilder()
+//
+//        divider.width           = LinearLayout.LayoutParams.MATCH_PARENT
+//        divider.heightDp        = 1
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_11")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        divider.backgroundColor = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//
+//        return divider.linearLayout(sheetUIContext.context)
+//    }
 
 
     // Value
@@ -325,24 +331,26 @@ class TextEditorViewBuilder(val title : String,
 
         value.sizeSp                = 17f
 
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-//        value.backgroundColor       = SheetManager.color
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        value.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         value.backgroundResource    = R.drawable.bg_edit_text_no_style
 
-        value.underlineColor        = R.color.dark_blue_hl_1
+//        value.underlineColor        = R.color.dark_blue_hl_1
 
-        value.minHeightDp           = 100f
+        value.minHeightDp           = 120f
 
         value.gravity               = Gravity.TOP
 
-        value.margin.topDp          = 12f
-        value.margin.bottomDp       = 12f
+        value.padding.leftDp        = 8f
+        value.padding.rightDp       = 8f
+        value.padding.topDp         = 6f
 
-        value.margin.rightDp        = 12f
-        value.padding.leftDp        = 12f
+        value.margin.leftDp         = 2f
+        value.margin.rightDp        = 2f
+        value.margin.bottomDp       = 2f
 
         value.text                  = this.text
 
@@ -378,8 +386,8 @@ class TextEditorViewBuilder(val title : String,
         layout.gravity          = Gravity.CENTER_VERTICAL or Gravity.END
 
         layout.margin.bottomDp  = 2f
-        layout.margin.rightDp   = 1f
-        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 2f
+        layout.margin.leftDp    = 2f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -406,7 +414,7 @@ class TextEditorViewBuilder(val title : String,
         layout.gravity          = Gravity.CENTER
 
         val bgColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("green_15")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
@@ -415,7 +423,6 @@ class TextEditorViewBuilder(val title : String,
                                            BottomRightCornerRadius(2f),
                                            BottomLeftCornerRadius(0f))
 
-        layout.margin.rightDp   = 1f
         layout.margin.leftDp    = 1f
 
         layout.padding.topDp    = 8f
@@ -514,7 +521,6 @@ class TextEditorViewBuilder(val title : String,
         layout.padding.bottomDp = 8f
 
         layout.margin.rightDp   = 1f
-        layout.margin.leftDp    = 1f
 
         layout//.child(icon)
               .child(label)

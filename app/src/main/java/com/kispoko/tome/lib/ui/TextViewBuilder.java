@@ -7,7 +7,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
-import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.model.sheet.style.Corners;
 import com.kispoko.tome.model.sheet.style.Spacing;
 import com.kispoko.tome.util.Util;
@@ -43,6 +45,8 @@ public class TextViewBuilder implements ViewBuilder
     public Integer                  heightDp;
 
     public Integer                  width;
+    public Integer                  widthDp;
+
     public Float                    weight;
 
     public Integer                  minEms;
@@ -80,6 +84,9 @@ public class TextViewBuilder implements ViewBuilder
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
+
+    public Integer                  strokeWidth;
+    public Integer                  strokeColor;
 
     public Integer                  shadowColor;
     public Float                    shadowRadius;
@@ -196,7 +203,7 @@ public class TextViewBuilder implements ViewBuilder
     {
         TextView textView = new TextView(context);
 
-        PaintDrawable bgDrawable = new PaintDrawable();
+        GradientDrawable bgDrawable = new GradientDrawable();
         boolean useDrawableBackground = false;
 
         // [1] Text View
@@ -336,22 +343,45 @@ public class TextViewBuilder implements ViewBuilder
         if (this.underlined != null && this.underlined)
             textView.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
 
+        // > Background Resource
+        // --------------------------------------------------------------------------------------
+
+        if (this.backgroundResource != null) {
+             textView.setBackgroundResource(this.backgroundResource);
+//            bgDrawable = (GradientDrawable) ContextCompat.getDrawable(context, this.backgroundResource);
+        }
+
         // > Background Color
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
         {
-            textView.setBackgroundColor(this.backgroundColor);
-            bgDrawable.setColorFilter(
-                    new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
+            if (this.backgroundResource != null) {
+                Drawable drawable = ContextCompat.getDrawable(context, this.backgroundResource);
+                bgDrawable.setColorFilter(
+                        new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
+                textView.setBackground(drawable);
+            }
+            else {
+                bgDrawable.setColorFilter(
+                        new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
+                useDrawableBackground = true;
+            }
         }
+//        else
+//        {
+//            int transparentColor = ContextCompat.getColor(context, R.color.transparent);
+//            bgDrawable.setColorFilter(
+//                    new PorterDuffColorFilter(transparentColor, PorterDuff.Mode.SRC_IN));
+//        }
 
-        // > Background Resource
+        // > Stroke
         // --------------------------------------------------------------------------------------
 
-        if (this.backgroundResource != null) {
-            textView.setBackgroundResource(this.backgroundResource);
+        if (this.strokeWidth != null && this.strokeColor != null) {
+            bgDrawable.setStroke(this.strokeWidth, this.strokeColor);
         }
+
 
         // > Drawable Top
         // --------------------------------------------------------------------------------------
@@ -418,6 +448,8 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.width != null)
             layoutParamsBuilder.setWidth(this.width);
+        else if (this.widthDp != null)
+            layoutParamsBuilder.setWidthDp(this.widthDp);
 
         // > Height
         // --------------------------------------------------------------------------------------
@@ -426,7 +458,7 @@ public class TextViewBuilder implements ViewBuilder
             layoutParamsBuilder.setHeight(this.height);
         else if (this.heightDp != null) {
             layoutParamsBuilder.setHeightDp(this.heightDp);
-            bgDrawable.setIntrinsicHeight(Util.dpToPixel(this.heightDp));
+//            bgDrawable.setIntrinsicHeight(Util.dpToPixel(this.heightDp));
         }
 
         // > Weight
@@ -453,6 +485,10 @@ public class TextViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         layoutParamsBuilder.setRules(this.rules);
+
+//        if (useDrawableBackground)
+
+//        bgDrawable.invalidateSelf();
 
         if (useDrawableBackground)
             textView.setBackground(bgDrawable);

@@ -40,6 +40,10 @@
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".activity.engine.valueset.BaseValueSetActivity"
+            android:label="Base Value Set"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activity.engine.value.NumberValueEditorActivity"
             android:label="Values"
             android:theme="@style/AppTheme.NoActionBar"

@@ -5,12 +5,15 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R.string.cell
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.rts.sheet.*
@@ -108,7 +111,8 @@ data class TextCellFormat(override val id : UUID,
 class TextCellViewBuilder(val cell : TableWidgetTextCell,
                           val rowFormat : TableWidgetRowFormat,
                           val column : TableWidgetTextColumn,
-                          val tableWidgetId : UUID,
+                          val rowIndex : Int,
+                          val tableWidget : TableWidget,
                           val sheetUIContext : SheetUIContext)
 {
 
@@ -126,9 +130,20 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
             when (maybeValueVariable) {
                 is Just -> openTextVariableEditorDialog(
                                             maybeValueVariable.value,
-                                            UpdateTargetTextCell(tableWidgetId, cell.id),
+                                            UpdateTargetTextCell(tableWidget.id, cell.id),
                                             sheetUIContext)
             }
+        }
+
+        // On Long Click
+        layout.setOnLongClickListener {
+            val sheetActivity = sheetUIContext.context as SheetActivity
+            val tableRowAction = SheetAction.TableRow(tableWidget.id,
+                                                      rowIndex,
+                                                      tableWidget.tableName(),
+                                                      tableWidget.columns())
+            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+            true
         }
 
         return layout

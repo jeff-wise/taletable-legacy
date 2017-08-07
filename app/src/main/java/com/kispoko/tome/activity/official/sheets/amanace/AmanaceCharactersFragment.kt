@@ -5,21 +5,17 @@ package com.kispoko.tome.activity.official.sheets.amanace
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.nav.*
+import com.kispoko.tome.activity.official.sheets.OpenSheetOfficialSheetsActivity
 import com.kispoko.tome.activity.official.sheets.SheetVariant
-import com.kispoko.tome.activity.official.sheets.VariantsDialogFragment
-import com.kispoko.tome.activity.sheet.dialog.AddAmountDialogFragment
-import com.kispoko.tome.activity.sheet.dialog.AddOperation
+import com.kispoko.tome.activity.official.sheets.VariantsViewBuilder
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder
@@ -31,7 +27,6 @@ import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.official.AmanaceCharacterSheetSummary
 import com.kispoko.tome.official.OfficialManager
-import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.theme.ThemeManager
 
 
@@ -187,10 +182,13 @@ class CharactersRecyclerViewAdapter(val items : List<AmanaceCharacterSheetSummar
 
         val sheetVariants = summary.variants.map { SheetVariant(it.label, it.id) }
 
-        val activity = context as AppCompatActivity
+        val activity = context as OpenSheetOfficialSheetsActivity
         viewHolder.setOnClick(View.OnClickListener {
-            val dialog = VariantsDialogFragment.newInstance(summary.name, sheetVariants)
-            dialog.show(activity.supportFragmentManager, "")
+            val viewBuilder = VariantsViewBuilder(summary.name,
+                                                  sheetVariants,
+                                                  themeId,
+                                                  activity)
+            activity.openBottomSheet(viewBuilder.view())
         })
     }
 

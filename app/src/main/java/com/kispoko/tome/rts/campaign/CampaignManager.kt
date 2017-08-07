@@ -3,6 +3,8 @@ package com.kispoko.tome.rts.campaign
 
 
 import android.content.Context
+import com.kispoko.tome.app.AppCampaignError
+import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
 import com.kispoko.tome.model.campaign.Campaign
@@ -10,10 +12,7 @@ import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.official.OfficialCampaign
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.rts.game.GameManager
-import effect.Err
-import effect.Val
-import effect.effError
-import effect.effValue
+import effect.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
 import lulo.document.SpecDoc
@@ -181,6 +180,8 @@ object CampaignManager
             this.campaignById.containsKey(campaignId)
 
 
-    fun campaignWithId(campaignId : CampaignId) : Campaign? = this.campaignById[campaignId]
+    fun campaignWithId(campaignId : CampaignId) : AppEff<Campaign> =
+        note(this.campaignById[campaignId],
+             AppCampaignError(CampaignDoesNotExist(campaignId)))
 
 }

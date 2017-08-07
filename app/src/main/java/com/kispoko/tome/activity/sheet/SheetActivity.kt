@@ -36,6 +36,7 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.rts.theme.ThemeManager
@@ -45,7 +46,8 @@ import effect.Err
 import effect.Val
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-
+import java.io.Serializable
+import java.util.*
 
 
 /**
@@ -62,6 +64,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     var viewPager : ViewPager? = null
     var bottomNavigation : AHBottomNavigation? = null
 
+    var actionBarActive : Boolean = false
 
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
@@ -106,10 +109,23 @@ class SheetActivity : AppCompatActivity(), SheetUI
     private fun initializeViews()
     {
         val pagePagerAdapter = PagePagerAdapter(supportFragmentManager)
+
         this.pagePagerAdapter = pagePagerAdapter
 
         this.viewPager = this.findViewById(R.id.page_pager) as ViewPager
         this.viewPager?.adapter = pagePagerAdapter
+        this.viewPager?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener
+        {
+            override fun onPageScrollStateChanged(state : Int) { }
+
+            override fun onPageScrolled(position : Int,
+                                        positionOffset : Float,
+                                        positionOffsetPixels : Int) { }
+
+            override fun onPageSelected(position : Int) {
+                hideActionBar()
+            }
+        })
 
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
@@ -198,8 +214,12 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
-    fun showActionBar(sheetContext : SheetContext)
+    override fun showActionBar(sheetAction : SheetAction,
+                               sheetContext : SheetContext)
     {
+        if (this.actionBarActive)
+            return
+
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.visibility = View.GONE
 
@@ -209,12 +229,27 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val actionBarView = this.findViewById(R.id.sheet_action_bar) as LinearLayout
         actionBarView.visibility = View.VISIBLE
         actionBarView.removeAllViews()
-        actionBarView.addView(TableActionBarView.view(SheetUIContext(sheetContext, this)))
+
+        when (sheetAction)
+        {
+            is SheetAction.TableRow ->
+            {
+                val tableActionBarBuilder =
+                            TableActionBarViewBuilder(sheetAction,
+                                                      SheetUIContext(sheetContext, this))
+                actionBarView.addView(tableActionBarBuilder.view())
+            }
+        }
+
+        this.actionBarActive = true
     }
 
 
-    fun hideActionBar()
+    override fun hideActionBar()
     {
+        if (!this.actionBarActive)
+            return
+
          val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.visibility = View.VISIBLE
 
@@ -223,6 +258,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         val actionBarView = this.findViewById(R.id.sheet_action_bar) as LinearLayout
         actionBarView.visibility = View.GONE
+
+        this.actionBarActive = false
     }
 
 

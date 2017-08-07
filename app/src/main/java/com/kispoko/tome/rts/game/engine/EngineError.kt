@@ -35,6 +35,18 @@ class ValueSetDoesNotExist(val valueSetId : ValueSetId) : EngineError()
 }
 
 
+class ValueSetIsNotBase(val valueSetId : ValueSetId) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Value Set Is Not a Base Value Set
+                Value Set Id: $valueSetId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
 class ValueSetDoesNotContainValue(val valueSetId : ValueSetId,
                                   val valueId : ValueId) : EngineError()
 {

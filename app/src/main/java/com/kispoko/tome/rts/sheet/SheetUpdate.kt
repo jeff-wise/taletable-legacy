@@ -5,6 +5,7 @@ package com.kispoko.tome.rts.sheet
 import com.kispoko.tome.app.ApplicationEvent
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.Widget
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import java.io.Serializable
 import java.util.*
 
@@ -90,7 +91,27 @@ data class UpdateTargetTextCell(val tableWidgetId : UUID, val cellId : UUID) : U
 
 data class UpdateTargetTextWidget(val textWidgetId : UUID) : UpdateTarget()
 
+data class UpdateTargetInsertTableRow(val tableWidgetId : UUID, val index : Int) : UpdateTarget()
+
 data class UpdateTargetStoryWidgetPart(val storyWidgetId : UUID,
+
                                        val partIndex : Int) : UpdateTarget()
 
+
+
+
+
+// -----------------------------------------------------------------------------------------
+// SHEET ACTION
+// -----------------------------------------------------------------------------------------
+
+sealed class SheetAction : Serializable
+{
+
+    data class TableRow(val tableWidgetId : UUID,
+                        val rowClickedIndex : Int,
+                        val tableName : String,
+                        val tableColumns : List<TableWidgetColumn>) : SheetAction()
+
+}
 

@@ -203,8 +203,7 @@ public class EditTextBuilder implements ViewBuilder
 
         if (this.backgroundResource != null && this.backgroundColor != null) {
             Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
-            int      color      = ContextCompat.getColor(context, this.backgroundColor);
-            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            bgDrawable.setColorFilter(new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
             editText.setBackground(bgDrawable);
         }
         else if (this.backgroundResource != null) {

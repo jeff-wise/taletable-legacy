@@ -1273,6 +1273,10 @@ types:
     presence: optional
     description: >
       The table widget formatting options.
+  - name: table_name
+    type: string
+    presence: required
+    description: The table name.
   - name: columns
     type: list
     of: table_widget_column

@@ -6,16 +6,21 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.official.sheets.amanace.AmanaceCharactersFragment
@@ -49,6 +54,10 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
     private var officialGameId : GameId? = null
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Dark)
+
+    private var fab : FloatingActionButton? = null
+    private var bottomSheet : LinearLayout? = null
+    private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -85,6 +94,12 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
 
         // > Tab Views
         this.initializeViews()
+
+        // > Initialize FAB
+        this.initializeFAB()
+
+        // > Initialize Bottom Sheet
+        this.initializeBottomSheet()
     }
 
 
@@ -98,6 +113,52 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
     // -----------------------------------------------------------------------------------------
     // UI
     // -----------------------------------------------------------------------------------------
+
+    private fun initializeFAB()
+    {
+        val fab = this.findViewById(R.id.button) as FloatingActionButton
+        //fab.hide()
+        this.fab = fab
+    }
+
+
+    private fun initializeBottomSheet()
+    {
+        val bottomSheet = this.findViewById(R.id.bottom_sheet) as LinearLayout
+
+        val behavior = BottomSheetBehavior.from(bottomSheet)
+
+        val activity = this
+        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onSlide(bottomSheet : View, slideOffset : Float) { }
+
+            override fun onStateChanged(bottomSheet : View, newState : Int)
+            {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED)
+                {
+                    fab?.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_fab_forward))
+                }
+                else
+                {
+                    fab?.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_fab_random))
+                }
+//                else {
+//                    fab?.setAncdd
+//                    fab?.hide()
+//                }
+//                else if (newState == BottomSheetBehavior.STATE_HIDDEN)
+//                    fab?.hide()
+//                else if (newState == BottomSheetBehavior.STATE_COLLAPSED)
+//                    fab?.hide()
+            }
+
+        })
+
+        this.bottomSheet = bottomSheet
+        this.bottomSheetBehavior = behavior
+    }
+
 
     private fun initializeViews()
     {
@@ -161,6 +222,21 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
         tabLayout.setSelectedTabIndicatorColor(
                 this.appSettings.color(uiColors.tabUnderlineColorId()))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun openBottomSheet(view : View)
+    {
+        this.bottomSheet?.removeAllViews()
+        this.bottomSheet?.addView(view)
+
+//        val behavior = BottomSheetBehavior.from(bottomSheet)
+        this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
 
 }
 

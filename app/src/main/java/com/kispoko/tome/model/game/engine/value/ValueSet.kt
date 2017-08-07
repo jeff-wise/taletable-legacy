@@ -85,7 +85,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     fun label() : String = this.label.value.value
 
-    fun labelSingular() : ValueSetLabelSingular = this.labelSingular.value
+    fun labelSingular() : String = this.labelSingular.value.value
 
     fun description() : String = this.description.value.value
 

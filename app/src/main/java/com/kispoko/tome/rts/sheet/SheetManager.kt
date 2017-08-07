@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.*
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.load.*
@@ -85,8 +86,7 @@ object SheetManager
     fun sheetContext(sheet : Sheet) : AppEff<SheetContext>
     {
         fun campaign(sheet : Sheet) : AppEff<Campaign> =
-                note(CampaignManager.campaignWithId(sheet.campaignId()),
-                        AppSheetError(CampaignDoesNotExist(sheet.sheetId(), sheet.campaignId())))
+                CampaignManager.campaignWithId(sheet.campaignId())
 
 
         fun gameId(campaign : Campaign) : AppEff<GameId> = effValue(campaign.gameId())
@@ -327,6 +327,7 @@ object SheetManager
                         sheetUI.pagePagerAdatper()
                                 .setPages(selectedSection.pages(), sheetRecord.sheetContext)
                     }
+                    sheetUI.hideActionBar()
                     true
                 }
 
@@ -603,6 +604,11 @@ interface SheetUI
     fun context() : Context
 
     fun rootSheetView() : View?
+
+    fun hideActionBar()
+
+    fun showActionBar(sheetAction : SheetAction,
+                      sheetContext : SheetContext)
 
 }
 

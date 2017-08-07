@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
@@ -16,8 +17,10 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
+import com.kispoko.tome.rts.sheet.SheetAction
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.UpdateTargetNumberCell
@@ -157,7 +160,8 @@ data class NumberCellValuePrefix(val value : String) : SQLSerializable, Serializ
 class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
                             val rowFormat : TableWidgetRowFormat,
                             val column : TableWidgetNumberColumn,
-                            val tableWidgetId : UUID,
+                            val rowIndex : Int,
+                            val tableWidget : TableWidget,
                             val sheetUIContext : SheetUIContext)
 {
 
@@ -176,8 +180,19 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
             Log.d("***NUMBERCELL", "on click")
             openNumberVariableEditorDialog(cell.valueVariable(),
                                            cell.resolveEditorType(column),
-                                           UpdateTargetNumberCell(tableWidgetId, cell.id),
+                                           UpdateTargetNumberCell(tableWidget.id, cell.id),
                                            sheetUIContext)
+        }
+
+        // On Long Click
+        layout.setOnLongClickListener {
+            val sheetActivity = sheetUIContext.context as SheetActivity
+            val tableRowAction = SheetAction.TableRow(tableWidget.id,
+                                                      rowIndex,
+                                                      tableWidget.tableName(),
+                                                      tableWidget.columns())
+            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+            true
         }
 
         return layout

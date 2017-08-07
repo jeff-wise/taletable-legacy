@@ -12,45 +12,49 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.app.AppError
+import com.kispoko.tome.activity.OpenSheetActivity
+import com.kispoko.tome.activity.engine.value.NewValueDialog
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.value.ValueSet
+import com.kispoko.tome.model.game.engine.value.Value
 import com.kispoko.tome.model.game.engine.value.ValueSetBase
+import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.SimpleDividerItemDecoration
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val
-import effect.effValue
 
 
 
 /**
- * Value Sets Activity
+ * Base Value Set Activity
  */
-class ValueSetsActivity : AppCompatActivity()
+class BaseValueSetActivity : AppCompatActivity()
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+    private var valueSetId   : ValueSetId? = null
     private var gameId : GameId? = null
+
+    private var valueSet : ValueSetBase? = null
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Dark)
 
@@ -66,19 +70,41 @@ class ValueSetsActivity : AppCompatActivity()
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
 
-        setContentView(R.layout.activity_value_sets)
+        setContentView(R.layout.activity_base_value_set)
 
         // (2) Read Parameters
         // -------------------------------------------------------------------------------------
 
+        if (this.intent.hasExtra("value_set_id"))
+            this.valueSetId = this.intent.getSerializableExtra("value_set_id") as ValueSetId
+
         if (this.intent.hasExtra("game_id"))
             this.gameId = this.intent.getSerializableExtra("game_id") as GameId
 
-        // (3) Initialize Views
+        // (3) Lookup Value Set
         // -------------------------------------------------------------------------------------
 
+        val gameId = this.gameId
+        val valueSetId = this.valueSetId
+        if (gameId != null && valueSetId != null)
+        {
+            val baseValueSet = GameManager.engine(gameId)
+                                          .apply { it.baseValueSet(valueSetId) }
+
+            when (baseValueSet) {
+                is Val -> this.valueSet = baseValueSet.value
+                is Err -> ApplicationLog.error(baseValueSet.error)
+            }
+        }
+
+        // (4) Initialize Views
+        // -------------------------------------------------------------------------------------
+
+        val valueSet = this.valueSet
+
         // > Toolbar
-        this.configureToolbar(getString(R.string.engine_value_sets))
+        if (valueSet != null)
+            this.configureToolbar(valueSet.label())
 
         // > Theme
         val theme = ThemeManager.theme(this.appSettings.themeId())
@@ -87,24 +113,11 @@ class ValueSetsActivity : AppCompatActivity()
             is Err -> ApplicationLog.error(theme.error)
         }
 
-        // > Views
-        val gameId = this.gameId
-        if (gameId != null)
+        // > Value List
+        if (valueSet != null)
         {
-            val valueSets = GameManager.engine(gameId)
-                                .apply { effValue<AppError,Set<ValueSet>>(it.valueSets()) }
-            when (valueSets) {
-                is Val ->
-                {
-                    val valueSetsSorted = valueSets.value.sortedBy { it.label() }
-                    this.initializeValueSetListView(gameId, valueSetsSorted)
-                }
-                is Err -> ApplicationLog.error(valueSets.error)
-            }
-        }
-        else
-        {
-            Log.d("***VALUESETSACT", "game id is null")
+            val values = valueSet.sortedValues()
+            this.initializeValueListView(values)
         }
 
         this.initializeFABView()
@@ -122,13 +135,11 @@ class ValueSetsActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeValueSetListView(gameId : GameId,
-                                           valueSets : List<ValueSet>)
+    private fun initializeValueListView(values : List<Value>)
     {
-        val recyclerView = this.findViewById(R.id.value_set_list_view) as RecyclerView
+        val recyclerView = this.findViewById(R.id.value_list_view) as RecyclerView
 
-        recyclerView.adapter =
-                ValueSetRecyclerViewAdapter(valueSets, gameId, this.appSettings.themeId(), this)
+        recyclerView.adapter = ValueRecyclerViewAdapter(values, this.appSettings.themeId())
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -144,11 +155,15 @@ class ValueSetsActivity : AppCompatActivity()
 
     private fun initializeFABView()
     {
-//        val fabView = this.findViewById(R.id.button_new_value_set)
-//        fabView.setOnClickListener {
-//            val intent = Intent(this, OpenSheetActivity::class.java)
-//            this.startActivity(intent)
-//        }
+        val fabView = this.findViewById(R.id.button_new_value)
+        fabView.setOnClickListener {
+            val valueSet = this.valueSet
+            if (valueSet != null)
+            {
+                val dialog = NewValueDialog.newInstance(valueSet)
+                dialog.show(supportFragmentManager, "")
+            }
+        }
     }
 
 
@@ -182,10 +197,23 @@ class ValueSetsActivity : AppCompatActivity()
         val searchButton = this.findViewById(R.id.toolbar_search_button) as ImageButton
         searchButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
+        // TOOLBAR TITLE
+        // -------------------------------------------------------------------------------------
+        val toolbarTitleView = this.findViewById(R.id.toolbar_title) as TextView
+        toolbarTitleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
+
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
-        titleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
+
+        val titleView = this.findViewById(R.id.title) as TextView
+        titleView.typeface = Font.typeface(TextFont.FiraSans, TextFontStyle.Regular, this)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        val color = ThemeManager.color(this.appSettings.themeId(), colorTheme)
+        if (color != null)
+            titleView.setTextColor(color)
 
     }
 
@@ -193,14 +221,12 @@ class ValueSetsActivity : AppCompatActivity()
 
 
 // -----------------------------------------------------------------------------------------
-// VALUE SET RECYCLER VIEW ADPATER
+// VALUE RECYCLER VIEW ADPATER
 // -----------------------------------------------------------------------------------------
 
-class ValueSetRecyclerViewAdapter(val valueSets : List<ValueSet>,
-                                  val gameId : GameId,
-                                  val themeId : ThemeId,
-                                  val activity : AppCompatActivity)
-                                   : RecyclerView.Adapter<ValueSetSummaryViewHolder>()
+class ValueRecyclerViewAdapter(val values : List<Value>,
+                               val themeId : ThemeId)
+                               : RecyclerView.Adapter<ValueSummaryViewHolder>()
 {
 
     // -------------------------------------------------------------------------------------
@@ -208,44 +234,35 @@ class ValueSetRecyclerViewAdapter(val valueSets : List<ValueSet>,
     // -------------------------------------------------------------------------------------
 
     override fun onCreateViewHolder(parent : ViewGroup,
-                                    viewType : Int) : ValueSetSummaryViewHolder
+                                    viewType : Int) : ValueSummaryViewHolder
     {
-        return ValueSetSummaryViewHolder(ValueSetSummaryView.view(themeId, parent.context))
+        return ValueSummaryViewHolder(ValueSummaryView.view(themeId, parent.context))
     }
 
 
-    override fun onBindViewHolder(viewHolder : ValueSetSummaryViewHolder, position : Int)
+    override fun onBindViewHolder(viewHolder : ValueSummaryViewHolder, position : Int)
     {
-        val valueSet = this.valueSets[position]
+        val value = this.values[position]
 
-        viewHolder.setHeaderText(valueSet.label())
-        viewHolder.setDescriptionText(valueSet.description())
+        viewHolder.setValueText(value.valueString())
 
-        val valueSetSize = valueSet.values(gameId) ap { effValue<AppError,Int>(it.size) }
-        when (valueSetSize) {
-            is Val -> viewHolder.setItemCount(valueSetSize.value)
-            is Err -> ApplicationLog.error(valueSetSize.error)
-        }
+        val descriptionString = value.description()
+        if (descriptionString != null)
+            viewHolder.setDescriptionText(descriptionString)
 
-        viewHolder.setOnClick(View.OnClickListener {
-            when (valueSet)
-            {
-                is ValueSetBase ->
-                {
-                    val intent = Intent(activity, BaseValueSetActivity::class.java)
-                    intent.putExtra("game_id", gameId)
-                    intent.putExtra("value_set_id", valueSet.valueSetId())
-                    activity.startActivity(intent)
-                }
-            }
-        })
+//        viewHolder.setOnClick(View.OnClickListener {
+//            val intent = Intent(activity, GameActivity::class.java)
+//            intent.putExtra("game", game)
+//            activity.startActivity(intent)
+//        })
 
     }
 
 
-    override fun getItemCount() = this.valueSets.size
+    override fun getItemCount() = this.values.size
 
 }
+
 
 
 // ---------------------------------------------------------------------------------------------
@@ -255,17 +272,15 @@ class ValueSetRecyclerViewAdapter(val valueSets : List<ValueSet>,
 /**
  * The View Holder caches a view for each item.
  */
-class ValueSetSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
+class ValueSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var layout : LinearLayout? = null
-    var headerView : TextView?  = null
+    var valueView : TextView?  = null
     var descView   : TextView?  = null
-    var countView  : TextView?  = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -274,10 +289,8 @@ class ValueSetSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
 
     init
     {
-        this.layout     = itemView.findViewById(R.id.value_set_list_item_layout) as LinearLayout
-        this.headerView = itemView.findViewById(R.id.value_set_list_item_header) as TextView
-        this.descView   = itemView.findViewById(R.id.value_set_list_item_description) as TextView
-        this.countView  = itemView.findViewById(R.id.value_set_list_item_count) as TextView
+        this.valueView = itemView.findViewById(R.id.value_list_item_value) as TextView
+        this.descView   = itemView.findViewById(R.id.value_list_item_description) as TextView
     }
 
 
@@ -285,9 +298,9 @@ class ValueSetSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
     // VIEW HOLDER
     // -----------------------------------------------------------------------------------------
 
-    fun setHeaderText(headerString : String)
+    fun setValueText(valueString : String)
     {
-        this.headerView?.text = headerString
+        this.valueView?.text = valueString
     }
 
 
@@ -296,33 +309,25 @@ class ValueSetSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
         this.descView?.text = descriptionString
     }
 
-
-    fun setItemCount(count : Int)
-    {
-        this.countView?.text = count.toString()
-    }
-
-
-    fun setOnClick(onClick : View.OnClickListener)
-    {
-        this.layout?.setOnClickListener(onClick)
-    }
-
 }
 
 
-object ValueSetSummaryView
+// ---------------------------------------------------------------------------------------------
+// VALUE SUMMARY VIEW
+// ---------------------------------------------------------------------------------------------
+
+object ValueSummaryView
 {
 
     fun view(themeId : ThemeId, context : Context) : View
     {
         val layout = this.viewLayout(context)
 
-        // Items Count
-        layout.addView(this.itemCountView(themeId, context))
+        // Value
+        layout.addView(this.valueView(themeId, context))
 
-        // Summary
-        layout.addView(this.summaryView(themeId, context))
+        // Description
+        layout.addView(this.descriptionView(themeId, context))
 
         return layout
     }
@@ -332,16 +337,13 @@ object ValueSetSummaryView
     {
         val layout = LinearLayoutBuilder()
 
-        layout.id                   = R.id.value_set_list_item_layout
-
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.orientation          = LinearLayout.HORIZONTAL
-        layout.gravity              = Gravity.CENTER_VERTICAL
+        layout.orientation          = LinearLayout.VERTICAL
 
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.leftDp       = 10f
+        layout.padding.rightDp      = 10f
         layout.padding.topDp        = 12f
         layout.padding.bottomDp     = 12f
 
@@ -349,101 +351,54 @@ object ValueSetSummaryView
     }
 
 
-    private fun summaryView(themeId : ThemeId, context : Context) : LinearLayout
+    private fun valueView(themeId : ThemeId, context : Context) : TextView
     {
-        // (1) Declarations
-        // --------------------------------------------------------------------------------------
+        val value                   = TextViewBuilder()
 
-        val layout      = LinearLayoutBuilder()
-        val header      = TextViewBuilder()
-        val description = TextViewBuilder()
+        value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        // (2) Layout
-        // --------------------------------------------------------------------------------------
+        value.id                    = R.id.value_list_item_value
 
-        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation          = LinearLayout.VERTICAL
-
-        layout.child(header)
-              .child(description)
-
-        // (3 A) Header
-        // --------------------------------------------------------------------------------------
-
-        header.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        header.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        header.id                   = R.id.value_set_list_item_header
-
-        val headerColorTheme = ColorTheme(setOf(
+        val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        header.color                = ThemeManager.color(themeId, headerColorTheme)
+        value.color                 = ThemeManager.color(themeId, colorTheme)
 
-        header.font                 = Font.typeface(TextFont.FiraSans,
+        value.font                  = Font.typeface(TextFont.FiraSans,
                                                     TextFontStyle.Regular,
                                                     context)
 
-        header.sizeSp               = 16f
+        value.sizeSp                = 17f
 
-//        header.margin.bottomDp      = 3f
-
-        // (3 B) Description
-        // --------------------------------------------------------------------------------------
-
-        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT
-        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        description.id              = R.id.value_set_list_item_description
-
-        val descriptionColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        description.color           = ThemeManager.color(themeId, descriptionColorTheme)
-
-        description.font            = Font.typeface(TextFont.FiraSans,
-                                                    TextFontStyle.Regular,
-                                                    context)
-
-        description.sizeSp          = 14f
-
-        return layout.linearLayout(context)
+        return value.textView(context)
     }
 
 
-    private fun itemCountView(themeId : ThemeId, context : Context) : TextView
+    private fun descriptionView(themeId : ThemeId, context : Context) : TextView
     {
-        val count                   = TextViewBuilder()
+        val desc                    = TextViewBuilder()
 
-        count.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
-        count.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+        desc.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
+        desc.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        count.id                    = R.id.value_set_list_item_count
-
-        count.gravity               = Gravity.CENTER
+        desc.id                     = R.id.value_list_item_description
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        count.color                 = ThemeManager.color(themeId, colorTheme)
+        desc.color                  = ThemeManager.color(themeId, colorTheme)
 
-        count.font                  = Font.typeface(TextFont.FiraSans,
+        desc.font                   = Font.typeface(TextFont.FiraSans,
                                                     TextFontStyle.Regular,
                                                     context)
 
-        count.backgroundResource    = R.drawable.bg_value_set_size
+        desc.sizeSp                 = 13f
 
-        count.sizeSp                = 15f
-
-        count.margin.rightDp        = 15f
-
-        return count.textView(context)
+        return desc.textView(context)
     }
 
 
 }
-
 
 

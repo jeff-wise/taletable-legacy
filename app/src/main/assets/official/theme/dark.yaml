@@ -80,8 +80,12 @@ palette:
   color: '#494949'
 - color_id: medium_grey_10
   color: '#454545'
-- color_id: dark_grey
-  color: '#282828'
+- color_id: medium_grey_11
+  color: '#404147'
+- color_id: medium_grey_12
+  color: '#3C3D42'
+- color_id: dark_grey_1
+  color: '#37383D'
 - color_id: dark_grey_2
   color: '#35363B'
 - color_id: dark_grey_3
@@ -110,6 +114,10 @@ palette:
   color: '#191A1C'
 - color_id: dark_grey_15
   color: '#171819'
+- color_id: dark_blue_1
+  color: '#1A2429'
+- color_id: dark_blue_2
+  color: '#171F24'
 - color_id: light_blue_1
   color: '#CEF0FF'
 - color_id: light_blue_2
@@ -149,9 +157,35 @@ palette:
 - color_id: light_blue_19
   color: '#7A8D96'
 - color_id: gold_1
-  color: '#D6CAA3'
+  color: '#F2E5B9'
 - color_id: gold_2
-  color: '#E0D1AE'
+  color: '#EBDDB3'
+- color_id: gold_3
+  color: '#E5D9AF'
+- color_id: gold_4
+  color: '#DED1A9'
+- color_id: gold_5
+  color: '#D9CDA5'
+- color_id: gold_6
+  color: '#D4C8A1'
+- color_id: gold_7
+  color: '#CCC19B'
+- color_id: gold_8
+  color: '#C7BC97'
+- color_id: gold_9
+  color: '#C2B794'
+- color_id: gold_10
+  color: '#BAB08E'
+- color_id: gold_11
+  color: '#B5AB8A'
+- color_id: gold_12
+  color: '#ADA484'
+- color_id: gold_13
+  color: '#A89F80'
+- color_id: gold_14
+  color: '#A39A7C'
+- color_id: gold_15
+  color: '#9C9376'
 - color_id: light_green_1
   color: '#EAFFCD'
 - color_id: light_green_2
@@ -182,8 +216,44 @@ palette:
   color: '#A4B28F'
 - color_id: green_1
   color: '#9FAD8B'
-- color_id: green_15
-  color: '#424739'
+- color_id: green_2
+  color: '#98A685'
+- color_id: green_3
+  color: '#919E7F'
+- color_id: green_4
+  color: '#8A9679'
+- color_id: green_5
+  color: '#838F73'
+- color_id: green_6
+  color: '#7C876D'
+- color_id: green_7
+  color: '#757F66'
+- color_id: green_8
+  color: '#6C755E'
+- color_id: green_9
+  color: '#67705A'
+- color_id: green_10
+  color: '#626B56'
+- color_id: dark_green_1
+  color: '#5B6350'
+- color_id: dark_green_2
+  color: '#545C4A'
+- color_id: dark_green_3
+  color: '#4D5444'
+- color_id: dark_green_4
+  color: '#494F40'
+- color_id: dark_green_5
+  color: '#444A3B'
+- color_id: dark_green_6
+  color: '#3F4537'
+- color_id: dark_green_7
+  color: '#3B4033'
+- color_id: dark_green_8
+  color: '#363B2F'
+- color_id: dark_green_9
+  color: '#31362B'
+- color_id: dark_green_10
+  color: '#2A2E25'
 ui_colors:
   toolbar_background: dark_grey_12
   toolbar_icons: light_grey_14

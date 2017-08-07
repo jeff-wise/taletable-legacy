@@ -3,6 +3,7 @@ package com.kispoko.tome.app
 
 
 import com.kispoko.tome.official.OfficialError
+import com.kispoko.tome.rts.campaign.CampaignError
 import com.kispoko.tome.rts.game.GameError
 import com.kispoko.tome.rts.game.engine.EngineError
 import com.kispoko.tome.rts.game.engine.interpreter.EvalError
@@ -65,6 +66,14 @@ class AppEvalError(val error : EvalError) : AppError()
 
 
 class AppGameError(val error : GameError) : AppError()
+{
+    override fun debugMessage(): String = error.debugMessage()
+
+    override fun logMessage(): String = error.userMessage()
+}
+
+
+class AppCampaignError(val error : CampaignError) : AppError()
 {
     override fun debugMessage(): String = error.debugMessage()
 

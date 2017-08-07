@@ -4,6 +4,7 @@ package com.kispoko.tome.model.sheet.widget.table
 
 import android.view.View
 import android.widget.TableLayout
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -13,6 +14,7 @@ import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.TableWidgetFormat
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.*
@@ -113,10 +115,9 @@ data class TableWidgetRow(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(columns : List<TableWidgetColumn>,
-             format : TableWidgetFormat,
-             tableWidgetId : UUID,
-             sheetUIContext: SheetUIContext) : View
+    fun view(tableWidget : TableWidget,
+             rowIndex : Int,
+             sheetUIContext : SheetUIContext) : View
     {
         val tableRow                = TableRowBuilder()
 
@@ -124,11 +125,21 @@ data class TableWidgetRow(override val id : UUID,
         tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT
         tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT
 
-        tableRow.marginSpacing      = format.rowFormat().margins()
-        tableRow.paddingSpacing     = format.rowFormat().padding()
+        tableRow.marginSpacing      = tableWidget.format().rowFormat().margins()
+        tableRow.paddingSpacing     = tableWidget.format().rowFormat().padding()
 
         tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
-                format.rowFormat().backgroundColorTheme())
+                tableWidget.format().rowFormat().backgroundColorTheme())
+
+
+        tableRow.onClick            = View.OnClickListener {
+            val sheetActivity = sheetUIContext.context as SheetActivity
+            val tableRowAction = SheetAction.TableRow(tableWidget.id,
+                                                      rowIndex,
+                                                      tableWidget.tableName(),
+                                                      tableWidget.columns())
+            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+        }
 
 
         this.cells().forEachIndexed { i, tableWidgetCell ->
@@ -136,7 +147,7 @@ data class TableWidgetRow(override val id : UUID,
             {
                 is TableWidgetBooleanCell ->
                 {
-                    val column = columns[i]
+                    val column = tableWidget.columns()[i]
                     when (column)
                     {
                         is TableWidgetBooleanColumn ->
@@ -150,13 +161,14 @@ data class TableWidgetRow(override val id : UUID,
                 }
                 is TableWidgetNumberCell ->
                 {
-                    val column = columns[i]
+                    val column = tableWidget.columns()[i]
                     when (column)
                     {
                         is TableWidgetNumberColumn ->
                             tableRow.rows.add(tableWidgetCell.view(this.format(),
                                                                    column,
-                                                                   tableWidgetId,
+                                                                   rowIndex,
+                                                                   tableWidget,
                                                                    sheetUIContext))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.NUMBER,
@@ -165,13 +177,14 @@ data class TableWidgetRow(override val id : UUID,
                 }
                 is TableWidgetTextCell ->
                 {
-                    val column = columns[i]
+                    val column = tableWidget.columns()[i]
                     when (column)
                     {
                         is TableWidgetTextColumn ->
                             tableRow.rows.add(tableWidgetCell.view(this.format(),
                                                                    column,
-                                                                   tableWidgetId,
+                                                                   rowIndex,
+                                                                   tableWidget,
                                                                    sheetUIContext))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.TEXT,
