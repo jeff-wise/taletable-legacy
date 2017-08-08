@@ -186,7 +186,7 @@ variables:
         gets caught
         joins pirates
 sections:
-- name: Profile
+- name: About Me
   pages:
   - name: My Stats
     format:
@@ -317,6 +317,7 @@ sections:
                     size: 15
             - type: story_part_variable
               story_part_variable:
+                numeric_editor_type: simple
                 variable:
                   type: variable_number
                   variable_number:
@@ -349,7 +350,7 @@ sections:
                 variable:
                   type: variable_text
                   variable_text:
-                    id: race
+                    id: eye_color
                     label: Eye Color
                     description: Eye Color
                     value:
@@ -1661,7 +1662,7 @@ sections:
           widget_text:
             id: my_story_part_1
             value_variable_id: my_story_part_1
-- name: Encounter
+- name: Action!
   pages:
   - name: Combat
     format:
@@ -1921,5 +1922,5 @@ sections:
                   color_id: light_grey_22
             limit_value_variable_id: max_health
             current_value_variable_id: current_health
-- name: Campaign
+- name: Notes
   pages:

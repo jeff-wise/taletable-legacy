@@ -302,6 +302,7 @@
 
     <string name="campaign">Campaign</string>
     <string name="game">Game</string>
+    <string name="edit_number">Edit Number</string>
 
     <string name="conditional_value">Conditional Value</string>
     <string name="dice_roll">Dice Roll</string>

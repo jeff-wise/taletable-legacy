@@ -839,7 +839,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 //        layout.margin.leftDp    = 2f
 
         val bgColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("green_15")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 

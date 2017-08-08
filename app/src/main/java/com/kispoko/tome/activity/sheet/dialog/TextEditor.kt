@@ -346,7 +346,7 @@ class TextEditorViewBuilder(val title : String,
 
         value.padding.leftDp        = 8f
         value.padding.rightDp       = 8f
-        value.padding.topDp         = 6f
+        value.padding.topDp         = 8f
 
         value.margin.leftDp         = 2f
         value.margin.rightDp        = 2f
@@ -508,7 +508,7 @@ class TextEditorViewBuilder(val title : String,
         layout.gravity          = Gravity.CENTER
 
         val bgColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 

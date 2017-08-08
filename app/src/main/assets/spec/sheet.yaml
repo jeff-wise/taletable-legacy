@@ -1188,6 +1188,11 @@ types:
     presence: optional
     description: >
       The value variable.
+  - name: numeric_editor_type
+    type: numeric_editor_type
+    presence: optional
+    description: >
+      The numeric editor type (if is number value).
 - name: story_part_icon
   label: Story Part Icon
   description: >

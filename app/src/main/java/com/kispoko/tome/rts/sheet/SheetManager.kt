@@ -362,11 +362,13 @@ object SheetManager
                     is WidgetUpdate ->
                     {
                         val rootView = this.currentSheetUI?.rootSheetView()
-                        if (rootView != null)
+                        val context = this.currentSheetUI?.context()
+                        if (rootView != null && context != null)
                         {
                             sheetRecord.sheet().update(sheetUpdate,
                                                        sheetRecord.sheetContext,
-                                                       rootView)
+                                                       rootView,
+                                                       context)
                         }
                     }
                 }

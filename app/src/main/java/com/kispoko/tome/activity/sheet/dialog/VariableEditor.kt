@@ -13,8 +13,39 @@ import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.UpdateTarget
 import effect.Err
 import effect.Val
-import java.util.*
 
+
+
+/**
+ * Variable Editor Dialog
+ */
+fun openVariableEditorDialog(variable : Variable,
+                             numericEditorType : NumericEditorType?,
+                             updateTarget : UpdateTarget,
+                             sheetUIContext : SheetUIContext)
+{
+
+    when (variable)
+    {
+        is TextVariable   -> openTextVariableEditorDialog(variable,
+                                                          updateTarget,
+                                                          sheetUIContext)
+        is NumberVariable ->
+        {
+            if (numericEditorType != null) {
+                openNumberVariableEditorDialog(variable,
+                                               numericEditorType,
+                                               updateTarget,
+                                               sheetUIContext)
+            } else {
+                openNumberVariableEditorDialog(variable,
+                                               updateTarget,
+                                               sheetUIContext)
+            }
+        }
+    }
+
+}
 
 
 /**
@@ -70,6 +101,14 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                     val adderDialog = AdderDialogFragment.newInstance(adderState,
                                                                       SheetContext(sheetUIContext))
                     adderDialog.show(sheetActivity.supportFragmentManager, "")
+                }
+                is NumericEditorType.Simple ->
+
+                {
+                    val simpleDialog = NumberEditorDialog.newInstance(variableValue.value,
+                                                                      updateTarget,
+                                                                      SheetContext(sheetUIContext))
+                    simpleDialog.show(sheetActivity.supportFragmentManager, "")
                 }
             }
         }

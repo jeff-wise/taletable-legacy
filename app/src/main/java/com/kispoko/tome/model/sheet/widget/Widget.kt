@@ -1687,6 +1687,13 @@ data class StoryWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var layoutViewId : Int? = null
+
+
+    // -----------------------------------------------------------------------------------------
     // SCHEMA
     // -----------------------------------------------------------------------------------------
 
@@ -1789,19 +1796,19 @@ data class StoryWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(storyWidgetUpdate : WidgetUpdateStoryWidget,
-               sheetContext : SheetContext,
+               sheetUIContext : SheetUIContext,
                rootView : View)
     {
         when (storyWidgetUpdate)
         {
             is StoryWidgetUpdateNumberPart ->
-                this.updateNumberPart(storyWidgetUpdate, sheetContext, rootView)
+                this.updateNumberPart(storyWidgetUpdate, sheetUIContext, rootView)
         }
     }
 
 
     private fun updateNumberPart(partUpdate : StoryWidgetUpdateNumberPart,
-                                 sheetContext : SheetContext,
+                                 sheetUIContext : SheetUIContext,
                                  rootView : View)
     {
         val part = this.story()[partUpdate.partIndex]
@@ -1819,10 +1826,20 @@ data class StoryWidget(override val id : UUID,
                 }
 
                 // Update View
-                val viewId = part.viewId
-                if (viewId != null) {
-                    val textView = rootView.findViewById(viewId) as TextView
-                    textView?.text = Util.doubleString(partUpdate.newNumber)
+                val layoutViewId = this.layoutViewId
+                if (layoutViewId == null)
+                {
+                    val viewId = part.viewId
+                    if (viewId != null) {
+                        val textView = rootView.findViewById(viewId) as TextView
+                        textView?.text = Util.doubleString(partUpdate.newNumber)
+                    }
+                }
+                else
+                {
+                    val layout = rootView.findViewById(layoutViewId) as LinearLayout
+                    layout.removeAllViews()
+                    layout.addView(StoryWidgetView.storySpannableView(this, sheetUIContext))
                 }
             }
         }

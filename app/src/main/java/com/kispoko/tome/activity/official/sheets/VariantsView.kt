@@ -111,7 +111,17 @@ class VariantsViewBuilder(val sheetName : String,
     {
         val layout = this.buttonsViewLayout()
 
-        val buttonViews : MutableList<View> = mutableListOf()
+        val buttonViews : MutableList<TextView> = mutableListOf()
+
+        val selectedTextColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        val selectedTextColor = ThemeManager.color(themeId, selectedTextColorTheme)
+
+        val unselectedTextColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        val unselectedTextColor = ThemeManager.color(themeId, unselectedTextColorTheme)
 
         variants.forEachIndexed { index, variant ->
             val buttonView = this.buttonView(variant, index)
@@ -126,9 +136,17 @@ class VariantsViewBuilder(val sheetName : String,
                     selectedIndex = index
                     buttonViews.forEachIndexed { buttonIndex, buttonView ->
                         if (buttonIndex == selectedIndex)
+                        {
                             buttonView.setBackgroundResource(R.drawable.bg_variant_button_selected)
+                            if (selectedTextColor != null)
+                                buttonView.setTextColor(selectedTextColor)
+                        }
                         else
+                        {
                             buttonView.setBackgroundResource(R.drawable.bg_variant_button_unselected)
+                            if (unselectedTextColor != null)
+                                buttonView.setTextColor(unselectedTextColor)
+                        }
                     }
                 }
             }
@@ -164,10 +182,21 @@ class VariantsViewBuilder(val sheetName : String,
 
         button.text             = variant.name
 
-        val textColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        button.color            = ThemeManager.color(themeId, textColorTheme)
+
+        if (index == this.selectedIndex)
+        {
+            val textColorTheme  = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_8")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+            button.color            = ThemeManager.color(themeId, textColorTheme)
+        }
+        else
+        {
+            val textColorTheme  = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+            button.color            = ThemeManager.color(themeId, textColorTheme)
+        }
 
         button.font             = Font.typeface(TextFont.FiraSans,
                                                 TextFontStyle.Regular,
@@ -197,8 +226,8 @@ class VariantsViewBuilder(val sheetName : String,
         button.padding.leftDp   = 8f
         button.padding.rightDp  = 8f
 
-        button.margin.leftDp    = 8f
-        button.margin.rightDp   = 8f
+        button.margin.leftDp    = 10f
+        button.margin.rightDp   = 10f
         button.margin.bottomDp  = 10f
 
         return button.textView(context)

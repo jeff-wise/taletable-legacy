@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet
 
 
+import android.content.Context
 import android.view.View
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -201,13 +202,14 @@ data class Sheet(override val id : UUID,
 
     fun update(widgetUpdate : WidgetUpdate,
                sheetContext : SheetContext,
-               rootView : View) =
+               rootView : View,
+               context : Context) =
         when (widgetUpdate)
         {
             is WidgetUpdateStoryWidget ->
             {
                 val storyWidget = this.storyWidgetById[widgetUpdate.widgetId]
-                storyWidget?.update(widgetUpdate, sheetContext, rootView)
+                storyWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
             }
             is WidgetUpdateTableWidget ->
             {

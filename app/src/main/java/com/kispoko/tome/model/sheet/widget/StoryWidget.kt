@@ -12,6 +12,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -249,7 +250,9 @@ data class StoryPartSpan(override val id : UUID,
  */
 data class StoryPartVariable(override val id : UUID,
                              val format : Comp<TextFormat>,
-                             val variable : Comp<Variable>) : StoryPart(), Serializable
+                             val variable : Comp<Variable>,
+                             val numericEditorType : Maybe<Prim<NumericEditorType>>)
+                              : StoryPart(), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -263,21 +266,34 @@ data class StoryPartVariable(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : TextFormat, variable : Variable)
-        : this(UUID.randomUUID(), Comp(format), Comp(variable))
+    constructor(format : TextFormat,
+                variable : Variable,
+                numericEditorType : Maybe<NumericEditorType>)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Comp(variable),
+               maybeLiftPrim(numericEditorType))
+
 
     companion object : Factory<StoryPartVariable>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartVariable> = when (doc)
         {
-            is DocDict -> effApply(::StoryPartVariable,
-                                   // Format
-                                   split(doc.maybeAt("format"),
-                                         effValue(TextFormat.default()),
-                                         { TextFormat.fromDocument(it) }),
-                                   // Style
-                                   doc.at("variable") ap { Variable.fromDocument(it) }
-                                   )
+            is DocDict ->
+            {
+                effApply(::StoryPartVariable,
+                         // Format
+                         split(doc.maybeAt("format"),
+                               effValue(TextFormat.default()),
+                               { TextFormat.fromDocument(it) }),
+                         // Style
+                         doc.at("variable") ap { Variable.fromDocument(it) },
+                         // Numeric Editor Type
+                         split(doc.maybeAt("numeric_editor_type"),
+                               effValue<ValueError,Maybe<NumericEditorType>>(Nothing()),
+                               { effApply(::Just, NumericEditorType.fromDocument(it)) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -291,6 +307,9 @@ data class StoryPartVariable(override val id : UUID,
 
 
     override fun variable() : Variable = this.variable.value
+
+
+    fun numericEditorType() : NumericEditorType? = getMaybePrim(this.numericEditorType)
 
 
     fun valueString(sheetUIContext : SheetUIContext) : String
@@ -558,9 +577,17 @@ object StoryWidgetView
 
         val wc = storyWidget.story().map { it.wordCount() }.sum()
         if (wc <= 5)
+        {
             layout.addView(this.storyFlexView(storyWidget, sheetUIContext))
+        }
         else
-            layout.addView(this.storySpannableView(storyWidget, sheetUIContext))
+        {
+            val layoutViewId = Util.generateViewId()
+            storyWidget.layoutViewId = layoutViewId
+            layout.id                = layoutViewId
+            val spanView = this.storySpannableView(storyWidget, sheetUIContext)
+            layout.addView(spanView)
+        }
 
 
         // Layout on click
@@ -694,14 +721,13 @@ object StoryWidgetView
                         {
                             openVariableEditorDialog(
                                     storyPart.variable(),
+                                    storyPart.numericEditorType(),
                                     UpdateTargetStoryWidgetPart(storyWidgetId, partIndex),
                                     sheetUIContext)
                         }
 
                         override fun updateDrawState(ds: TextPaint?) {
-//                            val color = SheetManager.color(sheetUIContext.sheetId,
-//                                            storyPart.textFormat().style().colorTheme())
-//                            ds?.linkColor = color
+                           // super.updateDrawState(ds)
                         }
                     }
 
@@ -953,6 +979,7 @@ object StoryWidgetView
         val variable = storyPart.variable()
         text.onClick        = View.OnClickListener {
             openVariableEditorDialog(variable,
+                                     storyPart.numericEditorType(),
                                      UpdateTargetStoryWidgetPart(widgetId, partIndex),
                                      sheetUIContext)
         }

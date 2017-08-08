@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import android.util.Log
 import android.view.Gravity
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -28,13 +29,19 @@ sealed class NumericEditorType : SQLSerializable, Serializable
 
     object Calculator : NumericEditorType()
     {
-        override fun asSQLValue() : SQLValue = SQLText( {"calculator"} )
+        override fun asSQLValue() : SQLValue = SQLText({ "calculator" })
+    }
+
+
+    object Simple : NumericEditorType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "simple" })
     }
 
 
     object Adder : NumericEditorType()
     {
-        override fun asSQLValue() : SQLValue = SQLText( {"adder"} )
+        override fun asSQLValue() : SQLValue = SQLText({ "adder" })
     }
 
 
@@ -47,6 +54,7 @@ sealed class NumericEditorType : SQLSerializable, Serializable
                 "calculator" -> effValue<ValueError,NumericEditorType>(
                                     NumericEditorType.Calculator)
                 "adder"      -> effValue<ValueError,NumericEditorType>(NumericEditorType.Adder)
+                "simple"     -> effValue<ValueError,NumericEditorType>(NumericEditorType.Simple)
                 else         -> effError<ValueError,NumericEditorType>(
                                     UnexpectedValue("NumericEditorType", doc.text, doc.path))
             }
