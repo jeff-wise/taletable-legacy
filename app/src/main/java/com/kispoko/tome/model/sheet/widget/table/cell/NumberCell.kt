@@ -15,7 +15,6 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
@@ -191,7 +190,9 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
                                                       rowIndex,
                                                       tableWidget.tableName(),
                                                       tableWidget.columns())
-            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+//            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+            sheetActivity.showTableEditor(tableRowAction, SheetContext(sheetUIContext))
+
             true
         }
 

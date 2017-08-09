@@ -34,7 +34,7 @@ class TableActionBarViewBuilder(val action : SheetAction.TableRow,
         layout.addView(this.headerView())
 
         // Divider
-        layout.addView(this.dividerView())
+//        layout.addView(this.dividerView())
 
         // Buttons View
         layout.addView(this.buttonsView())
@@ -59,8 +59,6 @@ class TableActionBarViewBuilder(val action : SheetAction.TableRow,
 
         layout.padding.bottomDp     = 10f
 
-        layout.elevation            = 6f
-
         return layout.linearLayout(sheetUIContext.context)
     }
 
@@ -77,7 +75,7 @@ class TableActionBarViewBuilder(val action : SheetAction.TableRow,
         layout.addView(this.headerLabelView())
 
         // Exit Button
-        layout.addView(this.headerExitButtonView())
+    //    layout.addView(this.headerExitButtonView())
 
         return layout
     }

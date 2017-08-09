@@ -142,7 +142,8 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
                                                       rowIndex,
                                                       tableWidget.tableName(),
                                                       tableWidget.columns())
-            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+//            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+            sheetActivity.showTableEditor(tableRowAction, SheetContext(sheetUIContext))
             true
         }
 

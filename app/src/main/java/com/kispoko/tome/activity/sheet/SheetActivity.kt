@@ -8,8 +8,8 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.NavigationView
-import android.support.design.widget.TabLayout
+import android.support.design.widget.*
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
@@ -38,18 +38,17 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
-import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-import java.io.Serializable
-import java.util.*
+
 
 
 /**
@@ -62,9 +61,13 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var pagePagerAdapter : PagePagerAdapter?   = null
-    var viewPager : ViewPager? = null
-    var bottomNavigation : AHBottomNavigation? = null
+    private var pagePagerAdapter : PagePagerAdapter?   = null
+    private var viewPager : ViewPager? = null
+    private var bottomNavigation : AHBottomNavigation? = null
+
+    private var fab : FloatingActionButton? = null
+    private var bottomSheet : LinearLayout? = null
+    private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
 
     var actionBarActive : Boolean = false
 
@@ -87,6 +90,12 @@ class SheetActivity : AppCompatActivity(), SheetUI
         this.configureToolbar("")
 
         this.initializeViews()
+
+        this.initializeFAB()
+
+        this.initializeBottomNavigation()
+
+        this.initializeBottomSheet()
 
         // (3) Load Sheet
         // -------------------------------------------------------------------------------------
@@ -140,6 +149,93 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
+    private fun initializeFAB()
+    {
+        val fab = this.findViewById(R.id.button) as FloatingActionButton
+        fab.hide()
+        this.fab = fab
+    }
+
+
+    private fun initializeBottomNavigation()
+    {
+        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
+        this.bottomNavigation = bottomNavigation
+    }
+
+
+    private fun initializeBottomSheet()
+    {
+        val bottomSheet = this.findViewById(R.id.bottom_sheet) as LinearLayout
+
+        val behavior = BottomSheetBehavior.from(bottomSheet)
+
+        val activity = this
+        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onSlide(bottomSheet : View, slideOffset : Float) { }
+
+            override fun onStateChanged(bottomSheet : View, newState : Int)
+            {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED)
+                {
+                    //bottomNavigation?.hideBottomNavigation()
+//                    bottomNavigation?.visibility = View.GONE
+
+                    val layoutParams = fab?.layoutParams as CoordinatorLayout.LayoutParams?
+                    layoutParams?.anchorId = R.id.bottom_sheet
+                    fab?.layoutParams = layoutParams
+                    fab?.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_fab_add))
+                    fab?.show()
+
+                    val bottomSheetHeight = bottomSheet.measuredHeight
+                    viewPager?.setPadding(0, 0, 0, bottomSheetHeight)
+
+//                    val vp = viewPager
+//                    if (vp != null)
+//                    {
+//                        val layoutParams = vp.layoutParams
+//                        layoutParams.height = vp.measuredHeight - bottomSheetHeight
+//                        vp.layoutParams = layoutParams
+//
+//                    }
+                }
+                else if (newState == BottomSheetBehavior.STATE_COLLAPSED)
+                {
+                    val viewPager = viewPager
+                    if (viewPager != null)
+                    {
+                        viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
+                    }
+
+                    bottomNavigation?.restoreBottomNavigation()
+
+//                    bottomNavigation?.visibility = View.VISIBLE
+
+                    val layoutParams = fab?.layoutParams as CoordinatorLayout.LayoutParams?
+                    layoutParams?.anchorId = View.NO_ID
+                    fab?.layoutParams = layoutParams
+                    fab?.hide()
+                    fab?.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_fab_random))
+
+                }
+//                else {
+//                    fab?.setAncdd
+//                    fab?.hide()
+//                }
+//                else if (newState == BottomSheetBehavior.STATE_HIDDEN)
+//                    fab?.hide()
+//                else if (newState == BottomSheetBehavior.STATE_COLLAPSED)
+//                    fab?.hide()
+            }
+
+        })
+
+        this.bottomSheet = bottomSheet
+        this.bottomSheetBehavior = behavior
+    }
+
+
     /**
      * Initialize the sidebars.
      */
@@ -177,10 +273,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
     {
-        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
-
-        this.bottomNavigation = bottomNavigation
-
         val sheetEff = SheetManager.sheet(sheetId)
 
         when (sheetEff)
@@ -199,15 +291,15 @@ class SheetActivity : AppCompatActivity(), SheetUI
                 val item3 = AHBottomNavigationItem(section3.nameString(),
                                                    section3.icon().drawableResId())
 
-                bottomNavigation.addItem(item1)
-                bottomNavigation.addItem(item2)
-                bottomNavigation.addItem(item3)
+                bottomNavigation?.addItem(item1)
+                bottomNavigation?.addItem(item2)
+                bottomNavigation?.addItem(item3)
 
-                bottomNavigation.defaultBackgroundColor =
+                bottomNavigation?.defaultBackgroundColor =
                                 SheetManager.color(sheetId, uiColors.bottomBarBackgroundColorId())
-                bottomNavigation.accentColor =
+                bottomNavigation?.accentColor =
                                 SheetManager.color(sheetId, uiColors.bottomBarActiveColorId())
-                bottomNavigation.inactiveColor =
+                bottomNavigation?.inactiveColor =
                                 SheetManager.color(sheetId, uiColors.bottomBarInactiveColorId())
             }
             is Err -> ApplicationLog.error(sheetEff.error)
@@ -262,6 +354,22 @@ class SheetActivity : AppCompatActivity(), SheetUI
         actionBarView.visibility = View.GONE
 
         this.actionBarActive = false
+    }
+
+
+    fun showTableEditor(sheetAction : SheetAction.TableRow, sheetContext : SheetContext)
+    {
+        this.bottomNavigation?.hideBottomNavigation()
+//        this.bottomNavigation?.visibility = View.GONE
+
+        val tableActionBarBuilder =
+                TableActionBarViewBuilder(sheetAction,
+                        SheetUIContext(sheetContext, this))
+
+        this.bottomSheet?.removeAllViews()
+        this.bottomSheet?.addView(tableActionBarBuilder.view())
+
+        this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
 
