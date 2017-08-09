@@ -23,6 +23,15 @@ data class VariableAdded(val variableId : VariableId) : StateEvent()
 }
 
 
+data class VariableUpdated(val variableId : VariableId) : StateEvent()
+{
+    override fun debugMessage() : String = """Variable Updated:
+            |    Variable Id: ${variableId.name.value.value}""".trimMargin()
+
+    override fun logMessage(): String = debugMessage()
+}
+
+
 data class MechanicAdded(val mechanicId : MechanicId,
                          val variableIds : Set<VariableId>) : StateEvent()
 {

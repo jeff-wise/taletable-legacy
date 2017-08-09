@@ -254,10 +254,10 @@ class TextEditorViewBuilder(val title : String,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.margin.bottomDp      = 2f
-        layout.margin.topDp         = 2f
-        layout.margin.leftDp        = 2f
-        layout.margin.rightDp       = 2f
+        // layout.margin.bottomDp      = 2f
+//        layout.margin.topDp         = 2f
+//        layout.margin.leftDp        = 2f
+//        layout.margin.rightDp       = 2f
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
@@ -340,16 +340,16 @@ class TextEditorViewBuilder(val title : String,
 
 //        value.underlineColor        = R.color.dark_blue_hl_1
 
-        value.minHeightDp           = 120f
+        value.minHeightDp           = 100f
 
         value.gravity               = Gravity.TOP
 
         value.padding.leftDp        = 8f
         value.padding.rightDp       = 8f
-        value.padding.topDp         = 8f
+//        value.padding.topDp         = 8f
 
-        value.margin.leftDp         = 2f
-        value.margin.rightDp        = 2f
+//        value.margin.leftDp         = 2f
+//        value.margin.rightDp        = 2f
         value.margin.bottomDp       = 2f
 
         value.text                  = this.text
@@ -385,9 +385,9 @@ class TextEditorViewBuilder(val title : String,
 
         layout.gravity          = Gravity.CENTER_VERTICAL or Gravity.END
 
-        layout.margin.bottomDp  = 2f
-        layout.margin.rightDp   = 2f
-        layout.margin.leftDp    = 2f
+//        layout.margin.bottomDp  = 2f
+//        layout.margin.rightDp   = 2f
+//        layout.margin.leftDp    = 2f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -414,7 +414,7 @@ class TextEditorViewBuilder(val title : String,
         layout.gravity          = Gravity.CENTER
 
         val bgColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
@@ -469,8 +469,8 @@ class TextEditorViewBuilder(val title : String,
         label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-//        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
-        label.textId        = R.string.done
+        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
+//        label.textId        = R.string.done
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_14")),

@@ -2325,7 +2325,7 @@ data class TextWidget(override val id : UUID,
     {
         val textVariable = this.valueVariable(sheetContext)
         when (textVariable) {
-            is Val -> textVariable.value.updateValue(newText)
+            is Val -> textVariable.value.updateValue(newText, sheetContext.sheetId)
             is Err -> ApplicationLog.error(textVariable.error)
         }
     }

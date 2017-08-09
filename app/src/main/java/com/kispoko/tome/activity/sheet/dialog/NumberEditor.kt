@@ -177,7 +177,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var valueString = currentValue.toString()
+    private var valueString = Util.doubleString(currentValue)
     private var valueTextView : TextView? = null
 
 

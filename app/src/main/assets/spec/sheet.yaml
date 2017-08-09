@@ -111,6 +111,10 @@ types:
     presence: optional
     description: >
       The section's pages.
+  - name: icon
+    type: icon
+    presence: required
+    description: The section icon.
 - name: section_name
   label: Section Name
   description: >

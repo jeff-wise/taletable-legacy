@@ -54,6 +54,21 @@ sealed class Icon : SQLSerializable, Serializable
         override fun asSQLValue() : SQLValue = SQLText({ "coins" })
     }
 
+    object Parchment : Icon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "parchment" })
+    }
+
+    object SwordOutline : Icon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "sword_outline" })
+    }
+
+    object Adventure : Icon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "adventure" })
+    }
+
     companion object
     {
         fun fromDocument(doc : SpecDoc) : ValueParser<Icon> = when (doc)
@@ -65,6 +80,9 @@ sealed class Icon : SQLSerializable, Serializable
                 "dice_roll"         -> effValue<ValueError,Icon>(Icon.DiceRoll)
                 "dice_roll_filled"  -> effValue<ValueError,Icon>(Icon.DiceRollFilled)
                 "coins"             -> effValue<ValueError,Icon>(Icon.Coins)
+                "parchment"         -> effValue<ValueError,Icon>(Icon.Parchment)
+                "sword_outline"     -> effValue<ValueError,Icon>(Icon.SwordOutline)
+                "adventure"         -> effValue<ValueError,Icon>(Icon.Adventure)
                 else                -> effError<ValueError,Icon>(
                                             UnexpectedValue("Icon", doc.text, doc.path))
             }
@@ -80,6 +98,9 @@ sealed class Icon : SQLSerializable, Serializable
         is DiceRoll         -> R.drawable.icon_dice_roll
         is DiceRollFilled   -> R.drawable.icon_dice_roll_filled
         is Coins            -> R.drawable.icon_coins
+        is Parchment        -> R.drawable.icon_parchment
+        is SwordOutline     -> R.drawable.icon_sword_outline
+        is Adventure        -> R.drawable.icon_adventure
     }
 
 }

@@ -13,6 +13,7 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
 import effect.*
 import lulo.document.*
@@ -629,14 +630,18 @@ data class TextVariable(override val id : UUID,
             this.variableValue().value(sheetContext)
 
 
-    fun updateValue(value : String)
+    fun updateValue(value : String, sheetId : SheetId)
     {
         when (this.variableValue())
         {
             is TextVariableLiteralValue ->
-                    this.variableValue = Sum(TextVariableLiteralValue(value))
+            {
+                this.variableValue = Sum(TextVariableLiteralValue(value))
+                SheetManager.onVariableUpdate(sheetId, this)
+            }
         }
     }
+
 }
 
 

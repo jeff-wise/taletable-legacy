@@ -2,7 +2,6 @@
 package com.kispoko.tome.rts.sheet
 
 
-import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
@@ -40,6 +39,9 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
 
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
+
+    private val onChangeListenersById : MutableMap<VariableId,MutableSet<(Variable) -> Unit>> = mutableMapOf()
+
 
     // Mechanic Indexes
     // -----------------------------------------------------------------------------------------
@@ -187,6 +189,25 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     }
 
 
+//
+//    fun updateListeners(variableId : VariableId)
+//    {
+//        val variable = this.variableWithId(variableId)
+//        when (variable)
+//        {
+//            is Val -> this.updateListeners(variable.value)
+//            is Err -> ApplicationLog.error(variable.error)
+//        }
+//    }
+
+
+    fun onVariableUpdate(variable : Variable)
+    {
+        this.updateListeners(variable)
+        ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
+    }
+
+
     /**
      * Update all listeners that the variable has been changed.
      */
@@ -221,6 +242,31 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
             }
         }
 
+
+        // (3) Update on change listeners
+        // -------------------------------------------------------------------------------------
+
+        if (onChangeListenersById.containsKey(variableId))
+        {
+            val listeners = onChangeListenersById[variableId]
+            listeners?.forEach { it(variable) }
+        }
+
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // ON CHANGE LISTENERS
+    // -----------------------------------------------------------------------------------------
+
+    fun addVariableOnChangeListener(variableId : VariableId, onChange : (Variable) -> Unit)
+    {
+        if (!this.onChangeListenersById.containsKey(variableId))
+            this.onChangeListenersById.put(variableId, mutableSetOf())
+
+        val onChangeListeners = this.onChangeListenersById[variableId]
+        onChangeListeners?.add(onChange)
     }
 
 
@@ -339,8 +385,6 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
 
 
 }
-
-
 
 
 data class MechanicState(val state : MutableMap<VariableId,Boolean>,

@@ -187,6 +187,7 @@ variables:
         joins pirates
 sections:
 - name: About Me
+  icon: parchment
   pages:
   - name: My Stats
     format:
@@ -1663,8 +1664,9 @@ sections:
             id: my_story_part_1
             value_variable_id: my_story_part_1
 - name: Action!
+  icon: sword_outline
   pages:
-  - name: Combat
+  - name: Mind
     format:
       background_color_theme:
         theme_color_ids:
@@ -1922,5 +1924,10 @@ sections:
                   color_id: light_grey_22
             limit_value_variable_id: max_health
             current_value_variable_id: current_health
-- name: Notes
+  - name: Body
+    groups:
+  - name: Roleplay
+    groups:
+- name: Adventure
+  icon: adventure
   pages:

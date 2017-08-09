@@ -141,6 +141,11 @@ object SheetManager
         }
 
 
+    fun onVariableUpdate(sheetId : SheetId, variable : Variable) =
+        SheetManager.sheetRecord(sheetId) apDo {
+            it.state.onVariableUpdate(variable)
+        }
+
 
     fun evalSheetName(sheetId : SheetId, sheetName : SheetName) : String
     {
@@ -152,6 +157,13 @@ object SheetManager
     {
         return sheetSummary.value
     }
+
+
+    fun addOnVariableChangeListener(sheetId : SheetId,
+                                    variableId : VariableId,
+                                    onChange : (Variable) -> Unit) =
+        SheetManager.sheetRecord(sheetId)
+                .apDo { it.state.addVariableOnChangeListener(variableId, onChange) }
 
 
     // -----------------------------------------------------------------------------------------

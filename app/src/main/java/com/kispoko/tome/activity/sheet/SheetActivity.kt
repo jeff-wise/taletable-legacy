@@ -32,6 +32,8 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
+import com.kispoko.tome.model.game.engine.variable.TextVariable
+import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
@@ -189,13 +191,13 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
                 val section1 = sheet.sections()[0]
                 val item1 = AHBottomNavigationItem(section1.nameString(),
-                                                   R.drawable.ic_bottom_nav_profile)
+                                                   section1.icon().drawableResId())
                 val section2 = sheet.sections()[1]
                 val item2 = AHBottomNavigationItem(section2.nameString(),
-                                                   R.drawable.ic_bottom_nav_campaign)
+                                                   section2.icon().drawableResId())
                 val section3 = sheet.sections()[2]
                 val item3 = AHBottomNavigationItem(section3.nameString(),
-                                                   R.drawable.ic_bottom_nav_encounter)
+                                                   section3.icon().drawableResId())
 
                 bottomNavigation.addItem(item1)
                 bottomNavigation.addItem(item2)
@@ -394,6 +396,18 @@ class SheetActivity : AppCompatActivity(), SheetUI
                             is Err -> ApplicationLog.error(characterName.error)
                         }
 
+                        val sheetContext = SheetManager.sheetContext(sheet)
+                        when (sheetContext)
+                        {
+                            is Val ->
+                            {
+                                SheetManager.addOnVariableChangeListener(sheet.sheetId(),
+                                        VariableId("name"),
+                                        { sheetActivity.updateToolbar(it, sheetContext.value)})
+                            }
+                        }
+
+
     //                        SheetManager.sheetRecord(sheet.sheetId()) apDo {
     //                            launch(UI) {
     //                                it.sheet.saveAsync(true, true)
@@ -407,6 +421,23 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         }
 
+    }
+
+
+    private fun updateToolbar(variable : Variable, sheetContext : SheetContext)
+    {
+        when (variable)
+        {
+            is TextVariable ->
+            {
+                val text = variable.variableValue().value(sheetContext)
+                when (text)
+                {
+                    is Val -> this.configureToolbar(text.value)
+                    is Err -> ApplicationLog.error(text.error)
+                }
+            }
+        }
     }
 
 

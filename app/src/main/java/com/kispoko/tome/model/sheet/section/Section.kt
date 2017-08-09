@@ -10,8 +10,8 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.page.Page
+import com.kispoko.tome.model.sheet.style.Icon
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -28,7 +28,8 @@ import java.util.*
  */
 data class Section(override val id : UUID,
                    val sectionName : Prim<SectionName>,
-                   val pages : Coll<Page>) : Model, Serializable
+                   val pages : Coll<Page>,
+                   val icon : Prim<Icon>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -39,6 +40,7 @@ data class Section(override val id : UUID,
     {
         this.sectionName.name   = "section_name"
         this.pages.name         = "pages"
+        this.icon.name          = "icon"
     }
 
 
@@ -47,23 +49,32 @@ data class Section(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(name : SectionName,
-                pages : MutableList<Page>)
-        : this(UUID.randomUUID(), Prim(name), Coll(pages))
+                pages : MutableList<Page>,
+                icon : Icon)
+        : this(UUID.randomUUID(),
+               Prim(name),
+               Coll(pages),
+               Prim(icon))
 
 
     companion object : Factory<Section>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Section> = when (doc)
         {
-            is DocDict -> effApply(::Section,
-                                   // Campaign Name
-                                   doc.at("name") ap { SectionName.fromDocument(it) },
-                                   // Page List
-                                   doc.list("pages") ap { docList ->
-                                       docList.mapIndexed { doc, index ->
-                                           Page.fromDocument(doc, index)
-                                       }
-                                   })
+            is DocDict ->
+            {
+                effApply(::Section,
+                         // Campaign Name
+                         doc.at("name") ap { SectionName.fromDocument(it) },
+                         // Page List
+                         doc.list("pages") ap { docList ->
+                             docList.mapIndexed { doc, index ->
+                                 Page.fromDocument(doc, index)
+                             } },
+                         // Icon
+                         doc.at("icon") ap { Icon.fromDocument(it) }
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -78,6 +89,8 @@ data class Section(override val id : UUID,
     fun nameString() : String = this.sectionName.value.value
 
     fun pages() : List<Page> = this.pages.list
+
+    fun icon() : Icon = this.icon.value
 
 
     // -----------------------------------------------------------------------------------------
