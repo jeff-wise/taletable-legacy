@@ -19,10 +19,7 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
-import com.kispoko.tome.rts.sheet.SheetAction
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.UpdateTargetNumberCell
+import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -91,6 +88,7 @@ data class NumberCellFormat(override val id : UUID,
         fun default() = NumberCellFormat(UUID.randomUUID(),
                                          Comp(defaultCellFormat),
                                          Nothing())
+
     }
 
 
@@ -175,23 +173,28 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
         layout.addView(this.valueTextView())
 
 
+
         layout.setOnClickListener {
-            Log.d("***NUMBERCELL", "on click")
-            openNumberVariableEditorDialog(cell.valueVariable(),
-                                           cell.resolveEditorType(column),
-                                           UpdateTargetNumberCell(tableWidget.id, cell.id),
-                                           sheetUIContext)
+            val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
+            when (valueVariable)
+            {
+                is Val ->
+                {
+                    openNumberVariableEditorDialog(valueVariable.value,
+                                                   cell.resolveEditorType(column),
+                                                   UpdateTargetNumberCell(tableWidget.id, cell.id),
+                                                   sheetUIContext)
+                }
+                is Err -> ApplicationLog.error(valueVariable.error)
+            }
         }
 
         // On Long Click
         layout.setOnLongClickListener {
             val sheetActivity = sheetUIContext.context as SheetActivity
-            val tableRowAction = SheetAction.TableRow(tableWidget.id,
-                                                      rowIndex,
-                                                      tableWidget.tableName(),
-                                                      tableWidget.columns())
-//            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
-            sheetActivity.showTableEditor(tableRowAction, SheetContext(sheetUIContext))
+            val updateTarget = UpdateTargetInsertTableRow(tableWidget)
+            tableWidget.selectedRow = rowIndex
+            sheetActivity.showTableEditor(updateTarget, SheetContext(sheetUIContext))
 
             true
         }
@@ -218,13 +221,13 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
         valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
         // > VALUE
-        val maybeValue = cell.valueString(sheetUIContext)
+        val maybeValue = cell.valueString(SheetContext(sheetUIContext))
         when (maybeValue)
         {
-            is Just    -> value.text = maybeValue.value
+            is Val    -> value.text = maybeValue.value
         }
 
-        val valueString = cell.valueVariable().valueString(SheetContext(sheetUIContext))
+        val valueString = cell.valueString(SheetContext(sheetUIContext))
         when (valueString) {
             is Val -> value.text = valueString.value
             is Err -> ApplicationLog.error(valueString.error)

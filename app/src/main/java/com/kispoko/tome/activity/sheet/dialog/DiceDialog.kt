@@ -18,7 +18,6 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.*
-import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -129,7 +128,7 @@ class DiceDialogFragment : DialogFragment()
 
             if (operation != null && adderState != null)
             {
-                val viewBuilder = DiceViewBuilder(operation, adderState, sheetUIContext)
+                val viewBuilder = DiceViewBuilder(operation, adderState, sheetUIContext, this)
                 return viewBuilder.view()
             }
             else
@@ -180,7 +179,8 @@ enum class DiceOperation : Serializable
 
 class DiceViewBuilder(val operation : DiceOperation,
                       val adderState : AdderState,
-                      val sheetUIContext : SheetUIContext)
+                      val sheetUIContext : SheetUIContext,
+                      val dialog : DialogFragment)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1001,7 +1001,7 @@ class DiceViewBuilder(val operation : DiceOperation,
         layout.gravity          = Gravity.CENTER
 
         val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("green_15")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
@@ -1015,6 +1015,7 @@ class DiceViewBuilder(val operation : DiceOperation,
             val adderDialog = AdderDialogFragment.newInstance(this.currentAdderState(),
                                                             SheetContext(sheetUIContext))
             adderDialog.show(sheetActivity.supportFragmentManager, "")
+            dialog.dismiss()
         }
 
         layout.margin.leftDp    = 2f

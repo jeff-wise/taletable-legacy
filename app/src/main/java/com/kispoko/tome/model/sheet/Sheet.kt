@@ -15,10 +15,7 @@ import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
-import com.kispoko.tome.model.sheet.widget.StoryWidget
-import com.kispoko.tome.model.sheet.widget.TableWidget
-import com.kispoko.tome.model.sheet.widget.TextWidget
-import com.kispoko.tome.model.sheet.widget.Widget
+import com.kispoko.tome.model.sheet.widget.*
 import com.kispoko.tome.rts.sheet.*
 import effect.*
 import lulo.document.*
@@ -65,6 +62,8 @@ data class Sheet(override val id : UUID,
     // Widgets
     // -----------------------------------------------------------------------------------------
 
+    private val pointsWidgetById : MutableMap<UUID,PointsWidget> = mutableMapOf()
+
     private val storyWidgetById : MutableMap<UUID,StoryWidget> = mutableMapOf()
 
     private val tableWidgetById : MutableMap<UUID,TableWidget> = mutableMapOf()
@@ -78,9 +77,10 @@ data class Sheet(override val id : UUID,
     init {
         this.forEachWidget {
             when (it) {
-                is StoryWidget -> storyWidgetById.put(it.id, it)
-                is TableWidget -> tableWidgetById.put(it.id, it)
-                is TextWidget  -> textWidgetById.put(it.id, it)
+                is PointsWidget -> pointsWidgetById.put(it.id, it)
+                is StoryWidget  -> storyWidgetById.put(it.id, it)
+                is TableWidget  -> tableWidgetById.put(it.id, it)
+                is TextWidget   -> textWidgetById.put(it.id, it)
             }
         }
     }
@@ -192,6 +192,10 @@ data class Sheet(override val id : UUID,
 
     fun onActive(sheetContext : SheetContext)
     {
+        this.variables().forEach {
+            SheetManager.addVariable(sheetContext.sheetId, it)
+        }
+
         sections.list.forEach { it.onActive(sheetContext) }
     }
 
@@ -206,6 +210,11 @@ data class Sheet(override val id : UUID,
                context : Context) =
         when (widgetUpdate)
         {
+            is WidgetUpdatePointsWidget ->
+            {
+                val pointsWidget = this.pointsWidgetById[widgetUpdate.widgetId]
+                pointsWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+            }
             is WidgetUpdateStoryWidget ->
             {
                 val storyWidget = this.storyWidgetById[widgetUpdate.widgetId]
@@ -214,7 +223,7 @@ data class Sheet(override val id : UUID,
             is WidgetUpdateTableWidget ->
             {
                 val tableWidget = this.tableWidgetById[widgetUpdate.widgetId]
-                tableWidget?.update(widgetUpdate, sheetContext, rootView)
+                tableWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
             }
             is WidgetUpdateTextWidget ->
             {

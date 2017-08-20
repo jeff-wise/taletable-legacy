@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
@@ -15,6 +14,7 @@ import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -29,7 +29,7 @@ import java.util.*
  * Variable
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Variable(open val variableId : Prim<VariableId>,
+sealed class Variable(open var variableId : Prim<VariableId>,
                       open val label : Prim<VariableLabel>,
                       open val description : Prim<VariableDescription>,
                       open val tags : Prim<VariableTagSet>) : Model, Serializable
@@ -139,6 +139,15 @@ sealed class Variable(open val variableId : Prim<VariableId>,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    fun setVariableId(variableId : VariableId)
+    {
+        this.variableId.value = variableId
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // VALUE STRING
@@ -149,7 +158,7 @@ sealed class Variable(open val variableId : Prim<VariableId>,
         is BooleanVariable  -> this.value() ap { effValue<AppError,String>(it.toString()) }
         is DiceRollVariable -> effValue(this.value().toString())
         is NumberVariable   -> this.valueString(sheetContext)
-        is TextVariable     -> this.value(sheetContext)
+        is TextVariable     -> this.valueString(sheetContext)
     }
 
 }
@@ -159,7 +168,7 @@ sealed class Variable(open val variableId : Prim<VariableId>,
  * Boolean Variable
  */
 data class BooleanVariable(override val id : UUID,
-                           override val variableId : Prim<VariableId>,
+                           override var variableId : Prim<VariableId>,
                            override val label : Prim<VariableLabel>,
                            override val description : Prim<VariableDescription>,
                            override val tags : Prim<VariableTagSet>,
@@ -276,7 +285,7 @@ data class BooleanVariable(override val id : UUID,
  * Dice Variable
  */
 data class DiceRollVariable(override val id : UUID,
-                            override val variableId : Prim<VariableId>,
+                            override var variableId : Prim<VariableId>,
                             override val label : Prim<VariableLabel>,
                             override val description : Prim<VariableDescription>,
                             override val tags : Prim<VariableTagSet>,
@@ -386,7 +395,7 @@ data class DiceRollVariable(override val id : UUID,
  * Number Variable
  */
 data class NumberVariable(override val id : UUID,
-                          override val variableId : Prim<VariableId>,
+                          override var variableId : Prim<VariableId>,
                           override val label : Prim<VariableLabel>,
                           override val description : Prim<VariableDescription>,
                           override val tags : Prim<VariableTagSet>,
@@ -487,7 +496,7 @@ data class NumberVariable(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<Double> =
+    fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
             this.variableValue().value(sheetContext)
 
 
@@ -495,21 +504,27 @@ data class NumberVariable(override val id : UUID,
      * The string representation of the widget's current value. This method returns 0 when the
      * value is null for some reason.
      */
-    override fun valueString(sheetContext : SheetContext) : AppEff<String> =
-        this.value(sheetContext) ap {
-            if ((it == Math.floor(it)))
-                effValue<AppError,String>(it.toInt().toString())
-            else
-                effValue(it.toString())
-        }
+    override fun valueString(sheetContext : SheetContext) : AppEff<String>
+    {
+        fun maybeString(mDouble : Maybe<Double>) : AppEff<String> =
+            when (mDouble) {
+                is Just -> effValue<AppError,String>(Util.doubleString(mDouble.value))
+                else    -> effValue("")
+            }
+
+        return this.value(sheetContext).apply(::maybeString)
+    }
 
 
-    fun updateValue(value : Double)
+    fun updateValue(value : Double, sheetId : SheetId)
     {
         when (this.variableValue())
         {
             is NumberVariableLiteralValue ->
-                    this.variableValue.value = NumberVariableLiteralValue(value)
+            {
+                this.variableValue.value = NumberVariableLiteralValue(value)
+                SheetManager.onVariableUpdate(sheetId, this)
+            }
         }
     }
 
@@ -520,7 +535,7 @@ data class NumberVariable(override val id : UUID,
  * Text Variable
  */
 data class TextVariable(override val id : UUID,
-                        override val variableId : Prim<VariableId>,
+                        override var variableId : Prim<VariableId>,
                         override val label : Prim<VariableLabel>,
                         override val description : Prim<VariableDescription>,
                         override val tags : Prim<VariableTagSet>,
@@ -626,8 +641,20 @@ data class TextVariable(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<String> =
+    fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> =
             this.variableValue().value(sheetContext)
+
+
+    override fun valueString(sheetContext : SheetContext) : AppEff<String>
+    {
+        fun maybeString(mString : Maybe<String>) : AppEff<String> =
+            when (mString) {
+                is Just -> effValue<AppError,String>(mString.value)
+                else    -> effValue("")
+            }
+
+        return this.value(sheetContext).apply(::maybeString)
+    }
 
 
     fun updateValue(value : String, sheetId : SheetId)

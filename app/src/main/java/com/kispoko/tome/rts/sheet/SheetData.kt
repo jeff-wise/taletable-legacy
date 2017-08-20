@@ -14,9 +14,7 @@ import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.variable.NumberVariableSummationValue
 import com.kispoko.tome.rts.game.GameManager
-import effect.effApply
-import effect.effValue
-import effect.mapM
+import effect.*
 
 
 /**
@@ -31,15 +29,21 @@ object SheetData
 
 
     fun referenceEngineValue(reference : DataReference,
-                             sheetContext : SheetContext) : AppEff<EngineValue> =
+                             sheetContext : SheetContext) : AppEff<Maybe<EngineValue>> =
         when (reference)
         {
-            is DataReferenceBoolean ->
-                effApply(::EngineValueBoolean, this.boolean(sheetContext, reference.reference))
-            is DataReferenceDiceRoll ->
-                effApply(::EngineValueDiceRoll, this.diceRoll(sheetContext, reference.reference))
-            is DataReferenceNumber ->
-                effApply(::EngineValueNumber, this.number(sheetContext, reference.reference))
+            is DataReferenceBoolean -> this.boolean(sheetContext, reference.reference) ap {
+                effValue<AppError,Maybe<EngineValue>>(Just(EngineValueBoolean(it)))
+            }
+            is DataReferenceDiceRoll -> this.diceRoll(sheetContext, reference.reference) ap {
+                effValue<AppError,Maybe<EngineValue>>(Just(EngineValueDiceRoll(it)))
+            }
+            is DataReferenceNumber -> this.number(sheetContext, reference.reference) ap {
+                when (it) {
+                    is Just -> effValue<AppError,Maybe<EngineValue>>(Just(EngineValueNumber(it.value)))
+                    else    -> effValue<AppError,Maybe<EngineValue>>(Nothing())
+                }
+            }
         }
 
 
@@ -77,14 +81,14 @@ object SheetData
      * Resolve a number reference.
      */
     fun number(sheetContext : SheetContext,
-               numberReference : NumberReference) : AppEff<Double> =
+               numberReference : NumberReference) : AppEff<Maybe<Double>> =
         when (numberReference)
         {
-            is NumberReferenceLiteral -> effValue(numberReference.value)
+            is NumberReferenceLiteral -> effValue(Just(numberReference.value))
             is NumberReferenceValue    ->
                     GameManager.engine(sheetContext.gameId)
                         .apply({ it.numberValue(numberReference.valueReference, sheetContext) })
-                        .apply({ effValue<AppError,Double>(it.value()) })
+                        .apply({ effValue<AppError,Maybe<Double>>(Just(it.value())) })
             is NumberReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
                     .apply( { it.numberVariable(numberReference.variableReference)})
                     .apply( { it.value(sheetContext) })
@@ -93,14 +97,14 @@ object SheetData
 
 
     fun numbers(sheetContext : SheetContext,
-                numberReference : NumberReference) : AppEff<List<Double>> =
+                numberReference : NumberReference) : AppEff<List<Maybe<Double>>> =
         when (numberReference)
         {
-            is NumberReferenceLiteral -> effValue(listOf(numberReference.value))
+            is NumberReferenceLiteral -> effValue(listOf(Just(numberReference.value)))
             is NumberReferenceValue    ->
                     GameManager.engine(sheetContext.gameId)
                         .apply({ it.numberValue(numberReference.valueReference, sheetContext) })
-                        .apply({ effValue<AppError,List<Double>>(listOf(it.value())) })
+                        .apply({ effValue<AppError,List<Maybe<Double>>>(listOf(Just(it.value()))) })
             is NumberReferenceVariable ->
             {
                 SheetManager.sheetState(sheetContext.sheetId)
@@ -114,14 +118,14 @@ object SheetData
      * Resolve a text reference.
      */
     fun text(sheetContext : SheetContext,
-             reference : TextReference) : AppEff<String> =
+             reference : TextReference) : AppEff<Maybe<String>> =
         when (reference)
         {
-            is TextReferenceLiteral  -> effValue(reference.value)
+            is TextReferenceLiteral  -> effValue(Just(reference.value))
             is TextReferenceValue    ->
                     GameManager.engine(sheetContext.gameId)
                         .apply({ it.textValue(reference.valueReference, sheetContext) })
-                        .apply({ effValue<AppError,String>(it.value()) })
+                        .apply({ effValue<AppError,Maybe<String>>(Just(it.value())) })
             is TextReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
                     .apply( { it.textVariable(reference.variableReference)})
                     .apply( { it.value(sheetContext) })

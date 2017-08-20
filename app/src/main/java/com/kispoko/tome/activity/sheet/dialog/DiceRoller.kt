@@ -318,8 +318,6 @@ object DiceRollerView
         layout.addView(this.actionsButtonView(sheetUIContext))
         layout.addView(this.rollButtonView(diceRoll, rollsListView, sheetUIContext))
 
-        Log.d("***DICEROLLER", "creating footer view")
-
         return layout
     }
 

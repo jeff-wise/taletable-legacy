@@ -20,9 +20,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
@@ -45,6 +43,7 @@ import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
+import effect.Just
 import effect.Val
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -66,10 +65,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
     private var bottomNavigation : AHBottomNavigation? = null
 
     private var fab : FloatingActionButton? = null
-    private var bottomSheet : LinearLayout? = null
-    private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
+    private var bottomSheet : RelativeLayout? = null
+    private var bottomSheetBehavior : BottomSheetBehavior<RelativeLayout>? = null
 
-    var actionBarActive : Boolean = false
 
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
@@ -134,7 +132,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
                                         positionOffsetPixels : Int) { }
 
             override fun onPageSelected(position : Int) {
-                hideActionBar()
+                // hideActionBar()
             }
         })
 
@@ -166,7 +164,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun initializeBottomSheet()
     {
-        val bottomSheet = this.findViewById(R.id.bottom_sheet) as LinearLayout
+        val bottomSheet = this.findViewById(R.id.bottom_sheet) as RelativeLayout
 
         val behavior = BottomSheetBehavior.from(bottomSheet)
 
@@ -188,7 +186,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
                     fab?.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_fab_add))
                     fab?.show()
 
-                    val bottomSheetHeight = bottomSheet.measuredHeight
+                    val bottomSheetHeight = bottomSheet.measuredHeight // - Util.dpToPixel(24f)
                     viewPager?.setPadding(0, 0, 0, bottomSheetHeight)
 
 //                    val vp = viewPager
@@ -208,9 +206,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
                         viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
                     }
 
-                    bottomNavigation?.restoreBottomNavigation()
+//                    bottomNavigation?.restoreBottomNavigation()
 
-//                    bottomNavigation?.visibility = View.VISIBLE
+                    bottomNavigation?.visibility = View.VISIBLE
 
                     val layoutParams = fab?.layoutParams as CoordinatorLayout.LayoutParams?
                     layoutParams?.anchorId = View.NO_ID
@@ -308,68 +306,28 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
-    override fun showActionBar(sheetAction : SheetAction,
-                               sheetContext : SheetContext)
+    fun showTableEditor(updateTarget : UpdateTarget, sheetContext : SheetContext)
     {
-        if (this.actionBarActive)
-            return
+        this.bottomNavigation?.visibility = View.GONE
 
-        val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
-        tabLayout.visibility = View.GONE
-
-        val toolbar = this.findViewById(R.id.toolbar) as Toolbar
-        toolbar.visibility = View.GONE
-
-        val actionBarView = this.findViewById(R.id.sheet_action_bar) as LinearLayout
-        actionBarView.visibility = View.VISIBLE
-        actionBarView.removeAllViews()
-
-        when (sheetAction)
-        {
-            is SheetAction.TableRow ->
-            {
-                val tableActionBarBuilder =
-                            TableActionBarViewBuilder(sheetAction,
-                                                      SheetUIContext(sheetContext, this))
-                actionBarView.addView(tableActionBarBuilder.view())
-            }
-        }
-
-        this.actionBarActive = true
-    }
-
-
-    override fun hideActionBar()
-    {
-        if (!this.actionBarActive)
-            return
-
-         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
-        tabLayout.visibility = View.VISIBLE
-
-        val toolbar = this.findViewById(R.id.toolbar) as Toolbar
-        toolbar.visibility = View.VISIBLE
-
-        val actionBarView = this.findViewById(R.id.sheet_action_bar) as LinearLayout
-        actionBarView.visibility = View.GONE
-
-        this.actionBarActive = false
-    }
-
-
-    fun showTableEditor(sheetAction : SheetAction.TableRow, sheetContext : SheetContext)
-    {
-        this.bottomNavigation?.hideBottomNavigation()
-//        this.bottomNavigation?.visibility = View.GONE
-
-        val tableActionBarBuilder =
-                TableActionBarViewBuilder(sheetAction,
-                        SheetUIContext(sheetContext, this))
+        val tableActionBarBuilder = TableActionBarViewBuilder(updateTarget,
+                                                              SheetUIContext(sheetContext, this))
 
         this.bottomSheet?.removeAllViews()
         this.bottomSheet?.addView(tableActionBarBuilder.view())
 
         this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+
+        this.fab?.setOnClickListener {
+            when (updateTarget)
+            {
+                is UpdateTargetInsertTableRow ->
+                {
+//                    val dialog = AddTableRowDialog.newInstance(updateTarget, sheetContext)
+//                    dialog.show(supportFragmentManager, "")
+                }
+            }
+        }
     }
 
 
@@ -492,16 +450,21 @@ class SheetActivity : AppCompatActivity(), SheetUI
                         val sheet = sheetLoad.value
                         SheetManager.setNewSheet(sheet, sheetUI)
 
-                        val characterName =
+                        val mCharacterName =
                                 SheetManager.sheetRecord(sheet.sheetId())    ap { (_, sheetContext, state) ->
                                 state.textVariableWithId(VariableId("name")) ap { textVar ->
                                     textVar.value(sheetContext)
                                 } }
 
-                        when (characterName)
+                        when (mCharacterName)
                         {
-                            is Val -> sheetActivity.configureToolbar(characterName.value)
-                            is Err -> ApplicationLog.error(characterName.error)
+                            is Val -> {
+                                val characterName = mCharacterName.value
+                                when (characterName) {
+                                    is Just -> sheetActivity.configureToolbar(characterName.value)
+                                }
+                            }
+                            is Err -> ApplicationLog.error(mCharacterName.error)
                         }
 
                         val sheetContext = SheetManager.sheetContext(sheet)
@@ -511,7 +474,10 @@ class SheetActivity : AppCompatActivity(), SheetUI
                             {
                                 SheetManager.addOnVariableChangeListener(sheet.sheetId(),
                                         VariableId("name"),
-                                        { sheetActivity.updateToolbar(it, sheetContext.value)})
+                                        OnVariableChangeListener(
+                                            { sheetActivity.updateToolbar(it, sheetContext.value)},
+                                            {})
+                                        )
                             }
                         }
 
@@ -538,11 +504,16 @@ class SheetActivity : AppCompatActivity(), SheetUI
         {
             is TextVariable ->
             {
-                val text = variable.variableValue().value(sheetContext)
-                when (text)
+                val mText = variable.variableValue().value(sheetContext)
+                when (mText)
                 {
-                    is Val -> this.configureToolbar(text.value)
-                    is Err -> ApplicationLog.error(text.error)
+                    is Val -> {
+                        val text = mText.value
+                        when (text) {
+                            is Just -> this.configureToolbar(text.value)
+                        }
+                    }
+                    is Err -> ApplicationLog.error(mText.error)
                 }
             }
         }

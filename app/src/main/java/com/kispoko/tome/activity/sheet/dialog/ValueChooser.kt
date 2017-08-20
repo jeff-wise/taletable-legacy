@@ -217,7 +217,7 @@ object ValueChooserView
     //    layout.backgroundResource   = R.drawable.bg_dialog
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
@@ -301,7 +301,7 @@ object ValueChooserView
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
@@ -310,7 +310,7 @@ object ValueChooserView
         layout.padding.topDp        = 12f
         layout.padding.bottomDp     = 12f
 
-        layout.margin.bottomDp      = 3f
+        layout.margin.bottomDp      = 1f
 
         layout.corners              = Corners(TopLeftCornerRadius(3f),
                                                 TopRightCornerRadius(3f),
@@ -336,7 +336,7 @@ object ValueChooserView
                                                 sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         title.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
@@ -386,16 +386,15 @@ object ValueChooserView
         recyclerView.layoutManager  = LinearLayoutManager(sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         recyclerView.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         val dividerColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         val dividerColor = SheetManager.color(sheetUIContext.sheetId, dividerColorTheme)
         recyclerView.divider = SimpleDividerItemDecoration(sheetUIContext.context, dividerColor)
-
 
         when (valueSet)
         {
@@ -481,7 +480,7 @@ object ValueChooserView
         layout.margin.topDp         = 3f
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
@@ -586,16 +585,17 @@ object ValueChooserView
                                             sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_blue_18")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         name.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        name.sizeSp         = 13f
+        name.sizeSp         = 12f
 
         name.margin.leftDp  = 10f
         name.margin.rightDp = 10f
 
-        name.margin.topDp   = 8f
+        name.margin.topDp   = 10f
+        name.margin.bottomDp = 10f
 
         return name.textView(sheetUIContext.context)
     }
@@ -876,7 +876,7 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
         else if (item is String)
         {
             val headerViewHolder = viewHolder as HeaderViewHolder
-            headerViewHolder.setHeaderText(item)
+            headerViewHolder.setHeaderText(item.toUpperCase())
         }
     }
 
@@ -907,7 +907,7 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
 
 
     val normalColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_8")),
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_9")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
     val greyColor = SheetManager.color(sheetUIContext.sheetId, normalColorTheme)
 

@@ -215,6 +215,10 @@
     <!-- FIELD -->
     <item name="field_value" type="id"/>
 
+    <item name="points_bar_label" type="id"/>
+    <item name="points_bar_current" type="id"/>
+    <item name="points_bar_limit" type="id"/>
+
 
     <item name="top_element" type="id"/>
 

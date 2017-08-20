@@ -14,6 +14,7 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Spacing
+import com.kispoko.tome.model.sheet.style.VerticalAlignment
 import com.kispoko.tome.model.sheet.widget.Widget
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
@@ -130,7 +131,7 @@ data class GroupRow(override val id : UUID,
 
     fun view(sheetUIContext: SheetUIContext) : View
     {
-        val layout = this.viewLayout(sheetUIContext.context)
+        val layout = this.viewLayout(sheetUIContext)
 
         // > Widgets
         layout.addView(widgetsView(sheetUIContext))
@@ -144,7 +145,7 @@ data class GroupRow(override val id : UUID,
 
 
 
-    private fun viewLayout(context : Context) : LinearLayout
+    private fun viewLayout(sheetUIContext : SheetUIContext) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -154,7 +155,13 @@ data class GroupRow(override val id : UUID,
 
         layout.marginSpacing    = this.format().margins()
 
-        return layout.linearLayout(context)
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
+                                                     this.format().backgroundColortheme())
+
+        layout.gravity          = this.format().alignment().gravityConstant() or
+                                    this.format().verticalAlignment().gravityConstant()
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -212,6 +219,7 @@ data class GroupRow(override val id : UUID,
  */
 data class GroupRowFormat(override val id : UUID,
                           val alignment : Prim<Alignment>,
+                          val verticalAlignment : Prim<VerticalAlignment>,
                           val backgroundColorTheme : Prim<ColorTheme>,
                           val margins : Comp<Spacing>,
                           val padding : Comp<Spacing>,
@@ -226,6 +234,7 @@ data class GroupRowFormat(override val id : UUID,
     init
     {
         this.alignment.name             = "alignment"
+        this.verticalAlignment.name     = "vertical_alignment"
         this.backgroundColorTheme.name  = "background_color_theme"
         this.margins.name               = "margins"
         this.padding.name               = "padding"
@@ -239,6 +248,7 @@ data class GroupRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(alignment : Alignment,
+                verticalAlignment : VerticalAlignment,
                 backgroundColorTheme : ColorTheme,
                 margins : Spacing,
                 padding : Spacing,
@@ -246,6 +256,7 @@ data class GroupRowFormat(override val id : UUID,
                 dividerColorTheme : ColorTheme)
         : this(UUID.randomUUID(),
                Prim(alignment),
+               Prim(verticalAlignment),
                Prim(backgroundColorTheme),
                Comp(margins),
                Comp(padding),
@@ -257,6 +268,7 @@ data class GroupRowFormat(override val id : UUID,
     {
 
         private val defaultAlignment            = Alignment.Center
+        private val defaultVerticalAlignment    = VerticalAlignment.Middle
         private val defaultBackgroundColorTheme = ColorTheme.transparent
         private val defaultMargins              = Spacing.default()
         private val defaultPadding              = Spacing.default()
@@ -273,6 +285,10 @@ data class GroupRowFormat(override val id : UUID,
                          split(doc.maybeAt("alignment"),
                                effValue<ValueError,Alignment>(defaultAlignment),
                                { Alignment.fromDocument(it) }),
+                         // Vertical Alignment
+                         split(doc.maybeAt("vertical_alignment"),
+                               effValue<ValueError,VerticalAlignment>(defaultVerticalAlignment),
+                               { VerticalAlignment.fromDocument(it) }),
                          // Background Color
                          split(doc.maybeAt("background_color_theme"),
                                effValue(defaultBackgroundColorTheme),
@@ -285,10 +301,10 @@ data class GroupRowFormat(override val id : UUID,
                          split(doc.maybeAt("padding"),
                                effValue(defaultPadding),
                                { Spacing.fromDocument(it) }),
-                        // Show Divider?
-                        split(doc.maybeAt("show_divider"),
-                              effValue(defaultShowDivider),
-                              { ShowGroupRowDivider.fromDocument(it) }),
+                         // Show Divider?
+                         split(doc.maybeAt("show_divider"),
+                               effValue(defaultShowDivider),
+                               { ShowGroupRowDivider.fromDocument(it) }),
                          // Divider Color
                          split(doc.maybeAt("divider_color_theme"),
                                effValue(defaultDividerColorTheme),
@@ -301,6 +317,7 @@ data class GroupRowFormat(override val id : UUID,
 
         fun default() : GroupRowFormat =
                 GroupRowFormat(defaultAlignment,
+                               defaultVerticalAlignment,
                                defaultBackgroundColorTheme,
                                defaultMargins,
                                defaultPadding,
@@ -315,6 +332,8 @@ data class GroupRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun alignment() : Alignment = this.alignment.value
+
+    fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
 
     fun backgroundColortheme() : ColorTheme = this.backgroundColorTheme.value
 

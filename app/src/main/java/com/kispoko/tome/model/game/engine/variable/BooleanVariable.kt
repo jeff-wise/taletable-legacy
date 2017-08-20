@@ -36,7 +36,7 @@ sealed class BooleanVariableValue : SumModel, Serializable
 
     companion object : Factory<BooleanVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<BooleanVariableValue> =
+        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanVariableValue> =
             when (doc.case())
             {
                 "boolean_literal"    -> BooleanVariableLiteralValue.fromDocument(doc)

@@ -4,8 +4,11 @@ package com.kispoko.tome.rts.sheet
 
 import com.kispoko.tome.app.ApplicationEvent
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.Widget
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetRowFormat
 import java.io.Serializable
 import java.util.*
 
@@ -49,14 +52,23 @@ data class WidgetUpdateEvent(val widget : Widget, val sheetId : SheetId)
 sealed class WidgetUpdate(open val widgetId : UUID) : SheetUpdate()
 
 
+// Points Widget Update
+sealed class WidgetUpdatePointsWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+
+
+data class PointsWidgetUpdateSetCurrentValue(
+                    override val widgetId : UUID,
+                    val newCurrentValue : Double) : WidgetUpdatePointsWidget(widgetId)
+
+
 // Story Widget Update
 
 sealed class WidgetUpdateStoryWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
 
 
 data class StoryWidgetUpdateNumberPart(override val widgetId : UUID,
-                                        val partIndex : Int,
-                                        val newNumber : Double) : WidgetUpdateStoryWidget(widgetId)
+                                       val partIndex : Int,
+                                       val newNumber : Double) : WidgetUpdateStoryWidget(widgetId)
 
 
 // Table Widget Update
@@ -66,6 +78,15 @@ sealed class WidgetUpdateTableWidget(override val widgetId : UUID) : WidgetUpdat
 data class TableWidgetUpdateSetNumberCell(override val widgetId : UUID,
                                           val cellId : UUID,
                                           val newNumber : Double) : WidgetUpdateTableWidget(widgetId)
+
+data class TableWidgetUpdateInsertRowBefore(
+                            override val widgetId : UUID,
+                            val selectedRow : Int) : WidgetUpdateTableWidget(widgetId)
+
+data class TableWidgetUpdateInsertRowAfter(
+                            override val widgetId : UUID,
+                            val selectedRow : Int) : WidgetUpdateTableWidget(widgetId)
+
 
 
 // Text Widget Update
@@ -85,16 +106,17 @@ data class TextWidgetUpdateSetText(override val widgetId : UUID,
 
 sealed class UpdateTarget : Serializable
 
+data class UpdateTargetPointsWidget(val pointsWidgetId : UUID) : UpdateTarget()
+
 data class UpdateTargetNumberCell(val tableWidgetId : UUID, val cellId : UUID) : UpdateTarget()
 
 data class UpdateTargetTextCell(val tableWidgetId : UUID, val cellId : UUID) : UpdateTarget()
 
 data class UpdateTargetTextWidget(val textWidgetId : UUID) : UpdateTarget()
 
-data class UpdateTargetInsertTableRow(val tableWidgetId : UUID, val index : Int) : UpdateTarget()
+data class UpdateTargetInsertTableRow(val tableWidget : TableWidget) : UpdateTarget()
 
 data class UpdateTargetStoryWidgetPart(val storyWidgetId : UUID,
-
                                        val partIndex : Int) : UpdateTarget()
 
 
@@ -104,14 +126,14 @@ data class UpdateTargetStoryWidgetPart(val storyWidgetId : UUID,
 // -----------------------------------------------------------------------------------------
 // SHEET ACTION
 // -----------------------------------------------------------------------------------------
-
-sealed class SheetAction : Serializable
-{
-
-    data class TableRow(val tableWidgetId : UUID,
-                        val rowClickedIndex : Int,
-                        val tableName : String,
-                        val tableColumns : List<TableWidgetColumn>) : SheetAction()
-
-}
+//
+//sealed class SheetAction : Serializable
+//{
+//
+//    data class TableRow(val tableWidgetId : UUID,
+//                        val rowClickedIndex : Int,
+//                        val tableName : String,
+//                        val tableColumns : List<TableWidgetColumn>) : SheetAction()
+//
+//}
 

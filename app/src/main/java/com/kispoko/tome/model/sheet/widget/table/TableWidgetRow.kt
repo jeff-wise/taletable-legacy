@@ -4,7 +4,6 @@ package com.kispoko.tome.model.sheet.widget.table
 
 import android.view.View
 import android.widget.TableLayout
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -15,7 +14,6 @@ import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidget
-import com.kispoko.tome.model.sheet.widget.TableWidgetFormat
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.*
 import effect.*
@@ -56,8 +54,17 @@ data class TableWidgetRow(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : TableWidgetRowFormat, cells : MutableList<TableWidgetCell>)
-        : this(UUID.randomUUID(), Comp(format), Coll(cells))
+    constructor(cells : MutableList<TableWidgetCell>)
+        : this(UUID.randomUUID(),
+               Comp(TableWidgetRowFormat.default()),
+               Coll(cells))
+
+
+    constructor(format : TableWidgetRowFormat,
+                cells : MutableList<TableWidgetCell>)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Coll(cells))
 
 
     companion object : Factory<TableWidgetRow>
@@ -133,12 +140,12 @@ data class TableWidgetRow(override val id : UUID,
 
 
         tableRow.onClick            = View.OnClickListener {
-            val sheetActivity = sheetUIContext.context as SheetActivity
-            val tableRowAction = SheetAction.TableRow(tableWidget.id,
-                                                      rowIndex,
-                                                      tableWidget.tableName(),
-                                                      tableWidget.columns())
-            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+//            val sheetActivity = sheetUIContext.context as SheetActivity
+//            val tableRowAction = SheetAction.TableRow(tableWidget.id,
+//                                                      rowIndex,
+//                                                      tableWidget.tableName(),
+//                                                      tableWidget.columns())
+//            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
         }
 
 

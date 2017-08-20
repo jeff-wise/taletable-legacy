@@ -387,7 +387,8 @@ object TextWidgetView
 
         layout.orientation          = format.insideLabelFormat()
                                             .position().linearLayoutOrientation()
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
 //        layout.backgroundColor      = SheetManager.color(

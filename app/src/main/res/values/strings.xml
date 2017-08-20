@@ -304,6 +304,8 @@
     <string name="game">Game</string>
     <string name="edit_number">Edit Number</string>
 
+    <string name="hold_to_accept">Hold to Accept</string>
+
     <string name="conditional_value">Conditional Value</string>
     <string name="dice_roll">Dice Roll</string>
     <string name="number">Number</string>

@@ -64,7 +64,9 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>) : Model, S
 
     abstract fun dependencies(): Set<VariableReference>
 
-    abstract fun value(sheetContext : SheetContext) : AppEff<Double>
+
+    abstract fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
+
 
     abstract fun summary(sheetContext : SheetContext) : TermSummary?
 
@@ -116,9 +118,9 @@ data class SummationTermNumber(override val id : UUID,
     override fun dependencies(): Set<VariableReference> = this.numberReference().dependencies()
 
 
-    override fun value(sheetContext : SheetContext) : AppEff<Double> =
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
         SheetData.numbers(sheetContext, this.numberReference()) ap {
-            effValue<AppError,Double>(it.sum())
+            effValue<AppError,Maybe<Double>>(Just(it.filterJust().sum()))
         }
 
 
@@ -212,9 +214,9 @@ data class SummationTermDiceRoll(override val id : UUID,
             this.diceRollReference().dependencies()
 
 
-    override fun value(sheetContext : SheetContext) : AppEff<Double> =
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
             SheetData.diceRoll(sheetContext, diceRollReference())
-                    .apply { effValue<AppError,Double>(it.roll().toDouble()) }
+                    .apply { effValue<AppError,Maybe<Double>>(Just(it.roll().toDouble())) }
 
 
     override fun summary(sheetContext : SheetContext) : TermSummary?
@@ -334,7 +336,7 @@ data class SummationTermConditional(override val id : UUID,
             .plus(falseValueReference.value.dependencies())
 
 
-    override fun value(sheetContext : SheetContext): AppEff<Double> =
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
         SheetData.boolean(sheetContext, conditionalValueReference())
             .apply { condition ->
                 if (condition)
@@ -425,77 +427,4 @@ data class TermSummary(val name : String?, val components : List<TermComponent>)
 
 
 data class TermComponent(val name : String, val value : String)
-
-
-//    // > Summary
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * A summary of the terms variables.
-//     * @return The list of 2-tuples (value, description) of each of the term's variables.
-//     */
-//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
-//    {
-//        // > Convert the component integers to strings
-//        List<Tuple2<String, Integer>> components = this.termValue().components();
-//        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
-//
-//        for (Tuple2<String,Integer> component : components)
-//        {
-//            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
-//                                                      component.getItem2().toString());
-//            componentsWithStringValue.add(comp);
-//        }
-//
-//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.name(), componentsWithStringValue);
-//    }
-//
-
-//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
-//           throws VariableException
-//    {
-//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.termValue().name(), this.termValue().components());
-//    }
-//
-//
-//    public String valueId()
-//    {
-//        if (this.termValue() != null)
-//            return this.termValue().name();
-//
-//        return "";
-//    }
-//
-//
-
-//    // > Term
-//    // ------------------------------------------------------------------------------------------
-//
-//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
-//    {
-//        List<Tuple2<String,Integer>> components = new ArrayList<>();
-//
-//        try {
-//            if (conditionalTermValue().value())
-//                components = whenTrueTermValue().components();
-//            else
-//                components = whenFalseTermValue().components();
-//        }
-//        catch (VariableException exception) {
-//            ApplicationFailure.variable(exception);
-//        }
-//
-//        // > Convert the component integers to strings
-//        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
-//
-//        for (Tuple2<String,Integer> component : components)
-//        {
-//            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
-//                                                      component.getItem2().toString());
-//            componentsWithStringValue.add(comp);
-//        }
-//
-//
-//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.name(), componentsWithStringValue);
-//    }
 

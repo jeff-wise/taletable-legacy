@@ -12,7 +12,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -22,6 +21,7 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.DiceRollerDialogFragment
 import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
+import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
@@ -37,6 +37,7 @@ import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.*
@@ -172,10 +173,19 @@ sealed class StoryPart : Model, Serializable
     // APi
     // -----------------------------------------------------------------------------------------
 
-    open fun variable() : Variable? = when (this)
+    open fun variable(sheetContext : SheetContext) : Variable? = when (this)
     {
-        is StoryPartVariable -> this.variable()
-        else                 -> null
+        is StoryPartVariable -> {
+            val variable = this.valueVariable(sheetContext)
+            when (variable) {
+                is Val -> variable.value
+                is Err -> {
+                    ApplicationLog.error(variable.error)
+                    null
+                }
+            }
+        }
+        else                 ->  null
     }
 
 
@@ -250,7 +260,7 @@ data class StoryPartSpan(override val id : UUID,
  */
 data class StoryPartVariable(override val id : UUID,
                              val format : Comp<TextFormat>,
-                             val variable : Comp<Variable>,
+                             val variableId : Prim<VariableId>,
                              val numericEditorType : Maybe<Prim<NumericEditorType>>)
                               : StoryPart(), Serializable
 {
@@ -267,11 +277,11 @@ data class StoryPartVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(format : TextFormat,
-                variable : Variable,
+                variableId : VariableId,
                 numericEditorType : Maybe<NumericEditorType>)
         : this(UUID.randomUUID(),
                Comp(format),
-               Comp(variable),
+               Prim(variableId),
                maybeLiftPrim(numericEditorType))
 
 
@@ -286,8 +296,8 @@ data class StoryPartVariable(override val id : UUID,
                          split(doc.maybeAt("format"),
                                effValue(TextFormat.default()),
                                { TextFormat.fromDocument(it) }),
-                         // Style
-                         doc.at("variable") ap { Variable.fromDocument(it) },
+                         // Variable Id
+                         doc.at("variable_id") ap { VariableId.fromDocument(it) },
                          // Numeric Editor Type
                          split(doc.maybeAt("numeric_editor_type"),
                                effValue<ValueError,Maybe<NumericEditorType>>(Nothing()),
@@ -305,16 +315,20 @@ data class StoryPartVariable(override val id : UUID,
 
     fun format() : TextFormat = this.format.value
 
+    fun variableId() : VariableId = this.variableId.value
 
-    override fun variable() : Variable = this.variable.value
+
+    fun valueVariable(sheetContext : SheetContext) : AppEff<Variable> =
+        SheetManager.sheetState(sheetContext.sheetId)
+                .apply { it.variableWithId(this.variableId()) }
 
 
     fun numericEditorType() : NumericEditorType? = getMaybePrim(this.numericEditorType)
 
 
-    fun valueString(sheetUIContext : SheetUIContext) : String
+    fun valueString(sheetContext : SheetContext) : String
     {
-        val str = this.variable().valueString(SheetContext(sheetUIContext))
+        val str = this.variable(sheetContext)?.valueString(sheetContext)
         when (str)
         {
             is Val -> return str.value
@@ -322,6 +336,7 @@ data class StoryPartVariable(override val id : UUID,
                 ApplicationLog.error(str.error)
             }
         }
+
         return ""
     }
 
@@ -576,7 +591,7 @@ object StoryWidgetView
         val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
 
         val wc = storyWidget.story().map { it.wordCount() }.sum()
-        if (wc <= 5)
+        if (wc <= 5 && storyWidget.actionParts().isEmpty())
         {
             layout.addView(this.storyFlexView(storyWidget, sheetUIContext))
         }
@@ -600,12 +615,16 @@ object StoryWidgetView
                     is StoryPartVariable -> variablePartIndex = index
                 }
             }
-            layout.setOnClickListener {
-                openVariableEditorDialog(
-                        variableParts.first().variable(),
-                        UpdateTargetStoryWidgetPart(storyWidget.id, variablePartIndex),
-                        sheetUIContext)
+            val variable = variableParts.first().variable(SheetContext(sheetUIContext))
+            if (variable != null) {
+                layout.setOnClickListener {
+                    openVariableEditorDialog(
+                            variable,
+                            UpdateTargetStoryWidgetPart(storyWidget.id, variablePartIndex),
+                            sheetUIContext)
+                }
             }
+
         }
 
         return layout
@@ -676,7 +695,7 @@ object StoryWidgetView
                 }
                 is StoryPartVariable ->
                 {
-                    val text = storyPart.valueString(sheetUIContext)
+                    val text = storyPart.valueString(SheetContext(sheetUIContext))
                     builder.append(text)
                     val textLen = text.length
                     phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
@@ -691,8 +710,8 @@ object StoryWidgetView
                 is StoryPartAction ->
                 {
                     val text = storyPart.text()
-                    builder.append(" " + text)
-                    val textLen = text.length + 1
+                    builder.append("  " + text)
+                    val textLen = text.length + 2
                     phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
                     index += textLen
                 }
@@ -719,11 +738,15 @@ object StoryWidgetView
                     {
                         override fun onClick(view : View?)
                         {
-                            openVariableEditorDialog(
-                                    storyPart.variable(),
-                                    storyPart.numericEditorType(),
-                                    UpdateTargetStoryWidgetPart(storyWidgetId, partIndex),
-                                    sheetUIContext)
+                            val variable = storyPart.variable(SheetContext(sheetUIContext))
+                            if (variable != null) {
+                                openVariableEditorDialog(
+                                        variable,
+                                        storyPart.numericEditorType(),
+                                        UpdateTargetStoryWidgetPart(storyWidgetId, partIndex),
+                                        sheetUIContext)
+                            }
+
                         }
 
                         override fun updateDrawState(ds: TextPaint?) {
@@ -799,10 +822,7 @@ object StoryWidgetView
                                             dialog.show(sheetActivity.supportFragmentManager, "")
                                         }
 
-                                        override fun updateDrawState(ds: TextPaint?) {
-    //                                        val color = SheetManager.color(sheetUIContext.sheetId,
-    //                                                        storyPart.textFormat().style().colorTheme())
-    //                                        ds?.linkColor = color
+                                        override fun updateDrawState(ds : TextPaint?) {
                                         }
                                     }
 
@@ -859,7 +879,7 @@ object StoryWidgetView
                 }
                 is StoryPartVariable ->
                 {
-                    this.words(storyPart.valueString(sheetUIContext)).forEach {
+                    this.words(storyPart.valueString(SheetContext(sheetUIContext))).forEach {
                         layout.addView(this.wordVariableView(it,
                                                              storyWidget.format(),
                                                              storyPart,
@@ -976,12 +996,14 @@ object StoryWidgetView
 
         storyPart.format().style().styleTextViewBuilder(text, sheetUIContext)
 
-        val variable = storyPart.variable()
         text.onClick        = View.OnClickListener {
-            openVariableEditorDialog(variable,
-                                     storyPart.numericEditorType(),
-                                     UpdateTargetStoryWidgetPart(widgetId, partIndex),
-                                     sheetUIContext)
+            val variable = storyPart.variable(SheetContext(sheetUIContext))
+            if (variable != null) {
+                openVariableEditorDialog(variable,
+                        storyPart.numericEditorType(),
+                        UpdateTargetStoryWidgetPart(widgetId, partIndex),
+                        sheetUIContext)
+            }
         }
 
         return text.textView(sheetUIContext.context)

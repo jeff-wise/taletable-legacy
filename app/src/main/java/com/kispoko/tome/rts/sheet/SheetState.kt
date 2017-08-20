@@ -40,7 +40,7 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
 
-    private val onChangeListenersById : MutableMap<VariableId,MutableSet<(Variable) -> Unit>> = mutableMapOf()
+    private val onChangeListenersById : MutableMap<VariableId,MutableSet<OnVariableChangeListener>> = mutableMapOf()
 
 
     // Mechanic Indexes
@@ -91,6 +91,9 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
         // TODO add log event for if variable with name already exist
         // TODO make sure variable does not depend on itself.
         val variableId = variable.variableId.value
+
+        if (this.variableById.containsKey(variableId))
+            return
 
         // (1) Index variable by name
         // -------------------------------------------------------------------------------------
@@ -176,6 +179,88 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     }
 
 
+    fun removeVariable(variableId : VariableId)
+    {
+        if (!this.variableById.containsKey(variableId))
+            return
+
+        val variable = this.variableById[variableId]
+
+        // (1) Notify listeners (before they are removed)
+        // -------------------------------------------------------------------------------------
+
+        this.onRemoveUpdateListeners(variable!!)
+
+        // (2) Remove from Id index
+        // -------------------------------------------------------------------------------------
+
+        variableById.remove(variableId)
+
+        // (3) Remove from serach index
+        // -------------------------------------------------------------------------------------
+
+        activeVariableIdTrie.remove(variableId.toString())
+        activeVariableLabelTrie.remove(variable!!.label())
+
+        // (4) Un-index tags
+        // -------------------------------------------------------------------------------------
+
+        for (tag in variable.tags())
+        {
+            if (variablesByTag.containsKey(tag))
+            {
+                val variableSet = variablesByTag[tag]
+                variableSet?.remove(variable)
+            }
+        }
+
+        // (5) Unindex dependencies
+        // -------------------------------------------------------------------------------------
+
+        for (variableRef in variable.dependencies(this.sheetContext))
+        {
+            when (variableRef)
+            {
+                is VariableId -> listenersById[variableRef]?.remove(variable)
+                is VariableTag -> listenersByTag[variableRef]?.remove(variable)
+            }
+        }
+
+        // (6) Update any mechanics which are dependent on this variable
+        // -------------------------------------------------------------------------------------
+
+        when (variable)
+        {
+            is BooleanVariable ->
+            {
+//                mechanicsByReqVariableId[variableId]?.forEach {
+//                    val isReady = it.update(variable)
+//                    if (isReady) this.addMechanic(it.mechanic)
+//                }
+            }
+        }
+
+    }
+
+
+    fun updateVariableId(currentVariableId : VariableId, newVariableId : VariableId)
+    {
+        // (1) Get Variable
+        val currentVariable = this.variableById[currentVariableId]
+
+        if (currentVariable == null || this.variableById.containsKey(newVariableId))
+            return
+
+        // (3) Remove variable with old id
+        this.removeVariable(currentVariableId)
+
+        currentVariable.setVariableId(newVariableId)
+
+        // (3) Add variable back with new id
+        this.addVariable(currentVariable)
+    }
+
+
     fun addMechanic(mechanic : Mechanic)
     {
         mechanic.variables().forEach { this.addVariable(it) }
@@ -189,22 +274,52 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     }
 
 
-//
-//    fun updateListeners(variableId : VariableId)
-//    {
-//        val variable = this.variableWithId(variableId)
-//        when (variable)
-//        {
-//            is Val -> this.updateListeners(variable.value)
-//            is Err -> ApplicationLog.error(variable.error)
-//        }
-//    }
-
-
     fun onVariableUpdate(variable : Variable)
     {
         this.updateListeners(variable)
         ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
+    }
+
+
+    fun onRemoveUpdateListeners(variable : Variable)
+    {
+        // (1) Update listeners of variable id
+        // -------------------------------------------------------------------------------------
+
+        val variableId = variable.variableId.value
+        if (listenersById.containsKey(variableId))
+        {
+            for (listener in listenersById[variableId]!!)
+            {
+                listener.onUpdate()
+                this.updateListeners(listener)
+            }
+
+        }
+
+        // (2) Update listeners of variable tag
+        // -------------------------------------------------------------------------------------
+
+        for (tag in variable.tags())
+        {
+            if (listenersByTag.containsKey(tag))
+            {
+                for (listener in listenersByTag[tag]!!)
+                {
+                    listener.onUpdate()
+                    this.updateListeners(listener)
+                }
+            }
+        }
+
+        // (3) Update on change listeners
+        // -------------------------------------------------------------------------------------
+
+        if (onChangeListenersById.containsKey(variableId))
+        {
+            val listeners = onChangeListenersById[variableId]
+            listeners?.forEach { it.onRemove() }
+        }
     }
 
 
@@ -242,16 +357,14 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
             }
         }
 
-
         // (3) Update on change listeners
         // -------------------------------------------------------------------------------------
 
         if (onChangeListenersById.containsKey(variableId))
         {
             val listeners = onChangeListenersById[variableId]
-            listeners?.forEach { it(variable) }
+            listeners?.forEach { it.onUpdate(variable) }
         }
-
 
     }
 
@@ -260,13 +373,13 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     // ON CHANGE LISTENERS
     // -----------------------------------------------------------------------------------------
 
-    fun addVariableOnChangeListener(variableId : VariableId, onChange : (Variable) -> Unit)
+    fun addVariableOnChangeListener(variableId : VariableId, listener : OnVariableChangeListener)
     {
         if (!this.onChangeListenersById.containsKey(variableId))
             this.onChangeListenersById.put(variableId, mutableSetOf())
 
         val onChangeListeners = this.onChangeListenersById[variableId]
-        onChangeListeners?.add(onChange)
+        onChangeListeners?.add(listener)
     }
 
 
@@ -311,6 +424,23 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     fun booleanVariable(variableReference : VariableReference) : AppEff<BooleanVariable> =
         this.variable(variableReference)
             .apply({it.booleanVariable(sheetContext.sheetId)})
+
+
+    fun booleanVariableWithId(variableId : VariableId) : AppEff<BooleanVariable>
+    {
+        fun boolVariableEff(variable : Variable) : AppEff<BooleanVariable> = when (variable)
+        {
+            is BooleanVariable -> effValue(variable)
+            else               -> effError(AppStateError(
+                                       VariableIsOfUnexpectedType(sheetContext.sheetId,
+                                                                  variableId,
+                                                                  VariableType.TEXT,
+                                                                  variable.type())))
+        }
+
+        return variableWithId(variableId)
+                  .apply(::boolVariableEff)
+    }
 
 
     // Variable > Dice Roll
@@ -426,136 +556,10 @@ data class MechanicState(val state : MutableMap<VariableId,Boolean>,
 }
 
 
+// ---------------------------------------------------------------------------------------------
+// ON CHANGE LISTERER
+// ---------------------------------------------------------------------------------------------
 
-//
-//    /**
-//     * Remove the variable with the given name from the state. Returns true if the variable was
-//     * removed, and false if the variable did not exist in the state.
-//     * @param variableName The variable name.
-//     * @return True if the variable was removed, False if the variable did not exist.
-//     */
-//    public static boolean removeVariable(String variableName)
-//    {
-//        if (!variableByName.containsKey(variableName))
-//            return false;
-//
-//        VariableUnion variableUnion = variableByName.get(variableName);
-//
-//        // [1] Remove the variable from the index
-//        // --------------------------------------------------------------------------------------
-//
-//        // > Delete from MAIN index
-//        variableByName.remove(variableName);
-//
-//        // > Delete from SEARCH indexes
-//        activeVariableNameTrie.remove(variableName);
-//        activeVariableLabelTrie.remove(variableName);
-//
-//        // [2] Un-Index the variable's dependencies
-//        // --------------------------------------------------------------------------------------
-//
-//        for (VariableReference variableReference : variableUnion.variable().dependencies())
-//        {
-//            switch (variableReference.type())
-//            {
-//                // > Index variable names to listeners
-//                case NAME:
-//                    String name = variableReference.name();
-//                    Set<Variable> nameListeners = variableNameToListeners.get(name);
-//                    nameListeners.remove(variableUnion.variable());
-//
-//                    if (nameListeners.isEmpty())
-//                        variableNameToListeners.remove(name);
-//                    break;
-//                case TAG:
-//                    String tag = variableReference.tag();
-//                    Set<Variable> tagListeners = variableTagToListeners.get(tag);
-//                    tagListeners.remove(variableUnion.variable());
-//
-//                    if (tagListeners.isEmpty())
-//                        variableTagToListeners.remove(tag);
-//                    break;
-//            }
-//        }
-//
-//        // [3] Un-Index the variable's tags
-//        // --------------------------------------------------------------------------------------
-//
-//        for (String tag : variableUnion.variable().tags())
-//        {
-//            Set<VariableUnion> variablesWithTag = tagIndex.get(tag);
-//            variablesWithTag.remove(variableUnion);
-//
-//            if (variablesWithTag.isEmpty())
-//                tagIndex.remove(tag);
-//        }
-//
-//        // [4] Notify all current listeners of this variable
-//        // --------------------------------------------------------------------------------------
-//
-//        updateVariableDependencies(variableUnion.variable());
-//
-//        return true;
-//    }
-//
+data class OnVariableChangeListener(val onUpdate : (Variable) -> Unit,
+                                    val onRemove : () -> Unit)
 
-//    // > Search
-//    // ------------------------------------------------------------------------------------------
-//
-//    public static Collection<EngineActiveSearchResult> search(String query)
-//    {
-//        Map<String,ActiveVariableSearchResult> resultsByVariableName = new HashMap<>();
-//
-//        // Name Matches
-//        Collection<VariableUnion> nameMatches = activeVariableNameTrie.prefixMap(query).values();
-//        for (VariableUnion variableUnion : nameMatches)
-//        {
-//            String variableName = variableUnion.variable().name();
-//            String variableLabel = variableUnion.variable().label();
-//
-//            ActiveVariableSearchResult result;
-//            if (resultsByVariableName.containsKey(variableName))
-//            {
-//                result = resultsByVariableName.get(variableName);
-//                result.addToRanking(1f);
-//            }
-//            else
-//            {
-//                result = new ActiveVariableSearchResult(variableName, variableLabel);
-//                resultsByVariableName.put(variableName, result);
-//            }
-//
-//            result.setNameIsMatched();
-//        }
-//
-//        // Label Matches
-//        Collection<VariableUnion> labelMatches = activeVariableLabelTrie.prefixMap(query).values();
-//        for (VariableUnion variableUnion : labelMatches)
-//        {
-//            String variableName = variableUnion.variable().name();
-//            String variableLabel = variableUnion.variable().label();
-//
-//            ActiveVariableSearchResult result;
-//            if (resultsByVariableName.containsKey(variableName))
-//            {
-//                result = resultsByVariableName.get(variableName);
-//                result.addToRanking(1f);
-//            }
-//            else
-//            {
-//                result = new ActiveVariableSearchResult(variableName, variableLabel);
-//                resultsByVariableName.put(variableName, result);
-//            }
-//
-//            result.setLabelIsMatched();
-//        }
-//
-//        Collection<EngineActiveSearchResult> results = new ArrayList<>();
-//        for (ActiveVariableSearchResult variableSearchResult : resultsByVariableName.values()) {
-//            results.add(new EngineActiveSearchResult(variableSearchResult));
-//        }
-//
-//        return results;
-//    }
-//
-//}

@@ -6,7 +6,6 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
@@ -15,11 +14,10 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
+import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
-import effect.effApply
-import effect.effError
-import effect.effValue
+import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -41,6 +39,7 @@ sealed class TextVariableValue : SumModel, Serializable
                 "text_literal"       -> TextVariableLiteralValue.fromDocument(doc)
                 "value_reference"    -> TextVariableValueValue.fromDocument(doc)
                 "program_invocation" -> TextVariableProgramValue.fromDocument(doc)
+                "value_set_id"       -> TextVariableValueUnknownValue.fromDocument(doc)
                 else                 -> effError<ValueError,TextVariableValue>(
                                             UnknownCase(doc.case(), doc.path))
             }
@@ -58,7 +57,8 @@ sealed class TextVariableValue : SumModel, Serializable
     // Value
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(sheetContext : SheetContext) : AppEff<String>
+    abstract fun value(sheetContext : SheetContext) : AppEff<Maybe<String>>
+
 
     abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
 
@@ -90,7 +90,9 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<String> = effValue(this.value)
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> =
+            effValue(Just(this.value))
+
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
         effValue(setOf())
@@ -110,6 +112,63 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
+ * Unknown Literal Value
+ */
+class TextVariableUnknownLiteralValue() : TextVariableValue(), SQLSerializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TextVariableValue>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariableValue> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "unknown_literal_value" -> effValue<ValueError,TextVariableValue>(
+                                                TextVariableUnknownLiteralValue())
+                else                    -> effError<ValueError,TextVariableValue>(
+                                                UnexpectedValue("TextVariableUnknownLiteralValue",
+                                                                doc.text,
+                                                                doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // Value
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> = effValue(Nothing())
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+        effValue(setOf())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "literal")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ "unknown_literal_value" })
 
 }
 
@@ -134,10 +193,10 @@ data class TextVariableValueValue(val valueReference : ValueReference)
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<String> =
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> =
         GameManager.engine(sheetContext.gameId)
                    .apply { it.textValue(this.valueReference, sheetContext) }
-                   .apply { effValue<AppError,String>(it.value()) }
+                   .apply { effValue<AppError,Maybe<String>>(Just(it.value())) }
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
@@ -164,6 +223,51 @@ data class TextVariableValueValue(val valueReference : ValueReference)
 }
 
 
+data class TextVariableValueUnknownValue(val valueSetId : ValueSetId)
+            : TextVariableValue(), SQLSerializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TextVariableValue>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariableValue> =
+                effApply(::TextVariableValueUnknownValue, ValueSetId.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // Value
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> = effValue(Nothing())
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+        effValue(setOf())
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "value")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = this.valueSetId.asSQLValue()
+
+}
+
+
 data class TextVariableProgramValue(val invocation : Invocation) : TextVariableValue(), Model
 {
 
@@ -184,7 +288,9 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 
     override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
 
-    override fun value(sheetContext : SheetContext) : AppEff<String> = TODO("Not Implemented")
+
+    override fun value(sheetContext : SheetContext) = TODO("Not Implemented")
+
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             effValue(setOf())

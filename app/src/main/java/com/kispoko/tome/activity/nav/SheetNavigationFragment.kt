@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +29,7 @@ import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.theme.ThemeManager
 import effect.Err
 import effect.Val
+
 
 
 /**
@@ -442,10 +442,10 @@ object SheetItemView
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_3")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_3")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+//        layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
 
         layout.padding.topDp    = 4f
         layout.padding.bottomDp = 4f

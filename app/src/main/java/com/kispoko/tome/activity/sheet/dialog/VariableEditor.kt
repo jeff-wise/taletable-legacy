@@ -95,6 +95,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                 is NumericEditorType.Adder ->
                 {
                     val adderState = AdderState(variableValue.value,
+                                                0.0,
                                                 setOf(),
                                                 numberVariable.label(),
                                                 updateTarget)

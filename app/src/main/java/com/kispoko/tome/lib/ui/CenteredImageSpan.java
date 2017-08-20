@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.style.ImageSpan;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
@@ -52,8 +53,11 @@ public class CenteredImageSpan extends ImageSpan
         int drawableHeight = b.getIntrinsicHeight();
         int fontAscent = paint.getFontMetricsInt().ascent;
         int fontDescent = paint.getFontMetricsInt().descent;
-        int transY = bottom - b.getBounds().bottom +  // align bottom to bottom
+//        int transY = bottom - b.getBounds().bottom +  // align bottom to bottom
+//                (drawableHeight - fontDescent + fontAscent) / 2;  // align center to center
+        int transY = top - b.getBounds().top +  // align bottom to bottom
                 (drawableHeight - fontDescent + fontAscent) / 2;  // align center to center
+
 
         canvas.translate(x, transY);
         b.draw(canvas);

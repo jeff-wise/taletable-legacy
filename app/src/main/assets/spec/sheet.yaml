@@ -237,11 +237,15 @@ types:
     presence: optional
     description: >
       The group row alignment.
-  - name: background
-    type: color_id
+  - name: vertical_alignment
+    type: vertical_alignment
+    presence: optional
+    description: Vertical alignment.
+  - name: background_color_theme
+    type: color_theme
     presence: optional
     description: >
-      The background color.
+      The background color theme.
   - name: margins
     type: spacing
     presence: optional
@@ -729,11 +733,10 @@ types:
     presence: optional
     description: >
       The number widget formatting options.
-  - name: value_variable
-    type: variable_number
+  - name: value_variable_id
+    type: variable_id
     presence: required
-    description: >
-      The number value.
+    description: The number variable value id.
   - name: value_prefix
     type: string
     presence: optional
@@ -1000,6 +1003,12 @@ types:
     presence: optional
     description: >
       The widget height.
+- name: points_widget_label
+  label: Points Widget Label
+  description: The points widget label.
+  group: 'Widget: Points'
+  type: primitive
+  base_type: string
 - name: widget_points
   label: Points Widget
   description: Points Widget
@@ -1024,6 +1033,26 @@ types:
     type: variable_id
     presence: required
     description: Current Value Variable Id
+  - name: label
+    type: points_widget_label
+    presence: optional
+    description: Points widget label
+- name: points_bar_style
+  label: Points Bar Style
+  description: Points Bar Style
+  group: 'Widget: Points'
+  type: primitive
+  base_type: string
+  constraints:
+  - points_bar_style_set
+- name: points_above_bar_style
+  label: Points Above Bar Style
+  description: Points Above Bar Style
+  group: 'Widget: Points'
+  type: primitive
+  base_type: string
+  constraints:
+  - points_above_bar_style_set
 - name: points_widget_format
   label: Points Widget Format
   description: >
@@ -1044,6 +1073,10 @@ types:
     type: text_format
     presence: optional
     description: Current Text Format
+  - name: label_text_format
+    type: text_format
+    presence: optional
+    description: Label Text Format
   - name: limit_color_theme
     type: color_theme
     presence: optional
@@ -1052,6 +1085,14 @@ types:
     type: color_theme
     presence: optional
     description: Current Color Theme
+  - name: bar_style
+    type: points_bar_style
+    presence: optional
+    description: Points bar style
+  - name: above_bar_style
+    type: points_above_bar_style
+    presence: optional
+    description: Points above bar style
   - name: bar_height
     type: number
     presence: optional
@@ -1187,9 +1228,9 @@ types:
     presence: optional
     description: >
       The text style.
-  - name: variable
-    type: variable
-    presence: optional
+  - name: variable_id
+    type: variable_id
+    presence: required
     description: >
       The value variable.
   - name: numeric_editor_type
@@ -1386,10 +1427,9 @@ types:
     description: >
       The column format.
   - name: default_value
-    type: boolean
-    presence: optional
-    description: >
-      The column default value.
+    type: variable_boolean_value
+    presence: required
+    description: The column default value.
   - name: variable_prefix
     type: column_variable_prefix
     presence: required
@@ -1469,10 +1509,9 @@ types:
     description: >
       The column format.
   - name: default_value
-    type: string
-    presence: optional
-    description: >
-      The column default value.
+    type: variable_number_value
+    presence: required
+    description: The column default value.
   - name: variable_prefix
     type: column_variable_prefix
     presence: required
@@ -1531,10 +1570,9 @@ types:
     presence: required
     description: Variable prefix
   - name: default_value
-    type: string
-    presence: optional
-    description: >
-      The column default value.
+    type: variable_text_value
+    presence: required
+    description: The column default value.
   - name: defines_namespaced
     type: boolean
     presence: optional
@@ -1673,11 +1711,11 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: value_variable
-    type: variable_boolean
+  - name: variable_value
+    type: variable_boolean_value
     presence: required
     description: >
-      The cell value
+      The cell variable value.
   - name: format
     type: table_widget_boolean_cell_format
     presence: optional
@@ -1732,11 +1770,11 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: value_variable
-    type: variable_number
+  - name: variable_value
+    type: variable_number_value
     presence: required
     description: >
-      The cell value.
+      The cell variable value.
   - name: format
     type: table_widget_number_cell_format
     presence: optional
@@ -2351,3 +2389,15 @@ constraints:
     set:
     - calculator
     - adder
+    - simple
+- name: points_bar_style_set
+  type: string_one_of
+  parameters:
+    set:
+    - simple
+    - opposite_labels
+- name: points_above_bar_style_set
+  type: string_one_of
+  parameters:
+    set:
+    - opposite_left_label

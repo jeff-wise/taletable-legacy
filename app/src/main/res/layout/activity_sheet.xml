@@ -8,120 +8,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<android.support.v7.widget.Toolbar-->
-                <!--android:id="@+id/toolbar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--android:background="@color/dark_theme_primary_88"-->
-                <!--app:contentInsetStart="0dp"-->
-                <!--android:theme="@style/AppTheme.NoActionBar" >-->
-
-                <!--<RelativeLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content">-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/menuLeft"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentStart="true"-->
-                        <!--android:layout_marginStart="15dp"-->
-                        <!--android:layout_centerVertical="true"-->
-                        <!--android:layout_marginEnd="15dp"-->
-                        <!--android:background="#00000000"-->
-                        <!--android:src="@drawable/ic_toolbar_sheet_app_menu"-->
-                        <!--android:tint="@color/dark_theme_primary_15" />-->
-
-                    <!--<TextView-->
-                        <!--android:id="@+id/toolbar_title"-->
-                        <!--android:textSize="18sp"-->
-                        <!--android:textColor="@color/dark_theme_primary_15"-->
-                        <!--android:layout_centerVertical="true"-->
-                        <!--android:layout_toEndOf="@+id/menuLeft"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content" />-->
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_centerVertical="true"-->
-                        <!--android:layout_alignParentEnd="true"-->
-                        <!--android:layout_marginEnd="15dp"-->
-                        <!--&gt;-->
-                        <!--<ImageButton-->
-                            <!--android:id="@+id/toolbar_nav_button"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:background="#00000000"-->
-                            <!--android:layout_marginEnd="15dp"-->
-                            <!--android:layout_marginTop="1dp"-->
-                            <!--android:src="@drawable/icon_toolbar_nav"-->
-                            <!--android:tint="@color/dark_theme_primary_15" />-->
-
-                        <!--<ImageButton-->
-                            <!--android:id="@+id/toolbar_options_button"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:background="#00000000"-->
-                            <!--android:src="@drawable/ic_toolbar_options"-->
-                            <!--android:tint="@color/dark_theme_primary_15" />-->
-
-
-                    <!--</LinearLayout>-->
-
-
-                <!--</RelativeLayout>-->
-
-            <!--</android.support.v7.widget.Toolbar>-->
-
-            <!--<com.kispoko.tome.lib.ui.CustomTabLayout-->
-                <!--android:id="@+id/tab_layout"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@color/dark_theme_primary_88"-->
-                <!--app:tabGravity="fill"-->
-                <!--app:tabMode="scrollable"-->
-                <!--app:tabTextColor="@color/dark_blue_hl_8"-->
-                <!--app:tabSelectedTextColor="@color/dark_blue_hlx_5"-->
-                <!--app:tabIndicatorColor="@color/dark_blue_hl_1" />-->
-
-            <!--<LinearLayout-->
-                <!--android:id="@+id/sheet_action_bar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="vertical">-->
-            <!--</LinearLayout>-->
-
-            <!--<android.support.v4.view.ViewPager-->
-                <!--android:id="@+id/page_pager"-->
-                <!--android:background="@color/dark_blue_7"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:focusableInTouchMode="true"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="1"/>-->
-
-            <!--<com.aurelhubert.ahbottomnavigation.AHBottomNavigation-->
-                <!--android:id="@+id/bottom_navigation"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:paddingTop="6dp" />-->
-
-        <!--</LinearLayout>-->
-
-
-
-    <!--</RelativeLayout>-->
-
-
     <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -134,6 +20,7 @@
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:elevation="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <android.support.v7.widget.Toolbar
@@ -141,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/dark_theme_primary_88"
+                app:elevation="0dp"
                 app:contentInsetStart="0dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
@@ -215,44 +103,27 @@
 
         </android.support.design.widget.AppBarLayout>
 
-
-        <LinearLayout
-            android:id="@+id/sheet_action_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-
-
         <android.support.v4.view.ViewPager
             android:id="@+id/page_pager"
             android:background="@color/dark_theme_dark_grey_9"
             android:layout_width="match_parent"
-            android:focusableInTouchMode="true"
             android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:paddingBottom="60dp"
             android:layout_weight="1"/>
 
-        <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom"
-            android:paddingTop="6dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="0dp"
-            android:layout_margin="0dp"
             android:orientation="vertical"
+            android:background="@color/dark_theme_medium_grey_12"
             app:behavior_hideable="true"
             app:behavior_peekHeight="0dp"
-            android:background="@color/dark_theme_medium_grey_12"
             app:layout_behavior="@string/bottom_sheet_behavior">
-
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <android.support.design.widget.FloatingActionButton
@@ -268,14 +139,23 @@
             app:rippleColor="#FFF" />
 
 
+        <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:paddingTop="6dp" />
+
+
+
     </android.support.design.widget.CoordinatorLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/app_navigation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/dark_blue_11" />
+    <!--<android.support.design.widget.NavigationView-->
+        <!--android:id="@+id/app_navigation_view"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:background="@color/dark_blue_11" />-->
 
     <android.support.design.widget.NavigationView
         android:id="@+id/right_nav_view"
@@ -285,4 +165,4 @@
         android:background="@color/dark_grey_12" />
 
 
-</android.support.v4.widget.DrawerLayout>
+ </android.support.v4.widget.DrawerLayout>

@@ -120,7 +120,6 @@ object SheetManager
             // Initialize Sheet
             sheetRecord.onActive(sheetUI.context())
 
-
             // Render
             SheetManager.render(sheet.sheetId(), sheetUI)
         } }
@@ -161,9 +160,9 @@ object SheetManager
 
     fun addOnVariableChangeListener(sheetId : SheetId,
                                     variableId : VariableId,
-                                    onChange : (Variable) -> Unit) =
+                                    onChangeListener : OnVariableChangeListener) =
         SheetManager.sheetRecord(sheetId)
-                .apDo { it.state.addVariableOnChangeListener(variableId, onChange) }
+                .apDo { it.state.addVariableOnChangeListener(variableId, onChangeListener) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -339,7 +338,7 @@ object SheetManager
                         sheetUI.pagePagerAdatper()
                                 .setPages(selectedSection.pages(), sheetRecord.sheetContext)
                     }
-                    sheetUI.hideActionBar()
+//                    sheetUI.hideActionBar()
                     true
                 }
 
@@ -619,10 +618,10 @@ interface SheetUI
 
     fun rootSheetView() : View?
 
-    fun hideActionBar()
-
-    fun showActionBar(sheetAction : SheetAction,
-                      sheetContext : SheetContext)
+//    fun hideActionBar()
+//
+//    fun showActionBar(sheetAction : SheetAction,
+//                      sheetContext : SheetContext)
 
 }
 

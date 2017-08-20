@@ -17,7 +17,8 @@ engine:
         value_text:
           value_id: soulsin
           description: 'A city founded by pirates, Soulsin is now a major trading part and home
-                        to the Endless Carnival.'
+                        to the Endless Carnival. Its citizens are tough and known for their
+                        resourcefulness.'
           value: Soulsin
           variables:
           - type: variable_boolean
@@ -30,45 +31,100 @@ engine:
                 boolean_literal: true
       - type: value_text
         value_text:
-          value_id: the_snow_sea
-          description: The Snow Sea
-          value: The Snow Sea
+          value_id: amadril
+          description: 'A kingdom that prides itself as a force of good, Amadril has a powerful
+                        army and some of the most skilled soliders. Some see the nobility as only
+                        pretense and believe there is something dark behind the lustrous banner. '
+          value: Amadril
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_amadril
+              label: Is Race Amadril
+              description: Is Race Amadril
+              value:
+                type: boolean_literal
+                boolean_literal: true
       - type: value_text
         value_text:
-          value_id: kalan
-          description: Kalan, Kingdom of Gardens
-          value: Kalan
+          value_id: arm_of_solocles
+          description: 'The Arm of Solocles is a theocratic kingdom where every citizen is a fanatic
+                        worshipper of Solocles, the one true god. The land is isolated, on a mountainous
+                        plateau. Little is known other than that priests have absolute authority.'
+          value: 'The Arm of Solocles'
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_solocles
+              label: Is Race - The Arm of Solocles
+              description: Is Race - The Arm of Solocles
+              value:
+                type: boolean_literal
+                boolean_literal: true
       - type: value_text
         value_text:
-          value_id: feya
-          description: Feya
-          value: Feya
+          value_id: illidasia
+          description: 'Illidasia is a large land of verdant fields and forests, inhabited by small,
+                        relatively isolated kingdoms. The people are peaceful, but strong, with a
+                        deep connection to nature.'
+          value: 'Illidasia'
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_illidasia
+              label: Is Race - Illidasia
+              description: Is Race - Illidasia
+              value:
+                type: boolean_literal
+                boolean_literal: true
       - type: value_text
         value_text:
-          value_id: erok
-          description: Erok
-          value: Erok the Ever-Shadowed
-      - type: value_text
-        value_text:
-          value_id: sylandin
-          description: Sylandin
-          value: Sylandin
-      - type: value_text
-        value_text:
-          value_id: isoro
-          description: Isoro
-          value: Isoro
-      - type: value_text
-        value_text:
-          value_id: sea_of_the_wailing_wind
-          description: Sea of the Wailing Wind
-          value: Sea of the Wailing Wind
+          value_id: waveborn
+          description: 'Living on cities of boats and rafts on the Jurean Sea, the Waveborn are a
+                        nomadic, militaristic race. Few have survived a fight with them, but for
+                        some reason, they never survive for long on land.  '
+          value: 'Waveborn'
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_waveborn
+              label: Is Race - Waveborn
+              description: Is Race - Waveborn
+              value:
+                type: boolean_literal
+                boolean_literal: true
       - type: value_text
         value_text:
           value_id: the_fanged_land
           description: 'A land of tall rocky spires that pierce the clouds, the inhabitants
-                  practice an old way of living and are known to bond with birds of prey.'
+                        practice an old way of living and are known to bond with birds of prey.'
           value: The Fanged Land
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_fanged
+              label: Is Race (Fanged Land)
+              description: Is Race (Fanged Land)
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: lorelen
+          description: 'One of the most prosperous kingdoms, Lorelen has an academic,
+                        intellectually-minded culture. The people respect knowledge and abhor violence.
+                        They seek to develop new technologies as well as discover the secrets
+                        from the age of magic.'
+          value: Lorelen
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_lorelen
+              label: Is Race - Lorelen
+              description: Is Race - Lorelen
+              value:
+                type: boolean_literal
+                boolean_literal: true
   - type: value_set_base
     value_set_base:
       value_set_id: classes
@@ -536,6 +592,120 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: dexterity_modifier
+  - summation_id: general_strength_action
+    summation_name: General Strength Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
+  - summation_id: general_dexterity_action
+    summation_name: General Dexterity Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Dexterity Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+  - summation_id: general_constitution_action
+    summation_name: General Constitution Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Constitution Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: constitution_modifier
+  - summation_id: general_intelligence_action
+    summation_name: General Intelligence Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Intelligence Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+  - summation_id: general_wisdom_action
+    summation_name: General Wisdom Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Wisdom Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+  - summation_id: general_charisma_action
+    summation_name: General Charisma Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Charisma Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
   - summation_id: flurry_attack
     summation_name: Flurry Attack
     terms:

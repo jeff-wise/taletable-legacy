@@ -822,7 +822,7 @@ types:
     description: >
       A description of what the variable represents.
   - name: value
-    type: boolean_variable_value
+    type: variable_boolean_value
     presence: required
     description: >
       The value of the variable.
@@ -837,7 +837,7 @@ types:
     presence: optional
     description: >
       Tags that can be used to place the variable in a group.
-- name: boolean_variable_value
+- name: variable_boolean_value
   label: Boolean Variable Value
   description: >
     The boolean variable value is the source of a Boolean Variable's value.
@@ -915,7 +915,7 @@ types:
     type: string
     presence: required
   - name: value
-    type: number_variable_value
+    type: variable_number_value
     presence: required
   - name: is_namespaced
     type: boolean
@@ -929,7 +929,7 @@ types:
     presence: optional
     description: >
       Tags that can be used to place the variable in a group.
-- name: number_variable_value
+- name: variable_number_value
   label: Number Variable Value
   description: >
     A number variable value is the source of a Number Variable's value.
@@ -937,8 +937,9 @@ types:
   type: sum
   cases:
   - type: number_literal
-    description: >
-      A literal number.
+    description: A literal number.
+  - type: unknown_number_literal
+    description: Unknown number literal
   - type: variable_id
     description: >
       The value of another number variable.
@@ -951,6 +952,13 @@ types:
   - type: summation_id
     description: >
       The value of a summation.
+- name: unknown_number_literal
+  label: Unknown Number Literal
+  description: >
+    Unknown number literal.
+  group: 'Variable: Number'
+  type: symbol
+  symbol: 'unknown_number_literal'
 - name: number_literal
   label: Number Literal
   description: >
@@ -1022,8 +1030,11 @@ types:
   type: sum
   cases:
   - type: text_literal
-    description: >
-      A literal text value.
+    description: A literal text value.
+  - type: unknown_text_literal
+    description: An unknown literal text value.
+  - type: value_set_id
+    description: value set id
   - type: value_reference
     description: >
       A text value from the Dictionary.
@@ -1037,6 +1048,13 @@ types:
   group: Variable
   type: primitive
   base_type: string
+- name: unknown_text_literal
+  label: Unknown Text Literal
+  description: >
+    A unknown literal text value.
+  group: Variable
+  type: symbol
+  symbol: 'unknown_text_literal'
 - name: summation_id
   label: Summation Id
   description: >

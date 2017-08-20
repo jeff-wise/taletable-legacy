@@ -20,6 +20,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.util.Util
@@ -697,7 +698,7 @@ object NumberWidgetView
                         format.insideLabelFormat().style().font())
 
             val valueSpan =
-                FormattedString.Span(numberWidget.valueString(sheetUIContext),
+                FormattedString.Span(numberWidget.valueString(SheetContext(sheetUIContext)),
                                      sheetUIContext.context.getString(R.string.placeholder_value),
                                      SheetManager.color(sheetUIContext.sheetId,
                                                         format.valueFormat().style().colorTheme()),
@@ -715,7 +716,7 @@ object NumberWidgetView
         }
         else
         {
-            value.text  = numberWidget.valueString(sheetUIContext)
+            value.text  = numberWidget.valueString(SheetContext(sheetUIContext))
             format.valueFormat().style().styleTextViewBuilder(value, sheetUIContext)
         }
 

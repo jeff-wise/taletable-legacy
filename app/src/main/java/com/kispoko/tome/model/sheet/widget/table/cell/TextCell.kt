@@ -5,9 +5,9 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.tome.R.string.cell
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.model.Model
@@ -70,8 +70,8 @@ data class TextCellFormat(override val id : UUID,
         }
 
 
-        val default : TextCellFormat =
-                TextCellFormat(UUID.randomUUID(), Comp.default(defaultCellFormat))
+        fun default() = TextCellFormat(UUID.randomUUID(),
+                                       Comp.default(defaultCellFormat))
 
     }
 
@@ -81,7 +81,6 @@ data class TextCellFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun cellFormat() : CellFormat = this.cellFormat.value
-
 
 
     // -----------------------------------------------------------------------------------------
@@ -126,24 +125,23 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         layout.addView(this.valueTextView())
 
         layout.setOnClickListener {
-            val maybeValueVariable = cell.valueVariable(SheetContext(sheetUIContext))
-            when (maybeValueVariable) {
-                is Just -> openTextVariableEditorDialog(
-                                            maybeValueVariable.value,
+            val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
+            when (valueVariable)
+            {
+                is Val -> openTextVariableEditorDialog(
+                                            valueVariable.value,
                                             UpdateTargetTextCell(tableWidget.id, cell.id),
                                             sheetUIContext)
+                is Err -> ApplicationLog.error(valueVariable.error)
             }
         }
 
         // On Long Click
         layout.setOnLongClickListener {
             val sheetActivity = sheetUIContext.context as SheetActivity
-            val tableRowAction = SheetAction.TableRow(tableWidget.id,
-                                                      rowIndex,
-                                                      tableWidget.tableName(),
-                                                      tableWidget.columns())
-//            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
-            sheetActivity.showTableEditor(tableRowAction, SheetContext(sheetUIContext))
+            val updateTarget = UpdateTargetInsertTableRow(tableWidget)
+            tableWidget.selectedRow = rowIndex
+            sheetActivity.showTableEditor(updateTarget, SheetContext(sheetUIContext))
             true
         }
 
@@ -171,9 +169,9 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         val cellValue = cell.valueString(SheetContext(sheetUIContext))
         when (cellValue)
         {
-            is Just -> value.text = cellValue.value
+            is Val -> value.text = cellValue.value
+            is Err -> ApplicationLog.error(cellValue.error)
         }
-        //value.text = column.defaultValue();
 
         return value.textView(sheetUIContext.context)
     }

@@ -15,6 +15,210 @@ variables:
       text_literal: 'Casmey Dalseya'
 - type: variable_text
   variable_text:
+    id: race
+    label: Race
+    description: Race
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: races
+        value_id: soulsin
+- type: variable_text
+  variable_text:
+    id: class
+    label: Class
+    description: Class
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: classes
+        value_id: swashbuckler
+- type: variable_number
+  variable_number:
+    id: age
+    label: Age
+    description: Age
+    value:
+      type: number_literal
+      number_literal: 21
+- type: variable_text
+  variable_text:
+    id: eye_color
+    label: Eye Color
+    description: Eye Color
+    value:
+      type: text_literal
+      text_literal: green
+- type: variable_text
+  variable_text:
+    id: hair_color
+    label: Hair Color
+    description: Hair Color
+    value:
+      type: text_literal
+      text_literal: brown
+- type: variable_text
+  variable_text:
+    id: alignment
+    label: Alignment
+    description: Alignment
+    value:
+      type: text_literal
+      text_literal: Chaotic Good
+- type: variable_number
+  variable_number:
+    id: strength
+    label: Strength
+    description: Strength
+    value:
+      type: number_literal
+      number_literal: 12
+- type: variable_number
+  variable_number:
+    id: strength_modifier
+    label: Strength Modifier
+    description: Strength Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: strength
+- type: variable_number
+  variable_number:
+    id: base_dexterity
+    label: Base Dexterity
+    description: Base Dexterity
+    value:
+      type: number_literal
+      number_literal: 16
+- type: variable_number
+  variable_number:
+    id: dexterity
+    label: Dexterity
+    description: Dexterity
+    value:
+      type: summation_id
+      summation_id: dexterity
+- type: variable_number
+  variable_number:
+    id: dexterity_modifier
+    label: Dexterity Modifier
+    description: Dexterity Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: dexterity
+- type: variable_number
+  variable_number:
+    id: constitution
+    label: Constitution
+    description: Constitution
+    value:
+      type: number_literal
+      number_literal: 11
+- type: variable_number
+  variable_number:
+    id: constitution_modifier
+    label: Constitution Modifier
+    description: Constitution Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: constitution
+- type: variable_number
+  variable_number:
+    id: intelligence
+    label: Intelligence
+    description: Intelligence
+    value:
+      type: number_literal
+      number_literal: 15
+- type: variable_number
+  variable_number:
+    id: intelligence_modifier
+    label: Intelligence Modifier
+    description: Intelligence Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: intelligence
+- type: variable_number
+  variable_number:
+    id: wisdom
+    label: Wisdom
+    description: Wisdom
+    value:
+      type: number_literal
+      number_literal: 8
+- type: variable_number
+  variable_number:
+    id: wisdom_modifier
+    label: Wisdom Modifier
+    description: Wisdom Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: wisdom
+- type: variable_number
+  variable_number:
+    id: charisma
+    label: Charisma
+    description: Charisma
+    value:
+      type: number_literal
+      number_literal: 14
+- type: variable_number
+  variable_number:
+    id: charisma_modifier
+    label: Charisma Modifier
+    description: Charisma Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: charisma
+- type: variable_text
+  variable_text:
     id: strength_label
     label: Strength Label
     description: Strength Label
@@ -79,12 +283,36 @@ variables:
       text_literal: 'weapons'
 - type: variable_text
   variable_text:
+    id: important_stuff_label
+    label: Important Stuff Label
+    description: Important Stuff Label
+    value:
+      type: text_literal
+      text_literal: 'some important things'
+- type: variable_text
+  variable_text:
+    id: less_important_stuff_label
+    label: Less Important Stuff Label
+    description: Less Important Stuff Label
+    value:
+      type: text_literal
+      text_literal: 'some less important things'
+- type: variable_text
+  variable_text:
     id: gold_label
     label: Gold Label
     description: Gold Label
     value:
       type: text_literal
       text_literal: 'gold'
+- type: variable_number
+  variable_number:
+    id: gold
+    label: Gold
+    description: Gold
+    value:
+      type: number_literal
+      number_literal: 107
 - type: variable_text
   variable_text:
     id: silver_label
@@ -93,6 +321,14 @@ variables:
     value:
       type: text_literal
       text_literal: 'silver'
+- type: variable_number
+  variable_number:
+    id: silver
+    label: Silver
+    description: Silver
+    value:
+      type: number_literal
+      number_literal: 12
 - type: variable_text
   variable_text:
     id: copper_label
@@ -101,6 +337,22 @@ variables:
     value:
       type: text_literal
       text_literal: 'copper'
+- type: variable_number
+  variable_number:
+    id: copper
+    label: Copper
+    description: Copper
+    value:
+      type: number_literal
+      number_literal: 30
+- type: variable_text
+  variable_text:
+    id: bears
+    label: Bears
+    description: Bears
+    value:
+      type: text_literal
+      text_literal: 'Bears'
 - type: variable_text
   variable_text:
     id: backpack_table_label
@@ -111,20 +363,52 @@ variables:
       text_literal: 'backpack'
 - type: variable_text
   variable_text:
-    id: defense_label
-    label: Defense Label
-    description: Defense Label
+    id: current_action_label
+    label: Current Action Label
+    description: Current Action Label
     value:
       type: text_literal
-      text_literal: 'defense'
+      text_literal: 'CURRENT ACTION'
 - type: variable_text
   variable_text:
-    id: attack_label
-    label: Attack Label
-    description: Attack Label
+    id: current_mind_action
+    label: Current Mind Action
+    description: Current Mind Action
     value:
       type: text_literal
-      text_literal: 'attack'
+      text_literal: 'Casual Observation'
+- type: variable_text
+  variable_text:
+    id: current_body_action
+    label: Current Body Action
+    description: Current Body Action
+    value:
+      type: text_literal
+      text_literal: 'Spinning Aerial Attack'
+- type: variable_text
+  variable_text:
+    id: body_status_label
+    label: Body Status Label
+    description: Body Status Label
+    value:
+      type: text_literal
+      text_literal: 'Body'
+- type: variable_text
+  variable_text:
+    id: mind_status_label
+    label: Mind Status Label
+    description: Mind Status Label
+    value:
+      type: text_literal
+      text_literal: 'Mind'
+- type: variable_text
+  variable_text:
+    id: max_health_label
+    label: Max Health Label
+    description: Max Health Label
+    value:
+      type: text_literal
+      text_literal: 'max health'
 - type: variable_number
   variable_number:
     id: max_health
@@ -133,6 +417,22 @@ variables:
     value:
       type: number_literal
       number_literal: 20
+- type: variable_text
+  variable_text:
+    id: max_ki_label
+    label: Max Ki Label
+    description: Max Ki Label
+    value:
+      type: text_literal
+      text_literal: 'max ki'
+- type: variable_number
+  variable_number:
+    id: max_ki
+    label: Max Ki
+    description: Max Ki
+    value:
+      type: number_literal
+      number_literal: 17
 - type: variable_number
   variable_number:
     id: current_health
@@ -141,6 +441,102 @@ variables:
     value:
       type: number_literal
       number_literal: 14
+- type: variable_number
+  variable_number:
+    id: current_ki
+    label: Current Ki
+    description: Current Ki
+    value:
+      type: number_literal
+      number_literal: 7
+- type: variable_number
+  variable_number:
+    id: defense
+    label: Defense
+    description: Defense
+    value:
+      type: number_literal
+      number_literal: 9
+- type: variable_number
+  variable_number:
+    id: attack
+    label: Attack
+    description: Attack
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_number
+  variable_number:
+    id: perception
+    label: Perception
+    description: Perception
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: persuasion
+    label: Persuasion
+    description: Persuasion
+    value:
+      type: number_literal
+      number_literal: 4
+- type: variable_text
+  variable_text:
+    id: general_actions_label
+    label: General Actions Label
+    description: General Actions Label
+    value:
+      type: text_literal
+      text_literal: 'General Actions'
+- type: variable_text
+  variable_text:
+    id: general_strength_action_description
+    label: General Strength Action Description
+    description: General Strength Action Description
+    value:
+      type: text_literal
+      text_literal: 'Lift, push, pull, drag, kick, throw, shove, etc..'
+- type: variable_text
+  variable_text:
+    id: general_dexterity_action_description
+    label: General Dexterity Action Description
+    description: General Dexterity Action Description
+    value:
+      type: text_literal
+      text_literal: 'Sneak, balance, climb, flip, roll, hide, etc...'
+- type: variable_text
+  variable_text:
+    id: general_constitution_action_description
+    label: General Constitution Action Description
+    description: General Constitution Action Description
+    value:
+      type: text_literal
+      text_literal: 'Endure cold or heat, hold breath, withstand pain, resist toxins, etc...'
+- type: variable_text
+  variable_text:
+    id: general_intelligence_action_description
+    label: General Intelligence Action Description
+    description: General Intelligence Action Description
+    value:
+      type: text_literal
+      text_literal: 'Recall esoteric facts, solve a puzzle, recognize a pattern, etc...'
+- type: variable_text
+  variable_text:
+    id: general_wisdom_action_description
+    label: General Wisdom Action Description
+    description: General Wisdom Action Description
+    value:
+      type: text_literal
+      text_literal: 'Sense deception, judge someone''s character, make an important decision, etc...'
+- type: variable_text
+  variable_text:
+    id: general_charisma_action_description
+    label: General Charisma Action Description
+    description: General Charisma Action Description
+    value:
+      type: text_literal
+      text_literal: 'Impress, seduce, intimidate, persuade, conciliate, etc...'
 - type: variable_text
   variable_text:
     id: my_story_part_1
@@ -195,8 +591,6 @@ sections:
         theme_color_ids:
         - theme_id: dark
           color_id: dark_grey_10
-      padding:
-        bottom: 10
     groups:
     - format:
         background_color_theme:
@@ -254,17 +648,7 @@ sections:
                     size: 15
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_text
-                  variable_text:
-                    id: race
-                    label: Race
-                    description: Race
-                    value:
-                      type: value_reference
-                      value_reference:
-                        value_set_id: races
-                        value_id: soulsin
+                variable_id: race
                 format:
                   style:
                     color_theme:
@@ -286,17 +670,7 @@ sections:
                     size: 15
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_text
-                  variable_text:
-                    id: class
-                    label: Class
-                    description: Class
-                    value:
-                      type: value_reference
-                      value_reference:
-                        value_set_id: classes
-                        value_id: swashbuckler
+                variable_id: class
                 format:
                   style:
                     color_theme:
@@ -319,15 +693,7 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 numeric_editor_type: simple
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: age
-                    label: Age
-                    description: Age
-                    value:
-                      type: number_literal
-                      number_literal: 21
+                variable_id: age
                 format:
                   style:
                     color_theme:
@@ -348,15 +714,7 @@ sections:
                     size: 15
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_text
-                  variable_text:
-                    id: eye_color
-                    label: Eye Color
-                    description: Eye Color
-                    value:
-                      type: text_literal
-                      text_literal: green
+                variable_id: eye_color
                 format:
                   style:
                     color_theme:
@@ -377,15 +735,7 @@ sections:
                     size: 15
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_text
-                  variable_text:
-                    id: hair_color
-                    label: Hair Color
-                    description: Hair Color
-                    value:
-                      type: text_literal
-                      text_literal: brown
+                variable_id: hair_color
                 format:
                   style:
                     color_theme:
@@ -491,15 +841,7 @@ sections:
             story:
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: strength
-                    label: Strength
-                    description: Strength
-                    value:
-                      type: number_literal
-                      number_literal: 12
+                variable_id: strength
                 format:
                   style:
                     color_theme:
@@ -521,23 +863,7 @@ sections:
                     top: 1
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: strength_modifier
-                    label: Strength Modifier
-                    description: Strength Modifier
-                    value:
-                      type: program_invocation
-                      program_invocation:
-                        program_id: ability_modifier
-                        parameter1:
-                          type: data_reference_number
-                          data_reference_number:
-                            type: variable_reference
-                            variable_reference:
-                              type: variable_id
-                              variable_id: strength
+                variable_id: strength_modifier
                 format:
                   style:
                     color_theme:
@@ -572,15 +898,7 @@ sections:
             story:
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: dexterity
-                    label: Dexterity
-                    description: Dexterity
-                    value:
-                      type: summation_id
-                      summation_id: dexterity
+                variable_id: dexterity
                 format:
                   style:
                     color_theme:
@@ -602,23 +920,7 @@ sections:
                     top: 1
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: dexterity_modifier
-                    label: Dexterity Modifier
-                    description: Dexterity Modifier
-                    value:
-                      type: program_invocation
-                      program_invocation:
-                        program_id: ability_modifier
-                        parameter1:
-                          type: data_reference_number
-                          data_reference_number:
-                            type: variable_reference
-                            variable_reference:
-                              type: variable_id
-                              variable_id: dexterity
+                variable_id: dexterity_modifier
                 format:
                   style:
                     color_theme:
@@ -628,15 +930,6 @@ sections:
                     size: 15
                   padding:
                     top: 1
-            variables:
-            - type: variable_number
-              variable_number:
-                id: base_dexterity
-                label: Base Dexterity
-                description: Base Dexterity
-                value:
-                  type: number_literal
-                  number_literal: 16
         - type: widget_story
           widget_story:
             id: constitution
@@ -662,15 +955,7 @@ sections:
             story:
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: constitution
-                    label: Constitution
-                    description: Constitution
-                    value:
-                      type: number_literal
-                      number_literal: 11
+                variable_id: constitution
                 format:
                   style:
                     color_theme:
@@ -692,23 +977,7 @@ sections:
                     top: 1
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: constitution_modifier
-                    label: Constitution Modifier
-                    description: Constitution Modifier
-                    value:
-                      type: program_invocation
-                      program_invocation:
-                        program_id: ability_modifier
-                        parameter1:
-                          type: data_reference_number
-                          data_reference_number:
-                            type: variable_reference
-                            variable_reference:
-                              type: variable_id
-                              variable_id: constitution
+                variable_id: constitution_modifier
                 format:
                   style:
                     color_theme:
@@ -785,15 +1054,7 @@ sections:
             story:
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: intelligence
-                    label: Intelligence
-                    description: Intelligence
-                    value:
-                      type: number_literal
-                      number_literal: 15
+                variable_id: intelligence
                 format:
                   style:
                     color_theme:
@@ -815,23 +1076,7 @@ sections:
                     top: 1
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: intelligence_modifier
-                    label: Intelligence Modifier
-                    description: Intelligence Modifier
-                    value:
-                      type: program_invocation
-                      program_invocation:
-                        program_id: ability_modifier
-                        parameter1:
-                          type: data_reference_number
-                          data_reference_number:
-                            type: variable_reference
-                            variable_reference:
-                              type: variable_id
-                              variable_id: intelligence
+                variable_id: intelligence_modifier
                 format:
                   style:
                     color_theme:
@@ -866,15 +1111,7 @@ sections:
             story:
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: wisdom
-                    label: Wisdom
-                    description: Wisdom
-                    value:
-                      type: number_literal
-                      number_literal: 8
+                variable_id: wisdom
                 format:
                   style:
                     color_theme:
@@ -896,23 +1133,7 @@ sections:
                     top: 1
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: wisdom_modifier
-                    label: Wisdom Modifier
-                    description: Wisdom Modifier
-                    value:
-                      type: program_invocation
-                      program_invocation:
-                        program_id: ability_modifier
-                        parameter1:
-                          type: data_reference_number
-                          data_reference_number:
-                            type: variable_reference
-                            variable_reference:
-                              type: variable_id
-                              variable_id: wisdom
+                variable_id: wisdom_modifier
                 format:
                   style:
                     color_theme:
@@ -947,15 +1168,7 @@ sections:
             story:
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: charisma
-                    label: Charisma
-                    description: Charisma
-                    value:
-                      type: number_literal
-                      number_literal: 14
+                variable_id: charisma
                 format:
                   style:
                     color_theme:
@@ -977,23 +1190,7 @@ sections:
                     top: 1
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: charisma_modifier
-                    label: Charisma Modifier
-                    description: Charisma Modifier
-                    value:
-                      type: program_invocation
-                      program_invocation:
-                        program_id: ability_modifier
-                        parameter1:
-                          type: data_reference_number
-                          data_reference_number:
-                            type: variable_reference
-                            variable_reference:
-                              type: variable_id
-                              variable_id: charisma
+                variable_id: charisma_modifier
                 format:
                   style:
                     color_theme:
@@ -1003,6 +1200,277 @@ sections:
                     size: 15
                   padding:
                     top: 1
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          top: 10
+          left: 10
+          right: 10
+          bottom: 15
+      rows:
+      - format:
+          padding:
+            top: 2
+            bottom: 6
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: important_stuff_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+                  font_style: bold
+              widget_format:
+                alignment: left
+            value_variable_id: important_stuff_label
+      - format:
+          padding:
+            top: 4
+            bottom: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: alignment
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I am '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: alignment
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_blue_7
+                    font_style: bold
+                    size: 16
+            - type: story_part_span
+              story_part_span:
+                text: '. Usually more chaotic than good.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+      - format:
+          padding:
+            top: 4
+            bottom: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: max_health
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'My '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_span
+              story_part_span:
+                text: 'maximum health '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_span
+              story_part_span:
+                text: 'is '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: max_health
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_blue_7
+                    font_style: bold
+                    size: 19
+            - type: story_part_span
+              story_part_span:
+                text: '.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+      - format:
+          padding:
+            top: 4
+            bottom: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: max_ki
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'Not to brag, but my '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_span
+              story_part_span:
+                text: 'maximum ki '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_span
+              story_part_span:
+                text: 'is '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: max_ki
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_blue_7
+                    font_style: bold
+                    size: 19
+            - type: story_part_span
+              story_part_span:
+                text: '.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+      - format:
+          padding:
+            top: 20
+            bottom: 6
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: less_important_stuff_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+                  font_style: bold
+              widget_format:
+                alignment: left
+            value_variable_id: less_important_stuff_label
+      - format:
+          padding:
+            top: 4
+            bottom: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: alignment
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I am afraid of '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: bears
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_blue_7
+                    font_style: bold
+                    size: 16
+            - type: story_part_span
+              story_part_span:
+                text: '. One escaped his cage in the Carnival when I was a kid. I never stopped having nightmares.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_17
+                    size: 16
   - name: My Stuff
     groups:
     - format:
@@ -1019,7 +1487,6 @@ sections:
             id: armor_table_label
             format:
               value_format:
-                alignment: left
                 style:
                   color_theme:
                     theme_color_ids:
@@ -1027,6 +1494,7 @@ sections:
                       color_id: light_blue_18
                   size: 12
               widget_format:
+                alignment: left
                 margins:
                   bottom: 2
                   left: 8
@@ -1073,6 +1541,9 @@ sections:
               table_widget_text_column:
                 name: Name
                 variable_prefix: armor
+                default_value:
+                  type: value_set_id
+                  value_set_id: armor
                 format:
                   column_format:
                     alignment: left
@@ -1087,6 +1558,9 @@ sections:
               table_widget_number_column:
                 name: Quantity
                 variable_prefix: armor_quantity
+                default_value:
+                  type: number_literal
+                  number_literal: 1
                 format:
                   column_format:
                     text_style:
@@ -1100,6 +1574,9 @@ sections:
               table_widget_boolean_column:
                 name: Is Equipped?
                 variable_prefix: is_armor_equipped
+                default_value:
+                  type: boolean_literal
+                  boolean_literal: false
                 format:
                   column_format:
                     text_style:
@@ -1122,22 +1599,14 @@ sections:
                       value_id: chainmail
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  value_variable:
-                    id: chainmail_quantity
-                    label: Chainmail Quantity
-                    description: Chainmail Quantity
-                    value:
-                      type: number_literal
-                      number_literal: 1
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
-                  value_variable:
-                    id: chainmail_is_equipped
-                    label: Is equipped
-                    description: Is equipped
-                    value:
-                      type: boolean_literal
-                      boolean_literal: true
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
     - format:
         background_color_theme:
           theme_color_ids:
@@ -1150,7 +1619,6 @@ sections:
             id: weapon_table_label
             format:
               value_format:
-                alignment: left
                 style:
                   color_theme:
                     theme_color_ids:
@@ -1158,6 +1626,7 @@ sections:
                       color_id: light_blue_18
                   size: 12
               widget_format:
+                alignment: left
                 margins:
                   bottom: 2
                   left: 8
@@ -1203,6 +1672,9 @@ sections:
               table_widget_text_column:
                 name: Name
                 variable_prefix: weapon
+                default_value:
+                  type: value_set_id
+                  value_set_id: weapons
                 format:
                   column_format:
                     alignment: left
@@ -1217,6 +1689,9 @@ sections:
               table_widget_number_column:
                 name: Quantity
                 variable_prefix: weapon_quantity
+                default_value:
+                  type: number_literal
+                  number_literal: 1
                 format:
                   column_format:
                     text_style:
@@ -1231,6 +1706,9 @@ sections:
               table_widget_boolean_column:
                 name: Is Equipped?
                 variable_prefix: is_weapon_equipped
+                default_value:
+                  type: boolean_literal
+                  boolean_literal: false
                 format:
                   column_format:
                     text_style:
@@ -1253,22 +1731,14 @@ sections:
                       value_id: cutlass
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  value_variable:
-                    id: sword_quantity
-                    label: Sword Quantity
-                    description: Sword Quantity
-                    value:
-                      type: number_literal
-                      number_literal: 1
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
-                  value_variable:
-                    id: sword_is_equipped
-                    label: Is Equipped
-                    description: Is Equipped
-                    value:
-                      type: boolean_literal
-                      boolean_literal: true
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -1279,22 +1749,14 @@ sections:
                       value_id: pike
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  value_variable:
-                    id: crossbow_quantity
-                    label: Crossbow Quantity
-                    description: Crossbow Quantity
-                    value:
-                      type: number_literal
-                      number_literal: 1
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
-                  value_variable:
-                    id: sword_is_equipped
-                    label: Is equipped
-                    description: Is equipped
-                    value:
-                      type: boolean_literal
-                      boolean_literal: true
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
     - format:
         background_color_theme:
           theme_color_ids:
@@ -1410,15 +1872,7 @@ sections:
                     height: 21
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: gold
-                    label: Gold
-                    description: Gold
-                    value:
-                      type: number_literal
-                      number_literal: 107
+                variable_id: gold
                 format:
                   margins:
                     left: 10
@@ -1459,15 +1913,7 @@ sections:
                     height: 21
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: silver
-                    label: Silver
-                    description: Silver
-                    value:
-                      type: number_literal
-                      number_literal: 12
+                variable_id: silver
                 format:
                   margins:
                     left: 10
@@ -1510,15 +1956,7 @@ sections:
                     height: 21
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: copper
-                    label: Copper
-                    description: Copper
-                    value:
-                      type: number_literal
-                      number_literal: 30
+                variable_id: copper
                 format:
                   margins:
                     left: 10
@@ -1543,7 +1981,6 @@ sections:
             id: backpack_table_label
             format:
               value_format:
-                alignment: left
                 style:
                   color_theme:
                     theme_color_ids:
@@ -1551,6 +1988,7 @@ sections:
                       color_id: light_blue_18
                   size: 12
               widget_format:
+                alignment: left
                 margins:
                   bottom: 2
                   left: 8
@@ -1596,6 +2034,9 @@ sections:
               table_widget_text_column:
                 name: Name
                 variable_prefix: backpack_item
+                default_value:
+                  type: value_set_id
+                  value_set_id: mundane_items
                 format:
                   column_format:
                     alignment: left
@@ -1610,6 +2051,9 @@ sections:
               table_widget_number_column:
                 name: Quantity
                 variable_prefix: backpack_item_quantity
+                default_value:
+                  type: number_literal
+                  number_literal: 1
                 format:
                   column_format:
                     text_style:
@@ -1631,13 +2075,9 @@ sections:
                       value_id: fiddle
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  value_variable:
-                    id: fiddle_quantity
-                    label: Fiddle Quantity
-                    description: Fiddle Quantity
-                    value:
-                      type: number_literal
-                      number_literal: 1
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -1648,13 +2088,9 @@ sections:
                       value_id: deck_of_cards
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  value_variable:
-                    id: deck_of_cards_quantity
-                    label: Deck of Cards Quantity
-                    description: Deck of Cards Quantity
-                    value:
-                      type: number_literal
-                      number_literal: 1
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
   - name: My Story
     groups:
     - rows:
@@ -1666,98 +2102,146 @@ sections:
 - name: Action!
   icon: sword_outline
   pages:
-  - name: Mind
+  - name: Status
     format:
       background_color_theme:
         theme_color_ids:
         - theme_id: dark
-          color_id: dark_grey_10
-      padding:
-        bottom: 400
+          color_id: dark_grey_9
     groups:
-    - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_10
-        padding:
-          top: 15
-          bottom: 15
-          left: 14
-          right: 14
-      rows:
+    - rows:
       - format:
           margins:
-            bottom: 2
+            top: 10
+            bottom: 10
+            left: 10
         widgets:
-        - type: widget_text
-          widget_text:
-            id: defense_label
+        - type: widget_story
+          widget_story:
+            id: body_status_label
             format:
-              value_format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: running
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  size:
+                    width: 25
+                    height: 25
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: body_status_label
+                format:
+                  margins:
+                    left: 7
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_blue_10
+                    font_style: regular
+                    size: 18
+      - format:
+          padding:
+            top: 18
+            bottom: 24
+            left: 12
+            right: 12
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_7
+        widgets:
+        - type: widget_points
+          widget_points:
+            id: health
+            label: 'HEALTH'
+            format:
+              bar_height: 8
+              bar_style: simple
+              above_bar_style: opposite_left_label
+              limit_text_format:
+                margins:
+                  right: 5
                 style:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
-                  size: 12
-            value_variable_id: defense_label
-        - type: widget_text
-          widget_text:
-            id: attack_label
-            format:
-              value_format:
+                      color_id: light_grey_22
+                vertical_alignment: bottom
+              current_text_format:
+                margins:
+                  left: 5
                 style:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
+                      color_id: light_grey_10
+                vertical_alignment: bottom
+              label_text_format:
+                margins:
+                  left: 5
+                padding:
+                  bottom: 1.5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
                   size: 12
-            value_variable_id: attack_label
-      - widgets:
+                vertical_alignment: bottom
+              limit_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: medium_grey_12
+              current_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_12
+            limit_value_variable_id: max_health
+            current_value_variable_id: current_health
+      - format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_7
+          margins:
+            top: 1
+          padding:
+            top: 12
+            bottom: 12
+            left: 12
+            right: 12
+        widgets:
         - type: widget_story
           widget_story:
             id: defense
             format:
               vertical_alignment: middle
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
                 margins:
                   right: 7
-                padding:
-                  top: 5
-                  bottom: 5
             story:
-            - type: story_part_icon
-              story_part_icon:
-                icon: shield
-                icon_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_18
-                  size:
-                    width: 21
-                    height: 21
+            - type: story_part_span
+              story_part_span:
+                text: 'DEFENSE'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    size: 13
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: defense
-                    label: Defense
-                    description: Defense
-                    value:
-                      type: number_literal
-                      number_literal: 9
+                variable_id: defense
                 format:
                   margins:
                     left: 10
@@ -1765,41 +2249,28 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_12
+                        color_id: light_grey_8
                     font_style: regular
-                    size: 25
+                    size: 24
         - type: widget_story
           widget_story:
             id: attack
             format:
               vertical_alignment: middle
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
                 margins:
                   left: 7
-                padding:
-                  top: 5
-                  bottom: 5
             story:
-            - type: story_part_icon
-              story_part_icon:
-                icon: sword
-                icon_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_18
-                  size:
-                    width: 20
-                    height: 20
+            - type: story_part_span
+              story_part_span:
+                text: 'ATTACK'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    size: 13
             - type: story_part_span
               story_part_span:
                 text: '+'
@@ -1810,19 +2281,11 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_15
-                    size: 25
+                        color_id: light_grey_11
+                    size: 24
             - type: story_part_variable
               story_part_variable:
-                variable:
-                  type: variable_number
-                  variable_number:
-                    id: attack
-                    label: Attack
-                    description: Attack
-                    value:
-                      type: number_literal
-                      number_literal: 6
+                variable_id: attack
                 format:
                   margins:
                     left: 2
@@ -1830,40 +2293,344 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_12
+                        color_id: light_grey_8
                     font_style: regular
-                    size: 25
+                    size: 24
     - format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
-            color_id: dark_grey_10
+            color_id: dark_grey_7
         padding:
+          top: 15
           bottom: 15
-          left: 8
-          right: 8
-          top: 20
+        margins:
+          top: 1
       rows:
       - widgets:
+        - type: widget_text
+          widget_text:
+            id: current_action_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_18
+                  size: 11
+            value_variable_id: current_action_label
+      - format:
+          margins:
+            top: 4
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: current_body_action
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                  size: 17
+            value_variable_id: current_body_action
+    - rows:
+      - format:
+          margins:
+            top: 10
+            bottom: 10
+            left: 10
+        widgets:
         - type: widget_story
           widget_story:
-            id: flurry_attack
+            id: mind_status_label
+            format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: mind
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  size:
+                    width: 20
+                    height: 20
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: mind_status_label
+                format:
+                  margins:
+                    left: 8
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_blue_10
+                    font_style: regular
+                    size: 18
+      - format:
+          padding:
+            top: 18
+            bottom: 24
+            left: 12
+            right: 12
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_7
+        widgets:
+        - type: widget_points
+          widget_points:
+            id: ki
+            label: 'KI'
+            format:
+              bar_height: 8
+              bar_style: simple
+              above_bar_style: opposite_left_label
+              limit_text_format:
+                margins:
+                  right: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                vertical_alignment: bottom
+              current_text_format:
+                margins:
+                  left: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                vertical_alignment: bottom
+              label_text_format:
+                margins:
+                  left: 5
+                padding:
+                  bottom: 1.5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  size: 12
+                vertical_alignment: bottom
+              limit_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: medium_grey_12
+              current_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_12
+            limit_value_variable_id: max_ki
+            current_value_variable_id: current_ki
+      - format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_7
+          margins:
+            top: 1
+          padding:
+            top: 12
+            bottom: 12
+            left: 12
+            right: 12
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: perception
+            format:
+              vertical_alignment: middle
+              widget_format:
+                margins:
+                  right: 7
             story:
             - type: story_part_span
               story_part_span:
-                text: 'I harass my opponent with a '
+                text: 'PERCEPTION'
                 format:
                   style:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
                         color_id: light_grey_20
-                    size: 16
+                    size: 13
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: perception
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_8
+                    font_style: regular
+                    size: 24
+        - type: widget_story
+          widget_story:
+            id: persuasion
+            format:
+              vertical_alignment: middle
+              widget_format:
+                margins:
+                  left: 7
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'PERSUASION'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    size: 13
+            - type: story_part_span
+              story_part_span:
+                text: '+'
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_11
+                    size: 24
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: persuasion
+                format:
+                  margins:
+                    left: 2
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_8
+                    font_style: regular
+                    size: 24
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_7
+        padding:
+          top: 15
+          bottom: 15
+        margins:
+          top: 1
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: current_action_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_18
+                  size: 11
+            value_variable_id: current_action_label
+      - format:
+          margins:
+            top: 4
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: current_mind_action
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                  size: 17
+            value_variable_id: current_mind_action
+  - name: Body Actions
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_10
+      padding:
+        top: 5
+        bottom: 400
+    groups:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_10
+        padding:
+          bottom: 8
+          left: 8
+          top: 8
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_actions_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  size: 15
+              widget_format:
+                alignment: left
+            value_variable_id: general_actions_label
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: general_strength_action
+            format:
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 2
+            story:
             - type: story_part_action
               story_part_action:
-                text: ' flurry of jabs '
-                roll_name: 'Flurry of Jabs Attack Bonus'
-                summation_id: flurry_attack
+                text: 'General Feat of Strength'
+                roll_name: 'General Feat of Strength Action'
+                summation_id: general_strength_action
                 text_format:
                   style:
                     color_theme:
@@ -1877,57 +2644,381 @@ sections:
                     - theme_id: dark
                       color_id: light_grey_8
                   size:
-                    width: 22
-                    height: 22
-            - type: story_part_span
-              story_part_span:
-                text: 'like an angry, persistent wasp.'
-                format:
+                    width: 21
+                    height: 21
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_strength_action_description
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_17
+                  size: 13
+              widget_format:
+                alignment: left
+            value_variable_id: general_strength_action_description
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+          top: 10
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: general_dexterity_action
+            format:
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 2
+            story:
+            - type: story_part_action
+              story_part_action:
+                text: 'General Movement of Dexterity'
+                roll_name: 'General Movement of Dexterity Action'
+                summation_id: general_dexterity_action
+                text_format:
                   style:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_2
                     size: 16
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: widget_points
-          widget_points:
-            id: health
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_8
+                  size:
+                    width: 21
+                    height: 21
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_dexterity_action_description
             format:
-              bar_height: 26
-              limit_text_format:
-                margins:
-                  right: 5
+              value_format:
                 style:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_2
-              current_text_format:
+                      color_id: light_grey_17
+                  size: 13
+              widget_format:
+                alignment: left
+            value_variable_id: general_dexterity_action_description
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+          top: 10
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: general_constitution_action
+            format:
+              widget_format:
+                alignment: left
                 margins:
-                  left: 5
+                  bottom: 2
+            story:
+            - type: story_part_action
+              story_part_action:
+                text: 'General Act of Constituiton'
+                roll_name: 'General Constitution Action'
+                summation_id: general_constitution_action
+                text_format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_2
+                    size: 16
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_8
+                  size:
+                    width: 21
+                    height: 21
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_constitution_action_description
+            format:
+              value_format:
+                alignment: left
                 style:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_2
-              limit_color_theme:
-                theme_color_ids:
-                - theme_id: dark
-                  color_id: medium_grey_8
-              current_color_theme:
-                theme_color_ids:
-                - theme_id: dark
-                  color_id: light_grey_22
-            limit_value_variable_id: max_health
-            current_value_variable_id: current_health
-  - name: Body
+                      color_id: light_grey_17
+                  size: 13
+              widget_format:
+                alignment: left
+            value_variable_id: general_constitution_action_description
+  - name: Mind Actions
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_10
+      padding:
+        top: 5
+        bottom: 400
     groups:
-  - name: Roleplay
-    groups:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_10
+        padding:
+          bottom: 8
+          left: 8
+          top: 8
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_actions_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  size: 15
+              widget_format:
+                alignment: left
+            value_variable_id: general_actions_label
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: general_intelligence_action
+            format:
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 2
+            story:
+            - type: story_part_action
+              story_part_action:
+                text: 'General Insight of Intelligence'
+                roll_name: 'General Insight of Intelligence Action'
+                summation_id: general_intelligence_action
+                text_format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_2
+                    size: 16
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_8
+                  size:
+                    width: 21
+                    height: 21
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_intelligence_action_description
+            format:
+              value_format:
+                alignment: left
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_17
+                  size: 13
+              widget_format:
+                alignment: left
+            value_variable_id: general_intelligence_action_description
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+          top: 10
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: general_wisdom_action
+            format:
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 2
+            story:
+            - type: story_part_action
+              story_part_action:
+                text: 'General Judgement of Wisdom'
+                roll_name: 'General Judgement of Wisdom Action'
+                summation_id: general_wisdom_action
+                text_format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_2
+                    size: 16
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_8
+                  size:
+                    width: 21
+                    height: 21
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_wisdom_action_description
+            format:
+              value_format:
+                alignment: left
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_17
+                  size: 13
+              widget_format:
+                alignment: left
+            value_variable_id: general_wisdom_action_description
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+          top: 10
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: general_charisma_action
+            format:
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 2
+            story:
+            - type: story_part_action
+              story_part_action:
+                text: 'General Act of Charisma'
+                roll_name: 'General Charisma Action'
+                summation_id: general_charisma_action
+                text_format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_2
+                    size: 16
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_8
+                  size:
+                    width: 21
+                    height: 21
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: general_charisma_action_description
+            format:
+              value_format:
+                alignment: left
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_17
+                  size: 13
+              widget_format:
+                alignment: left
+            value_variable_id: general_charisma_action_description
 - name: Adventure
   icon: adventure
   pages:

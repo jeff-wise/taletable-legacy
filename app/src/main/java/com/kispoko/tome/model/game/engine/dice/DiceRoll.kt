@@ -49,6 +49,13 @@ data class DiceRoll(override val id : UUID,
                maybeLiftPrim(rollName))
 
 
+    constructor()
+        : this(UUID.randomUUID(),
+               Conj(mutableSetOf()),
+               Conj(mutableSetOf()),
+               Nothing())
+
+
     companion object : Factory<DiceRoll>
     {
         override fun fromDocument(doc : SpecDoc)
@@ -124,6 +131,23 @@ data class DiceRoll(override val id : UUID,
 
 
         return RollSummary(total, quantitySummaries.plus(modifierSummaries))
+    }
+
+
+    fun add(diceRoll : DiceRoll) : DiceRoll
+    {
+        val quantities = this.quantities().plus(diceRoll.quantities()).toMutableSet()
+        val modifiers = this.modifiers().plus(diceRoll.modifiers()).toMutableSet()
+
+        return DiceRoll(quantities, modifiers)
+    }
+
+
+    fun addModifier(modifier : RollModifier) : DiceRoll
+    {
+        val modifiers = this.modifiers().plusElement(modifier)
+
+        return DiceRoll(this.quantities().toMutableSet(), modifiers.toMutableSet())
     }
 
 
@@ -321,6 +345,12 @@ data class RollModifier(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
+    constructor(modifier : Double)
+        : this(UUID.randomUUID(),
+               Prim(RollModifierValue(modifier)),
+               Nothing())
+
 
     constructor(value : RollModifierValue,
                 name : Maybe<RollModifierName>)

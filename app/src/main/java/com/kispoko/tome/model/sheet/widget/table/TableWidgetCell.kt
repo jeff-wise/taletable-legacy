@@ -6,6 +6,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableRow
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppSheetError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -19,6 +21,7 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.CellVariableUndefined
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -81,7 +84,8 @@ sealed class TableWidgetCell : Model, Serializable
  */
 data class TableWidgetBooleanCell(override val id : UUID,
                                   val format : Comp<BooleanCellFormat>,
-                                  val valueVariable : Comp<BooleanVariable>)
+                                  val variableValue : Sum<BooleanVariableValue>,
+                                  var variableId : VariableId?)
                                   : TableWidgetCell(), Model
 {
 
@@ -92,7 +96,7 @@ data class TableWidgetBooleanCell(override val id : UUID,
     init
     {
         this.format.name        = "format"
-        this.valueVariable.name = "value_variable"
+        this.variableValue.name = "variable_value"
     }
 
 
@@ -100,8 +104,25 @@ data class TableWidgetBooleanCell(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : BooleanCellFormat, valueVariable : BooleanVariable)
-        : this(UUID.randomUUID(), Comp(format), Comp(valueVariable))
+    constructor() : this(UUID.randomUUID(),
+                         Comp(BooleanCellFormat.default()),
+                         Sum(BooleanVariableLiteralValue(true)),
+                         null)
+
+
+    constructor(variableValue : BooleanVariableValue)
+        : this(UUID.randomUUID(),
+               Comp(BooleanCellFormat.default()),
+               Sum(variableValue),
+               null)
+
+
+    constructor(format : BooleanCellFormat,
+                variableValue : BooleanVariableValue)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Sum(variableValue),
+               null)
 
 
     companion object : Factory<TableWidgetBooleanCell>
@@ -113,11 +134,11 @@ data class TableWidgetBooleanCell(override val id : UUID,
                 effApply(::TableWidgetBooleanCell,
                          // Format
                          split(doc.maybeAt("format"),
-                               effValue(BooleanCellFormat.default),
+                               effValue(BooleanCellFormat.default()),
                                { BooleanCellFormat.fromDocument(it) }),
-                         // Value
-                         doc.at("value_variable") ap { BooleanVariable.fromDocument(it) }
-                        )
+                         // Variable Value
+                         doc.at("variable_value") ap { BooleanVariableValue.fromDocument(it) }
+                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -130,7 +151,12 @@ data class TableWidgetBooleanCell(override val id : UUID,
 
     fun format() : BooleanCellFormat = this.format.value
 
-    fun valueVariable() : BooleanVariable = this.valueVariable.value
+
+    fun variableValue() : BooleanVariableValue = this.variableValue.value
+
+
+    fun variableId() : AppEff<VariableId> =
+            note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
 
 
     // -----------------------------------------------------------------------------------------
@@ -155,18 +181,15 @@ data class TableWidgetBooleanCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value() : Boolean
-    {
-        val booleanEff = this.valueVariable().value()
+    fun valueVariable(sheetContext : SheetContext) : AppEff<BooleanVariable> =
+        this.variableId()                             ap { variableId ->
+        SheetManager.sheetState(sheetContext.sheetId) ap { state ->
+        state.booleanVariableWithId(variableId)
+            } }
 
-        when (booleanEff)
-        {
-            is Val -> return booleanEff.value
-            is Err -> ApplicationLog.error(booleanEff.error)
-        }
 
-        return true
-    }
+    fun value(sheetContext : SheetContext) : AppEff<Boolean> =
+        this.valueVariable(sheetContext) ap { it.value() }
 
 
     // -----------------------------------------------------------------------------------------
@@ -186,8 +209,9 @@ data class TableWidgetBooleanCell(override val id : UUID,
  */
 data class TableWidgetNumberCell(override val id : UUID,
                                  val format : Comp<NumberCellFormat>,
-                                 val valueVariable : Comp<NumberVariable>,
-                                 val editorType : Prim<NumericEditorType>)
+                                 val variableValue : Sum<NumberVariableValue>,
+                                 val editorType : Prim<NumericEditorType>,
+                                 var variableId : VariableId?)
                                   : TableWidgetCell(), Model
 {
 
@@ -205,7 +229,7 @@ data class TableWidgetNumberCell(override val id : UUID,
     init
     {
         this.format.name            = "format"
-        this.valueVariable.name     = "value_variable"
+        this.variableValue.name     = "variable_value"
         this.editorType.name        = "editor_type"
     }
 
@@ -213,6 +237,23 @@ data class TableWidgetNumberCell(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
+    constructor(variableValue : NumberVariableValue)
+        : this(UUID.randomUUID(),
+               Comp(NumberCellFormat.default()),
+               Sum(variableValue),
+               Prim(NumericEditorType.Simple),
+               null)
+
+
+    constructor(format : NumberCellFormat,
+                variableValue : NumberVariableValue,
+                editorType : NumericEditorType)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Sum(variableValue),
+               Prim(editorType),
+               null)
 
 
     companion object : Factory<TableWidgetNumberCell>
@@ -226,21 +267,17 @@ data class TableWidgetNumberCell(override val id : UUID,
             is DocDict ->
             {
                 effApply(::TableWidgetNumberCell,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               effValue(Comp.default(defaultNumberCellFormat)),
-                               { effApply(::Comp, NumberCellFormat.fromDocument(it)) }),
-                         // Value
-                         doc.at("value_variable") ap {
-                             effApply(::Comp, NumberVariable.fromDocument(it))
-                         },
+                               effValue(defaultNumberCellFormat),
+                               { NumberCellFormat.fromDocument(it) }),
+                         // Variable Value
+                         doc.at("variable_value") ap { NumberVariableValue.fromDocument(it) },
                          // Editor Type
                          split(doc.maybeAt("editor_type"),
-                               effValue<ValueError,Prim<NumericEditorType>>(Prim.default(defaultEditorType)),
-                               { effApply(::Prim, NumericEditorType.fromDocument(it)) })
-                        )
+                               effValue<ValueError,NumericEditorType>(defaultEditorType),
+                               { NumericEditorType.fromDocument(it) })
+                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -253,16 +290,19 @@ data class TableWidgetNumberCell(override val id : UUID,
 
     fun format() : NumberCellFormat = this.format.value
 
-    fun valueVariable() : NumberVariable = this.valueVariable.value
+    fun variableValue() : NumberVariableValue = this.variableValue.value
 
     fun editorType() : NumericEditorType = this.editorType.value
-
 
     fun resolveEditorType(column : TableWidgetNumberColumn) : NumericEditorType =
         if (this.editorType.isDefault())
             column.editorType()
         else
             this.editorType()
+
+
+    fun variableId() : AppEff<VariableId> =
+        note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
 
 
     // -----------------------------------------------------------------------------------------
@@ -287,22 +327,20 @@ data class TableWidgetNumberCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueString(sheetUIContext: SheetUIContext) : Maybe<String>
-    {
-        val numberEff = this.valueVariable().value(SheetContext(sheetUIContext))
-
-        when (numberEff)
-        {
-            is Val -> return Just(numberEff.value.toString())
-            is Err -> return Nothing()
-        }
-    }
+    fun valueVariable(sheetContext : SheetContext) : AppEff<NumberVariable> =
+        this.variableId()                             ap { variableId ->
+        SheetManager.sheetState(sheetContext.sheetId) ap { state ->
+        state.numberVariableWithId(variableId)
+            } }
 
 
-    fun updateValue(newValue : Double, sheetContext : SheetContext)
-    {
-        this.valueVariable().updateValue(newValue)
-    }
+    fun valueString(sheetContext : SheetContext) : AppEff<String> =
+         this.valueVariable(sheetContext) ap { it.valueString(sheetContext) }
+
+
+    fun updateValue(newValue : Double, sheetContext : SheetContext) =
+        this.valueVariable(sheetContext) apDo {
+            it.updateValue(newValue, sheetContext.sheetId) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -333,7 +371,7 @@ data class TableWidgetNumberCell(override val id : UUID,
 data class TableWidgetTextCell(override val id : UUID,
                                val format : Comp<TextCellFormat>,
                                val variableValue : Sum<TextVariableValue>,
-                               var variableId : Maybe<VariableId>)
+                               var variableId : VariableId?)
                                 : TableWidgetCell(), Model
 {
 
@@ -359,12 +397,18 @@ data class TableWidgetTextCell(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(variableValue : TextVariableValue)
+        : this(UUID.randomUUID(),
+               Comp(TextCellFormat.default()),
+               Sum(variableValue),
+               null)
+
     constructor(format : TextCellFormat,
                 variableValue : TextVariableValue)
         : this(UUID.randomUUID(),
                Comp(format),
                Sum(variableValue),
-               Nothing())
+               null)
 
 
     companion object : Factory<TableWidgetTextCell>
@@ -376,7 +420,7 @@ data class TableWidgetTextCell(override val id : UUID,
                 effApply(::TableWidgetTextCell,
                          // Format
                          split(doc.maybeAt("format"),
-                               effValue(TextCellFormat.default),
+                               effValue(TextCellFormat.default()),
                                 { TextCellFormat.fromDocument(it) }),
                          // Variable Value
                          doc.at("variable_value") ap { TextVariableValue.fromDocument(it) }
@@ -397,18 +441,29 @@ data class TableWidgetTextCell(override val id : UUID,
     fun variableValue() : TextVariableValue = this.variableValue.value
 
 
-    fun valueVariable(sheetContext : SheetContext) : Maybe<TextVariable> =
-        this.variableId ap { variableId ->
-            val variable = SheetManager.sheetState(sheetContext.sheetId)
-                                           .apply { it.textVariableWithId(variableId) }
-            when (variable) {
-                is Val -> Just(variable.value)
-                is Err -> {
-                    ApplicationLog.error(variable.error)
-                    Nothing<TextVariable>()
-                }
-            }
-        }
+    fun variableId() : AppEff<VariableId> =
+            note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
+
+
+    fun valueVariable(sheetContext : SheetContext) : AppEff<TextVariable> =
+        this.variableId()                             ap { variableId ->
+        SheetManager.sheetState(sheetContext.sheetId) ap { state ->
+        state.textVariableWithId(variableId)
+    } }
+
+//
+//    fun valueVariable(sheetContext : SheetContext) : Maybe<TextVariable> =
+//        this.variableId ap { variableId ->
+//            val variable = SheetManager.sheetState(sheetContext.sheetId)
+//                                           .apply { it.textVariableWithId(variableId) }
+//            when (variable) {
+//                is Val -> Just(variable.value)
+//                is Err -> {
+//                    ApplicationLog.error(variable.error)
+//                    Nothing<TextVariable>()
+//                }
+//            }
+//        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -416,15 +471,6 @@ data class TableWidgetTextCell(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun type() : TableWidgetCellType = TableWidgetCellType.TEXT
-
-
-    /**
-     * Update the id of the variable that holds the cell data.
-     */
-    fun setVariableId(variableId : VariableId)
-    {
-        this.variableId = Just(variableId)
-    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -442,17 +488,20 @@ data class TableWidgetTextCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueString(sheetContext : SheetContext) : Maybe<String> =
-        this.valueVariable(sheetContext) ap { variable ->
-            val str = variable.valueString(sheetContext)
-            when (str) {
-                is Val -> Just(str.value)
-                is Err -> {
-                    ApplicationLog.error(str.error)
-                    Nothing<String>()
-                }
-            }
-        }
+    fun valueString(sheetContext : SheetContext) : AppEff<String> =
+            this.valueVariable(sheetContext) ap { it.valueString(sheetContext) }
+//
+//    fun valueString(sheetContext : SheetContext) : Maybe<String> =
+//        this.valueVariable(sheetContext) ap { variable ->
+//            val str = variable.valueString(sheetContext)
+//            when (str) {
+//                is Val -> Just(str.value)
+//                is Err -> {
+//                    ApplicationLog.error(str.error)
+//                    Nothing<String>()
+//                }
+//            }
+//        }
 
 
 

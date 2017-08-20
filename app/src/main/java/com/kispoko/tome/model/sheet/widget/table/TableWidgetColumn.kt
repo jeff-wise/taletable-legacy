@@ -2,18 +2,22 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.game.engine.variable.BooleanVariableValue
+import com.kispoko.tome.model.game.engine.variable.NumberVariableValue
+import com.kispoko.tome.model.game.engine.variable.TextVariableValue
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
-import com.kispoko.tome.model.sheet.widget.table.column.DefaultBooleanColumnValue
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -80,7 +84,7 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
 
     abstract fun columnFormat() : ColumnFormat
 
-    abstract fun defaultValueString() : String
+    abstract fun defaultValueString(sheetContext : SheetContext) : String
 
 }
 
@@ -93,7 +97,7 @@ data class TableWidgetBooleanColumn(
         override val columnName : Prim<ColumnName>,
         override val variablePrefix : Prim<ColumnVariablePrefix>,
         override val isColumnNamespaced: Prim<IsColumnNamespaced>,
-        val defaultValue : Prim<DefaultBooleanColumnValue>,
+        val defaultValue : Sum<BooleanVariableValue>,
         val format : Comp<BooleanColumnFormat>)
           : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
@@ -119,13 +123,13 @@ data class TableWidgetBooleanColumn(
     constructor(columnName : ColumnName,
                 variablePrefix : ColumnVariablePrefix,
                 isColumnNamespaced : IsColumnNamespaced,
-                defaultValue : DefaultBooleanColumnValue,
+                defaultValue : BooleanVariableValue,
                 format : BooleanColumnFormat)
         : this(UUID.randomUUID(),
                Prim(columnName),
                Prim(variablePrefix),
                Prim(isColumnNamespaced),
-               Prim(defaultValue),
+               Sum(defaultValue),
                Comp(format))
 
 
@@ -145,10 +149,8 @@ data class TableWidgetBooleanColumn(
                          split(doc.maybeAt("is_namespaced"),
                                effValue(IsColumnNamespaced(false)),
                                { IsColumnNamespaced.fromDocument(it) }),
-                         // Default Value
-                         split(doc.maybeAt("default_value"),
-                               effValue(DefaultBooleanColumnValue(true)),
-                               { DefaultBooleanColumnValue.fromDocument(it) }),
+                         // Default Variable Value
+                         doc.at("default_value") ap { BooleanVariableValue.fromDocument(it) },
                          // Format
                          split(doc.maybeAt("format"),
                                effValue(BooleanColumnFormat.default),
@@ -164,7 +166,7 @@ data class TableWidgetBooleanColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun defaultValueBoolean() : Boolean = this.defaultValue.value.value
+    fun defaultValue() : BooleanVariableValue = this.defaultValue.value
 
     fun format() : BooleanColumnFormat = this.format.value
 
@@ -175,9 +177,12 @@ data class TableWidgetBooleanColumn(
 
     override fun type() : TableWidgetColumnType = TableWidgetColumnType.BOOLEAN
 
+
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
 
-    override fun defaultValueString() = this.defaultValueBoolean().toString()
+
+    override fun defaultValueString(sheetContext : SheetContext) =
+            this.defaultValue().toString()
 
 
     // -----------------------------------------------------------------------------------------
@@ -201,7 +206,7 @@ data class TableWidgetNumberColumn(
             override val columnName : Prim<ColumnName>,
             override val variablePrefix : Prim<ColumnVariablePrefix>,
             override val isColumnNamespaced: Prim<IsColumnNamespaced>,
-            val defaultValue : Prim<DefaultNumberColumnValue>,
+            val defaultValue : Sum<NumberVariableValue>,
             val format : Comp<NumberColumnFormat>,
             val editorType : Prim<NumericEditorType>)
              : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
@@ -229,14 +234,14 @@ data class TableWidgetNumberColumn(
     constructor(columnName : ColumnName,
                 variablePrefix : ColumnVariablePrefix,
                 isColumnNamespaced : IsColumnNamespaced,
-                defaultValue : DefaultNumberColumnValue,
+                defaultValue : NumberVariableValue,
                 format : NumberColumnFormat,
                 editorType : NumericEditorType)
         : this(UUID.randomUUID(),
                Prim(columnName),
                Prim(variablePrefix),
                Prim(isColumnNamespaced),
-               Prim(defaultValue),
+               Sum(defaultValue),
                Comp(format),
                Prim(editorType))
 
@@ -262,9 +267,7 @@ data class TableWidgetNumberColumn(
                                effValue(IsColumnNamespaced(false)),
                                { IsColumnNamespaced.fromDocument(it) }),
                          // Default Value
-                         split(doc.maybeAt("default_value"),
-                               effValue(DefaultNumberColumnValue(0.0)),
-                               { DefaultNumberColumnValue.fromDocument(it) }),
+                         doc.at("default_value") ap { NumberVariableValue.fromDocument(it) },
                          // Format
                          split(doc.maybeAt("format"),
                                effValue(NumberColumnFormat.default),
@@ -284,7 +287,7 @@ data class TableWidgetNumberColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun defaultValueDouble() : Double = this.defaultValue.value.value
+    fun defaultValue() : NumberVariableValue = this.defaultValue.value
 
     fun format() : NumberColumnFormat = this.format.value
 
@@ -297,9 +300,29 @@ data class TableWidgetNumberColumn(
 
     override fun type() : TableWidgetColumnType = TableWidgetColumnType.NUMBER
 
+
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
 
-    override fun defaultValueString() = Util.doubleString(this.defaultValueDouble())
+
+    override fun defaultValueString(sheetContext : SheetContext) : String
+    {
+        val maybeValue = this.defaultValue().value(sheetContext)
+        when (maybeValue)
+        {
+            is Val ->
+            {
+                val value = maybeValue.value
+                when (value)
+                {
+                    is Just    -> return Util.doubleString(value.value)
+                }
+
+            }
+            is Err -> ApplicationLog.error(maybeValue.error)
+        }
+
+        return ""
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -323,7 +346,7 @@ data class TableWidgetTextColumn(
                         override val columnName : Prim<ColumnName>,
                         override val variablePrefix : Prim<ColumnVariablePrefix>,
                         override val isColumnNamespaced: Prim<IsColumnNamespaced>,
-                        val defaultValue : Prim<DefaultTextColumnValue>,
+                        val defaultValue : Sum<TextVariableValue>,
                         val format : Comp<TextColumnFormat>,
                         val definesNamespace : Prim<DefinesNamespace>)
                         : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
@@ -351,14 +374,14 @@ data class TableWidgetTextColumn(
     constructor(columnName : ColumnName,
                 variablePrefix : ColumnVariablePrefix,
                 isColumnNamespaced : IsColumnNamespaced,
-                defaultValue : DefaultTextColumnValue,
+                defaultValue : TextVariableValue,
                 format : TextColumnFormat,
                 definesNamespace: DefinesNamespace)
         : this(UUID.randomUUID(),
                Prim(columnName),
                Prim(variablePrefix),
                Prim(isColumnNamespaced),
-               Prim(defaultValue),
+               Sum(defaultValue),
                Comp(format),
                Prim(definesNamespace))
 
@@ -381,9 +404,7 @@ data class TableWidgetTextColumn(
                                effValue(IsColumnNamespaced(false)),
                                { IsColumnNamespaced.fromDocument(it) }),
                          // Default Value
-                         split(doc.maybeAt("default_value"),
-                               effValue(DefaultTextColumnValue("")),
-                               { DefaultTextColumnValue.fromDocument(it) }),
+                         doc.at("default_value") ap { TextVariableValue.fromDocument(it) },
                          // Format
                          split(doc.maybeAt("format"),
                                effValue(TextColumnFormat.default),
@@ -403,10 +424,11 @@ data class TableWidgetTextColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-
     fun format() : TextColumnFormat = this.format.value
 
     fun definesNamespaceBool() : Boolean = this.definesNamespace.value.value
+
+    fun defaultValue() : TextVariableValue = this.defaultValue.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -415,9 +437,26 @@ data class TableWidgetTextColumn(
 
     override fun type() : TableWidgetColumnType = TableWidgetColumnType.TEXT
 
+
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
 
-    override fun defaultValueString() : String = this.defaultValue.value.value
+
+    override fun defaultValueString(sheetContext : SheetContext) : String
+    {
+        val maybeValue = this.defaultValue().value(sheetContext)
+        when (maybeValue)
+        {
+            is Val -> {
+                val value = maybeValue.value
+                when (value) {
+                    is Just -> return value.value
+                }
+            }
+            is Err -> ApplicationLog.error(maybeValue.error)
+        }
+
+        return ""
+    }
 
 
     // -----------------------------------------------------------------------------------------

@@ -7,12 +7,12 @@ import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.program.Invocation
@@ -24,10 +24,8 @@ import com.kispoko.tome.rts.game.engine.interpreter.Interpreter
 import com.kispoko.tome.rts.sheet.*
 import effect.*
 import lulo.document.*
+import lulo.value.*
 import lulo.value.UnexpectedType
-import lulo.value.UnknownCase
-import lulo.value.ValueError
-import lulo.value.ValueParser
 import java.io.Serializable
 
 
@@ -69,7 +67,7 @@ sealed class NumberVariableValue : SumModel, Serializable
     // Value
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(sheetContext : SheetContext) : AppEff<Double>
+    abstract fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
 
     abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
 
@@ -101,7 +99,9 @@ data class NumberVariableLiteralValue(val value : Double)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Double> = effValue(this.value)
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
+            effValue(Just(this.value))
+
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             effValue(setOf())
@@ -115,11 +115,69 @@ data class NumberVariableLiteralValue(val value : Double)
 
     override val sumModelObject = this
 
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLReal({ this.value })
+
+}
+
+
+/**
+ * Unknown Literal Value
+ */
+class NumberVariableUnknownLiteralValue() : NumberVariableValue(), SQLSerializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<NumberVariableValue>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "unknown_literal_value" -> effValue<ValueError,NumberVariableValue>(
+                                                NumberVariableUnknownLiteralValue())
+                else                    -> effError<ValueError,NumberVariableValue>(
+                                                UnexpectedValue("NumberVariableUnknownLiteralValue",
+                                                                doc.text,
+                                                                doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> = effValue(Nothing())
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            effValue(setOf())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "literal")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ "unknown_literal_value" })
 
 }
 
@@ -153,18 +211,11 @@ data class NumberVariableVariableValue(val variableId : VariableId)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Double>
-    {
-        fun numberVariable(state : SheetState) : AppEff<NumberVariable> =
-            state.numberVariableWithId(variableId)
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
+        SheetManager.sheetState(sheetContext.sheetId)
+                .apply { it.numberVariableWithId(variableId) }
+                .apply { it.variableValue().value(sheetContext) }
 
-        fun variableValue(numberVariable : NumberVariable) : AppEff<Double> =
-            numberVariable.variableValue().value(sheetContext)
-
-        return fromSheetEff(SheetManager.state(sheetContext.sheetId))
-                .apply(::numberVariable)
-                .apply(::variableValue)
-    }
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
@@ -219,8 +270,8 @@ data class NumberVariableProgramValue(val invocation : Invocation)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Double> =
-        Interpreter.evaluateNumber(this.invocation, sheetContext)
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
+        effApply(::Just, Interpreter.evaluateNumber(this.invocation, sheetContext))
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
@@ -273,13 +324,13 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Double>
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
     {
         fun numberValue(engine : Engine) : AppEff<ValueNumber> =
             engine.numberValue(valueReference, sheetContext)
 
-        fun doubleValue(numberValue : ValueNumber) : AppEff<Double> =
-            effValue(numberValue.value())
+        fun doubleValue(numberValue : ValueNumber) : AppEff<Maybe<Double>> =
+            effValue(Just(numberValue.value()))
 
         return GameManager.engine(sheetContext.gameId)
                           .apply(::numberValue)
@@ -348,10 +399,11 @@ data class NumberVariableSummationValue(val summationId : SummationId)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Double>
+    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
             = GameManager.engine(sheetContext.gameId)
                     .apply { it.summation(summationId) }
                     .apply { it.value(sheetContext) }
+                    .apply { effValue<AppError,Maybe<Double>>(Just(it)) }
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
@@ -375,115 +427,4 @@ data class NumberVariableSummationValue(val summationId : SummationId)
 
 }
 
-
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Initialize
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeNumberVariable()
-//    {
-//        // [1] Create reaction value (if program variable)
-//        // --------------------------------------------------------------------------------------
-//
-//        if (this.kind.getValue() == Kind.PROGRAM) {
-//            this.reactiveValue = new ReactiveValue<>(this.invocationValue.getValue(),
-//                                                     VariableType.NUMBER);
-//        }
-//        else {
-//            this.reactiveValue = null;
-//        }
-//    }
-//
-//
-//    private void initializeFunctors()
-//    {
-//        // Name
-//        this.name.setName("name");
-//        this.name.setLabelId(R.string.variable_field_name_label);
-//        this.name.setDescriptionId(R.string.variable_field_name_description);
-//
-//        // Label
-//        this.label.setName("label");
-//        this.label.setLabelId(R.string.variable_field_label_label);
-//        this.label.setDescriptionId(R.string.variable_field_label_description);
-//
-//        // Description
-//        this.description.setName("description");
-//        this.description.setLabelId(R.string.variable_field_description_label);
-//        this.description.setDescriptionId(R.string.variable_field_description_description);
-//
-//        // Is Namespaced
-//        this.isNamespaced.setName("is_namespaced");
-//        this.isNamespaced.setLabelId(R.string.variable_field_is_namespaced_label);
-//        this.isNamespaced.setDescriptionId(R.string.variable_field_is_namespaced_description);
-//
-//        // Tags
-//        this.tags.setName("tags");
-//        this.tags.setLabelId(R.string.variable_field_tags_label);
-//        this.tags.setDescriptionId(R.string.variable_field_tags_description);
-//
-//        // Kind
-//        this.kind.setName("kind");
-//        this.kind.setLabelId(R.string.variable_field_kind_label);
-//        this.kind.setDescriptionId(R.string.variable_field_kind_description);
-//
-//        // Literal Value
-//        this.literalValue.setName("kind_literal");
-//        this.literalValue.setLabelId(R.string.number_variable_field_value_literal_label);
-//        this.literalValue.setDescriptionId(R.string.number_variable_field_value_literal_description);
-//        this.literalValue.caseOf("kind", "literal");
-//
-//        // Variable Value
-//        this.variableReference.setName("kind_variable");
-//        this.variableReference.setLabelId(R.string.number_variable_field_value_variable_label);
-//        this.variableReference.setDescriptionId(R.string.number_variable_field_value_variable_description);
-//        this.variableReference.caseOf("kind", "variable");
-//
-//        // Program Value
-//        this.invocationValue.setName("kind_program");
-//        this.invocationValue.setLabelId(R.string.number_variable_field_value_program_label);
-//        this.invocationValue.setDescriptionId(R.string.number_variable_field_value_program_description);
-//        this.invocationValue.caseOf("kind", "program");
-//
-//        // Value (From Value Set) Value
-//        this.valueReference.setName("kind_value");
-//        this.valueReference.setLabelId(R.string.number_variable_field_value_value_label);
-//        this.valueReference.setDescriptionId(R.string.number_variable_field_value_value_description);
-//        this.valueReference.caseOf("kind", "value");
-//
-//        // Summation Value
-//        this.summation.setName("kind_summation");
-//        this.summation.setLabelId(R.string.number_variable_field_value_summation_label);
-//        this.summation.setDescriptionId(R.string.number_variable_field_value_summation_description);
-//        this.summation.caseOf("kind", "summation");
-//    }
-//
-//
-//    // ** Variable State
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Add any variables associated with the current value to the state.
-//     */
-//    private void addToState()
-//    {
-//        if (this.kind() != Kind.VALUE)
-//            return;
-//
-//        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
-//        dictionary.numberValue(this.valueReference()).addToState();
-//    }
-//
-//
-//    private void removeFromState()
-//    {
-//        if (this.kind() != Kind.VALUE)
-//            return;
-//
-//        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
-//        dictionary.numberValue(this.valueReference()).removeFromState();
-//    }
-//
 

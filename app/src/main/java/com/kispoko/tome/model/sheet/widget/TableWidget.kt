@@ -26,6 +26,7 @@ import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -299,17 +300,20 @@ object TableWidgetView
 
     fun view(tableWidget : TableWidget,
              format : TableWidgetFormat,
-             sheetUIContext: SheetUIContext) : View
+             sheetUIContext : SheetUIContext) : View
     {
         val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
 
         val tableLayout = this.tableLayout(format, sheetUIContext)
+        val tableLayoutId = Util.generateViewId()
+        tableLayout.id = tableLayoutId
+        tableWidget.tableLayoutId = tableLayoutId
 
         layout.addView(tableLayout)
 
         tableLayout.addView(this.headerRowView(tableWidget.columns(),
                                                tableWidget.format(),
-                sheetUIContext))
+                                               sheetUIContext))
 
         tableWidget.rows().forEachIndexed { rowIndex, tableWidgetRow ->
             tableLayout.addView(tableWidgetRow.view(tableWidget,

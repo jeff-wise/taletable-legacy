@@ -9,13 +9,18 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.flexbox.AlignContent
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.game.engine.dice.RollModifier
+import com.kispoko.tome.model.game.engine.dice.RollPartSummary
+import com.kispoko.tome.model.game.engine.dice.RollSummary
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -78,7 +83,7 @@ class AdderDialogFragment : DialogFragment()
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
 
-        val dialog = Dialog(activity)
+        val dialog = Dialog(context)
 
         val sheetContext = this.sheetContext
         if (sheetContext != null)
@@ -167,7 +172,8 @@ class AdderDialogFragment : DialogFragment()
 // ADDER STATE
 // ---------------------------------------------------------------------------------------------
 
-data class AdderState(val value : Double,
+data class AdderState(val originalValue : Double,
+                      val delta : Double,
                       val diceRolls : Set<DiceRoll>,
                       val valueName : String?,
                       val updateTarget : UpdateTarget) : Serializable
@@ -187,12 +193,21 @@ class AdderEditorViewBuilder(val adderState : AdderState,
     // -----------------------------------------------------------------------------------------
 
 
-    private var delta : Double = 0.0
-    private var currentValue : Double = adderState.value
+    private var delta : Double = this.adderState.delta
+    private var currentValue : Double = this.adderState.originalValue
     private val history : MutableList<Double> = mutableListOf()
 
     private var valueView : FlexboxLayout? = null
+
     private var singleValueTextView : TextView? = null
+    private var explainTextView : TextView? = null
+
+    private var originalValueTextView : TextView? = null
+    private var modifierTextView : TextView? = null
+
+    private var rollView : LinearLayout? = null
+
+    private var currentRoll : RollSummary? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -204,7 +219,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         this.delta += delta
         this.history.add(delta)
 
-        this.currentValue = adderState.value + this.delta
+        this.currentValue = adderState.originalValue + this.delta
 
         this.updateValueView()
     }
@@ -224,34 +239,134 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
     private fun updateValueView()
     {
-        // Number
-        val singleValueTextView = this.singleValueTextView
-        if (singleValueTextView != null)
+        if (this.adderState.diceRolls.isEmpty())
         {
-            singleValueTextView.text = Util.doubleString(this.currentValue)
+            singleValueTextView?.text = Util.doubleString(this.currentValue)
+
+            val explainString = Util.doubleString(this.adderState.originalValue) + " + " +
+                    Util.doubleString(this.delta)
+
+            explainTextView?.text = explainString
         }
         else
         {
-            val valuePartView = this.valuePartView(Util.doubleString(this.currentValue))
-            this.singleValueTextView = valuePartView
-            this.valueView?.addView(valuePartView)
+            modifierTextView?.text = Util.doubleString(this.delta) + " + "
         }
     }
 
 
     private fun createValueView()
     {
-        this.updateValueView()
+        if (this.adderState.diceRolls.isEmpty())
+        {
+            val valuePartView = this.valuePartView(Util.doubleString(this.currentValue))
+            this.singleValueTextView = valuePartView
+            this.valueView?.addView(valuePartView)
 
-        // Dice
-        adderState.diceRolls.forEach {
-            this.valueView?.addView(this.valuePartView(" + " + it.toString()))
+            val explainView = this.explainView()
+            val explainString = Util.doubleString(this.adderState.originalValue) + " + " +
+                                    Util.doubleString(this.delta)
+            explainView.text = explainString
+            this.explainTextView = explainView
+            this.valueView?.addView(explainView)
+
+        }
+        else
+        {
+            // Dice
+            adderState.diceRolls.forEach {
+                this.valueView?.addView(this.valuePartView(it.toString() + " + "))
+            }
+
+            // Modifier Value
+            val modifierPartView = this.valuePartView("")
+            this.modifierTextView = modifierPartView
+            this.valueView?.addView(modifierPartView)
+
+            if (this.delta != 0.0) {
+                modifierPartView.text = Util.doubleString(this.delta) + " + "
+            }
+
+            // Original Value
+            val originalPartView = this.valuePartView(Util.doubleString(this.adderState.originalValue))
+            this.originalValueTextView = originalPartView
+            this.valueView?.addView(originalPartView)
         }
     }
 
 
     private fun currentAdderState() : AdderState =
-            adderState.copy(value = this.currentValue)
+            adderState.copy(delta = this.delta)
+
+
+    // -----------------------------------------------------------------------------------------
+    // ROLL
+    // -----------------------------------------------------------------------------------------
+
+    private fun roll()
+    {
+        if (this.adderState.diceRolls.isNotEmpty())
+        {
+            var diceRoll = this.adderState.diceRolls.fold(DiceRoll(),
+                                                          {roll1, roll2 -> roll1.add(roll2)})
+
+            if (this.delta != 0.0)
+                diceRoll = diceRoll.addModifier(RollModifier(this.delta))
+
+            val rollSummary = diceRoll.rollSummary()
+            this.currentRoll = rollSummary
+            val rollResultView = this.rollResultView(rollSummary)
+
+            this.rollView?.visibility = View.VISIBLE
+            this.rollView?.removeAllViews()
+            this.rollView?.addView(rollResultView)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // FINISH
+    // -----------------------------------------------------------------------------------------
+
+    private fun finishWithResult()
+    {
+        var finalValue = 0.0
+        val currentRoll = this.currentRoll
+        if (this.adderState.diceRolls.isEmpty())
+            finalValue = this.currentValue
+        else if (currentRoll != null)
+            finalValue = currentRoll.value.toDouble()
+
+        when (this.adderState.updateTarget)
+        {
+            is UpdateTargetPointsWidget ->
+            {
+                val pointsWidgeUpdate =
+                        PointsWidgetUpdateSetCurrentValue(
+                                adderState.updateTarget.pointsWidgetId,
+                                finalValue)
+                SheetManager.updateSheet(sheetUIContext.sheetId, pointsWidgeUpdate)
+            }
+            is UpdateTargetNumberCell ->
+            {
+                val numberCellUpdate =
+                        TableWidgetUpdateSetNumberCell(adderState.updateTarget.tableWidgetId,
+                                                       adderState.updateTarget.cellId,
+                                                       finalValue)
+                SheetManager.updateSheet(sheetUIContext.sheetId, numberCellUpdate)
+            }
+            is UpdateTargetStoryWidgetPart ->
+            {
+                val numberPartUpdate =
+                        StoryWidgetUpdateNumberPart(adderState.updateTarget.storyWidgetId,
+                                                    adderState.updateTarget.partIndex,
+                                                    finalValue)
+                SheetManager.updateSheet(sheetUIContext.sheetId, numberPartUpdate)
+            }
+        }
+
+        dialog.dismiss()
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -261,6 +376,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
     fun view() : View
     {
         val layout = this.viewLayout()
+
+        val rollView = this.rollView()
+        this.rollView = rollView
+        layout.addView(rollView)
 
         layout.addView(this.screenView())
 
@@ -380,7 +499,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.padding.leftDp   = 15f
+        layout.padding.leftDp   = 14f
         layout.padding.rightDp  = 20f
 
         return layout.linearLayout(this.sheetUIContext.context)
@@ -464,6 +583,55 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         icon.color            = SheetManager.color(sheetUIContext.sheetId, undoColorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    // Explain View
+    // -----------------------------------------------------------------------------------------
+
+    private fun explainView() : TextView
+    {
+        val value               = TextViewBuilder()
+
+        value.layoutType        = LayoutType.FLEXBOX
+        value.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height            = LinearLayout.LayoutParams.MATCH_PARENT
+
+        value.layoutGravity     = Gravity.BOTTOM
+        value.gravity     = Gravity.BOTTOM
+
+//        value.text              = Util.doubleString(this.adderState.value) + " + " +
+//                                    Util.doubleString(this.delta)
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        value.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        val valueColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        value.color             = SheetManager.color(sheetUIContext.sheetId, valueColorTheme)
+
+        value.font              = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Light,
+                                                sheetUIContext.context)
+
+        value.corners           = Corners(TopLeftCornerRadius(1f),
+                                          TopRightCornerRadius(1f),
+                                          BottomRightCornerRadius(1f),
+                                          BottomLeftCornerRadius(1f))
+
+        value.margin.leftDp     = 20f
+
+//        value.padding.bottomDp  = 4f
+
+//        value.padding.leftDp     = 10f
+//        value.padding.rightDp    = 10f
+
+        value.sizeSp            = 32f
+
+        return value.textView(sheetUIContext.context)
     }
 
 
@@ -649,7 +817,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         layout.addView(this.calcButtonView())
 
         // Done Button
-        layout.addView(this.doneButtonView())
+        layout.addView(this.actionButtonView())
 
         return layout
     }
@@ -815,6 +983,13 @@ class AdderEditorViewBuilder(val adderState : AdderState,
     }
 
 
+    private fun actionButtonView() : LinearLayout =
+        if (this.adderState.diceRolls.isNotEmpty())
+            rollButtonView()
+        else
+            doneButtonView()
+
+
     private fun doneButtonView() : LinearLayout
     {
         // (1) Declarations
@@ -849,27 +1024,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                                            BottomLeftCornerRadius(1f))
 
         layout.onClick              = View.OnClickListener {
-            when (this.adderState.updateTarget)
-            {
-                is UpdateTargetNumberCell ->
-                {
-                    val numberCellUpdate =
-                            TableWidgetUpdateSetNumberCell(adderState.updateTarget.tableWidgetId,
-                                                           adderState.updateTarget.cellId,
-                                                           this.currentValue)
-                    SheetManager.updateSheet(sheetUIContext.sheetId, numberCellUpdate)
-                    dialog.dismiss()
-                }
-                is UpdateTargetStoryWidgetPart ->
-                {
-                    val numberPartUpdate =
-                            StoryWidgetUpdateNumberPart(adderState.updateTarget.storyWidgetId,
-                                                        adderState.updateTarget.partIndex,
-                                                        this.currentValue)
-                    SheetManager.updateSheet(sheetUIContext.sheetId, numberPartUpdate)
-                    dialog.dismiss()
-                }
-            }
+            this.finishWithResult()
         }
 
         layout.child(icon)
@@ -911,6 +1066,353 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         label.sizeSp        = 17.5f
 
         return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollButtonView() : LinearLayout
+    {
+        val layout          = this.rollButtonLayout()
+
+        val labelLayout     = this.rollButtonLabelLayout()
+        labelLayout.addView(this.rollButtonIconView())
+        labelLayout.addView(this.rollButtonLabelView())
+
+        layout.addView(labelLayout)
+        layout.addView(this.rollButtonMessageView())
+
+        return layout
+    }
+
+
+    private fun rollButtonLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = 0
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight               = 3f
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.gravity              = Gravity.CENTER
+
+        val bgColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.corners              = Corners(TopLeftCornerRadius(1f),
+                                              TopRightCornerRadius(1f),
+                                              BottomRightCornerRadius(1f),
+                                              BottomLeftCornerRadius(1f))
+
+
+        layout.onClick              = View.OnClickListener {
+            this.roll()
+        }
+
+        layout.onLongClick          = View.OnLongClickListener {
+            finishWithResult()
+            true
+        }
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollButtonLabelLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollButtonIconView() : ImageView
+    {
+        val icon            = ImageViewBuilder()
+
+        icon.widthDp        = 19
+        icon.heightDp       = 19
+
+        icon.image          = R.drawable.icon_dice_roll_filled
+
+        val iconColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        icon.margin.rightDp = 5f
+
+        return icon.imageView(sheetUIContext.context)
+    }
+
+
+    private fun rollButtonLabelView() : TextView
+    {
+        val label               = TextViewBuilder()
+
+        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text          = sheetUIContext.context.getString(R.string.roll).toUpperCase()
+//        label.textId        = R.string.roll
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.font          = Font.typeface(TextFont.FiraSans,
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
+
+        label.sizeSp        = 16.5f
+
+        return label.textView(sheetUIContext.context)
+    }
+
+
+    private fun rollButtonMessageView() : TextView
+    {
+        val label           = TextViewBuilder()
+
+        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
+        label.textId        = R.string.hold_to_accept
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.font          = Font.typeface(TextFont.FiraSans,
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
+
+        label.sizeSp        = 12f
+
+        return label.textView(sheetUIContext.context)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // ROLL VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun rollView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.visibility       = View.GONE
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollResultView(rollSummary : RollSummary) : LinearLayout
+    {
+        val layout = this.rollResultViewLayout()
+
+        layout.addView(this.rollValueView(rollSummary.value))
+
+        layout.addView(this.rollSummaryView(rollSummary.parts))
+
+        return layout
+    }
+
+
+    private fun rollResultViewLayout() : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity              = Gravity.CENTER_VERTICAL
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_11")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        layout.padding.topDp        = 12f
+        layout.padding.bottomDp     = 12f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollValueView(rollValue : Int) : TextView
+    {
+        val value = TextViewBuilder()
+
+        value.width                 = 0
+        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.weight                = 1f
+
+        value.gravity               = Gravity.CENTER
+
+        value.text                  = rollValue.toString()
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        value.color                 = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        value.font                  = Font.typeface(TextFont.FiraSans,
+                                                    TextFontStyle.Light,
+                                                    sheetUIContext.context)
+
+        value.sizeSp                = 25f
+
+        return value.textView(sheetUIContext.context)
+    }
+
+
+    private fun rollSummaryView(partSummaries : List<RollPartSummary>) : FlexboxLayout
+    {
+        val layout = FlexboxLayoutBuilder()
+
+        layout.width                    = 0
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.weight                   = 3.5f
+
+        layout.contentAlignment         = AlignContent.CENTER
+
+        partSummaries.forEach {
+            layout.child(this.rollPartSummaryView(it))
+        }
+
+        return layout.flexboxLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollPartSummaryView(rollPartSummary : RollPartSummary) : LinearLayoutBuilder
+    {
+
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout          = LinearLayoutBuilder()
+        val value           = TextViewBuilder()
+        val dice            = TextViewBuilder()
+        val description     = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.layoutType           = LayoutType.FLEXBOX
+        layout.width                = FlexboxLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = FlexboxLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.gravity              = Gravity.CENTER_VERTICAL
+
+        layout.margin.leftDp        = 5f
+        layout.margin.rightDp       = 5f
+
+        layout.padding.leftDp       = 6f
+        layout.padding.rightDp      = 6f
+        layout.padding.topDp        = 3f
+        layout.padding.bottomDp     = 3f
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.corners               = Corners(TopLeftCornerRadius(2f),
+                                               TopRightCornerRadius(2f),
+                                               BottomRightCornerRadius(2f),
+                                               BottomLeftCornerRadius(2f))
+
+        if (rollPartSummary.tag.isNotBlank())
+            layout.child(description)
+
+        if (rollPartSummary.dice.isNotBlank())
+            layout.child(dice)
+
+        layout.child(value)
+
+        // (3 A) Value
+        // -------------------------------------------------------------------------------------
+
+        value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        value.text                  = rollPartSummary.value.toString()
+
+        val valueColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        value.color                 = SheetManager.color(sheetUIContext.sheetId, valueColorTheme)
+
+        value.sizeSp                = 13.5f
+
+        value.font                  = Font.typeface(TextFont.FiraSans,
+                                                    TextFontStyle.Regular,
+                                                    sheetUIContext.context)
+
+        // (3 B) Dice
+        // -------------------------------------------------------------------------------------
+
+        dice.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
+        dice.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        dice.text                   = rollPartSummary.dice
+
+        dice.margin.rightDp         = 4f
+
+        val diceColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        dice.color                  = SheetManager.color(sheetUIContext.sheetId, diceColorTheme)
+
+        dice.sizeSp                 = 12f
+
+        dice.font                   = Font.typeface(TextFont.FiraSans,
+                                                    TextFontStyle.Regular,
+                                                    sheetUIContext.context)
+
+        // (3 C) Description
+        // -------------------------------------------------------------------------------------
+
+        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        description.text            = rollPartSummary.tag
+
+        description.margin.rightDp  = 5f
+
+        val descColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        description.color           = SheetManager.color(sheetUIContext.sheetId, descColorTheme)
+
+        description.font            = Font.typeface(TextFont.FiraSans,
+                                                    TextFontStyle.Regular,
+                                                    sheetUIContext.context)
+
+        description.sizeSp          = 12f
+
+        return layout
     }
 
 }

@@ -124,9 +124,9 @@ sealed class VerticalAlignment : SQLSerializable, Serializable
 
     fun relativeLayoutRule() : Int = when (this)
     {
-        is Top    -> RelativeLayout.ALIGN_TOP
+        is Top    -> RelativeLayout.ALIGN_PARENT_TOP
         is Middle -> RelativeLayout.CENTER_VERTICAL
-        is Bottom -> RelativeLayout.ALIGN_BOTTOM
+        is Bottom -> RelativeLayout.ALIGN_PARENT_BOTTOM
     }
 
 }

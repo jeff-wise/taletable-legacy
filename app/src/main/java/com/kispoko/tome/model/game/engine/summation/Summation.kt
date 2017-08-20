@@ -122,8 +122,9 @@ data class Summation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun value(sheetContext : SheetContext) : AppEff<Double> =
-            this.terms().map({it.value(sheetContext)}).sequenceI()
-                .apply { effValue<AppError,Double>(it.sum()) }
+            this.terms().map({it.value(sheetContext)}).sequenceI() ap {
+                effValue<AppError,Double>(it.filterJust().sum())
+            }
 
 
     // -----------------------------------------------------------------------------------------
@@ -158,15 +159,19 @@ data class Summation(override val id : UUID,
                 // Add dice modifier
                 is SummationTermNumber ->
                 {
-                    val modValue = SheetData.number(sheetContext, term.numberReference())
-                    when (modValue) {
+                    val maybeModValue = SheetData.number(sheetContext, term.numberReference())
+                    when (maybeModValue)
+                    {
                         is Val -> {
                             val termName = term.termName()
                             val maybeTermName = if (termName != null)
                                                     Just(RollModifierName(termName))
                                                     else Nothing<RollModifierName>()
-                            modifiers.add(RollModifier(RollModifierValue(modValue.value),
-                                                       maybeTermName))
+                            val modValue = maybeModValue.value
+                            when (modValue) {
+                                is Just -> modifiers.add(RollModifier(RollModifierValue(modValue.value),
+                                                         maybeTermName))
+                            }
                         }
                     }
 

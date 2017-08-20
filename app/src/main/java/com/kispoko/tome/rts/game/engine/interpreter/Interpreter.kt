@@ -19,6 +19,7 @@ import effect.Nothing
 import java.io.Serializable
 
 
+
 /**
  * Interpreter
  */
@@ -74,36 +75,45 @@ object Interpreter
         // Parameter 2 (Maybe)
         val invocationParameter2 = invocation.parameter2()
         val parameter2 = when (invocationParameter2) {
-            is Just    -> effApply(::Just, SheetData.referenceEngineValue(
-                                                    invocationParameter2.value, sheetContext))
+            is Just    -> SheetData.referenceEngineValue(invocationParameter2.value, sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
         }
 
         // Parameter 3 (Maybe)
         val invocationParameter3 = invocation.parameter3()
         val parameter3 = when (invocationParameter3) {
-            is Just    -> effApply(::Just, SheetData.referenceEngineValue(
-                                                    invocationParameter3.value, sheetContext))
+            is Just    -> SheetData.referenceEngineValue(invocationParameter3.value, sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
         }
 
         // Parameter 4 (Maybe)
         val invocationParameter4 = invocation.parameter4()
         val parameter4 = when (invocationParameter4) {
-            is Just    -> effApply(::Just, SheetData.referenceEngineValue(
-                                                invocationParameter4.value, sheetContext))
+            is Just    -> SheetData.referenceEngineValue(invocationParameter4.value, sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
         }
 
         // Parameter 5 (Maybe)
         val invocationParameter5 = invocation.parameter5()
         val parameter5 = when (invocationParameter5) {
-            is Just    -> effApply(::Just, SheetData.referenceEngineValue(
-                                                invocationParameter5.value, sheetContext))
+            is Just    -> SheetData.referenceEngineValue(invocationParameter5.value, sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
         }
 
-        return effApply(::Parameters, parameter1, parameter2, parameter3, parameter4, parameter5)
+
+        return parameter1 ap { maybeParameter1 ->
+            when (maybeParameter1)
+            {
+                is Just -> effApply(::Parameters, effValue(maybeParameter1.value),
+                                                  parameter2,
+                                                  parameter3,
+                                                  parameter4,
+                                                  parameter5)
+                is Nothing -> effError<AppError,Parameters>(
+                                AppEvalError(ProgramParameterDoesNotExist(1, invocation.programId())))
+            }
+        }
+
     }
 
 
@@ -173,45 +183,56 @@ object Interpreter
 
         val statementParameter2 = statement.parameter2()
         val parameter2 = when (statementParameter2) {
-            is Just    -> effApply(::Just, this.statementParameterValue(statementParameter2.value,
-                                                                        programParameters,
-                                                                        bindings,
-                                                                        programId,
-                                                                        sheetContext))
+            is Just    -> this.statementParameterValue(statementParameter2.value,
+                                                       programParameters,
+                                                       bindings,
+                                                       programId,
+                                                       sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
         }
 
         val statementParameter3 = statement.parameter3()
         val parameter3 = when (statementParameter3) {
-            is Just    -> effApply(::Just, this.statementParameterValue(statementParameter3.value,
-                                                                        programParameters,
-                                                                        bindings,
-                                                                        programId,
-                                                                        sheetContext))
+            is Just    -> this.statementParameterValue(statementParameter3.value,
+                                                       programParameters,
+                                                       bindings,
+                                                       programId,
+                                                       sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
         }
 
         val statementParameter4 = statement.parameter4()
         val parameter4 = when (statementParameter4) {
-            is Just    -> effApply(::Just, this.statementParameterValue(statementParameter4.value,
-                                                                        programParameters,
-                                                                        bindings,
-                                                                        programId,
-                                                                        sheetContext))
+            is Just    -> this.statementParameterValue(statementParameter4.value,
+                                                       programParameters,
+                                                       bindings,
+                                                       programId,
+                                                       sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
         }
 
         val statementParameter5 = statement.parameter5()
         val parameter5 = when (statementParameter5) {
-            is Just    -> effApply(::Just, this.statementParameterValue(statementParameter5.value,
-                                                                        programParameters,
-                                                                        bindings,
-                                                                        programId,
-                                                                        sheetContext))
+            is Just    -> this.statementParameterValue(statementParameter5.value,
+                                                       programParameters,
+                                                       bindings,
+                                                       programId,
+                                                       sheetContext)
             is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
         }
 
-        return effApply(::Parameters, parameter1, parameter2, parameter3, parameter4, parameter5)
+        return parameter1 ap { maybeParameter1 ->
+            when (maybeParameter1)
+            {
+                is Just -> effApply(::Parameters, effValue(maybeParameter1.value),
+                                                  parameter2,
+                                                  parameter3,
+                                                  parameter4,
+                                                  parameter5)
+                is Nothing -> effError<AppError,Parameters>(
+                                AppEvalError(ProgramParameterDoesNotExist(1, programId)))
+            }
+        }
     }
 
 
@@ -219,22 +240,24 @@ object Interpreter
                                         programParameters : Parameters,
                                         bindings : Map<String,EngineValue>,
                                         programId : ProgramId,
-                                        sheetContext : SheetContext) : AppEff<EngineValue> =
+                                        sheetContext : SheetContext) : AppEff<Maybe<EngineValue>> =
         when (statementParameter)
         {
             is StatementParameterBindingName ->
             {
                 val bindingName = statementParameter.bindingName.value
-                note(bindings[bindingName],
-                     AppEvalError(BindingDoesNotExist(bindingName, programId)))
+                if (bindings.containsKey(bindingName))
+                    effValue<AppError,Maybe<EngineValue>>(Just(bindings.get(bindingName)!!))
+                else
+                    effError<AppError,Maybe<EngineValue>>(AppEvalError(BindingDoesNotExist(bindingName, programId)))
             }
             is StatementParameterProgramParameter ->
             {
                 val parameterIndex = statementParameter.index.value
                 val parameter = programParameters.atIndex(parameterIndex)
                 when (parameter) {
-                    is Just    -> effValue<AppError,EngineValue>(parameter.value)
-                    is Nothing -> effError<AppError,EngineValue>(AppEvalError(
+                    is Just    -> effValue<AppError,Maybe<EngineValue>>(Just(parameter.value))
+                    is Nothing -> effError<AppError,Maybe<EngineValue>>(AppEvalError(
                                         ProgramParameterDoesNotExist(parameterIndex, programId)))
                 }
             }
