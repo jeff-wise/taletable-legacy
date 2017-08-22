@@ -306,6 +306,11 @@
 
     <string name="hold_to_accept">Hold to Accept</string>
 
+    <string name="sheet_options">Sheet Options</string>
+    <string name="layout_editor">Layout Editor</string>
+    <string name="manage_themes">Manage Themes</string>
+    <string name="view_state">View State</string>
+
     <string name="conditional_value">Conditional Value</string>
     <string name="dice_roll">Dice Roll</string>
     <string name="number">Number</string>

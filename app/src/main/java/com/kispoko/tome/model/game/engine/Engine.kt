@@ -17,6 +17,8 @@ import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.summation.Summation
@@ -43,6 +45,7 @@ import java.util.*
 data class Engine(override val id : UUID,
                   private val valueSets : Conj<ValueSet>,
                   private val mechanics : Conj<Mechanic>,
+                  private val mechanicCategories : Conj<MechanicCategory>,
                   private val functions : Conj<Function>,
                   private val programs : Conj<Program>,
                   private val summations : Conj<Summation>,
@@ -50,12 +53,21 @@ data class Engine(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // INDEXES
     // -----------------------------------------------------------------------------------------
 
     private val valueSetById : MutableMap<ValueSetId,ValueSet> =
                                             valueSets.set.associateBy { it.valueSetId.value }
                                                 as MutableMap<ValueSetId, ValueSet>
+
+
+    private val mechanicsByCategoryId
+                : MutableMap<MechanicCategoryId,MutableSet<Mechanic>> = mutableMapOf()
+
+
+    private val mechanicCategoryById : MutableMap<MechanicCategoryId,MechanicCategory> =
+                                    mechanicCategories.set.associateBy { it.categoryId() }
+                                            as MutableMap<MechanicCategoryId,MechanicCategory>
 
 
     private val programById : MutableMap<ProgramId,Program> =
@@ -72,17 +84,31 @@ data class Engine(override val id : UUID,
                                             summations.set.associateBy { it.summationId() }
                                                     as MutableMap<SummationId,Summation>
 
+
+    init
+    {
+        this.mechanics().forEach {
+            if (!mechanicsByCategoryId.containsKey(it.categoryId()))
+                mechanicsByCategoryId.put(it.categoryId(), mutableSetOf<Mechanic>())
+            val mechanicsInCategorySet = mechanicsByCategoryId[it.categoryId()]
+            mechanicsInCategorySet?.add(it)
+        }
+
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // INIT
     // -----------------------------------------------------------------------------------------
 
     init
     {
-        this.valueSets.name     = "value_sets"
-        this.mechanics.name     = "mechanics"
-        this.functions.name     = "functions"
-        this.programs.name      = "programs"
-        this.summations.name    = "summations"
+        this.valueSets.name             = "value_sets"
+        this.mechanics.name             = "mechanics"
+        this.mechanicCategories.name    = "mechanic_categories"
+        this.functions.name             = "functions"
+        this.programs.name              = "programs"
+        this.summations.name            = "summations"
     }
 
 
@@ -106,6 +132,10 @@ data class Engine(override val id : UUID,
                          // Mechanics
                          doc.list("mechanics") apply {
                              effApply(::Conj, it.mapSetMut { Mechanic.fromDocument(it) })
+                         },
+                         // Mechanic Categories
+                         doc.list("mechanic_categories") apply {
+                             effApply(::Conj, it.mapSetMut { MechanicCategory.fromDocument(it) })
                          },
                          // Functions
                          doc.list("functions") apply {
@@ -203,6 +233,17 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun mechanics() : Set<Mechanic> = this.mechanics.set
+
+
+    fun mechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic> =
+        this.mechanicsByCategoryId[categoryId] ?: setOf()
+
+
+    // Engine Data > Mechanic Categories
+    // -----------------------------------------------------------------------------------------
+
+    fun mechanicCategoryWithId(categoryId : MechanicCategoryId) : MechanicCategory? =
+            this.mechanicCategoryById[categoryId]
 
 
     // Engine Data > Summations

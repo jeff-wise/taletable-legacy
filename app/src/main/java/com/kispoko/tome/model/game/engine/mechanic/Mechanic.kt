@@ -14,7 +14,6 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
@@ -31,7 +30,7 @@ data class Mechanic(override val id : UUID,
                     val label : Prim<MechanicLabel>,
                     val description : Prim<MechanicDescription>,
                     val summary : Prim<MechanicSummary>,
-                    val category : Maybe<Prim<MechanicCategory>>,
+                    val categoryId : Prim<MechanicCategoryId>,
                     val requirements : Prim<MechanicRequirements>,
                     val variables : Conj<Variable>) : Model, Serializable
 {
@@ -46,11 +45,7 @@ data class Mechanic(override val id : UUID,
         this.label.name                         = "label"
         this.description.name                   = "description"
         this.summary.name                       = "summary"
-
-        when (this.category) {
-            is Just -> this.category.value.name = "category"
-        }
-
+        this.categoryId.name                    = "category_id"
         this.requirements.name                  = "requirements"
         this.variables.name                     = "variables"
     }
@@ -64,7 +59,7 @@ data class Mechanic(override val id : UUID,
                 label : MechanicLabel,
                 description : MechanicDescription,
                 summary : MechanicSummary,
-                category : Maybe<MechanicCategory>,
+                categoryId : MechanicCategoryId,
                 requirements : MechanicRequirements,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
@@ -72,7 +67,7 @@ data class Mechanic(override val id : UUID,
                Prim(label),
                Prim(description),
                Prim(summary),
-               maybeLiftPrim(category),
+               Prim(categoryId),
                Prim(requirements),
                Conj(variables))
 
@@ -85,17 +80,15 @@ data class Mechanic(override val id : UUID,
             {
                 effApply(::Mechanic,
                          // Mechanic Id
-                         doc.at("mechanic_id") ap { MechanicId.fromDocument(it) },
+                         doc.at("id") ap { MechanicId.fromDocument(it) },
                          // Label
                          doc.at("label") ap { MechanicLabel.fromDocument(it) },
                          // Description
                          doc.at("description") ap { MechanicDescription.fromDocument(it) },
                          // Summary
                          doc.at("summary") ap { MechanicSummary.fromDocument(it) },
-                         // Category
-                         split(doc.maybeAt("category"),
-                               effValue<ValueError,Maybe<MechanicCategory>>(Nothing()),
-                               { effApply(::Just, MechanicCategory.fromDocument(it)) }),
+                         // Category Id
+                         doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) },
                          // Requirements
                          doc.at("requirements") ap { MechanicRequirements.fromDocument(it) },
                          // Variables
@@ -120,7 +113,7 @@ data class Mechanic(override val id : UUID,
 
     fun summary() : String = this.summary.value.value
 
-    fun category() : MechanicCategory? = getMaybePrim(this.category)
+    fun categoryId() : MechanicCategoryId = this.categoryId.value
 
     fun requirements() : Set<VariableId> = this.requirements.value.variables.toSet()
 
@@ -256,21 +249,158 @@ data class MechanicSummary(val value : String) : SQLSerializable, Serializable
 /**
  * Mechanic Category
  */
-data class MechanicCategory(val value : String) : SQLSerializable, Serializable
+data class MechanicCategory(override val id : UUID,
+                            val categoryId : Prim<MechanicCategoryId>,
+                            val label : Prim<MechanicCategoryLabel>,
+                            val description : Prim<MechanicCategoryDescription>)
+                             : Model, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.categoryId.name    = "category_id"
+        this.label.name         = "label"
+        this.description.name   = "description"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(categoryId : MechanicCategoryId,
+                label : MechanicCategoryLabel,
+                description : MechanicCategoryDescription)
+        : this(UUID.randomUUID(),
+               Prim(categoryId),
+               Prim(label),
+               Prim(description))
+
+
+    companion object : Factory<MechanicCategory>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<MechanicCategory>  = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::MechanicCategory,
+                         // Category Id
+                         doc.at("id") ap { MechanicCategoryId.fromDocument(it) },
+                         // Label
+                         doc.at("label") ap { MechanicCategoryLabel.fromDocument(it) },
+                         // Description
+                         doc.at("description") ap { MechanicCategoryDescription.fromDocument(it) }
+                         )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun categoryId() : MechanicCategoryId = this.categoryId.value
+
+    fun label() : String = this.label.value.value
+
+    fun description() : String = this.description.value.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val name : String = "mechanic_category"
+
+    override val modelObject = this
+
+}
+
+
+/**
+ * Mechanic Category Id
+ */
+data class MechanicCategoryId(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<MechanicCategory>
+    companion object : Factory<MechanicCategoryId>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<MechanicCategory> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategoryId> = when (doc)
         {
-            is DocText -> effValue(MechanicCategory(doc.text))
+            is DocText -> effValue(MechanicCategoryId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+}
+
+
+/**
+ * Mechanic Category Label
+ */
+data class MechanicCategoryLabel(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<MechanicCategoryLabel>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategoryLabel> = when (doc)
+        {
+            is DocText -> effValue(MechanicCategoryLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+}
+
+
+/**
+ * Mechanic Category Description
+ */
+data class MechanicCategoryDescription(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<MechanicCategoryDescription>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategoryDescription> = when (doc)
+        {
+            is DocText -> effValue(MechanicCategoryDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------

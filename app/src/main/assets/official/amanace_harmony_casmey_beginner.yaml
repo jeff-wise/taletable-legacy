@@ -35,6 +35,32 @@ variables:
         value_id: swashbuckler
 - type: variable_number
   variable_number:
+    id: level
+    label: Level
+    description: Level
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: levels
+        value_id: level_one
+- type: variable_number
+  variable_number:
+    id: current_xp
+    label: Current Experience Points
+    description: Currenet Experience Points
+    value:
+      type: number_literal
+      number_literal: 70
+- type: variable_number
+  variable_number:
+    id: target_xp
+    label: Target XP
+    description: Target XP
+    value:
+      type: number_literal
+      number_literal: 1000
+- type: variable_number
+  variable_number:
     id: age
     label: Age
     description: Age
@@ -267,6 +293,22 @@ variables:
       text_literal: 'charisma'
 - type: variable_text
   variable_text:
+    id: level_label
+    label: Level Label
+    description: Level Label
+    value:
+      type: text_literal
+      text_literal: 'level'
+- type: variable_text
+  variable_text:
+    id: xp_label
+    label: Experience Points Label
+    description: Experience Points Label
+    value:
+      type: text_literal
+      text_literal: 'experience'
+- type: variable_text
+  variable_text:
     id: armor_table_label
     label: Armor Table Label
     description: Armor Table Label
@@ -288,7 +330,7 @@ variables:
     description: Important Stuff Label
     value:
       type: text_literal
-      text_literal: 'some important things'
+      text_literal: 'some important things...'
 - type: variable_text
   variable_text:
     id: less_important_stuff_label
@@ -296,7 +338,7 @@ variables:
     description: Less Important Stuff Label
     value:
       type: text_literal
-      text_literal: 'some less important things'
+      text_literal: 'some less important things...'
 - type: variable_text
   variable_text:
     id: gold_label
@@ -537,6 +579,25 @@ variables:
     value:
       type: text_literal
       text_literal: 'Impress, seduce, intimidate, persuade, conciliate, etc...'
+- type: variable_text
+  variable_text:
+    id: father_quote
+    label: Father's Quote
+    description: Father's Quote
+    value:
+      type: text_literal
+      text_literal: 'Life is like the trapeze: you are only supported by your own strength, then --
+                     all of a sudden -- the world goes upside down, and then you are falling, only
+                     to be caught by someone else. And sometimes, no one is there to catch you.
+                     You better hope that you have a safety net.'
+- type: variable_text
+  variable_text:
+    id: father_quote_source
+    label: Father Quote Source
+    description: Father Quote Source
+    value:
+      type: text_literal
+      text_literal: 'My Dad, when I was 11'
 - type: variable_text
   variable_text:
     id: my_story_part_1
@@ -1213,8 +1274,8 @@ sections:
       rows:
       - format:
           padding:
-            top: 2
-            bottom: 6
+            top: 6
+            bottom: 8
         widgets:
         - type: widget_text
           widget_text:
@@ -1225,9 +1286,9 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_20
+                      color_id: light_grey_5
                   size: 12
-                  font_style: bold
+                  font_style: regular
               widget_format:
                 alignment: left
             value_variable_id: important_stuff_label
@@ -1406,10 +1467,23 @@ sections:
                       - theme_id: dark
                         color_id: light_grey_17
                     size: 16
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 2
+        padding:
+          top: 10
+          left: 10
+          right: 10
+          bottom: 15
+      rows:
       - format:
           padding:
-            top: 20
-            bottom: 6
+            top: 6
+            bottom: 8
         widgets:
         - type: widget_text
           widget_text:
@@ -1420,9 +1494,9 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_20
+                      color_id: light_grey_5
                   size: 12
-                  font_style: bold
+                  font_style: regular
               widget_format:
                 alignment: left
             value_variable_id: less_important_stuff_label
@@ -1471,6 +1545,156 @@ sections:
                       - theme_id: dark
                         color_id: light_grey_17
                     size: 16
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_10
+        padding:
+          top: 20
+          right: 10
+          bottom: 25
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: level_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  size: 12
+              widget_format:
+                alignment: center
+                margins:
+                  bottom: 2
+                width: 1
+            value_variable_id: level_label
+        - type: widget_text
+          widget_text:
+            id: xp_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  size: 12
+              widget_format:
+                alignment: center
+                margins:
+                  bottom: 2
+                width: 3
+            value_variable_id: xp_label
+      - widgets:
+        - type: widget_number
+          widget_number:
+            id: level
+            value_variable_id: level
+            format:
+              widget_format:
+                width: 1
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  font_style: bold
+                  size: 30
+        - type: widget_points
+          widget_points:
+            id: xp
+            label: 'XP'
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+                width: 3
+              bar_height: 8
+              bar_style: simple
+              above_bar_style: opposite_left_label
+              limit_text_format:
+                margins:
+                  right: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                vertical_alignment: bottom
+              current_text_format:
+                margins:
+                  left: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                vertical_alignment: bottom
+              label_text_format:
+                margins:
+                  left: 5
+                padding:
+                  bottom: 1.5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  size: 12
+                vertical_alignment: bottom
+              limit_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: medium_grey_7
+              current_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_12
+            limit_value_variable_id: target_xp
+            current_value_variable_id: current_xp
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_10
+        padding:
+          bottom: 25
+      rows:
+      - widgets:
+        - type: widget_quote
+          widget_quote:
+            id: father_quote
+            quote_variable_id: father_quote
+            source_variable_id: father_quote_source
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              quote_style:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_22
+                size: 13
+              source_style:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_15
+                size: 14
+              icon_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_15
   - name: My Stuff
     groups:
     - format:
@@ -2091,6 +2315,26 @@ sections:
                   variable_value:
                     type: number_literal
                     number_literal: 1
+  - name: My Abilities
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_8
+    groups:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_8
+        padding:
+          top: 17
+      rows:
+      - widgets:
+        - type: widget_mechanic
+          widget_mechanic:
+            id: race_mechanics
+            category_id: race
   - name: My Story
     groups:
     - rows:

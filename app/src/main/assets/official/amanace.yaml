@@ -345,12 +345,224 @@ engine:
           value_id: chainmail
           description: 'Chainmail'
           value: 'Chainmail'
+  - type: value_set_base
+    value_set_base:
+      value_set_id: levels
+      label: Levels
+      label_singular: Level
+      description: The levels a player may reach with experience.
+      value_type: number
+      values:
+      - type: value_number
+        value_number:
+          value_id: level_one
+          description: 'Level 1'
+          value: 1
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_two
+          description: 'Level 2'
+          value: 2
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_three
+          description: 'Level 3'
+          value: 3
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_four
+          description: 'Level 4'
+          value: 4
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_four
+              label: Is Level Four?
+              description: Is Level Four?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_five
+          description: 'Level 5'
+          value: 5
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_four
+              label: Is Level Four?
+              description: Is Level Four?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_five
+              label: Is Level Five?
+              description: Is Level Five?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_six
+          description: 'Level 6'
+          value: 6
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_four
+              label: Is Level Four?
+              description: Is Level Four?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_five
+              label: Is Level Five?
+              description: Is Level Five?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_six
+              label: Is Level Six?
+              description: Is Level Six?
+              value:
+                type: boolean_literal
+                boolean_literal: true
   mechanics:
-  - mechanic_id: soulsin
-    label: Soulsin
-    description: Soulsin
-    summary: Soulsin
-    category: Race
+  - id: soulsin_ability_mods
+    label: Ability Score Adjustments
+    description: 'Ability score adjustments for the Soulsin race'
+    summary: 'Ability score adjustments for the Soulsin race'
+    category_id: race
     requirements:
     - 'is_race_soulsin'
     variables:
@@ -373,22 +585,22 @@ engine:
         - charisma_modifier
         value:
           type: number_literal
-          number_literal: 2
-    - type: variable_number
-      variable_number:
-        id: soulsin_wisdom_penalty
-        label: Soulsin Wisdom Penalty
-        description: Soulsin Wisdom Penalty
-        tags:
-        - wisdom_modifier
-        value:
-          type: number_literal
-          number_literal: -1
-  - mechanic_id: swashbuckler
+          number_literal: 1
+  - id: soulsin_canny_combatant
+    label: Canny Combatant
+    description: 'Whenever someone from Soulsin would lose points from perception due to an action
+                  by someone they are engaged in combat with, he or she instead gains those points
+                  to their attack modifier.'
+    summary: 'Points lost from perception due to opponent are instead added added to attack.'
+    category_id: race
+    requirements:
+    - 'is_race_soulsin'
+    variables:
+  - id: swashbuckler
     label: Swashbuckler
     description: Swashbuckler
     summary: Swashbuckler
-    category: Class
+    category_id: class
     requirements:
     - 'is_class_swashbuckler'
     variables:
@@ -412,6 +624,13 @@ engine:
         value:
           type: number_literal
           number_literal: 2
+  mechanic_categories:
+  - id: race
+    label: Race
+    description: Mechanics for a specific race.
+  - id: class
+    label: Class
+    description: Mechanics for a specific class.
   functions:
   - function_id: ability_modifier
     label: Ability Modifier

@@ -17,6 +17,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.game.engine.variable.DefinesNamespace
@@ -989,7 +990,7 @@ data class LogWidget(override val id : UUID,
 data class MechanicWidget(override val id : UUID,
                           val widgetId : Prim<WidgetId>,
                           val format : Comp<MechanicWidgetFormat>,
-                          val category : Func<MechanicCategory>,
+                          val categoryId : Prim<MechanicCategoryId>,
                           override val variables : Conj<Variable>) : Widget(variables)
 {
 
@@ -1001,7 +1002,7 @@ data class MechanicWidget(override val id : UUID,
     {
         this.widgetId.name      = "widget_id"
         this.format.name        = "format"
-        this.category.name      = "category"
+        this.categoryId.name      = "category_id"
         this.variables.name     = "variables"
     }
 
@@ -1012,12 +1013,12 @@ data class MechanicWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : MechanicWidgetFormat,
-                category : MechanicCategory,
+                categoryId : MechanicCategoryId,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
-               Prim(category),
+               Prim(categoryId),
                Conj(variables))
 
 
@@ -1031,9 +1032,11 @@ data class MechanicWidget(override val id : UUID,
                          // Widget Id
                          doc.at("id") ap { WidgetId.fromDocument(it) },
                          // Format
-                         doc.at("format") ap { MechanicWidgetFormat.fromDocument(it) },
-                         // Category
-                         doc.at("category") ap { MechanicCategory.fromDocument(it) },
+                         split(doc.maybeAt("format"),
+                               effValue(MechanicWidgetFormat.default()),
+                               { MechanicWidgetFormat.fromDocument(it) }),
+                         // Category Id
+                         doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) },
                          // Variables
                          split(doc.maybeList("variables"),
                                effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
@@ -1053,6 +1056,8 @@ data class MechanicWidget(override val id : UUID,
 
     fun format() : MechanicWidgetFormat = this.format.value
 
+    fun categoryId() : MechanicCategoryId = this.categoryId.value
+
 
     // -----------------------------------------------------------------------------------------
     // WIDGET
@@ -1060,8 +1065,11 @@ data class MechanicWidget(override val id : UUID,
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
-    override fun view(sheetUIContext: SheetUIContext): View {
-        TODO("not implemented")
+
+    override fun view(sheetUIContext: SheetUIContext) : View
+    {
+        val viewBuilder = MechanicWidgetViewBuilder(this, sheetUIContext)
+        return viewBuilder.view()
     }
 
 
@@ -1080,9 +1088,7 @@ data class MechanicWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext: SheetContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onSheetComponentActive(sheetContext: SheetContext) { }
 
 }
 
@@ -1648,8 +1654,8 @@ data class QuoteWidget(override val id : UUID,
                        val widgetId : Prim<WidgetId>,
                        val format : Comp<QuoteWidgetFormat>,
                        val viewType : Prim<QuoteViewType>,
-                       val quote : Prim<Quote>,
-                       val source : Maybe<Prim<QuoteSource>>,
+                       val quoteVariableId : Prim<VariableId>,
+                       val sourceVariableId : Maybe<Prim<VariableId>>,
                        override val variables : Conj<Variable>) : Widget(variables)
 {
 
@@ -1662,10 +1668,10 @@ data class QuoteWidget(override val id : UUID,
         this.widgetId.name                      = "widget_id"
         this.format.name                        = "format"
         this.viewType.name                      = "view_type"
-        this.quote.name                         = "quote"
+        this.quoteVariableId.name               = "quote"
 
-        when (this.source) {
-            is Just -> this.source.value.name   = "source"
+        when (this.sourceVariableId) {
+            is Just -> this.sourceVariableId.value.name   = "source"
         }
 
         this.variables.name                     = "variables"
@@ -1680,8 +1686,8 @@ data class QuoteWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 format   : QuoteWidgetFormat,
                 viewType : QuoteViewType,
-                quote    : Quote,
-                source   : Maybe<QuoteSource>,
+                quote    : VariableId,
+                source   : Maybe<VariableId>,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
@@ -1707,14 +1713,14 @@ data class QuoteWidget(override val id : UUID,
                                { QuoteWidgetFormat.fromDocument(it) }),
                          // View Type
                          split(doc.maybeAt("view_type"),
-                               effValue<ValueError,QuoteViewType>(QuoteViewType.NoIcon),
+                               effValue<ValueError,QuoteViewType>(QuoteViewType.Source),
                                { QuoteViewType.fromDocument(it) }),
-                         // Quote
-                         doc.at("quote") ap { Quote.fromDocument(it) },
-                         // Quote Source
-                         split(doc.maybeAt("source"),
-                               effValue<ValueError,Maybe<QuoteSource>>(Nothing()),
-                               { effApply(::Just, QuoteSource.fromDocument(it)) }),
+                         // Quote Variable Id
+                         doc.at("quote_variable_id") ap { VariableId.fromDocument(it) },
+                         // Source Variable Id
+                         split(doc.maybeAt("source_variable_id"),
+                               effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                               { effApply(::Just, VariableId.fromDocument(it)) }),
                          // Variables
                          split(doc.maybeList("variables"),
                              effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
@@ -1736,9 +1742,9 @@ data class QuoteWidget(override val id : UUID,
 
     fun viewType() : QuoteViewType = this.viewType.value
 
-    fun quoteString() : String = this.quote.value.value
+    fun quoteVariableId() : VariableId = this.quoteVariableId.value
 
-    fun sourceString() : String? = getMaybePrim(this.source)?.value
+    fun sourceVariableId() : VariableId? = getMaybePrim(this.sourceVariableId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -1748,8 +1754,58 @@ data class QuoteWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext: SheetUIContext) : View =
-            QuoteWidgetView.widgetView(this, sheetUIContext)
+    override fun view(sheetUIContext: SheetUIContext) : View
+    {
+        val viewBuilder = QuoteWidgetViewBuilder(this, sheetUIContext)
+        return viewBuilder.view()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun quoteVariable(sheetContext : SheetContext) : AppEff<TextVariable> =
+            SheetManager.sheetState(sheetContext.sheetId)
+                    .apply { it.textVariableWithId(this.quoteVariableId()) }
+
+
+    fun source(sheetContext : SheetContext) : Maybe<String>
+    {
+        val sourceVarId = this.sourceVariableId()
+        if (sourceVarId != null)
+        {
+            val sourceString = SheetManager.sheetState(sheetContext.sheetId)
+                                .apply { it.textVariableWithId(sourceVarId) }
+                                .apply { it.valueString(sheetContext)  }
+            when (sourceString)
+            {
+                is Val -> return Just(sourceString.value)
+                is Err -> ApplicationLog.error(sourceString.error)
+            }
+        }
+        else
+        {
+            return Just("")
+        }
+
+        return Nothing()
+    }
+
+
+    fun quote(sheetContext : SheetContext) : String
+    {
+        val quoteString = this.quoteVariable(sheetContext)
+                              .apply { it.valueString(sheetContext) }
+
+        when (quoteString)
+        {
+            is Val -> return quoteString.value
+            is Err -> ApplicationLog.error(quoteString.error)
+        }
+
+        return ""
+    }
 
 
     // -----------------------------------------------------------------------------------------

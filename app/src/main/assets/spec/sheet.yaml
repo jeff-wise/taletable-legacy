@@ -711,11 +711,35 @@ types:
     presence: required
     description: >
       The widget identifier.
-  - name: cateogry
-    type: mechanic_category
+  - name: category_id
+    type: mechanic_category_id
     presence: required
     description: >
       The mechanic category.
+- name: mechanic_widget_format
+  label: Mechanic Widget Format
+  description: >
+    Mechanic Widget formatting options.
+  group: 'Widget: Number'
+  type: product
+  fields:
+  - name: widget_format
+    type: widget_format
+    presence: optional
+    description: >
+      Standard widget formatting options.
+  - name: header_style
+    type: text_style
+    presence: optional
+    description: Header text style.
+  - name: mechanic_header_style
+    type: text_style
+    presence: optional
+    description: Mechanic header text style.
+  - name: mechanic_summary_style
+    type: text_style
+    presence: optional
+    description: Mechanic summary text style.
 - name: widget_number
   label: Number Widget
   description: >
@@ -1114,13 +1138,13 @@ types:
     presence: optional
     description: >
       The quote widget formatting options.
-  - name: quote
-    type: string
+  - name: quote_variable_id
+    type: variable_id
     presence: required
     description: >
       The quote.
-  - name: source
-    type: string
+  - name: source_variable_id
+    type: variable_id
     presence: optional
     description: >
       The quote source.
@@ -1151,11 +1175,10 @@ types:
     presence: optional
     description: >
       Source text style.
-  - name: icon_color
-    type: color_id
+  - name: icon_format
+    type: icon_format
     presence: optional
-    description: >
-      Quote icon color.
+    description: The icon format.
 - name: widget_story
   label: Story Widget
   description: >

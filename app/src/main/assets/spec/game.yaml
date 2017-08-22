@@ -33,6 +33,11 @@ types:
     presence: required
     description: >
       The name of the game.
+  - name: rulebook
+    type: rulebook
+    presence: optional
+    description: >
+      The name of the game.
   - name: engine
     type: engine
     presence: required
@@ -118,6 +123,104 @@ types:
   group: User
   type: primitive
   base_type: string
+- name: rulebook
+  label: Game Rulebook
+  description: >
+    The game rules.
+  group: 'Rulebook'
+  type: product
+  fields:
+  - name: title
+    type: string
+    presence: required
+    description: The title of the game rulebook.
+  - name: abstract
+    type: string
+    presence: optional
+    description: A brief description of the game rules.
+  - name: chapters
+    type: list
+    of: rulebook_chapter
+    presence: required
+    description: The chapters
+- name: rulebook_chapter
+  label: Game Rulebook Chapter
+  description: Chapter
+  group: 'Rulebook'
+  type: product
+  fields:
+  - name: id
+    type: string
+    presence: required
+    description: The chapter id.
+  - name: title
+    type: string
+    presence: required
+    description: The chapter title.
+  - name: sections
+    type: list
+    of: rulebook_section
+    presence: required
+    description: The chapters
+- name: rulebook_chapter_section
+  label: Game Rulebook Chapter Section
+  description: Chapter
+  group: 'Rulebook'
+  type: product
+  fields:
+  - name: id
+    type: string
+    presence: required
+    description: The section id.
+  - name: title
+    type: string
+    presence: required
+    description: The section title.
+  - name: body
+    type: string
+    presence: required
+    description: The section body.
+  - name: subsections
+    type: list
+    of: rulebook_subsection
+    presence: required
+    description: The sub sections.
+- name: rulebook_chapter_subsection
+  label: Game Rulebook Chapter SubSection
+  description: Chapter
+  group: 'Rulebook'
+  type: product
+  fields:
+  - name: id
+    type: string
+    presence: required
+    description: The subsection id.
+  - name: title
+    type: string
+    presence: required
+    description: The subsection title.
+  - name: body
+    type: string
+    presence: required
+    description: The subsection body.
+- name: rulebook_reference
+  label: Game Rulebook Reference
+  description: Chapter
+  group: 'Rulebook'
+  type: product
+  fields:
+  - name: chapter_id
+    type: string
+    presence: required
+    description: The chapter id.
+  - name: section_id
+    type: string
+    presence: optional
+    description: The section id.
+  - name: subsection_id
+    type: string
+    presence: optional
+    description: The subsection id.
 - name: engine  
   label: Engine
   description: >
@@ -139,6 +242,11 @@ types:
       The mechanics define groupings of variables that may be active or inactive, depending on 
       customizable conditions. This allows the creation of different game mechanics, and permits 
       those mechanics to be made available only in certain situations.
+  - name: mechanic_categories
+    type: list
+    of: mechanic_category
+    presence: required
+    description: The mechanic categories.
   - name: functions
     type: list
     of: function
@@ -692,7 +800,7 @@ types:
   group: Mechanic
   type: product
   fields:
-  - name: mechanic_id
+  - name: id
     type: mechanic_id
     presence: required
     description: >
@@ -718,9 +826,9 @@ types:
       The description should explain what the mechanic does and how, as well as detail situations 
       when it should be used. The description should relate the mechanic to the game rules that it 
       was created to emulate.
-  - name: category
-    type: string
-    presence: optional
+  - name: category_id
+    type: mechanic_category_id
+    presence: required
     description: >
       The category of the mechanic should group the mechanic with other related mechanics.
   - name: requirements
@@ -735,6 +843,13 @@ types:
     presence: required
     description: >
       The variables that are active when the mechanic is active.
+- name: mechanic_category_id
+  label: Mechanic Category Identifier
+  description: >
+    The unique mechanic identifier.
+  group: Game
+  type: primitive
+  base_type: string
 - name: mechanic_category
   label: Mechanic Category
   description: >
@@ -744,8 +859,8 @@ types:
   group: Mechanic
   type: product
   fields:
-  - name: name
-    type: string
+  - name: id
+    type: mechanic_category_id
     presence: required
     description: >
       The name of the mechanic category is used to uniquely identify the category when customizing 
@@ -759,7 +874,7 @@ types:
     presence: required
   - name: description
     type: string
-    presence: optional
+    presence: required
     description: >
       A description of the category and the common traits that its mechanics share.
 - name: variable
