@@ -20,6 +20,10 @@ engine:
                         to the Endless Carnival. Its citizens are tough and known for their
                         resourcefulness.'
           value: Soulsin
+          rulebook_reference:
+            chapter_id: races
+            section_id: standard_races
+            subsection_id: soulsin
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -36,6 +40,10 @@ engine:
                         army and some of the most skilled soliders. Some see the nobility as only
                         pretense and believe there is something dark behind the lustrous banner. '
           value: Amadril
+          rulebook_reference:
+            chapter_id: races
+            section_id: standard_races
+            subsection_id: amadril
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -52,6 +60,10 @@ engine:
                         worshipper of Solocles, the one true god. The land is isolated, on a mountainous
                         plateau. Little is known other than that priests have absolute authority.'
           value: 'The Arm of Solocles'
+          rulebook_reference:
+            chapter_id: races
+            section_id: standard_races
+            subsection_id: arm_of_solocles
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -68,6 +80,10 @@ engine:
                         relatively isolated kingdoms. The people are peaceful, but strong, with a
                         deep connection to nature.'
           value: 'Illidasia'
+          rulebook_reference:
+            chapter_id: races
+            section_id: standard_races
+            subsection_id: illidasia
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -84,6 +100,10 @@ engine:
                         nomadic, militaristic race. Few have survived a fight with them, but for
                         some reason, they never survive for long on land.  '
           value: 'Waveborn'
+          rulebook_reference:
+            chapter_id: races
+            section_id: standard_races
+            subsection_id: waveborn
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -99,6 +119,10 @@ engine:
           description: 'A land of tall rocky spires that pierce the clouds, the inhabitants
                         practice an old way of living and are known to bond with birds of prey.'
           value: The Fanged Land
+          rulebook_reference:
+            chapter_id: races
+            section_id: standard_races
+            subsection_id: fanged_land
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -116,6 +140,10 @@ engine:
                         They seek to develop new technologies as well as discover the secrets
                         from the age of magic.'
           value: Lorelen
+          rulebook_reference:
+            chapter_id: races
+            section_id: standard_races
+            subsection_id: lorelen
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -944,6 +972,47 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: strength_modifier
+  - summation_id: defense
+    summation_name: Defense
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Armor Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: defense_armor_bonus
+rulebook:
+  title: 'Amanace'
+  abstract: 'Learn all about Amanace'
+  chapters:
+  - id: races
+    title: 'Races: The Kingdoms & Cultures of Amanace'
+    sections:
+    - id: standard_races
+      title: 'Standard Races'
+      body: 'Text'
+      subsections:
+      - id: soulsin
+        title: 'Soulsin - The Port of Possibilities'
+        body: >
+          Soulsin is a port city abla asaf. A few paragraphs here history, culture, characteristics
+          and a list of mechanics.
 
 
 

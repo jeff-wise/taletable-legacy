@@ -11,6 +11,7 @@ import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.game.RulebookReference
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
 import com.kispoko.tome.util.Util
@@ -29,6 +30,7 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 sealed class Value(open val valueId : Prim<ValueId>,
                    open val description : Maybe<Prim<ValueDescription>>,
+                   open val rulebookReference : Maybe<Comp<RulebookReference>>,
                    open val variables : Conj<Variable>,
                    open val valueSetId : ValueSetId)
                     : Model, Serializable
@@ -67,6 +69,8 @@ sealed class Value(open val valueId : Prim<ValueId>,
     fun valueSetId() : ValueSetId = this.valueSetId
 
     fun description() : String? = getMaybePrim(this.description)?.value
+
+    fun rulebookReference() : Maybe<RulebookReference> = getMaybeComp(this.rulebookReference)
 
     fun variables() : Set<Variable> = this.variables.set
 
@@ -121,10 +125,11 @@ sealed class Value(open val valueId : Prim<ValueId>,
 data class ValueNumber(override val id : UUID,
                        override val valueId : Prim<ValueId>,
                        override val description: Maybe<Prim<ValueDescription>>,
+                       override val rulebookReference : Maybe<Comp<RulebookReference>>,
                        override val variables : Conj<Variable>,
                        override val valueSetId : ValueSetId,
                        val value : Prim<NumberValue>)
-                        : Value(valueId, description, variables, valueSetId)
+                        : Value(valueId, description, rulebookReference, variables, valueSetId)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -149,12 +154,14 @@ data class ValueNumber(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : Maybe<ValueDescription>,
+                rulebookReference : Maybe<RulebookReference>,
                 variables : MutableSet<Variable>,
                 valueSetId : ValueSetId,
                 value : NumberValue)
         : this(UUID.randomUUID(),
                Prim(valueId),
                maybeLiftPrim(description),
+               maybeLiftComp(rulebookReference),
                Conj(variables),
                valueSetId,
                Prim(value))
@@ -174,6 +181,10 @@ data class ValueNumber(override val id : UUID,
                          split(doc.maybeAt("description"),
                                effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
                                { effApply(::Just, ValueDescription.fromDocument(it)) }),
+                         // Rulebook Reference
+                         split(doc.maybeAt("rulebook_reference"),
+                               effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
+                               { effApply(::Just, RulebookReference.fromDocument(it)) }),
                          // Variables
                          doc.list("variables") ap { docList ->
                              docList.mapSetMut { Variable.fromDocument(it) }
@@ -235,10 +246,11 @@ data class ValueNumber(override val id : UUID,
 data class ValueText(override val id : UUID,
                      override val valueId : Prim<ValueId>,
                      override val description : Maybe<Prim<ValueDescription>>,
+                     override val rulebookReference : Maybe<Comp<RulebookReference>>,
                      override val variables : Conj<Variable>,
                      override val valueSetId : ValueSetId,
                      val value : Prim<TextValue>)
-                      : Value(valueId, description, variables, valueSetId)
+                      : Value(valueId, description, rulebookReference, variables, valueSetId)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -265,12 +277,14 @@ data class ValueText(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : Maybe<ValueDescription>,
+                rulebookReference : Maybe<RulebookReference>,
                 variables : MutableSet<Variable>,
                 valueSetId : ValueSetId,
                 value : TextValue)
         : this(UUID.randomUUID(),
                Prim(valueId),
                maybeLiftPrim(description),
+               maybeLiftComp(rulebookReference),
                Conj(variables),
                valueSetId,
                Prim(value))
@@ -288,6 +302,10 @@ data class ValueText(override val id : UUID,
                                    split(doc.maybeAt("description"),
                                          effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
                                          { effApply(::Just, ValueDescription.fromDocument(it)) }),
+                                   // Rulebook Reference
+                                   split(doc.maybeAt("rulebook_reference"),
+                                         effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
+                                         { effApply(::Just, RulebookReference.fromDocument(it)) }),
                                    // Variables
                                    split(doc.maybeList("variables"),
                                          effValue(mutableSetOf()),

@@ -28,7 +28,8 @@ import java.util.*
 data class Game(override val id : UUID,
                 val gameId : Prim<GameId>,
                 val description : Comp<GameDescription>,
-                val engine : Comp<Engine>) : Model, Serializable
+                val engine : Comp<Engine>,
+                val rulebook : Comp<Rulebook>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -40,6 +41,7 @@ data class Game(override val id : UUID,
         this.gameId.name        = "game_id"
         this.description.name   = "description"
         this.engine.name        = "engine"
+        this.rulebook.name      = "rulebook"
     }
 
 
@@ -49,11 +51,13 @@ data class Game(override val id : UUID,
 
     constructor(gameId : GameId,
                 description : GameDescription,
-                engine : Engine)
+                engine : Engine,
+                rulebook : Rulebook)
         : this(UUID.randomUUID(),
                Prim(gameId),
                Comp(description),
-               Comp(engine))
+               Comp(engine),
+               Comp(rulebook))
 
 
     companion object : Factory<Game>
@@ -70,7 +74,10 @@ data class Game(override val id : UUID,
                              // Description
                              doc.at("description") apply { GameDescription.fromDocument(it) },
                              // Engine
-                             doc.at("engine") apply { Engine.fromDocument(it, gameId) })
+                             doc.at("engine") apply { Engine.fromDocument(it, gameId) },
+                             // Rulebook
+                             doc.at("rulebook") apply { Rulebook.fromDocument(it) }
+                             )
                 }
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -87,6 +94,8 @@ data class Game(override val id : UUID,
     fun description() : GameDescription = this.description.value
 
     fun engine() : Engine = this.engine.value
+
+    fun rulebook() : Rulebook = this.rulebook.value
 
 
     // -----------------------------------------------------------------------------------------

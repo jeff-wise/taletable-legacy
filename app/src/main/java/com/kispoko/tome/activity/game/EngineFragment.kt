@@ -235,8 +235,7 @@ class EngineFragment : Fragment()
         val layout              = RelativeLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = 0
-        layout.weight           = 1f
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.VERTICAL
 

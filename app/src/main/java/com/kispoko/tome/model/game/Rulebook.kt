@@ -3,18 +3,15 @@ package com.kispoko.tome.model.game
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import effect.effApply
-import effect.effError
-import effect.effValue
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -45,6 +42,15 @@ data class Rulebook(override val id : UUID,
         this.abstract.name = "abstract"
         this.chapters.name = "chapters"
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // INDEXES
+    // -----------------------------------------------------------------------------------------
+
+    private val chapterById : MutableMap<RulebookChapterId,RulebookChapter> =
+                                        chapters().associateBy { it.chapterId() }
+                                                as MutableMap<RulebookChapterId,RulebookChapter>
 
 
     // -----------------------------------------------------------------------------------------
@@ -90,6 +96,31 @@ data class Rulebook(override val id : UUID,
     fun abstract() : RulebookAbstract = this.abstract.value
 
     fun chapters() : List<RulebookChapter> = this.chapters.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun subsection(rulebookReference : RulebookReference) : RulebookSubsection?
+    {
+        val chapter = this.chapterById[rulebookReference.chapterId()]
+
+        val sectionId = rulebookReference.sectionId()
+        if (chapter != null && sectionId != null)
+        {
+            val section = chapter.sectionWithId(sectionId)
+            val subsectionId = rulebookReference.subsectionId()
+            if (section != null && subsectionId != null)
+            {
+                val subsection = section.subsectionWithId(subsectionId)
+                if (subsection != null)
+                    return subsection
+            }
+        }
+
+        return null
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -190,6 +221,15 @@ data class RulebookChapter(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // INDEXES
+    // -----------------------------------------------------------------------------------------
+
+    private val sectionById : MutableMap<RulebookSectionId,RulebookSection> =
+                                        sections().associateBy { it.sectionId() }
+                                                as MutableMap<RulebookSectionId,RulebookSection>
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -235,12 +275,20 @@ data class RulebookChapter(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun sectionWithId(sectionId : RulebookSectionId) : RulebookSection? =
+        this.sectionById[sectionId]
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
-    override val name : String = "game"
+    override val name : String = "rulebook_section"
 
     override val modelObject = this
 
@@ -333,6 +381,15 @@ data class RulebookSection(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // INDEXES
+    // -----------------------------------------------------------------------------------------
+
+    private val subsectionById : MutableMap<RulebookSubsectionId,RulebookSubsection> =
+                                    subsections().associateBy { it.subsectionId() }
+                                            as MutableMap<RulebookSubsectionId,RulebookSubsection>
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -381,6 +438,14 @@ data class RulebookSection(override val id : UUID,
     fun body() : RulebookSectionBody = this.body.value
 
     fun subsections() : List<RulebookSubsection> = this.subsections.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun subsectionWithId(subsectionId : RulebookSubsectionId) : RulebookSubsection? =
+        this.subsectionById[subsectionId]
 
 
     // -----------------------------------------------------------------------------------------
@@ -491,10 +556,10 @@ data class RulebookSectionBody(val value : String) : SQLSerializable, Serializab
  * Rulebook Subection
  */
 data class RulebookSubsection(override val id : UUID,
-                           val subsectionId : Prim<RulebookSubsectionId>,
-                           val title : Prim<RulebookSubsectionTitle>,
-                           val body : Prim<RulebookSubsectionBody>)
-                            : Model, Serializable
+                              val subsectionId : Prim<RulebookSubsectionId>,
+                              val title : Prim<RulebookSubsectionTitle>,
+                              val body : Prim<RulebookSubsectionBody>)
+                                : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -547,9 +612,9 @@ data class RulebookSubsection(override val id : UUID,
 
     fun subsectionId() : RulebookSubsectionId = this.subsectionId.value
 
-    fun title() : RulebookSubsectionTitle = this.title.value
+    fun title() : String = this.title.value.value
 
-    fun body() : RulebookSubsectionBody = this.body.value
+    fun body() : String = this.body.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -648,6 +713,99 @@ data class RulebookSubsectionBody(val value : String) : SQLSerializable, Seriali
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// RULEBOOK REFERENCE
+// --------------------------------------------------------------------------------------------
+
+/**
+ * Rulebook Reference
+ */
+data class RulebookReference(override val id : UUID,
+                             val chapterId : Prim<RulebookChapterId>,
+                             val sectionId : Maybe<Prim<RulebookSectionId>>,
+                             val subsectionId : Maybe<Prim<RulebookSubsectionId>>)
+                              : Model, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.chapterId.name    = "section_id"
+
+        when (this.sectionId) {
+            is Just -> this.sectionId.value.name = "section_id"
+        }
+
+        when (this.subsectionId) {
+            is Just -> this.subsectionId.value.name = "subsection_id"
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(chapterId : RulebookChapterId,
+                sectionId : Maybe<RulebookSectionId>,
+                subsectionId : Maybe<RulebookSubsectionId>)
+        : this(UUID.randomUUID(),
+               Prim(chapterId),
+               maybeLiftPrim(sectionId),
+               maybeLiftPrim(subsectionId))
+
+
+    companion object : Factory<RulebookReference>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<RulebookReference> = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::RulebookReference,
+                         // Chapter Id
+                         doc.at("chapter_id") apply { RulebookChapterId.fromDocument(it) },
+                         // Section Id
+                         split(doc.maybeAt("section_id"),
+                               effValue<ValueError,Maybe<RulebookSectionId>>(Nothing()),
+                               { effApply(::Just, RulebookSectionId.fromDocument(it)) }),
+                         // Subsection Id
+                         split(doc.maybeAt("subsection_id"),
+                               effValue<ValueError,Maybe<RulebookSubsectionId>>(Nothing()),
+                               { effApply(::Just, RulebookSubsectionId.fromDocument(it)) })
+                        )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun chapterId() : RulebookChapterId = this.chapterId.value
+
+    fun sectionId() : RulebookSectionId? = getMaybePrim(this.sectionId)
+
+    fun subsectionId() : RulebookSubsectionId? = getMaybePrim(this.subsectionId)
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val name : String = "rulebook_reference"
+
+    override val modelObject = this
 
 }
 

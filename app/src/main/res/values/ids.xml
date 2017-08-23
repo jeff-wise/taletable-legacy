@@ -110,6 +110,7 @@
     <item name="choose_value_item_value" type="id"/>
     <item name="choose_value_item_summary" type="id"/>
     <item name="choose_value_item_icon" type="id"/>
+    <item name="choose_value_item_reference" type="id"/>
 
     <!-- SHEET NAVIGATION FRAGMENT -->
     <item name="sheet_nav_item_header" type="id"/>

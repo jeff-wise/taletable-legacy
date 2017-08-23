@@ -1539,11 +1539,6 @@ types:
     type: column_variable_prefix
     presence: required
     description: Variable prefix
-  - name: defines_namespaced
-    type: boolean
-    presence: optional
-    description: >
-      Do cells in this column define a namespace for the other cells in the row?
   - name: is_namespaced
     type: boolean
     presence: optional
@@ -1596,7 +1591,7 @@ types:
     type: variable_text_value
     presence: required
     description: The column default value.
-  - name: defines_namespaced
+  - name: defines_namespace
     type: boolean
     presence: optional
     description: >

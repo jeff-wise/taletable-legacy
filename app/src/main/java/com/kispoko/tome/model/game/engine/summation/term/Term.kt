@@ -65,7 +65,7 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>) : Model, S
     abstract fun dependencies(): Set<VariableReference>
 
 
-    abstract fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
+    abstract fun value(sheetContext : SheetContext) : Maybe<Double>
 
 
     abstract fun summary(sheetContext : SheetContext) : TermSummary?
@@ -118,10 +118,18 @@ data class SummationTermNumber(override val id : UUID,
     override fun dependencies(): Set<VariableReference> = this.numberReference().dependencies()
 
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
-        SheetData.numbers(sheetContext, this.numberReference()) ap {
-            effValue<AppError,Maybe<Double>>(Just(it.filterJust().sum()))
+    override fun value(sheetContext : SheetContext) : Maybe<Double>
+    {
+        val numbers = SheetData.numbers(sheetContext, this.numberReference())
+
+        when (numbers)
+        {
+            is Val -> return Just(numbers.value.filterJust().sum())
+            is Err -> ApplicationLog.error(numbers.error)
         }
+
+        return Nothing()
+    }
 
 
     override fun summary(sheetContext : SheetContext) : TermSummary?
@@ -214,9 +222,18 @@ data class SummationTermDiceRoll(override val id : UUID,
             this.diceRollReference().dependencies()
 
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
-            SheetData.diceRoll(sheetContext, diceRollReference())
-                    .apply { effValue<AppError,Maybe<Double>>(Just(it.roll().toDouble())) }
+    override fun value(sheetContext : SheetContext) : Maybe<Double>
+    {
+        val diceRoll = SheetData.diceRoll(sheetContext, diceRollReference())
+
+        when (diceRoll)
+        {
+            is Val -> return Just(diceRoll.value.roll().toDouble())
+            is Err -> ApplicationLog.error(diceRoll.error)
+        }
+
+        return Nothing()
+    }
 
 
     override fun summary(sheetContext : SheetContext) : TermSummary?
@@ -336,14 +353,24 @@ data class SummationTermConditional(override val id : UUID,
             .plus(falseValueReference.value.dependencies())
 
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
-        SheetData.boolean(sheetContext, conditionalValueReference())
-            .apply { condition ->
-                if (condition)
-                    SheetData.number(sheetContext, trueValueReference())
-                else
-                    SheetData.number(sheetContext, falseValueReference())
-            }
+    override fun value(sheetContext : SheetContext) : Maybe<Double>
+    {
+        val number = SheetData.boolean(sheetContext, conditionalValueReference())
+                        .apply { condition ->
+                            if (condition)
+                                SheetData.number(sheetContext, trueValueReference())
+                            else
+                                SheetData.number(sheetContext, falseValueReference())
+                        }
+
+        when (number)
+        {
+            is Val -> return number.value
+            is Err -> ApplicationLog.error(number.error)
+        }
+
+        return Nothing()
+    }
 
 
     override fun summary(sheetContext : SheetContext) : TermSummary?

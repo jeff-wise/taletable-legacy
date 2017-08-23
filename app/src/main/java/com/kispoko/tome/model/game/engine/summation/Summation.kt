@@ -121,10 +121,8 @@ data class Summation(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<Double> =
-            this.terms().map({it.value(sheetContext)}).sequenceI() ap {
-                effValue<AppError,Double>(it.filterJust().sum())
-            }
+    fun value(sheetContext : SheetContext) : Double =
+            this.terms().map({it.value(sheetContext)}).filterJust().sum()
 
 
     // -----------------------------------------------------------------------------------------

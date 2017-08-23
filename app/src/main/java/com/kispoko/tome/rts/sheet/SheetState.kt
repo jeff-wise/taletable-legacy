@@ -174,7 +174,6 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
 
         this.updateListeners(variable)
 
-
         ApplicationLog.event(AppStateEvent(VariableAdded(variableId)))
     }
 

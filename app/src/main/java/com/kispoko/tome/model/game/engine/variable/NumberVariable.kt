@@ -402,7 +402,7 @@ data class NumberVariableSummationValue(val summationId : SummationId)
     override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
             = GameManager.engine(sheetContext.gameId)
                     .apply { it.summation(summationId) }
-                    .apply { it.value(sheetContext) }
+                    .apply { effValue<AppError,Double>(it.value(sheetContext)) }
                     .apply { effValue<AppError,Maybe<Double>>(Just(it)) }
 
 

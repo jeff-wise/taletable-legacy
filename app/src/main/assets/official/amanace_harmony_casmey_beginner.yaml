@@ -122,7 +122,7 @@ variables:
     description: Base Dexterity
     value:
       type: number_literal
-      number_literal: 16
+      number_literal: 8
 - type: variable_number
   variable_number:
     id: dexterity
@@ -497,8 +497,8 @@ variables:
     label: Defense
     description: Defense
     value:
-      type: number_literal
-      number_literal: 9
+      type: summation_id
+      summation_id: defense
 - type: variable_number
   variable_number:
     id: attack
@@ -1896,6 +1896,7 @@ sections:
               table_widget_text_column:
                 name: Name
                 variable_prefix: weapon
+                defines_namespace: true
                 default_value:
                   type: value_set_id
                   value_set_id: weapons
@@ -1912,7 +1913,7 @@ sections:
             - type: table_widget_number_column
               table_widget_number_column:
                 name: Quantity
-                variable_prefix: weapon_quantity
+                variable_prefix: quantity
                 default_value:
                   type: number_literal
                   number_literal: 1
@@ -1929,7 +1930,7 @@ sections:
             - type: table_widget_boolean_column
               table_widget_boolean_column:
                 name: Is Equipped?
-                variable_prefix: is_weapon_equipped
+                variable_prefix: is_equipped
                 default_value:
                   type: boolean_literal
                   boolean_literal: false

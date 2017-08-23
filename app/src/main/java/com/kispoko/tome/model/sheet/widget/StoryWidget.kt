@@ -5,6 +5,7 @@ package com.kispoko.tome.model.sheet.widget
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.graphics.drawable.VectorDrawableCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -13,21 +14,16 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.flexbox.*
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.dialog.DiceRollerDialogFragment
-import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.functor.getMaybePrim
-import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -48,7 +44,11 @@ import lulo.value.*
 import lulo.value.UnexpectedType
 import java.io.Serializable
 import java.util.*
-
+import android.text.method.Touch.onTouchEvent
+import android.util.Log
+import android.view.GestureDetector
+import com.kispoko.tome.activity.sheet.dialog.*
+import com.kispoko.tome.lib.functor.*
 
 
 /**
@@ -601,9 +601,17 @@ object StoryWidgetView
             storyWidget.layoutViewId = layoutViewId
             layout.id                = layoutViewId
             val spanView = this.storySpannableView(storyWidget, sheetUIContext)
+
+            val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
+                    sheetUIContext.context as SheetActivity,
+                    SheetContext(sheetUIContext))
+            spanView.setOnTouchListener({ v, event ->
+                gestureDetector.onTouchEvent(event)
+                false
+            })
+
             layout.addView(spanView)
         }
-
 
         // Layout on click
         val variableParts = storyWidget.variableParts()
@@ -617,15 +625,16 @@ object StoryWidgetView
             }
             val variable = variableParts.first().variable(SheetContext(sheetUIContext))
             if (variable != null) {
-                layout.setOnClickListener {
-                    openVariableEditorDialog(
-                            variable,
-                            UpdateTargetStoryWidgetPart(storyWidget.id, variablePartIndex),
-                            sheetUIContext)
-                }
+//                layout.setOnClickListener {
+//                    openVariableEditorDialog(
+//                            variable,
+//                            UpdateTargetStoryWidgetPart(storyWidget.id, variablePartIndex),
+//                            sheetUIContext)
+//                }
             }
 
         }
+
 
         return layout
     }

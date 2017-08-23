@@ -193,6 +193,12 @@
     <string name="dice_modifiers_editor">Dice Modifiers Editor</string>
     <string name="dice_modifier_editor">Dice Modifier Editor</string>
 
+    <string name="read_about_in_rulebook">Read about in Rulebook</string>
+
+    <string name="widget_options">Widget Options</string>
+
+    <string name="value_history">Value History</string>
+
     <string name="learn_about_value_sets">Learn about Value Sets</string>
 
     <string name="value_set_editor">Value Set Editor</string>
@@ -1144,6 +1150,25 @@
         The tag of the referenced variables.
     </string>
 
+
+    <!-- GAME INFO FRAGMENT -->
+    <!-- ==================================================================================== -->
+
+    <string name="game_info_description_header">Game Description</string>
+    <string name="game_info_description_description">
+        Basic information about the game such as the name, genre, summary, etc&#8230;
+    </string>
+
+    <string name="game_info_rulebook_header">Rulebook</string>
+    <string name="game_info_rulebook_description">
+        The rules of the game in a formatted as a standard book meant to be read and referenced
+        by both players and gamemasters.
+    </string>
+
+    <string name="game_info_stats_header">Stats</string>
+    <string name="game_info_stats_description">
+        An overview of the game\'s components, usage statistics, and other useful data.
+    </string>
 
     <!-- FORM -->
     <!-- ==================================================================================== -->

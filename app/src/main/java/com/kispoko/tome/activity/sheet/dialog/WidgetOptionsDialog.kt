@@ -1,0 +1,368 @@
+
+package com.kispoko.tome.activity.sheet.dialog
+
+
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v4.view.GestureDetectorCompat
+import android.util.Log
+import android.view.*
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.*
+import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.model.theme.ThemeColorId
+import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.SheetUIContext
+
+
+
+/**
+ * Widget Options Dialog
+ */
+class WidgetOptionsDialog : DialogFragment()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var sheetContext : SheetContext? = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun newInstance(sheetContext : SheetContext) : WidgetOptionsDialog
+        {
+            val dialog = WidgetOptionsDialog()
+
+            val args = Bundle()
+            args.putSerializable("sheet_context", sheetContext)
+            dialog.arguments = args
+
+            return dialog
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // DIALOG FRAGMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+    {
+        // (1) Read State
+        // -------------------------------------------------------------------------------------
+
+        this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
+
+
+        // (2) Initialize UI
+        // -------------------------------------------------------------------------------------
+
+        val dialog = Dialog(context)
+
+        val sheetContext = this.sheetContext
+        if (sheetContext != null)
+        {
+            val sheetUIContext = SheetUIContext(sheetContext, context)
+
+            val dialogLayout = this.dialogLayout(sheetUIContext)
+
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            dialog.setContentView(dialogLayout)
+
+            val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+
+            dialog.window.setLayout(width.toInt(), height)
+        }
+
+        return dialog
+    }
+
+
+    override fun onCreateView(inflater : LayoutInflater?,
+                              container : ViewGroup?,
+                              savedInstanceState : Bundle?) : View?
+    {
+
+
+        val sheetContext = this.sheetContext
+        if (sheetContext != null)
+        {
+            val sheetUIContext  = SheetUIContext(sheetContext, context)
+
+            val viewBuilder = OptionsViewBuidler(sheetUIContext)
+            return viewBuilder.view()
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // DIALOG LAYOUT
+    // -----------------------------------------------------------------------------------------
+
+    fun dialogLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        return layout.linearLayout(context)
+    }
+
+}
+
+
+
+// ---------------------------------------------------------------------------------------------
+// GETSTURE DETECTOR
+// ---------------------------------------------------------------------------------------------
+
+
+fun openWidgetOptionsDialogOnDoubleTap(sheetActivity : SheetActivity,
+                                       sheetContext : SheetContext) : GestureDetectorCompat
+{
+    val gd = GestureDetectorCompat(sheetActivity,
+        object: GestureDetector.SimpleOnGestureListener() {
+
+            override fun onDoubleTap(e: MotionEvent?): Boolean {
+                Log.d("***WIDGET", "double tap")
+                val dialog = WidgetOptionsDialog.newInstance(sheetContext)
+                dialog.show(sheetActivity.supportFragmentManager, "")
+                return true
+            }
+
+            override fun onDown(e: MotionEvent?): Boolean {
+                Log.d("***WIDGET", "on down")
+                return super.onDown(e)
+            }
+
+            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                Log.d("***WIDGET", "single tap")
+                return super.onSingleTapConfirmed(e)
+            }
+        })
+
+    return gd
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// OPTIONS VIEW BUILDER
+// ---------------------------------------------------------------------------------------------
+
+class OptionsViewBuidler(val sheetUIContext : SheetUIContext)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    fun view() : View
+    {
+        val layout = this.viewLayout()
+
+        // Header
+        layout.addView(this.headerView())
+
+        // History Button
+        layout.addView(this.buttonView(R.drawable.icon_history, R.string.value_history))
+
+        return layout
+    }
+
+
+    private fun viewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        layout.corners          = Corners(TopLeftCornerRadius(3f),
+                                          TopRightCornerRadius(3f),
+                                          BottomRightCornerRadius(3f),
+                                          BottomLeftCornerRadius(3f))
+
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+        layout.padding.topDp    = 8f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    // Header
+    // -----------------------------------------------------------------------------------------
+
+    private fun headerView() : TextView
+    {
+        val header              = TextViewBuilder()
+
+        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        header.textId           = R.string.widget_options
+
+        header.font             = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Bold,
+                                                sheetUIContext.context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        header.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        header.sizeSp           = 16f
+
+        header.margin.bottomDp  = 10f
+
+        return header.textView(sheetUIContext.context)
+    }
+
+
+    // Section Header
+    // -----------------------------------------------------------------------------------------
+
+    private fun sectionHeaderView(stringId : Int) : TextView
+    {
+        val header              = TextViewBuilder()
+
+        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        header.textId           = stringId
+
+        header.font             = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Bold,
+                                                sheetUIContext.context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        header.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        header.sizeSp            = 14f
+
+        return header.textView(sheetUIContext.context)
+    }
+
+
+    // Divider
+    // -----------------------------------------------------------------------------------------
+
+    private fun dividerView() : LinearLayout
+    {
+        val divider                 = LinearLayoutBuilder()
+
+        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
+        divider.heightDp            = 1
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        return divider.linearLayout(sheetUIContext.context)
+    }
+
+
+    // Button
+    // -----------------------------------------------------------------------------------------
+
+    private fun buttonView(iconId : Int, labelId : Int) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout = LinearLayoutBuilder()
+        val icon   = ImageViewBuilder()
+        val label  = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.gravity              = Gravity.CENTER_VERTICAL
+
+        layout.margin.bottomDp      = 10f
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp                = 22
+        icon.heightDp               = 22
+
+        icon.image                  = iconId
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_24")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        icon.margin.rightDp         = 7f
+
+        // (3 B) Name
+        // -------------------------------------------------------------------------------------
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.font                  = Font.typeface(TextFont.FiraSans,
+                                                    TextFontStyle.Regular,
+                                                    sheetUIContext.context)
+
+        label.textId                = labelId
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        label.color                 = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.sizeSp                = 16f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+
+}
+

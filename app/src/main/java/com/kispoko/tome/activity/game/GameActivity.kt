@@ -191,7 +191,7 @@ class GamePagerAdapter(fragmentManager : FragmentManager,
     override fun getItem(position : Int) : Fragment =
         when (position)
         {
-            0    -> DescriptionFragment.newInstance(this.game.description())
+            0    -> InfoFragment.newInstance(this.game, this.appThemeId)
             1    -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
             else -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
         }

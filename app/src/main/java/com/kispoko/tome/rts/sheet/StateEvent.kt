@@ -17,7 +17,7 @@ sealed class StateEvent : ApplicationEvent
 data class VariableAdded(val variableId : VariableId) : StateEvent()
 {
     override fun debugMessage() : String = """Variable Added:
-            |    Variable Id: ${variableId.name.value.value}""".trimMargin()
+            |    Variable Id: $variableId""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
 }

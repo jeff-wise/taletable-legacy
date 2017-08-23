@@ -34,7 +34,7 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
                                open val variablePrefix : Prim<ColumnVariablePrefix>,
-                               open val isColumnNamespaced: Prim<IsColumnNamespaced>)
+                               open val isColumnNamespaced : Prim<IsColumnNamespaced>)
                                 : Model, Serializable
 {
 
@@ -426,7 +426,7 @@ data class TableWidgetTextColumn(
 
     fun format() : TextColumnFormat = this.format.value
 
-    fun definesNamespaceBool() : Boolean = this.definesNamespace.value.value
+    fun definesNamespace() : Boolean = this.definesNamespace.value.value
 
     fun defaultValue() : TextVariableValue = this.defaultValue.value
 

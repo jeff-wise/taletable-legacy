@@ -169,12 +169,8 @@ object SummationView
 
         // Header
         layout.addView(this.nameView(summationLabel, sheetUIContext))
-        val totalString = summation.value(SheetContext(sheetUIContext))
-        when (totalString) {
-            is Val -> layout.addView(this.totalView(Util.doubleString(totalString.value),
-                                                    sheetUIContext))
-            is Err -> ApplicationLog.error(totalString.error)
-        }
+        val total = summation.value(SheetContext(sheetUIContext))
+        layout.addView(this.totalView(Util.doubleString(total), sheetUIContext))
 
         // Summmation
         layout.addView(this.summationView(summation, sheetUIContext))
@@ -424,7 +420,7 @@ object SummationView
 
         layout.margin.leftDp            = 10f
         layout.margin.rightDp           = 10f
-        layout.margin.bottomDp          = 7f
+        layout.margin.bottomDp          = 10f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),

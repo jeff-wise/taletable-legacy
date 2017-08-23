@@ -2,11 +2,17 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TextView
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
+import com.kispoko.tome.activity.sheet.dialog.WidgetOptionsDialog
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
@@ -124,6 +130,15 @@ object WidgetView
 
     fun layout(widgetFormat : WidgetFormat, sheetUIContext: SheetUIContext) : LinearLayout
     {
+        val layout = this.widgetLayout(widgetFormat, sheetUIContext)
+
+        return layout
+    }
+
+
+    private fun widgetLayout(widgetFormat : WidgetFormat,
+                             sheetUIContext: SheetUIContext) : LinearLayout
+    {
         val layout = LinearLayoutBuilder()
 
         layout.orientation      = LinearLayout.VERTICAL
@@ -139,6 +154,7 @@ object WidgetView
                                                      widgetFormat.backgroundColorTheme())
 
         layout.corners          = widgetFormat.corners()
+
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -2178,6 +2194,8 @@ data class TableWidget(override val id : UUID,
     // INDEXES
     // -----------------------------------------------------------------------------------------
 
+    private var namespaceColumn : Int? = null
+
     private val numberCellById: MutableMap<UUID, TableWidgetNumberCell> = mutableMapOf()
 
 
@@ -2186,6 +2204,15 @@ data class TableWidget(override val id : UUID,
             row.cells().forEach { cell ->
                 when (cell) {
                     is TableWidgetNumberCell -> this.numberCellById.put(cell.id, cell)
+                }
+            }
+        }
+
+        this.columns().forEachIndexed { index, column ->
+            when (column) {
+                is TableWidgetTextColumn -> {
+                    if (column.definesNamespace() && namespaceColumn == null)
+                        namespaceColumn = index
                 }
             }
         }
@@ -2388,10 +2415,11 @@ data class TableWidget(override val id : UUID,
     private fun addBooleanCellVariable(booleanCell : TableWidgetBooleanCell,
                                        rowIndex : Int,
                                        cellIndex : Int,
+                                       namespace : VariableNameSpace?,
                                        sheetContext : SheetContext)
     {
         val column = this.columns()[cellIndex]
-        val variableId = this.cellVariableId(column.variablePrefix(), rowIndex)
+        val variableId = this.cellVariableId(column.variablePrefix(), rowIndex, namespace)
         val variable = BooleanVariable(variableId,
                                        VariableLabel(column.nameString()),
                                        VariableDescription(column.nameString()),
@@ -2408,10 +2436,11 @@ data class TableWidget(override val id : UUID,
     private fun addNumberCellVariable(numberCell : TableWidgetNumberCell,
                                       rowIndex : Int,
                                       cellIndex : Int,
+                                      namespace : VariableNameSpace?,
                                       sheetContext : SheetContext)
     {
         val column = this.columns()[cellIndex]
-        val variableId = this.cellVariableId(column.variablePrefix(), rowIndex)
+        val variableId = this.cellVariableId(column.variablePrefix(), rowIndex, namespace)
         val variable = NumberVariable(variableId,
                                       VariableLabel(column.nameString()),
                                       VariableDescription(column.nameString()),
@@ -2425,23 +2454,28 @@ data class TableWidget(override val id : UUID,
     private fun addTextCellVariable(textCell : TableWidgetTextCell,
                                     rowIndex : Int,
                                     cellIndex : Int,
+                                    namespace : VariableNameSpace?,
                                     sheetContext : SheetContext)
     {
         val column = this.columns()[cellIndex]
-        val variableId = this.cellVariableId(column.variablePrefix(), rowIndex)
+        val variableId = this.cellVariableId(column.variablePrefix(), rowIndex, namespace)
         val variable = TextVariable(variableId,
                                     VariableLabel(column.nameString()),
                                     VariableDescription(column.nameString()),
                                     VariableTagSet(mutableSetOf()),
-                                    textCell.variableValue(),
-                                    DefinesNamespace(false))
+                                    textCell.variableValue())
         SheetManager.addVariable(sheetContext.sheetId, variable)
         textCell.variableId = variableId
     }
 
 
-    private fun cellVariableId(variablePrefix : String, rowIndex : Int) : VariableId =
-        VariableId(variablePrefix + "_row_" + rowIndex.toString())
+    private fun cellVariableId(variablePrefix : String,
+                               rowIndex : Int,
+                               namespace : VariableNameSpace?) : VariableId =
+        if (namespace != null)
+            VariableId(namespace, VariableName(variablePrefix))
+        else
+            VariableId(variablePrefix + "_row_" + rowIndex.toString())
 
 
     // -----------------------------------------------------------------------------------------
@@ -2474,14 +2508,39 @@ data class TableWidget(override val id : UUID,
         if (rowIndex >= 0 && rowIndex < this.rows().size)
         {
             val row = this.rows()[rowIndex]
+
+            var namespace : VariableNameSpace? = null
+            val nsCol = this.namespaceColumn
+            if (nsCol != null)
+            {
+                val cell = row.cells()[nsCol]
+                when (cell) {
+                    is TableWidgetTextCell -> {
+                        val valueStringEff = cell.variableValue().value(sheetContext)
+                        when (valueStringEff) {
+                            is Val -> {
+                                val valueString = valueStringEff.value
+                                when (valueString) {
+                                    is Just ->
+                                    {
+                                        namespace = VariableNameSpace(valueString.value.toLowerCase())
+                                    }
+                                }
+                            }
+                            is Err -> ApplicationLog.error(valueStringEff.error)
+                        }
+                    }
+                }
+            }
+
             row.cells().forEachIndexed { cellIndex, cell ->
                 when (cell) {
                     is TableWidgetBooleanCell ->
-                        addBooleanCellVariable(cell, rowIndex, cellIndex, sheetContext)
+                        addBooleanCellVariable(cell, rowIndex, cellIndex, namespace, sheetContext)
                     is TableWidgetNumberCell ->
-                        addNumberCellVariable(cell, rowIndex, cellIndex, sheetContext)
+                        addNumberCellVariable(cell, rowIndex, cellIndex, namespace, sheetContext)
                     is TableWidgetTextCell ->
-                        addTextCellVariable(cell, rowIndex, cellIndex, sheetContext)
+                        addTextCellVariable(cell, rowIndex, cellIndex, namespace, sheetContext)
                 }
             }
         }
@@ -2490,11 +2549,8 @@ data class TableWidget(override val id : UUID,
 
     private fun updateTableVariables(fromIndex : Int, sheetContext : SheetContext)
     {
-        Log.d("***WIDGET", "called update table variables " + fromIndex.toString())
-        Log.d("***WIDGET", "rows highest index " + (this.rows().size - 1).toString())
         for (rowIndex in (this.rows().size - 1) downTo fromIndex)
         {
-            Log.d("***WIDGET", "updating table row " + rowIndex.toString())
             val row = this.rows()[rowIndex]
             row.cells().forEachIndexed { cellIndex, cell ->
                 val column = this.columns()[cellIndex]
@@ -2503,7 +2559,7 @@ data class TableWidget(override val id : UUID,
                     {
                         cell.valueVariable(sheetContext)              apDo { boolVar ->
                         SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
-                            val newVarId = cellVariableId(column.variablePrefix(), rowIndex)
+                            val newVarId = cellVariableId(column.variablePrefix(), rowIndex, null)
                             sheetState.updateVariableId(boolVar.variableId(), newVarId)
                         } }
                     }
@@ -2511,7 +2567,7 @@ data class TableWidget(override val id : UUID,
                     {
                         cell.valueVariable(sheetContext)              apDo { numVar ->
                         SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
-                            val newVarId = cellVariableId(column.variablePrefix(), rowIndex)
+                            val newVarId = cellVariableId(column.variablePrefix(), rowIndex, null)
                             sheetState.updateVariableId(numVar.variableId(), newVarId)
                         } }
                     }
@@ -2519,7 +2575,7 @@ data class TableWidget(override val id : UUID,
                     {
                         cell.valueVariable(sheetContext)              apDo { textVar ->
                         SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
-                            val newVarId = cellVariableId(column.variablePrefix(), rowIndex)
+                            val newVarId = cellVariableId(column.variablePrefix(), rowIndex, null)
                             sheetState.updateVariableId(textVar.variableId(), newVarId)
                         } }
                     }

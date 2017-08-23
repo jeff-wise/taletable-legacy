@@ -10,6 +10,7 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TableRowBuilder
+import com.kispoko.tome.model.game.engine.variable.VariableNameSpace
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
@@ -37,6 +38,13 @@ data class TableWidgetRow(override val id : UUID,
                           val cells : Coll<TableWidgetCell>)
                            : SheetComponent, Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var namespace : VariableNameSpace? = null
+
 
     // -----------------------------------------------------------------------------------------
     // INIT

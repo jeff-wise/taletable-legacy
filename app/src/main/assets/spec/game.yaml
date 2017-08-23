@@ -162,7 +162,7 @@ types:
     of: rulebook_section
     presence: required
     description: The chapters
-- name: rulebook_chapter_section
+- name: rulebook_section
   label: Game Rulebook Chapter Section
   description: Chapter
   group: 'Rulebook'
@@ -185,7 +185,7 @@ types:
     of: rulebook_subsection
     presence: required
     description: The sub sections.
-- name: rulebook_chapter_subsection
+- name: rulebook_subsection
   label: Game Rulebook Chapter SubSection
   description: Chapter
   group: 'Rulebook'
@@ -1483,6 +1483,11 @@ types:
     presence: required
     description: >
       The text value.
+  - name: rulebook_reference
+    type: rulebook_reference
+    presence: optional
+    description: >
+      A reference to a description of the value in the rulebook.
   - name: variables
     type: list
     of: variable
@@ -1511,6 +1516,11 @@ types:
     presence: required
     description: >
       The number value.
+  - name: rulebook_reference
+    type: rulebook_reference
+    presence: optional
+    description: >
+      A reference to a description of the value in the rulebook.
   - name: variables
     type: list
     of: variable

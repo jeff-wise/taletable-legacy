@@ -9,11 +9,11 @@ import com.kispoko.culebra.Parser as YamlParser
 import com.kispoko.culebra.Result as YamlResult
 import com.kispoko.culebra.Error as YamlError
 import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppGameError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
-import com.kispoko.tome.model.game.Game
-import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.*
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.official.*
 import effect.*
@@ -157,19 +157,38 @@ object GameManager
     // API
     // -----------------------------------------------------------------------------------------
 
+    // Game
+    // -----------------------------------------------------------------------------------------
+
     fun openGames() : List<Game> = this.gameById.values.toList()
 
+
+    fun hasGameWithId(gameId : GameId) : Boolean = this.gameById.containsKey(gameId)
+
+
+    fun gameWithId(gameId : GameId) : AppEff<Game> =
+            note(this.gameById[gameId],
+                    AppGameError(GameDoesNotExist(gameId)))
+
+    // Engine
+    // -----------------------------------------------------------------------------------------
 
     fun engine(gameId : GameId) : AppEff<Engine> =
             note(this.gameById[gameId]?.engine(),
                  AppGameError(GameDoesNotExist(gameId)))
 
-    fun gameWithId(gameId : GameId) : AppEff<Game> =
-            note(this.gameById[gameId],
-                 AppGameError(GameDoesNotExist(gameId)))
+    // Rulebook
+    // -----------------------------------------------------------------------------------------
+
+    fun rulebook(gameId : GameId) : AppEff<Rulebook> =
+            this.gameWithId(gameId) ap { effValue<AppError,Rulebook>(it.rulebook()) }
 
 
-    fun hasGameWithId(gameId : GameId) : Boolean = this.gameById.containsKey(gameId)
+    fun rulebookSubsection(gameId : GameId,
+                           rulebookReference : RulebookReference) : AppEff<RulebookSubsection?> =
+        GameManager.rulebook(gameId)
+                .apply { effValue<AppError,RulebookSubsection?>(it.subsection(rulebookReference)) }
+
 
 }
 

@@ -22,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.value.*
@@ -33,9 +34,9 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.SimpleDividerItemDecoration
 import effect.Err
+import effect.Just
 import effect.Val
 
 
@@ -448,13 +449,18 @@ object ValueChooserView
     // VALUE VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun valueView(sheetUIContext: SheetUIContext) : LinearLayout
+    fun valueView(sheetUIContext : SheetUIContext) : LinearLayout
     {
-        val layout = valueViewLayout(sheetUIContext)
+        val layout = this.valueViewLayout(sheetUIContext)
 
-        layout.addView(valueHeaderView(sheetUIContext))
-        layout.addView(valueSummaryView(sheetUIContext))
-        // layout.addView(this.valueDividerView(context))
+        // Header
+        layout.addView(this.valueHeaderView(sheetUIContext))
+
+        // Summary
+        layout.addView(this.valueSummaryView(sheetUIContext))
+
+        // Reference Link
+        layout.addView(this.referenceView(sheetUIContext))
 
         return layout
     }
@@ -568,6 +574,73 @@ object ValueChooserView
         summary.margin.leftDp   = 0.5f
 
         return summary.textView(sheetUIContext.context)
+    }
+
+
+    private fun referenceView(sheetUIContext : SheetUIContext) : LinearLayout
+
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout = LinearLayoutBuilder()
+        val icon   = ImageViewBuilder()
+        val label  = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.id               = R.id.choose_value_item_reference
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.margin.topDp     = 8f
+        layout.margin.leftDp    = 2f
+
+        layout.visibility       = View.GONE
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 20
+        icon.heightDp           = 20
+
+        icon.image              = R.drawable.icon_open_book
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        icon.color           = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        icon.margin.rightDp     = 10f
+        icon.padding.topDp      = 1f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId            = R.string.read_about_in_rulebook
+
+        label.font              = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        label.color             = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.sizeSp            = 16f
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -786,6 +859,19 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                 viewHolder.setValueText(value.value().toString())
             }
         }
+
+        val rulebookRef = value.rulebookReference()
+        when (rulebookRef) {
+            is Just ->
+            {
+                viewHolder.setReferenceView(View.OnClickListener {
+                    val sheetActivity = sheetUIContext.context as SheetActivity
+                    val dialog = RulebookExcerptDialog.newInstance(rulebookRef.value,
+                                                                   SheetContext(sheetUIContext))
+                    dialog.show(sheetActivity.supportFragmentManager, "")
+                })
+            }
+        }
     }
 
 
@@ -904,10 +990,11 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     var valueView   : TextView?  = null
     var summaryView : TextView?  = null
     var iconView    : ImageView? = null
+    var refView     : LinearLayout? = null
 
 
     val normalColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_9")),
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
     val greyColor = SheetManager.color(sheetUIContext.sheetId, normalColorTheme)
 
@@ -928,6 +1015,8 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.summaryView = itemView.findViewById(R.id.choose_value_item_summary) as TextView
 
         this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
+
+        this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
     }
 
 
@@ -959,6 +1048,14 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     {
         this.summaryView?.text = summaryString
     }
+
+
+    fun setReferenceView(onClickListener : View.OnClickListener)
+    {
+        this.refView?.visibility = View.VISIBLE
+        this.refView?.setOnClickListener(onClickListener)
+    }
+
 
 }
 

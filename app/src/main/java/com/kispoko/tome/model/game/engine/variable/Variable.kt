@@ -273,8 +273,9 @@ data class BooleanVariable(override val id : UUID,
     {
         when (this.variableValue())
         {
-            is BooleanVariableLiteralValue ->
-                    this.variableValue = Sum(BooleanVariableLiteralValue(value))
+            is BooleanVariableLiteralValue -> {
+                this.variableValue = Sum(BooleanVariableLiteralValue(value))
+            }
         }
     }
 
@@ -539,8 +540,7 @@ data class TextVariable(override val id : UUID,
                         override val label : Prim<VariableLabel>,
                         override val description : Prim<VariableDescription>,
                         override val tags : Prim<VariableTagSet>,
-                        var variableValue : Sum<TextVariableValue>,
-                        val definesNamespace : Prim<DefinesNamespace>)
+                        var variableValue : Sum<TextVariableValue>)
                         : Variable(variableId, label, description, tags)
 {
 
@@ -554,7 +554,6 @@ data class TextVariable(override val id : UUID,
         this.label.name             = "variable_id"
         this.description.name       = "variable_id"
         this.tags.name              = "tags"
-        this.definesNamespace.name  = "defines_namespace"
     }
 
 
@@ -566,15 +565,13 @@ data class TextVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : VariableTagSet,
-                variableValue : TextVariableValue,
-                definesNamespace : DefinesNamespace)
+                variableValue : TextVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
                Prim(label),
                Prim(description),
                Prim(tags),
-               Sum(variableValue),
-               Prim(definesNamespace))
+               Sum(variableValue))
 
 
     companion object : Factory<TextVariable>
@@ -595,11 +592,7 @@ data class TextVariable(override val id : UUID,
                                effValue(VariableTagSet.empty()),
                                { VariableTagSet.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap { TextVariableValue.fromDocument(it) },
-                         // Defines Namespace
-                         split(doc.maybeAt("defines_namespace"),
-                               effValue(DefinesNamespace(false)),
-                               { DefinesNamespace.fromDocument(it) })
+                         doc.at("value") ap { TextVariableValue.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -780,6 +773,10 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
             : this(maybeLiftPrim(namespace), Prim(name))
 
 
+    constructor(namespace : VariableNameSpace, name : VariableName)
+            : this(Just(Prim(namespace)), Prim(name))
+
+
     companion object : Factory<VariableId>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<VariableId> = when (doc)
@@ -824,7 +821,7 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
             s += "::"
         }
 
-        s += name.value.toString()
+        s += nameString()
 
         return s
     }

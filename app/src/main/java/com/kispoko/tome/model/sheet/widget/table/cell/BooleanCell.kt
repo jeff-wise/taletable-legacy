@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -309,39 +310,60 @@ object BooleanCellView
 
         layout.setOnClickListener {
 
-            val trueStyle    = cellFormat.resolveTrueStyle(column.format())
-            val falseStyle   = cellFormat.resolveFalseStyle(column.format())
-            val defaultStyle = cellFormat.resolveTextStyle(column.format())
-
             val sheetContext = SheetContext(sheetUIContext)
 
-            if (value)
+            val cellValue = cell.value(sheetContext)
+            when (cellValue)
             {
-                cell.valueVariable(sheetContext) apDo { it.updateValue(false) }
-
-                valueView.text = column.format().falseText()
-
-                // No false style, but need to undo true style
-                if (falseStyle == null && trueStyle != null)
-                    defaultStyle.styleTextView(valueView, sheetUIContext)
-                else
-                    falseStyle?.styleTextView(valueView, sheetUIContext)
-
-            }
-            else
-            {
-                cell.valueVariable(sheetContext) apDo { it.updateValue(true) }
-
-                valueView.text = column.format().trueText()
-
-                // No true style, but need to undo false style
-                if (trueStyle == null && falseStyle != null)
-                    defaultStyle.styleTextView(valueView, sheetUIContext)
-                // Set true style
-                else
-                    trueStyle?.styleTextView(valueView, sheetUIContext)
+                is Val -> toggleCellValue(cellValue.value, cell, column, valueView, sheetUIContext)
+                is Err -> ApplicationLog.error(cellValue.error)
             }
         }
+    }
+
+
+    private fun toggleCellValue(value : Boolean,
+                                cell : TableWidgetBooleanCell,
+                                column : TableWidgetBooleanColumn,
+                                valueView : TextView,
+                                sheetUIContext : SheetUIContext)
+    {
+        val cellFormat = cell.format()
+        val sheetContext = SheetContext(sheetUIContext)
+
+        val trueStyle    = cellFormat.resolveTrueStyle(column.format())
+        val falseStyle   = cellFormat.resolveFalseStyle(column.format())
+        val defaultStyle = cellFormat.resolveTextStyle(column.format())
+
+        if (value)
+        {
+            Log.d("***BOOLCELL", "was true")
+            cell.valueVariable(sheetContext) apDo { it.updateValue(false) }
+
+            valueView.text = column.format().falseText()
+
+            // No false style, but need to undo true style
+            if (falseStyle == null && trueStyle != null)
+                defaultStyle.styleTextView(valueView, sheetUIContext)
+            else
+                falseStyle?.styleTextView(valueView, sheetUIContext)
+
+        }
+        else
+        {
+            Log.d("***BOOLCELL", "was false")
+            cell.valueVariable(sheetContext) apDo { it.updateValue(true) }
+
+            valueView.text = column.format().trueText()
+
+            // No true style, but need to undo false style
+            if (trueStyle == null && falseStyle != null)
+                defaultStyle.styleTextView(valueView, sheetUIContext)
+            // Set true style
+            else
+                trueStyle?.styleTextView(valueView, sheetUIContext)
+        }
+
     }
 
 
