@@ -4,6 +4,7 @@ package com.kispoko.tome.activity.sheet.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -15,11 +16,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.VariableHistoryActivity
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
+import com.kispoko.tome.model.sheet.widget.Widget
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
@@ -40,6 +43,7 @@ class WidgetOptionsDialog : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+    private var widget : Widget? = null
     private var sheetContext : SheetContext? = null
 
 
@@ -49,12 +53,13 @@ class WidgetOptionsDialog : DialogFragment()
 
     companion object
     {
-        fun newInstance(sheetContext : SheetContext) : WidgetOptionsDialog
+        fun newInstance(widget : Widget, sheetContext : SheetContext) : WidgetOptionsDialog
         {
             val dialog = WidgetOptionsDialog()
 
             val args = Bundle()
             args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("widget", widget)
             dialog.arguments = args
 
             return dialog
@@ -72,6 +77,7 @@ class WidgetOptionsDialog : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
+        this.widget = arguments.getSerializable("widget") as Widget
 
 
         // (2) Initialize UI
@@ -79,23 +85,17 @@ class WidgetOptionsDialog : DialogFragment()
 
         val dialog = Dialog(context)
 
-        val sheetContext = this.sheetContext
-        if (sheetContext != null)
-        {
-            val sheetUIContext = SheetUIContext(sheetContext, context)
+        val dialogLayout = this.dialogLayout(context)
 
-            val dialogLayout = this.dialogLayout(sheetUIContext)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(dialogLayout)
 
-            dialog.setContentView(dialogLayout)
+        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-            val width  = context.resources.getDimension(R.dimen.action_dialog_width)
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
-
-            dialog.window.setLayout(width.toInt(), height)
-        }
+        dialog.window.setLayout(width.toInt(), height)
 
         return dialog
     }
@@ -108,11 +108,12 @@ class WidgetOptionsDialog : DialogFragment()
 
 
         val sheetContext = this.sheetContext
-        if (sheetContext != null)
+        val widget = this.widget
+        if (sheetContext != null && widget != null)
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
-            val viewBuilder = OptionsViewBuidler(sheetUIContext)
+            val viewBuilder = OptionsViewBuidler(widget, this, sheetUIContext)
             return viewBuilder.view()
         }
 
@@ -124,7 +125,7 @@ class WidgetOptionsDialog : DialogFragment()
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
 
-    fun dialogLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    fun dialogLayout(context : Context) : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -144,6 +145,7 @@ class WidgetOptionsDialog : DialogFragment()
 
 
 fun openWidgetOptionsDialogOnDoubleTap(sheetActivity : SheetActivity,
+                                       widget : Widget,
                                        sheetContext : SheetContext) : GestureDetectorCompat
 {
     val gd = GestureDetectorCompat(sheetActivity,
@@ -151,7 +153,7 @@ fun openWidgetOptionsDialogOnDoubleTap(sheetActivity : SheetActivity,
 
             override fun onDoubleTap(e: MotionEvent?): Boolean {
                 Log.d("***WIDGET", "double tap")
-                val dialog = WidgetOptionsDialog.newInstance(sheetContext)
+                val dialog = WidgetOptionsDialog.newInstance(widget, sheetContext)
                 dialog.show(sheetActivity.supportFragmentManager, "")
                 return true
             }
@@ -175,8 +177,18 @@ fun openWidgetOptionsDialogOnDoubleTap(sheetActivity : SheetActivity,
 // OPTIONS VIEW BUILDER
 // ---------------------------------------------------------------------------------------------
 
-class OptionsViewBuidler(val sheetUIContext : SheetUIContext)
+class OptionsViewBuidler(val widget : Widget,
+                         val dialog : WidgetOptionsDialog,
+                         val sheetUIContext : SheetUIContext)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    val sheetActivity : SheetActivity = sheetUIContext.context as SheetActivity
+    val sheetContext : SheetContext = SheetContext(sheetUIContext)
+
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
@@ -190,7 +202,20 @@ class OptionsViewBuidler(val sheetUIContext : SheetUIContext)
         layout.addView(this.headerView())
 
         // History Button
-        layout.addView(this.buttonView(R.drawable.icon_history, R.string.value_history))
+        val historyButtonOnClick = View.OnClickListener {
+            val variables = widget.variables(sheetContext)
+            if (variables.isNotEmpty())
+            {
+                val intent = Intent(sheetActivity, VariableHistoryActivity::class.java)
+                intent.putExtra("variable", variables.first())
+                intent.putExtra("sheet_context", sheetContext)
+                sheetActivity.startActivity(intent)
+                dialog.dismiss()
+            }
+        }
+        layout.addView(this.buttonView(R.drawable.icon_history,
+                                       R.string.value_history,
+                                       historyButtonOnClick))
 
         return layout
     }
@@ -301,7 +326,9 @@ class OptionsViewBuidler(val sheetUIContext : SheetUIContext)
     // Button
     // -----------------------------------------------------------------------------------------
 
-    private fun buttonView(iconId : Int, labelId : Int) : LinearLayout
+    private fun buttonView(iconId : Int,
+                           labelId : Int,
+                           onClick : View.OnClickListener) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -321,6 +348,8 @@ class OptionsViewBuidler(val sheetUIContext : SheetUIContext)
         layout.gravity              = Gravity.CENTER_VERTICAL
 
         layout.margin.bottomDp      = 10f
+
+        layout.onClick              = onClick
 
         layout.child(icon)
               .child(label)

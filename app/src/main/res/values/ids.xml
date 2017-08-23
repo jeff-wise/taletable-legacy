@@ -104,6 +104,10 @@
     <!-- COLUMN LIST ITEM -->
     <item name="column_list_item_type" type="id"/>
 
+    <!-- VARIABLE HISTORY ACTIVITY -->
+    <item name="variable_history_entry_icon" type="id"/>
+    <item name="variable_history_entry_value" type="id"/>
+    <item name="variable_history_entry_note" type="id"/>
 
     <!-- CHOOSE VALUE DIALOG -->
     <item name="choose_value_header" type="id"/>

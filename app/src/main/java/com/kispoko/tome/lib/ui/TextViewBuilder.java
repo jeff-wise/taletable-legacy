@@ -17,8 +17,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
-
-import com.kispoko.tome.R;
 import com.kispoko.tome.model.sheet.style.Corners;
 import com.kispoko.tome.model.sheet.style.Spacing;
 import com.kispoko.tome.util.Util;
@@ -98,6 +96,7 @@ public class TextViewBuilder implements ViewBuilder
 
     public View.OnClickListener     onClick;
     public View.OnLongClickListener onLongClick;
+    public View.OnTouchListener     onTouch;
 
     public Boolean                  hapticFeedback;
     public MovementMethod           movementMethod;
@@ -166,6 +165,7 @@ public class TextViewBuilder implements ViewBuilder
 
         this.onClick            = null;
         this.onLongClick        = null;
+        this.onTouch            = null;
 
         this.hapticFeedback     = null;
         this.movementMethod     = null;
@@ -285,6 +285,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.onLongClick != null)
             textView.setOnLongClickListener(this.onLongClick);
+
+        // > On Touch Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onTouch != null)
+            textView.setOnTouchListener(this.onTouch);
 
         // > Haptic Feedback
         // --------------------------------------------------------------------------------------

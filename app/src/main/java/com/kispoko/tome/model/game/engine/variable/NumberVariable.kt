@@ -6,8 +6,7 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
 import com.kispoko.tome.lib.orm.sql.SQLReal
@@ -27,6 +26,7 @@ import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
 import java.io.Serializable
+import java.util.*
 
 
 
@@ -427,4 +427,195 @@ data class NumberVariableSummationValue(val summationId : SummationId)
 
 }
 
+
+// ---------------------------------------------------------------------------------------------
+// HISTORY
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Number Variable History
+ */
+data class NumberVariableHistory(override val id : UUID,
+                                 val entries : Coll<NumberVariableHistoryEntry>)
+                                  : Model, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.entries.name    = "entries"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor() : this(mutableListOf())
+
+
+    constructor(entries : MutableList<NumberVariableHistoryEntry>)
+        : this(UUID.randomUUID(),
+               Coll(entries))
+
+
+    companion object : Factory<NumberVariableHistory>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableHistory> = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::NumberVariableHistory,
+                         // Variable Id
+                         doc.list("entries") ap {
+                             it.mapMut { NumberVariableHistoryEntry.fromDocument(it) }
+                         })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun entries() : List<NumberVariableHistoryEntry> = this.entries.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun append(value : NumberVariableValue)
+    {
+        this.entries.value.add(NumberVariableHistoryEntry(value, Nothing()))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() {}
+
+    override val name = "variable_number_history"
+
+    override val modelObject : Model = this
+
+
+}
+
+
+
+/**
+ * Number Variable History Entry
+ */
+data class NumberVariableHistoryEntry(
+                            override val id : UUID,
+                            val value : Sum<NumberVariableValue>,
+                            val description : Maybe<Prim<NumberVariableHistoryEntryDescription>>)
+                             : Model, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.value.name       = "value"
+
+        when (this.description) {
+            is Just -> this.description.value.name = "description"
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(value : NumberVariableValue,
+                description : Maybe<NumberVariableHistoryEntryDescription>)
+        : this(UUID.randomUUID(),
+               Sum(value),
+               maybeLiftPrim(description))
+
+
+    companion object : Factory<NumberVariableHistoryEntry>
+    {
+        override fun fromDocument(doc : SpecDoc)
+                        : ValueParser<NumberVariableHistoryEntry> = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::NumberVariableHistoryEntry,
+                         // Value
+                         doc.at("value") ap { NumberVariableValue.fromDocument(it) },
+                         // Description
+                         split(doc.maybeAt("description"),
+                               effValue<ValueError,Maybe<NumberVariableHistoryEntryDescription>>(Nothing()),
+                               { effApply(::Just, NumberVariableHistoryEntryDescription.fromDocument(it))  })
+                         )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : NumberVariableValue = this.value.value
+
+    fun description() : String? = getMaybePrim(this.description)?.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() {}
+
+    override val name = "variable_number_history_entry"
+
+    override val modelObject : Model = this
+
+}
+
+
+/**
+ * Number Variable History Entry Description
+ */
+data class NumberVariableHistoryEntryDescription(val value : String)
+                : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<NumberVariableHistoryEntryDescription>
+    {
+        override fun fromDocument(doc : SpecDoc)
+                     : ValueParser<NumberVariableHistoryEntryDescription> = when (doc)
+        {
+            is DocText -> effValue(NumberVariableHistoryEntryDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
 

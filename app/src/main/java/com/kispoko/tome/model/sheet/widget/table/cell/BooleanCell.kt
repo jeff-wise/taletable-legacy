@@ -337,8 +337,7 @@ object BooleanCellView
 
         if (value)
         {
-            Log.d("***BOOLCELL", "was true")
-            cell.valueVariable(sheetContext) apDo { it.updateValue(false) }
+            cell.valueVariable(sheetContext) apDo { it.updateValue(false, sheetContext.sheetId) }
 
             valueView.text = column.format().falseText()
 
@@ -351,8 +350,7 @@ object BooleanCellView
         }
         else
         {
-            Log.d("***BOOLCELL", "was false")
-            cell.valueVariable(sheetContext) apDo { it.updateValue(true) }
+            cell.valueVariable(sheetContext) apDo { it.updateValue(true, sheetContext.sheetId) }
 
             valueView.text = column.format().trueText()
 

@@ -2,6 +2,7 @@
 package com.kispoko.tome.rts.sheet
 
 
+import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
@@ -24,7 +25,8 @@ interface State
  *
  * Game data for a sheet.
  */
-class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : State
+class SheetState(val sheetContext : SheetContext,
+                 mechanics : Set<Mechanic>) : State, MechanicStateMachine
 {
 
     // -----------------------------------------------------------------------------------------
@@ -147,15 +149,9 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
         // (5) Update any mechanics which are dependent on this variable
         // -------------------------------------------------------------------------------------
 
-        when (variable)
-        {
+        when (variable) {
             is BooleanVariable ->
-            {
-                mechanicsByReqVariableId[variableId]?.forEach {
-                    val isReady = it.update(variable)
-                    if (isReady) this.addMechanic(it.mechanic)
-                }
-            }
+                mechanicsByReqVariableId[variableId]?.forEach { it.update(variable, this) }
         }
 
         // (6) Add companion variables to the state
@@ -260,7 +256,7 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     }
 
 
-    fun addMechanic(mechanic : Mechanic)
+    override fun addMechanic(mechanic : Mechanic)
     {
         mechanic.variables().forEach { this.addVariable(it) }
 
@@ -273,10 +269,21 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     }
 
 
+    override fun removeMechanic(mechanic : Mechanic)
+    {
+        mechanic.variables().forEach { this.removeVariable(it.variableId()) }
+
+        val event = MechanicRemoved(mechanic.mechanicId(),
+                                    mechanic.variables().map { it.variableId() }.toSet() )
+
+        ApplicationLog.event(AppStateEvent(event))
+    }
+
+
     fun onVariableUpdate(variable : Variable)
     {
-        this.updateListeners(variable)
         ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
+        this.updateListeners(variable)
     }
 
 
@@ -356,7 +363,16 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
             }
         }
 
-        // (3) Update on change listeners
+        // (3) Update any mechanics
+        // -------------------------------------------------------------------------------------
+
+        when (variable)
+        {
+            is BooleanVariable ->
+                mechanicsByReqVariableId[variableId]?.forEach { it.update(variable, this) }
+        }
+
+        // (4) Update on change listeners
         // -------------------------------------------------------------------------------------
 
         if (onChangeListenersById.containsKey(variableId))
@@ -395,7 +411,7 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
 
 
     fun variablesWithTag(variableTag : VariableTag) : AppEff<Set<Variable>> =
-            note(this.variablesByTag[variableTag],
+            note(this.variablesByTag.get(variableTag),
                  AppStateError(VariableWithTagDoesNotExist(sheetContext.sheetId, variableTag)))
 
 
@@ -462,11 +478,11 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
     {
 
         val vars = this.variables(variableReference) ap {
-//            Log.d("***SHEETSTATE", "number variables: " + it.toString())
-            it.mapM { it.numberVariable(sheetContext.sheetId) }
+            if (it.isNotEmpty())
+                it.mapM { variable -> variable.numberVariable(sheetContext.sheetId) }
+            else
+                effValue(setOf())
         }
-//        Log.d("***SHEETSTATE", "vars: " + vars.toString())
-
         return vars
     }
 
@@ -516,16 +532,26 @@ class SheetState(val sheetContext : SheetContext, mechanics : Set<Mechanic>) : S
 }
 
 
+interface MechanicStateMachine
+{
+    fun addMechanic(mechanic : Mechanic)
+    fun removeMechanic(mechanic : Mechanic)
+}
+
+
 data class MechanicState(val state : MutableMap<VariableId,Boolean>,
                          val mechanic : Mechanic)
 {
+
+    var isActive : Boolean = false
 
     constructor(mechanic : Mechanic)
         : this(mechanic.requirements().associate { Pair(it, false) }.toMutableMap(),
                mechanic)
 
 
-    fun update(variable : BooleanVariable) : Boolean
+    fun update(variable : BooleanVariable,
+               mechanicStateMachine : MechanicStateMachine)
     {
         val variableId = variable.variableId()
         if (state.containsKey(variableId))
@@ -536,21 +562,23 @@ data class MechanicState(val state : MutableMap<VariableId,Boolean>,
                 is Val ->
                 {
                     state[variableId] = value.value
-                    return this.isReady()
+                    if (this.isReady()) {
+                        this.isActive = true
+                        mechanicStateMachine.addMechanic(mechanic)
+                    }
+                    else if (!this.isReady() && this.isActive) {
+                        this.isActive = false
+                        mechanicStateMachine.removeMechanic(mechanic)
+                    }
                 }
-                is Err ->
-                {
-                    ApplicationLog.error(value.error)
-                    return false
-                }
+                is Err -> ApplicationLog.error(value.error)
             }
         }
-
-        return false
     }
 
 
     private fun isReady() = this.state.values.all { it }
+
 
 }
 

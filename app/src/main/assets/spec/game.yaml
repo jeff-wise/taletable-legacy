@@ -833,7 +833,7 @@ types:
       The category of the mechanic should group the mechanic with other related mechanics.
   - name: requirements
     type: list
-    of: variable_id
+    of: namespaced_variable_id
     presence: required
     description: >
       A list of boolean variables that must be true for the mechanic to be active.
@@ -1044,6 +1044,35 @@ types:
     presence: optional
     description: >
       Tags that can be used to place the variable in a group.
+  - name: history
+    type: variable_number_history
+    presence: optional
+    description: The value history.
+- name: variable_number_history
+  label: Number Variable History
+  description: Number Variable History
+  group: Variable
+  type: product
+  fields:
+  - name: values
+    type: list
+    of: variable_number_history_entry
+    presence: required
+    description: The values.
+- name: variable_number_history_entry
+  label: Number Variable History Entry
+  description: Number Variable History Entry
+  group: Variable
+  type: product
+  fields:
+  - name: variable_number_value
+    type: value
+    presence: required
+    description: The value
+  - name: description
+    type: string
+    presence: optional
+    description: A description of the value.
 - name: variable_number_value
   label: Number Variable Value
   description: >
@@ -1088,6 +1117,20 @@ types:
   group: Variable
   type: primitive
   base_type: string
+- name: namespaced_variable_id
+  label: Namespaced Variable Id
+  description: A variable id within a namespace.
+  group: Variable
+  type: product
+  fields:
+  - name: name
+    type: variable_id
+    presence: required
+    description: The variable id.
+  - name: namespace
+    type: string
+    presence: optional
+    description: The namespace.
 - name: variable_text
   label: Text Variable
   description: >

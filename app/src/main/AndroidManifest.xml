@@ -40,6 +40,14 @@
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".activity.sheet.state.SheetStateActivity"
+            android:label="Sheet State"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.sheet.VariableHistoryActivity"
+            android:label="Variable History"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activity.engine.valueset.BaseValueSetActivity"
             android:label="Base Value Set"
             android:theme="@style/AppTheme.NoActionBar" />

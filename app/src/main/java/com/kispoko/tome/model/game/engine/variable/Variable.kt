@@ -269,12 +269,13 @@ data class BooleanVariable(override val id : UUID,
     fun value() : AppEff<Boolean> = this.variableValue().value()
 
 
-    fun updateValue(value : Boolean)
+    fun updateValue(value : Boolean, sheetId : SheetId)
     {
         when (this.variableValue())
         {
             is BooleanVariableLiteralValue -> {
                 this.variableValue = Sum(BooleanVariableLiteralValue(value))
+                SheetManager.sheetState(sheetId) apDo { it.onVariableUpdate(this) }
             }
         }
     }
@@ -400,7 +401,8 @@ data class NumberVariable(override val id : UUID,
                           override val label : Prim<VariableLabel>,
                           override val description : Prim<VariableDescription>,
                           override val tags : Prim<VariableTagSet>,
-                          val variableValue : Sum<NumberVariableValue>)
+                          val variableValue : Sum<NumberVariableValue>,
+                          val history : Comp<NumberVariableHistory>)
                           : Variable(variableId, label, description, tags)
 {
 
@@ -414,6 +416,11 @@ data class NumberVariable(override val id : UUID,
         this.label.name         = "label"
         this.description.name   = "description"
         this.tags.name          = "tags"
+        this.variableValue.name = "value"
+        this.history.name       = "history"
+
+
+        this.history().append(this.variableValue())
     }
 
 
@@ -431,7 +438,23 @@ data class NumberVariable(override val id : UUID,
                Prim(label),
                Prim(description),
                Prim(tags),
-               Sum(value))
+               Sum(value),
+               Comp(NumberVariableHistory()))
+
+
+    constructor(variableId : VariableId,
+                label : VariableLabel,
+                description : VariableDescription,
+                tags : VariableTagSet,
+                value : NumberVariableValue,
+                history : NumberVariableHistory)
+        : this(UUID.randomUUID(),
+               Prim(variableId),
+               Prim(label),
+               Prim(description),
+               Prim(tags),
+               Sum(value),
+               Comp(history))
 
 
     companion object : Factory<NumberVariable>
@@ -452,7 +475,11 @@ data class NumberVariable(override val id : UUID,
                                effValue(VariableTagSet.empty()),
                                { VariableTagSet.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap { NumberVariableValue.fromDocument(it) }
+                         doc.at("value") ap { NumberVariableValue.fromDocument(it) },
+                         // History
+                         split(doc.maybeAt("history"),
+                               effValue(NumberVariableHistory()),
+                               { NumberVariableHistory.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -465,6 +492,8 @@ data class NumberVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun variableValue() : NumberVariableValue = this.variableValue.value
+
+    fun history() : NumberVariableHistory = this.history.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -524,6 +553,7 @@ data class NumberVariable(override val id : UUID,
             is NumberVariableLiteralValue ->
             {
                 this.variableValue.value = NumberVariableLiteralValue(value)
+                this.history().append(this.variableValue())
                 SheetManager.onVariableUpdate(sheetId, this)
             }
         }

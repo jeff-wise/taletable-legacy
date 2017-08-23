@@ -2,17 +2,10 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.support.v4.view.GestureDetectorCompat
-import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TextView
-import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
-import com.kispoko.tome.activity.sheet.dialog.WidgetOptionsDialog
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
@@ -22,11 +15,9 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.model.game.engine.variable.DefinesNamespace
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.*
@@ -46,7 +37,7 @@ import java.util.*
  * Widget
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Widget(open val variables : Conj<Variable>) : Model, SheetComponent, Serializable
+sealed class Widget() : Model, SheetComponent, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -104,7 +95,7 @@ sealed class Widget(open val variables : Conj<Variable>) : Model, SheetComponent
 
     abstract fun view(sheetUIContext : SheetUIContext) : View
 
-    fun variables() : Set<Variable> = this.variables.value
+    open fun variables(sheetContext : SheetContext) : Set<Variable> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -230,8 +221,7 @@ data class ActionWidget(override val id : UUID,
                         val description : Prim<ActionDescription>,
                         val descriptionHighlight : Prim<ActionDescriptionHighlight>,
                         val actionName : Prim<ActionName>,
-                        val actionResult : Prim<ActionResult>,
-                        override val variables : Conj<Variable>) : Widget(variables)
+                        val actionResult : Prim<ActionResult>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -247,7 +237,6 @@ data class ActionWidget(override val id : UUID,
         this.descriptionHighlight.name  = "description_highlight"
         this.actionName.name            = "action_name"
         this.actionResult.name          = "action_result"
-        this.variables.name             = "variables"
     }
 
 
@@ -261,8 +250,7 @@ data class ActionWidget(override val id : UUID,
                 description : ActionDescription,
                 descriptionHighlight : ActionDescriptionHighlight,
                 actionName : ActionName,
-                actionResult : ActionResult,
-                variables : MutableSet<Variable>)
+                actionResult : ActionResult)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
@@ -270,8 +258,7 @@ data class ActionWidget(override val id : UUID,
                Prim(description),
                Prim(descriptionHighlight),
                Prim(actionName),
-               Prim(actionResult),
-               Conj(variables))
+               Prim(actionResult))
 
 
     companion object : Factory<Widget>
@@ -296,11 +283,7 @@ data class ActionWidget(override val id : UUID,
                          // Action Name
                          doc.at("action_name") ap { ActionName.fromDocument(it) },
                          // Action Result
-                         doc.at("action_result") ap { ActionResult.fromDocument(it) },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         doc.at("action_result") ap { ActionResult.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -356,8 +339,7 @@ data class ActionWidget(override val id : UUID,
 data class BooleanWidget(override val id : UUID,
                          val widgetId : Prim<WidgetId>,
                          val format : Comp<BooleanWidgetFormat>,
-                         val valueVariable : Comp<BooleanVariable>,
-                         override val variables : Conj<Variable>) : Widget(variables)
+                         val valueVariable : Comp<BooleanVariable>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -369,7 +351,6 @@ data class BooleanWidget(override val id : UUID,
         this.widgetId.name      = "widget_id"
         this.format.name        = "format"
         this.valueVariable.name = "value_variable"
-        this.variables.name     = "variables"
     }
 
 
@@ -379,18 +360,16 @@ data class BooleanWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : BooleanWidgetFormat,
-                valueVariable : BooleanVariable,
-                variables : MutableSet<Variable>)
+                valueVariable : BooleanVariable)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
-               Comp(valueVariable),
-               Conj(variables))
+               Comp(valueVariable))
 
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Widget>  = when (doc)
         {
             is DocDict ->
             {
@@ -400,11 +379,7 @@ data class BooleanWidget(override val id : UUID,
                          // Format
                          doc.at("format") ap { BooleanWidgetFormat.fromDocument(it) },
                          // Value
-                         doc.at("value") ap { BooleanVariable.fromDocument(it) },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         doc.at("value") ap { BooleanVariable.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -465,8 +440,7 @@ data class ButtonWidget(override val id : UUID,
                         val viewType : Prim<ButtonViewType>,
                         val label : Prim<ButtonLabel>,
                         val description : Prim<ButtonDescription>,
-                        val icon : Prim<ButtonIcon>,
-                        override val variables : Conj<Variable>) : Widget(variables)
+                        val icon : Prim<ButtonIcon>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -481,7 +455,6 @@ data class ButtonWidget(override val id : UUID,
         this.label.name         = "label"
         this.description.name   = "description"
         this.icon.name          = "icon"
-        this.variables.name     = "variables"
     }
 
 
@@ -494,21 +467,19 @@ data class ButtonWidget(override val id : UUID,
                 viewType : ButtonViewType,
                 label : ButtonLabel,
                 description : ButtonDescription,
-                icon : ButtonIcon,
-                variables : MutableSet<Variable>)
+                icon : ButtonIcon)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Prim(viewType),
                Prim(label),
                Prim(description),
-               Prim(icon),
-               Conj(variables))
+               Prim(icon))
 
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Widget>  = when (doc)
         {
             is DocDict ->
             {
@@ -524,11 +495,7 @@ data class ButtonWidget(override val id : UUID,
                          // Description
                          doc.at("description") ap { ButtonDescription.fromDocument(it) },
                          // Icon
-                         doc.at("icon") ap { ButtonIcon.fromDocument(it) },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         doc.at("icon") ap { ButtonIcon.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -583,8 +550,7 @@ data class ExpanderWidget(override val id : UUID,
                           val widgetId : Prim<WidgetId>,
                           val format : Comp<ExpanderWidgetFormat>,
                           val label : Prim<ExpanderLabel>,
-                          val groups: Coll<Group>,
-                          override val variables : Conj<Variable>) : Widget(variables)
+                          val groups: Coll<Group>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -597,7 +563,6 @@ data class ExpanderWidget(override val id : UUID,
         this.format.name        = "format"
         this.label.name         = "label"
         this.groups.name        = "groups"
-        this.variables.name     = "variables"
     }
 
 
@@ -608,14 +573,12 @@ data class ExpanderWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 format : ExpanderWidgetFormat,
                 label : ExpanderLabel,
-                groups : MutableList<Group>,
-                variables : MutableSet<Variable>)
+                groups : MutableList<Group>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Prim(label),
-               Coll(groups),
-               Conj(variables))
+               Coll(groups))
 
 
     companion object : Factory<Widget>
@@ -634,12 +597,7 @@ data class ExpanderWidget(override val id : UUID,
                          // Groups
                          doc.list("groups") ap { docList ->
                              docList.mapIndexed { d,index -> Group.fromDocument(d,index) }
-                         },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
-                        )
+                         })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -691,8 +649,7 @@ data class ExpanderWidget(override val id : UUID,
  */
 data class ImageWidget(override val id : UUID,
                        val widgetId : Prim<WidgetId>,
-                       val format : Comp<ImageWidgetFormat>,
-                       override val variables : Conj<Variable>) : Widget(variables)
+                       val format : Comp<ImageWidgetFormat>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -703,7 +660,6 @@ data class ImageWidget(override val id : UUID,
     {
         this.widgetId.name  = "widget_id"
         this.format.name    = "format"
-        this.variables.name = "variables"
     }
 
 
@@ -712,17 +668,15 @@ data class ImageWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetId : WidgetId,
-                format : ImageWidgetFormat,
-                variables : MutableSet<Variable>)
+                format : ImageWidgetFormat)
         : this(UUID.randomUUID(),
                Prim(widgetId),
-               Comp(format),
-               Conj(variables))
+               Comp(format))
 
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Widget>  = when (doc)
         {
             is DocDict ->
             {
@@ -730,11 +684,7 @@ data class ImageWidget(override val id : UUID,
                          // Widget Name
                          doc.at("name") ap { WidgetId.fromDocument(it) },
                          // Format
-                         doc.at("format") ap { ImageWidgetFormat.fromDocument(it) },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         doc.at("format") ap { ImageWidgetFormat.fromDocument(it) }
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -791,8 +741,7 @@ data class ListWidget(override val id : UUID,
                       val widgetId : Prim<WidgetId>,
                       val format : Comp<ListWidgetFormat>,
                       val valueSetId: Func<ValueSetId>,
-                      val values : Coll<Variable>,
-                      override val variables : Conj<Variable>) : Widget(variables)
+                      val values : Coll<Variable>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -805,7 +754,6 @@ data class ListWidget(override val id : UUID,
         this.format.name        = "format"
         this.valueSetId.name    = "value_set_id"
         this.values.name        = "values"
-        this.variables.name     = "variables"
     }
 
 
@@ -816,14 +764,12 @@ data class ListWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 foramt : ListWidgetFormat,
                 valueSetId : ValueSetId,
-                values : MutableList<Variable>,
-                variables : MutableSet<Variable>)
+                values : MutableList<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(foramt),
                Prim(valueSetId),
-               Coll(values),
-               Conj(variables))
+               Coll(values))
 
 
     companion object : Factory<Widget>
@@ -842,12 +788,7 @@ data class ListWidget(override val id : UUID,
                          // Groups
                          doc.list("values") ap { docList ->
                              docList.mapMut { Variable.fromDocument(it) }
-                         },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
-                        )
+                         })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -902,8 +843,7 @@ data class ListWidget(override val id : UUID,
 data class LogWidget(override val id : UUID,
                      val widgetId : Prim<WidgetId>,
                      val format : Comp<LogWidgetFormat>,
-                     val entries : Coll<LogEntry>,
-                     override val variables : Conj<Variable>) : Widget(variables)
+                     val entries : Coll<LogEntry>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -915,7 +855,6 @@ data class LogWidget(override val id : UUID,
         this.widgetId.name      = "widget_id"
         this.format.name        = "format"
         this.entries.name       = "entries"
-        this.variables.name     = "variables"
     }
 
 
@@ -925,18 +864,16 @@ data class LogWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : LogWidgetFormat,
-                entries : MutableList<LogEntry>,
-                variables : MutableSet<Variable>)
+                entries : MutableList<LogEntry>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
-               Coll(entries),
-               Conj(variables))
+               Coll(entries))
 
 
     companion object : Factory<LogWidget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<LogWidget>  = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<LogWidget>  = when (doc)
         {
             is DocDict ->
             {
@@ -948,12 +885,7 @@ data class LogWidget(override val id : UUID,
                          // Entries
                          doc.list("entries") ap { docList ->
                              docList.mapMut { LogEntry.fromDocument(it) }
-                         },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
-                         )
+                         })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -1006,8 +938,7 @@ data class LogWidget(override val id : UUID,
 data class MechanicWidget(override val id : UUID,
                           val widgetId : Prim<WidgetId>,
                           val format : Comp<MechanicWidgetFormat>,
-                          val categoryId : Prim<MechanicCategoryId>,
-                          override val variables : Conj<Variable>) : Widget(variables)
+                          val categoryId : Prim<MechanicCategoryId>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1016,10 +947,9 @@ data class MechanicWidget(override val id : UUID,
 
     init
     {
-        this.widgetId.name      = "widget_id"
-        this.format.name        = "format"
-        this.categoryId.name      = "category_id"
-        this.variables.name     = "variables"
+        this.widgetId.name   = "widget_id"
+        this.format.name     = "format"
+        this.categoryId.name = "category_id"
     }
 
 
@@ -1029,13 +959,11 @@ data class MechanicWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : MechanicWidgetFormat,
-                categoryId : MechanicCategoryId,
-                variables : MutableSet<Variable>)
+                categoryId : MechanicCategoryId)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
-               Prim(categoryId),
-               Conj(variables))
+               Prim(categoryId))
 
 
     companion object : Factory<MechanicWidget>
@@ -1052,11 +980,7 @@ data class MechanicWidget(override val id : UUID,
                                effValue(MechanicWidgetFormat.default()),
                                { MechanicWidgetFormat.fromDocument(it) }),
                          // Category Id
-                         doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1116,8 +1040,8 @@ data class NumberWidget(override val id : UUID,
                         val widgetId : Prim<WidgetId>,
                         val format : Comp<NumberWidgetFormat>,
                         val valueVariableId : Prim<VariableId>,
-                        val description : Maybe<Prim<NumberWidgetDescription>>,
-                        override val variables : Conj<Variable>) : Widget(variables)
+                        val description : Maybe<Prim<NumberWidgetDescription>>)
+                         : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1133,8 +1057,6 @@ data class NumberWidget(override val id : UUID,
         when (this.description) {
             is Just -> this.description.value.name = "description"
         }
-
-        this.variables.name                         = "variables"
     }
 
 
@@ -1152,14 +1074,12 @@ data class NumberWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 format : NumberWidgetFormat,
                 valueVariableId : VariableId,
-                description : Maybe<NumberWidgetDescription>,
-                variables : MutableSet<Variable>)
+                description : Maybe<NumberWidgetDescription>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Prim(valueVariableId),
-               maybeLiftPrim(description),
-               Conj(variables))
+               maybeLiftPrim(description))
 
 
     companion object : Factory<NumberWidget>
@@ -1180,11 +1100,7 @@ data class NumberWidget(override val id : UUID,
                          // Description
                          split(doc.maybeAt("description"),
                                effValue<ValueError,Maybe<NumberWidgetDescription>>(Nothing()),
-                               { effApply(::Just, NumberWidgetDescription.fromDocument(it)) }),
-                         // Variables
-                         split(doc.maybeList("variables"),
-                             effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                             { it.mapSetMut { Variable.fromDocument(it)} })
+                               { effApply(::Just, NumberWidgetDescription.fromDocument(it)) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1280,8 +1196,7 @@ data class OptionWidget(override val id : UUID,
                         val format : Comp<OptionWidgetFormat>,
                         val viewType : Prim<OptionViewType>,
                         val description : Maybe<Prim<OptionDescription>>,
-                        val valueSet : Prim<ValueSetId>,
-                        override val variables : Conj<Variable>) : Widget(variables)
+                        val valueSet : Prim<ValueSetId>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1299,7 +1214,6 @@ data class OptionWidget(override val id : UUID,
         }
 
         this.valueSet.name                          = "value_set"
-        this.variables.name                         = "variables"
     }
 
 
@@ -1311,15 +1225,13 @@ data class OptionWidget(override val id : UUID,
                 format : OptionWidgetFormat,
                 viewType : OptionViewType,
                 description : Maybe<OptionDescription>,
-                valueSet : ValueSetId,
-                variables : MutableSet<Variable>)
+                valueSet : ValueSetId)
         : this(UUID.randomUUID(),
                 Prim(widgetId),
                 Comp(format),
                 Prim(viewType),
                 maybeLiftPrim(description),
-                Prim(valueSet),
-                Conj(variables))
+                Prim(valueSet))
 
 
     companion object : Factory<OptionWidget>
@@ -1344,11 +1256,7 @@ data class OptionWidget(override val id : UUID,
                                effValue<ValueError,Maybe<OptionDescription>>(Nothing()),
                                { effApply(::Just, OptionDescription.fromDocument(it)) }),
                          // ValueSet Name
-                         doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                             effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                             { it.mapSetMut { Variable.fromDocument(it)} })
+                         doc.at("value_set_id") ap { ValueSetId.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1406,8 +1314,7 @@ data class PointsWidget(override val id : UUID,
                         val format : Comp<PointsWidgetFormat>,
                         val limitValueVariableId : Prim<VariableId>,
                         val currentValueVariableId : Prim<VariableId>,
-                        val label : Maybe<Prim<PointsWidgetLabel>>,
-                        override val variables : Conj<Variable>) : Widget(variables)
+                        val label : Maybe<Prim<PointsWidgetLabel>>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1431,8 +1338,6 @@ data class PointsWidget(override val id : UUID,
         when (this.label) {
             is Just -> this.label.value.name = "label"
         }
-
-        this.variables.name                 = "variables"
     }
 
 
@@ -1444,15 +1349,13 @@ data class PointsWidget(override val id : UUID,
                 format : PointsWidgetFormat,
                 limitValueVariableId : VariableId,
                 currentValueVariableId : VariableId,
-                label : Maybe<PointsWidgetLabel>,
-                variables : MutableSet<Variable>)
+                label : Maybe<PointsWidgetLabel>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Prim(limitValueVariableId),
                Prim(currentValueVariableId),
-               maybeLiftPrim(label),
-               Conj(variables))
+               maybeLiftPrim(label))
 
 
     companion object : Factory<PointsWidget>
@@ -1475,11 +1378,7 @@ data class PointsWidget(override val id : UUID,
                          // Label
                          split(doc.maybeAt("label"),
                                effValue<ValueError,Maybe<PointsWidgetLabel>>(Nothing()),
-                               { effApply(::Just, PointsWidgetLabel.fromDocument(it)) }),
-                         // Variables
-                         split(doc.maybeList("variables"),
-                             effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                             { it.mapSetMut { Variable.fromDocument(it)} })
+                               { effApply(::Just, PointsWidgetLabel.fromDocument(it)) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1671,8 +1570,7 @@ data class QuoteWidget(override val id : UUID,
                        val format : Comp<QuoteWidgetFormat>,
                        val viewType : Prim<QuoteViewType>,
                        val quoteVariableId : Prim<VariableId>,
-                       val sourceVariableId : Maybe<Prim<VariableId>>,
-                       override val variables : Conj<Variable>) : Widget(variables)
+                       val sourceVariableId : Maybe<Prim<VariableId>>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1689,9 +1587,6 @@ data class QuoteWidget(override val id : UUID,
         when (this.sourceVariableId) {
             is Just -> this.sourceVariableId.value.name   = "source"
         }
-
-        this.variables.name                     = "variables"
-
     }
 
 
@@ -1703,15 +1598,13 @@ data class QuoteWidget(override val id : UUID,
                 format   : QuoteWidgetFormat,
                 viewType : QuoteViewType,
                 quote    : VariableId,
-                source   : Maybe<VariableId>,
-                variables : MutableSet<Variable>)
+                source   : Maybe<VariableId>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Prim(viewType),
                Prim(quote),
-               maybeLiftPrim(source),
-               Conj(variables))
+               maybeLiftPrim(source))
 
 
     companion object : Factory<QuoteWidget>
@@ -1736,11 +1629,7 @@ data class QuoteWidget(override val id : UUID,
                          // Source Variable Id
                          split(doc.maybeAt("source_variable_id"),
                                effValue<ValueError,Maybe<VariableId>>(Nothing()),
-                               { effApply(::Just, VariableId.fromDocument(it)) }),
-                         // Variables
-                         split(doc.maybeList("variables"),
-                             effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                             { it.mapSetMut { Variable.fromDocument(it)} })
+                               { effApply(::Just, VariableId.fromDocument(it)) })
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1850,8 +1739,7 @@ data class QuoteWidget(override val id : UUID,
 data class StoryWidget(override val id : UUID,
                        val widgetId : Prim<WidgetId>,
                        val format : Comp<StoryWidgetFormat>,
-                       val story : Coll<StoryPart>,
-                       override val variables : Conj<Variable>) : Widget(variables)
+                       val story : Coll<StoryPart>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1870,7 +1758,6 @@ data class StoryWidget(override val id : UUID,
         this.widgetId.name      = "widget_id"
         this.format.name        = "format"
         this.story.name         = "story"
-        this.variables.name     = "variables"
     }
 
 
@@ -1880,13 +1767,11 @@ data class StoryWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : StoryWidgetFormat,
-                story : MutableList<StoryPart>,
-                variables : MutableSet<Variable>)
+                story : MutableList<StoryPart>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
-               Coll(story),
-               Conj(variables))
+               Coll(story))
 
 
     companion object : Factory<StoryWidget>
@@ -1905,12 +1790,7 @@ data class StoryWidget(override val id : UUID,
                          // Story
                          doc.list("story") ap {
                              it.mapMut { StoryPart.fromDocument(it) }
-                         },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
-                        )
+                         })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -1937,6 +1817,20 @@ data class StoryWidget(override val id : UUID,
 
     override fun view(sheetUIContext : SheetUIContext) : View =
             StoryWidgetView.view(this, sheetUIContext)
+
+
+    override fun variables(sheetContext : SheetContext) : Set<Variable> =
+        this.variableParts().mapNotNull { part ->
+            val variable = SheetManager.sheetState(sheetContext.sheetId)
+                                       .apply { it.variableWithId(part.variableId()) }
+            when (variable) {
+                is Val -> variable.value
+                is Err -> {
+                    ApplicationLog.error(variable.error)
+                    null
+                }
+            }
+        }.toSet()
 
 
     // -----------------------------------------------------------------------------------------
@@ -2042,8 +1936,7 @@ data class TabWidget(override val id : UUID,
                      val widgetId : Prim<WidgetId>,
                      val format : Comp<TabWidgetFormat>,
                      val tabs : Coll<Tab>,
-                     val defaultSelected : Prim<DefaultSelected>,
-                     override val variables : Conj<Variable>) : Widget(variables)
+                     val defaultSelected : Prim<DefaultSelected>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -2066,14 +1959,12 @@ data class TabWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 format : TabWidgetFormat,
                 tabs : MutableList<Tab>,
-                defaultSelected : DefaultSelected,
-                variables : MutableSet<Variable>)
+                defaultSelected : DefaultSelected)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                Coll(tabs),
-               Prim(defaultSelected),
-               Conj(variables))
+               Prim(defaultSelected))
 
 
     companion object : Factory<TabWidget>
@@ -2096,11 +1987,7 @@ data class TabWidget(override val id : UUID,
                          // Default Selected
                          split(doc.maybeAt("default_selected"),
                                effValue(DefaultSelected(1)),
-                               { DefaultSelected.fromDocument(it) }),
-                         // Variables
-                         split(doc.maybeList("variables"),
-                             effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                             { it.mapSetMut { Variable.fromDocument(it)} })
+                               { DefaultSelected.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -2160,8 +2047,7 @@ data class TableWidget(override val id : UUID,
                        val format : Comp<TableWidgetFormat>,
                        val columns : Coll<TableWidgetColumn>,
                        val rows : Coll<TableWidgetRow>,
-                       val sort : Maybe<Prim<TableSort>>,
-                       override val variables : Conj<Variable>) : Widget(variables)
+                       val sort : Maybe<Prim<TableSort>>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -2228,16 +2114,14 @@ data class TableWidget(override val id : UUID,
                 format: TableWidgetFormat,
                 columns: MutableList<TableWidgetColumn>,
                 rows: MutableList<TableWidgetRow>,
-                sort: Maybe<TableSort>,
-                variables: MutableSet<Variable>)
+                sort: Maybe<TableSort>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Prim(tableName),
                Comp(format),
                Coll(columns),
                Coll(rows),
-               maybeLiftPrim(sort),
-               Conj(variables))
+               maybeLiftPrim(sort))
 
 
     companion object : Factory<TableWidget> {
@@ -2263,12 +2147,8 @@ data class TableWidget(override val id : UUID,
                         // Table Sort
                         split(doc.maybeAt("sort"),
                                 effValue<ValueError, Maybe<TableSort>>(Nothing()),
-                                { effApply(::Just, TableSort.fromDocument(it)) }),
-                        // Variables
-                        split(doc.maybeList("variables"),
-                                effValue<ValueError, MutableSet<Variable>>(mutableSetOf()),
-                                { it.mapSetMut { Variable.fromDocument(it) } })
-                )
+                                { effApply(::Just, TableSort.fromDocument(it)) })
+                        )
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -2315,12 +2195,10 @@ data class TableWidget(override val id : UUID,
             }
             is TableWidgetUpdateInsertRowBefore ->
             {
-                Log.d("***WIDGET", "insert row before")
                 this.addRow(tableWidgetUpdate.selectedRow, rootView, sheetUIContext)
             }
             is TableWidgetUpdateInsertRowAfter ->
             {
-                Log.d("***WIDGET", "insert row after")
                 this.addRow(tableWidgetUpdate.selectedRow + 1, rootView, sheetUIContext)
             }
         }
@@ -2351,7 +2229,6 @@ data class TableWidget(override val id : UUID,
 
     private fun addRow(rowIndex : Int, rootView : View, sheetUIContext : SheetUIContext)
     {
-        Log.d("***WIDGET", "row index is " + rowIndex.toString())
         val tableLayoutId = this.tableLayoutId
 
         if (tableLayoutId != null)
@@ -2595,8 +2472,7 @@ data class TextWidget(override val id : UUID,
                       val widgetId : Prim<WidgetId>,
                       val format : Comp<TextWidgetFormat>,
                       val description : Maybe<Prim<TextWidgetDescription>>,
-                      val valueVariableId : Prim<VariableId>,
-                      override val variables : Conj<Variable>) : Widget(variables)
+                      val valueVariableId : Prim<VariableId>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -2613,8 +2489,6 @@ data class TextWidget(override val id : UUID,
         }
 
         this.valueVariableId.name                   = "value_variable_id"
-
-        this.variables.name                         = "variables"
     }
 
 
@@ -2632,14 +2506,12 @@ data class TextWidget(override val id : UUID,
     constructor(widgetId: WidgetId,
                 format : TextWidgetFormat,
                 description : Maybe<TextWidgetDescription>,
-                valueVariableId : VariableId,
-                variables : MutableSet<Variable>)
+                valueVariableId : VariableId)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
                maybeLiftPrim(description),
-               Prim(valueVariableId),
-               Conj(variables))
+               Prim(valueVariableId))
 
 
     companion object : Factory<TextWidget>
@@ -2660,11 +2532,7 @@ data class TextWidget(override val id : UUID,
                                effValue<ValueError,Maybe<TextWidgetDescription>>(Nothing()),
                                { effApply(::Just, TextWidgetDescription.fromDocument(it)) }),
                          // Value
-                         doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         doc.at("value_variable_id") ap { VariableId.fromDocument(it) }
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))

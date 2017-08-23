@@ -199,6 +199,10 @@
 
     <string name="value_history">Value History</string>
 
+    <string name="sheet_state">Sheet State</string>
+
+    <string name="history">History</string>
+
     <string name="learn_about_value_sets">Learn about Value Sets</string>
 
     <string name="value_set_editor">Value Set Editor</string>

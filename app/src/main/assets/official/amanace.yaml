@@ -592,7 +592,7 @@ engine:
     summary: 'Ability score adjustments for the Soulsin race'
     category_id: race
     requirements:
-    - 'is_race_soulsin'
+    - name: 'is_race_soulsin'
     variables:
     - type: variable_number
       variable_number:
@@ -622,7 +622,7 @@ engine:
     summary: 'Points lost from perception due to opponent are instead added added to attack.'
     category_id: race
     requirements:
-    - 'is_race_soulsin'
+    - name: 'is_race_soulsin'
     variables:
   - id: swashbuckler
     label: Swashbuckler
@@ -630,7 +630,7 @@ engine:
     summary: Swashbuckler
     category_id: class
     requirements:
-    - 'is_class_swashbuckler'
+    - name: 'is_class_swashbuckler'
     variables:
     - type: variable_number
       variable_number:
@@ -652,6 +652,25 @@ engine:
         value:
           type: number_literal
           number_literal: 2
+  - id: cutlass
+    label: Cutlass
+    description: Cutlass
+    summary: Cutlass
+    category_id: weapon
+    requirements:
+    - namespace: cutlass
+      name: is_equipped
+    variables:
+    - type: variable_number
+      variable_number:
+        id: cutlass_defense_bonus
+        label: Cutlass Defense Bonus
+        description: Cutlass Defense Bonus
+        tags:
+        - defense_weapon_bonus
+        value:
+          type: number_literal
+          number_literal: 1
   mechanic_categories:
   - id: race
     label: Race
@@ -659,6 +678,9 @@ engine:
   - id: class
     label: Class
     description: Mechanics for a specific class.
+  - id: weapon
+    label: Weapon
+    description: Weapon mechanics.
   functions:
   - function_id: ability_modifier
     label: Ability Modifier
@@ -997,6 +1019,14 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: defense_armor_bonus
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Weapon Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: defense_weapon_bonus
 rulebook:
   title: 'Amanace'
   abstract: 'Learn all about Amanace'

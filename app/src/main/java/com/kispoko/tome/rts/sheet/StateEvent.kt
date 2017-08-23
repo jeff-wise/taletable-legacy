@@ -26,7 +26,7 @@ data class VariableAdded(val variableId : VariableId) : StateEvent()
 data class VariableUpdated(val variableId : VariableId) : StateEvent()
 {
     override fun debugMessage() : String = """Variable Updated:
-            |    Variable Id: ${variableId.name.value.value}""".trimMargin()
+            |    Variable Id: $variableId""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
 }
@@ -41,7 +41,7 @@ data class MechanicAdded(val mechanicId : MechanicId,
 
         return """Mechanic Added:
                |    Mechanic Id: ${mechanicId.value}
-               |    Variables:
+               |    Variables Added:
                |        $variablesString
                """.trimMargin()
     }
@@ -49,4 +49,21 @@ data class MechanicAdded(val mechanicId : MechanicId,
     override fun logMessage(): String = debugMessage()
 }
 
+
+data class MechanicRemoved(val mechanicId : MechanicId,
+                           val variableIds : Set<VariableId>) : StateEvent()
+{
+    override fun debugMessage() : String
+    {
+        val variablesString = variableIds.map { it.nameString() }.joinToString("\n        ")
+
+        return """Mechanic Removed:
+               |    Mechanic Id: ${mechanicId.value}
+               |    Variables Removed:
+               |        $variablesString
+               """.trimMargin()
+    }
+
+    override fun logMessage(): String = debugMessage()
+}
 

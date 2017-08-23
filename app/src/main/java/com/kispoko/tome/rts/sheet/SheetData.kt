@@ -109,7 +109,7 @@ object SheetData
             {
                 SheetManager.sheetState(sheetContext.sheetId)
                         .apply( { it.numberVariables(numberReference.variableReference) })
-                        .apply( { it.toList().mapM { it.value(sheetContext) } })
+                        .apply( { it.toList().mapMI { it.value(sheetContext) } })
             }
         }
 

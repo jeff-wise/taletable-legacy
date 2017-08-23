@@ -533,6 +533,14 @@ variables:
       text_literal: 'General Actions'
 - type: variable_text
   variable_text:
+    id: attacks_label
+    label: Attacks Label
+    description: Attacks Label
+    value:
+      type: text_literal
+      text_literal: 'Attacks'
+- type: variable_text
+  variable_text:
     id: general_strength_action_description
     label: General Strength Action Description
     description: General Strength Action Description
@@ -3035,6 +3043,99 @@ sections:
               widget_format:
                 alignment: left
             value_variable_id: general_constitution_action_description
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_10
+        padding:
+          bottom: 8
+          left: 8
+          top: 12
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: attacks_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  size: 15
+              widget_format:
+                alignment: left
+            value_variable_id: attacks_label
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: flurry_attack
+            format:
+              widget_format:
+                alignment: left
+                padding:
+                  right: 8
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I harass my opponent with a '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    size: 16
+            - type: story_part_action
+              story_part_action:
+                text: ' flurry of jabs '
+                roll_name: 'Flurry of Jabs Attack Bonus'
+                summation_id: flurry_attack
+                text_format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_2
+                    size: 16
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_8
+                  size:
+                    width: 22
+                    height: 22
+            - type: story_part_span
+              story_part_span:
+                text: 'like an angry, persistent wasp.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    size: 16
   - name: Mind Actions
     format:
       background_color_theme:

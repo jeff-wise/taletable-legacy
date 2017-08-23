@@ -5,7 +5,6 @@ package com.kispoko.tome.model.sheet.widget
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v4.view.GestureDetectorCompat
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -14,7 +13,6 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -44,9 +42,6 @@ import lulo.value.*
 import lulo.value.UnexpectedType
 import java.io.Serializable
 import java.util.*
-import android.text.method.Touch.onTouchEvent
-import android.util.Log
-import android.view.GestureDetector
 import com.kispoko.tome.activity.sheet.dialog.*
 import com.kispoko.tome.lib.functor.*
 
@@ -602,13 +597,6 @@ object StoryWidgetView
             layout.id                = layoutViewId
             val spanView = this.storySpannableView(storyWidget, sheetUIContext)
 
-            val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
-                    sheetUIContext.context as SheetActivity,
-                    SheetContext(sheetUIContext))
-            spanView.setOnTouchListener({ v, event ->
-                gestureDetector.onTouchEvent(event)
-                false
-            })
 
             layout.addView(spanView)
         }
@@ -643,7 +631,7 @@ object StoryWidgetView
     fun storySpannableView(storyWidget : StoryWidget,
                            sheetUIContext : SheetUIContext) : TextView
     {
-        val story = TextViewBuilder()
+        val story           = TextViewBuilder()
 
         story.width         = LinearLayout.LayoutParams.MATCH_PARENT
         story.height        = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -668,6 +656,15 @@ object StoryWidgetView
         }
 
         story.movementMethod    = LinkMovementMethod.getInstance()
+
+        val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
+                sheetUIContext.context as SheetActivity,
+                storyWidget,
+                SheetContext(sheetUIContext))
+        story.onTouch   = View.OnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            false
+        }
 
         return story.textView(sheetUIContext.context)
     }
