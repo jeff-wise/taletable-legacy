@@ -167,7 +167,7 @@ package com.kispoko.tome.activity;
 //            {
 //                case CONDITIONAL:
 //                    break;
-//                case DICE_ROLL:
+//                case DiceRoll:
 //                    layout.addView(this.diceRollTermView(termUnion.diceRollTerm(), context));
 //                    break;
 //                case INTEGER:

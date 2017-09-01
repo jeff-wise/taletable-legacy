@@ -200,6 +200,10 @@
     <string name="value_history">Value History</string>
 
     <string name="sheet_state">Sheet State</string>
+    <string name="sharing">Sharing</string>
+    <string name="is_shareable">Is Shareable</string>
+    <string name="visibility">Visibility</string>
+    <string name="read_in_rulebook">Read in the Rulebook</string>
 
     <string name="history">History</string>
 

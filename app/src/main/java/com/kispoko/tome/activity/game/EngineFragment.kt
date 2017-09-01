@@ -16,6 +16,7 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.engine.function.FunctionListActivity
 import com.kispoko.tome.activity.engine.valueset.ValueSetsActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.Engine
@@ -127,7 +128,11 @@ class EngineFragment : Fragment()
                                        context))
 
         // Functions
-        val functionsOnClick = View.OnClickListener {  }
+        val functionsOnClick = View.OnClickListener {
+            val intent = Intent(activity, FunctionListActivity::class.java)
+            intent.putExtra("game_id", engine.gameId)
+            activity.startActivity(intent)
+        }
         layout.addView(this.buttonView(R.string.engine_functions,
                                        R.string.engine_functions_description,
                                        functionsOnClick,

@@ -711,6 +711,10 @@ types:
     presence: required
     description: >
       The widget identifier.
+  - name: format
+    type: mechanic_widget_format
+    presence: optional
+    description: The widget format.
   - name: category_id
     type: mechanic_category_id
     presence: required
@@ -728,18 +732,26 @@ types:
     presence: optional
     description: >
       Standard widget formatting options.
-  - name: header_style
-    type: text_style
+  - name: header_format
+    type: text_format
     presence: optional
     description: Header text style.
-  - name: mechanic_header_style
-    type: text_style
+  - name: mechanic_header_format
+    type: text_format
     presence: optional
     description: Mechanic header text style.
-  - name: mechanic_summary_style
-    type: text_style
+  - name: mechanic_summary_format
+    type: text_format
     presence: optional
     description: Mechanic summary text style.
+  - name: view_type
+    type: string
+    presence: optional
+    description: Mechanic widget view type.
+  - name: mechanic_format
+    type: element_format
+    presence: optional
+    description: Mechanic background format.
 - name: widget_number
   label: Number Widget
   description: >
@@ -1307,6 +1319,10 @@ types:
     type: icon_format
     presence: optional
     description: The icon format.
+  - name: show_procedure_dialog
+    type: boolean
+    presence: optional
+    description: Show procedure dialog?
 - name: story_widget_format
   label: Story Widget Format
   description: >
@@ -2059,6 +2075,50 @@ types:
     presence: optional
     description: >
       The widget padding.
+- name: element_format
+  label: Element Format
+  description: General formatting options for some UI element.
+  group: Style
+  type: product
+  fields:
+  - name: position
+    type: position
+    presence: optional
+    description: >
+      The text position.
+  - name: height
+    type: height
+    presence: optional
+    description: >
+      The text height.
+  - name: padding
+    type: spacing
+    presence: optional
+    description: >
+      The text padding.
+  - name: margins
+    type: spacing
+    presence: optional
+    description: >
+      The text margins.
+  - name: background_color_theme
+    type: color_theme
+    presence: optional
+    description: Background color theme.
+  - name: corners
+    type: corners
+    presence: optional
+    description: Corners
+  - name: alignment
+    type: alignment
+    presence: optional
+    description: >
+      The text horizontal alignment.
+  - name: vertical_alignment
+    type: vertical_alignment
+    presence: optional
+    description: >
+      The text vertical alignment.
 - name: text_format
   label: Text Format
   description: >

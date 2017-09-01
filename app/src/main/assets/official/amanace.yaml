@@ -589,7 +589,7 @@ engine:
   - id: soulsin_ability_mods
     label: Ability Score Adjustments
     description: 'Ability score adjustments for the Soulsin race'
-    summary: 'Ability score adjustments for the Soulsin race'
+    summary: '+2 DEX, +1 CHA'
     category_id: race
     requirements:
     - name: 'is_race_soulsin'
@@ -1041,8 +1041,34 @@ rulebook:
       - id: soulsin
         title: 'Soulsin - The Port of Possibilities'
         body: >
-          Soulsin is a port city abla asaf. A few paragraphs here history, culture, characteristics
-          and a list of mechanics.
+          As with most places that have existed for ages, not much is known of Soulsin's origin.
+          Most historians are sure that at some point, perhaps thousands of years ago, it was only
+          a small town by the sea with nothing significant to its name. It had a good location, but
+          not especially good, since the harbor was, and still is, quite dangerous to navigate. The
+          land around is arid and is enough, along with the sea, for its citizens to live a decent
+          life only natural resources and limited trade.
+
+
+          But most books reference an event called the "Yellow Change" that occurred near Soulsin
+          at some point many years ago. No one is sure exactly what the Yellow Change was, but it affected many historical events around
+          that time, with numerous historians and scholars chasing that reference through dozens
+          of ancient texts and artifacts. Still, whatever it was caused a change in Soulsin. It
+          became an important destination and port. Everyone traveling the Miran Sea trade route began to
+          stop there.
+
+
+          Soulsin became a major trading port and what was a small town grew into a prosperous and
+          powerful city-state. Though riches flowed through the city, the gold and silver was not
+          spread out evenly among its citizens. Many historians point to Soulsin as an example of
+          what effect isolation has on a kingdom. Because Soulsin was so far from most other
+          kingdoms or city-states, it was never truly challenged. There was never a reset for
+          Soulsin. Corruption that grew within the city stayed and became a way of life. Today the
+          reputation remains and is very much deserved. While the rulers and many noble families
+          live luxurious lives, the majority of the citizens live nearly as slaves. Food shortages
+          are common and riots occur on a frequent basis. Injustices are accepted as normal things
+          that occur, just as the waves crash into the cliffside on the city's southside, where the
+          poorest live.
+
 
 
 

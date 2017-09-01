@@ -12,6 +12,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -23,17 +24,12 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLReal
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -44,6 +40,8 @@ import java.io.Serializable
 import java.util.*
 import com.kispoko.tome.activity.sheet.dialog.*
 import com.kispoko.tome.lib.functor.*
+import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.rts.game.GameManager
 
 
 /**
@@ -429,7 +427,9 @@ data class StoryPartAction(override val id : UUID,
                            val rollSummationId : Maybe<Prim<SummationId>>,
                            val procedureId : Maybe<Prim<ProcedureId>>,
                            val textFormat : Comp<TextFormat>,
-                           val iconFormat : Comp<IconFormat>) : StoryPart(), Serializable
+                           val iconFormat : Comp<IconFormat>,
+                           val showProcedureDialog : Prim<ShowProcedureDialog>)
+                            : StoryPart(), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -440,13 +440,15 @@ data class StoryPartAction(override val id : UUID,
                 rollSummationId : Maybe<SummationId>,
                 procedureId : Maybe<ProcedureId>,
                 textFormat : TextFormat,
-                iconFormat : IconFormat)
+                iconFormat : IconFormat,
+                showProcedureDialog : ShowProcedureDialog)
         : this(UUID.randomUUID(),
                Prim(text),
                maybeLiftPrim(rollSummationId),
                maybeLiftPrim(procedureId),
                Comp(textFormat),
-               Comp(iconFormat))
+               Comp(iconFormat),
+               Prim(showProcedureDialog))
 
 
     companion object : Factory<StoryPartAction>
@@ -473,7 +475,11 @@ data class StoryPartAction(override val id : UUID,
                          // Icon Format
                          split(doc.maybeAt("icon_format"),
                                effValue(IconFormat.default()),
-                               { IconFormat.fromDocument(it) })
+                               { IconFormat.fromDocument(it) }),
+                         // Show Procedure Dialog
+                         split(doc.maybeAt("show_procedure_dialog"),
+                               effValue(ShowProcedureDialog(false)),
+                               { ShowProcedureDialog.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -512,6 +518,35 @@ data class StoryPartAction(override val id : UUID,
     override val modelObject = this
 
     override val name = "story_part_action"
+
+}
+
+
+/**
+ * Story Part Action - Show Procedure Dialog
+ */
+data class ShowProcedureDialog(val value : Boolean) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ShowProcedureDialog>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowProcedureDialog> = when (doc)
+        {
+            is DocBoolean -> effValue(ShowProcedureDialog(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
 
 }
 
@@ -807,39 +842,51 @@ object StoryWidgetView
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
 
-                    val rollSummationId = storyPart.rollSummationId()
-                    if (rollSummationId != null)
+                    val procedureId = storyPart.procedureId()
+                    val summationId = storyPart.rollSummationId()
+                    Log.d("***STORYWIDGET", "here???")
+                    if (procedureId != null) {
+                        val clickSpan = object : ClickableSpan() {
+                            override fun onClick(view: View?) {
+                            }
+
+                            override fun updateDrawState(ds: TextPaint?) {
+                            }
+                        }
+
+                        builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                    }
+                    else if (summationId != null)
                     {
+                        Log.d("***STORYWIDGET", "summation id is not null")
+
                         val summation = GameManager.engine(sheetUIContext.gameId)
-                                                   .apply{ it.summation(rollSummationId)}
-                        when (summation)
-                        {
-                            is Val ->
+                                                   .apply{ it.summation(summationId)}
+
+                        summation apDo {
+                            Log.d("***STORYWIDGET", "in apDo")
+                            val diceRoll = it.diceRoll(SheetContext(sheetUIContext))
+                            if (diceRoll != null)
                             {
-                                val diceRoll = summation.value.diceRoll(SheetContext(sheetUIContext))
-
-                                if (diceRoll != null)
-                                {
-                                    val clickSpan = object: ClickableSpan() {
-                                        override fun onClick(view : View?) {
-                                            val sheetActivity = sheetUIContext.context as SheetActivity
-                                            val dialog = DiceRollerDialogFragment.newInstance(diceRoll,
-                                                                                  SheetContext(sheetUIContext))
-                                            dialog.show(sheetActivity.supportFragmentManager, "")
-                                        }
-
-                                        override fun updateDrawState(ds : TextPaint?) {
-                                        }
+                                Log.d("***STORYWIDGET", "dice roll is not null")
+                                val sheetActivity = sheetUIContext.context as SheetActivity
+                                val clickSpan = object : ClickableSpan() {
+                                    override fun onClick(view: View?) {
+                                        Log.d("***STORYWIDGET", "action on click")
+                                        val dialog = DiceRollDialog.newInstance(diceRoll,
+                                                SheetContext(sheetUIContext))
+                                        dialog.show(sheetActivity.supportFragmentManager, "")
                                     }
 
-                                    builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                                    override fun updateDrawState(ds: TextPaint?) {
+                                    }
                                 }
 
-
+                                builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                             }
-                            is Err -> ApplicationLog.error(summation.error)
                         }
                     }
+
                 }
             }
         }

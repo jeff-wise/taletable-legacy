@@ -216,6 +216,9 @@ data class Engine(override val id : UUID,
     // Engine Data > Functions
     // -----------------------------------------------------------------------------------------
 
+    fun functions() : Set<Function> = this.functions.set
+
+
     fun function(functionId : FunctionId) : AppEff<Function> =
             note(this.functionById[functionId],
                     AppEngineError(FunctionDoesNotExist(functionId)))
@@ -262,31 +265,31 @@ data class Engine(override val id : UUID,
 sealed class EngineValueType : SQLSerializable, Serializable
 {
 
-    object NUMBER : EngineValueType()
+    object Number : EngineValueType()
     {
         override fun asSQLValue() : SQLValue = SQLText({"number"})
     }
 
 
-    object TEXT : EngineValueType()
+    object Text : EngineValueType()
     {
         override fun asSQLValue() : SQLValue = SQLText({"text"})
     }
 
 
-    object BOOLEAN : EngineValueType()
+    object Boolean : EngineValueType()
     {
         override fun asSQLValue() : SQLValue = SQLText({"boolean"})
     }
 
 
-    object DICE_ROLL : EngineValueType()
+    object DiceRoll : EngineValueType()
     {
         override fun asSQLValue() : SQLValue = SQLText({"dice_roll"})
     }
 
 
-    object LIST_TEXT : EngineValueType()
+    object ListText : EngineValueType()
     {
         override fun asSQLValue() : SQLValue = SQLText({"list_text"})
     }
@@ -298,16 +301,25 @@ sealed class EngineValueType : SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "number"    -> effValue<ValueError,EngineValueType>(EngineValueType.NUMBER)
-                "text"      -> effValue<ValueError,EngineValueType>(EngineValueType.TEXT)
-                "boolean"   -> effValue<ValueError,EngineValueType>(EngineValueType.BOOLEAN)
-                "dice_roll" -> effValue<ValueError,EngineValueType>(EngineValueType.DICE_ROLL)
-                "list_text" -> effValue<ValueError,EngineValueType>(EngineValueType.LIST_TEXT)
+                "number"    -> effValue<ValueError,EngineValueType>(EngineValueType.Number)
+                "text"      -> effValue<ValueError,EngineValueType>(EngineValueType.Text)
+                "boolean"   -> effValue<ValueError,EngineValueType>(EngineValueType.Boolean)
+                "dice_roll" -> effValue<ValueError,EngineValueType>(EngineValueType.DiceRoll)
+                "list_text" -> effValue<ValueError,EngineValueType>(EngineValueType.ListText)
                 else        -> effError<ValueError,EngineValueType>(
                                     UnexpectedValue("EngineValueType", doc.text, doc.path))
             }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+    }
+
+    override fun toString(): String = when (this)
+    {
+        is Number   -> "Number"
+        is Text     -> "Text"
+        is Boolean  -> "Boolean"
+        is DiceRoll -> "DiceRoll"
+        is ListText -> "ListText"
     }
 
 }
@@ -369,7 +381,7 @@ data class EngineValueNumber(val value : Double) : EngineValue(), SQLSerializabl
     // ENGINE VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun type() = EngineValueType.NUMBER
+    override fun type() = EngineValueType.Number
 
 
     // -----------------------------------------------------------------------------------------
@@ -413,7 +425,7 @@ data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
     // ENGINE VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun type() = EngineValueType.TEXT
+    override fun type() = EngineValueType.Text
 
 
     // -----------------------------------------------------------------------------------------
@@ -458,7 +470,7 @@ data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializa
     // ENGINE VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun type() = EngineValueType.BOOLEAN
+    override fun type() = EngineValueType.Boolean
 
 
     // -----------------------------------------------------------------------------------------
@@ -505,7 +517,7 @@ data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), Model
     // ENGINE VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun type() = EngineValueType.DICE_ROLL
+    override fun type() = EngineValueType.DiceRoll
 
 
     // -----------------------------------------------------------------------------------------
@@ -557,7 +569,7 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
     // ENGINE VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun type() = EngineValueType.LIST_TEXT
+    override fun type() = EngineValueType.ListText
 
 
     // -----------------------------------------------------------------------------------------

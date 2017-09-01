@@ -2329,21 +2329,61 @@ sections:
       background_color_theme:
         theme_color_ids:
         - theme_id: dark
-          color_id: dark_grey_8
+          color_id: dark_grey_10
     groups:
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_8
         padding:
-          top: 17
+          top: 12
       rows:
       - widgets:
         - type: widget_mechanic
           widget_mechanic:
             id: race_mechanics
             category_id: race
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              header_format:
+                style:
+                  size: 18
+                  font_style: bold
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+              mechanic_header_format:
+                style:
+                  size: 15
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+              mechanic_summary_format:
+                style:
+                  size: 13
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_26
+              mechanic_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  top: 8
+                padding:
+                  top: 6
+                  bottom: 6
+                  left: 6
+                  right: 6
   - name: My Story
     groups:
     - rows:
@@ -3091,6 +3131,7 @@ sections:
           widget_story:
             id: flurry_attack
             format:
+              line_spacing: 1.3
               widget_format:
                 alignment: left
                 padding:
@@ -3098,7 +3139,7 @@ sections:
             story:
             - type: story_part_span
               story_part_span:
-                text: 'I harass my opponent with a '
+                text: 'I harass my foe with a '
                 format:
                   style:
                     color_theme:
@@ -3110,7 +3151,7 @@ sections:
               story_part_action:
                 text: ' flurry of jabs '
                 roll_name: 'Flurry of Jabs Attack Bonus'
-                summation_id: flurry_attack
+                roll_summation_id: flurry_attack
                 text_format:
                   style:
                     color_theme:
@@ -3129,6 +3170,76 @@ sections:
             - type: story_part_span
               story_part_span:
                 text: 'like an angry, persistent wasp.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    size: 16
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        margins:
+          left: 8
+          right: 8
+          top: 10
+        padding:
+          top: 8
+          bottom: 8
+          left: 8
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: flurry_attack
+            format:
+              line_spacing: 1.3
+              widget_format:
+                alignment: left
+                padding:
+                  right: 8
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_20
+                    size: 16
+            - type: story_part_action
+              story_part_action:
+                text: ' recklessly lunge '
+                roll_name: 'Reckless Lunge Attack Bonus'
+                roll_summation_id: flurry_attack
+                text_format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_2
+                    size: 16
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_8
+                  size:
+                    width: 22
+                    height: 22
+            - type: story_part_span
+              story_part_span:
+                text: 'at my opponent.'
                 format:
                   style:
                     color_theme:

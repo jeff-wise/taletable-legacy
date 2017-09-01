@@ -27,7 +27,14 @@
     <item name="function_list_item_parameter_type_1" type="id"/>
     <item name="function_list_item_parameter_type_2" type="id"/>
     <item name="function_list_item_parameter_type_3" type="id"/>
+    <item name="function_list_item_parameter_type_4" type="id"/>
+    <item name="function_list_item_parameter_type_5" type="id"/>
     <item name="function_list_item_result_type" type="id"/>
+
+    <!-- ACTIVE VARIABLE FRAGMENT -->
+    <item name="active_variable_layout" type="id"/>
+    <item name="active_variable_name" type="id"/>
+    <item name="active_variable_value" type="id"/>
 
     <!-- PROGRAM LIST ITEM -->
     <item name="program_list_item_layout" type="id"/>

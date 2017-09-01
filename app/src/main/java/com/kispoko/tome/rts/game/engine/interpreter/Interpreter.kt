@@ -12,7 +12,6 @@ import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
 import effect.Nothing
@@ -58,7 +57,7 @@ object Interpreter
                     effError<AppError,Double>(
                             AppEvalError(UnexpectedProgramResultType(invocation.programId(),
                                                                       engineValue.type(),
-                                                                      EngineValueType.NUMBER)))
+                                                                      EngineValueType.Number)))
             }
         }
 

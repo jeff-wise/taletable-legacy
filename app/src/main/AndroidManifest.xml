@@ -28,10 +28,6 @@
             android:label="Open Sheet"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.engine.EngineActivity"
-            android:label="Engine"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.NumberActivity"
             android:label="Edit Number"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -57,14 +53,14 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.engine.functionindex.FunctionIndexActivity"
-            android:label="Functions"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.engine.function.FunctionEditorActivity"
             android:label="Function"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.function.FunctionListActivity"
+            android:label="Functions"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.engine.program.ProgramEditorActivity"
             android:label="Program"

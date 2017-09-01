@@ -233,8 +233,8 @@ data class ValueSetBase(override val id : UUID,
     fun sortedValues() : List<Value> =
         when (this.valueType())
         {
-            is EngineValueType.NUMBER -> numberValues().sortedBy { it.value() }
-            is EngineValueType.TEXT   -> textValues().sortedBy { it.valueMinusThe() }
+            is EngineValueType.Number -> numberValues().sortedBy { it.value() }
+            is EngineValueType.Text -> textValues().sortedBy { it.valueMinusThe() }
             else                      ->
             {
                 numberValues().sortedBy { it.value() }

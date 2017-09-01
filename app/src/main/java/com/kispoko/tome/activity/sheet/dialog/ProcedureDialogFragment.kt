@@ -19,6 +19,7 @@ import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.procedure.Procedure
+import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -47,7 +48,7 @@ class ProcedureDialogFragment : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var procedure    : Procedure? = null
+    private var procedureId  : ProcedureId? = null
     private var sheetContext : SheetContext? = null
 
 
@@ -57,13 +58,13 @@ class ProcedureDialogFragment : DialogFragment()
 
     companion object
     {
-        fun newInstance(procedure : Procedure,
+        fun newInstance(procedureId : ProcedureId,
                         sheetContext : SheetContext) : ProcedureDialogFragment
         {
             val dialog = ProcedureDialogFragment()
 
             val args = Bundle()
-            args.putSerializable("procedure", procedure)
+            args.putSerializable("procedure_id", procedureId)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
 
@@ -81,7 +82,7 @@ class ProcedureDialogFragment : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.procedure    = arguments.getSerializable("procedure") as Procedure
+        this.procedureId  = arguments.getSerializable("procedure_id") as ProcedureId
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
 
 
@@ -119,11 +120,14 @@ class ProcedureDialogFragment : DialogFragment()
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
-            val procedure = this.procedure
+            val procedureId = this.procedureId
 
-            if (procedure != null)
-                return ProcedureView.view(procedure, sheetUIContext)
-            else
+//            if (procedureId != null)
+//            {
+//
+//                //return ProcedureView.view(procedure, sheetUIContext)
+//            }
+//            else
                 return super.onCreateView(inflater, container, savedInstanceState)
         }
         else

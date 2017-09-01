@@ -415,6 +415,9 @@ class SheetState(val sheetContext : SheetContext,
                  AppStateError(VariableWithTagDoesNotExist(sheetContext.sheetId, variableTag)))
 
 
+    fun variables() : Collection<Variable> = this.variableById.values
+
+
     fun variables(variableReference : VariableReference) : AppEff<Set<Variable>> =
         when (variableReference)
         {

@@ -224,6 +224,23 @@ data class FunctionTypeSignature(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun parameter1Type() : EngineValueType = this.parameter1Type.value
+
+    fun parameter2Type() : EngineValueType? = getMaybePrim(this.parameter2Type)
+
+    fun parameter3Type() : EngineValueType? = getMaybePrim(this.parameter3Type)
+
+    fun parameter4Type() : EngineValueType? = getMaybePrim(this.parameter4Type)
+
+    fun parameter5Type() : EngineValueType? = getMaybePrim(this.parameter5Type)
+
+    fun resultType() : EngineValueType = this.resultType.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 

@@ -9,6 +9,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.*
+import effect.Nothing
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -117,6 +118,37 @@ data class Rulebook(override val id : UUID,
                 if (subsection != null)
                     return subsection
             }
+        }
+
+        return null
+    }
+
+
+    fun referencePath(rulebookReference : RulebookReference) : RulebookReferencePath?
+    {
+        val chapter = this.chapterById[rulebookReference.chapterId()]
+
+        val sectionId = rulebookReference.sectionId()
+        if (chapter != null && sectionId != null)
+        {
+            val section = chapter.sectionWithId(sectionId)
+            val subsectionId = rulebookReference.subsectionId()
+            if (section != null && subsectionId != null)
+            {
+                val subsection = section.subsectionWithId(subsectionId)
+                if (subsection != null)
+                    return RulebookReferencePath(chapter.title(),
+                                                 Just(section.title()),
+                                                 Just(subsection.title()))
+            }
+            else if (section != null)
+            {
+                return RulebookReferencePath(chapter.title(), Just(section.title()), Nothing())
+            }
+        }
+        else if (chapter != null)
+        {
+            return RulebookReferencePath(chapter.title(), Nothing(), Nothing())
         }
 
         return null
@@ -612,9 +644,13 @@ data class RulebookSubsection(override val id : UUID,
 
     fun subsectionId() : RulebookSubsectionId = this.subsectionId.value
 
-    fun title() : String = this.title.value.value
+    fun title() : RulebookSubsectionTitle = this.title.value
 
-    fun body() : String = this.body.value.value
+    fun titleString() : String = this.title.value.value
+
+    fun body() : RulebookSubsectionBody = this.body.value
+
+    fun bodyString() : String = this.body.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -809,3 +845,11 @@ data class RulebookReference(override val id : UUID,
 
 }
 
+
+/**
+ * Rulebook Reference Path
+ */
+data class RulebookReferencePath(val chapterTitle : RulebookChapterTitle,
+                                 val sectionTitle : Maybe<RulebookSectionTitle>,
+                                 val subsectionTitle : Maybe<RulebookSubsectionTitle>)
+                                  : Serializable
