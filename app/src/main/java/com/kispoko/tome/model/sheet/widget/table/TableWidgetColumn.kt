@@ -44,7 +44,7 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
 
     companion object : Factory<TableWidgetColumn>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetColumn> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetColumn> = when (doc)
         {
             is DocDict ->
             {
@@ -135,8 +135,7 @@ data class TableWidgetBooleanColumn(
 
     companion object : Factory<TableWidgetBooleanColumn>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<TableWidgetBooleanColumn> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetBooleanColumn> = when (doc)
         {
             is DocDict ->
             {
@@ -252,8 +251,7 @@ data class TableWidgetNumberColumn(
         private val defaultEditorType = NumericEditorType.Adder
 
 
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<TableWidgetNumberColumn> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetNumberColumn> = when (doc)
         {
             is DocDict ->
             {
@@ -389,8 +387,7 @@ data class TableWidgetTextColumn(
     companion object : Factory<TableWidgetTextColumn>
     {
 
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<TableWidgetTextColumn> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetTextColumn> = when (doc)
         {
             is DocDict ->
             {
@@ -488,7 +485,7 @@ data class ColumnName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ColumnName>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ColumnName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnName> = when (doc)
         {
             is DocText -> effValue(ColumnName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -512,7 +509,7 @@ data class ColumnVariablePrefix(val value : String) : SQLSerializable, Serializa
 
     companion object : Factory<ColumnVariablePrefix>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ColumnVariablePrefix> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnVariablePrefix> = when (doc)
         {
             is DocText -> effValue(ColumnVariablePrefix(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -540,7 +537,7 @@ data class DefaultValueLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<DefaultValueLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<DefaultValueLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultValueLabel> = when (doc)
         {
             is DocText -> effValue(DefaultValueLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -569,7 +566,7 @@ data class IsColumnNamespaced(val value : Boolean) : SQLSerializable, Serializab
 
     companion object : Factory<IsColumnNamespaced>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<IsColumnNamespaced> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<IsColumnNamespaced> = when (doc)
         {
             is DocBoolean -> effValue(IsColumnNamespaced(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -599,7 +596,7 @@ data class DefinesNamespace(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<DefinesNamespace>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<DefinesNamespace> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DefinesNamespace> = when (doc)
         {
             is DocBoolean -> effValue(DefinesNamespace(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -664,8 +661,7 @@ data class ColumnFormat(override val id : UUID,
         private val defaultBackgroundColorTheme = ColorTheme.transparent
 
 
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<ColumnFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnFormat> = when (doc)
         {
             is DocDict -> effApply(::ColumnFormat,
                                    // Text Style
@@ -736,7 +732,7 @@ data class ColumnWidth(val value : Float) : SQLSerializable, Serializable
 
     companion object : Factory<ColumnWidth>
     {
-        override fun fromDocument(doc : SpecDoc): ValueParser<ColumnWidth> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnWidth> = when (doc)
         {
             is DocNumber -> effValue(ColumnWidth(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -766,8 +762,7 @@ data class DefaultNumberColumnValue(val value : Double) : SQLSerializable, Seria
 
     companion object : Factory<DefaultNumberColumnValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<DefaultNumberColumnValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultNumberColumnValue> = when (doc)
         {
             is DocNumber -> effValue(DefaultNumberColumnValue(doc.number))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -796,8 +791,7 @@ data class DefaultTextColumnValue(val value : String) : SQLSerializable, Seriali
 
     companion object : Factory<DefaultTextColumnValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<DefaultTextColumnValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultTextColumnValue> = when (doc)
         {
             is DocText -> effValue(DefaultTextColumnValue(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

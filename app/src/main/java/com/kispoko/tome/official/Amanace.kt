@@ -3,8 +3,7 @@ package com.kispoko.tome.official
 
 
 import com.kispoko.culebra.*
-import com.kispoko.culebra.Parser as YamlParser
-
+import effect.apply
 
 
 data class AmanaceCharacterSheetManifest(val summaries : List<AmanaceCharacterSheetSummary>)
@@ -17,13 +16,13 @@ data class AmanaceCharacterSheetManifest(val summaries : List<AmanaceCharacterSh
             {
                 is YamlDict ->
                 {
-                    parserApply(::AmanaceCharacterSheetManifest,
-                                // Summaries
-                                yamlValue.array("summaries") ap { yamlList ->
-                                    yamlList.map { AmanaceCharacterSheetSummary.fromYaml(it) }}
+                    apply(::AmanaceCharacterSheetManifest,
+                          // Summaries
+                          yamlValue.array("summaries") ap {
+                              it.mapApply { AmanaceCharacterSheetSummary.fromYaml(it) }}
                     )
                 }
-                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
             }
     }
 
@@ -47,21 +46,21 @@ data class AmanaceCharacterSheetSummary(val name : String,
             {
                 is YamlDict ->
                 {
-                    parserApply5(::AmanaceCharacterSheetSummary,
-                                 // Name
-                                 yamlValue.text("name"),
-                                 // Description
-                                 yamlValue.text("description"),
-                                 // Race
-                                 yamlValue.text("race"),
-                                 // Class
-                                 yamlValue.text("class"),
-                                 // Variant
-                                 yamlValue.array("variants") ap { yamlList ->
-                                     yamlList.map { AmanaceCharacterSheetVariant.fromYaml(it) }}
+                    apply(::AmanaceCharacterSheetSummary,
+                          // Name
+                          yamlValue.text("name"),
+                          // Description
+                          yamlValue.text("description"),
+                          // Race
+                          yamlValue.text("race"),
+                          // Class
+                          yamlValue.text("class"),
+                          // Variant
+                          yamlValue.array("variants") ap {
+                              it.mapApply { AmanaceCharacterSheetVariant.fromYaml(it) }}
                     )
                 }
-                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
             }
     }
 
@@ -78,14 +77,14 @@ data class AmanaceCharacterSheetVariant(val id : String, val label : String)
             {
                 is YamlDict ->
                 {
-                    parserApply2(::AmanaceCharacterSheetVariant,
-                                 // Id
-                                 yamlValue.text("id"),
-                                 // Label
-                                 yamlValue.text("label")
-                                 )
+                    apply(::AmanaceCharacterSheetVariant,
+                           // Id
+                           yamlValue.text("id"),
+                           // Label
+                           yamlValue.text("label")
+                           )
                 }
-                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
             }
     }
 

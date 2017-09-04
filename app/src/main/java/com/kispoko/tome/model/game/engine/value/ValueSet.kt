@@ -48,7 +48,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     companion object : Factory<ValueSet>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ValueSet> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSet> = when (doc)
         {
             is DocDict ->
             {
@@ -168,7 +168,7 @@ data class ValueSetBase(override val id : UUID,
 
     companion object : Factory<ValueSetBase>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ValueSetBase> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetBase> = when (doc)
         {
             is DocDict ->
             {
@@ -316,7 +316,7 @@ data class ValueSetCompound(override val id : UUID,
 
     companion object : Factory<ValueSetCompound>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ValueSetCompound> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetCompound> = when (doc)
         {
             is DocDict ->
             {
@@ -440,7 +440,7 @@ data class ValueSetIdSet(val idSet : HashSet<ValueSetId>) : SQLSerializable, Ser
 
     companion object : Factory<ValueSetIdSet>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetIdSet> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetIdSet> = when (doc)
         {
             is DocList -> effApply(::ValueSetIdSet, doc.mapHashSet { ValueSetId.fromDocument(it) })
             else       -> effError(lulo.value.UnexpectedType(DocType.LIST, docType(doc), doc.path))
@@ -476,7 +476,7 @@ data class ValueSetId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ValueSetId>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetId> = when (doc)
         {
             is DocText -> effValue(ValueSetId(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -505,7 +505,7 @@ data class ValueSetLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ValueSetLabel>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetLabel> = when (doc)
         {
             is DocText -> effValue(ValueSetLabel(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -534,7 +534,7 @@ data class ValueSetLabelSingular(val value : String) : SQLSerializable, Serializ
 
     companion object : Factory<ValueSetLabelSingular>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetLabelSingular> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetLabelSingular> = when (doc)
         {
             is DocText -> effValue(ValueSetLabelSingular(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -562,7 +562,7 @@ data class ValueSetDescription(val value : String) : SQLSerializable, Serializab
 
     companion object : Factory<ValueSetDescription>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetDescription> = when (doc)
         {
             is DocText -> effValue(ValueSetDescription(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))

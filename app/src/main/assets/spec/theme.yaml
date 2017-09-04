@@ -7,148 +7,190 @@ metadata:
   authors:
   - name: 'Jeff Wise'
 description:
-  overview_md: >
-    Themes
+  overviewd: Themes
 root_type: theme
 types:
-- name: theme  
-  label: Theme
-  description: >
-    A theme
-  group: Theme
-  type: product
-  fields:
-  - name: id
-    type: theme_id
-    presence: required
+- type: product_type
+  product_type:
+    name: theme  
+    label: Theme
     description: >
-      The id of the theme.
-  - name: palette
-    type: list
-    of: theme_color
-    presence: required
+      A theme
+    group: Theme
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: theme_id
+      presence: required
+      description: >
+        The id of the theme.
+    - name: palette
+      type: 
+        type: custom_coll_type
+        custom_coll_type: theme_color
+      presence: required
+      description: >
+        The theme colors
+    - name: ui_colors
+      type: 
+        type: custom_type
+        custom_type: ui_colors
+      presence: required
+      description: >
+        The colors for the user interface.
+- type: primitive_type
+  primitive_type:
+    name: theme_id
+    label: Theme Id
     description: >
-      The theme colors
-  - name: ui_colors
-    type: ui_colors
-    presence: required
+      The id of a theme.
+    group: Theme
+    base_type: string
+- type: product_type
+  product_type: 
+    name: theme_color  
+    label: Theme Color
     description: >
-      The colors for the user interface.
-- name: theme_id
-  label: Theme Id
-  description: >
-    The id of a theme.
-  group: Theme
-  type: primitive
-  base_type: string
-- name: theme_color  
-  label: Theme Color
-  description: >
-    A theme color
-  group: Theme
-  type: product
-  fields:
-  - name: color_id
-    type: color_id
-    presence: required
+      A theme color
+    group: Theme
+    type: product
+    fields:
+    - name: color_id
+      type: 
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        The id of the theme.
+    - name: color
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The color string.
+- type: primitive_type
+  primitive_type:
+    name: color_id
+    label: Color Id
     description: >
-      The id of the theme.
-  - name: color
-    type: string
-    presence: required
+      The id of a color.
+    group: Theme
+    base_type: string
+- type: product_type
+  product_type: 
+    name: color_theme  
+    label: Color Theme
     description: >
-      The color string.
-- name: color_id
-  label: Color Id
-  description: >
-    The id of a color.
-  group: Theme
-  type: primitive
-  base_type: string
-- name: color_theme  
-  label: Color Theme
-  description: >
-    A color theme (scheme). Maps themes to colors.
-  group: Theme
-  type: product
-  fields:
-  - name: theme_color_ids
-    type: list
-    of: theme_color_id
-    presence: required
+      A color theme (scheme). Maps themes to colors.
+    group: Theme
+    fields:
+    - name: theme_color_ids
+      type: 
+        type: custom_coll_type
+        custom_coll_type: theme_color_id
+      presence: required
+      description: >
+        The theme color ids.
+- type: product_type
+  product_type:
+    name: theme_color_id  
+    label: Theme Color Id
     description: >
-      The theme color ids.
-- name: theme_color_id  
-  label: Theme Color Id
-  description: >
-    An identifier for a color in a theme.
-  group: Theme
-  type: product
-  fields:
-  - name: theme_id
-    type: theme_id
-    presence: required
+      An identifier for a color in a theme.
+    group: Theme
+    fields:
+    - name: theme_id
+      type: 
+        type: custom_type
+        custom_type: theme_id
+      presence: required
+      description: >
+        The theme color id.
+    - name: color_id
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        The color id.
+- type: product_type
+  product_type:
+    name: ui_colors  
+    label: UI Colors
     description: >
-      The theme color id.
-  - name: color_id
-    type: color_id
-    presence: required
-    description: >
-      The color id.
-- name: ui_colors  
-  label: UI Colors
-  description: >
-    Colors of the user interface.
-  group: Theme
-  type: product
-  fields:
-  - name: toolbar_background
-    type: color_id
-    presence: required
-    description: >
-      Toolbar background color.
-  - name: toolbar_icons
-    type: color_id
-    presence: required
-    description: >
-      Toolbar icons color.
-  - name: title
-    type: color_id
-    presence: required
-    description: >
-      Title color.
-  - name: tab_bar_background
-    type: color_id
-    presence: required
-    description: >
-      Tab bar background color.
-  - name: tab_text_normal
-    type: color_id
-    presence: required
-    description: >
-      Default tab text color.
-  - name: tab_text_selected
-    type: color_id
-    presence: required
-    description: >
-      Tab selected text color.
-  - name: tab_underline
-    type: color_id
-    presence: required
-    description: >
-      Tab underline color.
-  - name: bottom_bar_background
-    type: color_id
-    presence: required
-    description: >
-      Bottom bar background color.
-  - name: bottom_bar_active
-    type: color_id
-    presence: required
-    description: >
-      Bottom bar selected elements color.
-  - name: bottom_bar_inactive
-    type: color_id
-    presence: required
-    description: >
-      Bottom bar deselected elements color.
+      Colors of the user interface.
+    group: Theme
+    fields:
+    - name: toolbar_background
+      type: 
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Toolbar background color.
+    - name: toolbar_icons
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Toolbar icons color.
+    - name: title
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Title color.
+    - name: tab_bar_background
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Tab bar background color.
+    - name: tab_text_normal
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Default tab text color.
+    - name: tab_text_selected
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Tab selected text color.
+    - name: tab_underline
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Tab underline color.
+    - name: bottom_bar_background
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Bottom bar background color.
+    - name: bottom_bar_active
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Bottom bar selected elements color.
+    - name: bottom_bar_inactive
+      type:
+        type: custom_type
+        custom_type: color_id
+      presence: required
+      description: >
+        Bottom bar deselected elements color.
+constraints:

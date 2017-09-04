@@ -81,7 +81,7 @@ sealed class Icon : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<Icon> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<Icon> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -157,7 +157,7 @@ data class IconFormat(override val id : UUID,
         private val defaultIconSize     = IconSize.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<IconFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<IconFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -215,7 +215,7 @@ data class IconSize(val width : Int, val height : Int) : SQLSerializable, Serial
 
     companion object : Factory<IconSize>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<IconSize> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<IconSize> = when (doc)
         {
             is DocDict ->
             {

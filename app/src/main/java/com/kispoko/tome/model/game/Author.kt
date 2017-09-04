@@ -3,15 +3,12 @@ package com.kispoko.tome.model.game
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.database.SQL
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.sheet.widget.TextWidgetLabel
 import com.kispoko.tome.model.user.UserName
 import effect.*
 import lulo.document.*
@@ -65,7 +62,7 @@ data class Author(override val id : UUID,
 
     companion object : Factory<Author>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Author> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Author> = when (doc)
         {
             is DocDict ->
             {
@@ -112,7 +109,7 @@ data class AuthorName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<AuthorName>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<AuthorName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<AuthorName> = when (doc)
         {
             is DocText -> effValue(AuthorName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -141,7 +138,7 @@ data class AuthorOrganization(val value : String) : SQLSerializable, Serializabl
 
     companion object : Factory<AuthorOrganization>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<AuthorOrganization> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<AuthorOrganization> = when (doc)
         {
             is DocText -> effValue(AuthorOrganization(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

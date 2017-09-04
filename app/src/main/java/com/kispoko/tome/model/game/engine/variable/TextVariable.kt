@@ -33,7 +33,7 @@ sealed class TextVariableValue : SumModel, Serializable
 
     companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TextVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> =
             when (doc.case())
             {
                 "text_literal"       -> TextVariableLiteralValue.fromDocument(doc)
@@ -77,8 +77,7 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
 
     companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<TextVariableValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> = when (doc)
         {
             is DocText -> effValue(TextVariableLiteralValue(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -128,7 +127,7 @@ class TextVariableUnknownLiteralValue() : TextVariableValue(), SQLSerializable
 
     companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariableValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -183,8 +182,7 @@ data class TextVariableValueValue(val valueReference : ValueReference)
 
     companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<TextVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> =
                 effApply(::TextVariableValueValue, ValueReference.fromDocument(doc))
     }
 
@@ -233,7 +231,7 @@ data class TextVariableValueUnknownValue(val valueSetId : ValueSetId)
 
     companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> =
                 effApply(::TextVariableValueUnknownValue, ValueSetId.fromDocument(doc))
     }
 
@@ -277,7 +275,7 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 
     companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> =
                 effApply(::TextVariableProgramValue, Invocation.fromDocument(doc))
     }
 

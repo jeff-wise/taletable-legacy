@@ -9,7 +9,7 @@ import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -49,7 +49,7 @@ data class TextColumnFormat(override val id : UUID,
         private val defaultColumnFormat = ColumnFormat.default
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextColumnFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextColumnFormat> = when (doc)
         {
             is DocDict ->
             {

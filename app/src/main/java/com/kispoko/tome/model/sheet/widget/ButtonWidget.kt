@@ -44,7 +44,7 @@ sealed class ButtonViewType : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<ButtonViewType> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<ButtonViewType> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -73,8 +73,7 @@ data class ButtonLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ButtonLabel>
     {
-        override fun fromDocument(doc: SpecDoc)
-                      : ValueParser<ButtonLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ButtonLabel> = when (doc)
         {
             is DocText -> effValue(ButtonLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -103,8 +102,7 @@ data class ButtonDescription(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ButtonDescription>
     {
-        override fun fromDocument(doc: SpecDoc)
-                      : ValueParser<ButtonDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ButtonDescription> = when (doc)
         {
             is DocText -> effValue(ButtonDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -141,7 +139,7 @@ sealed class ButtonIcon : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<ButtonIcon> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<ButtonIcon> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -219,7 +217,7 @@ data class ButtonWidgetFormat(override val id : UUID,
         private val defaultIconColorTheme      = ColorTheme.black
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ButtonWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ButtonWidgetFormat> = when (doc)
         {
             is DocDict ->
             {

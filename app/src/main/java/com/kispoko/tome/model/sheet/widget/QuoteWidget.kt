@@ -18,7 +18,6 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.IconFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -59,7 +58,7 @@ sealed class QuoteViewType : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<QuoteViewType> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<QuoteViewType> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -125,7 +124,7 @@ data class QuoteWidgetFormat(override val id : UUID,
         val defaultIconFormat     = IconFormat.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<QuoteWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<QuoteWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::QuoteWidgetFormat,
                                    // Widget Format

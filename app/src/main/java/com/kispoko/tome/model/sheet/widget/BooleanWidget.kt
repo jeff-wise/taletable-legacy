@@ -48,7 +48,7 @@ data class BooleanWidgetFormat(override val id : UUID,
 
     companion object : Factory<BooleanWidgetFormat>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -100,7 +100,7 @@ data class TrueText(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<TrueText>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TrueText> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TrueText> = when (doc)
         {
             is DocText -> effValue(TrueText(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -129,7 +129,7 @@ data class FalseText(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<FalseText>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<FalseText> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<FalseText> = when (doc)
         {
             is DocText -> effValue(FalseText(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

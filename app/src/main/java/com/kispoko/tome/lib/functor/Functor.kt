@@ -164,21 +164,21 @@ data class Conj<A>(val set : MutableSet<A>) : Func<MutableSet<A>>(set), Serializ
 
 fun <A : SQLSerializable> maybeLiftPrim(mValue : Maybe<A>) : Maybe<Prim<A>> = when(mValue)
 {
-    is Just -> maybeApply(::Prim, mValue)
+    is Just -> apply(::Prim, mValue)
     else    -> Nothing()
 }
 
 
 fun <A : SumModel> maybeLiftSum(mValue : Maybe<A>) : Maybe<Sum<A>> = when(mValue)
 {
-    is Just -> maybeApply(::Sum, mValue)
+    is Just -> apply(::Sum, mValue)
     else    -> Nothing()
 }
 
 
 fun <A : Model> maybeLiftComp(mValue : Maybe<A>) : Maybe<Comp<A>> = when(mValue)
 {
-    is Just -> maybeApply(::Comp, mValue)
+    is Just -> apply(::Comp, mValue)
     else    -> Nothing()
 }
 

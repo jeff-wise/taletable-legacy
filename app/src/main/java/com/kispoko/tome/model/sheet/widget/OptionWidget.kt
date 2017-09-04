@@ -53,7 +53,7 @@ sealed class OptionViewType : SQLSerializable,  Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<OptionViewType> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<OptionViewType> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -127,7 +127,7 @@ data class OptionWidgetFormat(override val id : UUID,
         val defaultHeight           = Height.Wrap
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<OptionWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<OptionWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::OptionWidgetFormat,
                                    // Widget Format
@@ -196,7 +196,7 @@ data class OptionDescription(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<OptionDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<OptionDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<OptionDescription> = when (doc)
         {
             is DocText -> effValue(OptionDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

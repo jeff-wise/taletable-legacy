@@ -58,17 +58,17 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".activity.engine.function.FunctionActivity"
+            android:label="Function"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".activity.engine.function.FunctionListActivity"
             android:label="Functions"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.engine.program.ProgramEditorActivity"
             android:label="Program"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activity.StatementActivity"
-            android:label="Statement"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
@@ -127,11 +127,6 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.sheet.widget.ActionWidgetActivity"
-            android:label="Groups"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activity.BooleanWidgetActivity"
             android:label="Groups"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />

@@ -33,7 +33,7 @@ data class ActionDescription(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ActionDescription>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ActionDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ActionDescription> = when (doc)
         {
             is DocText -> effValue(ActionDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -62,8 +62,7 @@ data class ActionDescriptionHighlight(val value : String) : SQLSerializable, Ser
 
     companion object : Factory<ActionDescriptionHighlight>
     {
-        override fun fromDocument(doc: SpecDoc)
-                      : ValueParser<ActionDescriptionHighlight> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ActionDescriptionHighlight> = when (doc)
         {
             is DocText -> effValue(ActionDescriptionHighlight(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -91,8 +90,7 @@ data class ActionName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ActionName>
     {
-        override fun fromDocument(doc: SpecDoc)
-                      : ValueParser<ActionName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ActionName> = when (doc)
         {
             is DocText -> effValue(ActionName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -121,7 +119,7 @@ data class ActionResult(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ActionResult>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ActionResult> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ActionResult> = when (doc)
         {
             is DocText -> effValue(ActionResult(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -184,7 +182,7 @@ data class ActionWidgetFormat(override val id : UUID,
         private val defaultHeight           = Height.Wrap
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ActionWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ActionWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::ActionWidgetFormat,
                                    // Widget Format

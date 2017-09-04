@@ -60,7 +60,7 @@ data class Campaign(override val id : UUID,
 
     companion object : Factory<Campaign>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Campaign> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Campaign> = when (doc)
         {
             is DocDict ->
             {
@@ -119,7 +119,7 @@ data class CampaignId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<CampaignId>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<CampaignId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<CampaignId> = when (doc)
         {
             is DocText -> effValue(CampaignId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -143,7 +143,7 @@ data class CampaignName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<CampaignName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<CampaignName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<CampaignName> = when (doc)
         {
             is DocText -> effValue(CampaignName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -172,7 +172,7 @@ data class CampaignSummary(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<CampaignSummary>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<CampaignSummary> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<CampaignSummary> = when (doc)
         {
             is DocText -> effValue(CampaignSummary(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

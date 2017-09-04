@@ -68,7 +68,7 @@ data class Program(override val id : UUID,
 
     companion object : Factory<Program>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Program>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Program> = when (doc)
         {
             is DocDict ->
             {
@@ -184,7 +184,7 @@ data class ProgramTypeSignature(override val id : UUID,
 
     companion object : Factory<ProgramTypeSignature>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ProgramTypeSignature> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramTypeSignature> = when (doc)
         {
             is DocDict ->
             {
@@ -247,7 +247,7 @@ data class ProgramId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ProgramId>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ProgramId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramId> = when (doc)
 
         {
             is DocText -> effValue(ProgramId(doc.text))
@@ -277,7 +277,7 @@ data class ProgramLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ProgramLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ProgramLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramLabel> = when (doc)
         {
             is DocText -> effValue(ProgramLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -305,7 +305,7 @@ data class ProgramDescription(val value : String) : SQLSerializable, Serializabl
 
     companion object : Factory<ProgramDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ProgramDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramDescription> = when (doc)
         {
             is DocText -> effValue(ProgramDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -334,7 +334,7 @@ data class ProgramParameterIndex(val value : Int) : SQLSerializable, Serializabl
 
     companion object : Factory<ProgramParameterIndex>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ProgramParameterIndex> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramParameterIndex> = when (doc)
         {
             is DocNumber -> effValue(ProgramParameterIndex(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))

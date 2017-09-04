@@ -38,9 +38,9 @@ import java.util.*
 data class MechanicWidgetFormat(override val id : UUID,
                                 val widgetFormat : Comp<WidgetFormat>,
                                 val viewType : Prim<MechanicWidgetViewType>,
-                                val headerFormat: Comp<TextFormat>,
-                                val mechanicHeaderFormat: Comp<TextFormat>,
-                                val mechanicSummaryFormat: Comp<TextFormat>,
+                                val headerFormat : Comp<TextFormat>,
+                                val mechanicHeaderFormat : Comp<TextFormat>,
+                                val mechanicSummaryFormat : Comp<TextFormat>,
                                 val mechanicFormat : Comp<ElementFormat>)
                                  : Model, Serializable
 {
@@ -90,7 +90,7 @@ data class MechanicWidgetFormat(override val id : UUID,
         val defaultMechanicFormat           = ElementFormat.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<MechanicWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -177,7 +177,7 @@ sealed class MechanicWidgetViewType : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<MechanicWidgetViewType> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<MechanicWidgetViewType> = when (doc)
         {
             is DocText -> when (doc.text)
             {

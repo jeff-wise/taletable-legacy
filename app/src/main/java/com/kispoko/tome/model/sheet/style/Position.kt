@@ -10,7 +10,7 @@ import effect.effError
 import effect.effValue
 import lulo.document.DocText
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
@@ -52,7 +52,7 @@ sealed class Position : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<Position> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<Position> = when (doc)
         {
             is DocText -> when (doc.text)
             {

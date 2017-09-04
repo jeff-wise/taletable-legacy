@@ -6,20 +6,17 @@ import android.graphics.Color
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.Theme
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.theme.AppThemeNotSupported
 import com.kispoko.tome.rts.theme.ThemeDoesNotHaveColor
 import com.kispoko.tome.rts.theme.ThemeManager
-import com.kispoko.tome.rts.theme.ThemeNotSupported
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -56,7 +53,7 @@ data class AppSettings(override val id : UUID,
 
     companion object : Factory<AppSettings>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<AppSettings> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<AppSettings> = when (doc)
         {
             is DocDict ->
             {

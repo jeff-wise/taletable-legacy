@@ -32,7 +32,7 @@ sealed class TextReference : Serializable
 
     companion object : Factory<TextReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextReference> =
             when (doc.case())
             {
                 "literal"  -> TextReferenceLiteral.fromDocument(doc)
@@ -64,7 +64,7 @@ data class TextReferenceLiteral(val value : String) : TextReference(), SQLSerial
 
     companion object : Factory<TextReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextReference> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextReference> = when (doc)
         {
             is DocText -> effValue(TextReferenceLiteral(doc.text))
             else       -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -95,7 +95,7 @@ data class TextReferenceValue(val valueReference : ValueReference)
 
     companion object : Factory<TextReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextReference> =
                 effApply(::TextReferenceValue, ValueReference.fromDocument(doc))
     }
 
@@ -122,7 +122,7 @@ data class TextReferenceVariable(val variableReference : VariableReference)
 
     companion object : Factory<TextReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextReference> =
                 effApply(::TextReferenceVariable, VariableReference.fromDocument(doc))
     }
 

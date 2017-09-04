@@ -104,7 +104,7 @@ data class TextWidgetFormat(override val id : UUID,
         private val defaultDescriptionStyle   = TextStyle.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -199,7 +199,7 @@ data class TextWidgetDescription(val value : String) : SQLSerializable, Serializ
 
     companion object : Factory<TextWidgetDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TextWidgetDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextWidgetDescription> = when (doc)
         {
             is DocText -> effValue(TextWidgetDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -228,7 +228,7 @@ data class TextWidgetLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<TextWidgetLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TextWidgetLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextWidgetLabel> = when (doc)
         {
             is DocText -> effValue(TextWidgetLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

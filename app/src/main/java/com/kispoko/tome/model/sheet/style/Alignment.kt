@@ -11,7 +11,7 @@ import effect.effError
 import effect.effValue
 import lulo.document.DocText
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
@@ -47,7 +47,7 @@ sealed class Alignment : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<Alignment> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<Alignment> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -99,7 +99,7 @@ sealed class VerticalAlignment : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<VerticalAlignment> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<VerticalAlignment> = when (doc)
         {
             is DocText -> when (doc.text)
             {

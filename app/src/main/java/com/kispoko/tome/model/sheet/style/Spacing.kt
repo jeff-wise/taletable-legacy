@@ -62,7 +62,7 @@ data class Spacing(override val id : UUID,
     companion object : Factory<Spacing>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Spacing> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Spacing> = when (doc)
         {
             is DocDict -> effApply(::Spacing,
                                    // Left
@@ -148,7 +148,7 @@ data class LeftSpacing(val value : Float) : SQLSerializable, Serializable
     companion object : Factory<LeftSpacing>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<LeftSpacing> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<LeftSpacing> = when (doc)
         {
             is DocNumber -> effValue(LeftSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -180,7 +180,7 @@ data class TopSpacing(val value : Float) : SQLSerializable, Serializable
     companion object : Factory<TopSpacing>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TopSpacing> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TopSpacing> = when (doc)
         {
             is DocNumber -> effValue(TopSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -211,7 +211,7 @@ data class RightSpacing(val value : Float) : SQLSerializable, Serializable
     companion object : Factory<RightSpacing>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RightSpacing> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RightSpacing> = when (doc)
         {
             is DocNumber -> effValue(RightSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -243,7 +243,7 @@ data class BottomSpacing(val value : Float) : SQLSerializable, Serializable
     companion object : Factory<BottomSpacing>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BottomSpacing> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BottomSpacing> = when (doc)
         {
             is DocNumber -> effValue(BottomSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))

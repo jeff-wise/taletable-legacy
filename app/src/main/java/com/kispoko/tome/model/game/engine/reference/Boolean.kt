@@ -29,7 +29,7 @@ sealed class BooleanReference : SumModel, Serializable
 
     companion object : Factory<BooleanReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanReference> =
             when (doc.case())
             {
                 "literal"  -> BooleanReferenceLiteral.fromDocument(doc)
@@ -61,7 +61,7 @@ data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference(), SQ
 
     companion object : Factory<BooleanReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanReference> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanReference> = when (doc)
         {
             is DocBoolean -> effValue(BooleanReferenceLiteral(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -100,7 +100,7 @@ data class BooleanReferenceVariable(val variableReference : VariableReference)
 
     companion object : Factory<BooleanReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanReference> =
                 effApply(::BooleanReferenceVariable, VariableReference.fromDocument(doc))
     }
 

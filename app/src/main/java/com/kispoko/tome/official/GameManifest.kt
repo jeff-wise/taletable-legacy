@@ -4,8 +4,8 @@ package com.kispoko.tome.official
 
 import com.kispoko.culebra.*
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.culebra.Parser as YamlParser
-
+import effect.apply
+import effect.effValue
 
 
 // ---------------------------------------------------------------------------------------------
@@ -24,13 +24,13 @@ data class GameManifest(val gameSummaries : List<GameSummary>)
         {
             is YamlDict ->
             {
-                parserApply(::GameManifest,
-                            // Summaries
-                            yamlValue.array("summaries") ap { yamlList ->
-                                yamlList.map { GameSummary.fromYaml(it) }}
-                            )
+                apply(::GameManifest,
+                      // Summaries
+                      yamlValue.array("summaries") ap {
+                          it.mapApply { GameSummary.fromYaml(it) }}
+                      )
             }
-            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
+            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
         }
 
     }
@@ -52,22 +52,24 @@ data class GameSummary(val gameId : GameId,
         {
             is YamlDict ->
             {
-                parserApply6(::GameSummary,
-                             // Game Id
-                             yamlValue.text("game_id") ap { result(GameId(it)) },
-                             // Name
-                             yamlValue.text("name"),
-                             // Description
-                             yamlValue.text("description"),
-                             // Genre
-                             yamlValue.text("genre"),
-                             // Players
-                             yamlValue.integer("players"),
-                             // Likes
-                             yamlValue.integer("likes")
-                             )
+                apply(::GameSummary,
+                      // Game Id
+                      yamlValue.text("game_id") ap {
+                          effValue<YamlParseError,GameId>(GameId(it))
+                      },
+                      // Name
+                      yamlValue.text("name"),
+                      // Description
+                      yamlValue.text("description"),
+                      // Genre
+                      yamlValue.text("genre"),
+                      // Players
+                      yamlValue.integer("players"),
+                      // Likes
+                      yamlValue.integer("likes")
+                      )
             }
-            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))
+            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
         }
 
     }

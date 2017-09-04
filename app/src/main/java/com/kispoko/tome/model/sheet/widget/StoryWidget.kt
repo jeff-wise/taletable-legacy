@@ -87,7 +87,7 @@ data class StoryWidgetFormat(override val id : UUID,
         private val defaultLineSpacing          = LineSpacing.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -148,7 +148,7 @@ sealed class StoryPart : Model, Serializable
     companion object : Factory<StoryPart>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPart> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPart> =
             when (doc.case())
             {
                 "story_part_span"     -> StoryPartSpan.fromDocument(doc) as ValueParser<StoryPart>
@@ -205,7 +205,7 @@ data class StoryPartSpan(override val id : UUID,
 
     companion object : Factory<StoryPartSpan>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartSpan> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartSpan> = when (doc)
         {
             is DocDict -> effApply(::StoryPartSpan,
                                    // Text Format
@@ -280,7 +280,7 @@ data class StoryPartVariable(override val id : UUID,
 
     companion object : Factory<StoryPartVariable>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartVariable> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartVariable> = when (doc)
         {
             is DocDict ->
             {
@@ -375,7 +375,7 @@ data class StoryPartIcon(override val id : UUID,
 
     companion object : Factory<StoryPartIcon>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartIcon> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartIcon> = when (doc)
         {
             is DocDict -> effApply(::StoryPartIcon,
                                    // Icon
@@ -453,7 +453,7 @@ data class StoryPartAction(override val id : UUID,
 
     companion object : Factory<StoryPartAction>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartAction> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartAction> = when (doc)
         {
             is DocDict ->
             {
@@ -534,7 +534,7 @@ data class ShowProcedureDialog(val value : Boolean) : SQLSerializable, Serializa
 
     companion object : Factory<ShowProcedureDialog>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowProcedureDialog> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowProcedureDialog> = when (doc)
         {
             is DocBoolean -> effValue(ShowProcedureDialog(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -563,7 +563,7 @@ data class StoryPartText(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<StoryPartText>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryPartText> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartText> = when (doc)
         {
             is DocText -> effValue(StoryPartText(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -592,7 +592,7 @@ data class LineSpacing(val value : Float) : SQLSerializable, Serializable
 
     companion object : Factory<LineSpacing>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<LineSpacing> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<LineSpacing> = when (doc)
         {
             is DocNumber -> effValue(LineSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))

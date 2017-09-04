@@ -42,7 +42,7 @@ sealed class NumberVariableValue : SumModel, Serializable
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> =
             when (doc.case())
             {
                 "number_literal"     -> NumberVariableLiteralValue.fromDocument(doc)
@@ -87,7 +87,7 @@ data class NumberVariableLiteralValue(val value : Double)
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> = when (doc)
         {
             is DocNumber -> effValue(NumberVariableLiteralValue(doc.number))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -137,7 +137,7 @@ class NumberVariableUnknownLiteralValue() : NumberVariableValue(), SQLSerializab
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -195,7 +195,7 @@ data class NumberVariableVariableValue(val variableId : VariableId)
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> =
                 effApply(::NumberVariableVariableValue, VariableId.fromDocument(doc))
     }
 
@@ -254,7 +254,7 @@ data class NumberVariableProgramValue(val invocation : Invocation)
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> =
             effApply(::NumberVariableProgramValue, Invocation.fromDocument(doc))
     }
 
@@ -315,7 +315,7 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> =
                 effApply(::NumberVariableValueValue, ValueReference.fromDocument(doc))
     }
 
@@ -371,7 +371,7 @@ data class NumberVariableSummationValue(val summationId : SummationId)
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> =
                 effApply(::NumberVariableSummationValue, SummationId.fromDocument(doc))
     }
 
@@ -464,7 +464,7 @@ data class NumberVariableHistory(override val id : UUID,
 
     companion object : Factory<NumberVariableHistory>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableHistory> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableHistory> = when (doc)
         {
             is DocDict ->
             {
@@ -548,8 +548,7 @@ data class NumberVariableHistoryEntry(
 
     companion object : Factory<NumberVariableHistoryEntry>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<NumberVariableHistoryEntry> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableHistoryEntry> = when (doc)
         {
             is DocDict ->
             {
@@ -602,8 +601,7 @@ data class NumberVariableHistoryEntryDescription(val value : String)
 
     companion object : Factory<NumberVariableHistoryEntryDescription>
     {
-        override fun fromDocument(doc : SpecDoc)
-                     : ValueParser<NumberVariableHistoryEntryDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableHistoryEntryDescription> = when (doc)
         {
             is DocText -> effValue(NumberVariableHistoryEntryDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

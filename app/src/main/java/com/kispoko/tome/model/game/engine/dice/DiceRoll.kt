@@ -58,8 +58,7 @@ data class DiceRoll(override val id : UUID,
 
     companion object : Factory<DiceRoll>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<DiceRoll> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRoll> = when (doc)
         {
             is DocDict ->
             {
@@ -189,8 +188,7 @@ data class DiceQuantity(override val id : UUID,
 
     companion object : Factory<DiceQuantity>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<DiceQuantity> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceQuantity> = when (doc)
         {
             is DocDict -> effApply(::DiceQuantity,
                                    // Sides
@@ -258,7 +256,7 @@ data class DiceRollName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<DiceRollName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollName> = when (doc)
         {
             is DocText -> effValue(DiceRollName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -287,7 +285,7 @@ data class DiceSides(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<DiceSides>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<DiceSides> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceSides> = when (doc)
         {
             is DocNumber -> effValue(DiceSides(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -316,7 +314,7 @@ data class DiceRollQuantity(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<DiceRollQuantity>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollQuantity> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollQuantity> = when (doc)
         {
             is DocNumber -> effValue(DiceRollQuantity(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -361,7 +359,7 @@ data class RollModifier(override val id : UUID,
 
     companion object : Factory<RollModifier>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RollModifier> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RollModifier> = when (doc)
         {
             is DocDict -> effApply(::RollModifier,
                                    // Value
@@ -410,7 +408,7 @@ data class RollModifierValue(val value : Double) : SQLSerializable, Serializable
 
     companion object : Factory<RollModifierValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RollModifierValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RollModifierValue> = when (doc)
         {
             is DocNumber -> effValue(RollModifierValue(doc.number))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -439,7 +437,7 @@ data class RollModifierName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<RollModifierName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RollModifierName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RollModifierName> = when (doc)
         {
             is DocText -> effValue(RollModifierName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

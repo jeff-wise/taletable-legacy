@@ -10,7 +10,7 @@ import effect.effError
 import effect.effValue
 import lulo.document.DocText
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -30,7 +30,7 @@ data class UserName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<UserName>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<UserName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<UserName> = when (doc)
         {
             is DocText -> effValue(UserName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

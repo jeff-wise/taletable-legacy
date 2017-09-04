@@ -29,7 +29,7 @@ sealed class DataReference : SumModel, Serializable
 
     companion object : Factory<DataReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DataReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DataReference> =
             when (doc.case())
             {
                 "data_reference_boolean"   -> DataReferenceBoolean.fromDocument(doc.nextCase())
@@ -40,6 +40,7 @@ sealed class DataReference : SumModel, Serializable
                                                 as ValueParser<DataReference>
                 else                        -> {
                     Log.d("***DATAREF", doc.toString())
+                    Log.d("***DATAREF", "data ref case: " + doc.case())
                     effError<ValueError, DataReference>(
                             UnknownCase(doc.case(), doc.path))
                 }
@@ -68,8 +69,7 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
 
     companion object : Factory<DataReferenceBoolean>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<DataReferenceBoolean> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DataReferenceBoolean> = when (doc)
         {
             is DocDict -> BooleanReference.fromDocument(doc) ap {
                               effValue<ValueError, DataReferenceBoolean>(
@@ -110,8 +110,7 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
 
     companion object : Factory<DataReferenceDiceRoll>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<DataReferenceDiceRoll> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DataReferenceDiceRoll> = when (doc)
         {
             is DocDict -> DiceRollReference.fromDocument(doc) ap {
                               effValue<ValueError, DataReferenceDiceRoll>(
@@ -152,7 +151,7 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
 
     companion object : Factory<DataReferenceNumber>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DataReferenceNumber> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DataReferenceNumber> =
                 effApply(::DataReferenceNumber, NumberReference.fromDocument(doc))
     }
 

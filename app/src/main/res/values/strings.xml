@@ -562,7 +562,7 @@
     <!-- ACTIVITY: FUNCTION -->
     <!-- ==================================================================================== -->
 
-    <string name="function_field_name_label">Name</string>
+    <string name="function_field_id_label">Function Id</string>
     <string name="function_field_name_description">
         The Function\'s unique identifier. Used when programming.
     </string>

@@ -267,7 +267,7 @@ object DiceRollerView
 
 
         name.padding.topDp      = 7f
-        name.padding.bottomDp   = 5f
+        name.padding.bottomDp   = 2f
 
         name.sizeSp             = 22f
 
@@ -284,7 +284,7 @@ object DiceRollerView
 
         description.gravity             = Gravity.CENTER
 
-        description.padding.bottomDp    = 9f
+        description.padding.bottomDp    = 8f
 
         description.text                = rollString
 
@@ -294,7 +294,7 @@ object DiceRollerView
         description.color               = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         description.font                = Font.typeface(TextFont.FiraSans,
-                                                        TextFontStyle.Italic,
+                                                        TextFontStyle.Regular,
                                                         sheetUIContext.context)
 
         description.sizeSp              = 14f
@@ -495,6 +495,9 @@ object DiceRollerView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         scrollView.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
+        scrollView.margin.leftDp        = 2f
+        scrollView.margin.rightDp       = 2f
+
         return scrollView.scrollView(sheetUIContext.context)
     }
 
@@ -541,6 +544,9 @@ object DiceRollerView
         layout.orientation          = LinearLayout.VERTICAL
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        layout.margin.leftDp        = 2f
+//        layout.margin.rightDp       = 2f
 
         return layout.linearLayout(context)
     }
@@ -621,7 +627,7 @@ object DiceRollerView
                                                     TextFontStyle.Light,
                                                     sheetUIContext.context)
 
-        value.sizeSp                = 25f
+        value.sizeSp                = 30f
 
         return value.textView(sheetUIContext.context)
     }
@@ -678,7 +684,7 @@ object DiceRollerView
         layout.padding.bottomDp     = 3f
 
         val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 

@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.engine.function
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -17,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.engine.valueset.BaseValueSetActivity
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
@@ -97,7 +99,7 @@ class FunctionListActivity : AppCompatActivity()
                 is Val -> {
                     val functionSet = functions.value
                     val functionList = functionSet.sortedBy { it.label() }
-                    this.initializeFunctionListView(functionList)
+                    this.initializeFunctionListView(functionList, gameId)
                 }
                 is Err -> ApplicationLog.error(functions.error)
             }
@@ -118,11 +120,12 @@ class FunctionListActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeFunctionListView(functions : List<Function>)
+    private fun initializeFunctionListView(functions : List<Function>, gameId : GameId)
     {
         val recyclerView = this.findViewById(R.id.function_list_view) as RecyclerView
 
         recyclerView.adapter = FunctionRecyclerViewAdapter(functions,
+                                                           gameId,
                                                            this.appSettings.themeId(),
                                                            this)
 
@@ -199,8 +202,9 @@ class FunctionListActivity : AppCompatActivity()
  * Function List RecyclerView Adapter
  */
 class FunctionRecyclerViewAdapter(val functions : List<Function>,
+                                  val gameId : GameId,
                                   val themeId : ThemeId,
-                                  val context : Context)
+                                  val activity : AppCompatActivity)
                                    : RecyclerView.Adapter<FunctionViewHolder>()
 {
 
@@ -220,13 +224,13 @@ class FunctionRecyclerViewAdapter(val functions : List<Function>,
     {
         val function = this.functions[position]
 
-        // > Header
+        // Header
         viewHolder.setHeaderText(function.label())
 
-        // > Description
+        // Description
         viewHolder.setDescriptionText(function.description());
 
-        // > Parameter Types
+        // Parameter Types
         val typeSignature = function.typeSignature()
 
         viewHolder.setParameterType1(typeSignature.parameter1Type().toString().toUpperCase())
@@ -247,11 +251,17 @@ class FunctionRecyclerViewAdapter(val functions : List<Function>,
         if (paramter5Type != null)
             viewHolder.setParameterType5(paramter5Type.toString().toUpperCase())
 
-        // > Result Types
+        // Result Types
         viewHolder.setResultType(typeSignature.resultType().toString().toUpperCase())
 
-//        // > On Click Listener
-//        viewHolder.setOnClick(function.name(), this.context);
+        // On Click Listener
+        viewHolder.setOnClick(View.OnClickListener {
+            val intent = Intent(activity, FunctionActivity::class.java)
+            intent.putExtra("function_id", function.functionId())
+            intent.putExtra("game_id", gameId)
+            activity.startActivity(intent)
+        })
+
     }
 
     override fun getItemCount() = this.functions.size
@@ -355,23 +365,11 @@ class FunctionViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
     }
 
 
-//    public void setOnClick(final String functionName, final Context context)
-//    {
-//        this.layoutView.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(context, FunctionEditorActivity.class);
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putString("function_name", functionName);
-//                intent.putExtras(bundle);
-//
-//                context.startActivity(intent);
-//            }
-//        });
-//    }
+    fun setOnClick(onClick : View.OnClickListener)
+    {
+        this.layout?.setOnClickListener(onClick)
+
+    }
 
 }
 

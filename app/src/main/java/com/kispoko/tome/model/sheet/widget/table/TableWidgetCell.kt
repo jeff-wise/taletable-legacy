@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import android.widget.TableRow
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppSheetError
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -49,7 +48,7 @@ sealed class TableWidgetCell : Model, Serializable
 
     companion object : Factory<TableWidgetCell>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetCell> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetCell> = when (doc)
         {
             is DocDict ->
             {
@@ -127,7 +126,7 @@ data class TableWidgetBooleanCell(override val id : UUID,
 
     companion object : Factory<TableWidgetBooleanCell>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetBooleanCell> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetBooleanCell> = when (doc)
         {
             is DocDict ->
             {
@@ -262,7 +261,7 @@ data class TableWidgetNumberCell(override val id : UUID,
         private val defaultNumberCellFormat = NumberCellFormat.default()
         private val defaultEditorType       = NumericEditorType.Calculator
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetNumberCell> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetNumberCell> = when (doc)
         {
             is DocDict ->
             {
@@ -413,7 +412,7 @@ data class TableWidgetTextCell(override val id : UUID,
 
     companion object : Factory<TableWidgetTextCell>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetTextCell> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetTextCell> = when (doc)
         {
             is DocDict ->
             {
@@ -577,7 +576,7 @@ data class CellFormat(override val id : UUID,
         private val defaultBackgroundColorTheme = ColorTheme.transparent
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<CellFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<CellFormat> = when (doc)
         {
             is DocDict ->
             {

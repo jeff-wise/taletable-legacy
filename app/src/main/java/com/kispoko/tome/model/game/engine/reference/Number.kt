@@ -12,7 +12,6 @@ import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
@@ -34,7 +33,7 @@ sealed class NumberReference : SumModel, Serializable
 
     companion object : Factory<NumberReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberReference> =
             when (doc.case())
             {
                 "number_literal"     -> NumberReferenceLiteral.fromDocument(doc.nextCase())
@@ -74,7 +73,7 @@ data class NumberReferenceLiteral(val value : Double) : NumberReference(), SQLSe
 
     companion object : Factory<NumberReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberReference> = when (doc)
         {
             is DocNumber -> effValue(NumberReferenceLiteral(doc.number))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -121,7 +120,7 @@ data class NumberReferenceValue(val valueReference : ValueReference)
 
     companion object : Factory<NumberReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberReference> =
                 effApply(::NumberReferenceValue, ValueReference.fromDocument(doc))
     }
 
@@ -164,7 +163,7 @@ data class NumberReferenceVariable(val variableReference : VariableReference)
 
     companion object : Factory<NumberReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberReference> =
                 effApply(::NumberReferenceVariable, VariableReference.fromDocument(doc))
     }
 

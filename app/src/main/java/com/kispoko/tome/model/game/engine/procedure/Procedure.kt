@@ -42,7 +42,7 @@ data class Procedure(override val id : UUID,
 
     companion object : Factory<Procedure>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Procedure>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Procedure> = when (doc)
         {
             is DocDict ->
             {
@@ -96,7 +96,7 @@ data class ProcedureId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ProcedureId>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ProcedureId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ProcedureId> = when (doc)
         {
             is DocText -> effValue(ProcedureId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -125,7 +125,7 @@ data class ProcedureName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ProcedureName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ProcedureName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ProcedureName> = when (doc)
         {
             is DocText -> effValue(ProcedureName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

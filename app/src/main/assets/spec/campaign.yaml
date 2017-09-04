@@ -7,41 +7,52 @@ metadata:
   authors:
   - name: 'Jeff Wise'
 description:
-  overview_md: >
+  overview: >
     A campaign is...
 root_type: campaign
 types:
-- name: campaign  
-  label: Campaign
-  description: >
-    The campaign.
-  group: Campaign
-  type: product
-  fields:
-  - name: id
-    type: campaign_id
-    presence: required
+- type: product_type
+  product_type: 
+    name: campaign  
+    label: Campaign
     description: >
-      The id of the campaign.
-  - name: campaign_name
-    type: string
-    presence: required
+      The campaign.
+    group: Campaign
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: campaign_id
+      presence: required
+      description: >
+        The id of the campaign.
+    - name: campaign_name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The name of the campaign.
+    - name: campaign_summary
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The summary of the campaign.
+    - name: game_id
+      type: 
+        type: custom_type
+        custom_type: game_id
+      presence: required
+      description: >
+        The id of the game.
+- type: primitive_type
+  primitive_type:
+    name: campaign_id
+    label: Campaign Id
     description: >
-      The name of the campaign.
-  - name: campaign_summary
-    type: string
-    presence: required
-    description: >
-      The summary of the campaign.
-  - name: game_id
-    type: game_id
-    presence: required
-    description: >
-      The id of the game.
-- name: campaign_id
-  label: Campaign Id
-  description: >
-    The id of a campaign.
-  group: Campaign
-  type: primitive
-  base_type: string
+      The id of a campaign.
+    group: Campaign
+    base_type: string
+constraints:

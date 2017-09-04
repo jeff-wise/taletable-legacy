@@ -153,7 +153,7 @@ data class NumberWidgetFormat(override val id : UUID,
         private val defaultValueSeparatorFormat = TextFormat.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -296,7 +296,7 @@ data class NumberWidgetLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<NumberWidgetLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberWidgetLabel> = when (doc)
         {
             is DocText -> effValue(NumberWidgetLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -325,7 +325,7 @@ data class ValueSeparator(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ValueSeparator>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ValueSeparator> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSeparator> = when (doc)
         {
             is DocText -> effValue(ValueSeparator(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -353,7 +353,7 @@ data class NumberWidgetDescription(val value : String) : SQLSerializable, Serial
 
     companion object : Factory<NumberWidgetDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberWidgetDescription> = when (doc)
         {
             is DocText -> effValue(NumberWidgetDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -382,7 +382,7 @@ data class NumberWidgetValuePrefix(val value : String) : SQLSerializable, Serial
 
     companion object : Factory<NumberWidgetValuePrefix>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetValuePrefix> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberWidgetValuePrefix> = when (doc)
         {
             is DocText -> effValue(NumberWidgetValuePrefix(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -411,7 +411,7 @@ data class NumberWidgetValuePostfix(val value : String) : SQLSerializable, Seria
 
     companion object : Factory<NumberWidgetValuePostfix>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetValuePostfix> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberWidgetValuePostfix> = when (doc)
         {
             is DocText -> effValue(NumberWidgetValuePostfix(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

@@ -81,7 +81,7 @@ data class WidgetFormat(override val id : UUID,
         private val defaultPadding              = Spacing.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<WidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<WidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::WidgetFormat,
                                    // Width
@@ -165,7 +165,7 @@ data class WidgetWidth(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<WidgetWidth>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<WidgetWidth> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<WidgetWidth> = when (doc)
         {
             is DocNumber -> effValue(WidgetWidth(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))

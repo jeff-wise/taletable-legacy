@@ -37,7 +37,7 @@ import java.util.*
  * Widget
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Widget() : Model, SheetComponent, Serializable
+sealed class Widget : Model, SheetComponent, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ sealed class Widget() : Model, SheetComponent, Serializable
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Widget> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
         {
             is DocDict ->
             {
@@ -165,7 +165,7 @@ data class WidgetId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<WidgetId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<WidgetId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<WidgetId> = when (doc)
         {
             is DocText -> effValue(WidgetId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -194,7 +194,7 @@ data class WidgetLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<WidgetLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<WidgetLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<WidgetLabel> = when (doc)
         {
             is DocText -> effValue(WidgetLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -213,6 +213,8 @@ data class WidgetLabel(val value : String) : SQLSerializable, Serializable
 
 /**
  * Action Widget
+ *
+ * // TODO remove
  */
 data class ActionWidget(override val id : UUID,
                         val widgetId : Prim<WidgetId>,
@@ -263,7 +265,7 @@ data class ActionWidget(override val id : UUID,
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
         {
             is DocDict ->
             {
@@ -369,7 +371,7 @@ data class BooleanWidget(override val id : UUID,
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
         {
             is DocDict ->
             {
@@ -433,6 +435,9 @@ data class BooleanWidget(override val id : UUID,
 
 /**
  * Button Widget
+ *
+ *
+ * // TODO remove
  */
 data class ButtonWidget(override val id : UUID,
                         val widgetId : Prim<WidgetId>,
@@ -479,7 +484,7 @@ data class ButtonWidget(override val id : UUID,
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
         {
             is DocDict ->
             {
@@ -583,7 +588,7 @@ data class ExpanderWidget(override val id : UUID,
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
         {
             is DocDict ->
             {
@@ -676,7 +681,7 @@ data class ImageWidget(override val id : UUID,
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
         {
             is DocDict ->
             {
@@ -774,7 +779,7 @@ data class ListWidget(override val id : UUID,
 
     companion object : Factory<Widget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Widget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
         {
             is DocDict ->
             {
@@ -873,7 +878,7 @@ data class LogWidget(override val id : UUID,
 
     companion object : Factory<LogWidget>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<LogWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<LogWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -968,7 +973,7 @@ data class MechanicWidget(override val id : UUID,
 
     companion object : Factory<MechanicWidget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -1084,7 +1089,7 @@ data class NumberWidget(override val id : UUID,
 
     companion object : Factory<NumberWidget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -1236,7 +1241,7 @@ data class OptionWidget(override val id : UUID,
 
     companion object : Factory<OptionWidget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<OptionWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<OptionWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -1360,7 +1365,7 @@ data class PointsWidget(override val id : UUID,
 
     companion object : Factory<PointsWidget>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<PointsWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<PointsWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -1609,7 +1614,7 @@ data class QuoteWidget(override val id : UUID,
 
     companion object : Factory<QuoteWidget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<QuoteWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<QuoteWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -1776,7 +1781,7 @@ data class StoryWidget(override val id : UUID,
 
     companion object : Factory<StoryWidget>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StoryWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -1969,7 +1974,7 @@ data class TabWidget(override val id : UUID,
 
     companion object : Factory<TabWidget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TabWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TabWidget> = when (doc)
         {
             is DocDict ->
             {
@@ -2125,7 +2130,7 @@ data class TableWidget(override val id : UUID,
 
 
     companion object : Factory<TableWidget> {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TableWidget> = when (doc) {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidget> = when (doc) {
             is DocDict -> {
                 effApply(::TableWidget,
                         // Widget Id
@@ -2516,7 +2521,7 @@ data class TextWidget(override val id : UUID,
 
     companion object : Factory<TextWidget>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TextWidget>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextWidget> = when (doc)
         {
             is DocDict ->
             {

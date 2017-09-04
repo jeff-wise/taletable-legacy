@@ -11,13 +11,13 @@ import lulo.value.ValueError
 /**
  * Load Errors
  */
-sealed class LoadError : ApplicationError
+sealed class DocLoadError : ApplicationError
 {
     override fun userMessage(): String = "Something went wrong."
 }
 
 
-class SpecIsNull(val specName : String) : LoadError()
+class SpecIsNull(val specName : String) : DocLoadError()
 {
     override fun debugMessage(): String = """
             Load Error: Specification is NULL
@@ -28,7 +28,7 @@ class SpecIsNull(val specName : String) : LoadError()
 }
 
 
-data class CannotOpenSpecFile(val filepath : String) : LoadError()
+data class CannotOpenSpecFile(val filepath : String) : DocLoadError()
 {
     override fun debugMessage(): String = """
             Load Error: Cannot Open Spec File
@@ -39,7 +39,7 @@ data class CannotOpenSpecFile(val filepath : String) : LoadError()
 }
 
 
-data class CannotOpenTemplateFile(val filepath : String) : LoadError()
+data class CannotOpenTemplateFile(val filepath : String) : DocLoadError()
 {
     override fun debugMessage(): String = """
             Load Error: Cannot Open Template File
@@ -50,7 +50,7 @@ data class CannotOpenTemplateFile(val filepath : String) : LoadError()
 }
 
 
-data class SpecParseError(val error : String) : LoadError()
+data class SchemaParseError(val error : String) : DocLoadError()
 {
     override fun debugMessage(): String = """
             |Load Error: Error parsing specification
@@ -63,7 +63,7 @@ data class SpecParseError(val error : String) : LoadError()
 
 data class DocumentParseError(val documentName : String,
                               val specName : String,
-                              val errors : List<DocParseError> ) : LoadError()
+                              val errors : List<DocParseError> ) : DocLoadError()
 {
     override fun debugMessage(): String
     {
@@ -73,8 +73,8 @@ data class DocumentParseError(val documentName : String,
             errorsString += docParseError.toString() + "\n"
         }
 
-        return """Load Error: Error parsing document '$documentName' with spec '$specName'
-                      (Document did not match specification)
+        return """Load Error: Error parsing document '$documentName' with schema '$specName'
+                      (Document did not match schema)
                       All errors:
                       $errorsString
                """
@@ -84,7 +84,7 @@ data class DocumentParseError(val documentName : String,
 }
 
 
-data class ValueParseError(val docName : String, val error : ValueError) : LoadError()
+data class ValueParseError(val docName : String, val error : ValueError) : DocLoadError()
 {
     override fun debugMessage(): String = """
             |Load Error: Error mapping document to object
@@ -97,7 +97,7 @@ data class ValueParseError(val docName : String, val error : ValueError) : LoadE
 
 
 
-class ContextIsNull : LoadError()
+class ContextIsNull : DocLoadError()
 {
     override fun debugMessage(): String = """
             Load Error: Context is null

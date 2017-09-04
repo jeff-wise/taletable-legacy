@@ -11,7 +11,11 @@ import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
+import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.theme.ThemeManager
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 
 
 /**
@@ -54,4 +58,14 @@ fun AppCompatActivity.configureToolbar(title : String)
     val backButtonView = this.findViewById(R.id.toolbar_back_button) as? ImageView
     backButtonView?.setOnClickListener { this.finish() }
 
+}
+
+
+fun AppCompatActivity.initializeState()
+{
+    val activity = this
+    launch(UI) {
+        ThemeManager.loadOfficialThemes(activity)
+        SheetManager.startSession(activity)
+    }
 }

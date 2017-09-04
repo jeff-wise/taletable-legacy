@@ -76,7 +76,7 @@ data class Page(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<Page> = when (doc)
+        fun fromDocument(doc : SchemaDoc, index : Int) : ValueParser<Page> = when (doc)
         {
             is DocDict -> effApply(::Page,
                                    // Name
@@ -180,7 +180,7 @@ data class PageName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<PageName>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<PageName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<PageName> = when (doc)
         {
             is DocText -> effValue(PageName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -209,7 +209,7 @@ data class PageIndex(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<PageIndex>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<PageIndex> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<PageIndex> = when (doc)
         {
             is DocNumber -> effValue(PageIndex(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -262,7 +262,7 @@ data class PageFormat(override val id : UUID,
         private val defaultBackgroundColorTheme = ColorTheme.transparent
         private val defaultPadding              = Spacing.default()
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<PageFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<PageFormat> = when (doc)
         {
             is DocDict ->
             {

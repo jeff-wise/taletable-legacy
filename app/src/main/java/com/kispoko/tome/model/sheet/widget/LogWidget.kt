@@ -60,7 +60,7 @@ data class LogEntry(override val id : UUID,
 
     companion object : Factory<LogEntry>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<LogEntry> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<LogEntry> = when (doc)
         {
             is DocDict -> effApply(::LogEntry,
                                    // Title
@@ -102,7 +102,7 @@ data class EntryTitle(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<EntryTitle>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<EntryTitle> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EntryTitle> = when (doc)
         {
             is DocText -> effValue(EntryTitle(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -131,7 +131,7 @@ data class EntryAuthor(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<EntryAuthor>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<EntryAuthor> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EntryAuthor> = when (doc)
         {
             is DocText -> effValue(EntryAuthor(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -160,7 +160,7 @@ data class EntrySummary(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<EntrySummary>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<EntrySummary> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EntrySummary> = when (doc)
         {
             is DocText -> effValue(EntrySummary(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -189,7 +189,7 @@ data class EntryText(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<EntryText>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<EntryText> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EntryText> = when (doc)
         {
             is DocText -> effValue(EntryText(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -231,7 +231,7 @@ data class LogWidgetFormat(override val id : UUID,
 
     companion object : Factory<LogWidgetFormat>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<LogWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<LogWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::LogWidgetFormat,
                                    // Model Id

@@ -2,8 +2,7 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppError
+import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
@@ -39,14 +38,17 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>) : Model, S
 
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> =
             when (doc.case())
             {
                 "summation_term_number"      -> SummationTermNumber.fromDocument(doc)
                 "summation_term_dice_roll"   -> SummationTermDiceRoll.fromDocument(doc)
                 "summation_term_conditional" -> SummationTermConditional.fromDocument(doc)
-                else                         -> effError<ValueError,SummationTerm>(
-                                                    UnknownCase(doc.case(), doc.path))
+                else                         -> {
+                    Log.d("***TERM", "case: " + doc.case())
+                    effError<ValueError,SummationTerm>(
+                            UnknownCase(doc.case(), doc.path))
+                }
             }
     }
 
@@ -91,7 +93,7 @@ data class SummationTermNumber(override val id : UUID,
 
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationTermNumber,
                                    // Term Name
@@ -193,7 +195,7 @@ data class SummationTermDiceRoll(override val id : UUID,
 
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationTermDiceRoll,
                                    // Term Name
@@ -303,7 +305,7 @@ data class SummationTermConditional(override val id : UUID,
 
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationTermConditional,
                                    // Term Name
@@ -432,7 +434,7 @@ data class TermName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<TermName>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TermName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TermName> = when (doc)
         {
             is DocText -> effValue(TermName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

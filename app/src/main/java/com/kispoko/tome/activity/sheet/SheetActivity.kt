@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -29,24 +28,20 @@ import com.kispoko.tome.activity.nav.NavigationActivity
 import com.kispoko.tome.activity.sheet.state.SheetStateActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.load.LoadResultError
-import com.kispoko.tome.load.LoadResultValue
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.official.OfficialIndex
-import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
+import com.kispoko.tome.util.initializeState
 import effect.Err
 import effect.Just
 import effect.Val
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 
 
 
@@ -95,12 +90,17 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         this.initializeBottomSheet()
 
-        // (3) Load Sheet
+        // (3) Initialize State
         // -------------------------------------------------------------------------------------
 
-        val officialIndex = OfficialIndex.load(this)
-        if (officialIndex != null)
-            this.loadSheet(officialIndex)
+        val sheetListener = SheetListener({ onSheetReady(it) })
+        SheetManager.addSheetListener(SheetId("casmey_beginner"), sheetListener)
+
+        this.initializeState()
+
+//        val officialIndex = OfficialIndex.load(this)
+//        if (officialIndex != null)
+//            this.loadSheet(officialIndex)
 
     }
 
@@ -412,88 +412,45 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // SHEET
     // -----------------------------------------------------------------------------------------
 
-    fun loadSheet(officialIndex : OfficialIndex)
-    {
-        val sheetId = SheetId("casmey_beginner")
 
-        val sheetRecord = SheetManager.sheetRecord(sheetId)
-        when (sheetRecord)
+    private fun onSheetReady(sheet : Sheet)
+    {
+        // Set sheet to be active
+        // -------------------------------------------------------------------------------------
+
+        SheetManager.setSheetActive(sheet.sheetId(), this)
+
+
+        // Configure toolbar to be character name
+        // -------------------------------------------------------------------------------------
+
+        val maybeName = SheetManager.sheetState(sheet.sheetId())     ap { state ->
+                        state.textVariableWithId(VariableId("name")) ap { textVar ->
+                            textVar.value(state.sheetContext)
+                        } }
+
+        when (maybeName)
         {
             is Val -> {
-                SheetManager.render(sheetId, this)
+                val name = maybeName.value
+                when (name) {
+                    is Just -> this.configureToolbar(name.value)
+                }
             }
-            is Err -> this.loadTemplateSheet(officialIndex, sheetId)
+            is Err -> ApplicationLog.error(maybeName.error)
         }
 
-    }
 
-
-    fun loadTemplateSheet(officialIndex : OfficialIndex, sheetId : SheetId)
-    {
-        val officialSheet = officialIndex.sheetById[sheetId]
-
-        if (officialSheet != null)
-        {
-            val sheetActivity : SheetActivity = this
-            val sheetUI : SheetUI = this
-            launch(UI) {
-
-                ThemeManager.loadOfficialThemes(officialIndex.themes, sheetActivity)
-
-                val sheetLoad = SheetManager.loadOfficialSheet(officialSheet,
-                                                               officialIndex,
-                                                               sheetActivity)
-
-                when (sheetLoad)
-                {
-                    is LoadResultValue ->
-                    {
-                        val sheet = sheetLoad.value
-                        SheetManager.setNewSheet(sheet, sheetUI)
-
-                        val mCharacterName =
-                                SheetManager.sheetRecord(sheet.sheetId())    ap { (_, sheetContext, state) ->
-                                state.textVariableWithId(VariableId("name")) ap { textVar ->
-                                    textVar.value(sheetContext)
-                                } }
-
-                        when (mCharacterName)
-                        {
-                            is Val -> {
-                                val characterName = mCharacterName.value
-                                when (characterName) {
-                                    is Just -> sheetActivity.configureToolbar(characterName.value)
-                                }
-                            }
-                            is Err -> ApplicationLog.error(mCharacterName.error)
-                        }
-
-                        val sheetContext = SheetManager.sheetContext(sheet)
-                        when (sheetContext)
-                        {
-                            is Val ->
-                            {
-                                SheetManager.addOnVariableChangeListener(sheet.sheetId(),
-                                        VariableId("name"),
-                                        OnVariableChangeListener(
-                                            { sheetActivity.updateToolbar(it, sheetContext.value)},
-                                            {})
-                                        )
-                            }
-                        }
-
-
-    //                        SheetManager.sheetRecord(sheet.sheetId()) apDo {
-    //                            launch(UI) {
-    //                                it.sheet.saveAsync(true, true)
-    //                            }
-    //                        }
-                    }
-                    is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetLoad.userMessage)
-                }
-
-            }
-
+        // Ensure toolbar updates value when name changes
+        // -------------------------------------------------------------------------------------
+        SheetManager.sheetContext(sheet) apDo { sheetContext ->
+            SheetManager.addOnVariableChangeListener(
+                    sheet.sheetId(),
+                    VariableId("name"),
+                    OnVariableChangeListener(
+                        { this.updateToolbar(it, sheetContext)},
+                        {})
+                    )
         }
 
     }

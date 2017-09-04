@@ -26,7 +26,7 @@ import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.official.AmanaceCharacterSheetSummary
-import com.kispoko.tome.official.OfficialManager
+import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.theme.ThemeManager
 
 

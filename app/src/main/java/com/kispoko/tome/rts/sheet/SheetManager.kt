@@ -8,10 +8,8 @@ import android.util.Log
 import android.view.View
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.*
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.load.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
@@ -23,22 +21,15 @@ import com.kispoko.tome.model.sheet.SheetName
 import com.kispoko.tome.model.sheet.SheetSummary
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.official.OfficialSheet
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.rts.campaign.CampaignManager
 import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.theme.ThemeDoesNotHaveColor
 import com.kispoko.tome.rts.theme.ThemeNotSupported
 import effect.*
-import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.run
-import lulo.document.SpecDoc
-import lulo.spec.Spec
-import java.io.InputStream
 import java.io.Serializable
-import lulo.File as LuloFile
 
 
 
@@ -54,7 +45,6 @@ object SheetManager
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var specification : Spec? = null
 
     private val sheet = "sheet"
 
@@ -62,6 +52,9 @@ object SheetManager
 
     private var currentSheet : SheetId? = null
     private var currentSheetUI : SheetUI? = null
+
+
+    private val listenerBySheet : MutableMap<SheetId,SheetListener> = hashMapOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -105,26 +98,6 @@ object SheetManager
                     AppSheetError(SheetDoesNotExist(sheetId)))
 
 
-    fun setNewSheet(sheet : Sheet, sheetUI : SheetUI)
-    {
-        SheetManager.sheetContext(sheet)        apDo { sheetContext ->
-        GameManager.engine(sheetContext.gameId) apDo { engine ->
-            val sheetRecord = SheetRecord.withDefaultView(sheet, sheetContext,
-                                        SheetState(sheetContext, engine.mechanics()))
-
-            // Create & Index Sheet Record
-            this.sheetById.put(sheet.sheetId(), sheetRecord)
-            this.currentSheet = sheet.sheetId()
-            this.currentSheetUI = sheetUI
-
-            // Initialize Sheet
-            sheetRecord.onActive(sheetUI.context())
-
-            // Render
-            SheetManager.render(sheet.sheetId(), sheetUI)
-        } }
-    }
-
 
     fun addVariable(sheetId : SheetId, variableId : VariableId) =
         SheetManager.sheetRecord(sheetId) apDo {
@@ -166,135 +139,80 @@ object SheetManager
 
 
     // -----------------------------------------------------------------------------------------
-    // SPECIFICATION
+    // SESSIONS
     // -----------------------------------------------------------------------------------------
 
     /**
-     * Get the Sheet specification (Lulo). If it is null, try to load it.
+     * Initializes the current session.
+     *
+     * If sheets are already loaded, then the session is already active.
+     *
+     * If no sheets are loaded, then it finds out what the last session was and loads that.
+     *
+     * Since persistence is not yet implemented, just loads Casmey for now.
      */
-    fun specification(context : Context) : Spec?
+    suspend fun startSession(context : Context)
     {
-        if (this.specification == null)
-            this.loadSpecification(context)
-
-        return this.specification
-    }
-
-
-    /**
-     * Get the specification in the Loader context.
-     */
-    fun specificationLoader(context : Context) : Loader<Spec>
-    {
-        val currentSpecification = this.specification(context)
-        if (currentSpecification != null)
-            return effValue(currentSpecification)
-        else
-            return effError(SpecIsNull("sheet"))
-    }
-
-
-    /**
-     * Load the specification. If it fails, report any errors.
-     */
-    fun loadSpecification(context : Context)
-    {
-        val specLoader = loadLuloSpecification(sheet, context)
-        when (specLoader)
+        if (this.sheetById.values.isEmpty())
         {
-            is Val -> this.specification = specLoader.value
-            is Err -> ApplicationLog.error(specLoader.error)
+            val casmeyOfficialSheet = OfficialSheet(SheetId("casmey_beginner"),
+                                                    CampaignId("harmony"),
+                                                    GameId("amanace"))
+            val lastSession = Session(listOf(SessionSheetOfficial(casmeyOfficialSheet)))
+
+            loadSessionSheets(lastSession, context)
         }
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // OFFICIAL
-    // -----------------------------------------------------------------------------------------
-
-    suspend fun loadOfficialSheet(officialSheet: OfficialSheet,
-                          officialIndex : OfficialIndex,
-                          context : Context) : LoadResult<Sheet> = run(CommonPool,
+    private suspend fun loadSessionSheets(session : Session, context : Context)
     {
-
-        loadOfficialCampaign(officialSheet, officialIndex, context)
-
-        val sheetLoader = _loadOfficialSheet(officialSheet, context)
-        when (sheetLoader)
-        {
-            is Val ->
-            {
-                val sheet = sheetLoader.value
-//                val value = SheetRecord.withDefaultView(sheet, SheetState(sheet))
-//                this.sheetById.put(sheet.sheetId.value, value)
-                LoadResultValue(sheet)
-            }
-            is Err ->
-            {
-                val loadError = sheetLoader.error
-                ApplicationLog.error(loadError)
-                LoadResultError<Sheet>(loadError.userMessage())
-            }
-        }
-    })
-
-
-    private fun _loadOfficialSheet(officialSheet: OfficialSheet, context : Context) : Loader<Sheet>
-    {
-        // LET...
-        fun templateFileString(inputStream: InputStream) : Loader<String> =
-            effValue(inputStream.bufferedReader().use { it.readText() })
-
-        fun templateDocument(templateString : String,
-                             sheetSpec : Spec,
-                             campaignSpec : Spec,
-                             gameSpec : Spec,
-                             themeSpec : Spec) : Loader<SpecDoc>
-        {
-            val docParse = sheetSpec.parseDocument(templateString,
-                                                   listOf(campaignSpec, gameSpec, themeSpec))
-            when (docParse)
-            {
-                is Val -> return effValue(docParse.value)
-                is Err -> return effError(DocumentParseError(
-                                        officialSheet.sheetId.value, sheet, docParse.error))
+        session.sheets.forEach {
+            when (it) {
+                is SessionSheetOfficial -> OfficialManager.loadSheet(it.officialSheet, context)
             }
         }
 
-        fun sheetFromDocument(specDoc : SpecDoc) : Loader<Sheet>
-        {
-            val sheetParse = Sheet.fromDocument(specDoc)
-            when (sheetParse)
-            {
-                is Val -> return effValue(sheetParse.value)
-                is Err -> return effError(ValueParseError(officialSheet.sheetId.value,
-                                                          sheetParse.error))
-            }
-        }
-
-        // DO...
-        return assetInputStream(context, officialSheet.filePath)
-                .apply(::templateFileString)
-                .applyWith(::templateDocument,
-                           SheetManager.specificationLoader(context),
-                           CampaignManager.specificationLoader(context),
-                           GameManager.specificationLoader(context),
-                           ThemeManager.specificationLoader(context))
-                .apply(::sheetFromDocument)
     }
 
 
-    private suspend fun loadOfficialCampaign(officialSheet : OfficialSheet,
-                                             officialIndex : OfficialIndex,
-                                             context : Context)
+    fun addSheetToSession(sheet : Sheet)
     {
-        if (!CampaignManager.hasCampaignWithId(officialSheet.campaignId))
-        {
-            val officialCampaign = officialIndex.campaignById[officialSheet.campaignId]
-            if (officialCampaign != null)
-                CampaignManager.loadOfficialCampaign(officialCampaign, officialIndex, context)
-            // TODO errors here
+        SheetManager.sheetContext(sheet)        apDo { sheetContext ->
+        GameManager.engine(sheetContext.gameId) apDo { engine ->
+            val sheetRecord = SheetRecord.withDefaultView(sheet, sheetContext,
+                                        SheetState(sheetContext, engine.mechanics()))
+
+            // Create & Index Sheet Record
+            this.sheetById.put(sheet.sheetId(), sheetRecord)
+            this.currentSheet = sheet.sheetId()
+
+            val listener = this.listenerBySheet[sheet.sheetId()]
+            if (listener != null)
+                listener.onSheetAdd(sheet)
+
+        } }
+    }
+
+
+    fun setSheetActive(sheetId : SheetId, sheetUI : SheetUI)
+    {
+        SheetManager.sheetRecord(sheetId) apDo {
+
+            this.currentSheetUI = sheetUI
+
+            // Initialize Sheet
+            it.onActive(sheetUI.context())
+
+            // Render
+            SheetManager.render(sheetId, sheetUI)
         }
+    }
+
+
+    fun addSheetListener(sheetId : SheetId, sheetListener : SheetListener)
+    {
+        this.listenerBySheet.put(sheetId, sheetListener)
     }
 
 
@@ -624,4 +542,19 @@ interface SheetUI
 //                      sheetContext : SheetContext)
 
 }
+
+
+data class Session(val sheets : List<SessionSheet>)
+
+
+sealed class SessionSheet
+
+data class SessionSheetOfficial(val officialSheet : OfficialSheet) : SessionSheet()
+
+data class SessionSheetDatabase(val sheetContext : SheetContext) : SessionSheet()
+
+
+
+data class SheetListener(val onSheetAdd : (Sheet) -> Unit)
+
 

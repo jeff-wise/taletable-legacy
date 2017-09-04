@@ -21,7 +21,7 @@ import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -56,7 +56,7 @@ data class TextCellFormat(override val id : UUID,
 
         private val defaultCellFormat = CellFormat.default
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextCellFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextCellFormat> = when (doc)
         {
             is DocDict -> effApply(::TextCellFormat,
                                    // Model Id

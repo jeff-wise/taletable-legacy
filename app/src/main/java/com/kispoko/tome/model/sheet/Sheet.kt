@@ -105,7 +105,7 @@ data class Sheet(override val id : UUID,
 
     companion object : Factory<Sheet>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Sheet> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Sheet> = when (doc)
         {
             is DocDict ->
             {
@@ -244,7 +244,7 @@ data class SheetId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<SheetId>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<SheetId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SheetId> = when (doc)
         {
             is DocText -> effValue(SheetId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

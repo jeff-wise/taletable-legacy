@@ -2,8 +2,6 @@
 package com.kispoko.tome.model.game.engine.summation
 
 
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Conj
@@ -66,7 +64,7 @@ data class Summation(override val id : UUID,
 
     companion object : Factory<Summation>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Summation> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Summation> = when (doc)
         {
             is DocDict ->
             {
@@ -198,7 +196,7 @@ data class SummationId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<SummationId>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationId> = when (doc)
         {
             is DocText -> effValue(SummationId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -227,7 +225,7 @@ data class SummationName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<SummationName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SummationName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationName> = when (doc)
         {
             is DocText -> effValue(SummationName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

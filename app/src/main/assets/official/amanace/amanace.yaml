@@ -810,6 +810,263 @@ engine:
       result:
         type: engine_value_number
         engine_value_number: 10
+  - function_id: critical_strike_damage
+    label: Critical Strike Damage Dice
+    description:
+      The dice roll modifier applied to damage on successful critical strikes.
+    type_signature:
+      parameter1_type: number
+      result_type: dice_roll
+    tuples:
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 1
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 2
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 3
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 4
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 4
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 5
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 6
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 7
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 8
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 9
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 7
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 10
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 11
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 12
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 9
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 13
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 10
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 14
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 10
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 15
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 11
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 16
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 12
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 17
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 12
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 18
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 13
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 19
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 14
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 20
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 14
+  - function_id: southern_charm_effects
+    label: Southern Charm Effects
+    description:
+      The possible effects of the Southern Charm action.
+    type_signature:
+      parameter1_type: number
+      result_type: text
+    tuples:
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 1
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target is infatuated with you and will likely do what you want.'
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 2
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target thinks you are very weird and would rather not spend
+                            time around you anymore.'
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 3
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target is offended and moves to leave your presence immediately.'
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 4
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target is upset and angry. They are looking to start a fight with you.'
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 5
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target is indifferent to your charm.'
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 6
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target is interested in you, but not completely sold. They will likely
+                             follow you if given a good reason.'
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 7
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target thinks your attempts to charm them are cute. They give you a
+                            condescending smile.'
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 8
+      result:
+        type: engine_value_text
+        engine_value_text: 'Target plays along and subtly charms you instead. You think you have charmed
+                            them, but you are subconciously bending an ear towards their will.'
   programs:
   - program_id: ability_modifier
     label: Ability Modifier

@@ -88,7 +88,7 @@ data class BooleanColumnFormat(override val id : UUID,
         private val defaultShowFalseIcon = ShowFalseIcon(false)
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanColumnFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanColumnFormat> = when (doc)
         {
             is DocDict -> effApply(::BooleanColumnFormat,
                                    // Column Format
@@ -180,7 +180,7 @@ data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<ShowTrueIcon>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowTrueIcon> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowTrueIcon> = when (doc)
         {
             is DocBoolean -> effValue(ShowTrueIcon(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -209,7 +209,7 @@ data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<ShowFalseIcon>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowFalseIcon> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowFalseIcon> = when (doc)
         {
             is DocBoolean -> effValue(ShowFalseIcon(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -238,7 +238,7 @@ data class ColumnTrueText(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ColumnTrueText>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ColumnTrueText> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnTrueText> = when (doc)
         {
             is DocText -> effValue(ColumnTrueText(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -267,7 +267,7 @@ data class ColumnFalseText(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ColumnFalseText>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ColumnFalseText> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnFalseText> = when (doc)
         {
             is DocText -> effValue(ColumnFalseText(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -297,8 +297,7 @@ data class DefaultBooleanColumnValue(val value : Boolean) : SQLSerializable, Ser
 
     companion object : Factory<DefaultBooleanColumnValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                        : ValueParser<DefaultBooleanColumnValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultBooleanColumnValue> = when (doc)
         {
             is DocBoolean -> effValue(DefaultBooleanColumnValue(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))

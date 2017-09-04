@@ -68,7 +68,7 @@ data class Group(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<Group> = when (doc)
+        fun fromDocument(doc : SchemaDoc, index : Int) : ValueParser<Group> = when (doc)
         {
             is DocDict -> effApply(::Group,
                                    // Format
@@ -143,7 +143,7 @@ data class GroupIndex(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<GroupIndex>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<GroupIndex> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GroupIndex> = when (doc)
         {
             is DocNumber -> effValue(GroupIndex(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -222,7 +222,7 @@ data class GroupFormat(override val id : UUID,
         private val defaultDividerThickness     = DividerThickness.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<GroupFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GroupFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -320,7 +320,7 @@ data class ShowGroupDivider(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<ShowGroupDivider>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ShowGroupDivider> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowGroupDivider> = when (doc)
         {
             is DocBoolean -> effValue(ShowGroupDivider(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))

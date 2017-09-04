@@ -36,7 +36,7 @@ sealed class BooleanVariableValue : SumModel, Serializable
 
     companion object : Factory<BooleanVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanVariableValue> =
             when (doc.case())
             {
                 "boolean_literal"    -> BooleanVariableLiteralValue.fromDocument(doc)
@@ -73,8 +73,7 @@ data class BooleanVariableLiteralValue(var value : Boolean)
 
     companion object : Factory<BooleanVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<BooleanVariableValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanVariableValue> = when (doc)
         {
             is DocBoolean -> effValue(BooleanVariableLiteralValue(doc.boolean))
             else          -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -124,7 +123,7 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
 
     companion object : Factory<BooleanVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanVariableValue> =
                 effApply(::BooleanVariableProgramValue, Invocation.fromDocument(doc))
     }
 

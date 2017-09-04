@@ -113,7 +113,7 @@ class ActiveVariablesFragment : Fragment()
         when (activeVariables)
         {
             is Val ->  {
-                layout.addView(this.activeVariablesRecyclerView(activeVariables.value, themeId, context))
+                //layout.addView(this.activeVariablesRecyclerView(activeVariables.value, themeId, context))
             }
         }
 
@@ -148,7 +148,7 @@ class ActiveVariablesFragment : Fragment()
 
         recyclerView.layoutManager      = LinearLayoutManager(context)
 
-        recyclerView.adapter            = ActiveVariableRecyclerViewAdapter(sheetItems, themeId)
+        //recyclerView.adapter            = ActiveVariableRecyclerViewAdapter(sheetItems, themeId)
 
         recyclerView.padding.leftDp     = 6f
         recyclerView.padding.rightDp    = 6f

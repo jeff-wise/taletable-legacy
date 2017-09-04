@@ -1,8 +1,10 @@
 
 package com.kispoko.tome.lib
 
-import lulo.document.SpecDoc
+
+import lulo.document.SchemaDoc
 import lulo.value.ValueParser
+
 
 
 /**
@@ -10,5 +12,5 @@ import lulo.value.ValueParser
  */
 interface Factory<A>
 {
-    fun fromDocument(doc : SpecDoc) : ValueParser<A>
+    fun fromDocument(doc: SchemaDoc): ValueParser<A>
 }

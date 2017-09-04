@@ -69,7 +69,7 @@ data class Function(override val id : UUID,
 
     companion object : Factory<Function>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Function>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Function> = when (doc)
         {
             is DocDict ->
             {
@@ -190,7 +190,7 @@ data class FunctionTypeSignature(override val id : UUID,
 
     companion object : Factory<FunctionTypeSignature>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<FunctionTypeSignature> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<FunctionTypeSignature> = when (doc)
         {
             is DocDict ->
             {
@@ -265,7 +265,7 @@ data class FunctionId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<FunctionId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<FunctionId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<FunctionId> = when (doc)
         {
             is DocText -> effValue(FunctionId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -294,7 +294,7 @@ data class FunctionLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<FunctionLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<FunctionLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<FunctionLabel> = when (doc)
         {
             is DocText -> effValue(FunctionLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -323,7 +323,7 @@ data class FunctionDescription(val value : String) : SQLSerializable, Serializab
 
     companion object : Factory<FunctionDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<FunctionDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<FunctionDescription> = when (doc)
         {
             is DocText -> effValue(FunctionDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -401,7 +401,7 @@ data class Tuple(override val id : UUID,
 
     companion object : Factory<Tuple>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Tuple> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Tuple> = when (doc)
         {
             is DocDict ->
             {

@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -64,7 +63,7 @@ data class NumberCellFormat(override val id : UUID,
         private val defaultCellFormat  = CellFormat.default
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberCellFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberCellFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -137,7 +136,7 @@ data class NumberCellValuePrefix(val value : String) : SQLSerializable, Serializ
 
     companion object : Factory<NumberCellValuePrefix>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberCellValuePrefix> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberCellValuePrefix> = when (doc)
         {
             is DocText -> effValue(NumberCellValuePrefix(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

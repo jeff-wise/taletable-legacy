@@ -12,7 +12,7 @@ import effect.effError
 import effect.effValue
 import lulo.document.DocDict
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -47,7 +47,7 @@ data class ListWidgetFormat(override val id : UUID,
 
     companion object : Factory<ListWidgetFormat>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ListWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ListWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::ListWidgetFormat,
                                    // Model Id

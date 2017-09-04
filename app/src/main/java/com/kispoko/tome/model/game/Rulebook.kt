@@ -69,7 +69,7 @@ data class Rulebook(override val id : UUID,
 
     companion object : Factory<Rulebook>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Rulebook> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Rulebook> = when (doc)
         {
             is DocDict ->
             {
@@ -180,7 +180,7 @@ data class RulebookTitle(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<RulebookTitle>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookTitle> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookTitle> = when (doc)
         {
             is DocText -> effValue(RulebookTitle(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -209,7 +209,7 @@ data class RulebookAbstract(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<RulebookAbstract>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookAbstract> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookAbstract> = when (doc)
         {
             is DocText -> effValue(RulebookAbstract(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -276,7 +276,7 @@ data class RulebookChapter(override val id : UUID,
 
     companion object : Factory<RulebookChapter>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RulebookChapter> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookChapter> = when (doc)
         {
             is DocDict ->
             {
@@ -339,7 +339,7 @@ data class RulebookChapterId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<RulebookChapterId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookChapterId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookChapterId> = when (doc)
         {
             is DocText -> effValue(RulebookChapterId(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -368,7 +368,7 @@ data class RulebookChapterTitle(val value : String) : SQLSerializable, Serializa
 
     companion object : Factory<RulebookChapterTitle>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookChapterTitle> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookChapterTitle> = when (doc)
         {
             is DocText -> effValue(RulebookChapterTitle(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -438,7 +438,7 @@ data class RulebookSection(override val id : UUID,
 
     companion object : Factory<RulebookSection>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RulebookSection> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSection> = when (doc)
         {
             is DocDict ->
             {
@@ -505,7 +505,7 @@ data class RulebookSectionId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<RulebookSectionId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookSectionId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSectionId> = when (doc)
         {
             is DocText -> effValue(RulebookSectionId(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -534,7 +534,7 @@ data class RulebookSectionTitle(val value : String) : SQLSerializable, Serializa
 
     companion object : Factory<RulebookSectionTitle>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookSectionTitle> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSectionTitle> = when (doc)
         {
             is DocText -> effValue(RulebookSectionTitle(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -563,7 +563,7 @@ data class RulebookSectionBody(val value : String) : SQLSerializable, Serializab
 
     companion object : Factory<RulebookSectionBody>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RulebookSectionBody> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSectionBody> = when (doc)
         {
             is DocText -> effValue(RulebookSectionBody(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -621,7 +621,7 @@ data class RulebookSubsection(override val id : UUID,
 
     companion object : Factory<RulebookSubsection>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RulebookSubsection> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSubsection> = when (doc)
         {
             is DocDict ->
             {
@@ -678,7 +678,7 @@ data class RulebookSubsectionId(val value : String) : SQLSerializable, Serializa
 
     companion object : Factory<RulebookSubsectionId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookSubsectionId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSubsectionId> = when (doc)
         {
             is DocText -> effValue(RulebookSubsectionId(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -707,7 +707,7 @@ data class RulebookSubsectionTitle(val value : String) : SQLSerializable, Serial
 
     companion object : Factory<RulebookSubsectionTitle>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<RulebookSubsectionTitle> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSubsectionTitle> = when (doc)
         {
             is DocText -> effValue(RulebookSubsectionTitle(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -736,7 +736,7 @@ data class RulebookSubsectionBody(val value : String) : SQLSerializable, Seriali
 
     companion object : Factory<RulebookSubsectionBody>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RulebookSubsectionBody> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSubsectionBody> = when (doc)
         {
             is DocText -> effValue(RulebookSubsectionBody(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -800,7 +800,7 @@ data class RulebookReference(override val id : UUID,
 
     companion object : Factory<RulebookReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<RulebookReference> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookReference> = when (doc)
         {
             is DocDict ->
             {

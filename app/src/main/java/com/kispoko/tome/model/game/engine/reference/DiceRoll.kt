@@ -19,7 +19,7 @@ import effect.Err
 import effect.Val
 import effect.effApply
 import effect.effError
-import lulo.document.*
+import lulo.document.SchemaDoc
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
@@ -39,7 +39,7 @@ sealed class DiceRollReference : SumModel, Serializable
 
     companion object : Factory<DiceRollReference>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<DiceRollReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollReference> =
             when (doc.case())
             {
                 "dice_roll"          -> DiceRollReferenceLiteral.fromDocument(doc)
@@ -78,7 +78,7 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference(),
 
     companion object : Factory<DiceRollReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollReference> =
                 effApply(::DiceRollReferenceLiteral, DiceRoll.fromDocument(doc))
 
     }
@@ -128,7 +128,7 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
 
     companion object : Factory<DiceRollReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollReference> =
                 effApply(::DiceRollReferenceVariable, VariableReference.fromDocument(doc))
 
     }

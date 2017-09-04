@@ -11,7 +11,6 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -35,8 +34,7 @@ data class ExpanderLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ExpanderLabel>
     {
-        override fun fromDocument(doc: SpecDoc)
-                      : ValueParser<ExpanderLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ExpanderLabel> = when (doc)
         {
             is DocText -> effValue(ExpanderLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -83,7 +81,7 @@ data class ExpanderWidgetFormat(override val id : UUID,
 
     companion object : Factory<ExpanderWidgetFormat>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ExpanderWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ExpanderWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::ExpanderWidgetFormat,
                                    // Model Id

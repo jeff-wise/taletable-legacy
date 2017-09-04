@@ -58,7 +58,7 @@ data class Corners(override val id : UUID,
     companion object : Factory<Corners>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Corners> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Corners> = when (doc)
         {
             is DocDict -> effApply(::Corners,
                                    // Top Left
@@ -132,7 +132,7 @@ data class TopLeftCornerRadius(val value : Float) : SQLSerializable, Serializabl
     companion object : Factory<TopLeftCornerRadius>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TopLeftCornerRadius> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TopLeftCornerRadius> = when (doc)
         {
             is DocNumber -> effValue(TopLeftCornerRadius(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -164,7 +164,7 @@ data class TopRightCornerRadius(val value : Float) : SQLSerializable, Serializab
     companion object : Factory<TopRightCornerRadius>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TopRightCornerRadius> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TopRightCornerRadius> = when (doc)
         {
             is DocNumber -> effValue(TopRightCornerRadius(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -196,7 +196,7 @@ data class BottomRightCornerRadius(val value : Float) : SQLSerializable, Seriali
     companion object : Factory<BottomRightCornerRadius>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BottomRightCornerRadius> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BottomRightCornerRadius> = when (doc)
         {
             is DocNumber -> effValue(BottomRightCornerRadius(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -228,7 +228,7 @@ data class BottomLeftCornerRadius(val value : Float) : SQLSerializable, Serializ
     companion object : Factory<BottomLeftCornerRadius>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BottomLeftCornerRadius> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BottomLeftCornerRadius> = when (doc)
         {
             is DocNumber -> effValue(BottomLeftCornerRadius(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))

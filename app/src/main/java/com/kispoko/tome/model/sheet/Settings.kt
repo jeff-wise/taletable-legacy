@@ -61,7 +61,7 @@ data class Settings(override val id : UUID,
         private val defaultSheetSummary = SheetSummary("")
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Settings> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Settings> = when (doc)
         {
             is DocDict ->
             {
@@ -123,7 +123,7 @@ data class SheetName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<SheetName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SheetName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SheetName> = when (doc)
         {
             is DocText -> effValue(SheetName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -143,7 +143,7 @@ data class SheetSummary(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<SheetSummary>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<SheetSummary> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SheetSummary> = when (doc)
         {
             is DocText -> effValue(SheetSummary(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

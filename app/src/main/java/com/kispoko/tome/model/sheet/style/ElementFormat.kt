@@ -13,7 +13,7 @@ import effect.effValue
 import effect.split
 import lulo.document.DocDict
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -90,7 +90,7 @@ data class ElementFormat(override val id : UUID,
         private val defaultAlignment            = Alignment.Center
         private val defaultVerticalAlignment    = VerticalAlignment.Middle
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ElementFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ElementFormat> = when (doc)
         {
             is DocDict ->
             {

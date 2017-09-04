@@ -42,7 +42,7 @@ sealed class Value(open val valueId : Prim<ValueId>,
 
     companion object
     {
-        fun fromDocument(doc: SpecDoc, valueSetId: ValueSetId): ValueParser<Value> =
+        fun fromDocument(doc: SchemaDoc, valueSetId: ValueSetId): ValueParser<Value> =
             when (doc)
             {
                 is DocDict ->
@@ -169,7 +169,7 @@ data class ValueNumber(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc,
+        fun fromDocument(doc : SchemaDoc,
                          valueSetId : ValueSetId) : ValueParser<ValueNumber> = when (doc)
         {
             is DocDict ->
@@ -292,7 +292,7 @@ data class ValueText(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc,
+        fun fromDocument(doc : SchemaDoc,
                          valueSetId : ValueSetId) : ValueParser<ValueText> = when (doc)
         {
             is DocDict -> effApply(::ValueText,
@@ -394,7 +394,7 @@ data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
 
     companion object : Factory<ValueReference>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueReference> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueReference> = when (doc)
         {
             is DocDict -> effApply(::ValueReference,
                                    // Value Set Name
@@ -428,7 +428,7 @@ data class ValueId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ValueId>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueId> = when (doc)
         {
             is DocText -> effValue(ValueId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -457,7 +457,7 @@ data class ValueDescription(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ValueDescription>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueDescription> = when (doc)
         {
             is DocText -> effValue(ValueDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -485,7 +485,7 @@ data class NumberValue(val value : Double) : SQLSerializable, Serializable
 
     companion object : Factory<NumberValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberValue> = when (doc)
         {
             is DocNumber -> effValue(NumberValue(doc.number))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -513,7 +513,7 @@ data class TextValue(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<TextValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextValue> = when (doc)
         {
             is DocText -> effValue(TextValue(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

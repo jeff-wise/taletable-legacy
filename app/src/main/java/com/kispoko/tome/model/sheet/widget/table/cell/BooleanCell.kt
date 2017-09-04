@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -80,7 +79,7 @@ data class BooleanCellFormat(override val id : UUID,
         private val defaultShowFalseIcon = ShowFalseIcon(false)
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanCellFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanCellFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -204,7 +203,7 @@ data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<ShowTrueIcon>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowTrueIcon> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowTrueIcon> = when (doc)
         {
             is DocBoolean -> effValue(ShowTrueIcon(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -233,7 +232,7 @@ data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<ShowFalseIcon>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowFalseIcon> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowFalseIcon> = when (doc)
         {
             is DocBoolean -> effValue(ShowFalseIcon(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))

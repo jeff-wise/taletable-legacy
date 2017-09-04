@@ -4,18 +4,13 @@ package com.kispoko.tome.model.sheet.widget
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.style.Height
-import com.kispoko.tome.model.sheet.style.Position
-import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.theme.ColorId
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.DocDict
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -46,7 +41,7 @@ data class ImageWidgetFormat(override val id : UUID,
 
     companion object : Factory<ImageWidgetFormat>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ImageWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ImageWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::ImageWidgetFormat,
                                    // Model Id

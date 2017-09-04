@@ -2,31 +2,6 @@
 package com.kispoko.tome.activity.sheet.grouprow;
 
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.R;
-import com.kispoko.tome.activity.sheet.widget.ActionWidgetActivity;
-import com.kispoko.tome.activity.BooleanWidgetActivity;
-import com.kispoko.tome.activity.ImageWidgetActivity;
-import com.kispoko.tome.activity.NumberWidgetActivity;
-import com.kispoko.tome.activity.TableWidgetActivity;
-import com.kispoko.tome.activity.TextWidgetActivity;
-import com.kispoko.tome.error.UnknownVariantError;
-import com.kispoko.tome.exception.UnionException;
-
-import java.io.Serializable;
-import java.util.List;
-
-
-
 /**
  * Widget List Recycler View Adapter
  */

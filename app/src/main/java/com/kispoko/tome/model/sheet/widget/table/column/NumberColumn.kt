@@ -65,7 +65,7 @@ data class NumberColumnFormat(override val id : UUID,
         private val defaultEditorType   = NumericEditorType.Calculator
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberColumnFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberColumnFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -130,7 +130,7 @@ data class ValuePrefix(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<ValuePrefix>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ValuePrefix> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ValuePrefix> = when (doc)
         {
             is DocText -> effValue(ValuePrefix(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

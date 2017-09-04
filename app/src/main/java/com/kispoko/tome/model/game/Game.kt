@@ -62,7 +62,7 @@ data class Game(override val id : UUID,
 
     companion object : Factory<Game>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Game> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Game> = when (doc)
         {
             is DocDict ->
             {
@@ -123,7 +123,7 @@ data class GameId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<GameId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<GameId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GameId> = when (doc)
         {
             is DocText -> effValue(GameId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -176,7 +176,7 @@ data class GameDescription(override val id : UUID,
 
     companion object : Factory<GameDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<GameDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GameDescription> = when (doc)
         {
             is DocDict ->
             {
@@ -227,7 +227,7 @@ data class GameName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<GameName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<GameName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GameName> = when (doc)
         {
             is DocText -> effValue(GameName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -256,7 +256,7 @@ data class GameSummary(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<GameSummary>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<GameSummary> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GameSummary> = when (doc)
         {
             is DocText -> effValue(GameSummary(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

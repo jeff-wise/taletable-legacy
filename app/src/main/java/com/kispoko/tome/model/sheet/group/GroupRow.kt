@@ -68,7 +68,7 @@ data class GroupRow(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<GroupRow> = when (doc)
+        fun fromDocument(doc : SchemaDoc, index : Int) : ValueParser<GroupRow> = when (doc)
         {
             is DocDict -> effApply(::GroupRow,
                                    // Format
@@ -276,7 +276,7 @@ data class GroupRowFormat(override val id : UUID,
         private val defaultDividerColorTheme    = ColorTheme.black
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<GroupRowFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GroupRowFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -367,7 +367,7 @@ data class GroupRowIndex(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<GroupRowIndex>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<GroupRowIndex> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GroupRowIndex> = when (doc)
         {
             is DocNumber -> effValue(GroupRowIndex(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -387,7 +387,7 @@ data class ShowGroupRowDivider(val value : Boolean) : SQLSerializable, Serializa
 
     companion object : Factory<ShowGroupRowDivider>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ShowGroupRowDivider> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowGroupRowDivider> = when (doc)
         {
             is DocBoolean -> effValue(ShowGroupRowDivider(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))

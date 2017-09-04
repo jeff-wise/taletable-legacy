@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.style
 
 
-import android.content.Context
 import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -86,7 +85,7 @@ data class TextFormat(override val id : UUID,
         private val defaultAlignment         = Alignment.Center
         private val defaultVerticalAlignment = VerticalAlignment.Middle
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -230,7 +229,7 @@ data class TextStyle(override val id : UUID,
         private val defaultBackgroundColorTheme = ColorTheme.transparent
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextStyle> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextStyle> = when (doc)
         {
             is DocDict ->
             {
@@ -358,7 +357,7 @@ data class TextSize(val sp : Float) : SQLSerializable, Serializable
 
     companion object : Factory<TextSize>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<TextSize> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextSize> = when (doc)
         {
             is DocNumber -> effValue(TextSize(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -387,7 +386,7 @@ data class IsUnderlined(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<IsUnderlined>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<IsUnderlined> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<IsUnderlined> = when (doc)
         {
             is DocBoolean -> effValue(IsUnderlined(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -424,7 +423,7 @@ sealed class TextFont : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<TextFont> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<TextFont> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -483,7 +482,7 @@ sealed class TextFontStyle : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<TextFontStyle> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<TextFontStyle> = when (doc)
         {
             is DocText -> when (doc.text)
             {

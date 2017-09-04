@@ -47,7 +47,7 @@ data class Theme(override val id : UUID,
 
     companion object : Factory<Theme>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Theme> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Theme> = when (doc)
         {
             is DocDict -> effApply(::Theme,
                                    // Model Id
@@ -175,7 +175,7 @@ data class UIColors(override val id: UUID,
 
     companion object : Factory<UIColors>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<UIColors> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<UIColors> = when (doc)
         {
             is DocDict -> effApply(::UIColors,
                                    // Toolbar Color
@@ -265,7 +265,7 @@ sealed class ThemeId : SQLSerializable, Serializable
     {
         companion object : Factory<ThemeId.Custom>
         {
-            override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeId.Custom> = when (doc)
+            override fun fromDocument(doc: SchemaDoc): ValueParser<Custom> = when (doc)
             {
                 is DocText ->
                     effValue(Custom(doc.text))
@@ -280,7 +280,7 @@ sealed class ThemeId : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<ThemeId> = when (doc)
         {
             is DocText ->
             {
@@ -296,6 +296,13 @@ sealed class ThemeId : SQLSerializable, Serializable
 
     }
 
+
+    override fun toString() = when (this)
+    {
+        is Light  -> "Light"
+        is Dark   -> "Dark"
+        is Custom -> this.name
+    }
 }
 
 
@@ -307,12 +314,12 @@ data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId) : Serializ
 
     companion object : Factory<ThemeColorId>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ThemeColorId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ThemeColorId> = when (doc)
         {
             is DocDict -> effApply(::ThemeColorId,
-                                   // ThemeId
+                                   // Theme Id
                                    doc.at("theme_id") ap { ThemeId.fromDocument(it) },
-                                   // ThemeId
+                                   // Color Id
                                    doc.at("color_id") ap { ColorId.fromDocument(it) }
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -337,7 +344,7 @@ data class ThemeColor(val colorId : ColorId, val color : Int) : Serializable
 
     companion object : Factory<ThemeColor>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ThemeColor> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ThemeColor> = when (doc)
         {
             is DocDict -> effApply(::ThemeColor,
                                    // Color Id
@@ -367,7 +374,7 @@ data class ColorTheme(val themeColorIds : Set<ThemeColorId>) : SQLSerializable, 
     companion object : Factory<ColorTheme>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ColorTheme> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColorTheme> = when (doc)
         {
             is DocDict -> effApply(::ColorTheme,
                                    // ThemeId

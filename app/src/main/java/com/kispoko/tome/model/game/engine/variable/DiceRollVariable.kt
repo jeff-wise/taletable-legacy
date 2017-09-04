@@ -9,7 +9,6 @@ import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -34,7 +33,7 @@ sealed class DiceRollVariableValue : Serializable
 
     companion object : Factory<DiceRollVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<DiceRollVariableValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollVariableValue> = when (doc)
         {
             is DocDict -> when (doc.case())
             {
@@ -73,7 +72,7 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll)
 
     companion object : Factory<DiceRollVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollVariableValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollVariableValue> =
                 effApply(::DiceRollVariableLiteralValue, DiceRoll.fromDocument(doc))
     }
 

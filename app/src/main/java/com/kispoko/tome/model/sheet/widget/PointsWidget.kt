@@ -111,7 +111,7 @@ data class PointsWidgetFormat(override val id : UUID,
         val defaultBarHeight            = PointsBarHeight(20)
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<PointsWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<PointsWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -219,7 +219,7 @@ data class PointsWidgetLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<PointsWidgetLabel>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<PointsWidgetLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<PointsWidgetLabel> = when (doc)
         {
             is DocText -> effValue(PointsWidgetLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -248,7 +248,7 @@ data class PointsBarHeight(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<PointsBarHeight>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<PointsBarHeight> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<PointsBarHeight> = when (doc)
         {
             is DocNumber -> effValue(PointsBarHeight(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -285,7 +285,7 @@ sealed class PointsBarStyle : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<PointsBarStyle> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<PointsBarStyle> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -316,7 +316,7 @@ sealed class PointsAboveBarStyle : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<PointsAboveBarStyle> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<PointsAboveBarStyle> = when (doc)
         {
             is DocText -> when (doc.text)
             {

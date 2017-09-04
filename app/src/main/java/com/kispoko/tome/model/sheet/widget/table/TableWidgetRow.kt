@@ -20,7 +20,7 @@ import com.kispoko.tome.rts.sheet.*
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
-import lulo.document.SpecDoc
+import lulo.document.SchemaDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -78,7 +78,7 @@ data class TableWidgetRow(override val id : UUID,
     companion object : Factory<TableWidgetRow>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetRow> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetRow> = when (doc)
         {
             is DocDict ->
             {
@@ -267,7 +267,7 @@ data class TableWidgetRowFormat(override val id : UUID,
         private val defaultCellHeight           = Height.Wrap
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetRowFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetRowFormat> = when (doc)
         {
             is DocDict -> effApply(::TableWidgetRowFormat,
                                    // Text Style

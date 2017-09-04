@@ -51,7 +51,7 @@ sealed class Height : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<Height> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<Height> = when (doc)
         {
             is DocNumber ->
             {

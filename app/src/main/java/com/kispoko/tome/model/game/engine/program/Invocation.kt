@@ -79,7 +79,7 @@ data class Invocation(override val id : UUID,
 
     companion object : Factory<Invocation>
     {
-        override fun fromDocument(doc : SpecDoc): ValueParser<Invocation> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Invocation> = when (doc)
         {
             is DocDict ->
             {

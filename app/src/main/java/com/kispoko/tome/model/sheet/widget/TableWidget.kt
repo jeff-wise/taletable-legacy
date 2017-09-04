@@ -95,7 +95,7 @@ data class TableWidgetFormat(override val id : UUID,
         private val defaultCellHeight        = Height.Wrap
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::TableWidgetFormat,
                                    // Widget Format
@@ -180,7 +180,7 @@ data class TableWidgetName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<TableWidgetName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetName> = when (doc)
         {
             is DocText -> effValue(TableWidgetName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -209,7 +209,7 @@ data class ShowTableDividers(val value : Boolean) : SQLSerializable, Serializabl
 
     companion object : Factory<ShowTableDividers>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowTableDividers> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowTableDividers> = when (doc)
         {
             is DocBoolean -> effValue(ShowTableDividers(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -239,7 +239,7 @@ data class TableSort(val columnIndex : Int,
 
     companion object : Factory<TableSort>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TableSort> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TableSort> = when (doc)
         {
             is DocDict ->
             {
@@ -279,7 +279,7 @@ sealed class TableSortOrder : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<TableSortOrder> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<TableSortOrder> = when (doc)
         {
             is DocText -> when (doc.text)
             {

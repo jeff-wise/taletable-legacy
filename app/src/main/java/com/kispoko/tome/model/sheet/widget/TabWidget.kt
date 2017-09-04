@@ -47,7 +47,7 @@ data class Tab(override val id : UUID,
 
     companion object : Factory<Tab>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Tab> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Tab> = when (doc)
         {
             is DocDict ->
             {
@@ -94,7 +94,7 @@ data class TabName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<TabName>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TabName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TabName> = when (doc)
         {
             is DocText -> effValue(TabName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -123,7 +123,7 @@ data class DefaultSelected(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<DefaultSelected>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DefaultSelected> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultSelected> = when (doc)
         {
             is DocNumber -> effValue(DefaultSelected(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -217,7 +217,7 @@ data class TabWidgetFormat(override val id : UUID,
         private val defaultTabCorners           = Corners.default()
 
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TabWidgetFormat> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TabWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -316,7 +316,7 @@ data class TabUnderlineSelected(val value : Boolean) : SQLSerializable, Serializ
 
     companion object : Factory<TabUnderlineSelected>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TabUnderlineSelected> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TabUnderlineSelected> = when (doc)
         {
             is DocBoolean -> effValue(TabUnderlineSelected(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -345,7 +345,7 @@ data class TabUnderlineThickness(val value : Int) : SQLSerializable, Serializabl
 
     companion object : Factory<TabUnderlineThickness>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TabUnderlineThickness> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TabUnderlineThickness> = when (doc)
         {
             is DocNumber -> effValue(TabUnderlineThickness(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -374,7 +374,7 @@ data class TabVerticalPadding(val value : Int) : SQLSerializable, Serializable
 
     companion object : Factory<TabVerticalPadding>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TabVerticalPadding> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TabVerticalPadding> = when (doc)
         {
             is DocNumber -> effValue(TabVerticalPadding(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))

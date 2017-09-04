@@ -26,10 +26,7 @@ import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.rts.game.engine.*
 import com.kispoko.tome.rts.sheet.SheetContext
-import effect.effApply
-import effect.effError
-import effect.effValue
-import effect.note
+import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -118,7 +115,7 @@ data class Engine(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc: SpecDoc, gameId : GameId) : ValueParser<Engine> = when (doc)
+        fun fromDocument(doc: SchemaDoc, gameId : GameId) : ValueParser<Engine> = when (doc)
         {
             is DocDict ->
             {
@@ -297,7 +294,7 @@ sealed class EngineValueType : SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<EngineValueType> = when (doc)
+        fun fromDocument(doc: SchemaDoc) : ValueParser<EngineValueType> = when (doc)
         {
             is DocText -> when (doc.text)
             {
@@ -318,7 +315,7 @@ sealed class EngineValueType : SQLSerializable, Serializable
         is Number   -> "Number"
         is Text     -> "Text"
         is Boolean  -> "Boolean"
-        is DiceRoll -> "DiceRoll"
+        is DiceRoll -> "Dice Roll"
         is ListText -> "ListText"
     }
 
@@ -334,7 +331,7 @@ sealed class EngineValue : SumModel, Serializable
 
     companion object : Factory<EngineValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<EngineValue> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EngineValue> =
             when (doc.case())
             {
                 "engine_value_number"  -> EngineValueNumber.fromDocument(doc)
@@ -369,7 +366,7 @@ data class EngineValueNumber(val value : Double) : EngineValue(), SQLSerializabl
 
     companion object : Factory<EngineValueNumber>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<EngineValueNumber> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EngineValueNumber> = when (doc)
         {
             is DocNumber -> effValue(EngineValueNumber(doc.number))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
@@ -413,7 +410,7 @@ data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
 
     companion object : Factory<EngineValueText>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineValueText> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EngineValueText> = when (doc)
         {
             is DocText -> effValue(EngineValueText(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -458,7 +455,7 @@ data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializa
 
     companion object : Factory<EngineValueBoolean>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineValueBoolean> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EngineValueBoolean> = when (doc)
         {
             is DocBoolean -> effValue(EngineValueBoolean(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -503,13 +500,8 @@ data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), Model
 
     companion object : Factory<EngineValueDiceRoll>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineValueDiceRoll> = when (doc)
-        {
-            is DocDict -> doc.at("value") ap {
-                              effApply(::EngineValueDiceRoll, DiceRoll.Companion.fromDocument(it))
-                          }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EngineValueDiceRoll> =
+                apply(::EngineValueDiceRoll, DiceRoll.fromDocument(doc))
     }
 
 
@@ -555,7 +547,7 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
 
     companion object : Factory<EngineTextListValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineTextListValue> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EngineTextListValue> = when (doc)
         {
             is DocDict -> doc.list("value") ap {
                               effApply(::EngineTextListValue, it.stringList())
@@ -588,24 +580,4 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
     override val sumModelObject = this
 
 }
-
-
-
-
-//
-//
-//
-//
-//    public Set<EngineActiveSearchResult> searchActive(String query)
-//    {
-//        Set<EngineActiveSearchResult> results = new HashSet<>();
-//
-//        // > Search for active variables
-//        results.addAll(State.search(query));
-//
-//        // > Search for active mechanics
-//        results.addAll(this.mechanicIndex().search(query));
-//
-//        return results;
-//    }
 

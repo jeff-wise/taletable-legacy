@@ -61,7 +61,7 @@ data class Statement(override val id : UUID,
 
     companion object : Factory<Statement>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Statement>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Statement> = when (doc)
         {
             is DocDict ->
             {
@@ -139,7 +139,7 @@ data class StatementBindingName(val value : String) : SQLSerializable, Serializa
 
     companion object : Factory<StatementBindingName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementBindingName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StatementBindingName> = when (doc)
         {
             is DocText -> effValue(StatementBindingName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -164,7 +164,7 @@ sealed class StatementParameter : SumModel, Serializable
 
     companion object : Factory<StatementParameter>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameter> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameter> =
             when (doc.case())
             {
                 "statement_binding"       -> StatementParameterBindingName.fromDocument(doc.nextCase())
@@ -199,7 +199,7 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
 
     companion object : Factory<StatementParameterBindingName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameterBindingName> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameterBindingName> =
                 effApply(::StatementParameterBindingName, StatementBindingName.fromDocument(doc))
     }
 
@@ -235,8 +235,7 @@ data class StatementParameterProgramParameter(val index : ProgramParameterIndex)
 
     companion object : Factory<StatementParameterProgramParameter>
     {
-        override fun fromDocument(doc : SpecDoc)
-                : ValueParser<StatementParameterProgramParameter> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameterProgramParameter> =
                 effApply(::StatementParameterProgramParameter,
                            ProgramParameterIndex.fromDocument(doc))
     }
@@ -265,7 +264,7 @@ data class StatementParameterReference(val reference : DataReference) : Statemen
 
     companion object : Factory<StatementParameterReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameterReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameterReference> =
                 effApply(::StatementParameterReference, DataReference.fromDocument(doc))
     }
 

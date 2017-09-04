@@ -74,7 +74,7 @@ data class Mechanic(override val id : UUID,
 
     companion object : Factory<Mechanic>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Mechanic>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Mechanic> = when (doc)
         {
             is DocDict ->
             {
@@ -145,7 +145,7 @@ data class MechanicId(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<MechanicId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicId> = when (doc)
         {
             is DocText -> effValue(MechanicId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -174,7 +174,7 @@ data class MechanicLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<MechanicLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicLabel> = when (doc)
         {
             is DocText -> effValue(MechanicLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -202,7 +202,7 @@ data class MechanicDescription(val value : String) : SQLSerializable, Serializab
 
     companion object : Factory<MechanicDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicDescription> = when (doc)
         {
             is DocText -> effValue(MechanicDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -230,7 +230,7 @@ data class MechanicSummary(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<MechanicSummary>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicSummary> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicSummary> = when (doc)
         {
             is DocText -> effValue(MechanicSummary(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -283,7 +283,7 @@ data class MechanicCategory(override val id : UUID,
 
     companion object : Factory<MechanicCategory>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<MechanicCategory>  = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicCategory> = when (doc)
         {
             is DocDict ->
             {
@@ -337,7 +337,7 @@ data class MechanicCategoryId(val value : String) : SQLSerializable, Serializabl
 
     companion object : Factory<MechanicCategoryId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategoryId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicCategoryId> = when (doc)
         {
             is DocText -> effValue(MechanicCategoryId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -365,7 +365,7 @@ data class MechanicCategoryLabel(val value : String) : SQLSerializable, Serializ
 
     companion object : Factory<MechanicCategoryLabel>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategoryLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicCategoryLabel> = when (doc)
         {
             is DocText -> effValue(MechanicCategoryLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -393,7 +393,7 @@ data class MechanicCategoryDescription(val value : String) : SQLSerializable, Se
 
     companion object : Factory<MechanicCategoryDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategoryDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicCategoryDescription> = when (doc)
         {
             is DocText -> effValue(MechanicCategoryDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -422,7 +422,7 @@ data class MechanicRequirements(val variables : ArrayList<VariableId>)
 
     companion object : Factory<MechanicRequirements>
     {
-        override fun fromDocument(doc : SpecDoc): ValueParser<MechanicRequirements> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicRequirements> = when (doc)
         {
             is DocList -> effApply(::MechanicRequirements,
                                    doc.mapArrayList { VariableId.fromDocument(it) })

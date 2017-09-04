@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.theme
 
 
-import android.util.Log
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -49,7 +48,7 @@ sealed class ColorId : SQLSerializable, Serializable
 
     companion object : Factory<ColorId>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ColorId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ColorId> = when (doc)
         {
             is DocText ->
             {

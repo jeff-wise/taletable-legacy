@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
@@ -48,7 +49,7 @@ sealed class Variable(open var variableId : Prim<VariableId>,
 
     companion object : Factory<Variable>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Variable> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Variable> =
             when (doc.case())
             {
                 "variable_boolean"   -> BooleanVariable.fromDocument(doc) as ValueParser<Variable>
@@ -208,7 +209,7 @@ data class BooleanVariable(override val id : UUID,
 
     companion object : Factory<BooleanVariable>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanVariable> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanVariable> = when (doc)
         {
             is DocDict ->
             {
@@ -327,7 +328,7 @@ data class DiceRollVariable(override val id : UUID,
 
     companion object : Factory<DiceRollVariable>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollVariable> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollVariable> = when (doc)
         {
             is DocDict ->
             {
@@ -459,7 +460,7 @@ data class NumberVariable(override val id : UUID,
 
     companion object : Factory<NumberVariable>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariable> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariable> = when (doc)
         {
             is DocDict ->
             {
@@ -606,7 +607,7 @@ data class TextVariable(override val id : UUID,
 
     companion object : Factory<TextVariable>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariable> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariable> = when (doc)
         {
             is DocDict ->
             {
@@ -717,7 +718,7 @@ data class VariableNameSpace(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<VariableNameSpace>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableNameSpace> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableNameSpace> = when (doc)
         {
             is DocText -> effValue(VariableNameSpace(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -746,7 +747,7 @@ data class VariableName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<VariableName>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableName> = when (doc)
         {
             is DocText -> effValue(VariableName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -772,13 +773,16 @@ sealed class VariableReference : SQLSerializable, Serializable
 
     companion object : Factory<VariableReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableReference> =
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableReference> =
             when (doc.case())
             {
                 "variable_id"  -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
                 "variable_tag" -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
-                else           -> effError<ValueError,VariableReference>(
-                                        UnknownCase(doc.case(), doc.path))
+                else           -> {
+                    Log.d("***VARIABLE", "case is: " + doc.case())
+                    effError<ValueError,VariableReference>(
+                            UnknownCase(doc.case(), doc.path))
+                }
             }
     }
 }
@@ -809,7 +813,7 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
 
     companion object : Factory<VariableId>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableId> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableId> = when (doc)
         {
             is DocDict ->
             {
@@ -822,7 +826,9 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
                          doc.at("name") ap { VariableName.fromDocument(it) }
                          )
             }
-            is DocText -> effApply(::VariableId, effValue(doc.text))
+            is DocText -> {
+                effApply(::VariableId, effValue(doc.text))
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -882,7 +888,7 @@ data class VariableTag(val value : String) : VariableReference(), Serializable
 
     companion object : Factory<VariableTag>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableTag> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableTag> = when (doc)
         {
             is DocText -> effValue(VariableTag(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -911,7 +917,7 @@ data class VariableLabel(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<VariableLabel>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableLabel> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableLabel> = when (doc)
         {
             is DocText -> effValue(VariableLabel(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -940,7 +946,7 @@ data class VariableDescription(val value : String) : SQLSerializable, Serializab
 
     companion object : Factory<VariableDescription>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableDescription> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableDescription> = when (doc)
         {
             is DocText -> effValue(VariableDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -969,7 +975,7 @@ data class DefinesNamespace(val value : Boolean) : SQLSerializable, Serializable
 
     companion object : Factory<DefinesNamespace>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<DefinesNamespace> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DefinesNamespace> = when (doc)
         {
             is DocBoolean -> effValue(DefinesNamespace(doc.boolean))
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
@@ -999,7 +1005,7 @@ data class VariableTagSet(val variables : MutableSet<VariableTag>) : SQLSerializ
     companion object : Factory<VariableTagSet>
     {
 
-        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableTagSet> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableTagSet> = when (doc)
         {
             is DocList -> effApply(::VariableTagSet,
                                    doc.mapSetMut { VariableTag.fromDocument(it) })

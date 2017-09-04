@@ -59,7 +59,7 @@ data class Section(override val id : UUID,
 
     companion object : Factory<Section>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Section> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Section> = when (doc)
         {
             is DocDict ->
             {
@@ -128,7 +128,7 @@ data class SectionName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<SectionName>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<SectionName> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SectionName> = when (doc)
         {
             is DocText -> effValue(SectionName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
