@@ -35,3 +35,25 @@ class AmanaceCharSheetManifestParseError(val errorString : String) : OfficialErr
 
     override fun logMessage(): String = userMessage()
 }
+
+
+class AmanaceCreatureSheetManifestParseError(val errorString : String) : OfficialError()
+{
+    override fun debugMessage() : String = """
+            |Amanace Creature Sheet Manifest Parse Error:
+            |    $errorString
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class AmanaceNPCSheetManifestParseError(val errorString : String) : OfficialError()
+{
+    override fun debugMessage() : String = """
+            |Amanace NPC Sheet Manifest Parse Error:
+            |    $errorString
+            """
+
+    override fun logMessage(): String = userMessage()
+}

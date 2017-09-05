@@ -145,6 +145,20 @@
     <item name="amanace_chars_item_race" type="id"/>
     <item name="amanace_chars_item_class" type="id"/>
 
+    <!-- AMANACE CREATURE SHEETS FRAGMENT -->
+    <item name="amanace_creatures_item_layout" type="id"/>
+    <item name="amanace_creatures_item_name" type="id"/>
+    <item name="amanace_creatures_item_desc" type="id"/>
+    <item name="amanace_creatures_item_type" type="id"/>
+    <item name="amanace_creatures_item_cr" type="id"/>
+
+    <!-- AMANACE NPC SHEETS FRAGMENT -->
+    <item name="amanace_npc_item_layout" type="id"/>
+    <item name="amanace_npc_item_name" type="id"/>
+    <item name="amanace_npc_item_desc" type="id"/>
+    <item name="amanace_npc_item_type" type="id"/>
+    <item name="amanace_npc_item_cr" type="id"/>
+
     <!-- VALUE SETS ACTIVITY -->
     <item name="value_set_list_item_layout" type="id"/>
     <item name="value_set_list_item_header" type="id"/>

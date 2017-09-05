@@ -81,7 +81,6 @@ class AmanaceCharactersFragment : Fragment()
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-
         val themeId = this.themeId
 
         if (themeId != null)
@@ -432,14 +431,14 @@ object SummaryItemView
                          themeId : ThemeId,
                          context : Context) : LinearLayout
     {
-        // (1) Declarations
+        // (1) declarations
         // -------------------------------------------------------------------------------------
 
         val layout              = LinearLayoutBuilder()
         val label               = TextViewBuilder()
         val value               = TextViewBuilder()
 
-        // (2) Layout
+        // (2) layout
         // -------------------------------------------------------------------------------------
 
         layout.width            = 0
@@ -453,7 +452,7 @@ object SummaryItemView
         layout.child(label)
               .child(value)
 
-        // (3 A) Label
+        // (3 a) label
         // -------------------------------------------------------------------------------------
 
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -465,16 +464,16 @@ object SummaryItemView
                                                 TextFontStyle.Regular,
                                                 context)
 
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        val labelColorTheme     = ColorTheme(setOf(
+                                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+                                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         label.color             = ThemeManager.color(themeId, labelColorTheme)
 
         label.sizeSp            = 11f
 
         label.margin.rightDp    = 5f
 
-        // (3 B) Value
+        // (3 b) value
         // -------------------------------------------------------------------------------------
 
         value.width             = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -486,8 +485,8 @@ object SummaryItemView
                                                 TextFontStyle.Regular,
                                                 context)
 
-        val valueColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+        val valueColorTheme     = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         value.color             = ThemeManager.color(themeId, valueColorTheme)
 

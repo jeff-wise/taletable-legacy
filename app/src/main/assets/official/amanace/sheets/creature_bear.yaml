@@ -1,0 +1,51 @@
+id: casmey_beginner
+campaign_id: harmony
+settings:
+  theme_id: dark
+  sheet_name: 'Bear'
+  sheet_summary: 'Barry the Bear'
+variables:
+- type: variable_text
+  variable_text:
+    id: name
+    label: Name
+    description: Name
+    value:
+      type: text_literal
+      text_literal: 'Barry'
+sections:
+- name: Combat
+  icon: parchment
+  pages:
+  - name: Combat
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_10
+    groups:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          top: 20
+          left: 8
+          right: 8
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: name
+            value_variable_id: name
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: gold_1
+                  font: merriweather
+                  font_style: regular
+                  size: 25

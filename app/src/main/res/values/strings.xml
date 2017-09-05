@@ -27,6 +27,9 @@
 
     <string name="edit_mode">Edit Mode</string>
 
+    <string name="type">Type</string>
+    <string name="cr">CR</string>
+
     <string name="table_editor">Table Editor</string>
 
     <string name="insert_row_below">Insert Below</string>

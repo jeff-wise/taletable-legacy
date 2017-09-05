@@ -1,0 +1,5 @@
+summaries:
+- name: Bear
+  type: Animal
+  description: A bear.
+  cr: 2

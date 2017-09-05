@@ -10,8 +10,6 @@ import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppOfficialError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
-import com.kispoko.tome.model.campaign.Campaign
-import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.official.*
 import com.kispoko.tome.rts.campaign.CampaignManager
 import com.kispoko.tome.rts.game.GameManager
@@ -43,6 +41,8 @@ object OfficialManager
     private var gameManifest : GameManifest? = null
 
     private var amanaceCharacterSheetManifest : AmanaceCharacterSheetManifest? = null
+    private var amanaceCreatureSheetManifest : AmanaceCreatureSheetManifest? = null
+    private var amanaceNPCSheetManifest : AmanaceNPCSheetManifest? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -230,6 +230,89 @@ object OfficialManager
         }
 
     }
+
+
+    // Amanace > Creature Manifest
+    // -----------------------------------------------------------------------------------------
+
+    fun amanaceCreatureSheetManifest(context : Context) : AmanaceCreatureSheetManifest?
+    {
+        if (amanaceCreatureSheetManifest == null)
+        {
+            val summaries = loadAmanaceCreatureSheetManifest(context)
+            when (summaries) {
+                is Val -> return summaries.value
+                is Err -> {
+                    ApplicationLog.error(summaries.error)
+                    return null
+                }
+            }
+        }
+        else
+        {
+            return null
+        }
+    }
+
+
+    private fun loadAmanaceCreatureSheetManifest(context : Context)
+                                : AppEff<AmanaceCreatureSheetManifest>
+    {
+        val filePath = ApplicationAssets.officialAmanaceDirectoryPath +
+                                        "/creature_sheet_manifest.yaml"
+
+        val sheetManifestParser = parseYaml(context.assets.open(filePath),
+                                            AmanaceCreatureSheetManifest.Companion::fromYaml)
+        return when (sheetManifestParser)
+        {
+            is Val -> effValue(sheetManifestParser.value)
+            is Err -> effError(AppOfficialError(
+                    AmanaceCreatureSheetManifestParseError(sheetManifestParser.toString())))
+        }
+
+    }
+
+
+    // Amanace > NPC Manifest
+    // -----------------------------------------------------------------------------------------
+
+    fun amanaceNPCSheetManifest(context : Context) : AmanaceNPCSheetManifest?
+    {
+        if (amanaceNPCSheetManifest == null)
+        {
+            val summaries = loadAmanaceNPCSheetManifest(context)
+            when (summaries) {
+                is Val -> return summaries.value
+                is Err -> {
+                    ApplicationLog.error(summaries.error)
+                    return null
+                }
+            }
+        }
+        else
+        {
+            return null
+        }
+    }
+
+
+    private fun loadAmanaceNPCSheetManifest(context : Context) : AppEff<AmanaceNPCSheetManifest>
+    {
+        val filePath = ApplicationAssets.officialAmanaceDirectoryPath +
+                                        "/npc_sheet_manifest.yaml"
+
+        val sheetManifestParser = parseYaml(context.assets.open(filePath),
+                                            AmanaceNPCSheetManifest.Companion::fromYaml)
+        return when (sheetManifestParser)
+        {
+            is Val -> effValue(sheetManifestParser.value)
+            is Err -> effError(AppOfficialError(
+                    AmanaceNPCSheetManifestParseError(sheetManifestParser.toString())))
+        }
+
+    }
+
+
 
 
     /**

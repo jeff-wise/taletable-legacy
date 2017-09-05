@@ -6,6 +6,11 @@ import com.kispoko.culebra.*
 import effect.apply
 
 
+
+// ---------------------------------------------------------------------------------------------
+// CHARACTER SHEETS
+// ---------------------------------------------------------------------------------------------
+
 data class AmanaceCharacterSheetManifest(val summaries : List<AmanaceCharacterSheetSummary>)
 {
 
@@ -89,3 +94,137 @@ data class AmanaceCharacterSheetVariant(val id : String, val label : String)
     }
 
 }
+
+
+// ---------------------------------------------------------------------------------------------
+// CREATURE SHEETS
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Amanace Creature Sheet Manifest
+ */
+data class AmanaceCreatureSheetManifest(val summaries : List<AmanaceCreatureSheetSummary>)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceCreatureSheetManifest> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::AmanaceCreatureSheetManifest,
+                          // Summaries
+                          yamlValue.array("summaries") ap {
+                              it.mapApply { AmanaceCreatureSheetSummary.fromYaml(it) }}
+                    )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+            }
+    }
+
+}
+
+
+/**
+ * Amanace Creature Sheet Summary
+ */
+data class AmanaceCreatureSheetSummary(val name : String,
+                                       val type : String,
+                                       val description : String,
+                                       val challengeRating : Int)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceCreatureSheetSummary> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::AmanaceCreatureSheetSummary,
+                          // Name
+                          yamlValue.text("name"),
+                          // Type
+                          yamlValue.text("type"),
+                          // Description
+                          yamlValue.text("description"),
+                          // Challenge Rating
+                          yamlValue.integer("cr")
+                          )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT,
+                                                  yamlType(yamlValue),
+                                                  yamlValue.path))
+            }
+    }
+
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// NPC SHEETS
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Amanace NPC Sheet Manifest
+ */
+data class AmanaceNPCSheetManifest(val summaries : List<AmanaceNPCSheetSummary>)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceNPCSheetManifest> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::AmanaceNPCSheetManifest,
+                          // Summaries
+                          yamlValue.array("summaries") ap {
+                              it.mapApply { AmanaceNPCSheetSummary.fromYaml(it) }}
+                    )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+            }
+    }
+
+}
+
+
+/**
+ * Amanace NPC Sheet Summary
+ */
+data class AmanaceNPCSheetSummary(val name : String,
+                                  val type : String,
+                                  val description : String,
+                                  val challengeRating : Int)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceNPCSheetSummary> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::AmanaceNPCSheetSummary,
+                          // Name
+                          yamlValue.text("name"),
+                          // Type
+                          yamlValue.text("type"),
+                          // Description
+                          yamlValue.text("description"),
+                          // Challenge Rating
+                          yamlValue.integer("cr")
+                          )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT,
+                                                  yamlType(yamlValue),
+                                                  yamlValue.path))
+            }
+    }
+
+}
+
+
