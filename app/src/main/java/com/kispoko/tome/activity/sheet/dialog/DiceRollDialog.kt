@@ -159,7 +159,7 @@ object DiceRollerView
         val layout = this.viewLayout(sheetUIContext)
 
         // Header
-        val diceRollName = diceRoll.rollName() ?: ""
+        val diceRollName = diceRoll.rollNameString() ?: ""
         layout.addView(this.headerView(diceRoll.toString(), diceRollName, sheetUIContext))
 
         // Rolls

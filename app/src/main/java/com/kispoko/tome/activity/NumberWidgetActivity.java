@@ -199,7 +199,7 @@ public class NumberWidgetActivity extends AppCompatActivity
 //                Form.field(
 //                        R.string.number_widget_field_value_postfix_label,
 //                        R.string.number_widget_field_value_postfix_description,
-//                        Form.buttonInput(this.numberWidget.valuePostfix(), this),
+//                        Form.buttonInput(this.numberWidget.valuePostfixString(), this),
 //                        this);
 
         // > Variables Field

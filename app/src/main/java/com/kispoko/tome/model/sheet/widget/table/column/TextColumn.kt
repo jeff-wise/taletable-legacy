@@ -7,10 +7,7 @@ import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
@@ -22,7 +19,8 @@ import java.util.*
  * Text Column Format
  */
 data class TextColumnFormat(override val id : UUID,
-                            val columnFormat : Comp<ColumnFormat>) : Model, Serializable
+                            val columnFormat : Comp<ColumnFormat>)
+                             : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -46,7 +44,7 @@ data class TextColumnFormat(override val id : UUID,
     companion object : Factory<TextColumnFormat>
     {
 
-        private val defaultColumnFormat = ColumnFormat.default
+        private val defaultColumnFormat = ColumnFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextColumnFormat> = when (doc)
@@ -67,6 +65,15 @@ data class TextColumnFormat(override val id : UUID,
         val default : TextColumnFormat = TextColumnFormat(defaultColumnFormat)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "column_format" to this.columnFormat().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------

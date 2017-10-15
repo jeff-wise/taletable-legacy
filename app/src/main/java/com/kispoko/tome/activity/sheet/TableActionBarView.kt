@@ -30,7 +30,7 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
         val layout = this.viewLayout()
 
         // Header View
-        layout.addView(this.headerView())
+        // layout.addView(this.headerView())
 
         // Buttons View
         layout.addView(this.buttonsView())
@@ -44,9 +44,11 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
         val layout                  = LinearLayoutBuilder()
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.heightDp             = 70
 
         layout.orientation          = LinearLayout.VERTICAL
+
+        layout.gravity              = Gravity.BOTTOM
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_12")),
@@ -93,18 +95,18 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
     // BUTTONS VIEW
     // -----------------------------------------------------------------------------------------
 
-    private fun buttonsView() : LinearLayout
-    {
-        val layout = this.buttonsViewLayout()
-
-        // Row Action Buttons
-        layout.addView(this.rowActionButtonsView())
-
-        // Table Action Buttons
-        layout.addView(this.tableActionButtonsView())
-
-        return layout
-    }
+//    private fun buttonsView() : LinearLayout
+//    {
+//        val layout = this.buttonsViewLayout()
+//
+////        // Row Action Buttons
+////        layout.addView(this.rowActionButtonsView())
+//
+//        // Table Action Buttons
+//        layout.addView(this.buttonsView())
+//
+//        return layout
+//    }
 
 
     private fun buttonsViewLayout() : LinearLayout
@@ -116,19 +118,37 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.margin.topDp     = 12f
-        layout.margin.bottomDp  = 12f
-
         layout.margin.leftDp    = 4f
         layout.margin.rightDp   = 4f
+
+        layout.margin.bottomDp  = 10f
 
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    private fun rowActionButtonsView() : LinearLayout
+    private fun buttonsView() : LinearLayout
     {
-        val layout      = this.rowActionButtonsViewLayout()
+        val layout      = this.buttonsViewLayout()
+
+        // Colors
+        val whiteColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_3")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        val whiteColor = SheetManager.color(sheetUIContext.sheetId, whiteColorTheme)
+
+        val greenColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("green_2")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        val greenColor = SheetManager.color(sheetUIContext.sheetId, greenColorTheme)
+
+        // Done
+        val doneOnClick = View.OnClickListener { }
+        layout.addView(this.actionButtonView(R.string.done,
+                                             R.drawable.icon_chevron_left,
+                                             28,
+                                             greenColor,
+                                             doneOnClick))
 
         // Insert Row Above
         val insertRowAboveOnClick = View.OnClickListener {
@@ -150,6 +170,7 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
         layout.addView(this.actionButtonView(R.string.insert_row_above,
                                              R.drawable.icon_insert_row_above,
                                              24,
+                                             whiteColor,
                                              insertRowAboveOnClick))
 
         // Insert Row Below
@@ -172,68 +193,71 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
         layout.addView(this.actionButtonView(R.string.insert_row_below,
                                              R.drawable.icon_insert_row_below,
                                              24,
+                                             whiteColor,
                                              insertRowBelowOnClick))
 
-        // Delete
-        val deleteOnClick = View.OnClickListener { }
-        layout.addView(this.actionButtonView(R.string.delete,
-                                             R.drawable.icon_delete_row,
+        // More
+        val moreOnClick = View.OnClickListener { }
+        layout.addView(this.actionButtonView(R.string.more,
+                                             R.drawable.icon_ellipsis,
                                              24,
-                                             deleteOnClick))
+                                             whiteColor,
+                                             moreOnClick))
 
         return layout
     }
 
 
-    private fun rowActionButtonsViewLayout() : LinearLayout
-    {
-        val layout          = LinearLayoutBuilder()
+//    private fun buttonsViewLayout() : LinearLayout
+//    {
+//        val layout          = LinearLayoutBuilder()
+//
+//        layout.width        = 0
+//        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+//        layout.weight       = 3f
+//
+//        layout.orientation  = LinearLayout.HORIZONTAL
+//
+//        layout.margin.rightDp   = 40f
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
+//
+//
+//    private fun tableActionButtonsView() : LinearLayout
+//    {
+//        val layout = this.tableActionButtonsViewLayout()
+//
+//        // Sort
+//        val sortOnClick = View.OnClickListener {  }
+//        layout.addView(this.actionButtonView(R.string.sort_table,
+//                                             R.drawable.icon_sorting_options,
+//                                             22,
+//                                             sortOnClick))
+//
+//        return layout
+//    }
 
-        layout.width        = 0
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight       = 3f
 
-        layout.orientation  = LinearLayout.HORIZONTAL
-
-        layout.margin.rightDp   = 40f
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-
-    private fun tableActionButtonsView() : LinearLayout
-    {
-        val layout = this.tableActionButtonsViewLayout()
-
-        // Sort
-        val sortOnClick = View.OnClickListener {  }
-        layout.addView(this.actionButtonView(R.string.sort_table,
-                                             R.drawable.icon_sorting_options,
-                                             22,
-                                             sortOnClick))
-
-        return layout
-    }
-
-
-    private fun tableActionButtonsViewLayout() : LinearLayout
-    {
-        val layout          = LinearLayoutBuilder()
-
-        layout.width        = 0
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight       = 1f
-
-        layout.orientation  = LinearLayout.HORIZONTAL
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
+//    private fun tableActionButtonsViewLayout() : LinearLayout
+//    {
+//        val layout          = LinearLayoutBuilder()
+//
+//        layout.width        = 0
+//        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+//        layout.weight       = 1f
+//
+//        layout.orientation  = LinearLayout.HORIZONTAL
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
 
 
 
     private fun actionButtonView(textId : Int,
                                  iconId : Int,
                                  iconSize : Int,
+                                 iconColor : Int,
                                  onClick : View.OnClickListener) : LinearLayout
     {
         // (1) Declarations
@@ -282,10 +306,7 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
 
         icon.margin.bottomDp    = 3f
 
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_3")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color              = iconColor
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------

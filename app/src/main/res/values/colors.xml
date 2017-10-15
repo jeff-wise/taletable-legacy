@@ -249,11 +249,11 @@
     <color name="dark_theme_light_grey_17">#A1A1A1</color>
     <color name="dark_theme_light_grey_25">#818181</color>
 
-    <color name="dark_theme_dark_grey_3">#333438</color>
-    <color name="dark_theme_dark_grey_5">#2E2F33</color>
-    <color name="dark_theme_dark_grey_8">#27292C</color>
-    <color name="dark_theme_dark_grey_9">#25272A</color>
-    <color name="dark_theme_dark_grey_10">#232427</color>
+    <color name="dark_theme_dark_grey_3">#33363C</color>
+    <color name="dark_theme_dark_grey_5">#2E3137</color>
+    <color name="dark_theme_dark_grey_8">#272A30</color>
+    <color name="dark_theme_dark_grey_9">#25282E</color>
+    <color name="dark_theme_dark_grey_10">#23262C</color>
 
     <color name="dark_theme_medium_grey_2">#636363</color>
     <color name="dark_theme_medium_grey_5">#585858</color>

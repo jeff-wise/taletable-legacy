@@ -25,7 +25,8 @@ import java.util.*
 data class Settings(override val id : UUID,
                     val themeId : Prim<ThemeId>,
                     val sheetName : Prim<SheetName>,
-                    val sheetSummary: Prim<SheetSummary>) : Model
+                    val sheetSummary: Prim<SheetSummary>)
+                     : Model, ToDocument
 {
 
     // -----------------------------------------------------------------------------------------
@@ -100,6 +101,17 @@ data class Settings(override val id : UUID,
     fun sheetName() : String = this.sheetName.value.value
 
     fun sheetSummary() : String = this.sheetSummary.value.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "theme_id" to this.themeId().toDocument(),
+        "sheet_name" to DocText(this.sheetName()),
+        "sheet_summary" to DocText(this.sheetSummary())
+    ))
 
 
     // -----------------------------------------------------------------------------------------

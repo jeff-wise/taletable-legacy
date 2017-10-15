@@ -194,7 +194,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
 
     private var delta : Double = this.adderState.delta
-    private var currentValue : Double = this.adderState.originalValue
+    private var currentValue : Double = this.adderState.originalValue + this.adderState.delta
     private val history : MutableList<Double> = mutableListOf()
 
     private var valueView : FlexboxLayout? = null
@@ -208,6 +208,15 @@ class AdderEditorViewBuilder(val adderState : AdderState,
     private var rollView : LinearLayout? = null
 
     private var currentRoll : RollSummary? = null
+
+    private val sheetContext = SheetContext(sheetUIContext)
+    private val activity = sheetUIContext.context as AppCompatActivity
+
+
+    val valueStaticColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+    val valueStaticColor = SheetManager.color(sheetUIContext.sheetId, valueStaticColorTheme)
 
 
     // -----------------------------------------------------------------------------------------
@@ -232,6 +241,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             val lastDelta = this.history.last()
             this.history.removeAt(this.history.size -1)
             this.currentValue -= lastDelta
+            this.delta -= lastDelta
             this.updateValueView()
         }
     }
@@ -250,7 +260,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         }
         else
         {
-            modifierTextView?.text = Util.doubleString(this.delta) + " + "
+            modifierTextView?.text = " + ${Util.doubleString(this.delta)}"
         }
     }
 
@@ -269,13 +279,18 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             explainView.text = explainString
             this.explainTextView = explainView
             this.valueView?.addView(explainView)
-
         }
         else
         {
+            // Original Value
+            val originalPartView = this.valuePartView(Util.doubleString(this.adderState.originalValue))
+            this.originalValueTextView = originalPartView
+            this.valueView?.addView(originalPartView)
+            this.originalValueTextView?.setTextColor(valueStaticColor)
+
             // Dice
             adderState.diceRolls.forEach {
-                this.valueView?.addView(this.valuePartView(it.toString() + " + "))
+                this.valueView?.addView(this.valuePartView(" + " + it.toString()))
             }
 
             // Modifier Value
@@ -284,13 +299,8 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             this.valueView?.addView(modifierPartView)
 
             if (this.delta != 0.0) {
-                modifierPartView.text = Util.doubleString(this.delta) + " + "
+                modifierPartView.text = " + ${Util.doubleString(this.delta)}"
             }
-
-            // Original Value
-            val originalPartView = this.valuePartView(Util.doubleString(this.adderState.originalValue))
-            this.originalValueTextView = originalPartView
-            this.valueView?.addView(originalPartView)
         }
     }
 
@@ -731,6 +741,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         // -X
         val minusNumOnClick = View.OnClickListener {
             val dialog = AddAmountDialogFragment.newInstance(AddOperation.SUBTRACT,
+                                                             this.currentAdderState(),
                                                              SheetContext(sheetUIContext))
             dialog.show(activity.supportFragmentManager, "")
             this.dialog.dismiss()
@@ -739,7 +750,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         // -ndX
         val minusDiceOnClick = View.OnClickListener {
-            val dialog = DiceDialogFragment.newInstance(DiceOperation.SUBTRACT,
+            val dialog = AddDiceDialogFragment.newInstance(DiceOperation.SUBTRACT,
                                                         this.currentAdderState(),
                                                         SheetContext(sheetUIContext))
             dialog.show(activity.supportFragmentManager, "")
@@ -749,7 +760,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         // +ndX
         val plusDiceOnClick = View.OnClickListener {
-            val dialog = DiceDialogFragment.newInstance(DiceOperation.ADD,
+            val dialog = AddDiceDialogFragment.newInstance(DiceOperation.ADD,
                                                         this.currentAdderState(),
                                                         SheetContext(sheetUIContext))
             dialog.show(activity.supportFragmentManager, "")
@@ -760,6 +771,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         // +X
         val plusNumOnClick = View.OnClickListener {
             val dialog = AddAmountDialogFragment.newInstance(AddOperation.ADD,
+                                                             this.currentAdderState(),
                                                              SheetContext(sheetUIContext))
             dialog.show(activity.supportFragmentManager, "")
             this.dialog.dismiss()
@@ -894,7 +906,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.textId        = R.string.use_previous
+        label.textId        = R.string.do_previous
 
         val labelColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
@@ -923,26 +935,35 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = 0
-        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.weight           = 2f
+        layout.width                = 0
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight               = 2f
 
-        layout.orientation      = LinearLayout.VERTICAL
+        layout.orientation          = LinearLayout.VERTICAL
 
-        layout.gravity          = Gravity.CENTER
+        layout.gravity              = Gravity.CENTER
 
-        layout.margin.rightDp   = 4f
+        layout.margin.rightDp       = 4f
 //        layout.margin.leftDp    = 2f
 
         val bgColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners           = Corners(TopLeftCornerRadius(1f),
+        layout.corners              = Corners(TopLeftCornerRadius(1f),
                                            TopRightCornerRadius(1f),
                                            BottomRightCornerRadius(1f),
                                            BottomLeftCornerRadius(1f))
+
+        layout.onClick              = View.OnClickListener {
+            val simpleDialog = NumberEditorDialog.newInstance(adderState.originalValue,
+                                                              adderState.valueName ?: "",
+                                                              adderState.updateTarget,
+                                                              sheetContext)
+            simpleDialog.show(activity.supportFragmentManager, "")
+            dialog.dismiss()
+        }
 
         layout.child(icon)
               .child(label)
@@ -966,7 +987,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.textId        = R.string.calculator
+        label.textId        = R.string.keypad
 
         val labelColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),

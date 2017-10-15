@@ -88,7 +88,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         this.initializeBottomNavigation()
 
-        this.initializeBottomSheet()
+        //this.initializeBottomSheet()
 
         // (3) Initialize State
         // -------------------------------------------------------------------------------------
@@ -149,9 +149,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun initializeFAB()
     {
-        val fab = this.findViewById(R.id.button) as FloatingActionButton
-        fab.hide()
-        this.fab = fab
+//        val fab = this.findViewById(R.id.button) as FloatingActionButton
+//        fab.hide()
+//        this.fab = fab
     }
 
 
@@ -309,27 +309,41 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     fun showTableEditor(updateTarget : UpdateTarget, sheetContext : SheetContext)
     {
-        this.bottomNavigation?.visibility = View.GONE
-
+        val toolbarView = this.findViewById(R.id.sheet_toolbar) as FrameLayout
+        toolbarView.visibility = View.VISIBLE
         val tableActionBarBuilder = TableActionBarViewBuilder(updateTarget,
                                                               SheetUIContext(sheetContext, this))
+        toolbarView.removeAllViews()
+        toolbarView.addView(tableActionBarBuilder.view())
 
-        this.bottomSheet?.removeAllViews()
-        this.bottomSheet?.addView(tableActionBarBuilder.view())
-
-        this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-
-        this.fab?.setOnClickListener {
-            when (updateTarget)
-            {
-                is UpdateTargetInsertTableRow ->
-                {
-//                    val dialog = AddTableRowDialog.newInstance(updateTarget, sheetContext)
-//                    dialog.show(supportFragmentManager, "")
-                }
-            }
-        }
+        val viewPager = this.viewPager
+        viewPager?.setPadding(0, 0, 0, Util.dpToPixel(130f))
     }
+
+
+//    fun showTableEditor(updateTarget : UpdateTarget, sheetContext : SheetContext)
+//    {
+//        this.bottomNavigation?.visibility = View.GONE
+//
+//        val tableActionBarBuilder = TableActionBarViewBuilder(updateTarget,
+//                                                              SheetUIContext(sheetContext, this))
+//
+//        this.bottomSheet?.removeAllViews()
+//        this.bottomSheet?.addView(tableActionBarBuilder.view())
+//
+//        this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+//
+//        this.fab?.setOnClickListener {
+//            when (updateTarget)
+//            {
+//                is UpdateTargetInsertTableRow ->
+//                {
+////                    val dialog = AddTableRowDialog.newInstance(updateTarget, sheetContext)
+////                    dialog.show(supportFragmentManager, "")
+//                }
+//            }
+//        }
+//    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -417,6 +431,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
     {
         // Set sheet to be active
         // -------------------------------------------------------------------------------------
+
+        val coordinatorLayout = this.findViewById(R.id.coordinator_layout) as CoordinatorLayout
+        coordinatorLayout.visibility = View.VISIBLE
 
         SheetManager.setSheetActive(sheet.sheetId(), this)
 

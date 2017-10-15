@@ -744,7 +744,7 @@ public class ORM
 //        }
 //
 //        // > Save the row, creating a new one if necessary.
-//        String tableName = ORM.name(model);
+//        String tableNameString = ORM.name(model);
 //        UpsertQuery upsertQuery = new UpsertQuery(ORM.name(model), model.getId(), row);
 //
 //        Long startTime = System.nanoTime();
@@ -754,7 +754,7 @@ public class ORM
 //        Long endTime = System.nanoTime();
 //
 //        String timeString = Util.timeDifferenceString(startTime, endTime);
-//        String eventMessage = "Table: " + tableName + "  " +
+//        String eventMessage = "Table: " + tableNameString + "  " +
 //                              "Id: " + model.getId().toString() + "  " +
 //                              timeString + " ms";
 //        EventLog.add(EventLog.EventType.ROW_INSERT, eventMessage);

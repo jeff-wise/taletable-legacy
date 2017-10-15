@@ -24,32 +24,72 @@ import java.util.*
 /**
  * Option View Type
  */
-sealed class OptionViewType : SQLSerializable,  Serializable
+sealed class OptionViewType : ToDocument, SQLSerializable, Serializable
 {
 
     object NoArrows : OptionViewType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"no_arrows"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("no_arrows")
+
     }
 
 
     object VerticalArrows : OptionViewType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"vertical_arrows"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("vertical_arrows")
+
     }
 
 
     object HorizontalArrows : OptionViewType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"horizontal_arrows"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("horizontal_arrows")
+
     }
 
 
     object ExpandedSlashes : OptionViewType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"expanded_slashes"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("expanded_slashes")
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -83,7 +123,7 @@ data class OptionWidgetFormat(override val id : UUID,
                               val descriptionStyle : Comp<TextStyle>,
                               val valueStyle : Comp<TextStyle>,
                               val valueItemStyle : Comp<TextStyle>,
-                              val height : Prim<Height>) : Model
+                              val height : Prim<Height>) : ToDocument, Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -164,11 +204,33 @@ data class OptionWidgetFormat(override val id : UUID,
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "description_style" to this.descriptionStyle().toDocument(),
+        "value_style" to this.valueStyle().toDocument(),
+        "value_item_style" to this.valueItemStyle().toDocument(),
+        "height" to this.height().toDocument()
+    ))
+
+
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun descriptionStyle() : TextStyle = this.descriptionStyle.value
+
+    fun valueStyle() : TextStyle = this.valueStyle.value
+
+    fun valueItemStyle() : TextStyle = this.valueItemStyle.value
+
+    fun height() : Height = this.height.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -187,7 +249,7 @@ data class OptionWidgetFormat(override val id : UUID,
 /**
  * Option Description
  */
-data class OptionDescription(val value : String) : SQLSerializable, Serializable
+data class OptionDescription(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -202,6 +264,13 @@ data class OptionDescription(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

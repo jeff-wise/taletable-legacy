@@ -47,7 +47,7 @@ data class TableWidgetFormat(override val id : UUID,
                              val rowFormat : Comp<TableWidgetRowFormat>,
                              val showDivider : Prim<ShowTableDividers>,
                              val dividerColorTheme : Prim<ColorTheme>,
-                             val cellHeight : Prim<Height>) : Model, Serializable
+                             val cellHeight : Prim<Height>) : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ data class TableWidgetFormat(override val id : UUID,
                                          effValue(defaultShowDivider),
                                          { ShowTableDividers.fromDocument(it) }),
                                    // Divider Color
-                                   split(doc.maybeAt("divider_color"),
+                                   split(doc.maybeAt("divider_color_theme"),
                                          effValue(defaultDividerColorTheme),
                                          { ColorTheme.fromDocument(it) }),
                                    // Height
@@ -127,15 +127,28 @@ data class TableWidgetFormat(override val id : UUID,
         }
 
 
-        val default : TableWidgetFormat =
-                TableWidgetFormat(defaultWidgetFormat,
-                                  defaultHeaderFormat,
-                                  defaultRowFormat,
-                                  defaultShowDivider,
-                                  defaultDividerColorTheme,
-                                  defaultCellHeight)
+        fun default() = TableWidgetFormat(defaultWidgetFormat,
+                                          defaultHeaderFormat,
+                                          defaultRowFormat,
+                                          defaultShowDivider,
+                                          defaultDividerColorTheme,
+                                          defaultCellHeight)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "header_format" to this.headerFormat().toDocument(),
+        "row_format" to this.rowFormat().toDocument(),
+        "show_divider" to this.showDivider().toDocument(),
+        "divider_color_theme" to this.dividerColorTheme().toDocument(),
+        "height" to this.cellHeight().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -148,7 +161,9 @@ data class TableWidgetFormat(override val id : UUID,
 
     fun rowFormat() : TableWidgetRowFormat = this.rowFormat.value
 
-    fun showDivider() : Boolean = this.showDivider.value.value
+    fun showDivider() : ShowTableDividers = this.showDivider.value
+
+    fun showDividerBool() : Boolean = this.showDivider.value.value
 
     fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
 
@@ -171,7 +186,7 @@ data class TableWidgetFormat(override val id : UUID,
 /**
  * Table Widget Name
  */
-data class TableWidgetName(val value : String) : SQLSerializable, Serializable
+data class TableWidgetName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -180,12 +195,19 @@ data class TableWidgetName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<TableWidgetName>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetName> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetName> = when (doc)
         {
             is DocText -> effValue(TableWidgetName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -200,7 +222,7 @@ data class TableWidgetName(val value : String) : SQLSerializable, Serializable
 /**
  * Show Table Dividers
  */
-data class ShowTableDividers(val value : Boolean) : SQLSerializable, Serializable
+data class ShowTableDividers(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -218,6 +240,13 @@ data class ShowTableDividers(val value : Boolean) : SQLSerializable, Serializabl
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -230,7 +259,8 @@ data class ShowTableDividers(val value : Boolean) : SQLSerializable, Serializabl
  * Table Sort
  */
 data class TableSort(val columnIndex : Int,
-                     val sortOrder : TableSortOrder) : SQLSerializable, Serializable
+                     val sortOrder : TableSortOrder)
+                      : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -256,6 +286,16 @@ data class TableSort(val columnIndex : Int,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "column_index" to DocNumber(this.columnIndex.toDouble()),
+        "sort_order" to this.sortOrder.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -264,17 +304,21 @@ data class TableSort(val columnIndex : Int,
 }
 
 
-sealed class TableSortOrder : SQLSerializable, Serializable
+sealed class TableSortOrder : ToDocument, SQLSerializable, Serializable
 {
 
     object Asc : TableSortOrder()
     {
         override fun asSQLValue() : SQLValue = SQLText({ "asc" })
+
+        override fun toDocument() = DocText("asc")
     }
 
     object Desc : TableSortOrder()
     {
         override fun asSQLValue() : SQLValue = SQLText({ "desc" })
+
+        override fun toDocument() = DocText("desc")
     }
 
     companion object
@@ -342,7 +386,7 @@ object TableWidgetView
         // Divider
         // -------------------------------------------------------------------------------------
 
-        if (format.showDivider())
+        if (format.showDividerBool())
         {
             val dividerDrawable = ContextCompat.getDrawable(sheetUIContext.context,
                                                             R.drawable.table_row_divider)

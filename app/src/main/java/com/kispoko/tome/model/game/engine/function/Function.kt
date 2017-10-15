@@ -28,7 +28,8 @@ data class Function(override val id : UUID,
                     val label : Prim<FunctionLabel>,
                     val description : Prim<FunctionDescription>,
                     val typeSignature : Comp<FunctionTypeSignature>,
-                    val tuples : Coll<Tuple>) : Model, Serializable
+                    val tuples : Coll<Tuple>)
+                     : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -93,14 +94,31 @@ data class Function(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "function_id" to this.functionId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.description().toDocument(),
+        "type_signature" to this.typeSignature().toDocument(),
+        "tuples" to DocList(this.tuples().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun functionId() : FunctionId = this.functionId.value
 
-    fun label() : String = this.label.value.value
+    fun label() : FunctionLabel = this.label.value
 
-    fun description() : String = this.description.value.value
+    fun labelString() : String = this.label.value.value
+
+    fun description() : FunctionDescription = this.description.value
+
+    fun descriptionString() : String = this.description.value.value
 
     fun typeSignature() : FunctionTypeSignature = this.typeSignature.value
 
@@ -138,7 +156,7 @@ data class FunctionTypeSignature(override val id : UUID,
                                  val parameter4Type : Maybe<Prim<EngineValueType>>,
                                  val parameter5Type : Maybe<Prim<EngineValueType>>,
                                  val resultType : Prim<EngineValueType>)
-                                 : Model, Serializable
+                                  : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -224,16 +242,42 @@ data class FunctionTypeSignature(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "parameter1_type" to this.parameter1Type().toDocument(),
+        "result_type" to this.resultType().toDocument()
+        ))
+        .maybeMerge(this.parameter2TypeMaybe().apply {
+            Just(Pair("parameter2_type", it.toDocument())) })
+        .maybeMerge(this.parameter3TypeMaybe().apply {
+            Just(Pair("parameter3_type", it.toDocument())) })
+        .maybeMerge(this.parameter4TypeMaybe().apply {
+            Just(Pair("parameter4_type", it.toDocument())) })
+        .maybeMerge(this.parameter5TypeMaybe().apply {
+            Just(Pair("parameter5_type", it.toDocument())) })
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun parameter1Type() : EngineValueType = this.parameter1Type.value
 
+    fun parameter2TypeMaybe() : Maybe<EngineValueType> = _getMaybePrim(this.parameter2Type)
+
     fun parameter2Type() : EngineValueType? = getMaybePrim(this.parameter2Type)
+
+    fun parameter3TypeMaybe() : Maybe<EngineValueType> = _getMaybePrim(this.parameter3Type)
 
     fun parameter3Type() : EngineValueType? = getMaybePrim(this.parameter3Type)
 
+    fun parameter4TypeMaybe() : Maybe<EngineValueType> = _getMaybePrim(this.parameter4Type)
+
     fun parameter4Type() : EngineValueType? = getMaybePrim(this.parameter4Type)
+
+    fun parameter5TypeMaybe() : Maybe<EngineValueType> = _getMaybePrim(this.parameter5Type)
 
     fun parameter5Type() : EngineValueType? = getMaybePrim(this.parameter5Type)
 
@@ -256,7 +300,7 @@ data class FunctionTypeSignature(override val id : UUID,
 /**
  * Function Id
  */
-data class FunctionId(val value : String) : SQLSerializable, Serializable
+data class FunctionId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -274,6 +318,13 @@ data class FunctionId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -285,7 +336,7 @@ data class FunctionId(val value : String) : SQLSerializable, Serializable
 /**
  * Function Label
  */
-data class FunctionLabel(val value : String) : SQLSerializable, Serializable
+data class FunctionLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -303,6 +354,13 @@ data class FunctionLabel(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -314,7 +372,7 @@ data class FunctionLabel(val value : String) : SQLSerializable, Serializable
 /**
  * Function Description
  */
-data class FunctionDescription(val value : String) : SQLSerializable, Serializable
+data class FunctionDescription(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -329,6 +387,12 @@ data class FunctionDescription(val value : String) : SQLSerializable, Serializab
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -349,7 +413,8 @@ data class Tuple(override val id : UUID,
                  val parameter3 : Maybe<Sum<EngineValue>>,
                  val parameter4 : Maybe<Sum<EngineValue>>,
                  val parameter5 : Maybe<Sum<EngineValue>>,
-                 val result : Sum<EngineValue>) : Model, Serializable
+                 val result : Sum<EngineValue>)
+                  : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -431,6 +496,24 @@ data class Tuple(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "parameter1" to this.parameter1().toDocument(),
+        "result" to this.result().toDocument()
+        ))
+        .maybeMerge(this.parameter2().apply {
+            Just(Pair("parameter2", it.toDocument())) })
+        .maybeMerge(this.parameter3().apply {
+            Just(Pair("parameter3", it.toDocument())) })
+        .maybeMerge(this.parameter4().apply {
+            Just(Pair("parameter4", it.toDocument())) })
+        .maybeMerge(this.parameter5().apply {
+            Just(Pair("parameter5", it.toDocument())) })
 
 
     // -----------------------------------------------------------------------------------------

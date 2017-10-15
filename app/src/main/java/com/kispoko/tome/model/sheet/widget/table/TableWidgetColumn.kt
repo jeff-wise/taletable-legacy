@@ -35,7 +35,7 @@ import java.util.*
 sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
                                open val variablePrefix : Prim<ColumnVariablePrefix>,
                                open val isColumnNamespaced : Prim<IsColumnNamespaced>)
-                                : Model, Serializable
+                                : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -69,11 +69,17 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun columnName() : ColumnName = this.columnName.value
+
     fun nameString() : String = this.columnName.value.value
 
-    fun variablePrefix() : String = this.variablePrefix.value.value
+    fun variablePrefix() : ColumnVariablePrefix = this.variablePrefix.value
 
-    fun isColumnNamespaced() : Boolean = this.isColumnNamespaced.value.value
+    fun variablePrefixString() : String = this.variablePrefix.value.value
+
+    fun isColumnNamespaced() : IsColumnNamespaced = this.isColumnNamespaced.value
+
+    fun isColumnNamespacedBoolean() : Boolean = this.isColumnNamespaced.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -135,30 +141,43 @@ data class TableWidgetBooleanColumn(
 
     companion object : Factory<TableWidgetBooleanColumn>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetBooleanColumn> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetBooleanColumn> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::TableWidgetBooleanColumn,
-                         // Name
-                         doc.at("name") ap { ColumnName.fromDocument(it) },
-                         // Variable Prefix
-                         doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
-                         // Is Column Namespaced
-                         split(doc.maybeAt("is_namespaced"),
-                               effValue(IsColumnNamespaced(false)),
-                               { IsColumnNamespaced.fromDocument(it) }),
-                         // Default Variable Value
-                         doc.at("default_value") ap { BooleanVariableValue.fromDocument(it) },
-                         // Format
-                         split(doc.maybeAt("format"),
-                               effValue(BooleanColumnFormat.default),
-                               { BooleanColumnFormat.fromDocument(it) })
-                         )
+                apply(::TableWidgetBooleanColumn,
+                      // Name
+                      doc.at("name") ap { ColumnName.fromDocument(it) },
+                      // Variable Prefix
+                      doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
+                      // Is Column Namespaced
+                      split(doc.maybeAt("is_namespaced"),
+                            effValue(IsColumnNamespaced(false)),
+                            { IsColumnNamespaced.fromDocument(it) }),
+                      // Default Variable Value
+                      doc.at("default_value") ap { BooleanVariableValue.fromDocument(it) },
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(BooleanColumnFormat.default()),
+                            { BooleanColumnFormat.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.columnName().toDocument(),
+        "variable_prefix" to this.variablePrefix().toDocument(),
+        "is_namespaced" to this.isColumnNamespaced().toDocument(),
+        "default_value" to this.defaultValue().toDocument(),
+        "format" to this.format().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -279,6 +298,20 @@ data class TableWidgetNumberColumn(
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.columnName().toDocument(),
+        "variable_prefix" to this.variablePrefix().toDocument(),
+        "is_namespaced" to this.isColumnNamespaced().toDocument(),
+        "default_value" to this.defaultValue().toDocument(),
+        "format" to this.format().toDocument(),
+        "editor_type" to this.editorType().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -418,12 +451,28 @@ data class TableWidgetTextColumn(
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.columnName().toDocument(),
+        "variable_prefix" to this.variablePrefix().toDocument(),
+        "is_namespaced" to this.isColumnNamespaced().toDocument(),
+        "default_value" to this.defaultValue().toDocument(),
+        "format" to this.format().toDocument(),
+        "defines_namespace" to this.definesNamespace().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun format() : TextColumnFormat = this.format.value
 
-    fun definesNamespace() : Boolean = this.definesNamespace.value.value
+    fun definesNamespace() : DefinesNamespace = this.definesNamespace.value
+
+    fun definesNamespaceBoolean() : Boolean = this.definesNamespace.value.value
 
     fun defaultValue() : TextVariableValue = this.defaultValue.value
 
@@ -480,8 +529,12 @@ enum class TableWidgetColumnType
 /**
  * Table Widget Column Name
  */
-data class ColumnName(val value : String) : SQLSerializable, Serializable
+data class ColumnName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ColumnName>
     {
@@ -491,6 +544,14 @@ data class ColumnName(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
@@ -504,8 +565,12 @@ data class ColumnName(val value : String) : SQLSerializable, Serializable
 /**
  * Column Variable Prefix
  */
-data class ColumnVariablePrefix(val value : String) : SQLSerializable, Serializable
+data class ColumnVariablePrefix(val value : String) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ColumnVariablePrefix>
     {
@@ -515,6 +580,14 @@ data class ColumnVariablePrefix(val value : String) : SQLSerializable, Serializa
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
@@ -528,36 +601,36 @@ data class ColumnVariablePrefix(val value : String) : SQLSerializable, Serializa
 /**
  * Default Value Label
  */
-data class DefaultValueLabel(val value : String) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<DefaultValueLabel>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultValueLabel> = when (doc)
-        {
-            is DocText -> effValue(DefaultValueLabel(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLText({this.value})
-
-}
+//data class DefaultValueLabel(val value : String) : ToDocument, SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<DefaultValueLabel>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultValueLabel> = when (doc)
+//        {
+//            is DocText -> effValue(DefaultValueLabel(doc.text))
+//            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue(): SQLValue = SQLText({this.value})
+//
+//}
 
 
 /**
  * Is Column Namespaced?
  */
-data class IsColumnNamespaced(val value : Boolean) : SQLSerializable, Serializable
+data class IsColumnNamespaced(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -575,6 +648,13 @@ data class IsColumnNamespaced(val value : Boolean) : SQLSerializable, Serializab
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -587,7 +667,7 @@ data class IsColumnNamespaced(val value : Boolean) : SQLSerializable, Serializab
 /**
  * Defines Namespace?
  */
-data class DefinesNamespace(val value : Boolean) : SQLSerializable, Serializable
+data class DefinesNamespace(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -602,6 +682,13 @@ data class DefinesNamespace(val value : Boolean) : SQLSerializable, Serializable
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -621,7 +708,7 @@ data class ColumnFormat(override val id : UUID,
                         val alignment : Prim<Alignment>,
                         val width : Prim<ColumnWidth>,
                         val backgroundColorTheme : Prim<ColorTheme>)
-                         : Model, Serializable
+                         : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -677,7 +764,7 @@ data class ColumnFormat(override val id : UUID,
                                          effValue(defaultWidth),
                                          { ColumnWidth.fromDocument(it) }),
                                    // Background Color
-                                   split(doc.maybeAt("background_color"),
+                                   split(doc.maybeAt("background_color_theme"),
                                          effValue(defaultBackgroundColorTheme),
                                          { ColorTheme.fromDocument(it) })
                                    )
@@ -685,13 +772,24 @@ data class ColumnFormat(override val id : UUID,
         }
 
 
-        val default : ColumnFormat =
-                ColumnFormat(defaultTextStyle,
-                             defaultAlignment,
-                             defaultWidth,
-                             defaultBackgroundColorTheme)
+        fun default() = ColumnFormat(defaultTextStyle,
+                                     defaultAlignment,
+                                     defaultWidth,
+                                     defaultBackgroundColorTheme)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "text_style" to this.textStyle().toDocument(),
+        "alignment" to this.alignment().toDocument(),
+        "width" to this.width().toDocument(),
+        "background_color_theme" to this.backgroundColorTheme().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -702,7 +800,9 @@ data class ColumnFormat(override val id : UUID,
 
     fun alignment() : Alignment = this.alignment.value
 
-    fun width() : Float = this.width.value.value
+    fun width() : ColumnWidth = this.width.value
+
+    fun widthFloat() : Float = this.width.value.value
 
     fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
 
@@ -723,7 +823,7 @@ data class ColumnFormat(override val id : UUID,
 /**
  * Column Widget
  */
-data class ColumnWidth(val value : Float) : SQLSerializable, Serializable
+data class ColumnWidth(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -732,12 +832,19 @@ data class ColumnWidth(val value : Float) : SQLSerializable, Serializable
 
     companion object : Factory<ColumnWidth>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnWidth> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ColumnWidth> = when (doc)
         {
             is DocNumber -> effValue(ColumnWidth(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
 
 
     // -----------------------------------------------------------------------------------------
@@ -753,57 +860,57 @@ data class ColumnWidth(val value : Float) : SQLSerializable, Serializable
 /**
  * Default Number Column Value
  */
-data class DefaultNumberColumnValue(val value : Double) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<DefaultNumberColumnValue>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultNumberColumnValue> = when (doc)
-        {
-            is DocNumber -> effValue(DefaultNumberColumnValue(doc.number))
-            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLReal({this.value})
-
-}
+//data class DefaultNumberColumnValue(val value : Double) : SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<DefaultNumberColumnValue>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultNumberColumnValue> = when (doc)
+//        {
+//            is DocNumber -> effValue(DefaultNumberColumnValue(doc.number))
+//            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue(): SQLValue = SQLReal({this.value})
+//
+//}
 
 
 /**
  * Default Text Column Value
  */
-data class DefaultTextColumnValue(val value : String) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<DefaultTextColumnValue>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultTextColumnValue> = when (doc)
-        {
-            is DocText -> effValue(DefaultTextColumnValue(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLText({this.value})
-
-}
+//data class DefaultTextColumnValue(val value : String) : SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<DefaultTextColumnValue>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultTextColumnValue> = when (doc)
+//        {
+//            is DocText -> effValue(DefaultTextColumnValue(doc.text))
+//            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue(): SQLValue = SQLText({this.value})
+//
+//}
 

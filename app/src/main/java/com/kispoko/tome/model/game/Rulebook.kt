@@ -30,7 +30,7 @@ data class Rulebook(override val id : UUID,
                     val title : Prim<RulebookTitle>,
                     val abstract : Prim<RulebookAbstract>,
                     val chapters : Coll<RulebookChapter>)
-                     : Model, Serializable
+                     : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -86,6 +86,17 @@ data class Rulebook(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "title" to this.title().toDocument(),
+        "abstract" to this.abstract().toDocument(),
+        "chapters" to DocList(this.chapters().map { it.toDocument() })
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -171,7 +182,7 @@ data class Rulebook(override val id : UUID,
 /**
  * Rulebook Title
  */
-data class RulebookTitle(val value : String) : SQLSerializable, Serializable
+data class RulebookTitle(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -189,6 +200,13 @@ data class RulebookTitle(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -200,7 +218,7 @@ data class RulebookTitle(val value : String) : SQLSerializable, Serializable
 /**
  * Rulebook Abstract
  */
-data class RulebookAbstract(val value : String) : SQLSerializable, Serializable
+data class RulebookAbstract(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -215,6 +233,13 @@ data class RulebookAbstract(val value : String) : SQLSerializable, Serializable
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -237,7 +262,7 @@ data class RulebookChapter(override val id : UUID,
                            val chapterId : Prim<RulebookChapterId>,
                            val title : Prim<RulebookChapterTitle>,
                            val sections : Coll<RulebookSection>)
-                            : Model, Serializable
+                            : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -296,6 +321,17 @@ data class RulebookChapter(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.chapterId().toDocument(),
+        "title" to this.title().toDocument(),
+        "sections" to DocList(this.sections().map { it.toDocument() } )
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -330,7 +366,7 @@ data class RulebookChapter(override val id : UUID,
 /**
  * Rulebook Chapter Id
  */
-data class RulebookChapterId(val value : String) : SQLSerializable, Serializable
+data class RulebookChapterId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -348,6 +384,13 @@ data class RulebookChapterId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -359,7 +402,7 @@ data class RulebookChapterId(val value : String) : SQLSerializable, Serializable
 /**
  * Rulebook Chapter Title
  */
-data class RulebookChapterTitle(val value : String) : SQLSerializable, Serializable
+data class RulebookChapterTitle(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -374,6 +417,13 @@ data class RulebookChapterTitle(val value : String) : SQLSerializable, Serializa
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -396,7 +446,8 @@ data class RulebookSection(override val id : UUID,
                            val sectionId : Prim<RulebookSectionId>,
                            val title : Prim<RulebookSectionTitle>,
                            val body : Prim<RulebookSectionBody>,
-                           val subsections : Coll<RulebookSubsection>) : Model, Serializable
+                           val subsections : Coll<RulebookSubsection>)
+                            : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -460,6 +511,18 @@ data class RulebookSection(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.sectionId().toDocument(),
+        "title" to this.title().toDocument(),
+        "body" to this.body().toDocument(),
+        "subsections" to DocList(this.subsections().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -496,7 +559,7 @@ data class RulebookSection(override val id : UUID,
 /**
  * Rulebook Section Id
  */
-data class RulebookSectionId(val value : String) : SQLSerializable, Serializable
+data class RulebookSectionId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -514,6 +577,13 @@ data class RulebookSectionId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -525,7 +595,7 @@ data class RulebookSectionId(val value : String) : SQLSerializable, Serializable
 /**
  * Rulebook Section Title
  */
-data class RulebookSectionTitle(val value : String) : SQLSerializable, Serializable
+data class RulebookSectionTitle(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -543,6 +613,13 @@ data class RulebookSectionTitle(val value : String) : SQLSerializable, Serializa
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -554,7 +631,7 @@ data class RulebookSectionTitle(val value : String) : SQLSerializable, Serializa
 /**
  * Rulebook Section Body
  */
-data class RulebookSectionBody(val value : String) : SQLSerializable, Serializable
+data class RulebookSectionBody(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -569,6 +646,13 @@ data class RulebookSectionBody(val value : String) : SQLSerializable, Serializab
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -591,7 +675,7 @@ data class RulebookSubsection(override val id : UUID,
                               val subsectionId : Prim<RulebookSubsectionId>,
                               val title : Prim<RulebookSubsectionTitle>,
                               val body : Prim<RulebookSubsectionBody>)
-                                : Model, Serializable
+                                : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -639,6 +723,17 @@ data class RulebookSubsection(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.subsectionId().toDocument(),
+        "title" to this.title().toDocument(),
+        "body" to this.body().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -669,7 +764,7 @@ data class RulebookSubsection(override val id : UUID,
 /**
  * Rulebook Subsection Id
  */
-data class RulebookSubsectionId(val value : String) : SQLSerializable, Serializable
+data class RulebookSubsectionId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -687,6 +782,13 @@ data class RulebookSubsectionId(val value : String) : SQLSerializable, Serializa
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -698,7 +800,7 @@ data class RulebookSubsectionId(val value : String) : SQLSerializable, Serializa
 /**
  * Rulebook Subsection Title
  */
-data class RulebookSubsectionTitle(val value : String) : SQLSerializable, Serializable
+data class RulebookSubsectionTitle(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -716,6 +818,13 @@ data class RulebookSubsectionTitle(val value : String) : SQLSerializable, Serial
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -727,7 +836,7 @@ data class RulebookSubsectionTitle(val value : String) : SQLSerializable, Serial
 /**
  * Rulebook Subsection Body
  */
-data class RulebookSubsectionBody(val value : String) : SQLSerializable, Serializable
+data class RulebookSubsectionBody(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -742,6 +851,13 @@ data class RulebookSubsectionBody(val value : String) : SQLSerializable, Seriali
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -764,7 +880,7 @@ data class RulebookReference(override val id : UUID,
                              val chapterId : Prim<RulebookChapterId>,
                              val sectionId : Maybe<Prim<RulebookSectionId>>,
                              val subsectionId : Maybe<Prim<RulebookSubsectionId>>)
-                              : Model, Serializable
+                              : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -804,22 +920,35 @@ data class RulebookReference(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::RulebookReference,
-                         // Chapter Id
-                         doc.at("chapter_id") apply { RulebookChapterId.fromDocument(it) },
-                         // Section Id
-                         split(doc.maybeAt("section_id"),
-                               effValue<ValueError,Maybe<RulebookSectionId>>(Nothing()),
-                               { effApply(::Just, RulebookSectionId.fromDocument(it)) }),
-                         // Subsection Id
-                         split(doc.maybeAt("subsection_id"),
-                               effValue<ValueError,Maybe<RulebookSubsectionId>>(Nothing()),
-                               { effApply(::Just, RulebookSubsectionId.fromDocument(it)) })
-                        )
+                apply(::RulebookReference,
+                      // Chapter Id
+                      doc.at("chapter_id") apply { RulebookChapterId.fromDocument(it) },
+                      // Section Id
+                      split(doc.maybeAt("section_id"),
+                            effValue<ValueError,Maybe<RulebookSectionId>>(Nothing()),
+                            { effApply(::Just, RulebookSectionId.fromDocument(it)) }),
+                      // Subsection Id
+                      split(doc.maybeAt("subsection_id"),
+                            effValue<ValueError,Maybe<RulebookSubsectionId>>(Nothing()),
+                            { effApply(::Just, RulebookSubsectionId.fromDocument(it)) })
+                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "chapter_id" to this.chapterId().toDocument()
+    ))
+    .maybeMerge(this.maybeSectionId().apply {
+        Just(Pair("section_id", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.maybeSubsectionId().apply {
+        Just(Pair("subsection_id", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -830,7 +959,11 @@ data class RulebookReference(override val id : UUID,
 
     fun sectionId() : RulebookSectionId? = getMaybePrim(this.sectionId)
 
+    fun maybeSectionId() : Maybe<RulebookSectionId> = _getMaybePrim(this.sectionId)
+
     fun subsectionId() : RulebookSubsectionId? = getMaybePrim(this.subsectionId)
+
+    fun maybeSubsectionId() : Maybe<RulebookSubsectionId> = _getMaybePrim(this.subsectionId)
 
 
     // -----------------------------------------------------------------------------------------

@@ -118,7 +118,7 @@ object OfficialManager
             {
                 val game = gameLoader.value
                 GameManager.addGame(game)
-                ApplicationLog.event(OfficialGameLoaded(game.description().gameName()))
+                ApplicationLog.event(OfficialGameLoaded(game.description().gameNameString()))
             }
             is Err -> ApplicationLog.error(gameLoader.error)
         }

@@ -18,10 +18,7 @@ import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.*
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
@@ -36,7 +33,7 @@ import java.util.*
 data class TableWidgetRow(override val id : UUID,
                           val format : Comp<TableWidgetRowFormat>,
                           val cells : Coll<TableWidgetCell>)
-                           : SheetComponent, Model, Serializable
+                           : ToDocument, SheetComponent, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -98,6 +95,16 @@ data class TableWidgetRow(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "cells" to DocList(this.cells().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -151,7 +158,7 @@ data class TableWidgetRow(override val id : UUID,
 //            val sheetActivity = sheetUIContext.context as SheetActivity
 //            val tableRowAction = SheetAction.TableRow(tableWidget.id,
 //                                                      rowIndex,
-//                                                      tableWidget.tableName(),
+//                                                      tableWidget.tableNameString(),
 //                                                      tableWidget.columns())
 //            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
         }
@@ -223,7 +230,8 @@ data class TableWidgetRowFormat(override val id : UUID,
                                 val backgroundColorTheme : Prim<ColorTheme>,
                                 val margins : Comp<Spacing>,
                                 val padding : Comp<Spacing>,
-                                val cellHeight : Prim<Height>) : Model, Serializable
+                                val cellHeight : Prim<Height>)
+                                 : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -302,6 +310,19 @@ data class TableWidgetRowFormat(override val id : UUID,
                                              defaultCellHeight)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "text_style" to this.textStyle().toDocument(),
+        "background_color_theme" to this.backgroundColorTheme().toDocument(),
+        "margins" to this.margins().toDocument(),
+        "padding" to this.padding().toDocument(),
+        "cell_height" to this.cellHeight().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------

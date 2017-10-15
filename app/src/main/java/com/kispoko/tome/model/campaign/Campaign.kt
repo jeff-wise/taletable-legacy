@@ -27,7 +27,8 @@ data class Campaign(override val id : UUID,
                     val campaignId : Prim<CampaignId>,
                     val campaignName : Prim<CampaignName>,
                     val campaignSummary : Prim<CampaignSummary>,
-                    val gameId : Prim<GameId>) : Model, Serializable
+                    val gameId : Prim<GameId>)
+                     : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -114,8 +115,12 @@ data class Campaign(override val id : UUID,
 /**
  * Campaign Id
  */
-data class CampaignId(val value : String) : SQLSerializable, Serializable
+data class CampaignId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<CampaignId>
     {
@@ -126,8 +131,19 @@ data class CampaignId(val value : String) : SQLSerializable, Serializable
         }
     }
 
-    override fun asSQLValue() : SQLValue = SQLText({this.value})
 
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 }
 
 

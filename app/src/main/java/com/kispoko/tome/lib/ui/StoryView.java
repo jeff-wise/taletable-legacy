@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 
 import com.kispoko.tome.model.sheet.widget.StoryPart;
 import com.kispoko.tome.model.sheet.widget.StoryPartSpan;
@@ -46,7 +45,7 @@ public class StoryView extends AppCompatTextView
         {
             if (part instanceof StoryPartSpan)
             {
-                String s = ((StoryPartSpan) part).text();
+                String s = ((StoryPartSpan) part).textString();
                 canvas.drawText(s, 0, 30, paint);
             }
         }

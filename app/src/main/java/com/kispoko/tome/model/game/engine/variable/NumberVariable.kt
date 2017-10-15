@@ -33,7 +33,7 @@ import java.util.*
 /**
  * Number Variable
  */
-sealed class NumberVariableValue : SumModel, Serializable
+sealed class NumberVariableValue : ToDocument, SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -50,8 +50,7 @@ sealed class NumberVariableValue : SumModel, Serializable
                 "program_invocation" -> NumberVariableProgramValue.fromDocument(doc)
                 "value_reference"    -> NumberVariableValueValue.fromDocument(doc)
                 "summation_id"       -> NumberVariableSummationValue.fromDocument(doc)
-                else                 -> effError<ValueError,NumberVariableValue>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -93,6 +92,13 @@ data class NumberVariableLiteralValue(val value : Double)
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value).withCase("number_literal")
 
 
     // -----------------------------------------------------------------------------------------
@@ -154,6 +160,13 @@ class NumberVariableUnknownLiteralValue() : NumberVariableValue(), SQLSerializab
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText("unknown")
+
+
+    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -198,6 +211,13 @@ data class NumberVariableVariableValue(val variableId : VariableId)
         override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> =
                 effApply(::NumberVariableVariableValue, VariableId.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.variableId.toDocument().withCase("variable_id")
 
 
     // -----------------------------------------------------------------------------------------
@@ -267,6 +287,13 @@ data class NumberVariableProgramValue(val invocation : Invocation)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.invocation.toDocument().withCase("program_invocation")
+
+
+    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -321,6 +348,13 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.valueReference.toDocument().withCase("value_reference")
+
+
+    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -340,7 +374,7 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
         GameManager.engine(sheetContext.gameId)
-                .apply { it.value(this.valueReference, sheetContext) }
+                .apply { it.value(this.valueReference, sheetContext.gameId) }
                 .apply { effValue<AppError,Set<Variable>>(it.variables()) }
 
 
@@ -374,6 +408,13 @@ data class NumberVariableSummationValue(val summationId : SummationId)
         override fun fromDocument(doc: SchemaDoc): ValueParser<NumberVariableValue> =
                 effApply(::NumberVariableSummationValue, SummationId.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.summationId.toDocument().withCase("summation_id")
 
 
     // -----------------------------------------------------------------------------------------

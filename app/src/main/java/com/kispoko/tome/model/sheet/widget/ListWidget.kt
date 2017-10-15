@@ -10,10 +10,7 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.effApply
 import effect.effError
 import effect.effValue
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.util.*
@@ -26,7 +23,7 @@ import java.util.*
 data class ListWidgetFormat(override val id : UUID,
                             val widgetFormat : Comp<WidgetFormat>,
                             val listStyle : Func<TextStyle>,
-                            val annotationStyle : Func<TextStyle>) : Model
+                            val annotationStyle : Func<TextStyle>) : ToDocument, Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -70,10 +67,25 @@ data class ListWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "list_style" to this.listStyle().toDocument(),
+        "annotation_style" to this.annotationStyle().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun listStyle() : TextStyle = this.listStyle.value
+
+    fun annotationStyle() : TextStyle = this.annotationStyle.value
 
 
     // -----------------------------------------------------------------------------------------

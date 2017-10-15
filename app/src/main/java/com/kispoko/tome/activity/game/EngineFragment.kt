@@ -16,8 +16,8 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.engine.function.FunctionListActivity
-import com.kispoko.tome.activity.engine.valueset.ValueSetsActivity
+import com.kispoko.tome.activity.game.engine.function.FunctionListActivity
+import com.kispoko.tome.activity.game.engine.valueset.ValueSetsActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.sheet.style.*

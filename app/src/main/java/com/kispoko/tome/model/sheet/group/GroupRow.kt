@@ -13,6 +13,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.Alignment
+import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.VerticalAlignment
 import com.kispoko.tome.model.sheet.widget.Widget
@@ -38,7 +39,7 @@ data class GroupRow(override val id : UUID,
                     val format : Comp<GroupRowFormat>,
                     val index : Prim<GroupRowIndex>,
                     val widgets : Coll<Widget>)
-                      : Model, SheetComponent, Comparable<GroupRow>, Serializable
+                      : ToDocument, Model, SheetComponent, Comparable<GroupRow>, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -84,6 +85,16 @@ data class GroupRow(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "widgets" to DocList(this.widgets().map { it.toDocument() })
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -161,6 +172,8 @@ data class GroupRow(override val id : UUID,
         layout.gravity          = this.format().alignment().gravityConstant() or
                                     this.format().verticalAlignment().gravityConstant()
 
+        layout.corners          = this.format().corners()
+
         return layout.linearLayout(sheetUIContext.context)
     }
 
@@ -223,8 +236,10 @@ data class GroupRowFormat(override val id : UUID,
                           val backgroundColorTheme : Prim<ColorTheme>,
                           val margins : Comp<Spacing>,
                           val padding : Comp<Spacing>,
+                          val corners : Comp<Corners>,
                           val showDivider : Prim<ShowGroupRowDivider>,
-                          val dividerColorTheme : Prim<ColorTheme>) : Model, Serializable
+                          val dividerColorTheme : Prim<ColorTheme>)
+                           : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -238,6 +253,7 @@ data class GroupRowFormat(override val id : UUID,
         this.backgroundColorTheme.name  = "background_color_theme"
         this.margins.name               = "margins"
         this.padding.name               = "padding"
+        this.corners.name               = "corners"
         this.showDivider.name           = "show_divider"
         this.dividerColorTheme.name     = "divider_color_theme"
     }
@@ -252,6 +268,7 @@ data class GroupRowFormat(override val id : UUID,
                 backgroundColorTheme : ColorTheme,
                 margins : Spacing,
                 padding : Spacing,
+                corners : Corners,
                 showDivider : ShowGroupRowDivider,
                 dividerColorTheme : ColorTheme)
         : this(UUID.randomUUID(),
@@ -260,6 +277,7 @@ data class GroupRowFormat(override val id : UUID,
                Prim(backgroundColorTheme),
                Comp(margins),
                Comp(padding),
+               Comp(corners),
                Prim(showDivider),
                Prim(dividerColorTheme))
 
@@ -272,6 +290,7 @@ data class GroupRowFormat(override val id : UUID,
         private val defaultBackgroundColorTheme = ColorTheme.transparent
         private val defaultMargins              = Spacing.default()
         private val defaultPadding              = Spacing.default()
+        private val defaultCorners              = Corners.default()
         private val defaultShowDivider          = ShowGroupRowDivider(false)
         private val defaultDividerColorTheme    = ColorTheme.black
 
@@ -301,6 +320,10 @@ data class GroupRowFormat(override val id : UUID,
                          split(doc.maybeAt("padding"),
                                effValue(defaultPadding),
                                { Spacing.fromDocument(it) }),
+                        // Corners
+                        split(doc.maybeAt("corners"),
+                                effValue(defaultCorners),
+                                { Corners.fromDocument(it) }),
                          // Show Divider?
                          split(doc.maybeAt("show_divider"),
                                effValue(defaultShowDivider),
@@ -321,10 +344,26 @@ data class GroupRowFormat(override val id : UUID,
                                defaultBackgroundColorTheme,
                                defaultMargins,
                                defaultPadding,
+                               defaultCorners,
                                defaultShowDivider,
                                defaultDividerColorTheme)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "alignment" to this.alignment().toDocument(),
+        "vertical_alignment" to this.alignment().toDocument(),
+        "background_color_theme" to this.backgroundColortheme().toDocument(),
+        "margins" to this.margins().toDocument(),
+        "padding" to this.padding().toDocument(),
+        "show_divider" to this.showDivider.value.toDocument(),
+        "divider_color_theme" to this.dividerColorTheme().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -340,6 +379,8 @@ data class GroupRowFormat(override val id : UUID,
     fun margins() : Spacing = this.margins.value
 
     fun padding() : Spacing = this.padding.value
+
+    fun corners() : Corners = this.corners.value
 
     fun showDividerBool() : Boolean = this.showDivider.value.value
 
@@ -382,8 +423,12 @@ data class GroupRowIndex(val value : Int) : SQLSerializable, Serializable
 /**
  * Show Divider
  */
-data class ShowGroupRowDivider(val value : Boolean) : SQLSerializable, Serializable
+data class ShowGroupRowDivider(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ShowGroupRowDivider>
     {
@@ -393,6 +438,18 @@ data class ShowGroupRowDivider(val value : Boolean) : SQLSerializable, Serializa
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLInt({ if (value) 1 else 0})
 

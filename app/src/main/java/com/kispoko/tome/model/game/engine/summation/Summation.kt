@@ -18,7 +18,6 @@ import com.kispoko.tome.model.game.engine.summation.term.TermSummary
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
-import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -34,7 +33,8 @@ import java.util.*
 data class Summation(override val id : UUID,
                      val summationId : Prim<SummationId>,
                      val summationName : Prim<SummationName>,
-                     val terms : Conj<SummationTerm>) : Model, Serializable
+                     val terms : Conj<SummationTerm>)
+                      : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -84,12 +84,25 @@ data class Summation(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "summation_id" to this.summationId().toDocument(),
+        "summation_name" to this.summationName().toDocument(),
+        "terms" to DocList(this.terms().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun summationId() : SummationId = this.summationId.value
 
-    fun summationName() : String = this.summationName.value.value
+    fun summationName() : SummationName = this.summationName.value
+
+    fun summationNameString() : String = this.summationName.value.value
 
     fun terms() : Set<SummationTerm> = this.terms.set
 
@@ -127,8 +140,8 @@ data class Summation(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun summary(sheetUIContext: SheetUIContext) : List<TermSummary> =
-            this.terms().mapNotNull { it.summary(SheetContext(sheetUIContext)) }
+    fun summary(sheetContext : SheetContext) : List<TermSummary> =
+            this.terms().mapNotNull { it.summary(sheetContext) }
 
 
     fun diceRoll(sheetContext : SheetContext) : DiceRoll?
@@ -175,10 +188,21 @@ data class Summation(override val id : UUID,
             }
         }
 
-        if (quantities.isEmpty())
-            return null
+        return if (quantities.isEmpty())
+            null
         else
-            return DiceRoll(quantities, modifiers, Just(DiceRollName(this.summationName())))
+            DiceRoll(quantities, modifiers, Just(DiceRollName(this.summationNameString())))
+    }
+
+
+    fun termWithId(termId : UUID) : SummationTerm?
+    {
+        this.terms().forEach {
+            if (it.id == termId)
+                return it
+        }
+
+        return null
     }
 
 }
@@ -187,7 +211,7 @@ data class Summation(override val id : UUID,
 /**
  * Summation Id
  */
-data class SummationId(val value : String) : SQLSerializable, Serializable
+data class SummationId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -205,6 +229,13 @@ data class SummationId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -216,7 +247,7 @@ data class SummationId(val value : String) : SQLSerializable, Serializable
 /**
  * Summation Name
  */
-data class SummationName(val value : String) : SQLSerializable, Serializable
+data class SummationName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -231,6 +262,13 @@ data class SummationName(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

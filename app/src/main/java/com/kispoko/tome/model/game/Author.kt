@@ -4,6 +4,8 @@ package com.kispoko.tome.model.game
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor._getMaybePrim
+import com.kispoko.tome.lib.functor.getMaybePrim
 import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -26,7 +28,7 @@ import java.util.*
 data class Author(override val id : UUID,
                   val authorName : Prim<AuthorName>,
                   val organization : Maybe<Prim<AuthorOrganization>>,
-                  val userName : Maybe<Prim<UserName>>) : Model
+                  val userName : Maybe<Prim<UserName>>) : ToDocument, Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -62,26 +64,51 @@ data class Author(override val id : UUID,
 
     companion object : Factory<Author>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Author> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Author> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::Author,
-                         // Name
-                         doc.at("name") apply { AuthorName.fromDocument(it) },
-                         // Organization
-                         split(doc.maybeAt("outside_label"),
-                                effValue<ValueError,Maybe<AuthorOrganization>>(Nothing()),
-                                { effApply(::Just, AuthorOrganization.fromDocument(it)) }),
-                         // User Name
-                        split(doc.maybeAt("user_name"),
-                                effValue<ValueError,Maybe<UserName>>(Nothing()),
-                                { effApply(::Just, UserName.fromDocument(it)) })
-                        )
+                apply(::Author,
+                      // Name
+                      doc.at("name") apply { AuthorName.fromDocument(it) },
+                      // Organization
+                      split(doc.maybeAt("organization"),
+                             effValue<ValueError,Maybe<AuthorOrganization>>(Nothing()),
+                             { effApply(::Just, AuthorOrganization.fromDocument(it)) }),
+                      // User Name
+                     split(doc.maybeAt("user_name"),
+                             effValue<ValueError,Maybe<UserName>>(Nothing()),
+                             { effApply(::Just, UserName.fromDocument(it)) })
+                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.name().toDocument()
+    ))
+    .maybeMerge(this.organization().apply {
+        Just(Pair("organization", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.userName().apply {
+        Just(Pair("user_name", it.toDocument() as SchemaDoc)) })
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun name() : AuthorName = this.authorName.value
+
+    fun organization() : Maybe<AuthorOrganization> = _getMaybePrim(this.organization)
+
+    fun userName() : Maybe<UserName> = _getMaybePrim(this.userName)
 
 
     // -----------------------------------------------------------------------------------------
@@ -100,7 +127,7 @@ data class Author(override val id : UUID,
 /**
  * Author Name
  */
-data class AuthorName(val value : String) : SQLSerializable, Serializable
+data class AuthorName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -118,6 +145,13 @@ data class AuthorName(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -129,7 +163,7 @@ data class AuthorName(val value : String) : SQLSerializable, Serializable
 /**
  * Author Organization
  */
-data class AuthorOrganization(val value : String) : SQLSerializable, Serializable
+data class AuthorOrganization(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -144,6 +178,14 @@ data class AuthorOrganization(val value : String) : SQLSerializable, Serializabl
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE

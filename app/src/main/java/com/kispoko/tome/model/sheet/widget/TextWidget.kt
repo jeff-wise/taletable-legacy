@@ -42,7 +42,8 @@ data class TextWidgetFormat(override val id : UUID,
                             val outsideLabel : Maybe<Prim<TextWidgetLabel>>,
                             val outsideLabelFormat : Comp<TextFormat>,
                             val valueFormat : Comp<TextFormat>,
-                            val descriptionStyle : Comp<TextStyle>) : Model, Serializable
+                            val descriptionStyle : Comp<TextStyle>)
+                             : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -108,51 +109,67 @@ data class TextWidgetFormat(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::TextWidgetFormat,
-                         // Widget Format
-                         split(doc.maybeAt("widget_format"),
-                               effValue(defaultWidgetFormat),
-                               { WidgetFormat.fromDocument(it) }),
-                         // Inside Label
-                         split(doc.maybeAt("inside_label"),
-                               effValue<ValueError,Maybe<TextWidgetLabel>>(defaultInsideLabel),
-                               { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
-                         // Inside Label Format
-                         split(doc.maybeAt("inside_label_format"),
-                               effValue(defaultInsideLabelFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Outside Label
-                         split(doc.maybeAt("outside_label"),
-                               effValue<ValueError,Maybe<TextWidgetLabel>>(defaultOutsideLabel),
-                               { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
-                         // Outside Label Format
-                         split(doc.maybeAt("outside_label_format"),
-                               effValue(defaultOutsideLabelFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Value Format
-                         split(doc.maybeAt("value_format"),
-                               effValue(defaultValueFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Description Style
-                         split(doc.maybeAt("description_style"),
-                               effValue(defaultDescriptionStyle),
-                               { TextStyle.fromDocument(it) })
-                         )
+                apply(::TextWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat),
+                            { WidgetFormat.fromDocument(it) }),
+                      // Inside Label
+                      split(doc.maybeAt("inside_label"),
+                            effValue<ValueError,Maybe<TextWidgetLabel>>(defaultInsideLabel),
+                            { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
+                      // Inside Label Format
+                      split(doc.maybeAt("inside_label_format"),
+                            effValue(defaultInsideLabelFormat),
+                            { TextFormat.fromDocument(it) }),
+                      // Outside Label
+                      split(doc.maybeAt("outside_label"),
+                            effValue<ValueError,Maybe<TextWidgetLabel>>(defaultOutsideLabel),
+                            { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
+                      // Outside Label Format
+                      split(doc.maybeAt("outside_label_format"),
+                            effValue(defaultOutsideLabelFormat),
+                            { TextFormat.fromDocument(it) }),
+                      // Value Format
+                      split(doc.maybeAt("value_format"),
+                            effValue(defaultValueFormat),
+                            { TextFormat.fromDocument(it) }),
+                      // Description Style
+                      split(doc.maybeAt("description_style"),
+                            effValue(defaultDescriptionStyle),
+                            { TextStyle.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        val default : TextWidgetFormat =
-                TextWidgetFormat(defaultWidgetFormat,
-                                 defaultInsideLabel,
-                                 defaultInsideLabelFormat,
-                                 defaultOutsideLabel,
-                                 defaultOutsideLabelFormat,
-                                 defaultValueFormat,
-                                 defaultDescriptionStyle)
+        fun default() = TextWidgetFormat(defaultWidgetFormat,
+                                         defaultInsideLabel,
+                                         defaultInsideLabelFormat,
+                                         defaultOutsideLabel,
+                                         defaultOutsideLabelFormat,
+                                         defaultValueFormat,
+                                         defaultDescriptionStyle)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "inside_label_format" to this.insideLabelFormat().toDocument(),
+        "outside_label_format" to this.outsideLabelFormat().toDocument(),
+        "value_format" to this.valueFormat().toDocument(),
+        "description_style" to this.descriptionStyle().toDocument()
+    ))
+    .maybeMerge(this.insideLabelMaybe().apply {
+        Just(Pair("inside_label", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.outsideLabelMaybe().apply {
+        Just(Pair("outside_label", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -161,9 +178,13 @@ data class TextWidgetFormat(override val id : UUID,
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
 
+    fun insideLabelMaybe() : Maybe<TextWidgetLabel> = _getMaybePrim(this.insideLabel)
+
     fun insideLabel() : String? = getMaybePrim(this.insideLabel)?.value
 
     fun insideLabelFormat() : TextFormat = this.insideLabelFormat.value
+
+    fun outsideLabelMaybe() : Maybe<TextWidgetLabel> = _getMaybePrim(this.outsideLabel)
 
     fun outsideLabel() : String? = getMaybePrim(this.outsideLabel)?.value
 
@@ -219,7 +240,7 @@ data class TextWidgetDescription(val value : String) : SQLSerializable, Serializ
 /**
  * Text Widget Description
  */
-data class TextWidgetLabel(val value : String) : SQLSerializable, Serializable
+data class TextWidgetLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -234,6 +255,13 @@ data class TextWidgetLabel(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

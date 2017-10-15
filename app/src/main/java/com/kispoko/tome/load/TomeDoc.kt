@@ -33,6 +33,7 @@ object TomeDoc
     private var sheetSchema : Schema? = null
     private var campaignSchema : Schema? = null
     private var gameSchema : Schema? = null
+    private var engineSchema : Schema? = null
     private var themeSchema : Schema? = null
 
 
@@ -52,13 +53,13 @@ object TomeDoc
             effValue(inputStream.bufferedReader().use { it.readText() })
 
         fun templateDocument(templateString : String,
-                             sheetSpec : Schema,
-                             campaignSpec : Schema,
-                             gameSpec : Schema,
-                             themeSpec : Schema) : DocLoader<SchemaDoc>
+                             sheetSchema : Schema,
+                             campaignSchema : Schema,
+                             engineSchema : Schema,
+                             themeSchema : Schema) : DocLoader<SchemaDoc>
         {
-            val docParse = sheetSpec.parseDocument(templateString,
-                                                   listOf(campaignSpec, gameSpec, themeSpec))
+            val docParse = sheetSchema.parseDocument(templateString,
+                                                   listOf(campaignSchema, engineSchema, themeSchema))
             when (docParse)
             {
                 is Val -> return effValue(docParse.value)
@@ -82,7 +83,7 @@ object TomeDoc
                .applyWith(::templateDocument,
                           sheetSchemaLoader(context),
                           campaignSchemaLoader(context),
-                          gameSchemaLoader(context),
+                          engineSchemaLoader(context),
                           themeSchemaLoader(context))
                .apply(::sheetFromDocument)
     }
@@ -144,9 +145,11 @@ object TomeDoc
         val templateFileString : DocLoader<String> =
                 effValue(inputStream.bufferedReader().use { it.readText() })
 
-        fun templateDocument(templateString : String, gameSpec : Schema) : DocLoader<SchemaDoc>
+        fun templateDocument(templateString : String,
+                             gameSchema : Schema,
+                             engineSchema : Schema) : DocLoader<SchemaDoc>
         {
-            val docParse = gameSpec.parseDocument(templateString, listOf())
+            val docParse = gameSchema.parseDocument(templateString, listOf(engineSchema))
             when (docParse)
             {
                 is Val -> return effValue(docParse.value)
@@ -170,7 +173,8 @@ object TomeDoc
         // DO...
         return templateFileString
                .applyWith(::templateDocument,
-                          gameSchemaLoader(context))
+                          gameSchemaLoader(context),
+                          engineSchemaLoader(context))
                .apply(::gameFromDocument)
     }
 
@@ -254,7 +258,7 @@ object TomeDoc
         if (schema != null)
             return effValue(schema)
         else
-            return effError(SpecIsNull("sheet"))
+            return effError(SchemaIsNull("sheet"))
     }
 
 
@@ -292,7 +296,7 @@ object TomeDoc
         if (schema != null)
             return effValue(schema)
         else
-            return effError(SpecIsNull("campaign"))
+            return effError(SchemaIsNull("campaign"))
     }
 
 
@@ -330,8 +334,47 @@ object TomeDoc
         if (schema != null)
             return effValue(schema)
         else
-            return effError(SpecIsNull("game"))
+            return effError(SchemaIsNull("game"))
     }
+
+
+    // Schemas > Engine
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Get the Sheet specification (Lulo). If it is null, try to load it.
+     */
+    fun engineSchema(context : Context) : Schema?
+    {
+        if (this.engineSchema == null)
+        {
+            val schemaLoader = loadLuloSchema("engine", context)
+            when (schemaLoader)
+            {
+                is Val -> {
+                    this.engineSchema = schemaLoader.value
+                    ApplicationLog.event(SchemaLoaded("engine"))
+                }
+                is Err -> ApplicationLog.error(schemaLoader.error)
+            }
+        }
+
+        return this.engineSchema
+    }
+
+
+    /**
+     * Get the specification in the loader context.
+     */
+    fun engineSchemaLoader(context : Context) : DocLoader<Schema>
+    {
+        val schema = this.engineSchema(context)
+        if (schema != null)
+            return effValue(schema)
+        else
+            return effError(SchemaIsNull("engine"))
+    }
+
 
 
     // Schemas > Theme
@@ -368,7 +411,7 @@ object TomeDoc
         if (schema != null)
             return effValue(schema)
         else
-            return effError(SpecIsNull("theme"))
+            return effError(SchemaIsNull("theme"))
     }
 
 }

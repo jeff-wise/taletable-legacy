@@ -13,10 +13,12 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.game.engine.dice.DiceQuantity
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -41,6 +43,7 @@ class AddAmountDialogFragment : DialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var operation       : AddOperation? = null
+    private var adderState      : AdderState? = null
     private var sheetContext    : SheetContext? = null
 
 
@@ -51,12 +54,14 @@ class AddAmountDialogFragment : DialogFragment()
     companion object
     {
         fun newInstance(operation : AddOperation,
+                        adderState : AdderState,
                         sheetContext : SheetContext) : AddAmountDialogFragment
         {
             val dialog = AddAmountDialogFragment()
 
             val args = Bundle()
             args.putSerializable("operation", operation)
+            args.putSerializable("adder_state", adderState)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
 
@@ -75,6 +80,7 @@ class AddAmountDialogFragment : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.operation    = arguments.getSerializable("operation") as AddOperation
+        this.adderState   = arguments.getSerializable("adder_state") as AdderState
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
 
 
@@ -88,7 +94,7 @@ class AddAmountDialogFragment : DialogFragment()
         {
             val sheetUIContext = SheetUIContext(sheetContext, context)
 
-            val dialogLayout = this.dialogLayout(sheetUIContext)
+            val dialogLayout = this.dialogLayout()
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -116,7 +122,8 @@ class AddAmountDialogFragment : DialogFragment()
                               savedInstanceState : Bundle?) : View?
     {
         val sheetContext = this.sheetContext
-        if (sheetContext != null)
+        val adderState = this.adderState
+        if (sheetContext != null && adderState != null)
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
@@ -124,7 +131,10 @@ class AddAmountDialogFragment : DialogFragment()
 
             if (operation != null)
             {
-                val viewBuilder = AddAmountEditorViewBuilder(operation, sheetUIContext)
+                val viewBuilder = AddAmountEditorViewBuilder(operation,
+                                                             adderState,
+                                                             sheetUIContext,
+                                                             this)
                 return viewBuilder.view()
             }
             else
@@ -143,7 +153,7 @@ class AddAmountDialogFragment : DialogFragment()
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
 
-    fun dialogLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    fun dialogLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -173,7 +183,9 @@ enum class AddOperation : Serializable
 // ---------------------------------------------------------------------------------------------
 
 class AddAmountEditorViewBuilder(val operation : AddOperation,
-                                 val sheetUIContext : SheetUIContext)
+                                 val adderState : AdderState,
+                                 val sheetUIContext : SheetUIContext,
+                                 val dialog : DialogFragment)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -181,11 +193,57 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
     // -----------------------------------------------------------------------------------------
 
     private var value : Double = 0.0
-
-    private var numberString : String = Util.doubleString(value)
+    private var numberString : String = ""
 
     private var valueTextView : TextView? = null
 
+    private var isActive = false
+
+
+    val activeValueColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+    val activeValueColor  = SheetManager.color(sheetUIContext.sheetId, activeValueColorTheme)
+
+    val inActiveValueColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+    val inActiveValueColor  = SheetManager.color(sheetUIContext.sheetId, inActiveValueColorTheme)
+
+
+    private fun append(string : String)
+    {
+        this.numberString += string
+
+        if (!isActive)
+            this.valueTextView?.setTextColor(activeValueColor)
+
+        this.valueTextView?.text = this.numberString
+    }
+
+
+    private fun delete()
+    {
+        if (this.numberString.isNotBlank())
+        {
+            this.numberString = this.numberString.dropLast(1)
+
+            if (this.numberString.isBlank()) {
+                this.valueTextView?.text = "0"
+                this.valueTextView?.setTextColor(inActiveValueColor)
+            }
+            else {
+                this.valueTextView?.text = this.numberString
+            }
+        }
+    }
+
+
+    private fun currentAdderState() : AdderState
+    {
+        val newDelta = adderState.delta + this.numberString.toDouble()
+        return adderState.copy(delta = newDelta)
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -330,12 +388,9 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         value.height            = LinearLayout.LayoutParams.WRAP_CONTENT
         value.weight            = 5f
 
-        value.text              = this.numberString
+        value.text              = "0"
 
-        val valueColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        value.color             = SheetManager.color(sheetUIContext.sheetId, valueColorTheme)
+        value.color             = inActiveValueColor
 
         value.font              = Font.typeface(TextFont.FiraSans,
                                                 TextFontStyle.Light,
@@ -366,12 +421,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 15f
 
-        layout.onClick        = View.OnClickListener {
-            if (this.numberString.isNotBlank()) {
-                this.numberString = this.numberString.dropLast(1)
-                this.valueTextView?.text = this.numberString
-            }
-        }
+        layout.onClick          = View.OnClickListener { this.delete() }
 
         layout.child(icon)
 
@@ -517,7 +567,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         layout.gravity          = Gravity.CENTER
 
         val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("green_15")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
@@ -525,6 +575,14 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
                                           TopRightCornerRadius(2f),
                                           BottomRightCornerRadius(2f),
                                           BottomLeftCornerRadius(2f))
+
+        layout.onClick          = View.OnClickListener {
+            val sheetActivity = sheetUIContext.context as SheetActivity
+            val adderDialog = AdderDialogFragment.newInstance(this.currentAdderState(),
+                    SheetContext(sheetUIContext))
+            adderDialog.show(sheetActivity.supportFragmentManager, "")
+            dialog.dismiss()
+        }
 
         layout.margin.leftDp    = 2f
         layout.margin.rightDp   = 2f
@@ -573,29 +631,25 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         // 1
         val oneOnClick = View.OnClickListener {
-            this.numberString += "1"
-            this.valueTextView?.text = this.numberString
+            this.append("1")
         }
         layout.addView(this.numberButtonView("1", oneOnClick))
 
         // 2
         val twoOnClick = View.OnClickListener {
-            this.numberString += "2"
-            this.valueTextView?.text = this.numberString
+            this.append("2")
         }
         layout.addView(this.numberButtonView("2", twoOnClick))
 
         // 3
         val threeOnClick = View.OnClickListener {
-            this.numberString += "3"
-            this.valueTextView?.text = this.numberString
+            this.append("3")
         }
         layout.addView(this.numberButtonView("3", threeOnClick))
 
         // 0
         val zeroOnClick = View.OnClickListener {
-            this.numberString += "0"
-            this.valueTextView?.text = this.numberString
+            this.append("0")
         }
         layout.addView(this.numberButtonView("0", zeroOnClick))
 
@@ -609,29 +663,25 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         // 4
         val fourOnClick = View.OnClickListener {
-            this.numberString += "4"
-            this.valueTextView?.text = this.numberString
+            this.append("4")
         }
         layout.addView(this.numberButtonView("4", fourOnClick))
 
         // 5
         val fiveOnClick = View.OnClickListener {
-            this.numberString += "5"
-            this.valueTextView?.text = this.numberString
+            this.append("5")
         }
         layout.addView(this.numberButtonView("5", fiveOnClick))
 
         // 6
         val sixOnClick = View.OnClickListener {
-            this.numberString += "6"
-            this.valueTextView?.text = this.numberString
+            this.append("6")
         }
         layout.addView(this.numberButtonView("6", sixOnClick))
 
         // .
         val dotOnClick = View.OnClickListener {
-            this.numberString += "."
-            this.valueTextView?.text = this.numberString
+            this.append(".")
         }
         layout.addView(this.numberButtonView(".", dotOnClick))
 
@@ -645,22 +695,19 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         // 7
         val sevenOnClick = View.OnClickListener {
-            this.numberString += "7"
-            this.valueTextView?.text = this.numberString
+            this.append("7")
         }
         layout.addView(this.numberButtonView("7", sevenOnClick))
 
         // 8
         val eightOnClick = View.OnClickListener {
-            this.numberString += "8"
-            this.valueTextView?.text = this.numberString
+            this.append("8")
         }
         layout.addView(this.numberButtonView("8", eightOnClick))
 
         // 9
         val nineOnClick = View.OnClickListener {
-            this.numberString += "9"
-            this.valueTextView?.text = this.numberString
+            this.append("9")
         }
         layout.addView(this.numberButtonView("9", nineOnClick))
 

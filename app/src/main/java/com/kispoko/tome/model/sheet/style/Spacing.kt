@@ -28,7 +28,8 @@ data class Spacing(override val id : UUID,
                    val left : Prim<LeftSpacing>,
                    val top : Prim<TopSpacing>,
                    val right : Prim<RightSpacing>,
-                   val bottom : Prim<BottomSpacing>) : Model, Serializable
+                   val bottom : Prim<BottomSpacing>)
+                    : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -121,6 +122,17 @@ data class Spacing(override val id : UUID,
     fun bottomPx() : Int = Util.dpToPixel(this.bottomDp())
 
 
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "left" to this.left.value.toDocument(),
+        "top" to this.top.value.toDocument(),
+        "right" to this.right.value.toDocument(),
+        "bottom" to this.bottom.value.toDocument()
+    ))
+
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -138,7 +150,7 @@ data class Spacing(override val id : UUID,
 /**
  * Left Spacing
  */
-data class LeftSpacing(val value : Float) : SQLSerializable, Serializable
+data class LeftSpacing(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -158,6 +170,14 @@ data class LeftSpacing(val value : Float) : SQLSerializable, Serializable
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -170,7 +190,7 @@ data class LeftSpacing(val value : Float) : SQLSerializable, Serializable
 /**
  * Top Spacing
  */
-data class TopSpacing(val value : Float) : SQLSerializable, Serializable
+data class TopSpacing(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -190,6 +210,13 @@ data class TopSpacing(val value : Float) : SQLSerializable, Serializable
     }
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -201,7 +228,7 @@ data class TopSpacing(val value : Float) : SQLSerializable, Serializable
 /**
  * Right Spacing
  */
-data class RightSpacing(val value : Float) : SQLSerializable, Serializable
+data class RightSpacing(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -221,6 +248,14 @@ data class RightSpacing(val value : Float) : SQLSerializable, Serializable
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -233,7 +268,7 @@ data class RightSpacing(val value : Float) : SQLSerializable, Serializable
 /**
  * Bottom Spacing
  */
-data class BottomSpacing(val value : Float) : SQLSerializable, Serializable
+data class BottomSpacing(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -252,6 +287,14 @@ data class BottomSpacing(val value : Float) : SQLSerializable, Serializable
         fun default() : BottomSpacing = BottomSpacing(0.0f)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE

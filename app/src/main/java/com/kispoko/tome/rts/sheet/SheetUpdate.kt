@@ -3,12 +3,10 @@ package com.kispoko.tome.rts.sheet
 
 
 import com.kispoko.tome.app.ApplicationEvent
+import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.Widget
-import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
-import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
-import com.kispoko.tome.model.sheet.widget.table.TableWidgetRowFormat
 import java.io.Serializable
 import java.util.*
 
@@ -70,6 +68,10 @@ data class StoryWidgetUpdateNumberPart(override val widgetId : UUID,
                                        val partIndex : Int,
                                        val newNumber : Double) : WidgetUpdateStoryWidget(widgetId)
 
+data class StoryWidgetUpdateTextValuePart(override val widgetId : UUID,
+                                          val partIndex : Int,
+                                          val newValueId : ValueId) : WidgetUpdateStoryWidget(widgetId)
+
 
 // Table Widget Update
 
@@ -119,6 +121,8 @@ data class UpdateTargetInsertTableRow(val tableWidget : TableWidget) : UpdateTar
 data class UpdateTargetStoryWidgetPart(val storyWidgetId : UUID,
                                        val partIndex : Int) : UpdateTarget()
 
+data class UpdateTargetSummationNumberTerm(val termId : UUID) : UpdateTarget()
+
 
 
 
@@ -132,7 +136,7 @@ data class UpdateTargetStoryWidgetPart(val storyWidgetId : UUID,
 //
 //    data class TableRow(val tableWidgetId : UUID,
 //                        val rowClickedIndex : Int,
-//                        val tableName : String,
+//                        val tableNameString : String,
 //                        val tableColumns : List<TableWidgetColumn>) : SheetAction()
 //
 //}

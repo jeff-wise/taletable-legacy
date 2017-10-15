@@ -42,7 +42,8 @@ data class BooleanCellFormat(override val id : UUID,
                              val trueStyle : Maybe<Comp<TextStyle>>,
                              val falseStyle : Maybe<Comp<TextStyle>>,
                              val showTrueIcon : Prim<ShowTrueIcon>,
-                             val showFalseIcon : Prim<ShowFalseIcon>) : Model, Serializable
+                             val showFalseIcon : Prim<ShowFalseIcon>)
+                              : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -116,12 +117,27 @@ data class BooleanCellFormat(override val id : UUID,
 
         fun default() = BooleanCellFormat(UUID.randomUUID(),
                                           Comp.default(defaultCellFormat),
-                                          Nothing<Comp<TextStyle>>(),
-                                          Nothing<Comp<TextStyle>>(),
+                                          Nothing(),
+                                          Nothing(),
                                           Prim.default(defaultShowTrueIcon),
                                           Prim.default(defaultShowFalseIcon))
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "cell_format" to this.cellFormat().toDocument(),
+        "show_true_icon" to this.showTrueIcon().toDocument(),
+        "show_false_icon" to this.showFalseIcon().toDocument()
+        ))
+        .maybeMerge(this.trueStyle().apply {
+            Just(Pair("true_style", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.falseStyle().apply {
+            Just(Pair("false_style", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -134,9 +150,13 @@ data class BooleanCellFormat(override val id : UUID,
 
     fun falseStyle() : Maybe<TextStyle> = getMaybeComp(this.falseStyle)
 
-    fun showTrueIcon() : Boolean = this.showTrueIcon.value.value
+    fun showTrueIcon() : ShowTrueIcon = this.showTrueIcon.value
 
-    fun showFalseIcon() : Boolean = this.showFalseIcon.value.value
+    fun showTrueIconBool() : Boolean = this.showTrueIcon.value.value
+
+    fun showFalseIcon() : ShowFalseIcon = this.showFalseIcon.value
+
+    fun showFalseIconBool() : Boolean = this.showFalseIcon.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -194,7 +214,7 @@ data class BooleanCellFormat(override val id : UUID,
 /**
  * Show True Icon
  */
-data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
+data class ShowTrueIcon(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -212,6 +232,13 @@ data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -223,7 +250,7 @@ data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
 /**
  * Show False Icon
  */
-data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
+data class ShowFalseIcon(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -238,6 +265,12 @@ data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -338,7 +371,7 @@ object BooleanCellView
         {
             cell.valueVariable(sheetContext) apDo { it.updateValue(false, sheetContext.sheetId) }
 
-            valueView.text = column.format().falseText()
+            valueView.text = column.format().falseTextString()
 
             // No false style, but need to undo true style
             if (falseStyle == null && trueStyle != null)
@@ -351,7 +384,7 @@ object BooleanCellView
         {
             cell.valueVariable(sheetContext) apDo { it.updateValue(true, sheetContext.sheetId) }
 
-            valueView.text = column.format().trueText()
+            valueView.text = column.format().trueTextString()
 
             // No true style, but need to undo false style
             if (trueStyle == null && falseStyle != null)
@@ -420,9 +453,9 @@ object BooleanCellView
 
         // > VALUE
         if (cellValue)
-            value.text          = column.format().trueText()
+            value.text          = column.format().trueTextString()
         else
-            value.text          = column.format().falseText()
+            value.text          = column.format().falseTextString()
 
         // > STYLE
         val defaultStyle  = cellFormat.resolveTextStyle(column.format())

@@ -6441,7 +6441,7 @@ encounter:
                   widgets:
                   - type: action
                     widget:
-                      description: Using a rope, I Secure a Prisoner by bindingName his legs and arms.
+                      description: Using a rope, I Secure a Prisoner by bindingNameString his legs and arms.
                       action_highlight: Secure a Prisoner
                       action_name: Secure a Prisoner
                       data:

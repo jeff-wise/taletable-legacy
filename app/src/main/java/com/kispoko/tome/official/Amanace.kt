@@ -86,7 +86,7 @@ data class AmanaceCharacterSheetVariant(val id : String, val label : String)
                            // Id
                            yamlValue.text("id"),
                            // Label
-                           yamlValue.text("label")
+                           yamlValue.text("labelString")
                            )
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))

@@ -53,7 +53,7 @@ data class NumberWidgetFormat(override val id : UUID,
                               val valuePostfixStyle : Comp<TextStyle>,
                               val valueSeparator : Maybe<Prim<ValueSeparator>>,
                               val valueSeparatorFormat : Comp<TextFormat>)
-                               : Model, Serializable
+                               : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -238,6 +238,33 @@ data class NumberWidgetFormat(override val id : UUID,
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "height" to this.height().toDocument(),
+        "inside_label_format" to this.insideLabelFormat().toDocument(),
+        "outside_label_format" to this.outsideLabelFormat().toDocument(),
+        "value_format" to this.valueFormat().toDocument(),
+        "description_style" to this.descriptionStyle().toDocument(),
+        "value_prefix_style" to this.valuePrefixStyle().toDocument(),
+        "value_postfix_style" to this.valuePostfixStyle().toDocument(),
+        "value_separator_format" to this.valueSeparatorFormat().toDocument()))
+        .maybeMerge(this.insideLabel().apply {
+            Just(Pair("inside_label", DocText(it.value) as SchemaDoc)) })
+        .maybeMerge(this.outsideLabel().apply {
+            Just(Pair("outside_label", DocText(it.value) as SchemaDoc)) })
+        .maybeMerge(this.valuePrefix().apply {
+            Just(Pair("value_prefix", DocText(it.value) as SchemaDoc)) })
+        .maybeMerge(this.valuePostfix().apply {
+            Just(Pair("value_postfix", DocText(it.value) as SchemaDoc)) })
+        .maybeMerge(this.valueSeparator().apply {
+            Just(Pair("value_separator", DocText(it.value) as SchemaDoc)) })
+
+
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
@@ -246,11 +273,15 @@ data class NumberWidgetFormat(override val id : UUID,
 
     fun height() : Height = this.height.value
 
-    fun insideLabel() : String? = getMaybePrim(this.insideLabel)?.value
+    fun insideLabel() : Maybe<NumberWidgetLabel> = _getMaybePrim(this.insideLabel)
+
+    fun insideLabelString() : String? = getMaybePrim(this.insideLabel)?.value
 
     fun insideLabelFormat() : TextFormat = this.insideLabelFormat.value
 
-    fun outsideLabel() : String? = getMaybePrim(this.outsideLabel)?.value
+    fun outsideLabel() : Maybe<NumberWidgetLabel> = _getMaybePrim(this.outsideLabel)
+
+    fun outsideLabelString() : String? = getMaybePrim(this.outsideLabel)?.value
 
     fun outsideLabelFormat() : TextFormat = this.outsideLabelFormat.value
 
@@ -258,17 +289,23 @@ data class NumberWidgetFormat(override val id : UUID,
 
     fun descriptionStyle() : TextStyle = this.descriptionStyle.value
 
-    fun valuePrefix() : String? = getMaybePrim(this.valuePrefix)?.value
+    fun valuePrefix() : Maybe<NumberWidgetValuePrefix> = _getMaybePrim(this.valuePrefix)
+
+    fun valuePrefixString() : String? = getMaybePrim(this.valuePrefix)?.value
 
     fun valuePrefixStyle() : TextStyle = this.valuePrefixStyle.value
 
-    fun valuePostfix() : String? = getMaybePrim(this.valuePostfix)?.value
+    fun valuePostfix() : Maybe<NumberWidgetValuePostfix> = _getMaybePrim(this.valuePostfix)
+
+    fun valuePostfixString() : String? = getMaybePrim(this.valuePostfix)?.value
 
     fun valuePostfixStyle() : TextStyle = this.valuePostfixStyle.value
 
-    fun valueSeparator() : String? = getMaybePrim(this.valueSeparator)?.value
+    fun valueSeparator() : Maybe<ValueSeparator> = _getMaybePrim(this.valueSeparator)
 
-    fun valueSeparatorFormat() : TextFormat? = this.valueSeparatorFormat.value
+    fun valueSeparatorString() : String? = getMaybePrim(this.valueSeparator)?.value
+
+    fun valueSeparatorFormat() : TextFormat = this.valueSeparatorFormat.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -464,7 +501,7 @@ object NumberWidgetView
         val layout = this.mainLayout(format, sheetUIContext.context)
 
         // > Outside Top/Left Label View
-        if (format.outsideLabel() != null) {
+        if (format.outsideLabelString() != null) {
             if (format.outsideLabelFormat().position().isTop() ||
                 format.outsideLabelFormat().position().isLeft()) {
                 layout.addView(this.outsideLabelView(format, sheetUIContext))
@@ -475,7 +512,7 @@ object NumberWidgetView
         layout.addView(this.valueMainView(numberWidget, format, sheetUIContext))
 
         // > Outside Bottom/Right Label View
-        if (format.outsideLabel() != null) {
+        if (format.outsideLabelString() != null) {
             if (format.outsideLabelFormat().position().isBottom() ||
                 format.outsideLabelFormat().position().isRight()) {
                 layout.addView(this.outsideLabelView(format, sheetUIContext))
@@ -516,7 +553,7 @@ object NumberWidgetView
         val layout = this.valueMainViewLayout(format, sheetUIContext)
 
         // > Inside Top/Left Label View
-        if (format.insideLabel() != null && numberWidget.description() == null) {
+        if (format.insideLabelString() != null && numberWidget.description() == null) {
             if (format.insideLabelFormat().position().isTop() ||
                 format.insideLabelFormat().position().isLeft()) {
                 layout.addView(this.insideLabelView(format, sheetUIContext))
@@ -526,7 +563,7 @@ object NumberWidgetView
         layout.addView(this.valueView(numberWidget, format, sheetUIContext))
 
         // > Inside Bottom/Right Label View
-        if (format.insideLabel() != null && numberWidget.description() == null) {
+        if (format.insideLabelString() != null && numberWidget.description() == null) {
             if (format.insideLabelFormat().position().isBottom() ||
                 format.insideLabelFormat().position().isRight()) {
                 layout.addView(this.insideLabelView(format, sheetUIContext))
@@ -616,7 +653,7 @@ object NumberWidgetView
         val layout = this.valueViewLayout(format, sheetUIContext.context)
 
         // > Prefix
-        val prefixString = format.valuePrefix()
+        val prefixString = format.valuePrefixString()
         if (prefixString != null)
             layout.addView(this.valueFixView(prefixString,
                                              format.valuePrefixStyle(),
@@ -631,7 +668,7 @@ object NumberWidgetView
 //            layout.addView(baseValueView(context));
 
         // > Postfix
-        val postfixString = format.valuePostfix()
+        val postfixString = format.valuePostfixString()
         if (postfixString != null)
             layout.addView(this.valueFixView(postfixString,
                                              format.valuePostfixStyle(),
@@ -691,7 +728,7 @@ object NumberWidgetView
 
             val labelSpan =
                 FormattedString.Span(
-                        format.insideLabel(),
+                        format.insideLabelString(),
                         SheetManager.color(sheetUIContext.sheetId,
                                            format.insideLabelFormat().style().colorTheme()),
                         format.insideLabelFormat().style().sizeSp(),
@@ -706,7 +743,7 @@ object NumberWidgetView
                                      format.valueFormat().style().font())
 
 
-            if (format.insideLabel() != null)
+            if (format.insideLabelString() != null)
                 spans.add(labelSpan)
 
             spans.add(valueSpan)
@@ -784,7 +821,7 @@ object NumberWidgetView
         separator.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         separator.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        separator.text          = format.valueSeparator()
+        separator.text          = format.valueSeparatorString()
 
         format.valueSeparatorFormat()?.style()?.styleTextViewBuilder(separator, sheetUIContext)
 
@@ -822,7 +859,7 @@ object NumberWidgetView
         label.layoutGravity     = format.outsideLabelFormat().alignment().gravityConstant() or
                                     Gravity.CENTER_VERTICAL
 
-        label.text              = format.outsideLabel()
+        label.text              = format.outsideLabelString()
 
         format.outsideLabelFormat().style().styleTextViewBuilder(label, sheetUIContext)
 
@@ -840,7 +877,7 @@ object NumberWidgetView
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.text              = format.insideLabel()
+        label.text              = format.insideLabelString()
 
         label.layoutGravity     = format.insideLabelFormat().alignment().gravityConstant() or
                                       Gravity.CENTER_VERTICAL;

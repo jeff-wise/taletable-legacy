@@ -8,10 +8,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effError
 import effect.effValue
-import lulo.document.DocText
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
@@ -23,32 +20,72 @@ import java.io.Serializable
 /**
  * Position
  */
-sealed class Position : SQLSerializable, Serializable
+sealed class Position : ToDocument, SQLSerializable, Serializable
 {
 
     object Left : Position()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"left"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("left")
+
     }
 
 
     object Top : Position()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"top"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("top")
+
     }
 
 
     object Right : Position()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"right"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("right")
+
     }
 
 
     object Bottom : Position()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"bottom"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("bottom")
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {

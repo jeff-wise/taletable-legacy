@@ -17,6 +17,7 @@
 
 
     <!-- VALUE LIST ITEM -->
+    <item name="value_list_item_layout" type="id"/>
     <item name="value_list_item_value" type="id"/>
     <item name="value_list_item_description" type="id"/>
 
@@ -118,6 +119,7 @@
 
     <!-- CHOOSE VALUE DIALOG -->
     <item name="choose_value_header" type="id"/>
+    <item name="choose_value_item_layout" type="id"/>
     <item name="choose_value_item_value" type="id"/>
     <item name="choose_value_item_summary" type="id"/>
     <item name="choose_value_item_icon" type="id"/>

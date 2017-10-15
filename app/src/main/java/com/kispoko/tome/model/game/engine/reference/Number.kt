@@ -24,7 +24,7 @@ import java.io.Serializable
 /**
  * Number Reference
  */
-sealed class NumberReference : SumModel, Serializable
+sealed class NumberReference : ToDocument, SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -82,6 +82,13 @@ data class NumberReferenceLiteral(val value : Double) : NumberReference(), SQLSe
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value).withCase("number_literal")
+
+
+    // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -123,6 +130,14 @@ data class NumberReferenceValue(val valueReference : ValueReference)
         override fun fromDocument(doc: SchemaDoc): ValueParser<NumberReference> =
                 effApply(::NumberReferenceValue, ValueReference.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.valueReference.toDocument()
+                                    .withCase("value_reference")
 
 
     // -----------------------------------------------------------------------------------------
@@ -169,6 +184,14 @@ data class NumberReferenceVariable(val variableReference : VariableReference)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.variableReference.toDocument()
+                                    .withCase("variable_reference")
+
+
+    // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -208,7 +231,7 @@ data class NumberReferenceVariable(val variableReference : VariableReference)
                     val valueString = it.valueString(sheetContext)
                     when (valueString)
                     {
-                        is Val -> TermComponent(it.label(), valueString.value)
+                        is Val -> TermComponent(it.labelString(), valueString.value)
                         is Err -> {
                             ApplicationLog.error(valueString.error)
                             null

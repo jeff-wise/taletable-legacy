@@ -138,8 +138,8 @@ object Interpreter
             }
         }
 
-        return note(bindings[program.resultBindingName()],
-                    AppEvalError(ResultBindingDoesNotExist(program.resultBindingName(),
+        return note(bindings[program.resultBindingNameString()],
+                    AppEvalError(ResultBindingDoesNotExist(program.resultBindingNameString(),
                                                             program.programId())))
     }
 
@@ -158,7 +158,7 @@ object Interpreter
                                                      programId, sheetContext)
 
         fun binding(engineValue : EngineValue) : StatementBinding =
-            StatementBinding(statement.bindingName(), engineValue)
+            StatementBinding(statement.bindingNameString(), engineValue)
 
 
         return functionEff     ap { function ->

@@ -11,6 +11,8 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.game.engine.value.ValueId
+import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -33,7 +35,8 @@ import java.util.*
 sealed class Variable(open var variableId : Prim<VariableId>,
                       open val label : Prim<VariableLabel>,
                       open val description : Prim<VariableDescription>,
-                      open val tags : Prim<VariableTagSet>) : Model, Serializable
+                      open val tags : Prim<VariableTagSet>)
+                       : Model, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -68,9 +71,13 @@ sealed class Variable(open var variableId : Prim<VariableId>,
 
     fun variableId() : VariableId = this.variableId.value
 
-    fun label() : String = this.label.value.value
+    fun label() : VariableLabel = this.label.value
 
-    fun description() : String = this.description.value.value
+    fun labelString() : String = this.label.value.value
+
+    fun description() : VariableDescription = this.description.value
+
+    fun descriptionString() : String = this.description.value.value
 
     fun tags() : Set<VariableTag> = this.tags.value.variables
 
@@ -184,7 +191,7 @@ data class BooleanVariable(override val id : UUID,
     init
     {
         this.variableId.name    = "variable_id"
-        this.label.name         = "label"
+        this.label.name         = "labelString"
         this.description.name   = "description"
         this.tags.name          = "tags"
     }
@@ -231,6 +238,19 @@ data class BooleanVariable(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.variableId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.description().toDocument(),
+        "tags" to DocList(this.tags().map { it.toDocument() }),
+        "value" to this.variableValue().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -303,7 +323,7 @@ data class DiceRollVariable(override val id : UUID,
     init
     {
         this.variableId.name    = "variable_id"
-        this.label.name         = "label"
+        this.label.name         = "labelString"
         this.description.name   = "description"
         this.tags.name          = "tags"
     }
@@ -350,6 +370,19 @@ data class DiceRollVariable(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.variableId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.description().toDocument(),
+        "tags" to DocList(this.tags().map { it.toDocument() }),
+        "value" to this.variableValue().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -414,7 +447,7 @@ data class NumberVariable(override val id : UUID,
     init
     {
         this.variableId.name    = "variable_id"
-        this.label.name         = "label"
+        this.label.name         = "labelString"
         this.description.name   = "description"
         this.tags.name          = "tags"
         this.variableValue.name = "value"
@@ -486,6 +519,19 @@ data class NumberVariable(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.variableId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.description().toDocument(),
+        "tags" to DocList(this.tags().map { it.toDocument() }),
+        "value" to this.variableValue().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -632,6 +678,19 @@ data class TextVariable(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.variableId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.description().toDocument(),
+        "tags" to DocList(this.tags().map { it.toDocument() }),
+        "value" to this.variableValue().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -681,13 +740,28 @@ data class TextVariable(override val id : UUID,
     }
 
 
-    fun updateValue(value : String, sheetId : SheetId)
+    fun updateLiteralValue(value : String, sheetId : SheetId)
     {
         when (this.variableValue())
         {
             is TextVariableLiteralValue ->
             {
                 this.variableValue = Sum(TextVariableLiteralValue(value))
+                SheetManager.onVariableUpdate(sheetId, this)
+            }
+        }
+    }
+
+
+    fun updateValue(valueId : ValueId, sheetId : SheetId)
+    {
+        val currentVariableValue = this.variableValue()
+        when (currentVariableValue)
+        {
+            is TextVariableValueValue -> {
+                val valueSetId = currentVariableValue.valueReference.valueSetId
+                val newValueReference = ValueReference(valueSetId, valueId)
+                this.variableValue = Sum(TextVariableValueValue(newValueReference))
                 SheetManager.onVariableUpdate(sheetId, this)
             }
         }
@@ -768,7 +842,7 @@ data class VariableName(val value : String) : SQLSerializable, Serializable
  * Variable Reference
  */
 @Suppress("UNCHECKED_CAST")
-sealed class VariableReference : SQLSerializable, Serializable
+sealed class VariableReference : ToDocument, SQLSerializable, Serializable
 {
 
     companion object : Factory<VariableReference>
@@ -780,8 +854,7 @@ sealed class VariableReference : SQLSerializable, Serializable
                 "variable_tag" -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
                 else           -> {
                     Log.d("***VARIABLE", "case is: " + doc.case())
-                    effError<ValueError,VariableReference>(
-                            UnknownCase(doc.case(), doc.path))
+                    effError(UnknownCase(doc.case(), doc.path))
                 }
             }
     }
@@ -832,6 +905,13 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.nameString())
 
 
     // -----------------------------------------------------------------------------------------
@@ -897,6 +977,13 @@ data class VariableTag(val value : String) : VariableReference(), Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -908,7 +995,7 @@ data class VariableTag(val value : String) : VariableReference(), Serializable
 /**
  * Variable Label
  */
-data class VariableLabel(val value : String) : SQLSerializable, Serializable
+data class VariableLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -926,6 +1013,13 @@ data class VariableLabel(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -937,7 +1031,7 @@ data class VariableLabel(val value : String) : SQLSerializable, Serializable
 /**
  * Variable Description
  */
-data class VariableDescription(val value : String) : SQLSerializable, Serializable
+data class VariableDescription(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -955,6 +1049,13 @@ data class VariableDescription(val value : String) : SQLSerializable, Serializab
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -966,30 +1067,30 @@ data class VariableDescription(val value : String) : SQLSerializable, Serializab
 /**
  * Defines Namespace
  */
-data class DefinesNamespace(val value : Boolean) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<DefinesNamespace>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DefinesNamespace> = when (doc)
-        {
-            is DocBoolean -> effValue(DefinesNamespace(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
-
-}
+//data class DefinesNamespace(val value : Boolean) : SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<DefinesNamespace>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<DefinesNamespace> = when (doc)
+//        {
+//            is DocBoolean -> effValue(DefinesNamespace(doc.boolean))
+//            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
+//
+//}
 
 
 /**

@@ -243,18 +243,42 @@ data class UIColors(override val id: UUID,
 
 
 
-sealed class ThemeId : SQLSerializable, Serializable
+sealed class ThemeId : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CASES
+    // -----------------------------------------------------------------------------------------
 
     object Light : ThemeId()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"light"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("light")
+
     }
 
 
     object Dark : ThemeId()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"dark"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("dark")
+
     }
 
 
@@ -263,6 +287,11 @@ sealed class ThemeId : SQLSerializable, Serializable
      */
     data class Custom(val name : String) : ThemeId()
     {
+
+        // -------------------------------------------------------------------------------------
+        // CONSTRUCTORS
+        // -------------------------------------------------------------------------------------
+
         companion object : Factory<ThemeId.Custom>
         {
             override fun fromDocument(doc: SchemaDoc): ValueParser<Custom> = when (doc)
@@ -273,10 +302,26 @@ sealed class ThemeId : SQLSerializable, Serializable
             }
         }
 
+
+        // -------------------------------------------------------------------------------------
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({this.name})
+
+
+        // -------------------------------------------------------------------------------------
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText(this.name)
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -297,6 +342,10 @@ sealed class ThemeId : SQLSerializable, Serializable
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
     override fun toString() = when (this)
     {
         is Light  -> "Light"
@@ -309,8 +358,13 @@ sealed class ThemeId : SQLSerializable, Serializable
 /**
  * Theme Color Id
  */
-data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId) : Serializable
+data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId)
+                : ToDocument, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ThemeColorId>
     {
@@ -325,6 +379,16 @@ data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId) : Serializ
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "theme_id" to this.themeId.toDocument(),
+        "color_id" to this.colorId.toDocument()
+    ))
 }
 
 
@@ -363,13 +427,13 @@ data class ThemeColor(val colorId : ColorId, val color : Int) : Serializable
  *
  * A pallette of colors for some object.
  */
-data class ColorTheme(val themeColorIds : Set<ThemeColorId>) : SQLSerializable, Serializable
+data class ColorTheme(val themeColorIds : Set<ThemeColorId>)
+                : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
 
     companion object : Factory<ColorTheme>
     {
@@ -413,6 +477,14 @@ data class ColorTheme(val themeColorIds : Set<ThemeColorId>) : SQLSerializable, 
 
     fun themeColorId(themeId : ThemeId) : ColorId? = this.colorIdByThemeId[themeId]
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "theme_color_ids" to DocList(this.themeColorIds.map { it.toDocument() })
+    ))
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZATION

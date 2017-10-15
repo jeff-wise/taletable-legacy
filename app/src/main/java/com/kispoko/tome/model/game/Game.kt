@@ -29,7 +29,8 @@ data class Game(override val id : UUID,
                 val gameId : Prim<GameId>,
                 val description : Comp<GameDescription>,
                 val engine : Comp<Engine>,
-                val rulebook : Comp<Rulebook>) : Model, Serializable
+                val rulebook : Comp<Rulebook>)
+                 : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -86,6 +87,18 @@ data class Game(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.gameId().toDocument(),
+        "description" to this.description().toDocument(),
+        "engine" to this.engine().toDocument(),
+        "rulebook" to this.rulebook().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -114,7 +127,7 @@ data class Game(override val id : UUID,
 /**
  * Game Id
  */
-data class GameId(val value : String) : SQLSerializable, Serializable
+data class GameId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -132,6 +145,13 @@ data class GameId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -146,7 +166,8 @@ data class GameId(val value : String) : SQLSerializable, Serializable
 data class GameDescription(override val id : UUID,
                            val gameName : Prim<GameName>,
                            val summary : Prim<GameSummary>,
-                           val authors : Coll<Author>) : Model, Serializable
+                           val authors : Coll<Author>)
+                            : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -194,12 +215,29 @@ data class GameDescription(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "game_name" to this.gameName().toDocument(),
+        "summary" to this.summary().toDocument(),
+        "authors" to DocList(this.authors().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun gameName() : String = this.gameName.value.value
+    fun gameName() : GameName = this.gameName.value
 
-    fun summary() : String = this.summary.value.value
+    fun gameNameString() : String = this.gameName.value.value
+
+    fun summary() : GameSummary = this.summary.value
+
+    fun summaryString() : String = this.summary.value.value
+
+    fun authors() : List<Author> = this.authors.list
 
 
     // -----------------------------------------------------------------------------------------
@@ -218,7 +256,7 @@ data class GameDescription(override val id : UUID,
 /**
  * Game Name
  */
-data class GameName(val value : String) : SQLSerializable, Serializable
+data class GameName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -236,6 +274,13 @@ data class GameName(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -247,7 +292,7 @@ data class GameName(val value : String) : SQLSerializable, Serializable
 /**
  * Game Summary
  */
-data class GameSummary(val value : String) : SQLSerializable, Serializable
+data class GameSummary(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -262,6 +307,13 @@ data class GameSummary(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

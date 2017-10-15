@@ -29,7 +29,7 @@ import java.util.*
 data class Section(override val id : UUID,
                    val sectionName : Prim<SectionName>,
                    val pages : Coll<Page>,
-                   val icon : Prim<Icon>) : Model, Serializable
+                   val icon : Prim<Icon>) : Model, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ data class Section(override val id : UUID,
             is DocDict ->
             {
                 effApply(::Section,
-                         // Campaign Name
+                         // Section Name
                          doc.at("name") ap { SectionName.fromDocument(it) },
                          // Page List
                          doc.list("pages") ap { docList ->
@@ -94,6 +94,30 @@ data class Section(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.name().toDocument(),
+        "pages" to DocList(this.pages().map { it.toDocument() }),
+        "icon" to this.icon().toDocument()
+    ))
+
+//        effApply(::Section,
+//                         // Campaign Name
+//                         doc.at("name") ap { SectionName.fromDocument(it) },
+//                         // Page List
+//                         doc.list("pages") ap { docList ->
+//                             docList.mapIndexed { doc, index ->
+//                                 Page.fromDocument(doc, index)
+//                             } },
+//                         // Icon
+//                         doc.at("icon") ap { Icon.fromDocument(it) }
+//                         )
+//            }
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -119,7 +143,7 @@ data class Section(override val id : UUID,
 /**
  * Section Name
  */
-data class SectionName(val value : String) : SQLSerializable, Serializable
+data class SectionName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -137,6 +161,13 @@ data class SectionName(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -144,214 +175,3 @@ data class SectionName(val value : String) : SQLSerializable, Serializable
 
 }
 
-
-//public class Section extends Model
-//                     implements ToYaml
-//{
-//
-//    // PROPERTIES
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // ------------------------------------------------------------------------------------------
-//
-//    private UUID                        id;
-//
-//
-//    // > Functors
-//    // ------------------------------------------------------------------------------------------
-//
-//    private PrimitiveFunctor<String>    name;
-//    private CollectionFunctor<Page>     pages;
-//
-//
-//    // CONSTRUCTORS
-//    // ------------------------------------------------------------------------------------------
-//
-//    public Section()
-//    {
-//        this.id     = null;
-//
-//        this.name   = new PrimitiveFunctor<>(null, String.class);
-//
-//        this.pages  = CollectionFunctor.empty(Page.class);
-//    }
-//
-//
-//    public Section(UUID id, String name, List<Page> pages)
-//    {
-//        this.id     = id;
-//
-//        this.name   = new PrimitiveFunctor<>(name, String.class);
-//
-//        this.pages  = CollectionFunctor.full(pages, Page.class);
-//
-//        this.initializeSection();
-//    }
-//
-//
-////    public static Section asCampaign(UUID id, List<Page> pages)
-////    {
-////        return new Section(id, SectionType.CAMPAIGN, pages);
-////    }
-//
-//
-//    public static Section fromYaml(YamlParser yaml)
-//                  throws YamlParseException
-//    {
-//        UUID id = UUID.randomUUID();
-//
-//        // TODO make this not true and catch exceptions when it's empty
-//        List<Page> pages = yaml.atKey("pages").forEach(new YamlParser.ForEach<Page>() {
-//            @Override
-//            public Page forEach(YamlParser yaml, int index) throws YamlParseException {
-//                return Page.fromYaml(yaml, index);
-//            }
-//        }, true);
-//
-//        return new Section(id, "section name", pages);
-//    }
-//
-//
-//    // API
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Id
-//    // ------------------------------------------------------------------------------------------
-//
-//    public UUID getId()
-//    {
-//        return this.id;
-//    }
-//
-//
-//    public void setId(UUID id)
-//    {
-//        this.id = id;
-//    }
-//
-//
-//    // ** On Load
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * This method is called when the Roleplay is completely loaded for the first time.
-//     */
-//    public void onLoad()
-//    {
-//        this.initializeSection();
-//    }
-//
-//
-//    // > Yaml
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The Section's yaml representation.
-//     * @return The Yaml Builder
-//     */
-//    public YamlBuilder toYaml()
-//    {
-//        return YamlBuilder.map()
-//                .putList("pages", this.pages());
-//    }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//
-//    // ** Pages
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Returns the pages in the roleplay section.
-//     * @return The roleplay pages.
-//     */
-//    public List<Page> pages()
-//    {
-//        return this.pages.getValue();
-//    }
-//
-//
-//    // > Render
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Render the roleplay.
-//     * @param pagePagerAdapter Render needs the pager adapter view so that the roleplay can update
-//     *                         the view when the pages change.
-//     */
-//    public void render(PagePagerAdapter pagePagerAdapter)
-//    {
-//        pagePagerAdapter.setPages(this.pages());
-//        pagePagerAdapter.notifyDataSetChanged();
-//    }
-//
-//
-//    // > Initialize
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Initialize the section.
-//     */
-//    public void initialize(Context context)
-//    {
-//        // Initialize the pages
-//        for (Page page : this.pages()) {
-//            page.initialize(context);
-//        }
-//    }
-//
-//
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Initialize the section state.
-//     */
-//    private void initializeSection()
-//    {
-//        // [1] Sort the pages
-//        // --------------------------------------------------------------------------------------
-//
-//        sortPages();
-//
-//        // [2] Add an update listener on pages to ensure that they are always sorted
-//        // --------------------------------------------------------------------------------------
-//
-//         this.pages.setOnUpdateListener(new Functor.OnUpdateListener() {
-//            @Override
-//            public void onUpdate() {
-//                sortPages();
-//            }
-//        });
-//    }
-//
-//
-//    /**
-//     * Sort the pages by their index value, so they are displayed in the intended order.
-//     */
-//    private void sortPages()
-//    {
-//        if (this.pages.isNull())
-//            return;
-//
-//        Collections.sort(this.pages.getValue(), new Comparator<Page>() {
-//            @Override
-//            public int compare(Page page1, Page page2) {
-//                if (page1.index() > page2.index())
-//                    return 1;
-//                if (page1.index() < page2.index())
-//                    return -1;
-//                return 0;
-//            }
-//        });
-//
-//    }
-//
-//
-//}

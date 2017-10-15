@@ -190,6 +190,13 @@ fun <A : SQLSerializable> getMaybePrim(mPrim : Maybe<Prim<A>>) : A? = when (mPri
 }
 
 
+fun <A : SQLSerializable> _getMaybePrim(mPrim : Maybe<Prim<A>>) : Maybe<A> = when (mPrim)
+{
+    is Just -> Just(mPrim.value.value)
+    else    -> Nothing()
+}
+
+
 fun <A : Model> getMaybeComp(mComp : Maybe<Comp<A>>) : Maybe<A> = when (mComp)
 {
     is Just -> Just(mComp.value.value)

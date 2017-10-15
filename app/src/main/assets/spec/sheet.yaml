@@ -7,20 +7,65 @@ metadata:
   authors:
   - name: 'Jeff Wise'
 description:
-  overview: >
-    Tome is an application for creating and playing roleplaying games. The heart of Tome 
-    is a programmable roleplaying engine that allows users to program game mechanics, create 
-    items, spells, etc... and design interactive, playable templates for their game. The Tome 
-    app includes a customizable layout so the entire experience of a roleplaying game can be 
-    built and customized within Tome. Furthermore, all of that work can easily be distributed 
-    and shared with players.
+  overview: |+
+    The sheet is a core data structure of Tome. It provides the visual and interactive 
+    elements for most game components. A sheet may be used to represent a player 
+    character, a monster, a non-player character, a village, a dungeon, etc... A sheet 
+    doesn't have to be a game entity, it could also just be a useful interface. For example, 
+    if one group enjoys role-playing without using the app very much, they may still want 
+    to use a sheet for one or two important tasks, such as tracking hit points.
+
+    The main elements of a sheet are the layout, the widgets, and the theme. The layout 
+    consists of sections, pages, groups, and rows. These allow you to arrange your data 
+    in whatever way is most appropriate to what you want to show. The layout engine is 
+    integrated into the mobile app using material design, such that sections are buttons 
+    on the bottom navigation menu and pages are tabs below the toolbar. Properly designed 
+    sheets will look and feel just like native apps on the mobile applications.
+
+    There are many widgets available to represent both static and dynamic data. You 
+    could build a sheet that is mostly read-only, or you can build a sheet that is 
+    fully immersive where everything is calculated and automatically updated. Many widgets 
+    also exist not just to display the data, but to allow you to convey atmosphere and 
+    personality in your interfaces. This allows you to arrange and manipulate your 
+    data in creative ways that match with the content of the data itself. 
+
+    Themes are built into every sheet component. They allow you to customize the colors 
+    depending on which theme is currently selected. The mobile application comes with 
+    a light and a dark default theme. Themes also allow you to modify the colors of 
+    native UI components in the mobile application, so that your sheet really feels like 
+    its own native app.
+
+    A sheet also has a state, which is a collection of variables. These are the underlying 
+    data elements that may change over time and be updated by a user. Some variables are 
+    specific to a sheet and are defined with the sheet. Other variables may come from 
+    elements in the Game or Campaign context. These variables are only *defined* in the 
+    Game or Campaign, but do not exist. Games and Campaigns are abstract components. A sheet 
+    represents a real entity with data that may persist and change over time. Once a 
+    variable is brought into a sheet, then it is real.
+
+    A sheet is meant to be used and interacted with. Many other data structures in the Tome 
+    platform are abstract. It is only when they are instantiated as a part of a sheet 
+    do they become real. For example, value sets are part of the Engine definition, but 
+    a value set does not actually exist until it is used in a sheet. Then a user can 
+    see the values and assign a value to a variable. The value set may be used when 
+    it is part of a sheet, but otherwise it is just an abstract collection of values. 
+
+    Sheets exist at the bottom of the Tome hierarchy. A sheet belongs to a Campaign, and 
+    a Campaign belongs to a Game. Therefore, sheets inherit both the properties of its 
+    parent Game and its parent Campaign. Campaigns allow similar sheets to be used in 
+    different settings while Games define most of the mechanics that a sheet is 
+    expected to obey.
 root_type: sheet
 types:
 - type: product_type
   product_type:
     name: sheet  
     label: Sheet
-    description: The sheet.
+    description: |+
+      A sheet represents a set of data that may be persisted and changed. The data elements 
+      are reprsented by a multitude of programmable widgets which are arranged in a 
+      customizable layout. Sheets are used to represent the primary entites in the Tome 
+      platform such as characters, monsters, and adventures.
     group: Sheet
     fields:
     - name: id
@@ -29,43 +74,83 @@ types:
         custom_type: sheet_id
       presence: required
       description: >
-        The id of the sheet.
+        The sheet's unique identifier. Must be alphanumeric with underscores. It is 
+        used to reference the sheet from other contexts and is usually just the name 
+        of the sheet, modified to match the character requirements.
     - name: campaign_id
       type: 
         type: custom_type
         custom_type: campaign_id
       presence: required
       description: >
-        The name of the campaign.
+        The unique identifier of the parent campaign. The campaign knows its parent 
+        game identifier, so the sheet knows about its game from the campaign.
     - name: sections
       type: 
         type: custom_coll_type
         custom_coll_type: section
       presence: required
       description: >
-        The sections.
+        The sheet sections. Sections are the top-level user interface component 
+        of sheets. Simple sheets may only have one, but complex sheets could have many, 
+        although there is a maximum of 5 on mobile. On mobile, sections are represented 
+        by the bottom navigation menu.
     - name: variables
       type: 
         type: custom_coll_type
         custom_coll_type: variable
       presence: optional
       description: >
-        The variables.
+        The collection of variables that represent the sheet's unique data.
     - name: settings
       type: 
         type: custom_type
         custom_type: settings
       presence: optional
       description: >
-        The sheet settings.
+        Micellaneous sheet settings such as themes. If not present, a default settings 
+        is provided and will work fine in most cases.
+    code_examples:
+    - language: YAML
+      title: 'A Basic Sheet.'
+      description: >
+        A basic sheet that uses the dark theme, has one variable that stores the charcter's 
+        name, and one text widget that displays the character name.
+      code: |+
+        id: my_sheet
+        campaign_id: my_campaign
+        settings:
+          theme_id: dark
+        variables:
+        - type: variable_text
+          variable_text:
+            id: name
+            label: Name
+            description: Name
+            value:
+              type: text_literal
+              text_literal: My Character's Name
+        sections:
+        - name: main_section
+          pages:
+          - name: main_page
+            groups:
+              rows:
+              - widgets:
+                - type: widget_text
+                  widget_text:
+                    id: name
+                    value_variable_id: name
 - type: primitive_type
   primitive_type:
     name: sheet_id
     label: sheet_id
     description: >
-      The unique sheet identifier.
+      The unique sheet identifier. It is used to reference the sheet from other contexts.
     group: Sheet
-    base_type: string
+    base_type: 
+      type: prim_type
+      prim_type: string
 - type: product_type
   product_type:
     name: settings
@@ -101,23 +186,50 @@ types:
     name: theme_id
     label: theme_id
     description: >
-      The unique theme identifier.
+      The unique theme identifier, used commonly to reference a theme.
     group: Theme
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: primitive_type
   primitive_type:
     name: custom_theme_name
     label: Custom Theme Name
     description: >
-      The name of a custom theme.
+      The name of a custom theme. It can be anything you want. It is intended for
+      identifying the theme in the user interface.
     group: Theme
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: product_type
   product_type:
     name: section
     label: Section
-    description: >
-      A section
+    description: |+
+      Sections are the largest layout components on a sheet. Simple sheets may only have 
+      one section while complex sheets could have five, ten, or more. It all depends on 
+      the use case and how the user wants to organize the sheet. There is no specific rule 
+      as to what a section should represent. It is also completely up to the user. Since 
+      sectons are the largest layout element, they usually represent the "biggest concept" 
+      in the sheet. 
+      
+      #### In the Mobile Application
+      In the mobile application, there is a limit of 5 sections, because they are displayed
+      in the bottom navigation menu, and there is only so much space available on the screens 
+      of mobile devices.
+      
+      Sometimes the sheet is simple enough that one only needs a few widgets, in which case 
+      no sections are needed, because a section would not represent anything. Currently there 
+      is no way to disable showing the bottom navigation in the mobile app in 
+      the case that no sections are necessary. That may be possible in the future.
+
+      <figure>
+        <img width="350px" src="/static/svg/layout-section.svg">
+        <figcaption>
+          Sections on mobile are managed by the bottom navigation menu tabs.
+        </figcaption>
+      </figure>
     group: Section
     fields:
     - name: name
@@ -126,34 +238,77 @@ types:
         custom_type: section_name
       presence: required
       description: >
-        The section name.
+        The section name. This value is used to reference the section from other 
+        data structures. It should be alphanumeric with underscores.
     - name: pages
       type:
         type: custom_coll_type
         custom_coll_type: page
       presence: optional
       description: >
-        The section's pages.
+        The section's pages. The pages are the main organizational structure of a 
+        section. They break the sheet data into managable units.
+
+        On mobile pages the pages are represented as tabs below the toolbar. There is 
+        currently no limit on the number of pages although too many pages may 
+        impact usability. Page data is loaded dynamically for the current page and 
+        the page before and after, so there should not be any performance issues with 
+        many tabs.
     - name: icon
       type:
         type: custom_type
         custom_type: icon
       presence: required
-      description: The section icon.
+      description: >
+        The icon that is displayed on mobile in the bottom navigation tab that 
+        represents the section.
+    code_examples:
+    - language: YAML
+      title: 'A Basic Section.'
+      description: >
+        A basic section with one page that holds a text widget.
+      code: |+
+        name: main_section
+        pages:
+        - name: main_page
+          groups:
+            rows:
+            - widgets:
+              - type: widget_text
+                widget_text:
+                  id: name
+                  value_variable_id: name
 - type: primitive_type
   primitive_type:
     name: section_name
     label: Section Name
     description: >
-      The name of a section.
+      The name of a section. Used to reference the section from other data structures.
     group: Section
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: product_type
   product_type:
     name: page
     label: Page
-    description: >
-      A page
+    description: |+
+      Pages are the primary way of grouping data in a sheet.
+
+      #### In the Mobile Application
+      
+      Pages are represented using tabs at the top of the screen below the toolbar. 
+      There is currently no limit on the number of pages although too many pages may 
+      impact usability. Page data is loaded dynamically for the current page and 
+      the page before and after, so there should not be any performance issues with 
+      many tabs.
+
+      <figure>
+        <img width="350px" src="/static/svg/layout-page.svg">
+        <figcaption>
+          Pages are represented with tabs in the mobile application.
+        </figcaption>
+      </figure>
     group: Page
     fields:
     - name: name
@@ -162,27 +317,49 @@ types:
         prim_type: string
       presence: required
       description: >
-        The page name.
+        The name of the page. Used to reference the page from other data structures.
+        Must be alphanumeric with underscores.
     - name: format
       type:
         type: custom_type
         custom_type: page_format
       presence: optional
       description: >
-        The page format.
+        The page formatting options. If no value is given, then the default page format 
+        will be applied. 
     - name: groups
       type:
         type: custom_coll_type
         custom_coll_type: group
       presence: required
       description: >
-        The groups in the page.
+        The page's groups. Groups are the primary layout element of a page. They 
+        represent vertical segments of a page. 
+
+        In the mobile application there is no set limit to the number of groups in a 
+        page, but too many groups will force the user to scroll a lot. If it's a story, 
+        then this may be appropriate, but in many cases, you may want to break the groups 
+        up into separate pages, so the user can tab through the data horizontally.
+    code_examples:
+    - language: YAML
+      title: 'A Basic Page.'
+      description: >
+        A basic page with one group that holds a text widget.
+      code: |+
+        name: main_page
+        groups:
+          rows:
+          - widgets:
+            - type: widget_text
+              widget_text:
+                id: name
+                value_variable_id: name
 - type: product_type
   product_type:
     name: page_format
     label: Page Format
-    description: >
-      Page formatting options.
+    description: |+
+      The page formatting options.
     group: Page
     type: product
     fields:
@@ -192,20 +369,38 @@ types:
         custom_type: color_theme
       presence: optional
       description: >
-        The page background color theme.
+        The background color theme of the entire page.
     - name: padding
       type:
         type: custom_type
         custom_type: spacing
       presence: optional
       description: >
-        The page padding.
+        The space between the page's border and the groups within the page. This space 
+        is part of the background and will be colored according to the background color.
 - type: product_type
   product_type:
     name: group
     label: Group
-    description: >
-      A group.
+    description: |+
+      Groups are the primary layout elements of a page. They help to break up the page 
+      into logical sections and to arrange similar widgets together.
+
+      #### In the Mobile Application
+      
+      In the mobile application groups are vertical segments of a page. There is no set 
+      limit to the number of groups in a page, but too many groups will force the user 
+      to scroll a lot. If it's a story, then this may be appropriate, but in many cases 
+      you may want to break the groups up into separate pages, so the user can tab 
+      through the data horizontally.
+
+      <figure>
+        <img width="350px" src="/static/svg/layout-group.svg">
+        <figcaption>
+          Groups in relation to the other layout elements. A group is the largest element of 
+          a page and contains group rows. 
+        </figcaption>
+      </figure>
     group: Group
     fields:
     - name: format
@@ -214,96 +409,49 @@ types:
         custom_type: group_format
       presence: optional
       description: >
-        The group format.
+        The group formatting options. If no value is given, then the default options 
+        will be used.
     - name: rows
       type: 
         type: custom_coll_type
         custom_coll_type: group_row
       presence: required
       description: >
-        The rows in the group.
+        The rows in the group. Rows were created primary to help make formatting and 
+        designing the layout more flexible. 
+
+        In the mobile application there is no set limit to the number of rows in a 
+        group, but it doesn't usually make sense to have too many. It is better to 
+        use groups as the primary layout element when possible.
+    code_examples:
+    - language: YAML
+      title: 'A Basic Group.'
+      description: >
+        A basic group with some top padding that has one row with a text widget.
+      code: |+
+        format:
+          padding:
+            top: 10
+        rows:
+        - widgets:
+          - type: widget_text
+            widget_text:
+              id: name
+              value_variable_id: name
+    - language: Kotlin
+      title: 'A simple Group.'
+      code: |+
+        function
 - type: product_type
   product_type:
     name: group_format
     label: Group Format
     description: >
-      Group formatting options.
+      The group formatting options.
     group: Group
     fields:
     - name: background_color_theme
       type: 
-        type: custom_type
-        custom_type: color_theme
-      presence: optional
-      description: >
-        The group background theme.
-    - name: margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The group margins.
-    - name: padding
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The group padding.
-    - name: corners
-      type:
-        type: custom_type
-        custom_type: corners
-      presence: optional
-      description: >
-        The corners on the group border.
-- type: product_type
-  product_type:
-    name: group_row
-    label: Group Row
-    description: >
-      A row in a group
-    group: Group Row
-    fields:
-    - name: format
-      type:
-        type: custom_type
-        custom_type: group_row_format
-      presence: optional
-      description: >
-        The group row format.
-    - name: widgets
-      type:
-        type: custom_coll_type
-        custom_coll_type: widget
-      presence: required
-      description: >
-        The widgets.
-- type: product_type
-  product_type:
-    name: group_row_format
-    label: Group Row Format
-    description: >
-      Group row formatting options.
-    group: Group Row
-    type: product
-    fields:
-    - name: alignment
-      type:
-        type: custom_type
-        custom_type: alignment
-      presence: optional
-      description: >
-        The group row alignment.
-    - name: vertical_alignment
-      type:
-        type: custom_type
-        custom_type: vertical_alignment
-      presence: optional
-      description: Vertical alignment.
-    - name: background_color_theme
-      type:
         type: custom_type
         custom_type: color_theme
       presence: optional
@@ -315,31 +463,160 @@ types:
         custom_type: spacing
       presence: optional
       description: >
-        The margins.
+        The space between the group's border and the content outside of the group (inside 
+        the page).
     - name: padding
       type:
         type: custom_type
         custom_type: spacing
       presence: optional
       description: >
-        The padding.
+        The space between the groups's border and the rows insides the group. This space 
+        is part of the background and will be colored according to the background color.
+    - name: corners
+      type:
+        type: custom_type
+        custom_type: corners
+      presence: optional
+      description: >
+        The corner radius of the group border.
+- type: product_type
+  product_type:
+    name: group_row
+    label: Group Row
+    description: |+
+      A group row is a row within a group. It is used primarily to help with formatting 
+      and desiging layouts by adding another layer of grouping. The group rows contain 
+      the widgtes.
+
+      #### In the Mobile Application
+      
+      A group row is the direct child layout element within a group. By default a row 
+      fills the the full width of its parent group, and the group usually stretches the 
+      full width of the device's screen, so rows typically represent vertical segments 
+      of the screen, though they are usually nested visually inside the group.
+      
+      There is no set limit to the number of rows in a group, but it doesn't usually 
+      make sense to have too many. It is better to use groups as the primary layout 
+      element when possible.
+      
+      <figure>
+        <img width="350px" src="/static/svg/layout-group-row.svg">
+        <figcaption>
+          Group rows are just vertical segments inside a group. Sometimes they are 
+          very useful and sometimes they just match the space of the parent group.
+        </figcaption>
+      </figure>
+    group: Group Row
+    fields:
+    - name: format
+      type:
+        type: custom_type
+        custom_type: group_row_format
+      presence: optional
+      description: >
+        The group row formatting options. If no value is given, the default formatting 
+        options are used.
+    - name: widgets
+      type:
+        type: custom_coll_type
+        custom_coll_type: widget
+      presence: required
+      description:
+        The widgets in the group row.
+
+        The widgets are displayed horizontally in the row so while there is no exact 
+        limit on the number of widgets in the row, there will only be so much space 
+        available, especially on mobile.
+    code_examples:
+    - language: YAML
+      title: 'A Basic Group Row.'
+      description: >
+        A basic group row with a text widget and a left / right margin.
+      code: |+
+        format:
+          margins:
+            left: 5
+            right: 5
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: name
+            value_variable_id: name
+- type: product_type
+  product_type:
+    name: group_row_format
+    label: Group Row Format
+    description: >
+      The group row formatting options.
+    group: Group Row
+    type: product
+    fields:
+    - name: alignment
+      type:
+        type: custom_type
+        custom_type: alignment
+      presence: optional
+      description: >
+        The horizontal alignment of the widgets within the row.
+    - name: vertical_alignment
+      type:
+        type: custom_type
+        custom_type: vertical_alignment
+      presence: optional
+      description: >
+        The vertical alignment of the widgets within the row.
+    - name: background_color_theme
+      type:
+        type: custom_type
+        custom_type: color_theme
+      presence: optional
+      description: >
+        The background color theme of the row.
+    - name: margins
+      type:
+        type: custom_type
+        custom_type: spacing
+      presence: optional
+      description: >
+        The space between the row's border and the adjacent rows or surrounding group.
+    - name: padding
+      type:
+        type: custom_type
+        custom_type: spacing
+      presence: optional
+      description: >
+        The space between the row's border and its widgets.
+    - name: corners
+      type:
+        type: custom_type
+        custom_type: corners
+      presence: optional
+      description: >
+        The corner radius of the group row background.
 - type: sum_type
   sum_type:
     name: widget
     label: Widget
-    description: >
-      A widget.
+    description: |+
+      Widgets are the primary user interface elements. They represent data in a unique way. 
+      Some widgets are relatively static while others may be fully interactive.
+
+      Widgets are contained inside [Group Rows](/#group-row).
+
+      #### In the Mobile Application
+      
+      <figure>
+        <img width="350px" src="/static/svg/layout-widget.svg">
+        <figcaption>
+          Widgets display the data on a sheet.
+        </figcaption>
+      </figure>
     group: Widget
     cases:
-    - type: widget_action
-      description: >
-        Action Widget
     - type: widget_boolean
       description: >
         Boolean Widget
-    - type: widget_button
-      description: >
-        Button Widget
     - type: widget_expander
       description: >
         Expander Widget
@@ -386,100 +663,9 @@ types:
     description: >
       The unique identifier of a widget.
     group: Widget
-    base_type: string
-- type: product_type
-  product_type:
-    name: widget_action
-    label: Action Widget
-    description: >
-      Action Widget
-    group: 'Widget: Action'
-    fields:
-    - name: id
-      type: 
-        type: custom_type
-        custom_type: widget_id
-      presence: required
-      description: >
-        The widget identifier.
-    - name: format
-      type:
-        type: custom_type
-        custom_type: action_widget_format
-      presence: optional
-      description: >
-        The action widget formatting options.
-    - name: description
-      type:
-        type: prim_type
-        prim_type: string
-      presence: required
-      description: >
-        The action widget description
-    - name: action_highlight
-      type:
-        type: prim_type
-        prim_type: string
-      presence: required
-      description: >
-        The highlight.
-    - name: action_name
-      type:
-        type: prim_type
-        prim_type: string
-      presence: required
-      description: >
-        The name of the action.
-    - name: action_result
-      type:
-        type: prim_type
-        prim_type: string
-      presence: required
-      description: >
-        The action result
-    - name: modifier
-      type: 
-        type: custom_type
-        custom_type: variable_number
-      presence: required
-      description: >
-        The modifier that represents the action.
-- type: product_type
-  product_type:
-    name: action_widget_format
-    label: Action Widget Format
-    description: >
-      Action Widget formatting options.
-    group: 'Widget: Action'
-    fields:
-    - name: widget_format
-      type: 
-        type: custom_type
-        custom_type: widget_format
-      presence: optional
-      description: >
-        The standard widget formatting options.
-    - name: description_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The description style.
-    - name: action_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The action style.
-    - name: height
-      type:
-        type: custom_type
-        custom_type: widget_height
-      presence: optional
-      description: >
-        The action widget height.
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: product_type
   product_type:
     name: widget_boolean
@@ -546,113 +732,6 @@ types:
       presence: optional
       description: >
         The text style.
-- type: product_type
-  product_type:
-    name: widget_button
-    label: Button Widget
-    description: >
-      Button Widget
-    group: 'Widget: Button'
-    fields:
-    - name: id
-      type: 
-        type: custom_type
-        custom_type: widget_id
-      presence: required
-      description: >
-        The widget identifier.
-    - name: format
-      type:
-        type: custom_type
-        custom_type: button_widget_format
-      presence: optional
-      description: >
-        The button widget formatting options.
-    - name: label
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The label.
-    - name: description
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The description.
-    - name: icon
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The button icon.
-    - name: view_type
-      type: 
-        type: custom_type
-        custom_type: button_view_type
-      presence: optional
-      description: >
-        The button view type.
-- type: product_type
-  product_type: 
-    name: button_widget_format
-    label: Button Widget Format
-    description: >
-      Button Widget formatting options.
-    group: 'Widget: Button'
-    fields:
-    - name: widget_format
-      type: 
-        type: custom_type
-        custom_type: widget_format
-      presence: optional
-      description: >
-        The standard widget formatting options.
-    - name: label_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The label style.
-    - name: description_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The description style.
-    - name: description_position
-      type:
-        type: custom_type
-        custom_type: position
-      presence: optional
-      description: >
-        The description position.
-    - name: button_color
-      type:
-        type: custom_type
-        custom_type: color_id
-      presence: optional
-      description: >
-        The button color.
-    - name: icon_color
-      type:
-        type: custom_type
-        custom_type: color_id
-      presence: optional
-      description: >
-        The icon color.
-    - name: height
-      type:
-        type: custom_type
-        custom_type: height
-      presence: optional
-      description: >
-        The widget height.
 - type: product_type
   product_type:
     name: widget_expander
@@ -1293,7 +1372,9 @@ types:
     label: Points Bar Style
     description: Points Bar Style
     group: 'Widget: Points'
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - points_bar_style_set
 - type: primitive_type
@@ -1302,7 +1383,9 @@ types:
     label: Points Above Bar Style
     description: Points Above Bar Style
     group: 'Widget: Points'
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - points_above_bar_style_set
 - type: product_type
@@ -1693,7 +1776,9 @@ types:
     label: Table Sort Order
     description: Table Sort ORder
     group: 'Widget: Table'
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - table_sort_order_set
 - type: product_type
@@ -1769,7 +1854,9 @@ types:
     label: column_variable_prefix
     description: Prefix of all generated variables in this column.
     group: 'Widget: Table'
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: product_type
   product_type:
     name: table_widget_boolean_column
@@ -2778,7 +2865,7 @@ types:
     label: Corners
     description: >
       The corners of an object.
-    group: Styel
+    group: Style
     fields:
     - name: top_left_radius
       type: 
@@ -2852,7 +2939,9 @@ types:
     label: Icon
     description: An icon.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - icon_set
 - type: product_type
@@ -2898,7 +2987,9 @@ types:
     description: >
       Numeric Editor Type
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - numeric_editor_type_set
 - type: primitive_type
@@ -2908,7 +2999,9 @@ types:
     description: >
       The alignment options.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - alignment_set
 - type: primitive_type
@@ -2918,7 +3011,9 @@ types:
     description: >
       The vertical alignment options.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - vertical_alignment_set
 - type: primitive_type
@@ -2928,7 +3023,9 @@ types:
     description: >
       Font.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: primitive_type
   primitive_type:
     name: text_font_style
@@ -2936,7 +3033,9 @@ types:
     description: >
       Font.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - font_style_set
 - type: primitive_type
@@ -2946,7 +3045,9 @@ types:
     description: >
       The widget height options.
     group: Style
-    base_type: number
+    base_type:
+      type: prim_type
+      prim_type: number
 - type: primitive_type
   primitive_type:
     name: position
@@ -2954,7 +3055,9 @@ types:
     description: >
       The widget position options.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - position_set
 - type: primitive_type
@@ -2964,7 +3067,9 @@ types:
     description: >
       The button icon options.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - button_icon_name_set
 - type: primitive_type
@@ -2974,7 +3079,9 @@ types:
     description: >
       Text size.
     group: Style
-    base_type: number
+    base_type: 
+      type: prim_type
+      prim_type: number
 - type: primitive_type
   primitive_type:
     name: button_view_type
@@ -2982,7 +3089,9 @@ types:
     description: >
       The type of button view.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - button_view_type_set
 - type: primitive_type
@@ -2992,7 +3101,9 @@ types:
     description: >
       The type of option widget view.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - option_widget_view_type_set
 - type: primitive_type
@@ -3002,102 +3113,108 @@ types:
     description: >
       The type of quote widget view.
     group: Style
-    base_type: string
+    base_type:
+      type: prim_type
+      prim_type: string
     constraints:
     - quote_widget_view_type_set
 constraints:
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: sheet_theme_type
+    label: Sheet Theme Type
     description: Sheet Theme Type
     set:
-    - dark
-    - light
-    - custom
+    - value: dark
+    - value: light
+    - value: custom
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: alignment_set
+    label: Alignment
     description: Alignment
     set:
-    - left
-    - center
-    - right
+    - value: left
+    - value: center
+    - value: right
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: vertical_alignment_set
+    label: Vertical Alignment
     description: Vertical Alignment
     set:
-    - top
-    - middle
-    - bottom
+    - value: top
+    - value: middle
+    - value: bottom
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: font_style_set
+    label: Font Style
     description: Font Style
     set:
-    - regular
-    - italic
-    - bold
-    - bold_italic
-    - light
+    - value: regular
+    - value: italic
+    - value: bold
+    - value: bold_italic
+    - value: light
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: position_set
+    label: Position
     description: Position
     set:
-    - left
-    - top
-    - right
-    - bottom
-- type: constraint_string_one_of
-  constraint_string_one_of:
-    name: button_view_type_set
-    description: Button View Type
-    set:
-    - circle_icon
-    - text
+    - value: left
+    - value: top
+    - value: right
+    - value: bottom
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: option_widget_view_type_set
+    label: Option Widget View Type
     description: Option Widget View Type
     set:
-    - no_arrows
-    - arrows_vertical
-    - arrows_horizontal
-    - expanded_slashes
+    - value: no_arrows
+    - value: arrows_vertical
+    - value: arrows_horizontal
+    - value: expanded_slashes
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: quote_widget_view_type_set
+    label: Quote Widget View Type
     description: Quote Widget View Type
     set:
-    - source
-    - icon_over_source
-    - no_icon
+    - value: source
+    - value: icon_over_source
+    - value: no_icon
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: icon_set
+    label: Icon
     description: Icon
     set:
-    - sword
-    - shield
+    - value: sword
+    - value: shield
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: numeric_editor_type_set
+    label: Numeric Editor Type
     description: Numeric Editor Type
     set:
-    - calculator
-    - adder
-    - simple
+    - value: calculator
+    - value: adder
+    - value: simple
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: points_bar_style_set
+    label: Points Bar Style
     description: Points Bar Style
     set:
-    - simple
-    - opposite_labels
+    - value: simple
+    - value: opposite_labels
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: points_above_bar_style_set
+    label: Points Above Bar Style
     description: Points Above Bar Style
     set:
-    - opposite_left_label
+    - value: opposite_left_label

@@ -51,7 +51,7 @@ data class PointsWidgetFormat(override val id : UUID,
                               val pointsBarStyle : Prim<PointsBarStyle>,
                               val pointsAboveBarStyle : Prim<PointsAboveBarStyle>,
                               val barHeight : Prim<PointsBarHeight>)
-                               : Model, Serializable
+                               : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -172,6 +172,23 @@ data class PointsWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "limit_text_format" to this.limitTextFormat().toDocument(),
+        "current_text_format" to this.currentTextFormat().toDocument(),
+        "label_text_format" to this.labelTextFormat().toDocument(),
+        "limit_color_theme" to this.limitColorTheme().toDocument(),
+        "current_color_theme" to this.currentColorTheme().toDocument(),
+        "bar_style" to this.barStyle().toDocument(),
+        "above_bar_style" to this.aboveBarStyle().toDocument(),
+        "bar_height" to this.barHeight().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -191,7 +208,9 @@ data class PointsWidgetFormat(override val id : UUID,
 
     fun aboveBarStyle() : PointsAboveBarStyle = this.pointsAboveBarStyle.value
 
-    fun barHeight() : Int  = this.barHeight.value.value
+    fun barHeight() : PointsBarHeight = this.barHeight.value
+
+    fun barHeightInt() : Int  = this.barHeight.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -210,7 +229,7 @@ data class PointsWidgetFormat(override val id : UUID,
 /**
  * Points Widget Label
  */
-data class PointsWidgetLabel(val value : String) : SQLSerializable, Serializable
+data class PointsWidgetLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -228,6 +247,13 @@ data class PointsWidgetLabel(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -239,7 +265,7 @@ data class PointsWidgetLabel(val value : String) : SQLSerializable, Serializable
 /**
  * Points Bar Height
  */
-data class PointsBarHeight(val value : Int) : SQLSerializable, Serializable
+data class PointsBarHeight(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -255,6 +281,12 @@ data class PointsBarHeight(val value : Int) : SQLSerializable, Serializable
         }
     }
 
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
@@ -268,20 +300,42 @@ data class PointsBarHeight(val value : Int) : SQLSerializable, Serializable
 /**
  * Points Bar Style
  */
-sealed class PointsBarStyle : SQLSerializable, Serializable
+sealed class PointsBarStyle : ToDocument, SQLSerializable, Serializable
 {
 
     object Simple : PointsBarStyle()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "simple" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("simple")
+
     }
 
 
     object OppositeLabels : PointsBarStyle()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "opposite_labels" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("opposite_labels")
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -305,12 +359,14 @@ sealed class PointsBarStyle : SQLSerializable, Serializable
 /**
  * Points Above Bar Style
  */
-sealed class PointsAboveBarStyle : SQLSerializable, Serializable
+sealed class PointsAboveBarStyle : ToDocument, SQLSerializable, Serializable
 {
 
     object OppositeLeftLabel : PointsAboveBarStyle()
     {
         override fun asSQLValue() : SQLValue = SQLText({ "opposite_left_label" })
+
+        override fun toDocument() = DocText("opposite_left_label")
     }
 
 
@@ -393,7 +449,7 @@ object PointsWidgetView
                                                           sheetUIContext))
                 }
 
-                val label = pointsWidget.label()
+                val label = pointsWidget.labelString()
                 if (label != null) {
                     val labelView = this.labelView(label,
                                                   pointsWidget.format().labelTextFormat(),
@@ -440,7 +496,7 @@ object PointsWidgetView
 
     fun barView(pointsWidget : PointsWidget, sheetUIContext : SheetUIContext) : View
     {
-        val layout = this.standardViewLayout(pointsWidget.format().barHeight(),
+        val layout = this.standardViewLayout(pointsWidget.format().barHeightInt(),
                                              sheetUIContext.context)
 
         layout.addView(this.standardBarView(pointsWidget, sheetUIContext))

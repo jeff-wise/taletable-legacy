@@ -26,7 +26,8 @@ import java.util.*
 data class NumberColumnFormat(override val id : UUID,
                               val columnFormat : Comp<ColumnFormat>,
                               val valuePrefix : Maybe<Prim<ValuePrefix>>,
-                              val editorType : Prim<NumericEditorType>) : Model, Serializable
+                              val editorType : Prim<NumericEditorType>)
+                               : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -61,7 +62,7 @@ data class NumberColumnFormat(override val id : UUID,
     companion object : Factory<NumberColumnFormat>
     {
 
-        private val defaultColumnFormat = ColumnFormat.default
+        private val defaultColumnFormat = ColumnFormat.default()
         private val defaultEditorType   = NumericEditorType.Calculator
 
 
@@ -89,9 +90,21 @@ data class NumberColumnFormat(override val id : UUID,
 
 
         val default = NumberColumnFormat(defaultColumnFormat,
-                                         Nothing<ValuePrefix>(),
+                                         Nothing(),
                                          defaultEditorType)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "column_format" to this.columnFormat().toDocument(),
+        "editor_type" to this.editorType().toDocument()
+    ))
+    .maybeMerge(this.valuePrefix().apply {
+        Just(Pair("default_value_prefix", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -99,6 +112,8 @@ data class NumberColumnFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun columnFormat() : ColumnFormat = this.columnFormat.value
+
+    fun valuePrefix() : Maybe<ValuePrefix> = _getMaybePrim(this.valuePrefix)
 
     fun valuePrefixString() : String? = getMaybePrim(this.valuePrefix)?.value
 
@@ -121,7 +136,7 @@ data class NumberColumnFormat(override val id : UUID,
 /**
  * Value Prefix
  */
-data class ValuePrefix(val value : String) : SQLSerializable, Serializable
+data class ValuePrefix(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -136,6 +151,13 @@ data class ValuePrefix(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

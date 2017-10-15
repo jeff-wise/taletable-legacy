@@ -35,7 +35,8 @@ data class Statement(override val id : UUID,
                      val parameter2 : Maybe<Sum<StatementParameter>>,
                      val parameter3 : Maybe<Sum<StatementParameter>>,
                      val parameter4 : Maybe<Sum<StatementParameter>>,
-                     val parameter5 : Maybe<Sum<StatementParameter>>) : Model, Serializable
+                     val parameter5 : Maybe<Sum<StatementParameter>>)
+                      : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -96,10 +97,30 @@ data class Statement(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "binding_name" to this.bindingName().toDocument(),
+        "function_id" to this.functionId().toDocument(),
+        "parameter_1" to this.parameter1().toDocument()
+        ))
+        .maybeMerge(this.parameter2().apply {
+            Just(Pair("parameter2", it.toDocument())) })
+        .maybeMerge(this.parameter3().apply {
+            Just(Pair("parameter3", it.toDocument())) })
+        .maybeMerge(this.parameter4().apply {
+            Just(Pair("parameter4", it.toDocument())) })
+        .maybeMerge(this.parameter5().apply {
+            Just(Pair("parameter5", it.toDocument())) })
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun bindingName() : String = this.bindingName.value.value
+    fun bindingName() : StatementBindingName = this.bindingName.value
+
+    fun bindingNameString() : String = this.bindingName.value.value
 
     fun functionId() : FunctionId = this.functionId.value
 
@@ -130,7 +151,7 @@ data class Statement(override val id : UUID,
 /**
  * Statement Binding
  */
-data class StatementBindingName(val value : String) : SQLSerializable, Serializable
+data class StatementBindingName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -148,6 +169,13 @@ data class StatementBindingName(val value : String) : SQLSerializable, Serializa
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -159,7 +187,7 @@ data class StatementBindingName(val value : String) : SQLSerializable, Serializa
  * Statement Parameter
  */
 @Suppress("UNCHECKED_CAST")
-sealed class StatementParameter : SumModel, Serializable
+sealed class StatementParameter : ToDocument, SumModel, Serializable
 {
 
     companion object : Factory<StatementParameter>
@@ -205,10 +233,17 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.bindingName.toDocument().withCase("statement_binding")
+
+
+    // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "bindingName")
+    override fun functor() = Prim(this, "bindingNameString")
 
     override val sumModelObject = this
 
@@ -242,6 +277,13 @@ data class StatementParameterProgramParameter(val index : ProgramParameterIndex)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.index.toDocument().withCase("program_parameter_index")
+
+
+    // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -267,6 +309,13 @@ data class StatementParameterReference(val reference : DataReference) : Statemen
         override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameterReference> =
                 effApply(::StatementParameterReference, DataReference.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.reference.toDocument().withCase("data_reference")
 
 
     // -----------------------------------------------------------------------------------------

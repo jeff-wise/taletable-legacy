@@ -106,7 +106,7 @@ class SheetState(val sheetContext : SheetContext,
         // -------------------------------------------------------------------------------------
 
         activeVariableIdTrie.put(variableId.toString(), variable)
-        activeVariableLabelTrie.put(variable.label(), variable)
+        activeVariableLabelTrie.put(variable.labelString(), variable)
 
         // (3) Index the variable by tag
         // -------------------------------------------------------------------------------------
@@ -195,7 +195,7 @@ class SheetState(val sheetContext : SheetContext,
         // -------------------------------------------------------------------------------------
 
         activeVariableIdTrie.remove(variableId.toString())
-        activeVariableLabelTrie.remove(variable!!.label())
+        activeVariableLabelTrie.remove(variable!!.labelString())
 
         // (4) Un-index tags
         // -------------------------------------------------------------------------------------

@@ -13,6 +13,7 @@ import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.SheetUI
 import com.kispoko.tome.rts.theme.ThemeManager
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -63,9 +64,9 @@ fun AppCompatActivity.configureToolbar(title : String)
 
 fun AppCompatActivity.initializeState()
 {
-    val activity = this
+    val activity = this as SheetUI
     launch(UI) {
-        ThemeManager.loadOfficialThemes(activity)
+        ThemeManager.loadOfficialThemes(activity.context())
         SheetManager.startSession(activity)
     }
 }

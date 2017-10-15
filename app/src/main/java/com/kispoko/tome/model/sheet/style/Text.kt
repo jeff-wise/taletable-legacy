@@ -34,7 +34,8 @@ data class TextFormat(override val id : UUID,
                       val padding : Comp<Spacing>,
                       val margins : Comp<Spacing>,
                       val alignment: Prim<Alignment>,
-                      val verticalAlignment: Prim<VerticalAlignment>) : Model, Serializable
+                      val verticalAlignment: Prim<VerticalAlignment>)
+                       : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -136,6 +137,21 @@ data class TextFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "style" to this.style().toDocument(),
+        "position" to this.position().toDocument(),
+        "height" to this.height().toDocument(),
+        "padding" to this.padding().toDocument(),
+        "margins" to this.margins().toDocument(),
+        "alignment" to this.alignment().toDocument(),
+        "vertical_alignment" to this.alignment().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -177,7 +193,8 @@ data class TextStyle(override val id : UUID,
                      val fontStyle : Prim<TextFontStyle>,
                      val isUnderlined : Prim<IsUnderlined>,
                      val alignment: Prim<Alignment>,
-                     val backgroundColorTheme : Prim<ColorTheme>) : Model, Serializable
+                     val backgroundColorTheme : Prim<ColorTheme>)
+                      : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -280,6 +297,21 @@ data class TextStyle(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "color_theme" to this.colorTheme().toDocument(),
+        "size" to this.size.value.toDocument(),
+        "font" to this.font().toDocument(),
+        "font_style" to this.fontStyle().toDocument(),
+        "is_underlined" to this.isUnderlined.value.toDocument(),
+        "alignment" to this.alignment().toDocument(),
+        "background_color_theme" to this.alignment().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -348,7 +380,7 @@ data class TextStyle(override val id : UUID,
 /**
  * Text Size
  */
-data class TextSize(val sp : Float) : SQLSerializable, Serializable
+data class TextSize(val sp : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -366,6 +398,13 @@ data class TextSize(val sp : Float) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.sp.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -377,7 +416,7 @@ data class TextSize(val sp : Float) : SQLSerializable, Serializable
 /**
  * Is Underlined
  */
-data class IsUnderlined(val value : Boolean) : SQLSerializable, Serializable
+data class IsUnderlined(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -395,6 +434,13 @@ data class IsUnderlined(val value : Boolean) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -406,20 +452,42 @@ data class IsUnderlined(val value : Boolean) : SQLSerializable, Serializable
 /**
  * Text Font
  */
-sealed class TextFont : SQLSerializable, Serializable
+sealed class TextFont : ToDocument, SQLSerializable, Serializable
 {
 
     object FiraSans : TextFont()
     {
-        override fun asSQLValue() = SQLText({ "roboto "})
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "fira_sans "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("fira_sans")
+
     }
 
 
     object Merriweather : TextFont()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() = SQLText({ "merriweather "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("merriweather")
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -447,38 +515,87 @@ sealed class TextFont : SQLSerializable, Serializable
 /**
  * Text Font
  */
-sealed class TextFontStyle : SQLSerializable, Serializable
+sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
 {
 
     object Regular : TextFontStyle()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() = SQLText({ "regular "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("regular")
+
     }
 
 
     object Bold : TextFontStyle()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() = SQLText({ "bold "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("bold")
+
     }
 
 
     object Italic : TextFontStyle()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() = SQLText({ "italic "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("italic")
+
     }
 
 
     object BoldItalic : TextFontStyle()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() = SQLText({ "bold_italic "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("bold_italic")
+
     }
 
 
     object Light : TextFontStyle()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() = SQLText({ "light "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("light")
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {

@@ -54,5 +54,7 @@ types:
     description: >
       The id of a campaign.
     group: Campaign
-    base_type: string
+    base_type: 
+      type: prim_type
+      prim_type: string
 constraints:

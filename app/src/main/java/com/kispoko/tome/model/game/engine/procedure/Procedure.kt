@@ -87,7 +87,7 @@ data class Procedure(override val id : UUID,
 /**
  * Procedure Id
  */
-data class ProcedureId(val value : String) : SQLSerializable, Serializable
+data class ProcedureId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -102,6 +102,13 @@ data class ProcedureId(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

@@ -11,10 +11,7 @@ import effect.effApply
 import effect.effError
 import effect.effValue
 import effect.split
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
@@ -35,7 +32,7 @@ data class ElementFormat(override val id : UUID,
                          val corners : Comp<Corners>,
                          val alignment: Prim<Alignment>,
                          val verticalAlignment: Prim<VerticalAlignment>)
-                           : Model, Serializable
+                           : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -143,6 +140,22 @@ data class ElementFormat(override val id : UUID,
                                       defaultVerticalAlignment)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "position" to this.position().toDocument(),
+        "height" to this.height().toDocument(),
+        "padding" to this.padding().toDocument(),
+        "margins" to this.margins().toDocument(),
+        "background_color_theme" to this.backgroundColorTheme().toDocument(),
+        "corners" to this.corners().toDocument(),
+        "alignment" to this.alignment().toDocument(),
+        "vertical_alignment" to this.verticalAlignment().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------

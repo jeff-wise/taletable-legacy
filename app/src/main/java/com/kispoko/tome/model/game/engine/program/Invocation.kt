@@ -28,7 +28,8 @@ data class Invocation(override val id : UUID,
                       val parameter2 : Maybe<Sum<DataReference>>,
                       val parameter3 : Maybe<Sum<DataReference>>,
                       val parameter4 : Maybe<Sum<DataReference>>,
-                      val parameter5 : Maybe<Sum<DataReference>>) : Model, Serializable
+                      val parameter5 : Maybe<Sum<DataReference>>)
+                       : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -79,7 +80,7 @@ data class Invocation(override val id : UUID,
 
     companion object : Factory<Invocation>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Invocation> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Invocation> = when (doc)
         {
             is DocDict ->
             {
@@ -109,6 +110,24 @@ data class Invocation(override val id : UUID,
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "program_id" to this.programId().toDocument(),
+        "parameter1" to this.parameter1().toDocument()
+    ))
+    .maybeMerge(this.parameter2().apply {
+        Just(Pair("parameter2", it.toDocument())) })
+    .maybeMerge(this.parameter3().apply {
+        Just(Pair("parameter3", it.toDocument())) })
+    .maybeMerge(this.parameter4().apply {
+        Just(Pair("parameter4", it.toDocument())) })
+    .maybeMerge(this.parameter5().apply {
+        Just(Pair("parameter5", it.toDocument())) })
 
 
     // -----------------------------------------------------------------------------------------

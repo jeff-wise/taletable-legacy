@@ -36,7 +36,8 @@ data class Page(override val id : UUID,
                 val pageName : Prim<PageName>,
                 val format : Comp<PageFormat>,
                 val index : Prim<PageIndex>,
-                val groups : CollS<Group>) : Model, SheetComponent, Serializable
+                val groups : CollS<Group>)
+                 : Model, ToDocument, SheetComponent, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -113,6 +114,17 @@ data class Page(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.name().toDocument(),
+        "format" to this.format().toDocument(),
+        "groups" to DocList(this.groups().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -171,7 +183,7 @@ data class Page(override val id : UUID,
 /**
  * Page Name
  */
-data class PageName(val value : String) : SQLSerializable, Serializable
+data class PageName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -186,6 +198,13 @@ data class PageName(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -231,7 +250,8 @@ data class PageIndex(val value : Int) : SQLSerializable, Serializable
  */
 data class PageFormat(override val id : UUID,
                       val backgroundColorTheme : Prim<ColorTheme>,
-                      val padding : Comp<Spacing>) : Model, Serializable
+                      val padding : Comp<Spacing>)
+                       : Model, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -294,6 +314,16 @@ data class PageFormat(override val id : UUID,
     fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
 
     fun padding() : Spacing = this.padding.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "background_color_theme" to this.backgroundColorTheme().toDocument(),
+        "padding" to this.padding().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------

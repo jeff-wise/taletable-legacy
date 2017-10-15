@@ -19,10 +19,7 @@ import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
@@ -34,7 +31,8 @@ import java.util.*
  * Text Cell Format
  */
 data class TextCellFormat(override val id : UUID,
-                          val cellFormat : Comp<CellFormat>) : Model, Serializable
+                          val cellFormat : Comp<CellFormat>)
+                           : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -74,6 +72,15 @@ data class TextCellFormat(override val id : UUID,
                                        Comp.default(defaultCellFormat))
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "cell_format" to this.cellFormat().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------

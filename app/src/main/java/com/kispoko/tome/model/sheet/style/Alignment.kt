@@ -9,10 +9,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effError
 import effect.effValue
-import lulo.document.DocText
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
@@ -24,26 +21,58 @@ import java.io.Serializable
 /**
  * Alignment
  */
-sealed class Alignment : SQLSerializable, Serializable
+sealed class Alignment : ToDocument, SQLSerializable, Serializable
 {
 
     object Left : Alignment()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"left"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("left")
+
     }
 
 
     object Center : Alignment()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"center"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("center")
+
     }
 
 
     object Right : Alignment()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"right"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("right")
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -76,24 +105,51 @@ sealed class Alignment : SQLSerializable, Serializable
 /**
  * Vertical Alignment
  */
-sealed class VerticalAlignment : SQLSerializable, Serializable
+sealed class VerticalAlignment : ToDocument, SQLSerializable, Serializable
 {
 
     object Top : VerticalAlignment()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"top"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("top")
+
     }
 
 
     object Middle : VerticalAlignment()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"middle"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("middle")
+
     }
 
 
     object Bottom : VerticalAlignment()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"bottom"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("bottom")
+
     }
 
 

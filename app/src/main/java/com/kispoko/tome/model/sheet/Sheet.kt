@@ -35,7 +35,7 @@ data class Sheet(override val id : UUID,
                  val campaignId : Prim<CampaignId>,
                  val sections : Coll<Section>,
                  val variables : Conj<Variable>,
-                 val settings : Comp<Settings>) : Model, Serializable
+                 val settings : Comp<Settings>) : Model, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ data class Sheet(override val id : UUID,
                          },
                          // Variables
                          split(doc.maybeList("variables"),
-                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
+                               effValue(mutableSetOf()),
                                { it.mapSetMut { Variable.fromDocument(it) } }),
                          // Sheet Settings
                          split(doc.maybeAt("settings"),
@@ -163,6 +163,19 @@ data class Sheet(override val id : UUID,
     override val name : String = "sheet"
 
     override val modelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.sheetId().toDocument(),
+        "campaign_id" to this.campaignId().toDocument(),
+        "sections" to DocList(this.sections().map { it.toDocument() }),
+        "variables" to DocList(this.variables().map { it.toDocument() }),
+        "settings" to this.settings().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -239,8 +252,12 @@ data class Sheet(override val id : UUID,
 /**
  * Sheet Id
  */
-data class SheetId(val value : String) : SQLSerializable, Serializable
+data class SheetId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<SheetId>
     {
@@ -250,6 +267,18 @@ data class SheetId(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
 

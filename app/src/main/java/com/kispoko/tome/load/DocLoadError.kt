@@ -17,7 +17,7 @@ sealed class DocLoadError : ApplicationError
 }
 
 
-class SpecIsNull(val specName : String) : DocLoadError()
+class SchemaIsNull(val specName : String) : DocLoadError()
 {
     override fun debugMessage(): String = """
             Load Error: Specification is NULL

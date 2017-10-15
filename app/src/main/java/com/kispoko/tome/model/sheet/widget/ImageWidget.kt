@@ -8,10 +8,7 @@ import com.kispoko.tome.lib.model.Model
 import effect.effApply
 import effect.effError
 import effect.effValue
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SchemaDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.util.*
@@ -22,7 +19,7 @@ import java.util.*
  * Image Widget Format
  */
 data class ImageWidgetFormat(override val id : UUID,
-                             val widgetFormat : Comp<WidgetFormat>) : Model
+                             val widgetFormat : Comp<WidgetFormat>) : ToDocument, Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -53,6 +50,15 @@ data class ImageWidgetFormat(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------

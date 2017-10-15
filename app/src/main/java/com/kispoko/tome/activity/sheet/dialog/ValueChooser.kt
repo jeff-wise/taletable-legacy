@@ -31,9 +31,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.SimpleDividerItemDecoration
 import effect.Err
 import effect.Just
@@ -54,6 +52,7 @@ class ValueChooserDialogFragment : DialogFragment()
 
     private var valueSet      : ValueSet? = null
     private var selectedValue : Value? = null
+    private var updateTarget  : UpdateTarget? = null
     private var sheetContext  : SheetContext? = null
 
 
@@ -65,6 +64,7 @@ class ValueChooserDialogFragment : DialogFragment()
     {
         fun newInstance(valueSet : ValueSet,
                         selectedValue : Value,
+                        updateTarget : UpdateTarget,
                         sheetContext: SheetContext) : ValueChooserDialogFragment
         {
             val dialog = ValueChooserDialogFragment()
@@ -72,6 +72,7 @@ class ValueChooserDialogFragment : DialogFragment()
             val args = Bundle()
             args.putSerializable("value_set", valueSet)
             args.putSerializable("selected_value", selectedValue)
+            args.putSerializable("update_target", updateTarget)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
 
@@ -91,6 +92,7 @@ class ValueChooserDialogFragment : DialogFragment()
 
         this.valueSet      = arguments.getSerializable("value_set") as ValueSet
         this.selectedValue = arguments.getSerializable("selected_value") as Value
+        this.updateTarget  = arguments.getSerializable("update_target") as UpdateTarget
         this.sheetContext  = arguments.getSerializable("sheet_context") as SheetContext
 
 
@@ -104,7 +106,7 @@ class ValueChooserDialogFragment : DialogFragment()
         {
             val sheetUIContext = SheetUIContext(sheetContext, context)
 
-            val dialogLayout = this.dialogLayout(sheetUIContext)
+            val dialogLayout = this.dialogLayout()
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -130,13 +132,20 @@ class ValueChooserDialogFragment : DialogFragment()
         {
             val sheetUIContext = SheetUIContext(sheetContext, context)
 
-            val valueSet       = this.valueSet
-            val selectedValue  = this.selectedValue
+            val valueSet      = this.valueSet
+            val selectedValue = this.selectedValue
+            val updateTarget  = this.updateTarget
 
-            if (valueSet != null && selectedValue != null)
-                return ValueChooserView.view(valueSet, selectedValue, sheetUIContext)
-            else
+            if (valueSet != null && selectedValue != null && updateTarget != null) {
+                return ValueChooserView.view(valueSet,
+                                             selectedValue,
+                                             updateTarget,
+                                             sheetUIContext,
+                                             this)
+            }
+            else {
                 return super.onCreateView(inflater, container, savedInstanceState)
+            }
         }
         else
         {
@@ -149,7 +158,7 @@ class ValueChooserDialogFragment : DialogFragment()
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
 
-    fun dialogLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    fun dialogLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -161,10 +170,6 @@ class ValueChooserDialogFragment : DialogFragment()
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // VIEWS
-    // -----------------------------------------------------------------------------------------
-
 }
 
 
@@ -174,15 +179,21 @@ object ValueChooserView
 
     fun view(valueSet : ValueSet,
              selectedValue : Value,
-             sheetUIContext: SheetUIContext) : View
+             updateTarget : UpdateTarget,
+             sheetUIContext : SheetUIContext,
+             dialog : DialogFragment) : View
     {
         val layout = viewLayout(sheetUIContext)
 
         // (1) Views
         // -------------------------------------------------------------------
-        val chooserView     = chooserView(valueSet, selectedValue, sheetUIContext)
+        val chooserView     = chooserView(valueSet,
+                                          selectedValue,
+                                          updateTarget,
+                                          sheetUIContext,
+                                          dialog)
         val optionsMenuView = optionsMenuView(sheetUIContext.context)
-        val headerView      = headerView(valueSet.label(), chooserView,
+        val headerView      = headerView(valueSet.labelString(), chooserView,
                 optionsMenuView, sheetUIContext)
 
         // (2) Initialize
@@ -377,7 +388,9 @@ object ValueChooserView
 
     fun chooserView(valueSet : ValueSet,
                     selectedValue : Value,
-                    sheetUIContext : SheetUIContext) : RecyclerView
+                    updateTarget : UpdateTarget,
+                    sheetUIContext : SheetUIContext,
+                    dialog : DialogFragment) : RecyclerView
     {
         val recyclerView            = RecyclerViewBuilder()
 
@@ -402,8 +415,10 @@ object ValueChooserView
             is ValueSetBase ->
             {
                 recyclerView.adapter = BaseValueSetRecyclerViewAdapter(valueSet.sortedValues(),
-                        selectedValue,
-                        sheetUIContext)
+                                                                       selectedValue,
+                                                                       updateTarget,
+                                                                       sheetUIContext,
+                                                                       dialog)
             }
             is ValueSetCompound ->
             {
@@ -440,7 +455,7 @@ object ValueChooserView
             }
         }
 
-        return valueSets.sortedBy { it.label() }
+        return valueSets.sortedBy { it.labelString() }
                         .flatMap(::valueSetItems)
     }
 
@@ -469,6 +484,8 @@ object ValueChooserView
     private fun valueViewLayout(sheetUIContext: SheetUIContext) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
+
+        layout.id                   = R.id.choose_value_item_layout
 
         layout.orientation          = LinearLayout.VERTICAL
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
@@ -822,7 +839,9 @@ object ValueChooserView
 
 class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                                       val selectedValue : Value,
-                                      val sheetUIContext: SheetUIContext)
+                                      val updateTarget : UpdateTarget,
+                                      val sheetUIContext: SheetUIContext,
+                                      val dialog : DialogFragment)
                 : RecyclerView.Adapter<ValueViewHolder>()
 {
 
@@ -853,6 +872,21 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                 val description = value.description()
                 if (description != null)
                     viewHolder.setSummaryText(description)
+
+                viewHolder.setOnClick(View.OnClickListener {
+                    when (updateTarget) {
+                        is UpdateTargetStoryWidgetPart -> {
+                            val textValuePartUpdate =
+                                StoryWidgetUpdateTextValuePart(
+                                        updateTarget.storyWidgetId,
+                                        updateTarget.partIndex,
+                                        value.valueId()
+                                        )
+                            SheetManager.updateSheet(sheetUIContext.sheetId, textValuePartUpdate)
+                            dialog.dismiss()
+                        }
+                    }
+                })
             }
             is ValueNumber ->
             {
@@ -987,6 +1021,7 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+    var layout      : LinearLayout? = null
     var valueView   : TextView?  = null
     var summaryView : TextView?  = null
     var iconView    : ImageView? = null
@@ -1010,12 +1045,10 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
 
     init
     {
+        this.layout      = itemView.findViewById(R.id.choose_value_item_layout) as LinearLayout
         this.valueView   = itemView.findViewById(R.id.choose_value_item_value) as TextView
-
         this.summaryView = itemView.findViewById(R.id.choose_value_item_summary) as TextView
-
         this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
-
         this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
     }
 
@@ -1056,6 +1089,11 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.refView?.setOnClickListener(onClickListener)
     }
 
+
+    fun setOnClick(onClickListener : View.OnClickListener)
+    {
+        this.layout?.setOnClickListener(onClickListener)
+    }
 
 }
 

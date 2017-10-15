@@ -3,10 +3,7 @@ package com.kispoko.tome.model.game.engine.dice
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Conj
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.functor.getMaybePrim
-import com.kispoko.tome.lib.functor.maybeLiftPrim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
 import effect.*
@@ -25,7 +22,8 @@ import java.util.*
 data class DiceRoll(override val id : UUID,
                     val quantities : Conj<DiceQuantity>,
                     val modifiers : Conj<RollModifier>,
-                    val rollName : Maybe<Prim<DiceRollName>>) : Model, Serializable
+                    val rollName : Maybe<Prim<DiceRollName>>)
+                     : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -68,8 +66,8 @@ data class DiceRoll(override val id : UUID,
                              docList.mapSetMut { DiceQuantity.fromDocument(it) }
                          },
                          // Modifier
-                         split(doc.maybeList("modiiers"),
-                               effValue(mutableSetOf<RollModifier>()),
+                         split(doc.maybeList("modifiers"),
+                               effValue(mutableSetOf()),
                               { it.mapSetMut { RollModifier.fromDocument(it) } }),
                          // Name
                          split(doc.maybeAt("name"),
@@ -83,6 +81,18 @@ data class DiceRoll(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "quantities" to DocList(this.quantities().map { it.toDocument() }),
+        "modifiers" to DocList(this.modifiers().map { it.toDocument() })
+    ))
+    .maybeMerge(this.rollName().apply {
+        Just(Pair("name", it.toDocument() as SchemaDoc)) })
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -90,7 +100,9 @@ data class DiceRoll(override val id : UUID,
 
     fun modifiers() : Set<RollModifier> = this.modifiers.set
 
-    fun rollName() : String? = getMaybePrim(this.rollName)?.value
+    fun rollName() : Maybe<DiceRollName> = _getMaybePrim(this.rollName)
+
+    fun rollNameString() : String? = getMaybePrim(this.rollName)?.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -176,7 +188,8 @@ data class DiceRoll(override val id : UUID,
  */
 data class DiceQuantity(override val id : UUID,
                         val sides : Prim<DiceSides>,
-                        val quantity : Prim<DiceRollQuantity>) : Model, Serializable
+                        val quantity : Prim<DiceRollQuantity>)
+                         : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -202,10 +215,24 @@ data class DiceQuantity(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "sides" to this.sides().toDocument(),
+        "quantity" to this.quantity().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun sides() : DiceSides = this.sides.value
+
     fun sidesInt() : Int = this.sides.value.value
+
+    fun quantity() : DiceRollQuantity = this.quantity.value
 
     fun quantityInt() : Int = this.quantity.value.value
 
@@ -247,7 +274,7 @@ data class DiceQuantity(override val id : UUID,
 /**
  * Dice Roll Name
  */
-data class DiceRollName(val value : String) : SQLSerializable, Serializable
+data class DiceRollName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -265,6 +292,13 @@ data class DiceRollName(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -276,7 +310,7 @@ data class DiceRollName(val value : String) : SQLSerializable, Serializable
 /**
  * Dice Sides
  */
-data class DiceSides(val value : Int) : SQLSerializable, Serializable
+data class DiceSides(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -294,6 +328,13 @@ data class DiceSides(val value : Int) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -305,7 +346,7 @@ data class DiceSides(val value : Int) : SQLSerializable, Serializable
 /**
  * Dice Roll Quantity
  */
-data class DiceRollQuantity(val value : Int) : SQLSerializable, Serializable
+data class DiceRollQuantity(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -323,6 +364,13 @@ data class DiceRollQuantity(val value : Int) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -337,7 +385,7 @@ data class DiceRollQuantity(val value : Int) : SQLSerializable, Serializable
 data class RollModifier(override val id : UUID,
                         val value : Prim<RollModifierValue>,
                         val modifierName : Maybe<Prim<RollModifierName>>)
-                         : Model, Serializable
+                         : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -375,10 +423,25 @@ data class RollModifier(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value" to this.value().toDocument()
+    ))
+    .maybeMerge(this.name().apply {
+        Just(Pair("name", it.toDocument() as SchemaDoc)) })
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun value() : RollModifierValue = this.value.value
+
     fun valueInt() : Int = this.value.value.value.toInt()
+
+    fun name() : Maybe<RollModifierName> = _getMaybePrim(this.modifierName)
 
     fun nameString() : String? = getMaybePrim(this.modifierName)?.value
 
@@ -399,7 +462,7 @@ data class RollModifier(override val id : UUID,
 /**
  * Roll Modifier Value
  */
-data class RollModifierValue(val value : Double) : SQLSerializable, Serializable
+data class RollModifierValue(val value : Double) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -417,6 +480,13 @@ data class RollModifierValue(val value : Double) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -428,7 +498,7 @@ data class RollModifierValue(val value : Double) : SQLSerializable, Serializable
 /**
  * Roll Modifier Name
  */
-data class RollModifierName(val value : String) : SQLSerializable, Serializable
+data class RollModifierName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -443,6 +513,13 @@ data class RollModifierName(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

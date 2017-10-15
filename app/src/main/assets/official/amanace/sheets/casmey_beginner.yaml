@@ -89,8 +89,10 @@ variables:
     label: Alignment
     description: Alignment
     value:
-      type: text_literal
-      text_literal: Chaotic Good
+      type: value_reference
+      value_reference:
+        value_set_id: alignments
+        value_id: chaotic_good
 - type: variable_number
   variable_number:
     id: strength
@@ -245,6 +247,22 @@ variables:
               variable_id: charisma
 - type: variable_text
   variable_text:
+    id: name_label
+    label: Name Label
+    description: Name Label
+    value:
+      type: text_literal
+      text_literal: 'my name is'
+- type: variable_text
+  variable_text:
+    id: about_me_label
+    label: About Me Label
+    description: About Me Label
+    value:
+      type: text_literal
+      text_literal: 'about me'
+- type: variable_text
+  variable_text:
     id: strength_label
     label: Strength Label
     description: Strength Label
@@ -330,7 +348,7 @@ variables:
     description: Important Stuff Label
     value:
       type: text_literal
-      text_literal: 'some important things...'
+      text_literal: 'some important things'
 - type: variable_text
   variable_text:
     id: less_important_stuff_label
@@ -338,7 +356,7 @@ variables:
     description: Less Important Stuff Label
     value:
       type: text_literal
-      text_literal: 'some less important things...'
+      text_literal: 'some less important things'
 - type: variable_text
   variable_text:
     id: gold_label
@@ -395,6 +413,14 @@ variables:
     value:
       type: text_literal
       text_literal: 'Bears'
+- type: variable_number
+  variable_number:
+    id: fiddle_songs_can_play
+    label: Fiddle Songs I Can Play
+    description: The number of songs I can play on the fiddle.
+    value:
+      type: number_literal
+      number_literal: 294
 - type: variable_text
   variable_text:
     id: backpack_table_label
@@ -594,10 +620,9 @@ variables:
     description: Father's Quote
     value:
       type: text_literal
-      text_literal: 'Life is like the trapeze: you are only supported by your own strength, then --
-                     all of a sudden -- the world goes upside down, and then you are falling, only
-                     to be caught by someone else. And sometimes, no one is there to catch you.
-                     You better hope that you have a safety net.'
+      text_literal: 'Life is like the trapeze: you hold yourself up high, and then you are spinning,
+                     the world is turning, and you are falling, only to be caught by someone else.
+                     Sometimes, no one is there to catch you. You better hope that you have a safety net.'
 - type: variable_text
   variable_text:
     id: father_quote_source
@@ -659,7 +684,7 @@ sections:
       background_color_theme:
         theme_color_ids:
         - theme_id: dark
-          color_id: dark_grey_10
+          color_id: dark_grey_11
     groups:
     - format:
         background_color_theme:
@@ -670,27 +695,50 @@ sections:
           top: 20
           left: 8
           right: 8
+          bottom: 15
       rows:
       - widgets:
         - type: widget_text
           widget_text:
-            id: name
-            value_variable_id: name
+            id: name_label
             format:
               value_format:
                 style:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: gold_1
-                  font: merriweather
+                      color_id: light_grey_20
+                  size: 12
                   font_style: regular
-                  size: 25
+              widget_format:
+                alignment: left
+            value_variable_id: name_label
+      - format:
+          margins:
+            top: 5
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: name
+            value_variable_id: name
+            format:
+              widget_format:
+                alignment: left
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_10
+                  font_style: bold
+                  size: 24
     - format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
             color_id: dark_grey_9
+        margins:
+          top: 15
         padding:
           top: 15
           bottom: 20
@@ -698,11 +746,32 @@ sections:
           right: 8
       rows:
       - widgets:
+        - type: widget_text
+          widget_text:
+            id: about_me_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+                  font_style: regular
+              widget_format:
+                alignment: left
+            value_variable_id: about_me_label
+      - format:
+          margins:
+            top: 12
+        widgets:
         - type: widget_story
           widget_story:
             id: summary
             format:
               line_spacing: 1.4
+              widget_format:
+                alignment: left
             story:
             - type: story_part_span
               story_part_span:
@@ -713,7 +782,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_14
                     size: 15
             - type: story_part_variable
               story_part_variable:
@@ -723,9 +792,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_10
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 16
+                    size: 18
             - type: story_part_span
               story_part_span:
                 text: ', I grew up as a performer, starring alongside my father in the Endless
@@ -735,7 +804,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_14
                     size: 15
             - type: story_part_variable
               story_part_variable:
@@ -745,9 +814,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_10
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 16
+                    size: 18
             - type: story_part_span
               story_part_span:
                 text: ' on a schooner called the Shark''s Fin. Guided by rough seas, I earned a
@@ -757,7 +826,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_14
                     size: 15
             - type: story_part_variable
               story_part_variable:
@@ -768,9 +837,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_10
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 16
+                    size: 20
             - type: story_part_span
               story_part_span:
                 text: ' year old girl. I am recognized for my '
@@ -779,7 +848,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_14
                     size: 15
             - type: story_part_variable
               story_part_variable:
@@ -789,9 +858,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_10
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 16
+                    size: 18
             - type: story_part_span
               story_part_span:
                 text: ' eyes and curly '
@@ -800,7 +869,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_14
                     size: 15
             - type: story_part_variable
               story_part_variable:
@@ -810,9 +879,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_10
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 16
+                    size: 18
             - type: story_part_span
               story_part_span:
                 text: ' hair, as well as for a few posters that may or may not say '
@@ -821,7 +890,7 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_14
                     size: 15
             - type: story_part_span
               story_part_span:
@@ -831,22 +900,24 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_20
+                        color_id: light_grey_14
                     font_style: bold_italic
                     size: 15
-
     - format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
-            color_id: dark_grey_10
+            color_id: dark_grey_9
+        margins:
+          top: 15
         padding:
-          bottom: 25
+          bottom: 20
+          top: 15
       rows:
       - format:
           margins:
-            top: 20
-            bottom: 3
+            top: 5
+            bottom: 5
         widgets:
         - type: widget_text
           widget_text:
@@ -857,7 +928,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
+                      color_id: light_grey_20
                   size: 12
             value_variable_id: strength_label
         - type: widget_text
@@ -869,7 +940,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
+                      color_id: light_grey_20
                   size: 12
             value_variable_id: dexterity_label
         - type: widget_text
@@ -881,7 +952,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
+                      color_id: light_grey_20
                   size: 12
             value_variable_id: constitution_label
       - widgets:
@@ -916,9 +987,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_8
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '  +'
@@ -927,7 +998,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
             - type: story_part_variable
@@ -938,8 +1010,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
-                    size: 15
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
         - type: widget_story
@@ -973,9 +1045,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_8
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '  +'
@@ -984,7 +1056,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
             - type: story_part_variable
@@ -995,8 +1068,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
-                    size: 15
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
         - type: widget_story
@@ -1030,9 +1103,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_8
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '  +'
@@ -1041,7 +1114,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
             - type: story_part_variable
@@ -1052,14 +1126,14 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
-                    size: 15
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
       - format:
           margins:
-            top: 20
-            bottom: 3
+            top: 25
+            bottom: 5
         widgets:
         - type: widget_text
           widget_text:
@@ -1070,7 +1144,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
+                      color_id: light_grey_20
                   size: 12
             value_variable_id: intelligence_label
         - type: widget_text
@@ -1082,7 +1156,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
+                      color_id: light_grey_20
                   size: 12
             value_variable_id: wisdom_label
         - type: widget_text
@@ -1094,7 +1168,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_18
+                      color_id: light_grey_20
                   size: 12
             value_variable_id: charisma_label
       - widgets:
@@ -1129,9 +1203,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_8
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '  +'
@@ -1140,7 +1214,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
             - type: story_part_variable
@@ -1151,8 +1226,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
-                    size: 15
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
         - type: widget_story
@@ -1186,9 +1261,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_8
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '  +'
@@ -1197,7 +1272,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
             - type: story_part_variable
@@ -1208,8 +1284,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
-                    size: 15
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
         - type: widget_story
@@ -1243,9 +1319,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_8
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '  +'
@@ -1254,7 +1330,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
             - type: story_part_variable
@@ -1265,8 +1342,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_22
-                    size: 15
+                        color_id: light_blue_15
+                    size: 16
                   padding:
                     top: 1
     - format:
@@ -1274,17 +1351,15 @@ sections:
           theme_color_ids:
           - theme_id: dark
             color_id: dark_grey_9
+        margins:
+          top: 15
         padding:
           top: 10
           left: 10
           right: 10
           bottom: 15
       rows:
-      - format:
-          padding:
-            top: 6
-            bottom: 8
-        widgets:
+      - widgets:
         - type: widget_text
           widget_text:
             id: important_stuff_label
@@ -1294,7 +1369,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_5
+                      color_id: light_grey_20
                   size: 12
                   font_style: regular
               widget_format:
@@ -1302,8 +1377,21 @@ sections:
             value_variable_id: important_stuff_label
       - format:
           padding:
-            top: 4
-            bottom: 4
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          margins:
+            top: 15
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
@@ -1320,8 +1408,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_variable
               story_part_variable:
                 variable_id: alignment
@@ -1332,9 +1420,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_7
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 16
+                    size: 17
             - type: story_part_span
               story_part_span:
                 text: '. Usually more chaotic than good.'
@@ -1343,12 +1431,25 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
       - format:
           padding:
-            top: 4
-            bottom: 4
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          margins:
+            top: 15
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
@@ -1365,8 +1466,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_span
               story_part_span:
                 text: 'maximum health '
@@ -1375,8 +1476,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_span
               story_part_span:
                 text: 'is '
@@ -1385,8 +1486,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_variable
               story_part_variable:
                 variable_id: max_health
@@ -1397,9 +1498,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_7
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '.'
@@ -1408,12 +1509,25 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
+                        color_id: light_grey_12
                     size: 16
       - format:
           padding:
-            top: 4
-            bottom: 4
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          margins:
+            top: 15
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
@@ -1430,8 +1544,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_span
               story_part_span:
                 text: 'maximum ki '
@@ -1440,8 +1554,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_span
               story_part_span:
                 text: 'is '
@@ -1450,8 +1564,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_variable
               story_part_variable:
                 variable_id: max_ki
@@ -1462,9 +1576,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_7
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 19
+                    size: 21
             - type: story_part_span
               story_part_span:
                 text: '.'
@@ -1473,26 +1587,22 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
     - format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
             color_id: dark_grey_9
         margins:
-          top: 2
+          top: 15
         padding:
-          top: 10
           left: 10
           right: 10
-          bottom: 15
+          bottom: 20
+          top: 15
       rows:
-      - format:
-          padding:
-            top: 6
-            bottom: 8
-        widgets:
+      - widgets:
         - type: widget_text
           widget_text:
             id: less_important_stuff_label
@@ -1502,7 +1612,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_5
+                      color_id: light_grey_20
                   size: 12
                   font_style: regular
               widget_format:
@@ -1510,12 +1620,25 @@ sections:
             value_variable_id: less_important_stuff_label
       - format:
           padding:
-            top: 4
-            bottom: 4
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          margins:
+            top: 15
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
-            id: alignment
+            id: fears
             format:
               widget_format:
                 alignment: left
@@ -1528,8 +1651,8 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
             - type: story_part_variable
               story_part_variable:
                 variable_id: bears
@@ -1540,9 +1663,9 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_blue_7
+                        color_id: light_blue_5
                     font_style: bold
-                    size: 16
+                    size: 18
             - type: story_part_span
               story_part_span:
                 text: '. One escaped his cage in the Carnival when I was a kid. I never stopped having nightmares.'
@@ -1551,17 +1674,77 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
-                        color_id: light_grey_17
-                    size: 16
+                        color_id: light_grey_12
+                    size: 15
+      - format:
+          padding:
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          margins:
+            top: 15
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: fiddle_songs
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I can play '
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_12
+                    size: 15
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: fiddle_songs_can_play
+                format:
+                  margins:
+                    left: 10
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_blue_5
+                    font_style: bold
+                    size: 20
+            - type: story_part_span
+              story_part_span:
+                text: ' songs on the fiddle.'
+                format:
+                  style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_12
+                    size: 15
     - format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
-            color_id: dark_grey_10
+            color_id: dark_grey_9
+        margins:
+          top: 15
         padding:
           top: 20
           right: 10
-          bottom: 25
+          bottom: 20
       rows:
       - widgets:
         - type: widget_text
@@ -1573,7 +1756,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_10
+                      color_id: light_grey_20
                   size: 12
               widget_format:
                 alignment: center
@@ -1590,7 +1773,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_blue_10
+                      color_id: light_grey_20
                   size: 12
               widget_format:
                 alignment: center
@@ -1611,7 +1794,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_10
+                      color_id: light_blue_5
                   font_style: bold
                   size: 30
         - type: widget_points
@@ -1671,9 +1854,12 @@ sections:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
-            color_id: dark_grey_10
+            color_id: dark_grey_9
+        margins:
+          top: 15
         padding:
-          bottom: 25
+          top: 20
+          bottom: 20
       rows:
       - widgets:
         - type: widget_quote
@@ -1690,19 +1876,19 @@ sections:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
-                    color_id: light_grey_22
-                size: 13
+                    color_id: light_grey_14
+                size: 15
               source_style:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
-                    color_id: light_grey_15
-                size: 14
+                    color_id: light_grey_25
+                size: 15
               icon_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
-                    color_id: light_grey_15
+                    color_id: light_grey_25
   - name: My Stuff
     groups:
     - format:
@@ -3049,7 +3235,7 @@ sections:
             story:
             - type: story_part_action
               story_part_action:
-                text: 'General Act of Constituiton'
+                text: 'General Act of Constitution'
                 roll_name: 'General Constitution Action'
                 summation_id: general_constitution_action
                 text_format:

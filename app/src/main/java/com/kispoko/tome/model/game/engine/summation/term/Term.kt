@@ -5,10 +5,7 @@ package com.kispoko.tome.model.game.engine.summation.term
 import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.functor.Sum
-import com.kispoko.tome.lib.functor.getMaybePrim
-import com.kispoko.tome.lib.functor.maybeLiftPrim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -29,7 +26,8 @@ import java.util.*
 /**
  * Summation Term
  */
-sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>) : Model, Serializable
+sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>)
+                    : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -56,6 +54,9 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>) : Model, S
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+    fun maybeTermName() : Maybe<TermName> = _getMaybePrim(this.termName)
+
 
     fun termName() : String? = getMaybePrim(this.termName)?.value
 
@@ -84,6 +85,7 @@ data class SummationTermNumber(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
     constructor(termName : Maybe<TermName>,
                 numberReference : NumberReference)
         : this(UUID.randomUUID(),
@@ -105,6 +107,18 @@ data class SummationTermNumber(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value" to this.numberReference().toDocument()
+    ))
+    .maybeMerge(this.maybeTermName().apply {
+        Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
+    .withCase("summation_term_number")
 
 
     // -----------------------------------------------------------------------------------------
@@ -140,7 +154,7 @@ data class SummationTermNumber(override val id : UUID,
 
         if (components.isNotEmpty())
         {
-            return TermSummary(this.termName(), components)
+            return TermSummary(this.termName(), components, this)
         }
         else
         {
@@ -152,7 +166,8 @@ data class SummationTermNumber(override val id : UUID,
                 {
                     is Val -> {
                         return TermSummary(termName(),
-                                           listOf(TermComponent(termName, value.value.toString())))
+                                           listOf(TermComponent(termName, value.value.toString())),
+                                           this)
                     }
                     is Err -> ApplicationLog.error(value.error)
                 }
@@ -210,6 +225,18 @@ data class SummationTermDiceRoll(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value" to this.diceRollReference().toDocument()
+    ))
+    .maybeMerge(this.maybeTermName().apply {
+        Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
+    .withCase("summation_term_dice_roll")
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -244,7 +271,7 @@ data class SummationTermDiceRoll(override val id : UUID,
 
         if (components.isNotEmpty())
         {
-            return TermSummary(this.termName(), components)
+            return TermSummary(this.termName(), components, this)
         }
         else
         {
@@ -256,7 +283,8 @@ data class SummationTermDiceRoll(override val id : UUID,
                 {
                     is Val -> {
                         return TermSummary(termName(),
-                                           listOf(TermComponent(termName, value.value.toString())))
+                                           listOf(TermComponent(termName, value.value.toString())),
+                                           this)
                     }
                     is Err -> ApplicationLog.error(value.error)
                 }
@@ -321,6 +349,20 @@ data class SummationTermConditional(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "condition" to this.conditionalValueReference().toDocument(),
+        "when_true" to this.trueValueReference().toDocument(),
+        "when_false" to this.falseValueReference().toDocument()
+    ))
+    .maybeMerge(this.maybeTermName().apply {
+        Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
+    .withCase("summation_term_conditional")
 
 
     // -----------------------------------------------------------------------------------------
@@ -390,7 +432,7 @@ data class SummationTermConditional(override val id : UUID,
 
                 if (components.isNotEmpty())
                 {
-                    return TermSummary(this.termName(), components)
+                    return TermSummary(this.termName(), components, this)
                 }
                 else
                 {
@@ -403,7 +445,8 @@ data class SummationTermConditional(override val id : UUID,
                             is Val -> {
                                 return TermSummary(termName(),
                                                    listOf(TermComponent(termName,
-                                                                        value.value.toString())))
+                                                                        value.value.toString())),
+                                                   this)
                             }
                             is Err -> ApplicationLog.error(value.error)
                         }
@@ -421,11 +464,10 @@ data class SummationTermConditional(override val id : UUID,
 }
 
 
-
 /**
  * Term Name
  */
-data class TermName(val value : String) : SQLSerializable, Serializable
+data class TermName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -443,6 +485,13 @@ data class TermName(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -452,7 +501,9 @@ data class TermName(val value : String) : SQLSerializable, Serializable
 
 
 
-data class TermSummary(val name : String?, val components : List<TermComponent>)
+data class TermSummary(val name : String?,
+                       val components : List<TermComponent>,
+                       val term : SummationTerm)
 
 
 data class TermComponent(val name : String, val value : String)

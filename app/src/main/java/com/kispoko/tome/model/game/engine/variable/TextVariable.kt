@@ -28,7 +28,7 @@ import java.io.Serializable
 /**
  * Text Variable Value
  */
-sealed class TextVariableValue : SumModel, Serializable
+sealed class TextVariableValue : ToDocument, SumModel, Serializable
 {
 
     companion object : Factory<TextVariableValue>
@@ -40,8 +40,7 @@ sealed class TextVariableValue : SumModel, Serializable
                 "value_reference"    -> TextVariableValueValue.fromDocument(doc)
                 "program_invocation" -> TextVariableProgramValue.fromDocument(doc)
                 "value_set_id"       -> TextVariableValueUnknownValue.fromDocument(doc)
-                else                 -> effError<ValueError,TextVariableValue>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -83,6 +82,13 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value).withCase("text_literal")
 
 
     // -----------------------------------------------------------------------------------------
@@ -144,6 +150,13 @@ class TextVariableUnknownLiteralValue() : TextVariableValue(), SQLSerializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText("unknown")
+
+
+    // -----------------------------------------------------------------------------------------
     // Value
     // -----------------------------------------------------------------------------------------
 
@@ -187,6 +200,14 @@ data class TextVariableValueValue(val valueReference : ValueReference)
     }
 
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.valueReference.toDocument().withCase("value_reference")
+
+
     // -----------------------------------------------------------------------------------------
     // Value
     // -----------------------------------------------------------------------------------------
@@ -199,7 +220,7 @@ data class TextVariableValueValue(val valueReference : ValueReference)
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
         GameManager.engine(sheetContext.gameId)
-                   .apply { it.value(this.valueReference, sheetContext) }
+                   .apply { it.value(this.valueReference, sheetContext.gameId) }
                    .apply { effValue<AppError,Set<Variable>>(it.variables()) }
 
 
@@ -234,6 +255,13 @@ data class TextVariableValueUnknownValue(val valueSetId : ValueSetId)
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> =
                 effApply(::TextVariableValueUnknownValue, ValueSetId.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.valueSetId.toDocument().withCase("value_set_id")
 
 
     // -----------------------------------------------------------------------------------------
@@ -278,6 +306,13 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextVariableValue> =
                 effApply(::TextVariableProgramValue, Invocation.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.invocation.toDocument().withCase("program_invocation")
 
 
     // -----------------------------------------------------------------------------------------

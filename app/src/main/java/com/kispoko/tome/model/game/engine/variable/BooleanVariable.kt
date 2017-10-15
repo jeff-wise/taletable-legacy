@@ -27,7 +27,7 @@ import java.io.Serializable
 /**
  * Boolean Variable
  */
-sealed class BooleanVariableValue : SumModel, Serializable
+sealed class BooleanVariableValue : ToDocument, SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -82,6 +82,13 @@ data class BooleanVariableLiteralValue(var value : Boolean)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value, listOf("boolean_literal"))
+
+
+    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -116,7 +123,6 @@ data class BooleanVariableLiteralValue(var value : Boolean)
 data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVariableValue()
 {
 
-
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -126,6 +132,14 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
         override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanVariableValue> =
                 effApply(::BooleanVariableProgramValue, Invocation.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.invocation.toDocument()
+
 
 
     // -----------------------------------------------------------------------------------------

@@ -27,7 +27,7 @@ import java.util.*
  */
 data class Tab(override val id : UUID,
                val tabName : Func<TabName>,
-               val groups : Coll<Group>) : Model, Serializable
+               val groups : Coll<Group>) : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -51,22 +51,41 @@ data class Tab(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::Tab,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
-                         // Tab Name
-                         doc.at("name") ap {
-                             effApply(::Prim, TabName.fromDocument(it))
-                         },
-                         // Groups
-                         doc.list("groups") ap { docList ->
-                             effApply(::Coll, docList.mapIndexed {
-                                 d,index -> Group.fromDocument(d,index) })
-                         })
+                apply(::Tab,
+                      // Model Id
+                      effValue(UUID.randomUUID()),
+                      // Tab Name
+                      doc.at("name") ap {
+                          effApply(::Prim, TabName.fromDocument(it))
+                      },
+                      // Groups
+                      doc.list("groups") ap { docList ->
+                          effApply(::Coll, docList.mapIndexed {
+                              d,index -> Group.fromDocument(d,index) })
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.tabName().toDocument(),
+        "groups" to DocList(this.groups().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun tabName() : TabName = this.tabName.value
+
+    fun groups() : List<Group> = this.groups.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -85,7 +104,7 @@ data class Tab(override val id : UUID,
 /**
  * Tab Name
  */
-data class TabName(val value : String) : SQLSerializable, Serializable
+data class TabName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -103,6 +122,13 @@ data class TabName(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -114,7 +140,7 @@ data class TabName(val value : String) : SQLSerializable, Serializable
 /**
  * Default Selected
  */
-data class DefaultSelected(val value : Int) : SQLSerializable, Serializable
+data class DefaultSelected(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -129,6 +155,13 @@ data class DefaultSelected(val value : Int) : SQLSerializable, Serializable
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
 
 
     // -----------------------------------------------------------------------------------------
@@ -153,7 +186,8 @@ data class TabWidgetFormat(override val id : UUID,
                            val tabPaddingVertical : Prim<TabVerticalPadding>,
                            val tabHeight : Prim<Height>,
                            val backgroundColorTheme : Prim<ColorTheme>,
-                           val tabCorners : Comp<Corners>) : Model, Serializable
+                           val tabCorners : Comp<Corners>)
+                            : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -284,10 +318,46 @@ data class TabWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "tab_default_style" to this.tabDefaultStyle().toDocument(),
+        "tab_selected_style" to this.tabSelectedStyle().toDocument(),
+        "underline_selected" to this.underlineSelected().toDocument(),
+        "underline_thickness" to this.underlineThickness().toDocument(),
+        "tab_margins" to this.tabMargins().toDocument(),
+        "tab_padding_vertical" to this.tabPaddingVertical().toDocument(),
+        "tab_height" to this.tabHeight().toDocument(),
+        "background_color_theme" to this.backgroundColorTheme().toDocument(),
+        "tab_corners" to this.tabCorners().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun tabDefaultStyle() : TextStyle = this.tabDefaultStyle.value
+
+    fun tabSelectedStyle() : TextStyle = this.tabSelectedStyle.value
+
+    fun underlineSelected() : TabUnderlineSelected = this.underlineSelected.value
+
+    fun underlineThickness() : TabUnderlineThickness = this.underlineThickness.value
+
+    fun tabMargins() : Spacing = this.tabMargins.value
+
+    fun tabPaddingVertical() : TabVerticalPadding = this.tabPaddingVertical.value
+
+    fun tabHeight() : Height = this.tabHeight.value
+
+    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+
+    fun tabCorners() : Corners = this.tabCorners.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -307,7 +377,7 @@ data class TabWidgetFormat(override val id : UUID,
 /**
  * Tab Underline Selected?
  */
-data class TabUnderlineSelected(val value : Boolean) : SQLSerializable, Serializable
+data class TabUnderlineSelected(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -325,6 +395,13 @@ data class TabUnderlineSelected(val value : Boolean) : SQLSerializable, Serializ
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -336,7 +413,7 @@ data class TabUnderlineSelected(val value : Boolean) : SQLSerializable, Serializ
 /**
  * Tab Underline Thickness
  */
-data class TabUnderlineThickness(val value : Int) : SQLSerializable, Serializable
+data class TabUnderlineThickness(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -352,6 +429,12 @@ data class TabUnderlineThickness(val value : Int) : SQLSerializable, Serializabl
         }
     }
 
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
@@ -365,7 +448,7 @@ data class TabUnderlineThickness(val value : Int) : SQLSerializable, Serializabl
 /**
  * Tab Vertical Padding
  */
-data class TabVerticalPadding(val value : Int) : SQLSerializable, Serializable
+data class TabVerticalPadding(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -380,6 +463,13 @@ data class TabVerticalPadding(val value : Int) : SQLSerializable, Serializable
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
 
 
     // -----------------------------------------------------------------------------------------

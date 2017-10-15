@@ -24,7 +24,7 @@ import java.io.Serializable
 /**
  * Dice Variable Value
  */
-sealed class DiceRollVariableValue : Serializable
+sealed class DiceRollVariableValue : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -75,6 +75,13 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll)
         override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollVariableValue> =
                 effApply(::DiceRollVariableLiteralValue, DiceRoll.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.diceRoll.toDocument().withCase("literal")
 
 
     // -----------------------------------------------------------------------------------------

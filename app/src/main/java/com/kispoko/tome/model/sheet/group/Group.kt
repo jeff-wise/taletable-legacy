@@ -38,7 +38,7 @@ data class Group(override val id : UUID,
                  val format : Comp<GroupFormat>,
                  val index : Prim<GroupIndex>,
                  val rows : CollS<GroupRow>)
-                  : Model, SheetComponent, Comparable<Group>, Serializable
+                  : ToDocument, Model, SheetComponent, Comparable<Group>, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -86,6 +86,15 @@ data class Group(override val id : UUID,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "rows" to DocList(this.rows().map { it.toDocument() })
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -166,7 +175,8 @@ data class GroupFormat(override val id : UUID,
                        val showDivider : Prim<ShowGroupDivider>,
                        val dividerColorTheme: Prim<ColorTheme>,
                        val dividerMargins : Prim<DividerMargin>,
-                       val dividerThickness : Prim<DividerThickness>) : Model, Serializable
+                       val dividerThickness : Prim<DividerThickness>)
+                        : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -248,7 +258,7 @@ data class GroupFormat(override val id : UUID,
                                effValue(defaultShowDivider),
                                { ShowGroupDivider.fromDocument(it) }),
                          // Divider Color Theme
-                         split(doc.maybeAt("divider_color_them"),
+                         split(doc.maybeAt("divider_color_theme"),
                                effValue(defaultDividerColorTheme),
                                { ColorTheme.fromDocument(it) }),
                          // Divider Margins
@@ -276,6 +286,22 @@ data class GroupFormat(override val id : UUID,
                             defaultDividerThickness)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+            "background_color_theme" to this.backgroundColorTheme().toDocument(),
+            "margins" to this.margins().toDocument(),
+            "padding" to this.padding().toDocument(),
+            "corners" to this.corners().toDocument(),
+            "show_divider" to this.showDivider.value.toDocument(),
+            "divider_color_theme" to this.dividerColorTheme().toDocument(),
+            "divider_margins" to this.dividerMargins.value.toDocument(),
+            "divider_thickness" to this.dividerThickness.value.toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -315,8 +341,12 @@ data class GroupFormat(override val id : UUID,
 /**
  * Show Divider
  */
-data class ShowGroupDivider(val value : Boolean) : SQLSerializable, Serializable
+data class ShowGroupDivider(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ShowGroupDivider>
     {
@@ -326,6 +356,18 @@ data class ShowGroupDivider(val value : Boolean) : SQLSerializable, Serializable
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLInt({ if (value) 1 else 0})
 

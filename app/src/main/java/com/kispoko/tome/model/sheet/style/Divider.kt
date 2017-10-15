@@ -19,8 +19,12 @@ import java.io.Serializable
 /**
  * Divider Margin
  */
-data class DividerMargin(val value : Float) : SQLSerializable, Serializable
+data class DividerMargin(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DividerMargin>
     {
@@ -34,6 +38,17 @@ data class DividerMargin(val value : Float) : SQLSerializable, Serializable
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
     override fun asSQLValue() : SQLValue = SQLReal({this.value.toDouble()})
 
 }
@@ -42,8 +57,12 @@ data class DividerMargin(val value : Float) : SQLSerializable, Serializable
 /**
  * Divider Thickness
  */
-data class DividerThickness(val value : Int) : SQLSerializable, Serializable
+data class DividerThickness(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DividerThickness>
     {
@@ -56,6 +75,17 @@ data class DividerThickness(val value : Int) : SQLSerializable, Serializable
         fun default() : DividerThickness = DividerThickness(0)
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLInt({this.value})
 

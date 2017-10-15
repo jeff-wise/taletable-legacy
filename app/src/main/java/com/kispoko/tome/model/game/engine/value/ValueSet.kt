@@ -39,7 +39,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
                       open val labelSingular: Prim<ValueSetLabelSingular>,
                       open val description : Prim<ValueSetDescription>,
                       open val valueType : Maybe<Prim<EngineValueType>>)
-                       : Model, Serializable
+                       : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -83,11 +83,19 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     fun valueSetId() : ValueSetId = this.valueSetId.value
 
-    fun label() : String = this.label.value.value
+    fun label() : ValueSetLabel = this.label.value
 
-    fun labelSingular() : String = this.labelSingular.value.value
+    fun labelString() : String = this.label.value.value
 
-    fun description() : String = this.description.value.value
+    fun labelSingular() : ValueSetLabelSingular = this.labelSingular.value
+
+    fun labelSingularString() : String = this.labelSingular.value.value
+
+    fun description() : ValueSetDescription = this.description.value
+
+    fun descriptionString() : String = this.description.value.value
+
+    fun maybeValueType() : Maybe<EngineValueType> = _getMaybePrim(this.valueType)
 
     fun valueType() : EngineValueType? = getMaybePrim(this.valueType)
 
@@ -95,7 +103,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
     // Lookup
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(valueId : ValueId, sheetContext : SheetContext) : AppEff<Value>
+    abstract fun value(valueId : ValueId, gameId : GameId) : AppEff<Value>
 
     abstract fun numberValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueNumber>
 
@@ -126,7 +134,7 @@ data class ValueSetBase(override val id : UUID,
     init
     {
         this.valueSetId.name                        = "value_set_id"
-        this.label.name                             = "label"
+        this.label.name                             = "labelString"
         this.labelSingular.name                     = "label_singular"
         this.description.name                       = "description"
 
@@ -135,6 +143,8 @@ data class ValueSetBase(override val id : UUID,
         }
 
         this.values.name                            = "values"
+
+
     }
 
 
@@ -198,6 +208,21 @@ data class ValueSetBase(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value_set_id" to this.valueSetId().toDocument(),
+        "label" to this.label().toDocument(),
+        "label_singular" to this.labelSingular().toDocument(),
+        "description" to this.description().toDocument(),
+        "values" to DocList(this.values.set.map { it.toDocument() })
+    ))
+    .maybeMerge(this.maybeValueType().apply {
+        Just(Pair("value_type", it.toDocument())) })
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -212,18 +237,18 @@ data class ValueSetBase(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    override fun value(valueId : ValueId, sheetContext : SheetContext) : AppEff<Value> =
+    override fun value(valueId : ValueId, gameId : GameId) : AppEff<Value> =
             note(this.valuesById[valueId],
                  AppEngineError(ValueSetDoesNotContainValue(this.valueSetId(), valueId)))
 
 
     override fun numberValue(valueId : ValueId,
                              sheetContext : SheetContext) : AppEff<ValueNumber> =
-            this.value(valueId, sheetContext).apply { it.numberValue() }
+            this.value(valueId, sheetContext.gameId).apply { it.numberValue() }
 
 
     override fun textValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueText> =
-        this.value(valueId, sheetContext).apply { it.textValue() }
+        this.value(valueId, sheetContext.gameId).apply { it.textValue() }
 
 
     override fun values(gameId : GameId) : AppEff<Set<Value>> =
@@ -260,6 +285,76 @@ data class ValueSetBase(override val id : UUID,
             }
         }
 
+
+    // -----------------------------------------------------------------------------------------
+    // NEW VALUES
+    // -----------------------------------------------------------------------------------------
+
+    fun newDefaultTextValue() : ValueText
+    {
+        val indicesUsed : MutableSet<Int> = mutableSetOf()
+        val newTextValueRegex = Regex("^New Value (\\d+)$")
+
+        this.values.set.forEach {
+            when (it)
+            {
+                is ValueText ->
+                {
+                    val textValue = it.value()
+                    val indexString = newTextValueRegex.matchEntire(textValue)?.groupValues?.get(1)
+
+                    if (indexString != null)
+                        indicesUsed.add(indexString.toInt())
+                }
+            }
+        }
+
+        var i : Int = 1
+        while (indicesUsed.contains(i))  { i += 1 }
+
+        val defaultValueId = "new_value_" + i.toString()
+        val defaultValue = "New Value " + i.toString()
+
+        return ValueText(ValueId(defaultValueId),
+                         Just(ValueDescription(defaultValue)),
+                         Nothing(),
+                         mutableSetOf(),
+                         this.valueSetId(),
+                         TextValue(defaultValue))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUES
+    // -----------------------------------------------------------------------------------------
+
+    fun addValue(value : Value)
+    {
+        this.values.set.add(value)
+        this.valuesById.put(value.valueId(), value)
+    }
+
+
+    fun removeValue(valueId : ValueId) : Boolean
+    {
+        val newValues : MutableSet<Value> = mutableSetOf()
+
+        this.values.set.forEach {
+            if (it.valueId() != valueId)
+                newValues.add(it)
+        }
+
+        val removed = newValues.size != this.values.set.size
+
+        this.values.set.clear()
+
+        newValues.forEach {
+            this.values.set.add(it)
+        }
+
+        return removed
+    }
+
 }
 
 
@@ -283,7 +378,7 @@ data class ValueSetCompound(override val id : UUID,
     init
     {
         this.valueSetId.name                        = "value_set_id"
-        this.label.name                             = "label"
+        this.label.name                             = "labelString"
         this.labelSingular.name                     = "label_singular"
         this.description.name                       = "description"
 
@@ -320,27 +415,42 @@ data class ValueSetCompound(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::ValueSetCompound,
-                         // Value Set Id
-                         doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
-                         // Label
-                         doc.at("label") ap { ValueSetLabel.fromDocument(it) },
-                         // Label Singular
-                         doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
-                         // Description
-                         doc.at("description") ap { ValueSetDescription.fromDocument(it) },
-                         // Value Type
-                         split(doc.maybeAt("value_type"),
-                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
-                         // Value Set Ids
-                         doc.list("value_set_ids") ap { docList ->
-                             docList.mapSet { ValueSetId.fromDocument(it) }
-                         })
+                apply(::ValueSetCompound,
+                      // Value Set Id
+                      doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
+                      // Label
+                      doc.at("label") ap { ValueSetLabel.fromDocument(it) },
+                      // Label Singular
+                      doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { ValueSetDescription.fromDocument(it) },
+                      // Value Type
+                      split(doc.maybeAt("value_type"),
+                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                      // Value Set Ids
+                      doc.list("value_set_ids") ap { docList ->
+                          docList.mapSet { ValueSetId.fromDocument(it) }
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value_set_id" to this.valueSetId().toDocument(),
+        "label" to this.label().toDocument(),
+        "label_singular" to this.labelSingular().toDocument(),
+        "description" to this.description().toDocument(),
+        "value_set_ids" to DocList(this.valueSetIds().map { it.toDocument() })
+    ))
+    .maybeMerge(this.maybeValueType().apply {
+        Just(Pair("value_type", it.toDocument())) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -365,9 +475,9 @@ data class ValueSetCompound(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    override fun value(valueId : ValueId, sheetContext : SheetContext) : AppEff<Value>
+    override fun value(valueId : ValueId, gameId : GameId) : AppEff<Value>
     {
-        val valueSets = GameManager.engine(sheetContext.gameId) ap { engine ->
+        val valueSets = GameManager.engine(gameId) ap { engine ->
                             this.valueSetIds().toList().mapM { engine.valueSet(it) }
                         }
 
@@ -376,7 +486,7 @@ data class ValueSetCompound(override val id : UUID,
             is Val ->
             {
                 for (valueSet in valueSets.value) {
-                    val value = valueSet.value(valueId, sheetContext)
+                    val value = valueSet.value(valueId, gameId)
                     when (value) {
                         is Val -> return value
                     }
@@ -391,11 +501,11 @@ data class ValueSetCompound(override val id : UUID,
 
     override fun numberValue(valueId : ValueId,
                              sheetContext : SheetContext) : AppEff<ValueNumber> =
-        this.value(valueId, sheetContext).apply { it.numberValue() }
+        this.value(valueId, sheetContext.gameId).apply { it.numberValue() }
 
 
     override fun textValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueText> =
-        this.value(valueId, sheetContext).apply { it.textValue() }
+        this.value(valueId, sheetContext.gameId).apply { it.textValue() }
 
 
     override fun values(gameId : GameId) : AppEff<Set<Value>>
@@ -467,7 +577,7 @@ data class ValueSetIdSet(val idSet : HashSet<ValueSetId>) : SQLSerializable, Ser
 /**
  * ValueSet Id
  */
-data class ValueSetId(val value : String) : SQLSerializable, Serializable
+data class ValueSetId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -485,6 +595,13 @@ data class ValueSetId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -496,7 +613,7 @@ data class ValueSetId(val value : String) : SQLSerializable, Serializable
 /**
  * ValueSet Label
  */
-data class ValueSetLabel(val value : String) : SQLSerializable, Serializable
+data class ValueSetLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -514,6 +631,13 @@ data class ValueSetLabel(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -525,7 +649,7 @@ data class ValueSetLabel(val value : String) : SQLSerializable, Serializable
 /**
  * ValueSet Label Singular
  */
-data class ValueSetLabelSingular(val value : String) : SQLSerializable, Serializable
+data class ValueSetLabelSingular(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -534,12 +658,20 @@ data class ValueSetLabelSingular(val value : String) : SQLSerializable, Serializ
 
     companion object : Factory<ValueSetLabelSingular>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetLabelSingular> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ValueSetLabelSingular> = when (doc)
         {
             is DocText -> effValue(ValueSetLabelSingular(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
@@ -553,7 +685,7 @@ data class ValueSetLabelSingular(val value : String) : SQLSerializable, Serializ
 /**
  * ValueSet Description
  */
-data class ValueSetDescription(val value : String) : SQLSerializable, Serializable
+data class ValueSetDescription(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -569,6 +701,14 @@ data class ValueSetDescription(val value : String) : SQLSerializable, Serializab
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -579,72 +719,7 @@ data class ValueSetDescription(val value : String) : SQLSerializable, Serializab
 
 
 
-//
-//
-///**
-// * Value Set Interface
-// */
-//public interface ValueSet
-//{
-//    String           name();
-//    String           label();
-//    String           labelSingular();
-//    String           description();
-//    int              size();
-//    List<ValueUnion> values();
-//    int              lengthOfLongestValueString();
-//    boolean          hasValue(String valueName);
-//    ValueUnion       valueWithName(String valueName);
-//}
 
-//
-//
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The value set singular label.
-//     * @return The singular label.
-//     */
-//    public String labelSingular()
-//    {
-//        return this.labelSingular.getValue();
-//    }
-//
-//
-//    public Tuple2<String,String> nextDefaultTextValue()
-//    {
-//        Set<Integer> numbersUsed = new HashSet<>();
-//
-//        for (ValueUnion valueUnion : values())
-//        {
-//            if (valueUnion.type() == ValueType.TEXT)
-//            {
-//                TextValue textValue = valueUnion.textValue();
-//                String textValueName = textValue.name();
-//                Matcher m = this.defaultTextValueIdPattern.matcher(textValueName);
-//
-//                if (m.find()) {
-//                    String numberString = m.group(1);
-//                    Integer number = Integer.parseInt(numberString);
-//                    numbersUsed.add(number);
-//                }
-//            }
-//        }
-//
-//        int i = 1;
-//        while (numbersUsed.contains(i))
-//            i++;
-//
-//        String defaultName = "new_value_" + Integer.toString(i);
-//        String defaultValue = "New Value " + Integer.toString(i);
-//
-//        return new Tuple2<>(defaultName, defaultValue);
-//    }
-//
-//
 //    // ** Value Type
 //    // ------------------------------------------------------------------------------------------
 //

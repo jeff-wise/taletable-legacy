@@ -14,7 +14,7 @@ import java.io.Serializable
 
 
 
-sealed class Height : SQLSerializable, Serializable
+sealed class Height : ToDocument, SQLSerializable, Serializable
 {
 
 
@@ -31,6 +31,8 @@ sealed class Height : SQLSerializable, Serializable
     object Wrap : Height()
     {
         override fun asSQLValue() : SQLValue = SQLReal({0.0})
+
+        override fun toDocument() = DocNumber(0.0)
     }
 
 
@@ -45,6 +47,8 @@ sealed class Height : SQLSerializable, Serializable
         // -----------------------------------------------------------------------------------------
 
         override fun asSQLValue() : SQLValue = SQLReal({this.value.toDouble()})
+
+        override fun toDocument() = DocNumber(this.value.toDouble())
 
     }
 

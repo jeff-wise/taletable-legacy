@@ -16,6 +16,7 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.theme.ThemeManager
 
 
+
 /**
  * Form Widgets
  */
@@ -191,8 +192,8 @@ object Form
 
         layout.padding.topDp        = 10f
         layout.padding.bottomDp     = 10f
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.leftDp       = 10f
+        layout.padding.rightDp      = 10f
 
         return layout.linearLayout(context)
     }
@@ -239,16 +240,227 @@ object Form
                                                 TextFontStyle.Regular,
                                                 context)
 
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        value.color              = ThemeManager.color(themeId, labelColorTheme)
 
-        value.sizeSp            = 17f
+        if (valueString.length < 35) {
+            val colorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_14")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            value.color              = ThemeManager.color(themeId, colorTheme)
+            value.sizeSp            = 17f
+        }
+        else {
+            val colorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            value.color              = ThemeManager.color(themeId, colorTheme)
+            value.sizeSp            = 14f
+        }
 
         value.margin.topDp      = 6f
 
         return value.textView(context)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL FIELD
+    // -----------------------------------------------------------------------------------------
+
+    fun modelFieldView(name : String,
+                       themeId : ThemeId,
+                       context : Context) : LinearLayout
+    {
+        val layout = this.modelFieldViewLayout(context)
+
+        // Icon
+        layout.addView(this.modelFieldIconView(themeId, context))
+
+        // Name
+        layout.addView(this.modelFieldNameView(name, themeId, context))
+
+        return layout
+    }
+
+
+    private fun modelFieldViewLayout(context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.padding.leftDp   = 10f
+        layout.padding.topDp    = 16f
+        layout.padding.bottomDp = 16f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun modelFieldIconView(themeId : ThemeId, context : Context) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.rightDp   = 7f
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 22
+        icon.heightDp           = 22
+
+        icon.image              = R.drawable.icon_edit_model
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        icon.color              = ThemeManager.color(themeId, iconColorTheme)
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun modelFieldNameView(nameString : String,
+                                   themeId: ThemeId,
+                                   context: Context) : TextView
+    {
+        val name                = TextViewBuilder()
+
+        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        name.text               = nameString
+
+        name.font               = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        name.color              = ThemeManager.color(themeId, colorTheme)
+
+        name.sizeSp             = 17f
+
+        return name.textView(context)
+    }
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL FIELD
+    // -----------------------------------------------------------------------------------------
+
+    fun listFieldView(name : String,
+                      themeId : ThemeId,
+                      context : Context) : LinearLayout
+    {
+        val layout = this.listFieldViewLayout(context)
+
+        // Icon
+        layout.addView(this.listFieldIconView(themeId, context))
+
+        // Name
+        layout.addView(this.listFieldNameView(name, themeId, context))
+
+        return layout
+    }
+
+
+    private fun listFieldViewLayout(context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.padding.leftDp   = 10f
+        layout.padding.topDp    = 16f
+        layout.padding.bottomDp = 16f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun listFieldIconView(themeId : ThemeId, context : Context) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.rightDp   = 7f
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 22
+        icon.heightDp           = 22
+
+        icon.image              = R.drawable.icon_list
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        icon.color              = ThemeManager.color(themeId, iconColorTheme)
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun listFieldNameView(nameString : String,
+                                  themeId: ThemeId,
+                                  context: Context) : TextView
+    {
+        val name                = TextViewBuilder()
+
+        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        name.text               = nameString
+
+        name.font               = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        name.color              = ThemeManager.color(themeId, colorTheme)
+
+        name.sizeSp             = 17f
+
+        return name.textView(context)
+    }
+
 }
 

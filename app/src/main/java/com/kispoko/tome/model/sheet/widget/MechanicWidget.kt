@@ -42,7 +42,7 @@ data class MechanicWidgetFormat(override val id : UUID,
                                 val mechanicHeaderFormat : Comp<TextFormat>,
                                 val mechanicSummaryFormat : Comp<TextFormat>,
                                 val mechanicFormat : Comp<ElementFormat>)
-                                 : Model, Serializable
+                                 : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -136,10 +136,27 @@ data class MechanicWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+            "widget_format" to this.widgetFormat().toDocument(),
+            "view_type" to this.viewType().toDocument(),
+            "header_format" to this.headerFormat().toDocument(),
+            "mechanic_header_format" to this.mechanicHeaderFormat().toDocument(),
+            "mechanic_summary_format" to this.mechanicSummaryFormat().toDocument(),
+            "mechanic_summary_format" to this.mechanicSummaryFormat().toDocument(),
+            "mechanic_format" to this.mechanicFormat().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun viewType() : MechanicWidgetViewType = this.viewType.value
 
     fun headerFormat() : TextFormat = this.headerFormat.value
 
@@ -166,12 +183,14 @@ data class MechanicWidgetFormat(override val id : UUID,
 /**
  * View Type
  */
-sealed class MechanicWidgetViewType : SQLSerializable, Serializable
+sealed class MechanicWidgetViewType : ToDocument, SQLSerializable, Serializable
 {
 
     object Boxes : MechanicWidgetViewType()
     {
-        override fun asSQLValue() : SQLValue = SQLText({"left"})
+        override fun asSQLValue() : SQLValue = SQLText({"boxes"})
+
+        override fun toDocument() = DocText("boxes")
     }
 
 
@@ -220,7 +239,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         GameManager.engine(sheetUIContext.gameId) apDo {
             val category = it.mechanicCategoryWithId(mechanicWidget.categoryId())
             if (category != null) {
-                val headerString = category.label() + " Mechanics"
+                val headerString = category.labelString() + " Mechanics"
                 layout.addView(this.headerView(headerString))
             }
         }
@@ -229,7 +248,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         GameManager.engine(sheetUIContext.gameId) apDo {
             val mechanics = it.mechanicsInCategory(mechanicWidget.categoryId())
             mechanics.forEach {
-                layout.addView(this.mechanicView(it.label(), it.summary()))
+                layout.addView(this.mechanicView(it.labelString(), it.summaryString()))
             }
         }
 

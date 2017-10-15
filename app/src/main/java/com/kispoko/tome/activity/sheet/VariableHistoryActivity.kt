@@ -83,7 +83,7 @@ class VariableHistoryActivity : AppCompatActivity()
         // > Toolbar
         val variable = this.variable
         if (variable != null) {
-            val toolbarTitle = variable.label() + " " + this.getString(R.string.history)
+            val toolbarTitle = variable.labelString() + " " + this.getString(R.string.history)
             this.configureToolbar(toolbarTitle)
         }
 

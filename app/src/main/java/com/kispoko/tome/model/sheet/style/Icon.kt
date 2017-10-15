@@ -26,57 +26,161 @@ import java.util.*
 /**
  * Icon
  */
-sealed class Icon : SQLSerializable, Serializable
+sealed class Icon : ToDocument, SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CASES
+    // -----------------------------------------------------------------------------------------
 
     object Sword : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "sword" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("sword")
+
     }
 
     object Shield : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "shield" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("shield")
+
     }
 
     object DiceRoll : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "dice_roll" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("dice_roll")
+
     }
 
     object DiceRollFilled : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "dice_roll_filled" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("dice_roll_filled")
+
     }
 
     object Coins : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "coins" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("coins")
+
     }
 
     object Parchment : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "parchment" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("parchment")
+
     }
 
     object SwordOutline : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "sword_outline" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("sword_outline")
+
     }
 
     object Adventure : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "adventure" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("adventure")
+
     }
 
     object Mind : Icon()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "mindd" })
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "mind" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("mind")
+
     }
 
     object Running : Icon()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({ "running" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("running")
+
     }
 
     companion object
@@ -125,7 +229,7 @@ sealed class Icon : SQLSerializable, Serializable
  */
 data class IconFormat(override val id : UUID,
                       val colorTheme : Prim<ColorTheme>,
-                      val size : Prim<IconSize>) : Model, Serializable
+                      val size : Prim<IconSize>) : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -182,6 +286,16 @@ data class IconFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "color_theme" to this.colorTheme().toDocument(),
+        "size" to this.size().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -206,7 +320,8 @@ data class IconFormat(override val id : UUID,
 /**
  * Icon Size
  */
-data class IconSize(val width : Int, val height : Int) : SQLSerializable, Serializable
+data class IconSize(val width : Int,
+                    val height : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -226,6 +341,16 @@ data class IconSize(val width : Int, val height : Int) : SQLSerializable, Serial
 
         fun default() = IconSize(20, 20)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "width" to DocNumber(this.width.toDouble()),
+        "height" to DocNumber(this.height.toDouble())
+    ))
 
 
     // -----------------------------------------------------------------------------------------

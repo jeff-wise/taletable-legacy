@@ -32,7 +32,7 @@
             android:label="Edit Number"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.engine.valueset.ValueSetsActivity"
+            android:name=".activity.game.engine.valueset.ValueSetsActivity"
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -44,49 +44,52 @@
             android:label="Variable History"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.engine.valueset.BaseValueSetActivity"
+            android:name=".activity.game.engine.valueset.BaseValueSetActivity"
             android:label="Base Value Set"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.engine.value.NumberValueEditorActivity"
-            android:label="Values"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".activity.engine.function.FunctionEditorActivity"
+            android:name=".activity.game.engine.function.FunctionEditorActivity"
             android:label="Function"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.function.FunctionActivity"
+            android:name=".activity.game.engine.function.FunctionActivity"
             android:label="Function"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.function.FunctionListActivity"
+            android:name=".activity.game.engine.function.FunctionListActivity"
             android:label="Functions"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".activity.engine.program.ProgramEditorActivity"
+            android:name=".activity.game.engine.summation.SummationActivity"
+            android:label="Summation"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activity.game.engine.value.ValueActivity"
+            android:label="Value"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activity.game.engine.program.ProgramEditorActivity"
             android:label="Program"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.mechanicindex.MechanicIndexActivity"
+            android:name=".activity.game.engine.mechanicindex.MechanicIndexActivity"
             android:label="Mechanics"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.engine.mechanic.MechanicActivity"
+            android:name=".activity.game.engine.mechanic.MechanicActivity"
             android:label="Mechanic"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.variable.TextVariableActivity"
+            android:name=".activity.game.engine.variable.TextVariableActivity"
             android:label="Text Variable"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.variable.NumberVariableActivity"
+            android:name=".activity.game.engine.variable.NumberVariableActivity"
             android:label="Number Variable"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
@@ -96,7 +99,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.variable.DiceVariableActivity"
+            android:name=".activity.game.engine.variable.DiceVariableActivity"
             android:label="Dice Variable"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
@@ -186,17 +189,17 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.variable.VariableReferenceActivity"
+            android:name=".activity.game.engine.variable.VariableReferenceActivity"
             android:label="Variable Reference Editor"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.function.TuplesEditorActivity"
+            android:name=".activity.game.engine.function.TuplesEditorActivity"
             android:label="Tuples Editor"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.engine.program.StatementsEditorActivity"
+            android:name=".activity.game.engine.program.StatementsEditorActivity"
             android:label="Program Statements Editor"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />

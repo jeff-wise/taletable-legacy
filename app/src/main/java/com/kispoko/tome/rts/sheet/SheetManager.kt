@@ -151,7 +151,7 @@ object SheetManager
      *
      * Since persistence is not yet implemented, just loads Casmey for now.
      */
-    suspend fun startSession(context : Context)
+    suspend fun startSession(sheetUI : SheetUI)
     {
         if (this.sheetById.values.isEmpty())
         {
@@ -160,7 +160,17 @@ object SheetManager
                                                     GameId("amanace"))
             val lastSession = Session(listOf(SessionSheetOfficial(casmeyOfficialSheet)))
 
-            loadSessionSheets(lastSession, context)
+            loadSessionSheets(lastSession, sheetUI.context())
+        }
+        else
+        {
+            Log.d("***SHEETMANAGER", "set sheet active")
+            val lastActiveSheet = this.sheetById.values.first().sheet()
+
+
+            val listener = this.listenerBySheet[lastActiveSheet.sheetId()]
+            if (listener != null)
+                listener.onSheetAdd(lastActiveSheet)
         }
     }
 
@@ -181,7 +191,7 @@ object SheetManager
         SheetManager.sheetContext(sheet)        apDo { sheetContext ->
         GameManager.engine(sheetContext.gameId) apDo { engine ->
             val sheetRecord = SheetRecord.withDefaultView(sheet, sheetContext,
-                                        SheetState(sheetContext, engine.mechanics()))
+                                        SheetState(sheetContext, engine.mechanicSet()))
 
             // Create & Index Sheet Record
             this.sheetById.put(sheet.sheetId(), sheetRecord)
@@ -222,6 +232,9 @@ object SheetManager
 
     fun render(sheetId : SheetId, sheetUI : SheetUI)
     {
+
+        Log.d("***SHEETMANAGER", "render")
+
         val sheetRecordEff = this.sheetRecord(sheetId)
 
         when (sheetRecordEff)
@@ -244,6 +257,7 @@ object SheetManager
                 if (section != null) {
                     sheetUI.pagePagerAdatper()
                            .setPages(section.pages(), sheetRecord.sheetContext)
+                    Log.d("***SHEETMANAGER", "set pages")
                 }
                 else {
                     ApplicationLog.error(SectionDoesNotExist(sheetId, selectedSectionName))

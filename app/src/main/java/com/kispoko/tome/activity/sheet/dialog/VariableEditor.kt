@@ -97,7 +97,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                     val adderState = AdderState(variableValue.value,
                                                 0.0,
                                                 setOf(),
-                                                numberVariable.label(),
+                                                numberVariable.labelString(),
                                                 updateTarget)
                     val adderDialog = AdderDialogFragment.newInstance(adderState,
                                                                       SheetContext(sheetUIContext))
@@ -107,6 +107,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
 
                 {
                     val simpleDialog = NumberEditorDialog.newInstance(variableValue.value,
+                                                                      numberVariable.labelString(),
                                                                       updateTarget,
                                                                       SheetContext(sheetUIContext))
                     simpleDialog.show(sheetActivity.supportFragmentManager, "")
@@ -123,7 +124,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                 {
                     val dialog = SummationDialogFragment.newInstance(
                                             summation.value,
-                                            numberVariable.label(),
+                                            numberVariable.labelString(),
                                             SheetContext(sheetUIContext))
                     dialog.show(sheetActivity.supportFragmentManager, "")
                 }
@@ -145,7 +146,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
     {
         is TextVariableLiteralValue ->
         {
-            val title = textVariable.label()
+            val title = textVariable.labelString()
             val text  = variableValue.value
 
             val sheetActivity = sheetUIContext.context as SheetActivity
@@ -163,7 +164,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val valueSet = GameManager.engine(sheetUIContext.gameId)
                                       .apply { it.valueSet(valueSetId) }
             val value    = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.value(valueReference, SheetContext(sheetUIContext)) }
+                                      .apply { it.value(valueReference, sheetUIContext.gameId) }
 
             when (valueSet)
             {
@@ -178,6 +179,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                                     ValueChooserDialogFragment.newInstance(
                                                     valueSet.value,
                                                     value.value,
+                                                    updateTarget,
                                                     SheetContext(sheetUIContext))
                             chooseDialog.show(sheetActivity.supportFragmentManager, "")
                         }

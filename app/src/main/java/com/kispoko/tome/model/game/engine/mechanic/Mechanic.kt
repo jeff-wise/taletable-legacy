@@ -32,7 +32,8 @@ data class Mechanic(override val id : UUID,
                     val summary : Prim<MechanicSummary>,
                     val categoryId : Prim<MechanicCategoryId>,
                     val requirements : Prim<MechanicRequirements>,
-                    val variables : Conj<Variable>) : Model, Serializable
+                    val variables : Conj<Variable>)
+                     : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ data class Mechanic(override val id : UUID,
     init
     {
         this.mechanicId.name                    = "mechanic_name"
-        this.label.name                         = "label"
+        this.label.name                         = "labelString"
         this.description.name                   = "description"
         this.summary.name                       = "summary"
         this.categoryId.name                    = "category_id"
@@ -102,16 +103,37 @@ data class Mechanic(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.mechanicId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.description().toDocument(),
+        "summary" to this.summary().toDocument(),
+        "category_id" to this.categoryId().toDocument(),
+        "requirements" to DocList(this.requirements().map { it.toDocument() }),
+        "variables" to DocList(this.variables().map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun mechanicId() : MechanicId = this.mechanicId.value
 
-    fun label() : String = this.label.value.value
+    fun label() : MechanicLabel = this.label.value
 
-    fun description() : String = this.description.value.value
+    fun labelString() : String = this.label.value.value
 
-    fun summary() : String = this.summary.value.value
+    fun description() : MechanicDescription = this.description.value
+
+    fun descriptionString() : String = this.description.value.value
+
+    fun summary() : MechanicSummary = this.summary.value
+
+    fun summaryString() : String = this.summary.value.value
 
     fun categoryId() : MechanicCategoryId = this.categoryId.value
 
@@ -136,7 +158,7 @@ data class Mechanic(override val id : UUID,
 /**
  * Mechanic Id
  */
-data class MechanicId(val value : String) : SQLSerializable, Serializable
+data class MechanicId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -154,6 +176,13 @@ data class MechanicId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -165,7 +194,7 @@ data class MechanicId(val value : String) : SQLSerializable, Serializable
 /**
  * Mechanic Label
  */
-data class MechanicLabel(val value : String) : SQLSerializable, Serializable
+data class MechanicLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -183,6 +212,13 @@ data class MechanicLabel(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -193,7 +229,7 @@ data class MechanicLabel(val value : String) : SQLSerializable, Serializable
 /**
  * Mechanic Description
  */
-data class MechanicDescription(val value : String) : SQLSerializable, Serializable
+data class MechanicDescription(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -211,6 +247,13 @@ data class MechanicDescription(val value : String) : SQLSerializable, Serializab
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -221,7 +264,7 @@ data class MechanicDescription(val value : String) : SQLSerializable, Serializab
 /**
  * Mechanic Summary
  */
-data class MechanicSummary(val value : String) : SQLSerializable, Serializable
+data class MechanicSummary(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -239,10 +282,18 @@ data class MechanicSummary(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -253,7 +304,7 @@ data class MechanicCategory(override val id : UUID,
                             val categoryId : Prim<MechanicCategoryId>,
                             val label : Prim<MechanicCategoryLabel>,
                             val description : Prim<MechanicCategoryDescription>)
-                             : Model, Serializable
+                             : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -263,7 +314,7 @@ data class MechanicCategory(override val id : UUID,
     init
     {
         this.categoryId.name    = "category_id"
-        this.label.name         = "label"
+        this.label.name         = "labelString"
         this.description.name   = "description"
     }
 
@@ -302,14 +353,29 @@ data class MechanicCategory(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.categoryId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.label().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun categoryId() : MechanicCategoryId = this.categoryId.value
 
-    fun label() : String = this.label.value.value
+    fun label() : MechanicCategoryLabel  = this.label.value
 
-    fun description() : String = this.description.value.value
+    fun labelString() : String = this.label.value.value
+
+    fun description() : MechanicCategoryDescription = this.description.value
+
+    fun descriptionString() : String = this.description.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -328,7 +394,7 @@ data class MechanicCategory(override val id : UUID,
 /**
  * Mechanic Category Id
  */
-data class MechanicCategoryId(val value : String) : SQLSerializable, Serializable
+data class MechanicCategoryId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -346,6 +412,13 @@ data class MechanicCategoryId(val value : String) : SQLSerializable, Serializabl
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -356,7 +429,7 @@ data class MechanicCategoryId(val value : String) : SQLSerializable, Serializabl
 /**
  * Mechanic Category Label
  */
-data class MechanicCategoryLabel(val value : String) : SQLSerializable, Serializable
+data class MechanicCategoryLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -374,6 +447,13 @@ data class MechanicCategoryLabel(val value : String) : SQLSerializable, Serializ
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -384,7 +464,8 @@ data class MechanicCategoryLabel(val value : String) : SQLSerializable, Serializ
 /**
  * Mechanic Category Description
  */
-data class MechanicCategoryDescription(val value : String) : SQLSerializable, Serializable
+data class MechanicCategoryDescription(val value : String)
+                        : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -399,6 +480,13 @@ data class MechanicCategoryDescription(val value : String) : SQLSerializable, Se
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

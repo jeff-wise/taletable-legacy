@@ -39,7 +39,7 @@ import java.util.*
  * Table Widget Cell
  */
 @Suppress("UNCHECKED_CAST")
-sealed class TableWidgetCell : Model, Serializable
+sealed class TableWidgetCell : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -142,6 +142,16 @@ data class TableWidgetBooleanCell(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "variable_value" to this.variableValue().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -281,6 +291,17 @@ data class TableWidgetNumberCell(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "variable_value" to this.variableValue().toDocument(),
+        "editor_type" to this.editorType().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -431,6 +452,16 @@ data class TableWidgetTextCell(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "variable_value" to this.variableValue().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -540,7 +571,8 @@ enum class TableWidgetCellType
 data class CellFormat(override val id : UUID,
                       val textStyle : Comp<TextStyle>,
                       val alignment : Prim<Alignment>,
-                      val backgroundColorTheme : Prim<ColorTheme>) : Model, Serializable
+                      val backgroundColorTheme : Prim<ColorTheme>)
+                       : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -611,6 +643,17 @@ data class CellFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "text_style" to this.textStyle().toDocument(),
+        "alignment" to this.alignment().toDocument(),
+        "background_color_theme" to this.backgroundColorTheme().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -648,7 +691,7 @@ object TableWidgetCellView
         layout.orientation          = LinearLayout.HORIZONTAL
         layout.width                = 0
         layout.height               = TableRow.LayoutParams.WRAP_CONTENT
-        layout.weight               = columnFormat.width()
+        layout.weight               = columnFormat.widthFloat()
 
 
         // > Gravity

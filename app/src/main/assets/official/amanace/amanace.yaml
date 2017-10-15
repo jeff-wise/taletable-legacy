@@ -178,6 +178,59 @@ engine:
                 boolean_literal: true
   - type: value_set_base
     value_set_base:
+      value_set_id: alignments
+      label: Alignments
+      label_singular: Alignment
+      description: The alignments.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: lawful_good
+          description: Lawful Good
+          value: Lawful Good
+      - type: value_text
+        value_text:
+          value_id: lawful_neutral
+          description: Lawful Neutral
+          value: Lawful Neutral
+      - type: value_text
+        value_text:
+          value_id: lawful_evil
+          description: Lawful Evil
+          value: Lawful Evil
+      - type: value_text
+        value_text:
+          value_id: neutral_good
+          description: Neutral Good
+          value: Neutral Good
+      - type: value_text
+        value_text:
+          value_id: neutral
+          description: Neutral
+          value: Neutral
+      - type: value_text
+        value_text:
+          value_id: neutral_evil
+          description: Neutral Evil
+          value: Neutral Evil
+      - type: value_text
+        value_text:
+          value_id: chaotic_good
+          description: Chaotic Good
+          value: Chaotic Good
+      - type: value_text
+        value_text:
+          value_id: chaotic_neutral
+          description: Chaotic Neutral
+          value: Chaotic Neutral
+      - type: value_text
+        value_text:
+          value_id: chaotic_evil
+          description: Chaotic Evil
+          value: Chaotic Evil
+  - type: value_set_base
+    value_set_base:
       value_set_id: hand_fist_weapons
       label: Hand or Fist Weapons
       label_singular: Hand or Fist Weapon

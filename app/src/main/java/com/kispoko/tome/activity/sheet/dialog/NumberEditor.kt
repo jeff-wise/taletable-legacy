@@ -21,8 +21,12 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.router.MessageUpdateSummationNumberTerm
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
+import java.util.*
+
 
 
 /**
@@ -36,6 +40,7 @@ class NumberEditorDialog : DialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var currentValue : Double? = null
+    private var title        : String? = null
     private var updateTarget : UpdateTarget? = null
     private var sheetContext : SheetContext? = null
 
@@ -47,6 +52,7 @@ class NumberEditorDialog : DialogFragment()
     companion object
     {
         fun newInstance(currentValue : Double,
+                        title : String,
                         updateTarget : UpdateTarget,
                         sheetContext : SheetContext) : NumberEditorDialog
         {
@@ -54,6 +60,7 @@ class NumberEditorDialog : DialogFragment()
 
             val args = Bundle()
             args.putDouble("current_value", currentValue)
+            args.putString("title", title)
             args.putSerializable("update_target", updateTarget)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
@@ -73,9 +80,9 @@ class NumberEditorDialog : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.currentValue = arguments.getDouble("current_value")
+        this.title        = arguments.getString("title")
         this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
-
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -87,7 +94,7 @@ class NumberEditorDialog : DialogFragment()
         {
             val sheetUIContext = SheetUIContext(sheetContext, context)
 
-            val dialogLayout = this.dialogLayout(sheetUIContext)
+            val dialogLayout = this.dialogLayout()
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -127,6 +134,7 @@ class NumberEditorDialog : DialogFragment()
             if (updateTarget != null && currentValue != null)
             {
                 val viewBuilder = NumberEditorViewBuilder(currentValue,
+                                                          this.title,
                                                           updateTarget,
                                                           sheetUIContext,
                                                           this)
@@ -148,7 +156,7 @@ class NumberEditorDialog : DialogFragment()
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
 
-    fun dialogLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    fun dialogLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -168,6 +176,7 @@ class NumberEditorDialog : DialogFragment()
 // ---------------------------------------------------------------------------------------------
 
 class NumberEditorViewBuilder(val currentValue : Double,
+                              val title : String?,
                               val updateTarget : UpdateTarget,
                               val sheetUIContext : SheetUIContext,
                               val dialog : DialogFragment)
@@ -224,7 +233,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.padding.bottomDp = 10f
+        layout.padding.bottomDp = 5f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -271,8 +280,14 @@ class NumberEditorViewBuilder(val currentValue : Double,
         name.margin.topDp       = 10f
         name.margin.leftDp      = 12f
 
-        name.text               = sheetUIContext.context
-                                                .getString(R.string.edit_number).toUpperCase()
+        if (this.title != null) {
+            name.text = sheetUIContext.context.getString(R.string.edit).toUpperCase() +
+                            " " + this.title.toUpperCase()
+        }
+        else {
+            name.text               = sheetUIContext.context
+                    .getString(R.string.edit_number).toUpperCase()
+        }
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
@@ -522,6 +537,13 @@ class NumberEditorViewBuilder(val currentValue : Double,
                                                         updateTarget.partIndex,
                                                         this.valueString.toDouble())
                     SheetManager.updateSheet(sheetUIContext.sheetId, numberPartUpdate)
+                    dialog.dismiss()
+                }
+                is UpdateTargetSummationNumberTerm ->
+                {
+                    val message = MessageUpdateSummationNumberTerm(updateTarget.termId,
+                                                                   this.valueString.toDouble())
+                    Router.send(message)
                     dialog.dismiss()
                 }
             }

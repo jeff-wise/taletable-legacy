@@ -36,7 +36,7 @@ import java.util.*
 data class NumberCellFormat(override val id : UUID,
                             val cellFormat : Comp<CellFormat>,
                             val valuePrefix : Maybe<Prim<NumberCellValuePrefix>>)
-                            : Model, Serializable
+                            : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -92,10 +92,23 @@ data class NumberCellFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "cell_format" to this.cellFormat().toDocument()
+        ))
+        .maybeMerge(this.valuePrefix().apply {
+            Just(Pair("value_prefix", it.toDocument() as SchemaDoc)) })
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun cellFormat() : CellFormat = this.cellFormat.value
+
+    fun valuePrefix() : Maybe<NumberCellValuePrefix> = _getMaybePrim(this.valuePrefix)
 
     fun valuePrefixString() : String? = getMaybePrim(this.valuePrefix)?.value
 
@@ -127,7 +140,7 @@ data class NumberCellFormat(override val id : UUID,
 /**
  * Value Prefix
  */
-data class NumberCellValuePrefix(val value : String) : SQLSerializable, Serializable
+data class NumberCellValuePrefix(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -142,6 +155,13 @@ data class NumberCellValuePrefix(val value : String) : SQLSerializable, Serializ
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -253,11 +273,11 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
 //        {
 //            String integerString = integerValue.toString();
 //
-//            String valuePrefix = null;
+//            String valuePrefixString = null;
 //            if (this.column != null)
-//                valuePrefix = this.format().resolveValuePrefix(column.format().valuePrefix());
-//            if (valuePrefix != null)
-//                integerString = valuePrefix + integerString;
+//                valuePrefixString = this.format().resolveValuePrefix(column.format().valuePrefixString());
+//            if (valuePrefixString != null)
+//                integerString = valuePrefixString + integerString;
 //
 //            return integerString;
 //        }

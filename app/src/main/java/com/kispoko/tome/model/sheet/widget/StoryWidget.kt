@@ -51,7 +51,7 @@ data class StoryWidgetFormat(override val id : UUID,
                              val widgetFormat : Comp<WidgetFormat>,
                              val verticalAlignment : Prim<VerticalAlignment>,
                              val lineSpacing : Prim<LineSpacing>)
-                              : Model, Serializable
+                              : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -118,6 +118,17 @@ data class StoryWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "vertical_alignment" to this.verticalAlignment().toDocument(),
+        "line_spacing" to this.lineSpacing().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -125,7 +136,9 @@ data class StoryWidgetFormat(override val id : UUID,
 
     fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
 
-    fun lineSpacing() : Float = this.lineSpacing.value.value
+    fun lineSpacing() : LineSpacing = this.lineSpacing.value
+
+    fun lineSpacingFloat() : Float = this.lineSpacing.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -142,7 +155,7 @@ data class StoryWidgetFormat(override val id : UUID,
 
 
 @Suppress("UNCHECKED_CAST")
-sealed class StoryPart : Model, Serializable
+sealed class StoryPart : ToDocument, Model, Serializable
 {
 
     companion object : Factory<StoryPart>
@@ -221,10 +234,22 @@ data class StoryPartSpan(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "text" to this.text().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun text() : String = this.text.value.value
+    fun text() : StoryPartText = this.text.value
+
+    fun textString() : String = this.text.value.value
 
     fun format() : TextFormat = this.format.value
 
@@ -233,7 +258,7 @@ data class StoryPartSpan(override val id : UUID,
     // STORY PART
     // -----------------------------------------------------------------------------------------
 
-    override fun wordCount() = this.text().split(' ').size
+    override fun wordCount() = this.textString().split(' ').size
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -303,6 +328,18 @@ data class StoryPartVariable(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "format" to this.format().toDocument(),
+        "variable_id" to this.variableId().toDocument()
+    ))
+    .maybeMerge(this.numericEditorTypeMaybe().apply {
+        Just(Pair("numeric_editor_type", it.toDocument())) })
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -310,11 +347,11 @@ data class StoryPartVariable(override val id : UUID,
 
     fun variableId() : VariableId = this.variableId.value
 
-
     fun valueVariable(sheetContext : SheetContext) : AppEff<Variable> =
         SheetManager.sheetState(sheetContext.sheetId)
                 .apply { it.variableWithId(this.variableId()) }
 
+    fun numericEditorTypeMaybe() : Maybe<NumericEditorType> = _getMaybePrim(this.numericEditorType)
 
     fun numericEditorType() : NumericEditorType? = getMaybePrim(this.numericEditorType)
 
@@ -388,6 +425,16 @@ data class StoryPartIcon(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "icon" to this.icon().toDocument(),
+        "icon_format" to this.iconFormat().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -488,25 +535,49 @@ data class StoryPartAction(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "text" to this.text().toDocument(),
+        "text_format" to this.textFormat().toDocument(),
+        "icon_format" to this.iconFormat().toDocument(),
+        "show_procedure_dialog" to this.showProcedureDialog().toDocument()
+        ))
+        .maybeMerge(this.rollSummationIdMaybe().apply {
+            Just(Pair("roll_summation_id", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.procedureIdMaybe().apply {
+            Just(Pair("procedure_id", it.toDocument() as SchemaDoc)) })
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun rollSummationIdMaybe() : Maybe<SummationId> = _getMaybePrim(this.rollSummationId)
+
     fun rollSummationId() : SummationId? = getMaybePrim(this.rollSummationId)
+
+    fun procedureIdMaybe() : Maybe<ProcedureId> = _getMaybePrim(this.procedureId)
 
     fun procedureId() : ProcedureId? = getMaybePrim(this.procedureId)
 
-    fun text() : String = this.text.value.value
+    fun text() : StoryPartText = this.text.value
+
+    fun textString() : String = this.text.value.value
 
     fun textFormat() : TextFormat = this.textFormat.value
 
     fun iconFormat() : IconFormat = this.iconFormat.value
+
+    fun showProcedureDialog() : ShowProcedureDialog = this.showProcedureDialog.value
 
 
     // -----------------------------------------------------------------------------------------
     // STORY PART
     // -----------------------------------------------------------------------------------------
 
-    override fun wordCount() = this.text().split(' ').size
+    override fun wordCount() = this.textString().split(' ').size
 
 
     // -----------------------------------------------------------------------------------------
@@ -525,7 +596,7 @@ data class StoryPartAction(override val id : UUID,
 /**
  * Story Part Action - Show Procedure Dialog
  */
-data class ShowProcedureDialog(val value : Boolean) : SQLSerializable, Serializable
+data class ShowProcedureDialog(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -543,6 +614,13 @@ data class ShowProcedureDialog(val value : Boolean) : SQLSerializable, Serializa
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -554,7 +632,7 @@ data class ShowProcedureDialog(val value : Boolean) : SQLSerializable, Serializa
 /**
  * Story Part Text
  */
-data class StoryPartText(val value : String) : SQLSerializable, Serializable
+data class StoryPartText(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -572,6 +650,13 @@ data class StoryPartText(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -583,7 +668,7 @@ data class StoryPartText(val value : String) : SQLSerializable, Serializable
 /**
  * Line Spacing
  */
-data class LineSpacing(val value : Float) : SQLSerializable, Serializable
+data class LineSpacing(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -600,6 +685,13 @@ data class LineSpacing(val value : Float) : SQLSerializable, Serializable
 
         fun default() = LineSpacing(1.0f)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
 
 
     // -----------------------------------------------------------------------------------------
@@ -676,7 +768,7 @@ object StoryWidgetView
                                                           sheetUIContext)
 
         story.lineSpacingAdd    = 0f
-        story.lineSpacingMult   = storyWidget.format().lineSpacing()
+        story.lineSpacingMult   = storyWidget.format().lineSpacingFloat()
 
         story.gravity       = storyWidget.widgetFormat().alignment().gravityConstant()
         story.layoutGravity = storyWidget.widgetFormat().alignment().gravityConstant()
@@ -728,7 +820,7 @@ object StoryWidgetView
             {
                 is StoryPartSpan ->
                 {
-                    val text = storyPart.text()
+                    val text = storyPart.textString()
                     builder.append(text)
                     val textLen = text.length
                     phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
@@ -750,7 +842,7 @@ object StoryWidgetView
                 }
                 is StoryPartAction ->
                 {
-                    val text = storyPart.text()
+                    val text = storyPart.textString()
                     builder.append("  " + text)
                     val textLen = text.length + 2
                     phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
@@ -925,7 +1017,7 @@ object StoryWidgetView
             {
                 is StoryPartSpan ->
                 {
-                    this.words(storyPart.text()).forEach {
+                    this.words(storyPart.textString()).forEach {
                         layout.addView(this.wordView(it, storyWidget.format(),
                                                      storyPart, sheetUIContext))
                     }
@@ -1007,7 +1099,7 @@ object StoryWidgetView
 
         val formatPadding   = storyPartSpan.format().padding()
         val padding         = Spacing(LeftSpacing(formatPadding.leftDp()),
-                                      TopSpacing(formatPadding.topDp() + format.lineSpacing()),
+                                      TopSpacing(formatPadding.topDp() + format.lineSpacingFloat()),
                                       RightSpacing(formatPadding.rightDp()),
                                       BottomSpacing(formatPadding.bottomDp()))
 
@@ -1040,7 +1132,7 @@ object StoryWidgetView
 
         val formatPadding   = storyPart.format().padding()
         val padding         = Spacing(LeftSpacing(formatPadding.leftDp()),
-                                      TopSpacing(formatPadding.topDp() + format.lineSpacing()),
+                                      TopSpacing(formatPadding.topDp() + format.lineSpacingFloat()),
                                       RightSpacing(formatPadding.rightDp()),
                                       BottomSpacing(formatPadding.bottomDp()))
 

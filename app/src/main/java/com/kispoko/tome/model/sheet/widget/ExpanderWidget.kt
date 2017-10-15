@@ -25,7 +25,7 @@ import java.util.*
 /**
  * Expander Widget Label
  */
-data class ExpanderLabel(val value : String) : SQLSerializable, Serializable
+data class ExpanderLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -40,6 +40,13 @@ data class ExpanderLabel(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -59,7 +66,7 @@ data class ExpanderWidgetFormat(override val id : UUID,
                                 val widgetFormat : Comp<WidgetFormat>,
                                 val nameStyleClosed : Func<TextStyle>,
                                 val nameStyleOpen : Func<TextStyle>,
-                                val headerPadding : Func<Spacing>) : Model
+                                val headerPadding : Func<Spacing>) : ToDocument, Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -108,10 +115,28 @@ data class ExpanderWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "name_style_closed" to this.nameStyleClosed().toDocument(),
+        "name_style_open" to this.nameStyleOpen().toDocument(),
+        "header_padding" to this.headerPadding().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun nameStyleClosed() : TextStyle = this.nameStyleClosed.value
+
+    fun nameStyleOpen() : TextStyle = this.nameStyleOpen.value
+
+    fun headerPadding() : Spacing = this.headerPadding.value
 
 
     // -----------------------------------------------------------------------------------------

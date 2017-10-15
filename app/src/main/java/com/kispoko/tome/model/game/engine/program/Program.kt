@@ -29,7 +29,8 @@ data class Program(override val id : UUID,
                    val description : Prim<ProgramDescription>,
                    val typeSignature : Comp<ProgramTypeSignature>,
                    val statements : Coll<Statement>,
-                   val resultBindingName: Prim<StatementBindingName>) : Model, Serializable
+                   val resultBindingName : Prim<StatementBindingName>)
+                    : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ data class Program(override val id : UUID,
     init
     {
         this.programId.name         = "program_id"
-        this.label.name             = "label"
+        this.label.name             = "labelString"
         this.description.name       = "description"
         this.typeSignature.name     = "type_signature"
         this.statements.name        = "statements"
@@ -83,7 +84,7 @@ data class Program(override val id : UUID,
                          doc.at("type_signature") ap { ProgramTypeSignature.fromDocument(it) },
                          // Statements
                          split(doc.maybeList("statements"),
-                               effValue<ValueError,MutableList<Statement>>(mutableListOf()),
+                               effValue(mutableListOf()),
                                { it.mapMut { Statement.fromDocument(it) } }),
                          doc.at("result_binding_name") ap { StatementBindingName.fromDocument(it) })
             }
@@ -93,20 +94,40 @@ data class Program(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "program_id" to this.programId().toDocument(),
+        "label" to this.label().toDocument(),
+        "description" to this.description().toDocument(),
+        "type_signature" to this.typeSignature().toDocument(),
+        "statements" to DocList(this.statements().map { it.toDocument() }),
+        "result_binding_name" to this.resultBindingName().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun programId() : ProgramId = this.programId.value
 
-    fun label() : String = this.label.value.value
+    fun label() : ProgramLabel = this.label.value
 
-    fun description() : String = this.description.value.value
+    fun labelString() : String = this.label.value.value
+
+    fun description() : ProgramDescription = this.description.value
+
+    fun descriptionString() : String = this.description.value.value
 
     fun typeSignature() : ProgramTypeSignature = this.typeSignature.value
 
     fun statements() : List<Statement> = this.statements.list
 
-    fun resultBindingName() : String = this.resultBindingName.value.value
+    fun resultBindingName() : StatementBindingName = this.resultBindingName.value
+
+    fun resultBindingNameString() : String = this.resultBindingName.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -132,7 +153,7 @@ data class ProgramTypeSignature(override val id : UUID,
                                 val parameter4Type : Maybe<Prim<EngineValueType>>,
                                 val parameter5Type : Maybe<Prim<EngineValueType>>,
                                 val resultType : Prim<EngineValueType>)
-                                : Model, Serializable
+                                : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -218,8 +239,38 @@ data class ProgramTypeSignature(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+            "parameter1_type" to this.parameter1Type().toDocument(),
+            "result_type" to this.resultType().toDocument()
+    ))
+    .maybeMerge(this.parameter2Type().apply {
+        Just(Pair("parameter2_type", it.toDocument())) })
+    .maybeMerge(this.parameter3Type().apply {
+        Just(Pair("parameter3_type", it.toDocument())) })
+    .maybeMerge(this.parameter4Type().apply {
+        Just(Pair("parameter4_type", it.toDocument())) })
+    .maybeMerge(this.parameter5Type().apply {
+        Just(Pair("parameter5_type", it.toDocument())) })
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+    fun parameter1Type() : EngineValueType = this.parameter1Type.value
+
+    fun parameter2Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter2Type)
+
+    fun parameter3Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter3Type)
+
+    fun parameter4Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter4Type)
+
+    fun parameter5Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter5Type)
+
+    fun resultType() : EngineValueType = this.resultType.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -238,7 +289,7 @@ data class ProgramTypeSignature(override val id : UUID,
 /**
  * Program Id
  */
-data class ProgramId(val value : String) : SQLSerializable, Serializable
+data class ProgramId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -257,6 +308,13 @@ data class ProgramId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -268,7 +326,7 @@ data class ProgramId(val value : String) : SQLSerializable, Serializable
 /**
  * Program Label
  */
-data class ProgramLabel(val value : String) : SQLSerializable, Serializable
+data class ProgramLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -284,6 +342,14 @@ data class ProgramLabel(val value : String) : SQLSerializable, Serializable
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -296,7 +362,7 @@ data class ProgramLabel(val value : String) : SQLSerializable, Serializable
 /**
  * Program Description
  */
-data class ProgramDescription(val value : String) : SQLSerializable, Serializable
+data class ProgramDescription(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -314,6 +380,13 @@ data class ProgramDescription(val value : String) : SQLSerializable, Serializabl
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -325,7 +398,7 @@ data class ProgramDescription(val value : String) : SQLSerializable, Serializabl
 /**
  * Program Parameter
  */
-data class ProgramParameterIndex(val value : Int) : SQLSerializable, Serializable
+data class ProgramParameterIndex(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -340,6 +413,14 @@ data class ProgramParameterIndex(val value : Int) : SQLSerializable, Serializabl
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE

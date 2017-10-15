@@ -10,6 +10,8 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.FalseText
+import com.kispoko.tome.model.sheet.widget.TrueText
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
 import lulo.document.*
@@ -32,7 +34,7 @@ data class BooleanColumnFormat(override val id : UUID,
                                val falseText : Prim<ColumnFalseText>,
                                val showTrueIcon : Prim<ShowTrueIcon>,
                                val showFalseIcon : Prim<ShowFalseIcon>)
-                                : Model, Serializable
+                                : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -81,7 +83,7 @@ data class BooleanColumnFormat(override val id : UUID,
     companion object : Factory<BooleanColumnFormat>
     {
 
-        private val defaultColumnFormat  = ColumnFormat.default
+        private val defaultColumnFormat  = ColumnFormat.default()
         private val defaultTrueText      = ColumnTrueText("True")
         private val defaultFalseText     = ColumnFalseText("False")
         private val defaultShowTrueIcon  = ShowTrueIcon(false)
@@ -90,49 +92,69 @@ data class BooleanColumnFormat(override val id : UUID,
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanColumnFormat> = when (doc)
         {
-            is DocDict -> effApply(::BooleanColumnFormat,
-                                   // Column Format
-                                   split(doc.maybeAt("column_format"),
-                                         effValue(defaultColumnFormat),
-                                         { ColumnFormat.fromDocument(it) }),
-                                   // True Style
-                                   split(doc.maybeAt("true_style"),
-                                         effValue<ValueError,Maybe<TextStyle>>(Nothing()),
-                                         { effApply(::Just, TextStyle.fromDocument(it)) }),
-                                   // False Style
-                                   split(doc.maybeAt("false_style"),
-                                         effValue<ValueError,Maybe<TextStyle>>(Nothing()),
-                                         { effApply(::Just, TextStyle.fromDocument(it)) }),
-                                   // True Text
-                                   split(doc.maybeAt("true_text"),
-                                         effValue(defaultTrueText),
-                                         { ColumnTrueText.fromDocument(it) }),
-                                   // False Text
-                                   split(doc.maybeAt("false_text"),
-                                         effValue(defaultFalseText),
-                                         { ColumnFalseText.fromDocument(it) }),
-                                   // Show True Icon?
-                                   split(doc.maybeAt("show_true_icon"),
-                                         effValue(defaultShowTrueIcon),
-                                         { ShowTrueIcon.fromDocument(it) }),
-                                   // Show False Icon?
-                                   split(doc.maybeAt("show_false_icon"),
-                                         effValue(defaultShowFalseIcon),
-                                         { ShowFalseIcon.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                apply(::BooleanColumnFormat,
+                      // Column Format
+                      split(doc.maybeAt("column_format"),
+                            effValue(defaultColumnFormat),
+                            { ColumnFormat.fromDocument(it) }),
+                      // True Style
+                      split(doc.maybeAt("true_style"),
+                            effValue<ValueError,Maybe<TextStyle>>(Nothing()),
+                            { effApply(::Just, TextStyle.fromDocument(it)) }),
+                      // False Style
+                      split(doc.maybeAt("false_style"),
+                            effValue<ValueError,Maybe<TextStyle>>(Nothing()),
+                            { effApply(::Just, TextStyle.fromDocument(it)) }),
+                      // True Text
+                      split(doc.maybeAt("true_text"),
+                            effValue(defaultTrueText),
+                            { ColumnTrueText.fromDocument(it) }),
+                      // False Text
+                      split(doc.maybeAt("false_text"),
+                            effValue(defaultFalseText),
+                            { ColumnFalseText.fromDocument(it) }),
+                      // Show True Icon?
+                      split(doc.maybeAt("show_true_icon"),
+                            effValue(defaultShowTrueIcon),
+                            { ShowTrueIcon.fromDocument(it) }),
+                      // Show False Icon?
+                      split(doc.maybeAt("show_false_icon"),
+                            effValue(defaultShowFalseIcon),
+                            { ShowFalseIcon.fromDocument(it) })
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        val default : BooleanColumnFormat =
-                BooleanColumnFormat(defaultColumnFormat,
-                                    Nothing(),
-                                    Nothing(),
-                                    defaultTrueText,
-                                    defaultFalseText,
-                                    defaultShowTrueIcon,
-                                    defaultShowFalseIcon)
+        fun default() = BooleanColumnFormat(defaultColumnFormat,
+                                            Nothing(),
+                                            Nothing(),
+                                            defaultTrueText,
+                                            defaultFalseText,
+                                            defaultShowTrueIcon,
+                                            defaultShowFalseIcon)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+
+    override fun toDocument() = DocDict(mapOf(
+        "column_format" to this.columnFormat().toDocument(),
+        "true_text" to this.trueText().toDocument(),
+        "false_text" to this.falseText().toDocument(),
+        "show_true_icon" to this.showTrueIcon().toDocument(),
+        "show_false_icon" to this.showFalseIcon().toDocument()
+        ))
+        .maybeMerge(this.trueStyle().apply {
+            Just(Pair("true_style", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.falseStyle().apply {
+            Just(Pair("false_style", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -145,13 +167,21 @@ data class BooleanColumnFormat(override val id : UUID,
 
     fun falseStyle() : Maybe<TextStyle> = getMaybeComp(this.falseStyle)
 
-    fun trueText() : String = this.trueText.value.value
+    fun trueText() : ColumnTrueText = this.trueText.value
 
-    fun falseText() : String = this.falseText.value.value
+    fun trueTextString() : String = this.trueText.value.value
 
-    fun showTrueIcon() : Boolean = this.showTrueIcon.value.value
+    fun falseText() : ColumnFalseText = this.falseText.value
 
-    fun showFalseIcon() : Boolean = this.showFalseIcon.value.value
+    fun falseTextString() : String = this.falseText.value.value
+
+    fun showTrueIcon() : ShowTrueIcon = this.showTrueIcon.value
+
+    fun showTrueIconBoolean() : Boolean = this.showTrueIcon.value.value
+
+    fun showFalseIcon() : ShowFalseIcon = this.showFalseIcon.value
+
+    fun showFalseIconBoolean() : Boolean = this.showFalseIcon.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -171,7 +201,7 @@ data class BooleanColumnFormat(override val id : UUID,
 /**
  * Show True Icon
  */
-data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
+data class ShowTrueIcon(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -189,6 +219,13 @@ data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -200,7 +237,7 @@ data class ShowTrueIcon(val value : Boolean) : SQLSerializable, Serializable
 /**
  * Show False Icon
  */
-data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
+data class ShowFalseIcon(val value : Boolean) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -218,6 +255,13 @@ data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -229,7 +273,7 @@ data class ShowFalseIcon(val value : Boolean) : SQLSerializable, Serializable
 /**
  * Column True Text
  */
-data class ColumnTrueText(val value : String) : SQLSerializable, Serializable
+data class ColumnTrueText(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -247,6 +291,13 @@ data class ColumnTrueText(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -258,7 +309,7 @@ data class ColumnTrueText(val value : String) : SQLSerializable, Serializable
 /**
  * Column False Text
  */
-data class ColumnFalseText(val value : String) : SQLSerializable, Serializable
+data class ColumnFalseText(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -276,6 +327,13 @@ data class ColumnFalseText(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -288,28 +346,28 @@ data class ColumnFalseText(val value : String) : SQLSerializable, Serializable
 /**
  * Default Boolean Column Value
  */
-data class DefaultBooleanColumnValue(val value : Boolean) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<DefaultBooleanColumnValue>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultBooleanColumnValue> = when (doc)
-        {
-            is DocBoolean -> effValue(DefaultBooleanColumnValue(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLInt({ if(this.value) 1 else 0 })
-
-}
+//data class DefaultBooleanColumnValue(val value : Boolean) : SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<DefaultBooleanColumnValue>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultBooleanColumnValue> = when (doc)
+//        {
+//            is DocBoolean -> effValue(DefaultBooleanColumnValue(doc.boolean))
+//            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue(): SQLValue = SQLInt({ if(this.value) 1 else 0 })
+//
+//}
 

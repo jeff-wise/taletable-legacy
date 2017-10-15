@@ -307,7 +307,7 @@ object ProcedureView
         description.width           = LinearLayout.LayoutParams.WRAP_CONTENT
         description.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        description.text            = program.description()
+        description.text            = program.descriptionString()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),

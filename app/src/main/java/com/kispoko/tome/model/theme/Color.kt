@@ -19,30 +19,70 @@ import java.io.Serializable
 /**
  * Color Id
  */
-sealed class ColorId : SQLSerializable, Serializable
+sealed class ColorId : ToDocument, SQLSerializable, Serializable
 {
 
     object Transparent : ColorId()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"transparent"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("transparent")
+
     }
 
 
     object White : ColorId()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"white"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("white")
+
     }
 
 
     object Black : ColorId()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"black"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("black")
+
     }
 
 
     data class Theme(val id : String) : ColorId()
     {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"this.id"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText(this.id)
+
     }
 
 

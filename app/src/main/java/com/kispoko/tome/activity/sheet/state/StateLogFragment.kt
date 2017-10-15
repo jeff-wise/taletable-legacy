@@ -114,7 +114,7 @@ class StateLogFragment : Fragment()
             }
 
             when (game) {
-                is Val -> gameName = game.value.description().gameName()
+                is Val -> gameName = game.value.description().gameNameString()
                 is Err -> ApplicationLog.error(game.error)
             }
 

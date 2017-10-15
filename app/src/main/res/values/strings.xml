@@ -38,10 +38,12 @@
 
     <string name="open_sheet">Open Sheet</string>
     <string name="official">Official</string>
+    <string name="delete_value">Delete Value</string>
 
     <string name="actions">Actions</string>
     <string name="new_s">New</string>
     <string name="blank">Blank</string>
+    <string name="more">More</string>
 
     <string name="import_s">Import</string>
 
@@ -225,6 +227,8 @@
     <string name="dice_roller">Dice Roller</string>
 
     <string name="summation_editor">Summation Editor</string>
+    <string name="summation">Summation</string>
+    <string name="keypad">Keypad</string>
 
 
     <!-- DIALOG -->
@@ -315,7 +319,7 @@
     <string name="add_value">Add Value</string>
     <string name="add_more_values">Add More Values</string>
 
-    <string name="use_previous">Use Previous</string>
+    <string name="do_previous">Do Previous</string>
 
     <string name="campaign">Campaign</string>
     <string name="game">Game</string>
@@ -537,7 +541,7 @@
     <!-- ACTIVITY: VALUE -->
     <!-- ==================================================================================== -->
 
-    <string name="value_field_name_label">Identifier</string>
+    <string name="value_field_id_label">Value Id</string>
     <string name="value_field_name_description">
         The unique identifier for the value. Used when programming.
     </string>
@@ -580,7 +584,7 @@
         A description of what the function represents or calculates.
     </string>
 
-    <string name="function_field_parameter_types_label">Parameter Types</string>
+    <string name="function_field_type_signature_label">Type Signature</string>
     <string name="function_field_parameter_types_description">
         The types of the function\'s parameters.
     </string>

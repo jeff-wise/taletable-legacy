@@ -28,7 +28,8 @@ data class BooleanWidgetFormat(override val id : UUID,
                                val widgetFormat : Comp<WidgetFormat>,
                                val textStyle : Comp<TextStyle>,
                                val trueText : Prim<TrueText>,
-                               val falseText : Prim<FalseText>) : Model, Serializable
+                               val falseText : Prim<FalseText>)
+                                : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -69,10 +70,25 @@ data class BooleanWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "text_style" to this.textStyle().toDocument(),
+        "true_text" to this.trueText.value.toDocument(),
+        "false_text" to this.falseText.value.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun textStyle() : TextStyle = this.textStyle.value
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -91,7 +107,7 @@ data class BooleanWidgetFormat(override val id : UUID,
 /**
  * True Text
  */
-data class TrueText(val value : String) : SQLSerializable, Serializable
+data class TrueText(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -109,6 +125,13 @@ data class TrueText(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -120,7 +143,7 @@ data class TrueText(val value : String) : SQLSerializable, Serializable
 /**
  * False Text
  */
-data class FalseText(val value : String) : SQLSerializable, Serializable
+data class FalseText(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -135,6 +158,13 @@ data class FalseText(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------

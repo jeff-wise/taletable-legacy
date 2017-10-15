@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
-import android.util.Log
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Sum
 import com.kispoko.tome.lib.model.SumModel
@@ -20,7 +19,7 @@ import java.io.Serializable
  * Value Reference
  */
 @Suppress("UNCHECKED_CAST")
-sealed class DataReference : SumModel, Serializable
+sealed class DataReference : ToDocument, SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -38,12 +37,7 @@ sealed class DataReference : SumModel, Serializable
                                                 as ValueParser<DataReference>
                 "data_reference_number"    -> DataReferenceNumber.fromDocument(doc.nextCase())
                                                 as ValueParser<DataReference>
-                else                        -> {
-                    Log.d("***DATAREF", doc.toString())
-                    Log.d("***DATAREF", "data ref case: " + doc.case())
-                    effError<ValueError, DataReference>(
-                            UnknownCase(doc.case(), doc.path))
-                }
+                else                       -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -78,6 +72,14 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
             else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.reference.toDocument()
+                                    .withCase("data_reference_boolean")
 
 
     // -----------------------------------------------------------------------------------------
@@ -122,6 +124,14 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.reference.toDocument()
+                                    .withCase("data_reference_dice_roll")
+
+
+    // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -154,6 +164,14 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
         override fun fromDocument(doc: SchemaDoc): ValueParser<DataReferenceNumber> =
                 effApply(::DataReferenceNumber, NumberReference.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.reference.toDocument()
+                                    .withCase("data_reference_number")
 
 
     // -----------------------------------------------------------------------------------------

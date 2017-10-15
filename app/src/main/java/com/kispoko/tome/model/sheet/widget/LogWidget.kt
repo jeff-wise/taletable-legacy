@@ -4,13 +4,13 @@ package com.kispoko.tome.model.sheet.widget
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -27,7 +27,7 @@ data class LogEntry(override val id : UUID,
                     val title : Prim<EntryTitle>,
                     val author : Prim<EntryAuthor>,
                     val summary : Prim<EntrySummary>,
-                    val text : Prim<EntryText>) : Model
+                    val text : Prim<EntryText>) : ToDocument, Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -78,6 +78,31 @@ data class LogEntry(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "title" to this.title().toDocument(),
+        "author" to this.author().toDocument(),
+        "summary" to this.summary().toDocument(),
+        "text" to this.text().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun title() : EntryTitle = this.title.value
+
+    fun author() : EntryAuthor = this.author.value
+
+    fun summary() : EntrySummary = this.summary.value
+
+    fun text() : EntryText = this.text.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -93,7 +118,7 @@ data class LogEntry(override val id : UUID,
 /**
  * Entry Title
  */
-data class EntryTitle(val value : String) : SQLSerializable, Serializable
+data class EntryTitle(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -111,6 +136,13 @@ data class EntryTitle(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -122,7 +154,7 @@ data class EntryTitle(val value : String) : SQLSerializable, Serializable
 /**
  * Entry Author
  */
-data class EntryAuthor(val value : String) : SQLSerializable, Serializable
+data class EntryAuthor(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -140,6 +172,13 @@ data class EntryAuthor(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -151,7 +190,7 @@ data class EntryAuthor(val value : String) : SQLSerializable, Serializable
 /**
  * Entry Summary
  */
-data class EntrySummary(val value : String) : SQLSerializable, Serializable
+data class EntrySummary(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -169,6 +208,13 @@ data class EntrySummary(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -180,7 +226,7 @@ data class EntrySummary(val value : String) : SQLSerializable, Serializable
 /**
  * Entry Text
  */
-data class EntryText(val value : String) : SQLSerializable, Serializable
+data class EntryText(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -198,6 +244,13 @@ data class EntryText(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -211,7 +264,7 @@ data class EntryText(val value : String) : SQLSerializable, Serializable
  */
 data class LogWidgetFormat(override val id : UUID,
                            val widgetFormat : Comp<WidgetFormat>,
-                           val dividerColor : Func<ColorId>) : Model
+                           val dividerColorTheme : Prim<ColorTheme>) : ToDocument, Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -221,7 +274,7 @@ data class LogWidgetFormat(override val id : UUID,
     init
     {
         this.widgetFormat.name      = "widget_format"
-        this.dividerColor.name      = "divider_color"
+        this.dividerColorTheme.name = "divider_color_theme"
     }
 
 
@@ -241,8 +294,8 @@ data class LogWidgetFormat(override val id : UUID,
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
                                    },
                                    // Divider Color
-                                   doc.at("divider_color") ap {
-                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   doc.at("divider_color_theme") ap {
+                                       effApply(::Prim, ColorTheme.fromDocument(it))
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -250,10 +303,22 @@ data class LogWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "divider_color_theme" to this.dividerColorTheme().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
 
 
     // -----------------------------------------------------------------------------------------

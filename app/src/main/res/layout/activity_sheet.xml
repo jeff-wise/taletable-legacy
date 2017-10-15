@@ -8,13 +8,22 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <FrameLayout
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dark_theme_dark_grey_10">
+    </FrameLayout>
+
+
     <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:fitsSystemWindows="true"
-        android:id="@+id/coordinatorLayout" >
+        android:id="@+id/coordinator_layout" >
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
@@ -111,32 +120,46 @@
             android:focusableInTouchMode="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:paddingBottom="60dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1">
 
+            </android.support.v4.view.ViewPager>
 
-        <RelativeLayout
-            android:id="@+id/bottom_sheet"
+        <FrameLayout
+            android:id="@+id/sheet_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/dark_theme_medium_grey_12"
-            app:behavior_hideable="true"
-            app:behavior_peekHeight="0dp"
-            app:layout_behavior="@string/bottom_sheet_behavior">
-        </RelativeLayout>
+            android:visibility="gone"
+            android:minHeight="40dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="60dp"
+            android:background="@color/dark_theme_medium_grey_12">
+        </FrameLayout>
 
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:src="@drawable/ic_fab_random"
-            app:layout_anchor="@id/bottom_sheet"
-            app:layout_anchorGravity="top|end"
-            app:backgroundTint="@color/dark_theme_light_green_13"
-            app:rippleColor="#FFF" />
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/bottom_sheet"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:background="@color/dark_theme_medium_grey_12"-->
+            <!--app:behavior_hideable="true"-->
+            <!--app:behavior_peekHeight="0dp"-->
+            <!--app:layout_behavior="@string/bottom_sheet_behavior">-->
+        <!--</RelativeLayout>-->
+
+
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="16dp"-->
+            <!--android:clickable="true"-->
+            <!--android:src="@drawable/ic_fab_random"-->
+            <!--app:layout_anchor="@id/bottom_sheet"-->
+            <!--app:layout_anchorGravity="top|end"-->
+            <!--app:backgroundTint="@color/dark_theme_light_green_13"-->
+            <!--app:rippleColor="#FFF" />-->
 
 
         <com.aurelhubert.ahbottomnavigation.AHBottomNavigation

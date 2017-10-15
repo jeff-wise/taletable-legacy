@@ -33,7 +33,7 @@ sealed class Value(open val valueId : Prim<ValueId>,
                    open val rulebookReference : Maybe<Comp<RulebookReference>>,
                    open val variables : Conj<Variable>,
                    open val valueSetId : ValueSetId)
-                    : Model, Serializable
+                    : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -69,6 +69,8 @@ sealed class Value(open val valueId : Prim<ValueId>,
     fun valueSetId() : ValueSetId = this.valueSetId
 
     fun description() : String? = getMaybePrim(this.description)?.value
+
+    fun maybeDescription() : Maybe<ValueDescription> = _getMaybePrim(this.description)
 
     fun rulebookReference() : Maybe<RulebookReference> = getMaybeComp(this.rulebookReference)
 
@@ -108,6 +110,9 @@ sealed class Value(open val valueId : Prim<ValueId>,
                                                         ValueType.TEXT,
                                                         this.type())))
     }
+
+
+    fun valueReference() = ValueReference(this.valueSetId(), this.valueId())
 
 
     // -----------------------------------------------------------------------------------------
@@ -198,6 +203,21 @@ data class ValueNumber(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value_id" to this.valueId().toDocument(),
+        "variables" to DocList(this.variables().map { it.toDocument() }),
+        "value" to this.value.value.toDocument()
+    ))
+    .maybeMerge(this.maybeDescription().apply {
+        Just(Pair("description", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.rulebookReference().apply {
+        Just(Pair("rulebook_reference", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -295,29 +315,47 @@ data class ValueText(override val id : UUID,
         fun fromDocument(doc : SchemaDoc,
                          valueSetId : ValueSetId) : ValueParser<ValueText> = when (doc)
         {
-            is DocDict -> effApply(::ValueText,
-                                   // Value Id
-                                   doc.at("value_id") ap { ValueId.fromDocument(it) },
-                                   // Description
-                                   split(doc.maybeAt("description"),
-                                         effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
-                                         { effApply(::Just, ValueDescription.fromDocument(it)) }),
-                                   // Rulebook Reference
-                                   split(doc.maybeAt("rulebook_reference"),
-                                         effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
-                                         { effApply(::Just, RulebookReference.fromDocument(it)) }),
-                                   // Variables
-                                   split(doc.maybeList("variables"),
-                                         effValue(mutableSetOf()),
-                                         { it.mapSetMut { Variable.fromDocument(it) } }),
-                                   // Value Set Id
-                                   effValue(valueSetId),
-                                   // Value
-                                   doc.at("value") ap { TextValue.fromDocument(it) }
-                                   )
+            is DocDict ->
+            {
+                apply(::ValueText,
+                      // Value Id
+                      doc.at("value_id") ap { ValueId.fromDocument(it) },
+                      // Description
+                      split(doc.maybeAt("description"),
+                            effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
+                            { effApply(::Just, ValueDescription.fromDocument(it)) }),
+                      // Rulebook Reference
+                      split(doc.maybeAt("rulebook_reference"),
+                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
+                            { effApply(::Just, RulebookReference.fromDocument(it)) }),
+                      // Variables
+                      split(doc.maybeList("variables"),
+                            effValue(mutableSetOf()),
+                            { it.mapSetMut { Variable.fromDocument(it) } }),
+                      // Value Set Id
+                      effValue(valueSetId),
+                      // Value
+                      doc.at("value") ap { TextValue.fromDocument(it) }
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value_id" to this.valueId().toDocument(),
+        "variables" to DocList(this.variables().map { it.toDocument() }),
+        "value" to this.value.value.toDocument()
+    ))
+    .maybeMerge(this.maybeDescription().apply {
+        Just(Pair("description", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.rulebookReference().apply {
+        Just(Pair("rulebook_reference", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -385,7 +423,7 @@ enum class ValueType
  * Value Reference
  */
 data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
-            : SQLSerializable, Serializable
+            : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -407,6 +445,16 @@ data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value_set_id" to this.valueSetId.toDocument(),
+        "value_id" to this.valueId.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -419,7 +467,7 @@ data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
 /**
  * Value Id
  */
-data class ValueId(val value : String) : SQLSerializable, Serializable
+data class ValueId(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -437,6 +485,13 @@ data class ValueId(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
@@ -448,7 +503,7 @@ data class ValueId(val value : String) : SQLSerializable, Serializable
 /**
  * Value Description
  */
-data class ValueDescription(val value : String) : SQLSerializable, Serializable
+data class ValueDescription(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -464,6 +519,14 @@ data class ValueDescription(val value : String) : SQLSerializable, Serializable
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -476,7 +539,7 @@ data class ValueDescription(val value : String) : SQLSerializable, Serializable
 /**
  * Number Value
  */
-data class NumberValue(val value : Double) : SQLSerializable, Serializable
+data class NumberValue(val value : Double) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -492,6 +555,14 @@ data class NumberValue(val value : Double) : SQLSerializable, Serializable
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value)
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -504,7 +575,7 @@ data class NumberValue(val value : Double) : SQLSerializable, Serializable
 /**
  * Text Value
  */
-data class TextValue(val value : String) : SQLSerializable, Serializable
+data class TextValue(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -519,6 +590,14 @@ data class TextValue(val value : String) : SQLSerializable, Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE

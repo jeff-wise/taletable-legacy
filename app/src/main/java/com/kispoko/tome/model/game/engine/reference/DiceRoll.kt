@@ -20,8 +20,8 @@ import effect.Val
 import effect.effApply
 import effect.effError
 import lulo.document.SchemaDoc
+import lulo.document.ToDocument
 import lulo.value.UnknownCase
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 
@@ -30,7 +30,7 @@ import java.io.Serializable
 /**
  * Boolean Reference
  */
-sealed class DiceRollReference : SumModel, Serializable
+sealed class DiceRollReference : ToDocument, SumModel, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -44,8 +44,7 @@ sealed class DiceRollReference : SumModel, Serializable
             {
                 "dice_roll"          -> DiceRollReferenceLiteral.fromDocument(doc)
                 "variable_reference" -> DiceRollReferenceVariable.fromDocument(doc)
-                else                 -> effError<ValueError,DiceRollReference>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -82,6 +81,13 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference(),
                 effApply(::DiceRollReferenceLiteral, DiceRoll.fromDocument(doc))
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.value.toDocument().withCase("dice_roll")
 
 
     // -----------------------------------------------------------------------------------------
@@ -135,6 +141,14 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.variableReference.toDocument()
+                                    .withCase("variable_reference")
+
+
+    // -----------------------------------------------------------------------------------------
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
@@ -152,7 +166,7 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
                     val valueString = it.valueString(sheetContext)
                     when (valueString)
                     {
-                        is Val -> TermComponent(it.label(), valueString.value)
+                        is Val -> TermComponent(it.labelString(), valueString.value)
                         is Err -> {
                             ApplicationLog.error(valueString.error)
                             null

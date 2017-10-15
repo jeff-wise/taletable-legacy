@@ -24,7 +24,7 @@ import java.io.Serializable
 /**
  * Boolean Reference
  */
-sealed class BooleanReference : SumModel, Serializable
+sealed class BooleanReference : ToDocument, SumModel, Serializable
 {
 
     companion object : Factory<BooleanReference>
@@ -70,6 +70,13 @@ data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference(), SQ
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value).withCase("literal")
+
+
+    // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -103,6 +110,14 @@ data class BooleanReferenceVariable(val variableReference : VariableReference)
         override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanReference> =
                 effApply(::BooleanReferenceVariable, VariableReference.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.variableReference.toDocument()
+                                    .withCase("variable")
 
 
     // -----------------------------------------------------------------------------------------

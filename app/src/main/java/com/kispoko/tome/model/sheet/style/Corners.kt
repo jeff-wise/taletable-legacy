@@ -24,7 +24,8 @@ data class Corners(override val id : UUID,
                    val topLeftRadius : Prim<TopLeftCornerRadius>,
                    val topRightRadius : Prim<TopRightCornerRadius>,
                    val bottomRightRadius : Prim<BottomRightCornerRadius>,
-                   val bottomLeftRadius : Prim<BottomLeftCornerRadius>) : Model, Serializable
+                   val bottomLeftRadius : Prim<BottomLeftCornerRadius>)
+                    : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -91,6 +92,18 @@ data class Corners(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "top_left_radius" to this.topLeftRadius.value.toDocument(),
+        "top_right_radius" to this.topRightRadius.value.toDocument(),
+        "bottom_right_radius" to this.bottomRightRadius.value.toDocument(),
+        "bottom_left_radius" to this.bottomLeftRadius.value.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -122,7 +135,7 @@ data class Corners(override val id : UUID,
 /**
  * Top Left Corner Radius
  */
-data class TopLeftCornerRadius(val value : Float) : SQLSerializable, Serializable
+data class TopLeftCornerRadius(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -142,6 +155,14 @@ data class TopLeftCornerRadius(val value : Float) : SQLSerializable, Serializabl
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -154,7 +175,7 @@ data class TopLeftCornerRadius(val value : Float) : SQLSerializable, Serializabl
 /**
  * Top Right Corner Radius
  */
-data class TopRightCornerRadius(val value : Float) : SQLSerializable, Serializable
+data class TopRightCornerRadius(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -174,6 +195,13 @@ data class TopRightCornerRadius(val value : Float) : SQLSerializable, Serializab
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -186,7 +214,7 @@ data class TopRightCornerRadius(val value : Float) : SQLSerializable, Serializab
 /**
  * Bottom Right Corner Radius
  */
-data class BottomRightCornerRadius(val value : Float) : SQLSerializable, Serializable
+data class BottomRightCornerRadius(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -206,6 +234,14 @@ data class BottomRightCornerRadius(val value : Float) : SQLSerializable, Seriali
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
@@ -218,7 +254,7 @@ data class BottomRightCornerRadius(val value : Float) : SQLSerializable, Seriali
 /**
  * Bottom Left Corner Radius
  */
-data class BottomLeftCornerRadius(val value : Float) : SQLSerializable, Serializable
+data class BottomLeftCornerRadius(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -237,6 +273,14 @@ data class BottomLeftCornerRadius(val value : Float) : SQLSerializable, Serializ
         fun default() = BottomLeftCornerRadius(0.0f)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE

@@ -34,7 +34,8 @@ data class WidgetFormat(override val id : UUID,
                         val backgroundColorTheme : Prim<ColorTheme>,
                         val corners : Comp<Corners>,
                         val margins : Comp<Spacing>,
-                        val padding : Comp<Spacing>) : Model, Serializable
+                        val padding : Comp<Spacing>)
+                         : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -124,6 +125,20 @@ data class WidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "width" to this.width.value.toDocument(),
+        "alignment" to this.alignment().toDocument(),
+        "background_color_theme" to this.backgroundColorTheme().toDocument(),
+        "corners" to this.corners().toDocument(),
+        "margins" to this.margins().toDocument(),
+        "padding" to this.padding().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
@@ -156,7 +171,7 @@ data class WidgetFormat(override val id : UUID,
 /**
  * Widget Width
  */
-data class WidgetWidth(val value : Int) : SQLSerializable, Serializable
+data class WidgetWidth(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -173,6 +188,13 @@ data class WidgetWidth(val value : Int) : SQLSerializable, Serializable
 
         fun default() = WidgetWidth(1)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
 
 
     // -----------------------------------------------------------------------------------------

@@ -46,7 +46,8 @@ data class Engine(override val id : UUID,
                   private val functions : Conj<Function>,
                   private val programs : Conj<Program>,
                   private val summations : Conj<Summation>,
-                  val gameId : GameId) : Model, Serializable
+                  val gameId : GameId)
+                   : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -84,7 +85,7 @@ data class Engine(override val id : UUID,
 
     init
     {
-        this.mechanics().forEach {
+        this.mechanicSet().forEach {
             if (!mechanicsByCategoryId.containsKey(it.categoryId()))
                 mechanicsByCategoryId.put(it.categoryId(), mutableSetOf<Mechanic>())
             val mechanicsInCategorySet = mechanicsByCategoryId[it.categoryId()]
@@ -115,43 +116,57 @@ data class Engine(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc: SchemaDoc, gameId : GameId) : ValueParser<Engine> = when (doc)
+        fun fromDocument(doc : SchemaDoc, gameId : GameId) : ValueParser<Engine> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::Engine,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
-                         // Value Sets
-                         doc.list("value_sets") apply {
-                             effApply(::Conj, it.mapSetMut { ValueSet.fromDocument(it) })
-                         },
-                         // Mechanics
-                         doc.list("mechanics") apply {
-                             effApply(::Conj, it.mapSetMut { Mechanic.fromDocument(it) })
-                         },
-                         // Mechanic Categories
-                         doc.list("mechanic_categories") apply {
-                             effApply(::Conj, it.mapSetMut { MechanicCategory.fromDocument(it) })
-                         },
-                         // Functions
-                         doc.list("functions") apply {
-                             effApply(::Conj, it.mapSetMut { Function.fromDocument(it) })
-                         },
-                         // Programs
-                         doc.list("programs") apply {
-                             effApply(::Conj, it.mapSetMut { Program.fromDocument(it) })
-                         },
-                         // Summations
-                         doc.list("summations") apply {
-                             effApply(::Conj, it.mapSetMut { Summation.fromDocument(it) })
-                         },
-                         effValue(gameId)
-                         )
+                apply(::Engine,
+                      // Model Id
+                      effValue(UUID.randomUUID()),
+                      // Value Sets
+                      doc.list("value_sets") apply {
+                          effApply(::Conj, it.mapSetMut { ValueSet.fromDocument(it) })
+                      },
+                      // Mechanics
+                      doc.list("mechanics") apply {
+                          effApply(::Conj, it.mapSetMut { Mechanic.fromDocument(it) })
+                      },
+                      // Mechanic Categories
+                      doc.list("mechanic_categories") apply {
+                          effApply(::Conj, it.mapSetMut { MechanicCategory.fromDocument(it) })
+                      },
+                      // Functions
+                      doc.list("functions") apply {
+                          effApply(::Conj, it.mapSetMut { Function.fromDocument(it) })
+                      },
+                      // Programs
+                      doc.list("programs") apply {
+                          effApply(::Conj, it.mapSetMut { Program.fromDocument(it) })
+                      },
+                      // Summations
+                      doc.list("summations") apply {
+                          effApply(::Conj, it.mapSetMut { Summation.fromDocument(it) })
+                      },
+                      effValue(gameId)
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value_sets" to DocList(this.valueSets().map { it.toDocument() }),
+        "mechanics" to DocList(this.mechanicSet().map { it.toDocument() }),
+        "mechanic_categories" to DocList(this.mechanicCategorySet().map { it.toDocument() }),
+        "functions" to DocList(this.functionSet().map { it.toDocument() }),
+        "programs" to DocList(this.programSet().map { it.toDocument() }),
+        "summations" to DocList(this.summationSet().map { it.toDocument() })
+    ))
 
 
     // -----------------------------------------------------------------------------------------
@@ -189,14 +204,54 @@ data class Engine(override val id : UUID,
             }
         }
 
+//
+//    fun removeValueSet(valueSetId : ValueSetId) : Boolean
+//    {
+//        val newValueSets : MutableSet<ValueSet> = mutableSetOf()
+//
+//        this.valueSets().forEach {
+//            if (it.valueSetId() != valueSetId)
+//                newValueSets.add(it)
+//        }
+//
+//        val removedSet = newValueSets.size != this.valueSets().size
+//
+//        this.valueSets.set.clear()
+//
+//        newValueSets.forEach {
+//            this.valueSets.set.add(it)
+//        }
+//
+//        return removedSet
+//    }
+
+
+//    fun updateValueSet(updatedValueSet : ValueSet)
+//    {
+//        Log.d("***ENGINE", "called update value set")
+//        val removed = this.removeValueSet(updatedValueSet.valueSetId())
+//        if (removed) {
+//            this.valueSets.set.add(updatedValueSet)
+//            Log.d("***ENGINE", "updated value set")
+//            Log.d("***ENGINE", updatedValueSet.toString())
+//        }
+//
+//    }
+
+//
+//    fun addValueSet(newValueSet : ValueSet)
+//    {
+//        this.valueSets.set.add(newValueSet)
+//    }
+
 
     // Engine Data > Values
     // -----------------------------------------------------------------------------------------
 
 
-    fun value(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<Value> =
+    fun value(valueReference : ValueReference, gameId : GameId) : AppEff<Value> =
             this.valueSet(valueReference.valueSetId)
-                    .apply { it.value(valueReference.valueId, sheetContext) }
+                    .apply { it.value(valueReference.valueId, gameId) }
 
 
     fun textValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueText> =
@@ -213,7 +268,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Functions
     // -----------------------------------------------------------------------------------------
 
-    fun functions() : Set<Function> = this.functions.set
+    fun functionSet() : Set<Function> = this.functions.set
 
 
     fun function(functionId : FunctionId) : AppEff<Function> =
@@ -224,6 +279,9 @@ data class Engine(override val id : UUID,
     // Engine Data > Programs
     // -----------------------------------------------------------------------------------------
 
+    fun programSet() : Set<Program> = this.programs.value
+
+
     fun program(programId : ProgramId) : AppEff<Program> =
             note(this.programById[programId],
                  AppEngineError(ProgramDoesNotExist(programId)))
@@ -232,7 +290,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Mechanics
     // -----------------------------------------------------------------------------------------
 
-    fun mechanics() : Set<Mechanic> = this.mechanics.set
+    fun mechanicSet() : Set<Mechanic> = this.mechanics.set
 
 
     fun mechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic> =
@@ -242,12 +300,18 @@ data class Engine(override val id : UUID,
     // Engine Data > Mechanic Categories
     // -----------------------------------------------------------------------------------------
 
+    fun mechanicCategorySet() : Set<MechanicCategory> = this.mechanicCategories.set
+
+
     fun mechanicCategoryWithId(categoryId : MechanicCategoryId) : MechanicCategory? =
             this.mechanicCategoryById[categoryId]
 
 
     // Engine Data > Summations
     // -----------------------------------------------------------------------------------------
+
+    fun summationSet() : Set<Summation> = this.summations.set
+
 
     fun summation(summationid : SummationId) : AppEff<Summation> =
             note(this.summationById[summationid],
@@ -259,36 +323,81 @@ data class Engine(override val id : UUID,
 /**
  * Engine Value Type
  */
-sealed class EngineValueType : SQLSerializable, Serializable
+sealed class EngineValueType : ToDocument, SQLSerializable, Serializable
 {
 
     object Number : EngineValueType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"number"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("number")
+
     }
 
 
     object Text : EngineValueType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"text"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("text")
+
     }
 
 
     object Boolean : EngineValueType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"boolean"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("boolean")
+
     }
 
 
     object DiceRoll : EngineValueType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"dice_roll"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("dice_roll")
+
     }
 
 
     object ListText : EngineValueType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"list_text"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("list_text")
+
     }
 
 
@@ -326,7 +435,7 @@ sealed class EngineValueType : SQLSerializable, Serializable
  * Engine Value
  */
 @Suppress("UNCHECKED_CAST")
-sealed class EngineValue : SumModel, Serializable
+sealed class EngineValue : ToDocument, SumModel, Serializable
 {
 
     companion object : Factory<EngineValue>
@@ -344,8 +453,7 @@ sealed class EngineValue : SumModel, Serializable
                                             as ValueParser<EngineValue>
                 "list_text"            -> EngineTextListValue.fromDocument(doc)
                                             as ValueParser<EngineValue>
-                else                   -> effError<ValueError,EngineValue>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                   -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -372,6 +480,13 @@ data class EngineValueNumber(val value : Double) : EngineValue(), SQLSerializabl
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value).withCase("engine_value_number")
 
 
     // -----------------------------------------------------------------------------------------
@@ -416,6 +531,13 @@ data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value).withCase("engine_value_text")
 
 
     // -----------------------------------------------------------------------------------------
@@ -464,6 +586,13 @@ data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializa
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value).withCase("engine_value_boolean")
+
+
+    // -----------------------------------------------------------------------------------------
     // ENGINE VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -503,6 +632,13 @@ data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), Model
         override fun fromDocument(doc: SchemaDoc): ValueParser<EngineValueDiceRoll> =
                 apply(::EngineValueDiceRoll, DiceRoll.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.value.toDocument().withCase("dice_roll")
 
 
     // -----------------------------------------------------------------------------------------
@@ -555,6 +691,15 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+            "value" to DocList(this.value.map { DocText(it) })
+    )).withCase("list_text")
 
 
     // -----------------------------------------------------------------------------------------

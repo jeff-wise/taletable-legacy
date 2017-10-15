@@ -35,26 +35,57 @@ import java.util.*
 /**
  * Quote View Type
  */
-sealed class QuoteViewType : SQLSerializable, Serializable
+sealed class QuoteViewType : ToDocument, SQLSerializable, Serializable
 {
 
     object Source : QuoteViewType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"source"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("source")
+
     }
 
 
     object IconOverSource : QuoteViewType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"icon_over_source"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("icon_over_source")
+
     }
 
 
     object NoIcon : QuoteViewType()
     {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
         override fun asSQLValue() : SQLValue = SQLText({"no_icon"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("no_icon")
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -84,7 +115,7 @@ data class QuoteWidgetFormat(override val id : UUID,
                              val quoteStyle : Comp<TextStyle>,
                              val sourceStyle : Comp<TextStyle>,
                              val iconFormat : Comp<IconFormat>)
-                             : Model, Serializable
+                             : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -155,6 +186,18 @@ data class QuoteWidgetFormat(override val id : UUID,
                                   defaultIconFormat)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "quote_style" to this.quoteStyle().toDocument(),
+        "source_style" to this.sourceStyle().toDocument(),
+        "icon_format" to this.iconFormat().toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
