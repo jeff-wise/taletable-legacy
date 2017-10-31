@@ -113,3 +113,15 @@ class SummationDoesNotExist(val summationId : SummationId) : EngineError()
 
     override fun logMessage(): String = userMessage()
 }
+
+
+class SummationIsNotDiceRoll(val summationId : SummationId) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Summation Is Not Dice Roll
+                Summation Id: $summationId
+            """
+
+    override fun logMessage(): String = userMessage()
+}

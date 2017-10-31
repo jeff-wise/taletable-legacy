@@ -3,8 +3,14 @@ package com.kispoko.tome.model.sheet.group
 
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.PaintDrawable
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -21,6 +27,7 @@ import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -70,18 +77,21 @@ data class Group(override val id : UUID,
     {
         fun fromDocument(doc : SchemaDoc, index : Int) : ValueParser<Group> = when (doc)
         {
-            is DocDict -> effApply(::Group,
-                                   // Format
-                                   split(doc.maybeAt("format"),
-                                         effValue(GroupFormat.default),
-                                         { GroupFormat.fromDocument(it)}),
-                                   // Index
-                                   effValue(GroupIndex(index)),
-                                   // Groups
-                                   doc.list("rows") ap { docList ->
-                                       docList.mapIndexed {
-                                           doc, index -> GroupRow.fromDocument(doc, index) }
-                                   })
+            is DocDict ->
+            {
+                apply(::Group,
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(GroupFormat.default()),
+                            { GroupFormat.fromDocument(it)}),
+                      // Index
+                      effValue(GroupIndex(index)),
+                      // Groups
+                      doc.list("rows") ap { docList ->
+                          docList.mapIndexed {
+                              doc, index -> GroupRow.fromDocument(doc, index) }
+                      })
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -122,9 +132,9 @@ data class Group(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext)
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
     {
-        this.rows.list.forEach { it.onSheetComponentActive(sheetContext) }
+        this.rows.list.forEach { it.onSheetComponentActive(sheetUIContext) }
     }
 
 
@@ -275,15 +285,14 @@ data class GroupFormat(override val id : UUID,
         }
 
 
-        val default : GroupFormat =
-                GroupFormat(defaultBackgroundColorTheme,
-                            defaultMargins,
-                            defaultPadding,
-                            defaultCorners,
-                            defaultShowDivider,
-                            defaultDividerColorTheme,
-                            defaultDividerMargins,
-                            defaultDividerThickness)
+        fun default() = GroupFormat(defaultBackgroundColorTheme,
+                                    defaultMargins,
+                                    defaultPadding,
+                                    defaultCorners,
+                                    defaultShowDivider,
+                                    defaultDividerColorTheme,
+                                    defaultDividerMargins,
+                                    defaultDividerThickness)
 
     }
 
@@ -396,20 +405,110 @@ fun groupView(group : Group, sheetUIContext: SheetUIContext) : View
 
 private fun viewLayout(format : GroupFormat, sheetUIContext: SheetUIContext) : LinearLayout
 {
-    val layout = LinearLayoutBuilder()
+//    val layout = LinearLayoutBuilder()
+//
+//    layout.orientation          = LinearLayout.VERTICAL;
+//    layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+//    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//    layout.marginSpacing        = format.margins()
+//
+//    layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId,
+//                                                     format.backgroundColorTheme())
+//    layout.corners              = format.corners()
+//
+//    return layout.linearLayout(sheetUIContext.context)
 
-    layout.orientation          = LinearLayout.VERTICAL;
-    layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.marginSpacing        = format.margins()
+    val layout = GroupTouchView(sheetUIContext.context)
 
-    layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.backgroundColorTheme())
-    layout.corners              = format.corners()
+    layout.orientation = LinearLayout.VERTICAL
 
-    return layout.linearLayout(sheetUIContext.context)
+    val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                 LinearLayout.LayoutParams.WRAP_CONTENT)
+
+
+    val margins = format.margins()
+    layoutParams.leftMargin = margins.leftPx()
+    layoutParams.rightMargin = margins.rightPx()
+    layoutParams.topMargin = margins.topPx()
+    layoutParams.bottomMargin = margins.bottomPx()
+
+    layout.layoutParams = layoutParams
+
+//        val padding = widgetFormat.padding()
+//        layout.setPadding(padding.leftPx(),
+//                          padding.topPx(),
+//                          padding.rightPx(),
+//                          padding.bottomPx())
+
+
+    // Background
+    val bgDrawable = PaintDrawable()
+
+    val corners = format.corners()
+    val topLeft  = Util.dpToPixel(corners.topLeftCornerRadiusDp()).toFloat()
+    val topRight : Float   = Util.dpToPixel(corners.topRightCornerRadiusDp()).toFloat()
+    val bottomRight : Float = Util.dpToPixel(corners.bottomRightCornerRadiusDp()).toFloat()
+    val bottomLeft :Float = Util.dpToPixel(corners.bottomLeftCornerRadiusDp()).toFloat()
+
+    val radii = floatArrayOf(topLeft, topLeft, topRight, topRight,
+                     bottomRight, bottomRight, bottomLeft, bottomLeft)
+
+    bgDrawable.setCornerRadii(radii)
+
+    val bgColor = SheetManager.color(sheetUIContext.sheetId,
+                                     format.backgroundColorTheme())
+
+    bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
+
+        layout.background = bgDrawable
+
+
+    return layout
 }
+
+
+class GroupTouchView(context : Context) : LinearLayout(context)
+{
+
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?) : Boolean
+    {
+        if (ev != null)
+        {
+            when (ev.action)
+            {
+                MotionEvent.ACTION_UP ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_MOVE ->
+                {
+                    // Log.d("***GROUP", "x: ${ev.x} y: ${ev.y}")
+                }
+                MotionEvent.ACTION_OUTSIDE ->
+                {
+                    //SheetActivityGlobal.touchHandler.removeCallbacks(runnable)
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_SCROLL ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_CANCEL ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+            }
+        }
+
+        return false
+    }
+
+
+}
+
 
 
 private fun rowsView(group : Group, sheetUIContext: SheetUIContext) : View

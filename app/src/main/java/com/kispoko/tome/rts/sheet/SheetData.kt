@@ -11,10 +11,11 @@ import com.kispoko.tome.model.game.engine.EngineValueDiceRoll
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.reference.*
-import com.kispoko.tome.model.game.engine.summation.Summation
-import com.kispoko.tome.model.game.engine.variable.NumberVariableSummationValue
+import com.kispoko.tome.model.game.engine.variable.VariableName
+import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.rts.game.GameManager
 import effect.*
+
 
 
 /**
@@ -41,7 +42,7 @@ object SheetData
             is DataReferenceNumber -> this.number(sheetContext, reference.reference) ap {
                 when (it) {
                     is Just -> effValue<AppError,Maybe<EngineValue>>(Just(EngineValueNumber(it.value)))
-                    else    -> effValue<AppError,Maybe<EngineValue>>(Nothing())
+                    else    -> effValue(Nothing())
                 }
             }
         }
@@ -81,7 +82,8 @@ object SheetData
      * Resolve a number reference.
      */
     fun number(sheetContext : SheetContext,
-               numberReference : NumberReference) : AppEff<Maybe<Double>> =
+               numberReference : NumberReference,
+               context : Maybe<VariableNamespace> = Nothing()) : AppEff<Maybe<Double>> =
         when (numberReference)
         {
             is NumberReferenceLiteral -> effValue(Just(numberReference.value))
@@ -90,14 +92,15 @@ object SheetData
                         .apply({ it.numberValue(numberReference.valueReference, sheetContext) })
                         .apply({ effValue<AppError,Maybe<Double>>(Just(it.value())) })
             is NumberReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
-                    .apply( { it.numberVariable(numberReference.variableReference)})
+                    .apply( { it.numberVariable(numberReference.variableReference, context)})
                     .apply( { it.value(sheetContext) })
 
         }
 
 
     fun numbers(sheetContext : SheetContext,
-                numberReference : NumberReference) : AppEff<List<Maybe<Double>>> =
+                numberReference : NumberReference,
+                context : Maybe<VariableNamespace> = Nothing()) : AppEff<List<Maybe<Double>>> =
         when (numberReference)
         {
             is NumberReferenceLiteral -> effValue(listOf(Just(numberReference.value)))

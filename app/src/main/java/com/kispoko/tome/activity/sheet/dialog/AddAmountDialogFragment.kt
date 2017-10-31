@@ -598,7 +598,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         icon.image              = R.drawable.icon_check
 
         val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_3")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 

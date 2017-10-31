@@ -41,7 +41,8 @@ import java.util.*
 import com.kispoko.tome.activity.sheet.dialog.*
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.model.game.engine.variable.NumberVariable
+
 
 
 /**
@@ -204,7 +205,8 @@ sealed class StoryPart : ToDocument, Model, Serializable
  * Story Part Span
  */
 data class StoryPartSpan(override val id : UUID,
-                         val format : Comp<TextFormat>,
+                         val format : Comp<ElementFormat>,
+                         val textStyle : Comp<TextStyle>,
                          val text : Prim<StoryPartText>) : StoryPart(), Serializable
 {
 
@@ -212,22 +214,34 @@ data class StoryPartSpan(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : TextFormat, text : StoryPartText)
-        : this(UUID.randomUUID(), Comp(format), Prim(text))
+    constructor(format : ElementFormat,
+                textStyle : TextStyle,
+                text : StoryPartText)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Comp(textStyle),
+               Prim(text))
 
 
     companion object : Factory<StoryPartSpan>
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartSpan> = when (doc)
         {
-            is DocDict -> effApply(::StoryPartSpan,
-                                   // Text Format
-                                   split(doc.maybeAt("format"),
-                                         effValue(TextFormat.default()),
-                                         { TextFormat.fromDocument(it) }),
-                                   // Text
-                                   doc.at("text") ap { StoryPartText.fromDocument(it) }
-                                   )
+            is DocDict ->
+            {
+                apply(::StoryPartSpan,
+                      // Element Format
+                      split(doc.maybeAt("format"),
+                            effValue(ElementFormat.default()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Text Style
+                      split(doc.maybeAt("text_style"),
+                            effValue(TextStyle.default()),
+                            { TextStyle.fromDocument(it) }),
+                      // Text
+                      doc.at("text") ap { StoryPartText.fromDocument(it) }
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -239,6 +253,7 @@ data class StoryPartSpan(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "format" to this.format().toDocument(),
+        "text_style" to this.textStyle().toDocument(),
         "text" to this.text().toDocument()
     ))
 
@@ -251,7 +266,9 @@ data class StoryPartSpan(override val id : UUID,
 
     fun textString() : String = this.text.value.value
 
-    fun format() : TextFormat = this.format.value
+    fun format() : ElementFormat = this.format.value
+
+    fun textStyle() : TextStyle = this.textStyle.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -277,9 +294,11 @@ data class StoryPartSpan(override val id : UUID,
  * Story Part Variable
  */
 data class StoryPartVariable(override val id : UUID,
-                             val format : Comp<TextFormat>,
+                             val format : Comp<ElementFormat>,
+                             val textStyle : Comp<TextStyle>,
                              val variableId : Prim<VariableId>,
-                             val numericEditorType : Maybe<Prim<NumericEditorType>>)
+                             val numericEditorType : Maybe<Prim<NumericEditorType>>,
+                             val numberFormat : Prim<NumberFormat>)
                               : StoryPart(), Serializable
 {
 
@@ -294,13 +313,17 @@ data class StoryPartVariable(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : TextFormat,
+    constructor(format : ElementFormat,
+                textStyle : TextStyle,
                 variableId : VariableId,
-                numericEditorType : Maybe<NumericEditorType>)
+                numericEditorType : Maybe<NumericEditorType>,
+                numberFormat : NumberFormat)
         : this(UUID.randomUUID(),
                Comp(format),
+               Comp(textStyle),
                Prim(variableId),
-               maybeLiftPrim(numericEditorType))
+               maybeLiftPrim(numericEditorType),
+               Prim(numberFormat))
 
 
     companion object : Factory<StoryPartVariable>
@@ -309,18 +332,26 @@ data class StoryPartVariable(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::StoryPartVariable,
-                         // Format
-                         split(doc.maybeAt("format"),
-                               effValue(TextFormat.default()),
-                               { TextFormat.fromDocument(it) }),
-                         // Variable Id
-                         doc.at("variable_id") ap { VariableId.fromDocument(it) },
-                         // Numeric Editor Type
-                         split(doc.maybeAt("numeric_editor_type"),
-                               effValue<ValueError,Maybe<NumericEditorType>>(Nothing()),
-                               { effApply(::Just, NumericEditorType.fromDocument(it)) })
-                         )
+                apply(::StoryPartVariable,
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(ElementFormat.default()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Text Styel
+                      split(doc.maybeAt("text_style"),
+                             effValue(TextStyle.default()),
+                             { TextStyle.fromDocument(it) }),
+                      // Variable Id
+                      doc.at("variable_id") ap { VariableId.fromDocument(it) },
+                      // Numeric Editor Type
+                      split(doc.maybeAt("numeric_editor_type"),
+                            effValue<ValueError,Maybe<NumericEditorType>>(Nothing()),
+                            { effApply(::Just, NumericEditorType.fromDocument(it)) }),
+                      // Number Format
+                      split(doc.maybeAt("number_format"),
+                            effValue<ValueError,NumberFormat>(NumberFormat.Normal),
+                            { NumberFormat.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -333,6 +364,7 @@ data class StoryPartVariable(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "format" to this.format().toDocument(),
+        "text_style" to this.textStyle().toDocument(),
         "variable_id" to this.variableId().toDocument()
     ))
     .maybeMerge(this.numericEditorTypeMaybe().apply {
@@ -343,7 +375,9 @@ data class StoryPartVariable(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun format() : TextFormat = this.format.value
+    fun format() : ElementFormat = this.format.value
+
+    fun textStyle() : TextStyle = this.textStyle.value
 
     fun variableId() : VariableId = this.variableId.value
 
@@ -354,6 +388,8 @@ data class StoryPartVariable(override val id : UUID,
     fun numericEditorTypeMaybe() : Maybe<NumericEditorType> = _getMaybePrim(this.numericEditorType)
 
     fun numericEditorType() : NumericEditorType? = getMaybePrim(this.numericEditorType)
+
+    fun numberFormat() : NumberFormat = this.numberFormat.value
 
 
     fun valueString(sheetContext : SheetContext) : String
@@ -473,7 +509,8 @@ data class StoryPartAction(override val id : UUID,
                            val text : Prim<StoryPartText>,
                            val rollSummationId : Maybe<Prim<SummationId>>,
                            val procedureId : Maybe<Prim<ProcedureId>>,
-                           val textFormat : Comp<TextFormat>,
+                           val format : Comp<ElementFormat>,
+                           val textStyle : Comp<TextStyle>,
                            val iconFormat : Comp<IconFormat>,
                            val showProcedureDialog : Prim<ShowProcedureDialog>)
                             : StoryPart(), Serializable
@@ -486,14 +523,16 @@ data class StoryPartAction(override val id : UUID,
     constructor(text : StoryPartText,
                 rollSummationId : Maybe<SummationId>,
                 procedureId : Maybe<ProcedureId>,
-                textFormat : TextFormat,
+                format : ElementFormat,
+                textStyle : TextStyle,
                 iconFormat : IconFormat,
                 showProcedureDialog : ShowProcedureDialog)
         : this(UUID.randomUUID(),
                Prim(text),
                maybeLiftPrim(rollSummationId),
                maybeLiftPrim(procedureId),
-               Comp(textFormat),
+               Comp(format),
+               Comp(textStyle),
                Comp(iconFormat),
                Prim(showProcedureDialog))
 
@@ -504,30 +543,34 @@ data class StoryPartAction(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::StoryPartAction,
-                         // Text
-                         doc.at("text") ap { StoryPartText.fromDocument(it) },
-                         // Roll Summation Id
-                         split(doc.maybeAt("roll_summation_id"),
-                               effValue<ValueError,Maybe<SummationId>>(Nothing()),
-                               { effApply(::Just, SummationId.fromDocument(it)) }),
-                         // Procedure Id
-                         split(doc.maybeAt("procedure_id"),
-                               effValue<ValueError,Maybe<ProcedureId>>(Nothing()),
-                               { effApply(::Just, ProcedureId.fromDocument(it)) }),
-                         // Text Format
-                         split(doc.maybeAt("text_format"),
-                               effValue(TextFormat.default()),
-                               { TextFormat.fromDocument(it) }),
-                         // Icon Format
-                         split(doc.maybeAt("icon_format"),
-                               effValue(IconFormat.default()),
-                               { IconFormat.fromDocument(it) }),
-                         // Show Procedure Dialog
-                         split(doc.maybeAt("show_procedure_dialog"),
-                               effValue(ShowProcedureDialog(false)),
-                               { ShowProcedureDialog.fromDocument(it) })
-                         )
+                apply(::StoryPartAction,
+                      // Text
+                      doc.at("text") ap { StoryPartText.fromDocument(it) },
+                      // Roll Summation Id
+                      split(doc.maybeAt("roll_summation_id"),
+                            effValue<ValueError,Maybe<SummationId>>(Nothing()),
+                            { effApply(::Just, SummationId.fromDocument(it)) }),
+                      // Procedure Id
+                      split(doc.maybeAt("procedure_id"),
+                            effValue<ValueError,Maybe<ProcedureId>>(Nothing()),
+                            { effApply(::Just, ProcedureId.fromDocument(it)) }),
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(ElementFormat.default()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Text Style
+                      split(doc.maybeAt("text_style"),
+                            effValue(TextStyle.default()),
+                            { TextStyle.fromDocument(it) }),
+                      // Icon Format
+                      split(doc.maybeAt("icon_format"),
+                            effValue(IconFormat.default()),
+                            { IconFormat.fromDocument(it) }),
+                      // Show Procedure Dialog
+                      split(doc.maybeAt("show_procedure_dialog"),
+                            effValue(ShowProcedureDialog(false)),
+                            { ShowProcedureDialog.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -540,7 +583,8 @@ data class StoryPartAction(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "text" to this.text().toDocument(),
-        "text_format" to this.textFormat().toDocument(),
+        "format" to this.format().toDocument(),
+        "text_style" to this.textStyle().toDocument(),
         "icon_format" to this.iconFormat().toDocument(),
         "show_procedure_dialog" to this.showProcedureDialog().toDocument()
         ))
@@ -566,7 +610,9 @@ data class StoryPartAction(override val id : UUID,
 
     fun textString() : String = this.text.value.value
 
-    fun textFormat() : TextFormat = this.textFormat.value
+    fun format() : ElementFormat = this.format.value
+
+    fun textStyle() : TextStyle = this.textStyle.value
 
     fun iconFormat() : IconFormat = this.iconFormat.value
 
@@ -811,6 +857,8 @@ object StoryWidgetView
 
         val builder = SpannableStringBuilder()
 
+        val sheetContext = SheetContext(sheetUIContext)
+
         val phrases : MutableList<Phrase> = mutableListOf()
 
         var index = 0
@@ -828,8 +876,31 @@ object StoryWidgetView
                 }
                 is StoryPartVariable ->
                 {
-                    val text = storyPart.valueString(SheetContext(sheetUIContext))
+                    val valueVariableEff = storyPart.valueVariable(sheetContext)
+                    // TODO move this logic in variable
+                    val text = when (valueVariableEff)
+                    {
+                        is Val ->
+                        {
+                            val valueVar = valueVariableEff.value
+                            when (valueVar)
+                            {
+                                is NumberVariable -> {
+                                    val number = valueVar.valueOrZero(sheetContext)
+                                    storyPart.numberFormat().formattedString(number)
+                                }
+                                else -> storyPart.valueString(SheetContext(sheetUIContext))
+                            }
+                        }
+                        is Err -> {
+                            ApplicationLog.error(valueVariableEff.error)
+                            ""
+                        }
+
+                    }
+
                     builder.append(text)
+
                     val textLen = text.length
                     phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
                     index += textLen
@@ -857,13 +928,13 @@ object StoryWidgetView
             {
                 is StoryPartSpan ->
                 {
-                    this.formatSpans(storyPart.format(), sheetUIContext).forEach {
+                    this.formatSpans(storyPart.textStyle(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
                 }
                 is StoryPartVariable ->
                 {
-                    this.formatSpans(storyPart.format(), sheetUIContext).forEach {
+                    this.formatSpans(storyPart.textStyle(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
 
@@ -930,7 +1001,7 @@ object StoryWidgetView
                     val imageSpan = CenteredImageSpan(vectorDrawable)
                     builder.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
 
-                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
+                    this.formatSpans(storyPart.textStyle(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
 
@@ -952,21 +1023,22 @@ object StoryWidgetView
                     {
                         Log.d("***STORYWIDGET", "summation id is not null")
 
-                        val summation = GameManager.engine(sheetUIContext.gameId)
-                                                   .apply{ it.summation(summationId)}
+                        val sheetContext = SheetContext(sheetUIContext)
 
-                        summation apDo {
-                            Log.d("***STORYWIDGET", "in apDo")
-                            val diceRoll = it.diceRoll(SheetContext(sheetUIContext))
-                            if (diceRoll != null)
+                        val diceRoll = SheetManager.summation(summationId, sheetContext)
+                                                    .apply { it.diceRoll(sheetContext) }
+
+                        when (diceRoll)
+                        {
+                            is Val ->
                             {
-                                Log.d("***STORYWIDGET", "dice roll is not null")
                                 val sheetActivity = sheetUIContext.context as SheetActivity
                                 val clickSpan = object : ClickableSpan() {
                                     override fun onClick(view: View?) {
-                                        Log.d("***STORYWIDGET", "action on click")
-                                        val dialog = DiceRollDialog.newInstance(diceRoll,
-                                                SheetContext(sheetUIContext))
+                                        val dialog = DiceRollDialog.newInstance(
+                                                                    diceRoll.value,
+                                                                    Nothing(),
+                                                                    SheetContext(sheetUIContext))
                                         dialog.show(sheetActivity.supportFragmentManager, "")
                                     }
 
@@ -976,6 +1048,7 @@ object StoryWidgetView
 
                                 builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                             }
+                            is Err -> ApplicationLog.error(diceRoll.error)
                         }
                     }
 
@@ -987,18 +1060,16 @@ object StoryWidgetView
     }
 
 
-    fun formatSpans(textFormat : TextFormat, sheetUIContext : SheetUIContext) : List<Any>
+    fun formatSpans(textStyle : TextStyle, sheetUIContext : SheetUIContext) : List<Any>
     {
-        val style = textFormat.style()
-
-        val sizePx = Util.spToPx(textFormat.style().sizeSp(), sheetUIContext.context)
+        val sizePx = Util.spToPx(textStyle.sizeSp(), sheetUIContext.context)
         val sizeSpan = AbsoluteSizeSpan(sizePx)
 
-        val typeface = Font.typeface(style.font(), style.fontStyle(), sheetUIContext.context)
+        val typeface = Font.typeface(textStyle.font(), textStyle.fontStyle(), sheetUIContext.context)
 
         val typefaceSpan = CustomTypefaceSpan(typeface)
 
-        var color = SheetManager.color(sheetUIContext.sheetId, textFormat.style().colorTheme())
+        var color = SheetManager.color(sheetUIContext.sheetId, textStyle.colorTheme())
         val colorSpan = ForegroundColorSpan(color)
 
         return listOf(sizeSpan, typefaceSpan, colorSpan)
@@ -1009,6 +1080,8 @@ object StoryWidgetView
                       sheetUIContext : SheetUIContext) : FlexboxLayout
     {
         val layout = this.storyViewLayout(storyWidget.format(), sheetUIContext)
+
+        val sheetContext = SheetContext(sheetUIContext)
 
         val storyParts = storyWidget.story()
 
@@ -1024,7 +1097,30 @@ object StoryWidgetView
                 }
                 is StoryPartVariable ->
                 {
-                    this.words(storyPart.valueString(SheetContext(sheetUIContext))).forEach {
+                    val valueVariableEff = storyPart.valueVariable(sheetContext)
+                    // TODO move this logic in variable
+                    val text = when (valueVariableEff)
+                    {
+                        is Val ->
+                        {
+                            val valueVar = valueVariableEff.value
+                            when (valueVar)
+                            {
+                                is NumberVariable -> {
+                                    val number = valueVar.valueOrZero(sheetContext)
+                                    storyPart.numberFormat().formattedString(number)
+                                }
+                                else -> storyPart.valueString(SheetContext(sheetUIContext))
+                            }
+                        }
+                        is Err -> {
+                            ApplicationLog.error(valueVariableEff.error)
+                            ""
+                        }
+
+                    }
+
+                    this.words(text).forEach {
                         layout.addView(this.wordVariableView(it,
                                                              storyWidget.format(),
                                                              storyPart,
@@ -1106,7 +1202,7 @@ object StoryWidgetView
         text.paddingSpacing = padding
         text.marginSpacing  = storyPartSpan.format().margins()
 
-        storyPartSpan.format().style().styleTextViewBuilder(text, sheetUIContext)
+        storyPartSpan.textStyle().styleTextViewBuilder(text, sheetUIContext)
 
         return text.textView(sheetUIContext.context)
     }
@@ -1139,7 +1235,7 @@ object StoryWidgetView
         text.paddingSpacing = padding
         text.marginSpacing  = storyPart.format().margins()
 
-        storyPart.format().style().styleTextViewBuilder(text, sheetUIContext)
+        storyPart.textStyle().styleTextViewBuilder(text, sheetUIContext)
 
         text.onClick        = View.OnClickListener {
             val variable = storyPart.variable(SheetContext(sheetUIContext))

@@ -14,6 +14,7 @@ import com.kispoko.tome.official.*
 import com.kispoko.tome.rts.campaign.CampaignManager
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.SheetUI
 import com.kispoko.tome.rts.theme.ThemeManager
 import effect.Err
 import effect.Val
@@ -53,8 +54,9 @@ object OfficialManager
     // -----------------------------------------------------------------------------------------
 
     suspend fun loadSheet(officialSheet : OfficialSheet,
-                          context : Context) = run(CommonPool,
+                          sheetUI : SheetUI) = run(CommonPool,
     {
+        val context = sheetUI.context()
 
         this.loadCampaign(officialSheet.officialCampaign(), context)
 
@@ -65,9 +67,8 @@ object OfficialManager
             is Val ->
             {
                 val sheet = sheetLoader.value
-                launch(UI) {
-                    SheetManager.addSheetToSession(sheet)
-                }
+                // Needs to run in UI thread (renders the sheet)
+                launch(UI) { SheetManager.addSheetToSession(sheet, sheetUI, false) }
                 ApplicationLog.event(OfficialSheetLoaded(sheet.sheetId().value))
             }
             is Err -> ApplicationLog.error(sheetLoader.error)

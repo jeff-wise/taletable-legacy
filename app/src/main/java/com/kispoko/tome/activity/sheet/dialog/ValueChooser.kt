@@ -63,7 +63,7 @@ class ValueChooserDialogFragment : DialogFragment()
     companion object
     {
         fun newInstance(valueSet : ValueSet,
-                        selectedValue : Value,
+                        selectedValue : Value?,
                         updateTarget : UpdateTarget,
                         sheetContext: SheetContext) : ValueChooserDialogFragment
         {
@@ -91,7 +91,7 @@ class ValueChooserDialogFragment : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.valueSet      = arguments.getSerializable("value_set") as ValueSet
-        this.selectedValue = arguments.getSerializable("selected_value") as Value
+        this.selectedValue = arguments.getSerializable("selected_value") as Value?
         this.updateTarget  = arguments.getSerializable("update_target") as UpdateTarget
         this.sheetContext  = arguments.getSerializable("sheet_context") as SheetContext
 
@@ -136,7 +136,7 @@ class ValueChooserDialogFragment : DialogFragment()
             val selectedValue = this.selectedValue
             val updateTarget  = this.updateTarget
 
-            if (valueSet != null && selectedValue != null && updateTarget != null) {
+            if (valueSet != null && updateTarget != null) {
                 return ValueChooserView.view(valueSet,
                                              selectedValue,
                                              updateTarget,
@@ -178,7 +178,7 @@ object ValueChooserView
 
 
     fun view(valueSet : ValueSet,
-             selectedValue : Value,
+             selectedValue : Value?,
              updateTarget : UpdateTarget,
              sheetUIContext : SheetUIContext,
              dialog : DialogFragment) : View
@@ -387,7 +387,7 @@ object ValueChooserView
     // -----------------------------------------------------------------------------------------
 
     fun chooserView(valueSet : ValueSet,
-                    selectedValue : Value,
+                    selectedValue : Value?,
                     updateTarget : UpdateTarget,
                     sheetUIContext : SheetUIContext,
                     dialog : DialogFragment) : RecyclerView
@@ -428,11 +428,13 @@ object ValueChooserView
                     is Val ->
                     {
                         val items = valueSetIndexList(valueSets.value, sheetUIContext)
-                        Log.d("***VALUECHOOSER", items.toString())
+                        //Log.d("***VALUECHOOSER", items.toString())
                         recyclerView.adapter =
                                 CompoundValueSetRecyclerViewAdapter(items,
                                         selectedValue,
-                                        sheetUIContext)
+                                        updateTarget,
+                                        sheetUIContext,
+                                        dialog)
                     }
                     is Err -> ApplicationLog.error(valueSets.error)
                 }
@@ -838,7 +840,7 @@ object ValueChooserView
 
 
 class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
-                                      val selectedValue : Value,
+                                      val selectedValue : Value?,
                                       val updateTarget : UpdateTarget,
                                       val sheetUIContext: SheetUIContext,
                                       val dialog : DialogFragment)
@@ -885,6 +887,13 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                             SheetManager.updateSheet(sheetUIContext.sheetId, textValuePartUpdate)
                             dialog.dismiss()
                         }
+                        is UpdateTargetTextCell -> {
+                            val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
+                                                                           updateTarget.cellId,
+                                                                           value.valueId())
+                            SheetManager.updateSheet(sheetUIContext.sheetId, update)
+                            dialog.dismiss()
+                        }
                     }
                 })
             }
@@ -919,8 +928,10 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
 // -----------------------------------------------------------------------------------------
 
 class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
-                                          val selectedValue : Value,
-                                          val sheetUIContext : SheetUIContext)
+                                          val selectedValue : Value?,
+                                          val updateTarget : UpdateTarget,
+                                          val sheetUIContext : SheetUIContext,
+                                          val dialog : DialogFragment)
         : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 
@@ -940,7 +951,7 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
     {
         val itemAtPosition = this.items[position]
 
-        if (itemAtPosition is String)
+        if (itemAtPosition is ValueSetLabel)
             return HEADER
         else if (itemAtPosition is Value)
             return VALUE
@@ -986,6 +997,28 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                     val description = item.description()
                     if (description != null)
                         valueViewHolder.setSummaryText(description)
+
+                    viewHolder.setOnClick(View.OnClickListener {
+                        when (updateTarget) {
+                            is UpdateTargetStoryWidgetPart -> {
+                                val textValuePartUpdate =
+                                        StoryWidgetUpdateTextValuePart(
+                                                updateTarget.storyWidgetId,
+                                                updateTarget.partIndex,
+                                                item.valueId()
+                                        )
+                                SheetManager.updateSheet(sheetUIContext.sheetId, textValuePartUpdate)
+                                dialog.dismiss()
+                            }
+                            is UpdateTargetTextCell -> {
+                                val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
+                                        updateTarget.cellId,
+                                        item.valueId())
+                                SheetManager.updateSheet(sheetUIContext.sheetId, update)
+                                dialog.dismiss()
+                            }
+                        }
+                    })
                 }
                 is ValueNumber ->
                 {
@@ -993,10 +1026,10 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                 }
             }
         }
-        else if (item is String)
+        else if (item is ValueSetLabel)
         {
             val headerViewHolder = viewHolder as HeaderViewHolder
-            headerViewHolder.setHeaderText(item.toUpperCase())
+            headerViewHolder.setHeaderText(item.value.toUpperCase())
         }
     }
 

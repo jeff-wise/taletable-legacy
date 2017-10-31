@@ -8,7 +8,7 @@ import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.*
 import org.apache.commons.collections4.trie.PatriciaTrie
-
+import java.util.jar.Attributes
 
 
 /**
@@ -235,6 +235,7 @@ class SheetState(val sheetContext : SheetContext,
             }
         }
 
+        ApplicationLog.event(AppStateEvent(VariableRemoved(variableId)))
     }
 
 
@@ -253,6 +254,8 @@ class SheetState(val sheetContext : SheetContext,
 
         // (3) Add variable back with new id
         this.addVariable(currentVariable)
+
+        ApplicationLog.event(AppStateEvent(VariableRenamed(currentVariableId, newVariableId)))
     }
 
 
@@ -282,7 +285,7 @@ class SheetState(val sheetContext : SheetContext,
 
     fun onVariableUpdate(variable : Variable)
     {
-        ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
+    //    ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
         this.updateListeners(variable)
     }
 
@@ -334,14 +337,20 @@ class SheetState(val sheetContext : SheetContext,
      */
     fun updateListeners(variable : Variable)
     {
+        ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
+//        Log.d("***SHEETSTATE", "UPDATE LISTENERS -------------------------------------")
+//        Log.d("***SHEETSTATE", this.listenersById[VariableId("acrobatics", "is_proficient")].toString())
+
         // (1) Update listeners of variable id
         // -------------------------------------------------------------------------------------
 
         val variableId = variable.variableId.value
         if (listenersById.containsKey(variableId))
         {
+            Log.d("***SHEETSTATE", "update listeners for: ${variable.variableId()}")
             for (listener in listenersById[variableId]!!)
             {
+                Log.d("***SHEETSTATE", "found listener: ${listener.variableId()}")
                 listener.onUpdate()
                 this.updateListeners(listener)
             }
@@ -418,21 +427,33 @@ class SheetState(val sheetContext : SheetContext,
     fun variables() : Collection<Variable> = this.variableById.values
 
 
-    fun variables(variableReference : VariableReference) : AppEff<Set<Variable>> =
+    fun variables(variableReference : VariableReference,
+                  context : Maybe<VariableNamespace> = Nothing()) : AppEff<Set<Variable>> =
         when (variableReference)
         {
-            is VariableId  -> effApply(::setOf, this.variableWithId(variableReference))
-            is VariableTag -> this.variablesWithTag(variableReference)
+            is VariableId      -> effApply(::setOf, this.variableWithId(variableReference))
+            is VariableTag     -> this.variablesWithTag(variableReference)
+            is VariableContext -> {
+                when (context) {
+                    is Just -> {
+                        val contextId = VariableId(context.value, VariableName(variableReference.value))
+                        effApply(::setOf, this.variableWithId(contextId))
+                    }
+                    else    -> effError<AppError,Set<Variable>>(AppStateError(NoContext(variableReference)))
+                }
+
+            }
         }
 
 
-    fun variable(variableReference : VariableReference) : AppEff<Variable>
+    fun variable(variableReference : VariableReference,
+                 context : Maybe<VariableNamespace> = Nothing()) : AppEff<Variable>
     {
         fun firstVariable(variableSet : Set<Variable>) : AppEff<Variable> =
                 note(variableSet.firstOrNull(),
                         AppStateError(VariableDoesNotExist(sheetContext.sheetId, variableReference)))
 
-        return this.variables(variableReference).apply(::firstVariable)
+        return this.variables(variableReference, context).apply(::firstVariable)
     }
 
 
@@ -472,21 +493,22 @@ class SheetState(val sheetContext : SheetContext,
     // Variable > Number
     // -----------------------------------------------------------------------------------------
 
-    fun numberVariable(variableReference : VariableReference) : AppEff<NumberVariable> =
-        this.variable(variableReference)
-            .apply({it.numberVariable(sheetContext.sheetId)})
+    fun numberVariable(variableReference : VariableReference,
+                       context : Maybe<VariableNamespace> = Nothing()) : AppEff<NumberVariable> =
+        this.variable(variableReference, context)
+                .apply({it.numberVariable(sheetContext.sheetId)})
 
 
-    fun numberVariables(variableReference : VariableReference) : AppEff<Set<NumberVariable>>
+    fun numberVariables(variableReference : VariableReference,
+                        context : Maybe<VariableNamespace> = Nothing()) : AppEff<Set<NumberVariable>>
     {
 
-        val vars = this.variables(variableReference) ap {
+        return this.variables(variableReference, context) ap {
             if (it.isNotEmpty())
                 it.mapM { variable -> variable.numberVariable(sheetContext.sheetId) }
             else
                 effValue(setOf())
         }
-        return vars
     }
 
 

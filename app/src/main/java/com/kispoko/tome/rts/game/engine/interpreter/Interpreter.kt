@@ -52,7 +52,7 @@ object Interpreter
         this.evaluate(invocation, sheetContext) ap { engineValue ->
             when (engineValue)
             {
-                is EngineValueNumber -> effValue<AppError,Double>(engineValue.value)
+                is EngineValueNumber -> effValue(engineValue.value)
                 else                 ->
                     effError<AppError,Double>(
                             AppEvalError(UnexpectedProgramResultType(invocation.programId(),
@@ -75,28 +75,28 @@ object Interpreter
         val invocationParameter2 = invocation.parameter2()
         val parameter2 = when (invocationParameter2) {
             is Just    -> SheetData.referenceEngineValue(invocationParameter2.value, sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
+            is Nothing -> effValue(effect.Nothing())
         }
 
         // Parameter 3 (Maybe)
         val invocationParameter3 = invocation.parameter3()
         val parameter3 = when (invocationParameter3) {
             is Just    -> SheetData.referenceEngineValue(invocationParameter3.value, sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
+            is Nothing -> effValue(effect.Nothing())
         }
 
         // Parameter 4 (Maybe)
         val invocationParameter4 = invocation.parameter4()
         val parameter4 = when (invocationParameter4) {
             is Just    -> SheetData.referenceEngineValue(invocationParameter4.value, sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
+            is Nothing -> effValue(effect.Nothing())
         }
 
         // Parameter 5 (Maybe)
         val invocationParameter5 = invocation.parameter5()
         val parameter5 = when (invocationParameter5) {
             is Just    -> SheetData.referenceEngineValue(invocationParameter5.value, sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(effect.Nothing())
+            is Nothing -> effValue(effect.Nothing())
         }
 
 
@@ -187,7 +187,7 @@ object Interpreter
                                                        bindings,
                                                        programId,
                                                        sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
+            is Nothing -> effValue(Nothing())
         }
 
         val statementParameter3 = statement.parameter3()
@@ -197,7 +197,7 @@ object Interpreter
                                                        bindings,
                                                        programId,
                                                        sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
+            is Nothing -> effValue(Nothing())
         }
 
         val statementParameter4 = statement.parameter4()
@@ -207,7 +207,7 @@ object Interpreter
                                                        bindings,
                                                        programId,
                                                        sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
+            is Nothing -> effValue(Nothing())
         }
 
         val statementParameter5 = statement.parameter5()
@@ -217,7 +217,7 @@ object Interpreter
                                                        bindings,
                                                        programId,
                                                        sheetContext)
-            is Nothing -> effValue<AppError,Maybe<EngineValue>>(Nothing())
+            is Nothing -> effValue(Nothing())
         }
 
         return parameter1 ap { maybeParameter1 ->

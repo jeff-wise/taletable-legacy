@@ -277,6 +277,9 @@ object ORMLog
     var logLevel : ORMLogLevel = ORMLogLevel.DEBUG
 
 
+    var transactionInserts = 0
+
+
     fun event(event : ORMEvent)
     {
         when(event)
@@ -300,6 +303,8 @@ object ORMLog
             {
                 if (logLevel >= ORMLogLevel.DEBUG)
                     Log.d("***ORM EVENT", event.prettyEventMessage())
+
+                transactionInserts += 1
             }
             is DefineTable ->
             {
@@ -308,13 +313,18 @@ object ORMLog
             }
             is BeginTranscation ->
             {
-                if (logLevel >= ORMLogLevel.NORMAL)
+                if (logLevel >= ORMLogLevel.NORMAL) {
+                    // TODO track multiple transactions
+                    transactionInserts = 0
                     Log.d("***ORM EVENT", event.prettyEventMessage())
+                }
             }
             is EndTranscation ->
             {
-                if (logLevel >= ORMLogLevel.NORMAL)
+                if (logLevel >= ORMLogLevel.NORMAL) {
+                    event.totalRowInserts = transactionInserts
                     Log.d("***ORM EVENT", event.prettyEventMessage())
+                }
             }
             is OpeningDatabase ->
             {

@@ -84,7 +84,7 @@ data class Page(override val id : UUID,
                                    doc.at("name") ap { PageName.fromDocument(it) },
                                    // Format
                                    split(doc.maybeAt("format"),
-                                         effValue(PageFormat.default),
+                                         effValue(PageFormat.default()),
                                          { PageFormat.fromDocument(it) }),
                                    // Index
                                    effValue(PageIndex(index)),
@@ -139,9 +139,9 @@ data class Page(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext)
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
     {
-        this.groups.list.forEach { it.onSheetComponentActive(sheetContext) }
+        this.groups.list.forEach { it.onSheetComponentActive(sheetUIContext) }
     }
 
 
@@ -301,8 +301,8 @@ data class PageFormat(override val id : UUID,
         }
 
 
-        val default : PageFormat = PageFormat(defaultBackgroundColorTheme,
-                                              defaultPadding)
+        fun default() = PageFormat(defaultBackgroundColorTheme,
+                                   defaultPadding)
 
     }
 

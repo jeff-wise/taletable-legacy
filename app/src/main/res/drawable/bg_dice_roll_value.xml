@@ -15,7 +15,7 @@
     </stroke>
 
     <size
-        android:height="48dp"
-        android:width="48dp" />
+        android:height="52dp"
+        android:width="52dp" />
 
 </shape>

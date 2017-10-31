@@ -1,0 +1,5259 @@
+id: magic_of_heroes
+description:
+  summary: 'A low-magic fantasy game with creative combat mechanics'
+  game_name: 'The Magic of Heroes'
+  authors:
+engine:
+  value_sets:
+  - type: value_set_base
+    value_set_base:
+      value_set_id: deities
+      label: Deities
+      label_singular: Deities
+      description: The standard deites of The Magic of Heroes.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: ferrasada
+          description: 'The goddess of trickery and independence.'
+          value: Ferrasada
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: worships_ferrasada
+              label: Worships Ferrasada?
+              description: Worships Ferrasada?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: brisila
+          description: 'The goddess of nature.'
+          value: Brisila
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: worships_brisila
+              label: Worships Brisila?
+              description: Worships Brisila?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: kra_amaga
+          description: 'The god of war and violence.'
+          value: Kra Amaga
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: worships_kra_amaga
+              label: Worships Kra Amaga?
+              description: Worships Kra Amaga?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: melo
+          description: 'The god of song and dance.'
+          value: Melo
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: worships_melo
+              label: Worships Melo?
+              description: Worships Melo?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: Grimela
+          description: 'The goddess of knowledge.'
+          value: Grimela
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: worships_grimela
+              label: Worships Grimela?
+              description: Worships Grimela?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: eso_evantil
+          description: 'The god of life.'
+          value: Eso Evantil
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: worships_eso_evantil
+              label: Worships Eso Evantil?
+              description: Worships Eso Evantil?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+  - type: value_set_base
+    value_set_base:
+      value_set_id: races
+      label: Races
+      label_singular: Race
+      description: The cultures and creatures of Amanace.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: dragonborn
+          description: 'Dragonborn have dragonic heritage.'
+          value: Dragonborn
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_dragonborn
+              label: Is Race Dragonborn
+              description: Is Race Dragonborn
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: dwarf
+          description: 'Dwarves'
+          value: Dwarf
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_dwarf
+              label: Is Race Dwarf
+              description: Is Race Dwarf
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: elf
+          description: 'Elf'
+          value: Elf
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_elf
+              label: Is Race Elf
+              description: Is Race Elf
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: gnome
+          description: 'Gnome'
+          value: Gnome
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_gnome
+              label: Is Race Gnome
+              description: Is Race Gnome
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: half_elf
+          description: 'Half-Elf'
+          value: 'Half-Elf'
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_half_elf
+              label: Is Race Half-Elf
+              description: Is Race Half-Elf
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: half_orc
+          description: 'Half-Orc'
+          value: 'Half-Orc'
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_half_orc
+              label: Is Race Half-Orc
+              description: Is Race Half-Orc
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: halfling
+          description: 'Halfling'
+          value: Halfling
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_halfling
+              label: Is Race Halfling
+              description: Is Race Halfling
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: human
+          description: 'Human'
+          value: Human
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_human
+              label: Is Race Human
+              description: Is Race Human
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: tiefling
+          description: 'Tiefling'
+          value: Tiefling
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_race_tiefling
+              label: Is Race Tiefling
+              description: Is Race Tiefling
+              value:
+                type: boolean_literal
+                boolean_literal: true
+  - type: value_set_base
+    value_set_base:
+      value_set_id: classes
+      label: Classes
+      label_singular: Class
+      description: The cultures and creatures of Amanace.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: barbarian
+          description: 'Barbarian'
+          value: Barbarian
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_barbarian
+              label: Is Class Barbarian
+              description: Is Class Barbarian
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: bard
+          description: 'Bard'
+          value: Bard
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_bard
+              label: Is Class Bard
+              description: Is Class Bard
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: cleric
+          description: 'Cleric'
+          value: Cleric
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_cleric
+              label: Is Class Cleric
+              description: Is Class Cleric
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: druid
+          description: 'Druid'
+          value: Druid
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_druid
+              label: Is Class Druid
+              description: Is Class Druid
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: fighter
+          description: 'Fighter'
+          value: Fighter
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_fighter
+              label: Is Class Fighter
+              description: Is Class Fighter
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: monk
+          description: 'Monk'
+          value: Monk
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_monk
+              label: Is Class Monk
+              description: Is Class Monk
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: paladin
+          description: 'Paladin'
+          value: Paladin
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_paladin
+              label: Is Class Paladin
+              description: Is Class Paladin
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: ranger
+          description: 'Ranger'
+          value: Ranger
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_ranger
+              label: Is Class Ranger
+              description: Is Class Ranger
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: rogue
+          description: 'Rogue'
+          value: Rogue
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_rogue
+              label: Is Class Rogue
+              description: Is Class Rogue
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: sorcerer
+          description: 'Sorcerer'
+          value: Sorcerer
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_sorcerer
+              label: Is Class Sorcerer
+              description: Is Class Sorcerer
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: warlock
+          description: 'Warlock'
+          value: Warlock
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_warlock
+              label: Is Class Warlock
+              description: Is Class Warlock
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: wizard
+          description: 'Wizard'
+          value: Wizard
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_class_wizard
+              label: Is Class Wizard
+              description: Is Class Wizard
+              value:
+                type: boolean_literal
+                boolean_literal: true
+  - type: value_set_base
+    value_set_base:
+      value_set_id: alignments
+      label: Alignments
+      label_singular: Alignment
+      description: The alignments.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: lawful_good
+          description: Lawful Good
+          value: Lawful Good
+      - type: value_text
+        value_text:
+          value_id: lawful_neutral
+          description: Lawful Neutral
+          value: Lawful Neutral
+      - type: value_text
+        value_text:
+          value_id: lawful_evil
+          description: Lawful Evil
+          value: Lawful Evil
+      - type: value_text
+        value_text:
+          value_id: neutral_good
+          description: Neutral Good
+          value: Neutral Good
+      - type: value_text
+        value_text:
+          value_id: neutral
+          description: Neutral
+          value: Neutral
+      - type: value_text
+        value_text:
+          value_id: neutral_evil
+          description: Neutral Evil
+          value: Neutral Evil
+      - type: value_text
+        value_text:
+          value_id: chaotic_good
+          description: Chaotic Good
+          value: Chaotic Good
+      - type: value_text
+        value_text:
+          value_id: chaotic_neutral
+          description: Chaotic Neutral
+          value: Chaotic Neutral
+      - type: value_text
+        value_text:
+          value_id: chaotic_evil
+          description: Chaotic Evil
+          value: Chaotic Evil
+  - type: value_set_base
+    value_set_base:
+      value_set_id: simple_melee_weapons
+      label: Simple Melee Weapons
+      label_singular: Simple Melee Weapon
+      description: 'Simple Melee Weapons'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: club
+          description: 'Club'
+          value: Club
+          variables:
+          - type: variable_number
+            variable_number:
+              id: club_weight
+              label: Club Weight
+              description: The weight of a club.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: dagger
+          description: 'Dagger'
+          value: Dagger
+          variables:
+          - type: variable_number
+            variable_number:
+              id: dagger_weight
+              label: Dagger Weight
+              description: The weight of a dagger.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: greatclub
+          description: 'Greatclub'
+          value: Greatclub
+          variables:
+          - type: variable_number
+            variable_number:
+              id: greatclub_weight
+              label: Greatclub Weight
+              description: The weight of a greatclub.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: handaxe
+          description: 'Handaxe'
+          value: Handaxe
+          variables:
+          - type: variable_number
+            variable_number:
+              id: handaxe_weight
+              label: Handaxe Weight
+              description: The weight of a handaxe.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: javelin
+          description: 'Javelin'
+          value: Javelin
+          variables:
+          - type: variable_number
+            variable_number:
+              id: javelin_weight
+              label: Javelin Weight
+              description: The weight of a javelin.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: light_hammer
+          description: 'Light Hammer'
+          value: Light Hammer
+          variables:
+          - type: variable_number
+            variable_number:
+              id: light_hammer_weight
+              label: Light Hammer Weight
+              description: The weight of a light hammer.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: mace
+          description: 'Mace'
+          value: Mace
+          variables:
+          - type: variable_number
+            variable_number:
+              id: mace_weight
+              label: Mace Weight
+              description: The weight of a Mace.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: quarterstaff
+          description: 'Quarterstaff'
+          value: Quarterstaff
+          variables:
+          - type: variable_number
+            variable_number:
+              id: quarterstaff_weight
+              label: Quarterstaff Weight
+              description: The weight of a Quarterstaff.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: sickle
+          description: 'Sickle'
+          value: Sickle
+          variables:
+          - type: variable_number
+            variable_number:
+              id: sickle_weight
+              label: Sickle Weight
+              description: The weight of a Sickle.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: spear
+          description: 'Spear'
+          value: Spear
+          variables:
+          - type: variable_number
+            variable_number:
+              id: spear_weight
+              label: Spear Weight
+              description: The weight of a Spear.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+  - type: value_set_base
+    value_set_base:
+      value_set_id: simple_ranged_weapons
+      label: Simple Ranged Weapons
+      label_singular: Simple Ranged Weapon
+      description: 'Simple ranged weapons.'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: crossbow_light
+          description: Light Crossbow
+          value: Crossbow, Light
+          variables:
+          - type: variable_number
+            variable_number:
+              id: crossbow_light_weight
+              label: Crossbow, Light Weight
+              description: The weight of a Light Crossbow.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: dart
+          description: Dart
+          value: Dart
+          variables:
+          - type: variable_number
+            variable_number:
+              id: dart_weight
+              label: Dart Weight
+              description: The weight of a Dart.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.25
+      - type: value_text
+        value_text:
+          value_id: shortbow
+          description: Shortbow
+          value: Shortbow
+          variables:
+          - type: variable_number
+            variable_number:
+              id: shortbow_weight
+              label: Shortbow Weight
+              description: The weight of a Shortbow.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: sling
+          description: Sling
+          value: Sling
+          variables:
+          - type: variable_number
+            variable_number:
+              id: sling_weight
+              label: Sling Weight
+              description: The weight of a Sling.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+  - type: value_set_base
+    value_set_base:
+      value_set_id: martial_melee_weapons
+      label: Martial Melee Weapons
+      label_singular: Martial Melee Weapon
+      description: 'Martial melee weapons'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: battleaxe
+          description: Battleaxe
+          value: Battleaxe
+          variables:
+          - type: variable_number
+            variable_number:
+              id: battleaxe_weight
+              label: Battleaxe Weight
+              description: The weight of a Battleaxe.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: flail
+          description: Flail
+          value: Flail
+          variables:
+          - type: variable_number
+            variable_number:
+              id: flail_weight
+              label: Flail Weight
+              description: The weight of a Flail.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: glaive
+          description: Glaive
+          value: Glaive
+          variables:
+          - type: variable_number
+            variable_number:
+              id: glaive_weight
+              label: Glaive Weight
+              description: The weight of a Glaive.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: greataxe
+          description: Greataxe
+          value: Greataxe
+          variables:
+          - type: variable_number
+            variable_number:
+              id: greataxe_weight
+              label: Greataxe Weight
+              description: The weight of a Greataxe.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 7
+      - type: value_text
+        value_text:
+          value_id: greatsword
+          description: Greatsword
+          value: Greatsword
+          variables:
+          - type: variable_number
+            variable_number:
+              id: greatsword_weight
+              label: Greatsword Weight
+              description: The weight of a Greatsword.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: halberd
+          description: Halberd
+          value: Halberd
+          variables:
+          - type: variable_number
+            variable_number:
+              id: halberd_weight
+              label: Halberd Weight
+              description: The weight of a Halberd.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: lance
+          description: Lance
+          value: Lance
+          variables:
+          - type: variable_number
+            variable_number:
+              id: lance_weight
+              label: Lance Weight
+              description: The weight of a Lance.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: longsword
+          description: Longsword
+          value: Longsword
+          variables:
+          - type: variable_number
+            variable_number:
+              id: longsword_weight
+              label: Longsword Weight
+              description: The weight of a Longsword.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: maul
+          description: Maul
+          value: Maul
+          variables:
+          - type: variable_number
+            variable_number:
+              id: maul_weight
+              label: Maul Weight
+              description: The weight of a Maul.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: morningstar
+          description: Morningstar
+          value: Morningstar
+          variables:
+          - type: variable_number
+            variable_number:
+              id: morningstar_weight
+              label: Morningstar Weight
+              description: The weight of a Morningstar.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: pike
+          description: Pike
+          value: Pike
+          variables:
+          - type: variable_number
+            variable_number:
+              id: pike_weight
+              label: Pike Weight
+              description: The weight of a Pike.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 18
+      - type: value_text
+        value_text:
+          value_id: rapier
+          description: Rapier
+          value: Rapier
+          variables:
+          - type: variable_number
+            variable_number:
+              id: rapier_weight
+              label: Rapier Weight
+              description: The weight of a Rapier.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: scimitar
+          description: Scimitar
+          value: Scimitar
+          variables:
+          - type: variable_number
+            variable_number:
+              id: scimitar_weight
+              label: Scimitar Weight
+              description: The weight of a Scimitar.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: shortsword
+          description: Shortsword
+          value: Shortsword
+          variables:
+          - type: variable_number
+            variable_number:
+              id: shortsword_weight
+              label: Shortsword Weight
+              description: The weight of a Shortsword.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: trident
+          description: Trident
+          value: Trident
+          variables:
+          - type: variable_number
+            variable_number:
+              id: trident_weight
+              label: Trident Weight
+              description: The weight of a Trident.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: war_pick
+          description: War Pick
+          value: War Pick
+          variables:
+          - type: variable_number
+            variable_number:
+              id: war_pick_weight
+              label: War Pick Weight
+              description: The weight of a War Pick.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: war_hammer
+          description: Warhammer
+          value: Warhammer
+          variables:
+          - type: variable_number
+            variable_number:
+              id: warhammer_weight
+              label: Warhammer Weight
+              description: The weight of a Warhammer.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: whip
+          description: Whip
+          value: Whip
+          variables:
+          - type: variable_number
+            variable_number:
+              id: whip_weight
+              label: Whip Weight
+              description: The weight of a Whip.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+  - type: value_set_base
+    value_set_base:
+      value_set_id: martial_ranged_weapons
+      label: Martial Ranged Weapons
+      label_singular: Martial Ranged Weapon
+      description: 'Martial Ranged Weapons.'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: blowgun
+          description: Blowgun
+          value: Blowgun
+          variables:
+          - type: variable_number
+            variable_number:
+              id: blowgun_weight
+              label: Blowgun Weight
+              description: The weight of a Blowgun.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: crossbow_hand
+          description: Hand Crossbow
+          value: Crossbow, Hand
+          variables:
+          - type: variable_number
+            variable_number:
+              id: crossbow_hand_weight
+              label: Crossbow, Hand Weight
+              description: The weight of a Hand Crossbow.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: crossbow_heavy
+          description: Heavy Crossbow
+          value: Crossbow, Heavy
+          variables:
+          - type: variable_number
+            variable_number:
+              id: crossbow_heavy_weight
+              label: Crossbow, Heavy Weight
+              description: The weight of a Heavy Crossbow.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 18
+      - type: value_text
+        value_text:
+          value_id: longbow
+          description: Longbow
+          value: Longbow
+          variables:
+          - type: variable_number
+            variable_number:
+              id: longbow_weight
+              label: Longbow Weight
+              description: The weight of a Longbow.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: net
+          description: Net
+          value: Net
+          variables:
+          - type: variable_number
+            variable_number:
+              id: net_weight
+              label: Net Weight
+              description: The weight of a Net.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+  - type: value_set_compound
+    value_set_compound:
+      value_set_id: armor_and_shields
+      label: Armor & Shields
+      label_singular: Armor or Shield
+      description: 'All armor and shields'
+      value_set_ids:
+      - light_armor
+      - medium_armor
+      - heavy_armor
+      - shields
+  - type: value_set_compound
+    value_set_compound:
+      value_set_id: weapons
+      label: Weapons
+      label_singular: Weapon
+      description: 'Weapons'
+      value_set_ids:
+      - simple_melee_weapons
+      - simple_ranged_weapons
+      - martial_melee_weapons
+      - martial_ranged_weapons
+  - type: value_set_base
+    value_set_base:
+      value_set_id: ammunition
+      label: Ammunition
+      label_singular: Ammunition
+      description: 'Ammunition for certain ranged weapons.'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: arrow
+          description: 'Arrow'
+          value: Arrow
+          variables:
+          - type: variable_number
+            variable_number:
+              id: arrow_weight
+              label: Arrow Weight
+              description: The weight of a single arrow.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.05
+      - type: value_text
+        value_text:
+          value_id: blowgun_needle
+          description: 'Blowgun Needle'
+          value: Blowgun Needle
+          variables:
+          - type: variable_number
+            variable_number:
+              id: blowgun_needle_weight
+              label: Blowgun Needle Weight
+              description: The weight of a single blowgun needle.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.02
+      - type: value_text
+        value_text:
+          value_id: crossbow_bolt
+          description: 'Crossbow Bolt'
+          value: Crossbow Bolt
+          variables:
+          - type: variable_number
+            variable_number:
+              id: crossbow_bolt_weight
+              label: Crossbow Bolt Weight
+              description: The weight of a single crossbow bolt.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.075
+      - type: value_text
+        value_text:
+          value_id: sling_bullet
+          description: 'Sling Bullet'
+          value: Sling Bullet
+          variables:
+          - type: variable_number
+            variable_number:
+              id: sling_bullet_weight
+              label: Sling Bullet Weight
+              description: The weight of a single sling bullet.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.075
+  - type: value_set_base
+    value_set_base:
+      value_set_id: arcane_foci
+      label: Arcane Foci
+      label_singular: Arcane Focus
+      description: >
+        An arcane focus is a special item--an orb, a crystal, a rod, a specially constructed staff,
+        a wand-like length of wood, or some similar item--designed to channel the power of arcane
+        spells. A sorcerer, warlock, or wizard can use such an item as a spellcasting focus.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: arcane_focus_crystal
+          description: 'Crystal Arcane Focus'
+          value: 'Arcane Focus: Crystal'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: arcane_focus_crystal_weight
+              label: Arcane Focus (Crystal) Weight
+              description: The weight of a crystal arcane focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: arcane_focus_orb
+          description: 'Orb Arcane Focus'
+          value: 'Arcane Focus: Orb'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: arcane_focus_orb_weight
+              label: Arcane Focus (Orb) Weight
+              description: The weight of an orb arcane focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: arcane_focus_rod
+          description: 'Rod Arcane Focus'
+          value: 'Arcane Focus: Rod'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: arcane_focus_rod_weight
+              label: Arcane Focus (Rod) Weight
+              description: The weight of a rod arcane focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: arcane_focus_staff
+          description: 'Staff Arcane Focus'
+          value: 'Arcane Focus: Staff'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: arcane_focus_staff_weight
+              label: Arcane Focus (Staff) Weight
+              description: The weight of a staff arcane focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: arcane_focus_wand
+          description: 'Wand Arcane Focus'
+          value: 'Arcane Focus: Wand'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: arcane_focus_wand_weight
+              label: Arcane Focus (Wand) Weight
+              description: The weight of a wand arcane focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+  - type: value_set_base
+    value_set_base:
+      value_set_id: druidic_foci
+      label: Druidic Foci
+      label_singular: Druidic Focus
+      description: >
+        A druidic focus might be a sprig of mistletoe or holly, a wand or scepter made of yew or
+        another special wood, a staff drawn whole out of a living tree, or a totem object
+        incorporating feathers, fur, bones, and teeth from sacred animals. A druid can use such an
+        object as a spellcasting focus.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: druidic_focus_sprig_of_mistletoe
+          description: 'Druidic Focus: Sprig of Mistletoe'
+          value: 'Druidic Focus: Spric of Mistletoe'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: druidic_focus_sprig_of_mistletoe_weight
+              label: Druidic Focus (Sprig of Mistletoe) Weight
+              description: The weight of a sprig of mistletoe druidic focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: druidic_focus_totem
+          description: 'Druidic Focus: Totem'
+          value: 'Druidic Focus: Totem'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: druidic_focus_totem_weight
+              label: Druidic Focus (Totem) Weight
+              description: The weight of a totem druidic focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: druidic_focus_wooden_staff
+          description: 'Druidic Focus: Wooden Staff'
+          value: 'Druidic Focus: Wooden Staff'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: druidic_focus_wooden_staff_weight
+              label: Druidic Focus (Wooden Staff) Weight
+              description: The weight of a wooden staff druidic focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: druidic_focus_yew_wand
+          description: 'Druidic Focus: Yew Wand'
+          value: 'Druidic Focus: Yew Wand'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: druidic_focus_yew_wand_weight
+              label: Druidic Focus (Yew Wand) Weight
+              description: The weight of a yew wand druidic focus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+  - type: value_set_base
+    value_set_base:
+      value_set_id: holy_symbols
+      label: Holy Symbols
+      label_singular: Holy Symbol
+      description: >
+        A holy symbol is a representation of a god or pantheon. It might be an amulet depicting
+        a symbol representing a deity, the same symbol carefully engraved or inlaid as an emblem
+        on a shield, or a tiny box holding a fragment of a sacred relic. A cleric or paladin can
+        use a holy symbol as a spellcasting focus. To use the symbol in this way, the caster must
+        hold it in hand, wear it visibly, or bear it on a shield.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: holy_symbol_amulet
+          description: 'Holy Symbol: Amulet'
+          value: 'Holy Symbol: Amulet'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: holy_symbol_amulet_weight
+              label: Holy Symbol (Amulet) Weight
+              description: The weight of an amulet (holy symbol).
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: holy_symbol_emblem
+          description: 'Holy Symbol: Emblem'
+          value: 'Holy Symbol: Emblem'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: holy_symbol_emblem_weight
+              label: Holy Symbol (Emblem) Weight
+              description: The weight of an emblem (holy symbol).
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: holy_symbol_reliquary
+          description: 'Holy Symbol: Reliquary'
+          value: 'Holy Symbol: Reliquary'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: holy_symbol_reliquary_weight
+              label: Holy Symbol (Reliquary) Weight
+              description: The weight of a reliquary (holy symbol).
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+  - type: value_set_base
+    value_set_base:
+      value_set_id: adventuring_gear
+      label: Adventuring Gear
+      label_singular: Adventuring Gear
+      description: 'Adventuring Gear'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: abacus
+          description: 'Abacus'
+          value: Abacus
+          variables:
+          - type: variable_number
+            variable_number:
+              id: abacus_weight
+              label: Abacus Weight
+              description: The weight of an abacus.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: acid_vial
+          description: A vial of acid.
+          value: 'Acid (Vial)'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: acid_vial_weight
+              label: Acid (Vial) Weight
+              description: The weight of a vial of acid.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: alchemists_fire_flask
+          description: A flask of Alchemist's Fire.
+          value: 'Alchemist''s Fire (Flask)'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: alchemists_fire_flask_weight
+              label: Alchemist's Fire (Flask) Weight
+              description: The weight of a flask of Alchemist's Fire.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: antitoxin_vial
+          description: Grants imbiber advantage on saves against poison.
+          value: 'Antitoxin (Vial)'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: antitoxin_vial_weight
+              label: Antitoxin (Vial) Weight
+              description: The weight of a vail of Antitoxin.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: backpack
+          description: 'Backpack'
+          value: Backpack
+          variables:
+          - type: variable_number
+            variable_number:
+              id: backpack_weight
+              label: Backpack Weight
+              description: The weight of a backpack.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: bag_of_ball_bearings_1000
+          description: Limit movement when spilled on the ground.
+          value: Bag of Ball Bearings (1000)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: bag_of_ball_bearings_1000_weight
+              label: Bag of Ball Bearings (1000) Weight
+              description: The weight of a bag of 1000 ball bearings.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: barrel
+          description: 'Barrel'
+          value: Barrel
+          variables:
+          - type: variable_number
+            variable_number:
+              id: barrel_weight
+              label: Barrel Weight
+              description: The weight of a barrel.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 70
+      - type: value_text
+        value_text:
+          value_id: basket
+          description: 'Basket'
+          value: Basket
+          variables:
+          - type: variable_number
+            variable_number:
+              id: basket_weight
+              label: Basket Weight
+              description: The weight of a basket.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: bedroll
+          description: 'Bedroll'
+          value: Bedroll
+          variables:
+          - type: variable_number
+            variable_number:
+              id: bedroll_weight
+              label: Bedroll Weight
+              description: The weight of a bedroll.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 7
+      - type: value_text
+        value_text:
+          value_id: bell
+          description: 'Bell'
+          value: Bell
+          variables:
+          - type: variable_number
+            variable_number:
+              id: bell_weight
+              label: Bell Weight
+              description: The weight of a bell.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: blanket
+          description: 'Blanket'
+          value: Blanket
+          variables:
+          - type: variable_number
+            variable_number:
+              id: blanket_weight
+              label: Blanket Weight
+              description: The weight of a blanket.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: block_and_tackle
+          description: Pulleys to aid in lifting heavy things.
+          value: Block and Tackle
+          variables:
+          - type: variable_number
+            variable_number:
+              id: block_and_tackle_weight
+              label: Block and Tackle Weight
+              description: The weight of a block and tackle.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: book
+          description: A book.
+          value: Book
+          variables:
+          - type: variable_number
+            variable_number:
+              id: book_weight
+              label: Book Weight
+              description: The weight of a book.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: bottle_glass
+          description: 'Bottle: Glass'
+          value: 'Bottle: Glass'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: bottle_glass_weight
+              label: Bottle (Glass) Weight
+              description: The weight of a bottle (glass).
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: bucket
+          description: 'Bucket'
+          value: Bucket
+          variables:
+          - type: variable_number
+            variable_number:
+              id: bucket_weight
+              label: Bucket Weight
+              description: The weight of a bucket.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: caltrops_bag_20
+          description: Thrown on the ground to limit movement.
+          value: Caltrops (Bag of 20)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: caltrops_bag_20_weight
+              label: Caltrops (Bag of 20) Weight
+              description: The weight of a bag of 20 caltrops.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: candle
+          description: Sheds faint light for 1 hour.
+          value: Candle
+          variables:
+          - type: variable_number
+            variable_number:
+              id: candle_weight
+              label: Candle Weight
+              description: The weight of a candle.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: case_crossbow_bolt
+          description: Case that holds 20 bolts.
+          value: Case, Crossbow Bolt
+          variables:
+          - type: variable_number
+            variable_number:
+              id: case_crossbow_bolt_weight
+              label: Case (Crossbow Bolt) Weight
+              description: The weight of a crossbow bolt case.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: case_map_or_scroll
+          description: A case for holding parchment.
+          value: Case, Map or Scroll
+          variables:
+          - type: variable_number
+            variable_number:
+              id: case_map_or_scroll_weight
+              label: Case (Map or Scroll) Weight
+              description: The weight of a map or scroll case.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: chain_10_feet
+          description: A 10 foot long chain.
+          value: Chain (10 feet)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: chain_10_feet_weight
+              label: Chain (10 feet) Weight
+              description: The weight of a 10 foot chain.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: chalk_1_piece
+          description: 'Chalk (1 piece)'
+          value: Chalk (1 piece)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: chalk_1_piece_weight
+              label: Chalk (1 piece) Weight
+              description: The weight of 1 piece of chalk.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: chest
+          description: 'Chest'
+          value: Chest
+          variables:
+          - type: variable_number
+            variable_number:
+              id: chest_weight
+              label: Chest Weight
+              description: The weight of a chest.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 25
+      - type: value_text
+        value_text:
+          value_id: climbers_kit
+          description: Gear to aid in climbing.
+          value: Climber's Kit
+          variables:
+          - type: variable_number
+            variable_number:
+              id: climbers_kit_weight
+              label: Climber's Kit Weight
+              description: The weight of a Climber's Kit.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 12
+      - type: value_text
+        value_text:
+          value_id: clothes_common
+          description: 'Clothes: Common'
+          value: 'Clothes: Common'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: clothes_common_weight
+              label: Clothes (Common) Weight
+              description: The weight of common clothes.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: clothes_costume
+          description: 'Clothes: Costume'
+          value: 'Clothes: Costume'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: clothes_costume_weight
+              label: Clothes (Costume) Weight
+              description: The weight of costume clothes.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: clothes_fine
+          description: 'Clothes: Fine'
+          value: 'Clothes: Fine'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: clothes_fine_weight
+              label: Clothes (Fine) Weight
+              description: The weight of fine clothes.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: clothes_travelers
+          description: 'Clothes: Traveler''s'
+          value: 'Clothes: Traveler''s'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: clothes_travelers_weight
+              label: Clothes (Travelers) Weight
+              description: The weight of travelers clothes.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: component_pouch
+          description: A watertight leather belt pouch.
+          value: Component Pouch
+          variables:
+          - type: variable_number
+            variable_number:
+              id: component_pouch_weight
+              label: Component Pouch Weight
+              description: The weight of a component pouch.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: crowbar
+          description: A crowbar.
+          value: Component Pouch
+          variables:
+          - type: variable_number
+            variable_number:
+              id: crowbar_weight
+              label: Crowbar Weight
+              description: The weight of a crowbar.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: fishing_tackle
+          description: Gear for fishing.
+          value: Fishing Tackle
+          variables:
+          - type: variable_number
+            variable_number:
+              id: fishing_tackle_weight
+              label: Fishing Tackle Weight
+              description: The weight of a fishing tackle.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: flask
+          description: Flask
+          value: Flask
+          variables:
+          - type: variable_number
+            variable_number:
+              id: flask_weight
+              label: Flask Weight
+              description: The weight of a flask.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: grappling_hook
+          description: Grappling Hook
+          value: Grappling Hook
+          variables:
+          - type: variable_number
+            variable_number:
+              id: grappling_hook_weight
+              label: Grappling Hook Weight
+              description: The weight of a grappling hook.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: hammer
+          description: Hammer
+          value: Hammer
+          variables:
+          - type: variable_number
+            variable_number:
+              id: hammer_weight
+              label: Hammer Weight
+              description: The weight of a hammer.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: hammer_sledge
+          description: Sledge Hammer
+          value: Hammer, Sledge
+          variables:
+          - type: variable_number
+            variable_number:
+              id: hammer_sledge_weight
+              label: Hammer (Sledge) Weight
+              description: The weight of a sledge hammer.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: healers_kit
+          description: Bandages, salves, etc... for healing.
+          value: Healer's Kit
+          variables:
+          - type: variable_number
+            variable_number:
+              id: healers_kit_weight
+              label: Healer's Kit Weight
+              description: The weight of a healer's kit.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: holy_water_flask
+          description: Blessed water that harms undead or demons.
+          value: Holy Water (flask)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: holy_water_flask_weight
+              label: Holy Water (flask) Weight
+              description: The weight of a flask of holy water.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: hourglass
+          description: Hourglass
+          value: Hourglass
+          variables:
+          - type: variable_number
+            variable_number:
+              id: hourglass_weight
+              label: Hourglass Weight
+              description: The weight of an hourglass.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: hunting_trap
+          description: A steel trap with a pressure plate.
+          value: Hunting Trap
+          variables:
+          - type: variable_number
+            variable_number:
+              id: hunting_trap_weight
+              label: Hunting Trap Weight
+              description: The weight of a hunting trap.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 25
+      - type: value_text
+        value_text:
+          value_id: ink_1_ounce
+          description: A 1 ounce bottle of ink.
+          value: Ink
+          variables:
+          - type: variable_number
+            variable_number:
+              id: ink_weight
+              label: Ink Weight
+              description: The weight of a 1 ounce bottle of ink.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: jug
+          description:  A jug.
+          value: Jug
+          variables:
+          - type: variable_number
+            variable_number:
+              id: jug_weight
+              label: Jug Weight
+              description: The weight of a jug.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: ladder_10_foot
+          description:  A ladder.
+          value: Ladder (10 foot)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: ladder_10_foot_weight
+              label: 10-foot Ladder Weight
+              description: The weight of a 10 foot ladder.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 25
+      - type: value_text
+        value_text:
+          value_id: lamp
+          description:  Casts a bright light in a 15 foot radius.
+          value: Lamp
+          variables:
+          - type: variable_number
+            variable_number:
+              id: lamp_weight
+              label: Lamp Weight
+              description: The weight of a lamp.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: lantern_bullseye
+          description:  Casts a bright light in a 60-foot cone.
+          value: Lantern, Bullseye
+          variables:
+          - type: variable_number
+            variable_number:
+              id: lantern_bullseye_weight
+              label: Latern (Bullseye) Weight
+              description: The weight of a bullseye lantern.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: lantern_hooded
+          description: Casts a bright light that can be shielded.
+          value: Lantern, Hooded
+          variables:
+          - type: variable_number
+            variable_number:
+              id: lantern_hooded_weight
+              label: Lantern (Hooded) Weight
+              description: The weight of a hooded lantern.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: lock
+          description: A lock.
+          value: Lock
+          variables:
+          - type: variable_number
+            variable_number:
+              id: lock_weight
+              label: Lock Weight
+              description: The weight of a lock.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: magnifying_glass
+          description: A magnifying glass.
+          value: Magnifying Glass
+          variables:
+          - type: variable_number
+            variable_number:
+              id: magnifying_glass_weight
+              label: Magnifying Glass Weight
+              description: The weight of a magnifying glass.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: manacles
+          description: Manacles
+          value: Manacles
+          variables:
+          - type: variable_number
+            variable_number:
+              id: manacles_weight
+              label: Manacles Weight
+              description: The weight of a pair of manacles.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: mess_kit
+          description: Mess Kit
+          value: Mess Kit
+          variables:
+          - type: variable_number
+            variable_number:
+              id: mess_kit_weight
+              label: Mess Kit Weight
+              description: The weight of a mess kit.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: mirror_steel
+          description: A steel mirror.
+          value: Mirror, Steel
+          variables:
+          - type: variable_number
+            variable_number:
+              id: mirror_steel_weight
+              label: Mirror (Steel) Weight
+              description: The weight of a steel mirror.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.5
+      - type: value_text
+        value_text:
+          value_id: oil_flask
+          description: A flask of oil.
+          value: Oil (flask)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: oil_flask_weight
+              label: Oil (Flask) Weight
+              description: The weight of a flask of oil.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: paper_one_sheet
+          description: One sheet of paper.
+          value: Paper (one sheet)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: paper_one_sheet_weight
+              label: Paper (One Sheet) Weight
+              description: The weight of a one sheet of paper.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: parchment_one_sheet
+          description: One sheet of parchment.
+          value: Parchment (one sheet)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: parchment_one_sheet_weight
+              label: Parchment (One Sheet) Weight
+              description: The weight of a one sheet of parchment.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: perfume_vial
+          description: A vial of perfume.
+          value: Perfume (vial)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: perfume_vial_weight
+              label: Perfume (Vial) Weight
+              description: The weight of a vial of perfume.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: pick_miners
+          description: A miner's pick.
+          value: Pick, Miner's
+          variables:
+          - type: variable_number
+            variable_number:
+              id: pick_miners_weight
+              label: Pick (Miner's) Weight
+              description: The weight of a miner's pick.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: piton
+          description: A piton.
+          value: Piton
+          variables:
+          - type: variable_number
+            variable_number:
+              id: piton_weight
+              label: Piton Weight
+              description: The weight of a piton.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.25
+      - type: value_text
+        value_text:
+          value_id: poison_basic_vial
+          description: A vial of poison.
+          value: Poison, Basic (vial)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: poison_basic_vial_weight
+              label: Poison, Basic (Vial) Weight
+              description: The weight of a vial of basic poison.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: pole_10_foot
+          description: A 10-foot long pole.
+          value: Pole (10-foot)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: pole_10_foot_weight
+              label: Pole (10-foot) Weight
+              description: The weight of a 10-foot pole.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 7
+      - type: value_text
+        value_text:
+          value_id: pot_iron
+          description: An iron pot.
+          value: Pot, Iron
+          variables:
+          - type: variable_number
+            variable_number:
+              id: pot_iron_weight
+              label: Pot (Iron) Weight
+              description: The weight of an iron pot.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: potion_of_healing
+          description: A potion of healing.
+          value: Potion of Healing
+          variables:
+          - type: variable_number
+            variable_number:
+              id: potion_of_healing_weight
+              label: Potion of Healing Weight
+              description: The weight of a potion of healing.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.5
+      - type: value_text
+        value_text:
+          value_id: pouch
+          description: A pouch.
+          value: Pouch
+          variables:
+          - type: variable_number
+            variable_number:
+              id: pouch_weight
+              label: Pouch Weight
+              description: The weight of a pouch.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: quiver
+          description: Holds up to 20 arrows.
+          value: Quiver
+          variables:
+          - type: variable_number
+            variable_number:
+              id: quiver_weight
+              label: Quiver Weight
+              description: The weight of a quiver.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: ram_portable
+          description: A portable ram.
+          value: Ram, Portable
+          variables:
+          - type: variable_number
+            variable_number:
+              id: ram_portable_weight
+              label: Ram (Portable) Weight
+              description: The weight of a portable ram.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 35
+      - type: value_text
+        value_text:
+          value_id: rations_1_day
+          description: 1 days worth of rations.
+          value: Rations (1 day)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: rations_1_day_weight
+              label: Rations (1 day) Weight
+              description: The weight of a one day's worth of rations.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: robes
+          description: Robes
+          value: Robes
+          variables:
+          - type: variable_number
+            variable_number:
+              id: robes_weight
+              label: Robes Weight
+              description: The weight of a robes.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: rope_hempen_50_foot
+          description: Rope Hempen 50 foot
+          value: Rope, Hempen (50 foot)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: rope_hempen_50_foot_weight
+              label: Rope, Hempen (50 foot) Weight
+              description: The weight of a 50-foot hempen rope.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: rope_silk_50_feet
+          description: Rope Silk 50 feet
+          value: Rope, Silk (50 feet)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: rope_silk_50_feet_weight
+              label: Rope, Silk (50 feet) Weight
+              description: The weight of a 50-foot silk rope.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: sack
+          description: Sack
+          value: Sack
+          variables:
+          - type: variable_number
+            variable_number:
+              id: sack_weight
+              label: Sack Weight
+              description: The weight of a sack.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0.5
+      - type: value_text
+        value_text:
+          value_id: scale_merchants
+          description: Merchant's Scale
+          value: Scale, Merchant's
+          variables:
+          - type: variable_number
+            variable_number:
+              id: scale_merchants_weight
+              label: Scale, Merchant's Weight
+              description: The weight of a merchant's scale.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: sealing_wax
+          description: Sealing wax
+          value: Sealing Wax
+          variables:
+          - type: variable_number
+            variable_number:
+              id: sealing_wax_weight
+              label: Sealing Wax Weight
+              description: The weight of a sealing wax.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: shovel
+          description: Shovel
+          value: Shovel
+          variables:
+          - type: variable_number
+            variable_number:
+              id: shovel_weight
+              label: Shovel Weight
+              description: The weight of a shovel.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: signal_whistle
+          description: Signal whistle
+          value: Signal Whistle
+          variables:
+          - type: variable_number
+            variable_number:
+              id: signal_whistle_weight
+              label: Signal Whistle Weight
+              description: The weight of a signal whistle.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: signet_ring
+          description: Signet Ring
+          value: Signet Ring
+          variables:
+          - type: variable_number
+            variable_number:
+              id: signet_ring_weight
+              label: Signet Ring Weight
+              description: The weight of a signet ring.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: soap
+          description: Soap
+          value: Soap
+          variables:
+          - type: variable_number
+            variable_number:
+              id: soap_weight
+              label: Soap Weight
+              description: The weight of a bar of soap.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: spellbook
+          description: Spellbook
+          value: Spellbook
+          variables:
+          - type: variable_number
+            variable_number:
+              id: spellbook_weight
+              label: Spellbook Weight
+              description: The weight of a spellbook.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 3
+      - type: value_text
+        value_text:
+          value_id: spikes_iron_10
+          description: Spikes, Iron (10)
+          value: Spikes, Iron (10)
+          variables:
+          - type: variable_number
+            variable_number:
+              id: spikes_iron_10_weight
+              label: Spikes, Iron (10) Weight
+              description: The weight of a 10 iron spikes.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: spyglass
+          description: Spyglass
+          value: Spyglass
+          variables:
+          - type: variable_number
+            variable_number:
+              id: spyglass_weight
+              label: Spyglass Weight
+              description: The weight of a spyglass.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: spyglass
+          description: Spyglass
+          value: Spyglass
+          variables:
+          - type: variable_number
+            variable_number:
+              id: spyglass_weight
+              label: Spyglass Weight
+              description: The weight of a spyglass.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: tent_two_person
+          description: Two-Person Tent
+          value: Tent, Two-Person
+          variables:
+          - type: variable_number
+            variable_number:
+              id: tent_two_person_weight
+              label: Tent, Tow-Person Weight
+              description: The weight of a two-person tent.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 20
+      - type: value_text
+        value_text:
+          value_id: tinderbox
+          description: Tinderbox
+          value: Tinderbox
+          variables:
+          - type: variable_number
+            variable_number:
+              id: tinderbox_weight
+              label: Tinderbox Weight
+              description: The weight of a tinderbox.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: torch
+          description: Torch
+          value: Torch
+          variables:
+          - type: variable_number
+            variable_number:
+              id: torch_weight
+              label: Torch Weight
+              description: The weight of a torch.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: vial
+          description: Vial
+          value: Vial
+          variables:
+          - type: variable_number
+            variable_number:
+              id: vial_weight
+              label: Vial Weight
+              description: The weight of a vial.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 0
+      - type: value_text
+        value_text:
+          value_id: waterskin
+          description: Waterskin
+          value: Waterskin
+          variables:
+          - type: variable_number
+            variable_number:
+              id: waterskin_weight
+              label: Waterskin Weight
+              description: The weight of a waterskin.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 5
+      - type: value_text
+        value_text:
+          value_id: whetstone
+          description: Whetstone
+          value: Whetstone
+          variables:
+          - type: variable_number
+            variable_number:
+              id: whetstone_weight
+              label: Whetstone Weight
+              description: The weight of a whetstone.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 1
+  - type: value_set_base
+    value_set_base:
+      value_set_id: light_armor
+      label: Light Armor
+      label_singular: Light Armor
+      description: 'Light Armor'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: padded
+          description: |-
+            Padded armor consists of quilted layers of cloth and batting.
+          value: 'Padded Armor'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_padded_armor_bonus
+              label: Padded Armor Bonus
+              description: The bonus to armor class from wearing Padded Armor.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 11
+          - type: variable_number
+            variable_number:
+              id: armor_padded_weight
+              label: Padded Armor Weight
+              description: The weight of Padded Armor.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 8
+      - type: value_text
+        value_text:
+          value_id: leather
+          description: |-
+             The breastplate and shoulder protectors of this armor are made of leather that has
+             been stiffened by being boiled in oil. The rest of the armor is made of softer and
+             more flexible materials
+          value: 'Leather Armor'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_leather_armor_bonus
+              label: Leather Armor Bonus
+              description: The bonus to armor class from wearing Leather Armor.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 11
+          - type: variable_number
+            variable_number:
+              id: armor_leather_weight
+              label: Leather Armor Weight
+              description: The weight of Leather Armor.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 10
+      - type: value_text
+        value_text:
+          value_id: studded_leather
+          description: |-
+            Made from tough but flexible leather, studded leather is reinforced with close-set
+            rivets or spikes
+          value: 'Studded Leather Armor'
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_studded_leather_armor_bonus
+              label: Studded Leather Armor Bonus
+              description: The bonus to armor class from wearing Studded Leather Armor.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 12
+          - type: variable_number
+            variable_number:
+              id: armor_studded_leather_weight
+              label: Studded Leather Armor Weight
+              description: The weight of Studded Leather Armor.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 13
+  - type: value_set_base
+    value_set_base:
+      value_set_id: medium_armor
+      label: Medium Armor
+      label_singular: Medium Armor
+      description: 'Medium Armor'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: hide
+          description: |-
+            This crude armor consists of thick furs and pelts. It is commonly worn by barbarian
+            tribes, evil humanoids, and other folk who lack access to the tools and materials
+            needed to create better armor.
+          value: Hide
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_hide_armor_bonus
+              label: Hide Armor Bonus
+              description: The bonus to armor class from wearing Hide Armor.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 12
+          - type: variable_number
+            variable_number:
+              id: armor_hide_weight
+              label: Hide Armor Weight
+              description: The weight of Hide Armor.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 12
+      - type: value_text
+        value_text:
+          value_id: chain_shirt
+          description: |-
+            Made of interlocking metal rings, a chain shirt is worn between layers of clothing
+            or leather. This armor offers modest protection to the wearer's upper body and allows
+            the sound of the rings rubbing against one another to be muffled by outer layers.
+          value: Chain Shirt
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_chain_shirt_armor_bonus
+              label: Chain Shirt Armor Bonus
+              description: The bonus to armor class from wearing a Chain Shirt.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 13
+          - type: variable_number
+            variable_number:
+              id: armor_chain_shirt_weight
+              label: Chain Shirt Weight
+              description: The weight of a Chain Shirt.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 20
+      - type: value_text
+        value_text:
+          value_id: scale_mail
+          description: |-
+            This armor consists of a coat and leggings (and perhaps a separate skirt) of leather
+            covered with overlapping pieces of metal, much like the scales of a fish. The suit
+            includes gauntlets.
+          value: Scale Mail
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_scale_mail_armor_bonus
+              label: Scale Mail Armor Bonus
+              description: The bonus to armor class from wearing Scale Mail.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 14
+          - type: variable_number
+            variable_number:
+              id: armor_scale_mail_weight
+              label: Scale Mail Weight
+              description: The weight of Scale Mail.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 45
+      - type: value_text
+        value_text:
+          value_id: breastplate
+          description: |-
+            This armor consists of a fitted metal chest piece worn with supple leather. Although
+            it leaves the legs and arms relatively unprotected, this armor provides good
+            protection for the wearer's vital organs while leaving the wearer relatively unencumbered.
+          value: Breastplate
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_breastplate_armor_bonus
+              label: Breastplate Armor Bonus
+              description: The bonus to armor class from wearing Breastplate.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 14
+          - type: variable_number
+            variable_number:
+              id: armor_breastplate_weight
+              label: Breastplate Weight
+              description: The weight of Breastplate.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 20
+      - type: value_text
+        value_text:
+          value_id: halfplate
+          description: |-
+            Half plate consists of shaped metal plates that cover most of the wearer's body. It
+            does not include leg protection beyond simple greaves that are attached with leather
+            straps.
+          value: Half Plate
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_halfplate_armor_bonus
+              label: Half Plate Armor Bonus
+              description: The bonus to armor class from wearing Half Plate.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 15
+          - type: variable_number
+            variable_number:
+              id: armor_half_plate_weight
+              label: Half Plate Weight
+              description: The weight of Half Plate.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 40
+  - type: value_set_base
+    value_set_base:
+      value_set_id: heavy_armor
+      label: Heavy Armor
+      label_singular: Heavy Armor
+      description: 'Heavy Armor'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: ring_mail
+          description: |-
+            This armor is leather armor with heavy rings sewn into it. The rings help reinforce
+            the armor against blows from swords and axes. Ring mail is inferior to chain mail,
+            and it's usually worn only by those who can't afford better armor.
+          value: Ring Mail
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_ring_mail_armor_bonus
+              label: Ring Mail Armor Bonus
+              description: The bonus to armor class from wearing Ring Mail.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 14
+          - type: variable_number
+            variable_number:
+              id: armor_ring_mail_weight
+              label: Ring Mail Weight
+              description: The weight of Ring Mail.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 40
+      - type: value_text
+        value_text:
+          value_id: chain_mail
+          description: |-
+           Made of interlocking metal rings, chain mail includes a layer of quilted fabric worn
+           underneath the mail to prevent chafing and to cushion the impact of blows. The suit
+           includes gauntlets.
+          value: Chain Mail
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_chain_mail_weight
+              label: Chain Mail Weight
+              description: The weight of Chain Mail.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 55
+          - type: variable_number
+            variable_number:
+              id: armor_chain_mail_armor_bonus
+              label: Chain Mail Armor Bonus
+              description: The bonus to armor class from wearing Chain Mail.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 16
+      - type: value_text
+        value_text:
+          value_id: splint
+          description: |-
+            This armor is made of narrow vertical strips of metal riveted to a backing of leather
+            that is worn over cloth padding. Flexible chain mail protects the joints.
+          value: Splint
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_splint_armor_bonus
+              label: Splint Armor Bonus
+              description: The bonus to armor class from wearing Splint.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 17
+          - type: variable_number
+            variable_number:
+              id: armor_splint_weight
+              label: Splint Weight
+              description: The weight of Splint.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 60
+      - type: value_text
+        value_text:
+          value_id: plate
+          description: |-
+            Plate consists of shaped, interlocking metal plates to cover the entire body. A suit
+            of plate includes gauntlets, heavy leather boots, a visored helmet, and thick layers
+            of padding underneath the armor. Buckles and straps distribute the weight over the body.
+          value: Plate
+          variables:
+          - type: variable_number
+            variable_number:
+              id: armor_plate_armor_bonus
+              label: Plate Armor Bonus
+              description: The bonus to armor class from wearing Plate.
+              tags:
+              - armor
+              value:
+                type: number_literal
+                number_literal: 18
+          - type: variable_number
+            variable_number:
+              id: armor_plate_weight
+              label: Plate Armor Weight
+              description: The weight of Plate Armor.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 65
+  - type: value_set_base
+    value_set_base:
+      value_set_id: shields
+      label: Shields
+      label_singular: Shield
+      description: 'Shields'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: shield
+          description: 'Shield'
+          value: Shield
+          variables:
+          - type: variable_number
+            variable_number:
+              id: shield_weight
+              label: Shield Weight
+              description: The weight of a Shield.
+              tags:
+              - carried_item_weight
+              value:
+                type: number_literal
+                number_literal: 6
+  - type: value_set_base
+    value_set_base:
+      value_set_id: levels
+      label: Levels
+      label_singular: Level
+      description: The levels a player may reach with experience.
+      value_type: number
+      values:
+      - type: value_number
+        value_number:
+          value_id: level_one
+          description: 'Level 1'
+          value: 1
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_two
+          description: 'Level 2'
+          value: 2
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_three
+          description: 'Level 3'
+          value: 3
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_four
+          description: 'Level 4'
+          value: 4
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_four
+              label: Is Level Four?
+              description: Is Level Four?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_five
+          description: 'Level 5'
+          value: 5
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_four
+              label: Is Level Four?
+              description: Is Level Four?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_five
+              label: Is Level Five?
+              description: Is Level Five?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_number
+        value_number:
+          value_id: level_six
+          description: 'Level 6'
+          value: 6
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_one
+              label: Is Level One?
+              description: Is Level One?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_two
+              label: Is Level Two?
+              description: Is Level Two?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_three
+              label: Is Level Three?
+              description: Is Level Three?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_four
+              label: Is Level Four?
+              description: Is Level Four?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_five
+              label: Is Level Five?
+              description: Is Level Five?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+          - type: variable_boolean
+            variable_boolean:
+              id: is_level_six
+              label: Is Level Six?
+              description: Is Level Six?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+  mechanics:
+  - id: dragonborn_ability_score_bonuses
+    label: Dragonborn Ability Score Bonuses
+    description: 'The ability score bonuses that Dragonborns acquire at first level.'
+    summary: '+2 STR, +1 CHA'
+    category_id: race_dragonborn
+    requirements:
+    - name: 'is_race_dragonborn'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: dragonborn_strength_bonus
+        label: Dragonborn Strength Bonus
+        description: Dragonborn Strength Bonus
+        tags:
+        - strength_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+    - type: variable_number
+      variable_number:
+        id: dragonborn_charisma_bonus
+        label: Dragonborn Charisma Bonus
+        description: Dragonborn Charisma Bonus
+        tags:
+        - charisma_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+  - id: dwarf_ability_score_bonuses
+    label: Dwarf Ability Score Bonuses
+    description: 'The ability score bonuses that Dwarves acquire at first level.'
+    summary: '+2 CON'
+    category_id: race_dwarf
+    requirements:
+    - name: 'is_race_dwarf'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: dwarf_constitution_bonus
+        label: Dwarf Constitution Bonus
+        description: Dwarf Constitution Bonus
+        tags:
+        - constitution_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: elf_ability_score_bonuses
+    label: Elf Ability Score Bonuses
+    description: 'The ability score bonuses that Elves acquire at first level.'
+    summary: '+2 DEX'
+    category_id: race_elf
+    requirements:
+    - name: 'is_race_elf'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: elf_dexterity_bonus
+        label: Elf Dexterity Bonus
+        description: Elf Dexterity Bonus
+        tags:
+        - dexterity_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: gnome_ability_score_bonuses
+    label: Gnome Ability Score Bonuses
+    description: 'The ability score bonuses that Gnomes acquire at first level.'
+    summary: '+2 INT'
+    category_id: race_gnome
+    requirements:
+    - name: 'is_race_gnome'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: gnome_intelligence_bonus
+        label: Gnome Intelligence Bonus
+        description: Gnome Intelligence Bonus
+        tags:
+        - intelligence_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: half_elf_ability_score_bonuses
+    label: Half-Elf Ability Score Bonuses
+    description: 'The ability score bonuses that Half-Elves acquire at first level.'
+    summary: '+2 CHA'
+    category_id: race_half_elf
+    requirements:
+    - name: 'is_race_half_elf'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: half_elf_charisma_bonus
+        label: Half-Elf Charisma Bonus
+        description: Half-Elf Charisma Bonus
+        tags:
+        - charisma_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: half_orc_ability_score_bonuses
+    label: Half-Orc Ability Score Bonuses
+    description: 'The ability score bonuses that Half-Orcs acquire at first level.'
+    summary: '+2 STR, +1 CON'
+    category_id: race_half_orc
+    requirements:
+    - name: 'is_race_half_orc'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: half_orc_strength_bonus
+        label: Half-Orc Strength Bonus
+        description: Half-Orc Strength Bonus
+        tags:
+        - strength_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+    - type: variable_number
+      variable_number:
+        id: half_orc_constitution_bonus
+        label: Half-Orc Constitution Bonus
+        description: Half-Orc Constitution Bonus
+        tags:
+        - constitution_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: halfling_ability_score_bonuses
+    label: Halfling Ability Score Bonuses
+    description: 'The ability score bonuses that Halflings acquire at first level.'
+    summary: '+2 DEX'
+    category_id: race_halfling
+    requirements:
+    - name: 'is_race_halfling'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: halfling_dexterity_bonus
+        label: Halfling Dexterity Bonus
+        description: Halfling Dexterity Bonus
+        tags:
+        - dexterity_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: human_ability_score_bonuses
+    label: Human Ability Score Bonuses
+    description: 'The ability score bonuses that humans acquire at first level.'
+    summary: '+1 to each ability score'
+    category_id: race_human
+    requirements:
+    - name: 'is_race_human'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: human_strength_bonus
+        label: Human Strength Bonus
+        description: Human Strength Bonus
+        tags:
+        - strength_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+    - type: variable_number
+      variable_number:
+        id: human_dexterity_bonus
+        label: Human Dexterity Bonus
+        description: Human Dexterity Bonus
+        tags:
+        - dexterity_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+    - type: variable_number
+      variable_number:
+        id: human_constitution_bonus
+        label: Human Constitution Bonus
+        description: Human Constitution Bonus
+        tags:
+        - constitution_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+    - type: variable_number
+      variable_number:
+        id: human_intelligence_bonus
+        label: Human Intelligence Bonus
+        description: Human Intelligence Bonus
+        tags:
+        - intelligence_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+    - type: variable_number
+      variable_number:
+        id: human_wisdom_bonus
+        label: Human Wisdom Bonus
+        description: Human Wisdom Bonus
+        tags:
+        - wisdom_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+    - type: variable_number
+      variable_number:
+        id: human_charisma_bonus
+        label: Human Charisma Bonus
+        description: Human Charisma Bonus
+        tags:
+        - charisma_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+  - id: human_ability_score_bonuses
+    label: Tiefling Ability Score Bonuses
+    description: 'The ability score bonuses that Tieflings acquire at first level.'
+    summary: '+1 INT, +2 CHA'
+    category_id: race_tiefling
+    requirements:
+    - name: 'is_race_tiefling'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: tiefling_intelligence_bonus
+        label: Tiefling Intelligence Bonus
+        description: Tiefling Intelligence Bonus
+        tags:
+        - intelligence_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 1
+    - type: variable_number
+      variable_number:
+        id: tiefling_charisma_bonus
+        label: Tiefling Charisma Bonus
+        description: Tiefling Charisma Bonus
+        tags:
+        - charisma_racial_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: soulsin_canny_combatant
+    label: Canny Combatant
+    description: 'Whenever someone from Soulsin would lose points from perception due to an action
+                  by someone they are engaged in combat with, he or she instead gains those points
+                  to their attack modifier.'
+    summary: 'Points lost from perception due to opponent are instead added added to attack.'
+    category_id: race
+    requirements:
+    - name: 'is_race_soulsin'
+    variables:
+  - id: swashbuckler
+    label: Swashbuckler
+    description: Swashbuckler
+    summary: Swashbuckler
+    category_id: class
+    requirements:
+    - name: 'is_class_swashbuckler'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: swashbuckler_dexterity_bonus
+        label: Swashbuckler Dexterity Bonus
+        description: Swashbuckler Dexterity Bonus
+        tags:
+        - dexterity_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+    - type: variable_number
+      variable_number:
+        id: swashbuckler_charisma_bonus
+        label: Swashbuckler Charisma Bonus
+        description: Swashbuckler Charisma Bonus
+        tags:
+        - charisma_modifier
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: cutlass
+    label: Cutlass
+    description: Cutlass
+    summary: Cutlass
+    category_id: weapon
+    requirements:
+    - namespace: cutlass
+      name: is_equipped
+    variables:
+    - type: variable_number
+      variable_number:
+        id: cutlass_defense_bonus
+        label: Cutlass Defense Bonus
+        description: Cutlass Defense Bonus
+        tags:
+        - defense_weapon_bonus
+        value:
+          type: number_literal
+          number_literal: 1
+  mechanic_categories:
+  - id: race_human
+    label: 'Race: Human'
+    description: Mechanics for humans.
+  - id: class
+    label: Class
+    description: Mechanics for a specific class.
+  - id: weapon
+    label: Weapon
+    description: Weapon mechanics.
+  functions:
+  - function_id: proficiency_bonus
+    label: Proficiency Bonus
+    description:
+      The proficiency bonus by level.
+    type_signature:
+      parameter1_type: number
+      result_type: number
+    tuples:
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 1
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 2
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 3
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 4
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 5
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 6
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 7
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 8
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 9
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 10
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 11
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 12
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 13
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 14
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 15
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 16
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 17
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 18
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 19
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 20
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+  - function_id: ability_modifier
+    label: Ability Modifier
+    description:
+      The modifier applied to dice rolls that are relevant to the ability.
+    type_signature:
+      parameter1_type: number
+      result_type: number
+    tuples:
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 1
+      result:
+        type: engine_value_number
+        engine_value_number: -5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 2
+      result:
+        type: engine_value_number
+        engine_value_number: -4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 3
+      result:
+        type: engine_value_number
+        engine_value_number: -4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 4
+      result:
+        type: engine_value_number
+        engine_value_number: -3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 5
+      result:
+        type: engine_value_number
+        engine_value_number: -3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 6
+      result:
+        type: engine_value_number
+        engine_value_number: -2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 7
+      result:
+        type: engine_value_number
+        engine_value_number: -2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 8
+      result:
+        type: engine_value_number
+        engine_value_number: -1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 9
+      result:
+        type: engine_value_number
+        engine_value_number: -1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 10
+      result:
+        type: engine_value_number
+        engine_value_number: 0
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 11
+      result:
+        type: engine_value_number
+        engine_value_number: 0
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 12
+      result:
+        type: engine_value_number
+        engine_value_number: 1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 13
+      result:
+        type: engine_value_number
+        engine_value_number: 1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 14
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 15
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 16
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 17
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 18
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 19
+      result:
+        type: engine_value_number
+        engine_value_number: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 20
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 21
+      result:
+        type: engine_value_number
+        engine_value_number: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 22
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 23
+      result:
+        type: engine_value_number
+        engine_value_number: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 24
+      result:
+        type: engine_value_number
+        engine_value_number: 7
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 25
+      result:
+        type: engine_value_number
+        engine_value_number: 7
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 26
+      result:
+        type: engine_value_number
+        engine_value_number: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 27
+      result:
+        type: engine_value_number
+        engine_value_number: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 28
+      result:
+        type: engine_value_number
+        engine_value_number: 9
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 29
+      result:
+        type: engine_value_number
+        engine_value_number: 9
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 30
+      result:
+        type: engine_value_number
+        engine_value_number: 10
+  - function_id: sneak_attack_damage_bonus
+    label: Sneak Attack Damage Bonus
+    description:
+      The dice roll modifier applied to sneak attack damage.
+    type_signature:
+      parameter1_type: number
+      result_type: dice_roll
+    tuples:
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 1
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 2
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 1
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 3
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 4
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 2
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 5
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 6
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 3
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 7
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 8
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 4
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 9
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 10
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 5
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 11
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 12
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 6
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 13
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 7
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 14
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 7
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 15
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 16
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 8
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 17
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 9
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 18
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 9
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 19
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 10
+    - parameter1:
+        type: engine_value_number
+        engine_value_number: 20
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 10
+  programs:
+  - program_id: ability_modifier
+    label: Ability Modifier
+    description: Calcuates the ability modifier of an ability score.
+    type_signature:
+      parameter1_type: number
+      result_type: number
+    statements:
+    - binding_name: result
+      function_id: ability_modifier
+      parameter1:
+        type: program_parameter_index
+        program_parameter_index: 1
+    result_binding_name: result
+  - program_id: proficiency_bonus
+    label: Proficency Bonus
+    description: Calcuates the proficiency bonus base on the current level.
+    type_signature:
+      parameter1_type: number
+      result_type: number
+    statements:
+    - binding_name: result
+      function_id: proficiency_bonus
+      parameter1:
+        type: program_parameter_index
+        program_parameter_index: 1
+    result_binding_name: result
+  summations:
+  - summation_id: strength
+    summation_name: Strength
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_strength
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Racial Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: strength_racial_modifier
+  - summation_id: dexterity
+    summation_name: Dexterity
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_dexterity
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Racial Bonsues
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: dexterity_racial_modifier
+  - summation_id: constitution
+    summation_name: Constitution
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_constitution
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Racial Bonsues
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: constitution_racial_modifier
+  - summation_id: intelligence
+    summation_name: Intelligence
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_intelligence
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Racial Bonsues
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: intelligence_racial_modifier
+  - summation_id: wisdom
+    summation_name: Wisdom
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_wisdom
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Racial Bonsues
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: wisdom_racial_modifier
+  - summation_id: charisma
+    summation_name: Charisma
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_charisma
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Racial Bonsues
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: charisma_racial_modifier
+  - summation_id: initiative
+    summation_name: Initiative
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Misc Initiative Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: initiative_bonus
+  - summation_id: skill_acrobatics_bonus
+    summation_name: Skill (Acrobatics) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: acrobatics::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_animal_handling_bonus
+    summation_name: Skill (Animal Handling) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: animal_handling::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_arcana_bonus
+    summation_name: Skill (Arcana) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: arcana::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_athletics_bonus
+    summation_name: Skill (Athletics) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: athletics::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_deception_bonus
+    summation_name: Skill (Deception) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: deception::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_history_bonus
+    summation_name: Skill (History) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: history::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_insight_bonus
+    summation_name: Skill (Insight) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: insight::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_intimidation_bonus
+    summation_name: Skill (Intimidation) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intimidation::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_investigation_bonus
+    summation_name: Skill (Investigation) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: investigation::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_medicine_bonus
+    summation_name: Skill (Medicine) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: medicine::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_nature_bonus
+    summation_name: Skill (Nature) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: nature::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_perception_bonus
+    summation_name: Skill (Perception) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: perception::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_performance_bonus
+    summation_name: Skill (Performance) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: performance::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_persuasion_bonus
+    summation_name: Skill (Persuasion) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: persuasion::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_religion_bonus
+    summation_name: Skill (Religion) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: religion::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_sleight_of_hand_bonus
+    summation_name: Skill (Sleight of Hand) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: sleight_of_hand::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_stealth_bonus
+    summation_name: Skill (Stealth) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: stealth::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_survival_bonus
+    summation_name: Skill (Survival) Bonus
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: survival::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: skill_check_roll
+    summation_name: Skill Check Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: skill_bonus
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_context
+            variable_context: skill_bonus
+  - summation_id: gear_total_weight
+    summation_name: Total Weight of Gear
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Gear Weights
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: carried_item_weight
+  - summation_id: general_strength_action
+    summation_name: General Strength Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
+  - summation_id: general_dexterity_action
+    summation_name: General Dexterity Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Dexterity Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+  - summation_id: general_constitution_action
+    summation_name: General Constitution Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Constitution Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: constitution_modifier
+  - summation_id: general_intelligence_action
+    summation_name: General Intelligence Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Intelligence Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+  - summation_id: general_wisdom_action
+    summation_name: General Wisdom Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Wisdom Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+  - summation_id: general_charisma_action
+    summation_name: General Charisma Action
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Charisma Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+  - summation_id: flurry_attack
+    summation_name: Flurry Attack
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Bonuses
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
+  - summation_id: armor_class
+    summation_name: Armor Class
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Armor
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: armor
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Shield
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: shield
+  - summation_id: passive_perception
+    summation_name: Passive Perception
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: number_literal
+          number_literal: 10
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: perception::is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+rulebook:
+  title: 'The Magic of Heroes'
+  abstract: 'The Magic of Heroes Rules'
+  chapters:
+  - id: equipment
+    title: 'Equipment'
+    sections:
+    - id: gear
+      title: 'Gear'
+      body: 'Gear'
+      subsections:
+      - id: acid
+        title: Acid
+        body: >
+          As an action, you can splash the contents of this vial onto a creature within 5 feet of
+          you or throw the vial up to 20 feet, shattering it on impact. In either case, make a
+          ranged attack against a creature or object, treating the acid as an improvised weapon.
+          On a hit, the target takes 2d6 acid damage.
+      - id: alchemists_fire
+        title: Alchemist's Fire
+        body: >
+          This sticky, adhesive fluid ignites when exposed to air. As an action, you can throw
+          this flask up to 20 feet, shattering it on impact. Make a ranged attack against a
+          creature or object, treating the alchemist's fire as an improvised weapon. On a hit,
+          the target takes 1d4 fire damage at the start of each of its turns. A creature can end
+          this damage by using its action to make a DC 10 Dexterity check to extinguish the flames.
+      - id: antitoxin
+        title: Antitoxin
+        body: >
+          A creature that drinks this vial of liquid gains advantage on saving throws against
+          poison for 1 hour. It confers no benefit to undead or constructs.
+      - id: arcane_focus
+        title: Arcane Focus
+        body: >
+          An arcane focus is a special item--an orb, a crystal, a rod, a specially constructed
+          staff, a wand-like length of wood, or some similar item--designed to channel the power
+          of arcane spells. A sorcerer, warlock, or wizard can use such an item as a
+          spellcasting focus.
+      - id: ball_bearings
+        title: Ball Bearings
+        body: >
+          As an action, you can spill these tiny metal balls from their pouch to cover a level,
+          square area that is 10 feet on a side. A creature moving across the covered area must
+          succeed on a DC 10 Dexterity saving throw or fall prone. A creature moving through the
+          area at half speed doesn't need to make the save.
+      - id: block_and_tackle
+        title: Block and Tackle
+        body: >
+          A set of pulleys with a cable threaded through them and a hook to attach to objects,
+          a block and tackle allows you to hoist up to four times the weight you can normally lift.
+      - id: book
+        title: Book
+        body: >
+          A book might contain poetry, historical accounts, information pertaining to a particular
+          field of lore, diagrams and notes on gnomish contraptions, or just about anything else
+          that can be represented using text or pictures. A book of spells is
+          a spellbook (described later in this section).
+      - id: caltrops
+        title: Caltrops
+        body: >
+          As an action, you can spread a bag of caltrops to cover a square area that is 5 feet on
+          a side. Any creature that enters the area must succeed on a DC 15 Dexterity saving throw
+          or stop moving this turn and take 1 piercing damage. Taking this damage reduces the
+          creature's walking speed by 10 feet until the creature regains at least 1 hit point.
+          A creature moving through the area at half speed doesn't need to make the save.
+      - id: candle
+        title: Candle
+        body: >
+          For 1 hour, a candle sheds bright light in a 5-foot radius and dim light for an
+          additional 5 feet.
+      - id: case_crossbow_bolt
+        title: Case, Crossbow Bolt
+        body: >
+          This wooden case can hold up to twenty crossbow bolts.
+      - id: case_map_or_scroll
+        title: Case, Map or Scroll
+        body: >
+          This cylindrical leather case can hold up to ten rolled-up sheets of paper or five
+          rolled-up sheets of parchment.
+      - id: chain
+        title: Chain
+        body: >
+          A chain has 10 hit points. It can be burst with a successful DC 20 Strength check.
+      - id: climbers_kit
+        title: Climber's Kit
+        body: >
+          A climber's kit includes special pitons, boot tips, gloves, and a harness. You can use
+          the climber's kit as an action to anchor yourself; when you do, you can't fall more
+          than 25 feet from the point where you anchored yourself, and you can't climb more than
+          25 feet away from that point without undoing the anchor.
+      - id: component_pouch
+        title: Component Pouch
+        body: >
+          A component pouch is a small, watertight leather belt pouch that has compartments to
+          hold all the material components and other special items you need to cast your spells,
+          except for those components that have a specific cost (as indicated in a spell's
+          description).
+      - id: crowbar
+        title: Crowbar
+        body: >
+          Using a crowbar grants advantage to Strength checks where the crowbar's leverage
+          can be applied.
+      - id: druidic_focus
+        title: Druidic Focus
+        body: >
+          A druidic focus might be a sprig of mistletoe or holly, a wand or scepter made of
+          yew or another special wood, a staff drawn whole out of a living tree, or a totem
+          object incorporating feathers, fur, bones, and teeth from sacred animals. A druid
+          can use such an object as a spellcasting focus.
+      - id: fishing_tackle
+        title: Fishing Tackle
+        body: >
+          This kit includes a wooden rod, silken line, corkwood bobbers, steel hooks, lead sinkers,
+          velvet lures, and narrow netting.
+      - id: healers_kit
+        title: Healer's Kit
+        body: >
+          This kit is a leather pouch containing bandages, salves, and splints. The kit has ten
+          uses. As an action, you can expend one use of the kit to stabilize a creature that has
+          0 hit points, without needing to make a Wisdom (Medicine) check.
+      - id: holy_symbol
+        title: Holy Symbol
+        body: >
+          A holy symbol is a representation of a god or pantheon. It might be an amulet depicting
+          a symbol representing a deity, the same symbol carefully engraved or inlaid as an emblem
+          on a shield, or a tiny box holding a fragment of a sacred relic. A cleric or paladin can
+          use a holy symbol as a spellcasting focus. To use the symbol in this way, the caster must
+          hold it in hand, wear it visibly, or bear it on a shield.
+      - id: holy_water
+        title: Holy Water
+        body: >
+          As an action, you can splash the contents of this flask onto a creature within 5 feet of
+          you or throw it up to 20 feet, shattering it on impact. In either case, make a ranged
+          attack against a target creature, treating the holy water as an improvised weapon. If
+          the target is a fiend or undead, it takes 2d6 radiant damage.
+          A cleric or paladin may create holy water by performing a special ritual. The ritual
+          takes 1 hour to perform, uses 25 gp worth of powdered silver, and requires the caster
+          to expend a 1st-level spell slot.
+      - id: hunting_trap
+        title: Hunting Trap
+        body: >
+          When you use your action to set it, this trap forms a saw-toothed steel ring that snaps
+          shut when a creature steps on a pressure plate in the center. The trap is affixed by a
+          heavy chain to an immobile object, such as a tree or a spike driven into the ground. A
+          creature that steps on the plate must succeed on a DC 13 Dexterity saving throw or take
+          1d4 piercing damage and stop moving. Thereafter, until the creature breaks free of the
+          trap, its movement is limited by the length of the chain (typically 3 feet long). A
+          creature can use its action to make a DC 13 Strength check, freeing itself or another
+          creature within its reach on a success. Each failed check deals 1 piercing damage to
+          the trapped creature.
+      - id: lamp
+        title: Lamp
+        body: >
+          A lamp casts bright light in a 15-foot radius and dim light for an additional 30 feet.
+          Once lit, it burns for 6 hours on a flask (1 pint) of oil.
+      - id: lantern_bullseye
+        title: Lantern, Bullseye
+        body: >
+          A bullseye lantern casts bright light in a 60-foot cone and dim light for an additional
+          60 feet. Once lit, it burns for 6 hours on a flask (1 pint) of oil.
+      - id: lantern_hooded
+        title: Lantern, Hooded
+        body: >
+          A hooded lantern casts bright light in a 30-foot radius and dim light for an additional
+          30 feet. Once lit, it burns for 6 hours on a flask (1 pint) of oil. As an action, you can
+          lower the hood, reducing the light to dim light in a 5-foot radius.
+      - id: lock
+        title: Lock
+        body: >
+          A key is provided with the lock. Without the key, a creature proficient with thieves'
+          tools can pick this lock with a successful DC 15 Dexterity check. Your GM may decide that
+          better locks are available for higher prices.
+      - id: magnifying_glass
+        title: Magnifying Glass
+        body: >
+          This lens allows a closer look at small objects. It is also useful as a substitute for
+          flint and steel when starting fires. Lighting a fire with a magnifying glass requires
+          light as bright as sunlight to focus, tinder to ignite, and about 5 minutes for the fire
+          to ignite. A magnifying glass grants advantage on any ability check made to appraise or
+          inspect an item that is small or highly detailed.
+      - id: manacles
+        title: Manacles
+        body: >
+          These metal restraints can bind a Small or Medium creature. Escaping the manacles
+          requires a successful DC 20 Dexterity check. Breaking them requires a successful DC 20
+          Strength check. Each set of manacles comes with one key. Without the key, a creature
+          proficient with thieves' tools can pick the manacles' lock with a successful DC 15
+          Dexterity check. Manacles have 15 hit points.
+      - id: mess_kit
+        title: Mess Kit
+        body: >
+          This tin box contains a cup and simple cutlery. The box clamps together, and one side can
+          be used as a cooking pan and the other as a plate or shallow bowl.
+      - id: oil
+        title: Oil
+        body: >
+          Oil usually comes in a clay flask that holds 1 pint. As an action, you can splash the oil
+          in this flask onto a creature within 5 feet of you or throw it up to 20 feet, shattering
+          it on impact. Make a ranged attack against a target creature or object, treating the oil
+          as an improvised weapon. On a hit, the target is covered in oil. If the target takes any
+          fire damage before the oil dries (after 1 minute), the target takes an additional 5 fire
+          damage from the burning oil. You can also pour a flask of oil on the ground to cover a
+          5-foot-square area, provided that the surface is level. If lit, the oil burns for 2
+          rounds and deals 5 fire damage to any creature that enters the area or ends its turn in
+          the area. A creature can take this damage only once per turn.
+      - id: poison_basic
+        title: Poison, Basic
+        body: >
+           You can use the poison in this vial to coat one slashing or piercing weapon or up to
+           three pieces of ammunition. Applying the poison takes an action. A creature hit by the
+           poisoned weapon or ammunition must make a DC 10 Constitution saving throw or take
+           1d4 poison damage. Once applied, the poison retains potency for 1 minute before drying.
+      - id: potion_of_healing
+        title: Potion of Healing
+        body: >
+          A character who drinks the magical red fluid in this vial regains 2d4 + 2 hit points.
+          Drinking or administering a potion takes an action.
+      - id: pouch
+        title: Pouch
+        body: >
+          A cloth or leather pouch can hold up to 20 sling bullets or 50 blowgun needles, among
+          other things. A compartmentalized pouch for holding spell components is called a
+          component pouch (described earlier in this section).
+      - id: quiver
+        title: Quiver
+        body: >
+          A quiver can hold up to 20 arrows.
+      - id: ram_portable
+        title: Ram, Portable
+        body: >
+          You can use a portable ram to break down doors. When doing so, you gain a +4 bonus on
+          the Strength check. One other character can help you use the ram, giving you advantage
+          on this check.
+      - id: rations
+        title: Rations
+        body: >
+          Rations consist of dry foods suitable for extended travel, including jerky, dried fruit,
+          hardtack, and nuts.
+      - id: rope
+        title: Rope
+        body: >
+          Rope, whether made of hemp or silk, has 2 hit points and can be burst with a DC 17
+          Strength check.
+      - id: scale_merchants
+        title: Scale, Merchant's
+        body: >
+           A scale includes a small balance, pans, and a suitable assortment of weights up to 2
+           pounds. With it, you can measure the exact weight of small objects, such as raw precious
+           metals or trade goods, to help determine their worth.
+      - id: spellbook
+        title: Spellbook
+        body: >
+          Essential for wizards, a spellbook is a leather-bound tome with 100 blank vellum pages
+          suitable for recording spells.
+      - id: spyglass
+        title: Spyglass
+        body: >
+          Objects viewed through a spyglass are magnified to twice their size. Tent. A simple and
+          portable canvas shelter, a tent sleeps two.
+      - id: tinderbox
+        title: Tinderbox
+        body: >
+          This small container holds flint, fire steel, and tinder (usually dry cloth soaked in
+          light oil) used to kindle a fire. Using it to light a torch--or anything else with
+          abundant, exposed fuel--takes an action. Lighting any other fire takes 1 minute.
+      - id: torch
+        title: Torch
+        body: >
+          A torch burns for 1 hour, providing bright light in a 20-foot radius and dim light for an
+          additional 20 feet. If you make a melee attack with a burning torch and hit, it deals 1
+          fire damage.
+
+

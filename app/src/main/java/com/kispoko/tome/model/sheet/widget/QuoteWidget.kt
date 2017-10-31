@@ -179,11 +179,10 @@ data class QuoteWidgetFormat(override val id : UUID,
         }
 
 
-        val default : QuoteWidgetFormat =
-                QuoteWidgetFormat(defaultWidgetFormat,
-                                  defaultQuoteStyle,
-                                  defaultSoureStyle,
-                                  defaultIconFormat)
+        fun default() = QuoteWidgetFormat(defaultWidgetFormat,
+                                          defaultQuoteStyle,
+                                          defaultSoureStyle,
+                                          defaultIconFormat)
 
     }
 

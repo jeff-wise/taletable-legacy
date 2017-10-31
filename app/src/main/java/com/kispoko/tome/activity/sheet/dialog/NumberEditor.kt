@@ -505,7 +505,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
         layout.gravity          = Gravity.CENTER
 
         val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_1")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
@@ -528,6 +528,14 @@ class NumberEditorViewBuilder(val currentValue : Double,
                                                            updateTarget.cellId,
                                                            this.valueString.toDouble())
                     SheetManager.updateSheet(sheetUIContext.sheetId, numberCellUpdate)
+                    dialog.dismiss()
+                }
+                is UpdateTargetPointsWidget ->
+                {
+                    val pointsWidgeUpdate = PointsWidgetUpdateSetCurrentValue(
+                                                        updateTarget.pointsWidgetId,
+                                                        this.valueString.toDouble())
+                    SheetManager.updateSheet(sheetUIContext.sheetId, pointsWidgeUpdate)
                     dialog.dismiss()
                 }
                 is UpdateTargetStoryWidgetPart ->
@@ -562,7 +570,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
         icon.image              = R.drawable.icon_check
 
         val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_3")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 

@@ -1,0 +1,3247 @@
+id: casmey_beginner
+campaign_id: isara
+settings:
+  theme_id: dark
+  sheet_name: 'Casmey Dalseya'
+  sheet_summary: 'Level 1 Human Rogue'
+engine:
+  value_sets:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+variables:
+- type: variable_text
+  variable_text:
+    id: name
+    label: Name
+    description: Name
+    value:
+      type: text_literal
+      text_literal: 'Casmey Dalseya'
+- type: variable_text
+  variable_text:
+    id: race
+    label: Race
+    description: Race
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: races
+        value_id: human
+- type: variable_text
+  variable_text:
+    id: class
+    label: Class
+    description: Class
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: classes
+        value_id: rogue
+- type: variable_text
+  variable_text:
+    id: deity
+    label: Deity
+    description: Deity
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: deities
+        value_id: ferrasada
+- type: variable_number
+  variable_number:
+    id: level
+    label: Level
+    description: Level
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: levels
+        value_id: level_one
+- type: variable_number
+  variable_number:
+    id: current_xp
+    label: Current Experience Points
+    description: Currenet Experience Points
+    value:
+      type: number_literal
+      number_literal: 70
+- type: variable_number
+  variable_number:
+    id: target_xp
+    label: Target XP
+    description: Target XP
+    value:
+      type: number_literal
+      number_literal: 1000
+- type: variable_number
+  variable_number:
+    id: age
+    label: Age
+    description: Age
+    value:
+      type: number_literal
+      number_literal: 21
+- type: variable_text
+  variable_text:
+    id: eye_color
+    label: Eye Color
+    description: Eye Color
+    value:
+      type: text_literal
+      text_literal: green
+- type: variable_text
+  variable_text:
+    id: hair_color
+    label: Hair Color
+    description: Hair Color
+    value:
+      type: text_literal
+      text_literal: brown
+- type: variable_text
+  variable_text:
+    id: alignment
+    label: Alignment
+    description: Alignment
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id: alignments
+        value_id: chaotic_good
+- type: variable_number
+  variable_number:
+    id: proficiency_bonus
+    label: Proficiency Bonus
+    description: Proficiency Bonus
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_bonus
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: level
+- type: variable_number
+  variable_number:
+    id: base_strength
+    label: Base Strength
+    description: Base Strength
+    value:
+      type: number_literal
+      number_literal: 12
+- type: variable_number
+  variable_number:
+    id: strength
+    label: Strength
+    description: Strength
+    value:
+      type: summation_id
+      summation_id: strength
+- type: variable_number
+  variable_number:
+    id: strength_modifier
+    label: Strength Modifier
+    description: Strength Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: strength
+- type: variable_number
+  variable_number:
+    id: base_dexterity
+    label: Base Dexterity
+    description: Base Dexterity
+    value:
+      type: number_literal
+      number_literal: 15
+- type: variable_number
+  variable_number:
+    id: dexterity
+    label: Dexterity
+    description: Dexterity
+    value:
+      type: summation_id
+      summation_id: dexterity
+- type: variable_number
+  variable_number:
+    id: dexterity_modifier
+    label: Dexterity Modifier
+    description: Dexterity Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: dexterity
+- type: variable_number
+  variable_number:
+    id: base_constitution
+    label: Base Constitution
+    description: Base Constitution
+    value:
+      type: number_literal
+      number_literal: 13
+- type: variable_number
+  variable_number:
+    id: constitution
+    label: Constitution
+    description: Constitution
+    value:
+      type: summation_id
+      summation_id: constitution
+- type: variable_number
+  variable_number:
+    id: constitution_modifier
+    label: Constitution Modifier
+    description: Constitution Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: constitution
+- type: variable_number
+  variable_number:
+    id: base_intelligence
+    label: Base Intelligence
+    description: Base Intelligence
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: intelligence
+    label: Intelligence
+    description: Intelligence
+    value:
+      type: summation_id
+      summation_id: intelligence
+- type: variable_number
+  variable_number:
+    id: intelligence_modifier
+    label: Intelligence Modifier
+    description: Intelligence Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: intelligence
+- type: variable_number
+  variable_number:
+    id: base_wisdom
+    label: Base Wisdom
+    description: Base Wisdom
+    value:
+      type: number_literal
+      number_literal: 8
+- type: variable_number
+  variable_number:
+    id: wisdom
+    label: Wisdom
+    description: Wisdom
+    value:
+      type: summation_id
+      summation_id: wisdom
+- type: variable_number
+  variable_number:
+    id: wisdom_modifier
+    label: Wisdom Modifier
+    description: Wisdom Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: wisdom
+- type: variable_number
+  variable_number:
+    id: base_charisma
+    label: Base Charisma
+    description: Base Charisma
+    value:
+      type: number_literal
+      number_literal: 14
+- type: variable_number
+  variable_number:
+    id: charisma
+    label: Charisma
+    description: Charisma
+    value:
+      type: summation_id
+      summation_id: charisma
+- type: variable_number
+  variable_number:
+    id: charisma_modifier
+    label: Charisma Modifier
+    description: Charisma Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameter1:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: charisma
+- type: variable_text
+  variable_text:
+    id: passive_perception_label
+    label: Passive Perception Label
+    description: Passive Perception Label
+    value:
+      type: text_literal
+      text_literal: 'passive perception'
+- type: variable_text
+  variable_text:
+    id: armor_class_label
+    label: Armor Class Label
+    description: Armor Class Label
+    value:
+      type: text_literal
+      text_literal: 'armor class'
+- type: variable_text
+  variable_text:
+    id: speed_label
+    label: Speed Label
+    description: Speed Label
+    value:
+      type: text_literal
+      text_literal: 'speed'
+- type: variable_number
+  variable_number:
+    id: initiative
+    label: Initiative
+    description: Initiative
+    value:
+      type: summation_id
+      summation_id: initiative
+- type: variable_number
+  variable_number:
+    id: armor_class
+    label: Armor Class
+    description: Armor Class
+    value:
+      type: summation_id
+      summation_id: armor_class
+- type: variable_number
+  variable_number:
+    id: passive_perception
+    label: Passive Perception
+    description: Passive Perception
+    value:
+      type: summation_id
+      summation_id: passive_perception
+- type: variable_number
+  variable_number:
+    id: gear_total_weight
+    label: Total Weight of Gear
+    description: The total weight of all the gear the character is carrying.
+    value:
+      type: summation_id
+      summation_id: gear_total_weight
+- type: variable_text
+  variable_text:
+    id: speed
+    label: Speed
+    description: Speed
+    value:
+      type: text_literal
+      text_literal: '25 ft'
+- type: variable_text
+  variable_text:
+    id: name_label
+    label: Name Label
+    description: Name Label
+    value:
+      type: text_literal
+      text_literal: 'my name is'
+- type: variable_text
+  variable_text:
+    id: about_me_label
+    label: About Me Label
+    description: About Me Label
+    value:
+      type: text_literal
+      text_literal: 'about me'
+- type: variable_text
+  variable_text:
+    id: strength_label
+    label: Strength Label
+    description: Strength Label
+    value:
+      type: text_literal
+      text_literal: 'strength'
+- type: variable_text
+  variable_text:
+    id: dexterity_label
+    label: Dexterity Label
+    description: Dexterity Label
+    value:
+      type: text_literal
+      text_literal: 'dexterity'
+- type: variable_text
+  variable_text:
+    id: constitution_label
+    label: Constitution Label
+    description: Constitution Label
+    value:
+      type: text_literal
+      text_literal: 'constitution'
+- type: variable_text
+  variable_text:
+    id: intelligence_label
+    label: Intelligence Label
+    description: Intelligence Label
+    value:
+      type: text_literal
+      text_literal: 'intelligence'
+- type: variable_text
+  variable_text:
+    id: wisdom_label
+    label: Wisdom Label
+    description: Wisdom Label
+    value:
+      type: text_literal
+      text_literal: 'wisdom'
+- type: variable_text
+  variable_text:
+    id: charisma_label
+    label: Charisma Label
+    description: Charisma Label
+    value:
+      type: text_literal
+      text_literal: 'charisma'
+- type: variable_text
+  variable_text:
+    id: level_label
+    label: Level Label
+    description: Level Label
+    value:
+      type: text_literal
+      text_literal: 'level'
+- type: variable_text
+  variable_text:
+    id: xp_label
+    label: Experience Points Label
+    description: Experience Points Label
+    value:
+      type: text_literal
+      text_literal: 'experience'
+- type: variable_text
+  variable_text:
+    id: armor_table_label
+    label: Armor Table Label
+    description: Armor Table Label
+    value:
+      type: text_literal
+      text_literal: 'my armor'
+- type: variable_text
+  variable_text:
+    id: weapon_table_label
+    label: Armor Table Label
+    description: Armor Table Label
+    value:
+      type: text_literal
+      text_literal: 'my weapons'
+- type: variable_text
+  variable_text:
+    id: important_stuff_label
+    label: Important Stuff Label
+    description: Important Stuff Label
+    value:
+      type: text_literal
+      text_literal: 'some important things'
+- type: variable_text
+  variable_text:
+    id: less_important_stuff_label
+    label: Less Important Stuff Label
+    description: Less Important Stuff Label
+    value:
+      type: text_literal
+      text_literal: 'some less important things'
+- type: variable_text
+  variable_text:
+    id: my_money_label
+    label: My Money Label
+    description: My Money Label
+    value:
+      type: text_literal
+      text_literal: 'my money'
+- type: variable_text
+  variable_text:
+    id: gold_label
+    label: Gold Label
+    description: Gold Label
+    value:
+      type: text_literal
+      text_literal: 'gold'
+- type: variable_number
+  variable_number:
+    id: gold
+    label: Gold
+    description: Gold
+    value:
+      type: number_literal
+      number_literal: 107
+- type: variable_text
+  variable_text:
+    id: silver_label
+    label: Silver Label
+    description: Silver Label
+    value:
+      type: text_literal
+      text_literal: 'silver'
+- type: variable_number
+  variable_number:
+    id: silver
+    label: Silver
+    description: Silver
+    value:
+      type: number_literal
+      number_literal: 12
+- type: variable_text
+  variable_text:
+    id: copper_label
+    label: Copper Label
+    description: Copper Label
+    value:
+      type: text_literal
+      text_literal: 'copper'
+- type: variable_number
+  variable_number:
+    id: copper
+    label: Copper
+    description: Copper
+    value:
+      type: number_literal
+      number_literal: 30
+- type: variable_number
+  variable_number:
+    id: max_hit_points
+    label: Max Hit Points
+    description: Maximum hit points.
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: current_hit_points
+    label: Current Hit Points
+    description: Current hit points.
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_text
+  variable_text:
+    id: bears
+    label: Bears
+    description: Bears
+    value:
+      type: text_literal
+      text_literal: 'Bears'
+- type: variable_number
+  variable_number:
+    id: fiddle_songs_can_play
+    label: Fiddle Songs I Can Play
+    description: The number of songs I can play on the fiddle.
+    value:
+      type: number_literal
+      number_literal: 294
+- type: variable_text
+  variable_text:
+    id: backpack_table_label
+    label: Backpack Table Label
+    description: Backpack Table Label
+    value:
+      type: text_literal
+      text_literal: 'my backpack'
+- type: variable_text
+  variable_text:
+    id: father_quote
+    label: Father's Quote
+    description: Father's Quote
+    value:
+      type: text_literal
+      text_literal: 'Life is like the trapeze: you hold yourself up high, and then you are spinning,
+                     the world is turning, and you are falling, only to be caught by someone else.
+                     Sometimes, no one is there to catch you. You better hope that you have a safety net.'
+- type: variable_text
+  variable_text:
+    id: father_quote_source
+    label: Father Quote Source
+    description: Father Quote Source
+    value:
+      type: text_literal
+      text_literal: 'My Dad, when I was 11'
+- type: variable_text
+  variable_text:
+    id: my_story_part_1
+    label: My Story Part 1
+    description: My Story Part 1
+    value:
+      type: text_literal
+      text_literal: >
+        Hi, my name is Casmey. Some call me Cass. To be honest, you can call me whatever you want
+        -- I probably won't mind. I'm used to using a lot of aliases, and quite often I can't remember
+        what they are. A man once called me Amalyn once, but I thought he had been shouting at the
+        woman in front of me until he confronted me about a "stolen necklace". I had remembered
+        then that Amalyn was not a very good person.
+
+        I grew up in Soulsin. My father was a performer in the Endless Carnival. As early as I can
+        remember he was teaching me card tricks, acrobatics, and musical instruments. When I was
+        six I was allowed to perform with my father. I started playing the fiddle. Then I played
+        the fiddle while balancing on a ball. I played the fiddle while walking on a tightrope. I
+        even got to play the fiddle while riding on the back of an elephant when I turned seven. I
+        fell a few times, but I always landed on my feet. I heard my father often complimented on
+        his brave little girl. That made me smile. I wasn't afraid of anything.
+
+        When I turned ten my father let me start participating in the dangerous performances.
+
+        I fell a few times, but I always landed on my feet, only it hurt a bit more. Still, I
+        wasn't afriad. The bigger, the higher, the more dangerous...the more fun!
+- type: variable_text
+  variable_text:
+    id: my_story_part_2
+    label: My Story Part 2
+    description: My Story Part 2
+    value:
+      type: text_literal
+      text_literal: >
+        When I was high on the tightrope I looked down at the crowd below me. I could see how
+        little they had, the dirt on the faces, the sorrow in their posture. Soulsin was not kind
+        to those without money. And as talented as we were, my father and I, we didn't make much
+        from the carnival. The owners and the patrons kept the money for themselves.
+
+        I thought I could have fun and help the people at the same time.
+
+        Well, eventually I got caught. It wasn't my fault, of course. My partner slipped and fell
+        gets caught
+        joins pirates
+sections:
+- name: About Me
+  icon: parchment
+  pages:
+  - name: My Stats
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_11
+    groups:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          top: 20
+          left: 8
+          right: 8
+          bottom: 15
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: name_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+                  font_style: regular
+              widget_format:
+                alignment: left
+            value_variable_id: name_label
+      - format:
+          margins:
+            top: 5
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: name
+            value_variable_id: name
+            format:
+              widget_format:
+                alignment: left
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                  font_style: bold
+                  size: 24
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 15
+        padding:
+          top: 15
+          bottom: 20
+          left: 8
+          right: 8
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: about_me_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+                  font_style: regular
+              widget_format:
+                alignment: left
+            value_variable_id: about_me_label
+      - format:
+          margins:
+            top: 12
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: summary
+            format:
+              line_spacing: 1.4
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'In some lands I''m known as Cass, and in others they call me "Hey! Someone
+                       stop her! She''s getting away!". I am a '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: race
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                  font_style: bold
+                  size: 18
+            - type: story_part_span
+              story_part_span:
+                text: ' born in the sprawl of Tomol City. Since I was young, I performed alongside my
+                        father in the Endless Carnival. But some things happened and I became a '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: class
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                  font_style: bold
+                  size: 18
+            - type: story_part_span
+              story_part_span:
+                text: ' and found a gig on a schooner called the Shark''s Fin. Guided by rough seas, I earned a
+                      formidable reputation for just a '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                numeric_editor_type: simple
+                variable_id: age
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                  font_style: bold
+                  size: 20
+            - type: story_part_span
+              story_part_span:
+                text: ' year old girl. I am recognized for my '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: eye_color
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                  font_style: bold
+                  size: 18
+            - type: story_part_span
+              story_part_span:
+                text: ' eyes and curly '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: hair_color
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                  font_style: bold
+                  size: 18
+            - type: story_part_span
+              story_part_span:
+                text: ' hair, as well as for a few posters that may or may not say '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  size: 16
+            - type: story_part_span
+              story_part_span:
+                text: 'WANTED.'
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  font_style: bold_italic
+                  size: 16
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 15
+        padding:
+          top: 20
+          right: 10
+          bottom: 20
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: level_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+              widget_format:
+                alignment: center
+                margins:
+                  bottom: 2
+                width: 1
+            value_variable_id: level_label
+        - type: widget_text
+          widget_text:
+            id: xp_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+              widget_format:
+                alignment: center
+                margins:
+                  bottom: 2
+                width: 3
+            value_variable_id: xp_label
+      - widgets:
+        - type: widget_number
+          widget_number:
+            id: level
+            value_variable_id: level
+            format:
+              widget_format:
+                width: 1
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 30
+        - type: widget_points
+          widget_points:
+            id: xp
+            label: 'XP'
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+                width: 3
+              bar_height: 8
+              bar_style: simple
+              above_bar_style: limit_label_max_right
+              limit_text_format:
+                margins:
+                  right: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                vertical_alignment: bottom
+              current_text_format:
+                margins:
+                  left: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                vertical_alignment: bottom
+              label_text_format:
+                margins:
+                  left: 5
+                padding:
+                  bottom: 1.5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  size: 12
+                vertical_alignment: bottom
+              limit_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: medium_grey_7
+              current_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_blue_10
+            limit_value_variable_id: target_xp
+            current_value_variable_id: current_xp
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 15
+        padding:
+          bottom: 20
+          top: 15
+      rows:
+      - format:
+          margins:
+            top: 5
+            bottom: 5
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: strength_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: strength_label
+        - type: widget_text
+          widget_text:
+            id: dexterity_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: dexterity_label
+        - type: widget_text
+          widget_text:
+            id: constitution_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: constitution_label
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: strength
+            format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: center
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_5
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 8
+                  right: 8
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: strength
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: strength_modifier
+                format:
+                  margins:
+                    left: 8
+                  padding:
+                    top: 1
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_15
+                  size: 16
+                number_format: modifier
+        - type: widget_story
+          widget_story:
+            id: dexterity
+            format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: center
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_5
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 8
+                  right: 8
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: dexterity
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: dexterity_modifier
+                format:
+                  margins:
+                    left: 8
+                  padding:
+                    top: 1
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_15
+                  size: 16
+                number_format: modifier
+        - type: widget_story
+          widget_story:
+            id: constitution
+            format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: center
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_5
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 8
+                  right: 8
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: constitution
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: constitution_modifier
+                format:
+                  margins:
+                    left: 8
+                  padding:
+                    top: 1
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_15
+                  size: 16
+                number_format: modifier
+      - format:
+          margins:
+            top: 25
+            bottom: 5
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: intelligence_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: intelligence_label
+        - type: widget_text
+          widget_text:
+            id: wisdom_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: wisdom_label
+        - type: widget_text
+          widget_text:
+            id: charisma_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: charisma_label
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: intelligence
+            format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: center
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_5
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 8
+                  right: 8
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: intelligence
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: intelligence_modifier
+                format:
+                  margins:
+                    left: 8
+                  padding:
+                    top: 1
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_15
+                  size: 16
+                number_format: modifier
+        - type: widget_story
+          widget_story:
+            id: wisdom
+            format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: center
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_5
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 8
+                  right: 8
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: wisdom
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: wisdom_modifier
+                format:
+                  margins:
+                    left: 8
+                  padding:
+                    top: 1
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_15
+                  size: 16
+                number_format: modifier
+        - type: widget_story
+          widget_story:
+            id: charisma
+            format:
+              vertical_alignment: middle
+              widget_format:
+                alignment: center
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_5
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 8
+                  right: 8
+                padding:
+                  top: 5
+                  bottom: 5
+            story:
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: charisma
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: charisma_modifier
+                format:
+                  margins:
+                    left: 8
+                  padding:
+                    top: 1
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_15
+                  size: 16
+                number_format: modifier
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 15
+        padding:
+          top: 10
+          left: 10
+          right: 10
+          bottom: 15
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: important_stuff_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+                  font_style: regular
+              widget_format:
+                alignment: left
+            value_variable_id: important_stuff_label
+      - format:
+          padding:
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          margins:
+            top: 15
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: alignment
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I am '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: alignment
+                format:
+                  margins:
+                    left: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 17
+            - type: story_part_span
+              story_part_span:
+                text: '. Usually more chaotic than good.'
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+      - format:
+          padding:
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          margins:
+            top: 15
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: deity
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I worship '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: deity
+                format:
+                  margins:
+                    left: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 18
+            - type: story_part_span
+              story_part_span:
+                text: '. Her churches are the streets and the open roads'
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 15
+        padding:
+          left: 10
+          right: 10
+          bottom: 20
+          top: 15
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: less_important_stuff_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+                  font_style: regular
+              widget_format:
+                alignment: left
+            value_variable_id: less_important_stuff_label
+      - format:
+          padding:
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          margins:
+            top: 15
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: fears
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I am afraid of '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: bears
+                format:
+                  margins:
+                    left: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 18
+            - type: story_part_span
+              story_part_span:
+                text: '. One escaped his cage in the Carnival when I was a kid. I never stopped having nightmares.'
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+      - format:
+          padding:
+            top: 6
+            bottom: 8
+            left: 8
+            right: 8
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_5
+          margins:
+            top: 15
+          corners:
+            top_right_radius: 4
+            top_left_radius: 4
+            bottom_left_radius: 4
+            bottom_right_radius: 4
+        widgets:
+        - type: widget_story
+          widget_story:
+            id: fiddle_songs
+            format:
+              widget_format:
+                alignment: left
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'I can play '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: fiddle_songs_can_play
+                format:
+                  margins:
+                    left: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_5
+                  font_style: bold
+                  size: 20
+            - type: story_part_span
+              story_part_span:
+                text: ' songs on the fiddle.'
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+                  size: 16
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 15
+        padding:
+          top: 20
+          bottom: 20
+      rows:
+      - widgets:
+        - type: widget_quote
+          widget_quote:
+            id: father_quote
+            quote_variable_id: father_quote
+            source_variable_id: father_quote_source
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              quote_style:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                size: 15
+              source_style:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_25
+                size: 15
+              icon_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_25
+  - name: My Stuff
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_11
+    groups:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          top: 15
+          bottom: 15
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: armor_table_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 5
+                  left: 5
+            value_variable_id: armor_table_label
+      - widgets:
+        - type: widget_table
+          widget_table:
+            id: armor_and_shields
+            table_name: 'Armor and Shields'
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              header_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                padding:
+                  left: 8
+                  top: 8
+                  bottom: 8
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                  size: 12.5
+              row_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                margins:
+                  top: 2
+                padding:
+                  left: 8
+                  top: 12
+                  bottom: 12
+            columns:
+            - type: table_widget_text_column
+              table_widget_text_column:
+                name: Name
+                variable_prefix: armor
+                default_value:
+                  type: value_set_id
+                  value_set_id: armor_and_shields
+                format:
+                  column_format:
+                    alignment: left
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_5
+                      size: 15
+                    width: 3
+            - type: table_widget_boolean_column
+              table_widget_boolean_column:
+                name: Is Equipped?
+                variable_prefix: is_armor_equipped
+                default_value:
+                  type: boolean_literal
+                  boolean_literal: false
+                format:
+                  column_format:
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_7
+                      size: 15
+                    width: 2
+                  true_text: 'Yes'
+                  false_text: 'No'
+            rows:
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: light_armor
+                      value_id: leather
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        margins:
+          top: 15
+        padding:
+          top: 15
+          bottom: 15
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: weapon_table_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 5
+                  left: 5
+            value_variable_id: weapon_table_label
+      - widgets:
+        - type: widget_table
+          widget_table:
+            id: weapons
+            table_name: 'Weapons'
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              header_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                padding:
+                  left: 8
+                  top: 8
+                  bottom: 8
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                  size: 12.5
+              row_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                margins:
+                  top: 2
+                padding:
+                  left: 8
+                  top: 12
+                  bottom: 12
+            columns:
+            - type: table_widget_text_column
+              table_widget_text_column:
+                name: Name
+                variable_prefix: weapon
+                defines_namespace: true
+                default_value:
+                  type: value_set_id
+                  value_set_id: weapons
+                format:
+                  column_format:
+                    alignment: left
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_5
+                      size: 15
+                    width: 3
+            - type: table_widget_number_column
+              table_widget_number_column:
+                name: Quantity
+                variable_prefix: quantity
+                default_value:
+                  type: number_literal
+                  number_literal: 1
+                format:
+                  column_format:
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_7
+                      size: 15
+                    width: 2
+                  editor_type: adder
+            - type: table_widget_boolean_column
+              table_widget_boolean_column:
+                name: Is Equipped?
+                variable_prefix: is_equipped
+                default_value:
+                  type: boolean_literal
+                  boolean_literal: false
+                format:
+                  column_format:
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_7
+                      size: 15
+                    width: 2
+                  true_text: 'Yes'
+                  false_text: 'No'
+            rows:
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: weapons
+                      value_id: rapier
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: weapons
+                      value_id: dagger
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 2
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          top: 15
+          bottom: 15
+          left: 8
+          right: 8
+        margins:
+          top: 15
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: my_money_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 5
+                  left: 0
+            value_variable_id: my_money_label
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: gold_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_right_radius: 2
+                  top_left_radius: 2
+                margins:
+                  right: 6
+                padding:
+                  top: 5
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: gold_label
+        - type: widget_text
+          widget_text:
+            id: silver_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_right_radius: 2
+                  top_left_radius: 2
+                padding:
+                  top: 5
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: silver_label
+        - type: widget_text
+          widget_text:
+            id: copper_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_right_radius: 2
+                  top_left_radius: 2
+                margins:
+                  left: 6
+                padding:
+                  top: 5
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+            value_variable_id: copper_label
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: gold
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  right: 6
+                padding:
+                  top: 3
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: coins
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size:
+                    width: 21
+                    height: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: gold
+                format:
+                  margins:
+                    left: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  font_style: regular
+                  size: 19
+        - type: widget_story
+          widget_story:
+            id: silver
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                padding:
+                  top: 3
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: coins
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size:
+                    width: 21
+                    height: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: silver
+                format:
+                  margins:
+                    left: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  font_style: regular
+                  size: 19
+        - type: widget_story
+          widget_story:
+            id: copper
+            format:
+              vertical_alignment: middle
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  left: 6
+                padding:
+                  top: 3
+                  bottom: 5
+            story:
+            - type: story_part_icon
+              story_part_icon:
+                icon: coins
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size:
+                    width: 21
+                    height: 21
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: copper
+                format:
+                  margins:
+                    left: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  font_style: regular
+                  size: 19
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          bottom: 15
+          top: 15
+        margins:
+          top: 15
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: backpack_table_label
+            format:
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                  size: 12
+              widget_format:
+                alignment: left
+                margins:
+                  bottom: 5
+                  left: 5
+            value_variable_id: backpack_table_label
+      - widgets:
+        - type: widget_table
+          widget_table:
+            id: backpack
+            table_name: 'Backpack'
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              header_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                padding:
+                  left: 8
+                  top: 8
+                  bottom: 8
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                  size: 12.5
+              row_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                margins:
+                  top: 2
+                padding:
+                  left: 8
+                  top: 12
+                  bottom: 12
+            columns:
+            - type: table_widget_text_column
+              table_widget_text_column:
+                name: Name
+                variable_prefix: backpack_item
+                default_value:
+                  type: value_set_id
+                  value_set_id: adventuring_gear
+                format:
+                  column_format:
+                    alignment: left
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_5
+                      size: 15
+                    width: 3
+            - type: table_widget_number_column
+              table_widget_number_column:
+                name: Quantity
+                variable_prefix: backpack_item_quantity
+                default_value:
+                  type: number_literal
+                  number_literal: 1
+                format:
+                  column_format:
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_7
+                      size: 15
+                    width: 2
+                  editor_type: adder
+            rows:
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: adventuring_gear
+                      value_id: bedroll
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: adventuring_gear
+                      value_id: mess_kit
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: adventuring_gear
+                      value_id: tinderbox
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: adventuring_gear
+                      value_id: torch
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 10
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: adventuring_gear
+                      value_id: rations_1_day
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 10
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: adventuring_gear
+                      value_id: waterskin
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id: adventuring_gear
+                      value_id: rope_hempen_50_foot
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
+        padding:
+          bottom: 15
+          top: 15
+        margins:
+          top: 15
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: total_weight_gear
+            format:
+              widget_format:
+                alignment: center
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'My gear''s total weight is '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_10
+                  size: 18
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: gear_total_weight
+                format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    top: 6
+                    bottom: 6
+                    left: 6
+                    right: 6
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                  font_style: bold
+                  size: 18
+  - name: My Abilities
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_10
+    groups:
+    - format:
+        padding:
+          top: 12
+      rows:
+      - widgets:
+        - type: widget_mechanic
+          widget_mechanic:
+            id: race_mechanics
+            category_id: race_human
+            format:
+              widget_format:
+                margins:
+                  left: 8
+                  right: 8
+              header_format:
+                style:
+                  size: 18
+                  font_style: bold
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+              mechanic_header_format:
+                style:
+                  size: 15
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_12
+              mechanic_summary_format:
+                style:
+                  size: 13
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_26
+              mechanic_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                  bottom_right_radius: 2
+                  bottom_left_radius: 2
+                margins:
+                  top: 8
+                padding:
+                  top: 6
+                  bottom: 6
+                  left: 6
+                  right: 6
+- name: Action!
+  icon: sword_outline
+  pages:
+  - name: My Skills
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_9
+    groups:
+    - rows:
+      - format:
+          margins:
+            top: 10
+            bottom: 10
+        widgets:
+        - type: widget_table
+          widget_table:
+            id: skills
+            table_name: 'Skills'
+            format:
+              widget_format:
+                margins:
+                  bottom: 20
+                  left: 8
+                  right: 8
+              header_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                padding:
+                  left: 8
+                  top: 10
+                  bottom: 10
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_22
+                  size: 12.5
+              row_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                margins:
+                  top: 2
+                padding:
+                  top: 12
+                  bottom: 12
+                  right: 15
+                  left: 15
+            columns:
+            - type: table_widget_number_column
+              table_widget_number_column:
+                name: Bonus
+                variable_prefix: skill_bonus
+                default_value:
+                  type: number_literal
+                  number_literal: 0
+                format:
+                  column_format:
+                    alignment: left
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_5
+                      size: 18
+                    width: 0.8
+                  number_format: modifier
+            - type: table_widget_text_column
+              table_widget_text_column:
+                name: Name
+                variable_prefix: skill_name
+                default_value:
+                  type: text_literal
+                  text_literal: Skill
+                defines_namespace: true
+                format:
+                  column_format:
+                    alignment: left
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_7
+                      size: 16
+                    width: 1.75
+                action:
+                  name: Skill Check
+                  roll_summation_id: skill_check_roll
+            - type: table_widget_boolean_column
+              table_widget_boolean_column:
+                name: Proficient?
+                variable_prefix: is_proficient
+                default_value:
+                  type: boolean_literal
+                  boolean_literal: false
+                format:
+                  column_format:
+                    alignment: center
+                    text_style:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: dark
+                          color_id: light_grey_7
+                      size: 16
+                    width: 1
+                  true_text: 'Yes'
+                  false_text: 'No'
+                  true_style:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_green_10
+                    size: 15.5
+            rows:
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_acrobatics_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Acrobatics
+                  action_name: Acrobatics Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_animal_handling_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Animal Handling
+                  action_name: Animal Handling Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_arcana_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Arcana
+                  action_name: Arcana Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_athletics_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Athletics
+                  action_name: Athletics Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_deception_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Deception
+                  action_name: Deception Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_history_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: History
+                  action_name: History Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_insight_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Insight
+                  action_name: Insight Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_intimidation_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Intimidation
+                  action_name: Intimidation Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_investigation_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Investigation
+                  action_name: Investigation Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_medicine_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Medicine
+                  action_name: Medicine Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_nature_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Nature
+                  action_name: Nature Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_perception_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Perception
+                  action_name: Perception Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_performance_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Performance
+                  action_name: Performance Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_persuasion_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Persuasion
+                  action_name: Persuasion Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_religion_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Religion
+                  action_name: Religion Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_sleight_of_hand_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Sleight of Hand
+                  action_name: Slieght of Hand Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_stealth_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Stealth
+                  action_name: Stealth Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+            - cells:
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: summation_id
+                    summation_id: skill_survival_bonus
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: text_literal
+                    text_literal: Survival
+                  action_name: Survival Check
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: false
+  - name: My Abilities
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_9
+    groups:
+  - name: Combat
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_9
+    groups:
+    - rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: passive_perception_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                padding:
+                  top: 4
+                  bottom: 4
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_6
+                  size: 12
+            value_variable_id: passive_perception_label
+        - type: widget_text
+          widget_text:
+            id: armor_class_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_blue_8
+                padding:
+                  top: 4
+                  bottom: 4
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_6
+                  size: 12
+            value_variable_id: armor_class_label
+        - type: widget_text
+          widget_text:
+            id: speed_label
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                padding:
+                  top: 4
+                  bottom: 4
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_6
+                  size: 12
+            value_variable_id: speed_label
+      - widgets:
+        - type: widget_number
+          widget_number:
+            id: passive_perception
+            value_variable_id: passive_perception
+            format:
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_4
+                width: 1
+              height: 48
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: white_5
+                  size: 22
+                vertical_alignment: middle
+        - type: widget_number
+          widget_number:
+            id: armor_class
+            value_variable_id: armor_class
+            format:
+              height: 48
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_blue_6
+                width: 1
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: white_3
+                  size: 32
+                vertical_alignment: middle
+        - type: widget_text
+          widget_text:
+            id: speed
+            value_variable_id: speed
+            format:
+              height: 48
+              widget_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_4
+                width: 1
+              value_format:
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: white_5
+                  size: 21
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_1
+        padding:
+          bottom: 25
+          top: 22
+      rows:
+      - widgets:
+        - type: widget_points
+          widget_points:
+            id: current_hit_points
+            label: hit points
+            format:
+              widget_format:
+                margins:
+                  left: 12
+                  right: 12
+              bar_height: 6
+              bar_style: simple
+              above_bar_style: limit_label_max_right
+              limit_text_format:
+                margins:
+                  right: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_7
+                  size: 20
+                vertical_alignment: bottom
+              current_text_format:
+                margins:
+                  left: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_4
+                  size: 21
+                vertical_alignment: bottom
+              label_text_format:
+                margins:
+                  left: 5
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_7
+                  size: 20
+                vertical_alignment: bottom
+              limit_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: medium_grey_7
+              current_color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_blue_12
+            limit_value_variable_id: current_hit_points
+            current_value_variable_id: max_hit_points
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+        padding:
+          bottom: 15
+          top: 15
+      rows:
+      - widgets:
+        - type: widget_story
+          widget_story:
+            id: roll_initiative
+            format:
+              widget_format:
+                alignment: center
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_6
+                margins:
+                  top: 15
+                  bottom: 15
+            story:
+            - type: story_part_span
+              story_part_span:
+                text: 'Let''s do this '
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_14
+                  size: 20
+            - type: story_part_action
+              story_part_action:
+                text: 'Roll Initiative'
+                roll_name: Initiative
+                summation_id: initiative
+                text_style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_1
+                  font_style: bold_italic
+                  size: 20
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                  size:
+                    width: 25
+                    height: 25
+- name: Adventure
+  icon: adventure
+  pages:
+  - name: Journal
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey_9
+    groups:
+    - format:
+        padding:
+          top: 12
+      rows:
+      - widgets:
+        - type: widget_log
+          widget_log:
+            id: journal
+            format:
+              widget_format:
+                margins:
+                  left: 10
+                  right: 10
+              entry_format:
+                title_style:
+                  color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_5
+                  size: 22
+                author_style:
+                  color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_22
+                  size: 14
+                summary_style:
+                  color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_15
+                  size: 15
+                entry_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                  corners:
+                    top_left_radius: 3
+                    top_right_radius: 3
+                    bottom_right_radius: 3
+                    bottom_left_radius: 3
+                  margins:
+                    top: 15
+                  padding:
+                    top: 8
+                    bottom: 8
+                    left: 8
+                    right: 8
+            entries:
+            - title: Title1
+              date: '10/21/17'
+              author: Player1
+              summary: The summary bla bla
+              text: This is one entry
+            - title: Title2
+              date: '10/15/17'
+              author: Player1
+              summary: The summary bla bla a bit longer
+              text: This is one entry

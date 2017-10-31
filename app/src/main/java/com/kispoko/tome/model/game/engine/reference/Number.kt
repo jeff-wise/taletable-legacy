@@ -39,8 +39,7 @@ sealed class NumberReference : ToDocument, SumModel, Serializable
                 "number_literal"     -> NumberReferenceLiteral.fromDocument(doc.nextCase())
                 "value_reference"    -> NumberReferenceValue.fromDocument(doc.nextCase())
                 "variable_reference" -> NumberReferenceVariable.fromDocument(doc.nextCase())
-                else                 -> effError<ValueError,NumberReference>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 

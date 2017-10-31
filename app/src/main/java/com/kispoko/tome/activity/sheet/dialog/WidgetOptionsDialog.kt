@@ -149,19 +149,16 @@ fun openWidgetOptionsDialogOnDoubleTap(sheetActivity : SheetActivity,
         object: GestureDetector.SimpleOnGestureListener() {
 
             override fun onDoubleTap(e: MotionEvent?): Boolean {
-                Log.d("***WIDGET", "double tap")
                 val dialog = WidgetOptionsDialog.newInstance(widget, sheetContext)
                 dialog.show(sheetActivity.supportFragmentManager, "")
                 return true
             }
 
             override fun onDown(e: MotionEvent?): Boolean {
-                Log.d("***WIDGET", "on down")
                 return super.onDown(e)
             }
 
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                Log.d("***WIDGET", "single tap")
                 return super.onSingleTapConfirmed(e)
             }
         })

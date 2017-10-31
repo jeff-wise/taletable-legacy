@@ -81,6 +81,10 @@ data class TableWidgetUpdateSetNumberCell(override val widgetId : UUID,
                                           val cellId : UUID,
                                           val newNumber : Double) : WidgetUpdateTableWidget(widgetId)
 
+data class TableWidgetUpdateSetTextCellValue(override val widgetId : UUID,
+                                             val cellId : UUID,
+                                             val newValueId : ValueId) : WidgetUpdateTableWidget(widgetId)
+
 data class TableWidgetUpdateInsertRowBefore(
                             override val widgetId : UUID,
                             val selectedRow : Int) : WidgetUpdateTableWidget(widgetId)

@@ -69,6 +69,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
     public View.OnClickListener     onClick;
     public View.OnLongClickListener onLongClick;
+    public View.OnTouchListener     onTouch;
 
     public Boolean                  hapticFeedback;
 
@@ -123,6 +124,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         this.onClick            = null;
         this.onLongClick        = null;
+        this.onTouch            = null;
 
         this.hapticFeedback     = null;
 
@@ -228,6 +230,13 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         if (this.onLongClick != null)
             linearLayout.setOnLongClickListener(this.onLongClick);
+
+        // > On Touch Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onTouch != null)
+            linearLayout.setOnTouchListener(this.onTouch);
+
 
         // > Haptic Feedback
         // --------------------------------------------------------------------------------------

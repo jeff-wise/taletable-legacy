@@ -40,13 +40,12 @@ import java.util.*
  * Engine
  */
 data class Engine(override val id : UUID,
-                  private val valueSets : Conj<ValueSet>,
-                  private val mechanics : Conj<Mechanic>,
-                  private val mechanicCategories : Conj<MechanicCategory>,
-                  private val functions : Conj<Function>,
-                  private val programs : Conj<Program>,
-                  private val summations : Conj<Summation>,
-                  val gameId : GameId)
+                  val valueSets : Conj<ValueSet>,
+                  val mechanics : Conj<Mechanic>,
+                  val mechanicCategories : Conj<MechanicCategory>,
+                  val functions : Conj<Function>,
+                  val programs : Conj<Program>,
+                  val summations : Conj<Summation>)
                    : ToDocument, Model, Serializable
 {
 
@@ -87,7 +86,7 @@ data class Engine(override val id : UUID,
     {
         this.mechanicSet().forEach {
             if (!mechanicsByCategoryId.containsKey(it.categoryId()))
-                mechanicsByCategoryId.put(it.categoryId(), mutableSetOf<Mechanic>())
+                mechanicsByCategoryId.put(it.categoryId(), mutableSetOf())
             val mechanicsInCategorySet = mechanicsByCategoryId[it.categoryId()]
             mechanicsInCategorySet?.add(it)
         }
@@ -116,7 +115,7 @@ data class Engine(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc : SchemaDoc, gameId : GameId) : ValueParser<Engine> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<Engine> = when (doc)
         {
             is DocDict ->
             {
@@ -146,8 +145,7 @@ data class Engine(override val id : UUID,
                       // Summations
                       doc.list("summations") apply {
                           effApply(::Conj, it.mapSetMut { Summation.fromDocument(it) })
-                      },
-                      effValue(gameId)
+                      }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))

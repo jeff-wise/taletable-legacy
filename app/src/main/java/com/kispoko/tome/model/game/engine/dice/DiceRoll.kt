@@ -6,6 +6,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -134,6 +135,7 @@ data class DiceRoll(override val id : UUID,
                                     .map { RollPartSummary(it.roll(), it.toString(), "") }
 
         val modifierSummaries = this.modifiers()
+                                    .filter { it.valueInt() != 0 }
                                     .sortedByDescending { it.valueInt() }
                                     .map { RollPartSummary(it.valueInt(), "", it.nameString() ?: "") }
 
@@ -162,6 +164,25 @@ data class DiceRoll(override val id : UUID,
     }
 
 
+    fun rangeString(base : Double) : String
+    {
+        var min = base
+        var max = base
+
+        this.quantities().forEach {
+            min += it.quantityInt()
+            max += (it.sidesInt() * it.quantityInt())
+        }
+
+        this.modifiers().forEach {
+            min += it.valueInt()
+            max += it.valueInt()
+        }
+
+        return "${Util.doubleString(min)} - ${Util.doubleString(max)}"
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // TO STRING
     // -----------------------------------------------------------------------------------------
@@ -174,8 +195,10 @@ data class DiceRoll(override val id : UUID,
 
         val modifierSum = this.modifierValues().sum()
         var modifierString = ""
-        if (modifierSum != 0)
+        if (modifierSum > 0)
             modifierString = " + " + modifierSum.toString()
+        else if (modifierSum < 0)
+            modifierString = " - " + Math.abs(modifierSum).toString()
 
         return diceString + modifierString
     }

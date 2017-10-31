@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -107,7 +108,7 @@ data class PointsWidgetFormat(override val id : UUID,
         val defaultLimitColorTheme      = ColorTheme.black
         val defaultCurrentColorTheme    = ColorTheme.white
         val defaultPointsBarStyle       = PointsBarStyle.Simple
-        val defaultPointsAboveBarStyle  = PointsAboveBarStyle.OppositeLeftLabel
+        val defaultPointsAboveBarStyle  = PointsAboveBarStyle.LimitLabelMaxRight
         val defaultBarHeight            = PointsBarHeight(20)
 
 
@@ -115,44 +116,44 @@ data class PointsWidgetFormat(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::PointsWidgetFormat,
-                         // Widget Format
-                         split(doc.maybeAt("widget_format"),
-                               effValue(defaultWidgetFormat),
-                               { WidgetFormat.fromDocument(it) }),
-                         // Limit Text Format
-                         split(doc.maybeAt("limit_text_format"),
-                               effValue(defaultLimitTextFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Current Text Format
-                         split(doc.maybeAt("current_text_format"),
-                               effValue(defaultCurrentTextFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Label Text Format
-                         split(doc.maybeAt("label_text_format"),
-                               effValue(defaultLabelTextFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Limit Color Theme
-                         split(doc.maybeAt("limit_color_theme"),
-                               effValue(defaultLimitColorTheme),
-                               { ColorTheme.fromDocument(it) }),
-                         // Current Color Theme
-                         split(doc.maybeAt("current_color_theme"),
-                               effValue(defaultCurrentColorTheme),
-                               { ColorTheme.fromDocument(it) }),
-                         // Bar Style
-                         split(doc.maybeAt("bar_style"),
-                               effValue<ValueError,PointsBarStyle>(defaultPointsBarStyle),
-                               { PointsBarStyle.fromDocument(it) }),
-                         // Bar Style
-                         split(doc.maybeAt("above_bar_style"),
-                               effValue<ValueError,PointsAboveBarStyle>(defaultPointsAboveBarStyle),
-                               { PointsAboveBarStyle.fromDocument(it) }),
-                         // Bar Height
-                         split(doc.maybeAt("bar_height"),
-                               effValue(defaultBarHeight),
-                               { PointsBarHeight.fromDocument(it) })
-                         )
+                apply(::PointsWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat),
+                            { WidgetFormat.fromDocument(it) }),
+                      // Limit Text Format
+                      split(doc.maybeAt("limit_text_format"),
+                            effValue(defaultLimitTextFormat),
+                            { TextFormat.fromDocument(it) }),
+                      // Current Text Format
+                      split(doc.maybeAt("current_text_format"),
+                            effValue(defaultCurrentTextFormat),
+                            { TextFormat.fromDocument(it) }),
+                      // Label Text Format
+                      split(doc.maybeAt("label_text_format"),
+                            effValue(defaultLabelTextFormat),
+                            { TextFormat.fromDocument(it) }),
+                      // Limit Color Theme
+                      split(doc.maybeAt("limit_color_theme"),
+                            effValue(defaultLimitColorTheme),
+                            { ColorTheme.fromDocument(it) }),
+                      // Current Color Theme
+                      split(doc.maybeAt("current_color_theme"),
+                            effValue(defaultCurrentColorTheme),
+                            { ColorTheme.fromDocument(it) }),
+                      // Bar Style
+                      split(doc.maybeAt("bar_style"),
+                            effValue<ValueError,PointsBarStyle>(defaultPointsBarStyle),
+                            { PointsBarStyle.fromDocument(it) }),
+                      // Bar Style
+                      split(doc.maybeAt("above_bar_style"),
+                            effValue<ValueError,PointsAboveBarStyle>(defaultPointsAboveBarStyle),
+                            { PointsAboveBarStyle.fromDocument(it) }),
+                      // Bar Height
+                      split(doc.maybeAt("bar_height"),
+                            effValue(defaultBarHeight),
+                            { PointsBarHeight.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -362,11 +363,19 @@ sealed class PointsBarStyle : ToDocument, SQLSerializable, Serializable
 sealed class PointsAboveBarStyle : ToDocument, SQLSerializable, Serializable
 {
 
-    object OppositeLeftLabel : PointsAboveBarStyle()
+    object LimitLabelMaxRight : PointsAboveBarStyle()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "opposite_left_label" })
+        override fun asSQLValue() : SQLValue = SQLText({ "limit_label_max_right" })
 
-        override fun toDocument() = DocText("opposite_left_label")
+        override fun toDocument() = DocText("limit_label_max_right")
+    }
+
+
+    object LabelLeftSlashRight : PointsAboveBarStyle()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "label_left_slash_right" })
+
+        override fun toDocument() = DocText("label_left_slash_right")
     }
 
 
@@ -376,8 +385,10 @@ sealed class PointsAboveBarStyle : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "opposite_left_label" -> effValue<ValueError,PointsAboveBarStyle>(
-                                             PointsAboveBarStyle.OppositeLeftLabel)
+                "limit_label_max_right" -> effValue<ValueError,PointsAboveBarStyle>(
+                                             PointsAboveBarStyle.LimitLabelMaxRight)
+                "label_left_slash_right" -> effValue<ValueError,PointsAboveBarStyle>(
+                                                PointsAboveBarStyle.LabelLeftSlashRight)
                 else                  -> effError<ValueError,PointsAboveBarStyle>(
                                              UnexpectedValue("PointsAboveBarStyle", doc.text, doc.path))
             }
@@ -441,7 +452,7 @@ object PointsWidgetView
 
         when (pointsWidget.format().aboveBarStyle())
         {
-            is PointsAboveBarStyle.OppositeLeftLabel ->
+            is PointsAboveBarStyle.LimitLabelMaxRight ->
             {
                 if (currentPointsString != null) {
                     layout.addView(this.currentPointsView(currentPointsString,
@@ -620,9 +631,10 @@ object PointsWidgetView
         current.marginSpacing       = textFormat.margins()
 
 //        current.addRule(RelativeLayout.ALIGN_PARENT_START)
-//        current.addRule(textFormat.verticalAlignment().relativeLayoutRule())
+        Log.d("***POINTSWIDGET", "current vert align: ${textFormat.verticalAlignment()}")
+        current.addRule(textFormat.verticalAlignment().relativeLayoutRule())
 
-        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+//        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
         return current.textView(sheetUIContext.context)
     }
@@ -654,6 +666,8 @@ object PointsWidgetView
         limit.marginSpacing         = textFormat.margins()
 
 //        limit.addRule(RelativeLayout.ALIGN_PARENT_END)
+
+        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.verticalAlignment()}")
         limit.addRule(textFormat.verticalAlignment().relativeLayoutRule())
 //        limit.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
@@ -689,6 +703,7 @@ object PointsWidgetView
         label.marginSpacing         = textFormat.margins()
 //
 //        label.addRule(RelativeLayout.ALIGN_PARENT_END)
+        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.verticalAlignment()}")
         label.addRule(textFormat.verticalAlignment().relativeLayoutRule())
 
 //        label.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)

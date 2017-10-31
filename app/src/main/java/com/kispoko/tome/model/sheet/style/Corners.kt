@@ -83,10 +83,10 @@ data class Corners(override val id : UUID,
         }
 
 
-        fun default() : Corners = Corners(TopLeftCornerRadius.default(),
-                                          TopRightCornerRadius.default(),
-                                          BottomRightCornerRadius.default(),
-                                          BottomLeftCornerRadius.default())
+        fun default() = Corners(TopLeftCornerRadius.default(),
+                                TopRightCornerRadius.default(),
+                                BottomRightCornerRadius.default(),
+                                BottomLeftCornerRadius.default())
 
     }
 
@@ -125,7 +125,7 @@ data class Corners(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "spacing"
+    override val name = "corners"
 
     override val modelObject = this
 

@@ -2,6 +2,8 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import android.util.Log
+import android.util.TypedValue
 import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -365,16 +367,88 @@ data class TextStyle(override val id : UUID,
     fun styleTextView(textView : TextView, sheetUIContext : SheetUIContext)
     {
         textView.setTextColor(SheetManager.color(sheetUIContext.sheetId, this.colorTheme()))
-        textView.textSize = Util.spToPx(this.sizeSp(), sheetUIContext.context).toFloat()
+        Log.d("***TEXT", "size: " + this.sizeSp().toString())
+        //textView.textSize = Util.spToPx(this.sizeSp(), sheetUIContext.context).toFloat()
+
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, this.sizeSp())
         textView.typeface = Font.typeface(this.font(), this.fontStyle(), sheetUIContext.context)
     }
 
 
-
-
-
 }
 
+
+/**
+ * Number Format
+ */
+sealed class NumberFormat : ToDocument, SQLSerializable, Serializable
+{
+
+    object Modifier : NumberFormat()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({"modifier"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("modifier")
+    }
+
+
+    object Normal : NumberFormat()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({"normal"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("normal")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<NumberFormat> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "normal"   -> effValue<ValueError,NumberFormat>(NumberFormat.Normal)
+                "modifier" -> effValue<ValueError,NumberFormat>(NumberFormat.Modifier)
+                else       -> effError<ValueError,NumberFormat>(
+                                  UnexpectedValue("NumberFormat", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+
+    fun formattedString(n : Double) : String =
+        when (this)
+        {
+            is NumberFormat.Modifier -> {
+                if (n >= 0)
+                    "+${Util.doubleString(n)}"
+                else
+                    Util.doubleString(n)
+            }
+            is NumberFormat.Normal -> Util.doubleString(n)
+        }
+}
 
 
 /**

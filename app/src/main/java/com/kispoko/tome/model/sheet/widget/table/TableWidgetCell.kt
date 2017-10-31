@@ -2,12 +2,17 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableRow
+import android.widget.TextView
 import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppSheetError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -15,8 +20,11 @@ import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.Alignment
+import com.kispoko.tome.model.sheet.style.NumberFormat
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.Action
+import com.kispoko.tome.model.sheet.widget.ActionName
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.model.theme.ColorTheme
@@ -24,6 +32,7 @@ import com.kispoko.tome.rts.sheet.CellVariableUndefined
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -75,6 +84,8 @@ sealed class TableWidgetCell : ToDocument, Model, Serializable
 
     abstract fun type() : TableWidgetCellType
 
+    abstract fun updateView(sheetUIContext : SheetUIContext)
+
 }
 
 
@@ -87,6 +98,8 @@ data class TableWidgetBooleanCell(override val id : UUID,
                                   var variableId : VariableId?)
                                   : TableWidgetCell(), Model
 {
+
+    var namespace : VariableNamespace? = null
 
     // -----------------------------------------------------------------------------------------
     // INIT
@@ -186,6 +199,10 @@ data class TableWidgetBooleanCell(override val id : UUID,
     override fun type() : TableWidgetCellType = TableWidgetCellType.BOOLEAN
 
 
+    override fun updateView(sheetUIContext : SheetUIContext) {
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
@@ -220,6 +237,7 @@ data class TableWidgetNumberCell(override val id : UUID,
                                  val format : Comp<NumberCellFormat>,
                                  val variableValue : Sum<NumberVariableValue>,
                                  val editorType : Prim<NumericEditorType>,
+                                 val action : Maybe<Comp<Action>>,
                                  var variableId : VariableId?)
                                   : TableWidgetCell(), Model
 {
@@ -228,7 +246,9 @@ data class TableWidgetNumberCell(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var viewId : Maybe<Int> = Nothing()
+    var viewId : Int? = null
+    var column : TableWidgetNumberColumn? = null
+    var namespace : VariableNamespace? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -240,6 +260,10 @@ data class TableWidgetNumberCell(override val id : UUID,
         this.format.name            = "format"
         this.variableValue.name     = "variable_value"
         this.editorType.name        = "editor_type"
+
+        when (this.action) {
+            is Just -> this.action.value.name       = "action"
+        }
     }
 
 
@@ -249,9 +273,10 @@ data class TableWidgetNumberCell(override val id : UUID,
 
     constructor(variableValue : NumberVariableValue)
         : this(UUID.randomUUID(),
-               Comp(NumberCellFormat.default()),
+               Comp.default(NumberCellFormat.default()),
                Sum(variableValue),
-               Prim(NumericEditorType.Simple),
+               Prim.default(NumericEditorType.Simple),
+               Nothing(),
                null)
 
 
@@ -262,6 +287,7 @@ data class TableWidgetNumberCell(override val id : UUID,
                Comp(format),
                Sum(variableValue),
                Prim(editorType),
+               Nothing(),
                null)
 
 
@@ -270,23 +296,33 @@ data class TableWidgetNumberCell(override val id : UUID,
 
         private val defaultNumberCellFormat = NumberCellFormat.default()
         private val defaultEditorType       = NumericEditorType.Calculator
+        private val defaultAction           = Nothing<Action>()
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetNumberCell> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::TableWidgetNumberCell,
-                         // Format
-                         split(doc.maybeAt("format"),
-                               effValue(defaultNumberCellFormat),
-                               { NumberCellFormat.fromDocument(it) }),
-                         // Variable Value
-                         doc.at("variable_value") ap { NumberVariableValue.fromDocument(it) },
-                         // Editor Type
-                         split(doc.maybeAt("editor_type"),
-                               effValue<ValueError,NumericEditorType>(defaultEditorType),
-                               { NumericEditorType.fromDocument(it) })
-                         )
+                apply(::TableWidgetNumberCell,
+                      // Model Id
+                      effValue(UUID.randomUUID()),
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(Comp.default(defaultNumberCellFormat)),
+                            { apply(::Comp, NumberCellFormat.fromDocument(it)) }),
+                      // Variable Value
+                      doc.at("variable_value") ap {
+                          apply(::Sum, NumberVariableValue.fromDocument(it))
+                      },
+                      // Editor Type
+                      split(doc.maybeAt("editor_type"),
+                            effValue<ValueError,Prim<NumericEditorType>>(Prim.default(defaultEditorType)),
+                            { apply(::Prim, NumericEditorType.fromDocument(it)) }),
+                      // Action
+                      split(doc.maybeAt("action"),
+                            effValue<ValueError,Maybe<Comp<Action>>>(Nothing()),
+                            { effApply({x -> Just(Comp(x))}, Action.fromDocument(it)) }),
+                      effValue(null)
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -302,6 +338,8 @@ data class TableWidgetNumberCell(override val id : UUID,
         "variable_value" to this.variableValue().toDocument(),
         "editor_type" to this.editorType().toDocument()
     ))
+    .maybeMerge(this.action().apply {
+        Just(Pair("action", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -310,9 +348,12 @@ data class TableWidgetNumberCell(override val id : UUID,
 
     fun format() : NumberCellFormat = this.format.value
 
+
     fun variableValue() : NumberVariableValue = this.variableValue.value
 
+
     fun editorType() : NumericEditorType = this.editorType.value
+
 
     fun resolveEditorType(column : TableWidgetNumberColumn) : NumericEditorType =
         if (this.editorType.isDefault())
@@ -325,11 +366,40 @@ data class TableWidgetNumberCell(override val id : UUID,
         note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
 
 
+    fun action() : Maybe<Action> = getMaybeComp(this.action)
+
+
     // -----------------------------------------------------------------------------------------
     // CELL
     // -----------------------------------------------------------------------------------------
 
     override fun type() : TableWidgetCellType = TableWidgetCellType.NUMBER
+
+
+    override fun updateView(sheetUIContext : SheetUIContext) {
+        this.viewId?.let {
+            val activity = sheetUIContext.context as AppCompatActivity
+            val valueTextView = activity.findViewById(it) as TextView?
+            val maybeValue = this.value(SheetContext(sheetUIContext))
+            when (maybeValue)
+            {
+                is Val    -> {
+                    val numberFormat = this.column?.format()?.let {
+                                           this.format().resolveNumberFormat(it)
+                                       } ?: NumberFormat.Normal
+                    when (numberFormat) {
+                        is NumberFormat.Modifier -> {
+                            valueTextView?.text = numberFormat.formattedString(maybeValue.value)
+                        }
+                        else -> {
+                            valueTextView?.text = Util.doubleString(maybeValue.value)
+                        }
+                    }
+                }
+                is Err -> ApplicationLog.error(maybeValue.error)
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -358,6 +428,12 @@ data class TableWidgetNumberCell(override val id : UUID,
          this.valueVariable(sheetContext) ap { it.valueString(sheetContext) }
 
 
+    fun value(sheetContext : SheetContext) : AppEff<Double> =
+            this.valueVariable(sheetContext)
+                .apply { it.value(sheetContext) }
+                .apply { effValue<AppError,Double>(maybe(0.0, it)) }
+
+
     fun updateValue(newValue : Double, sheetContext : SheetContext) =
         this.valueVariable(sheetContext) apDo {
             it.updateValue(newValue, sheetContext.sheetId) }
@@ -367,20 +443,22 @@ data class TableWidgetNumberCell(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(rowFormat : TableWidgetRowFormat,
+    fun view(row : TableWidgetRow,
              column : TableWidgetNumberColumn,
              rowIndex : Int,
              tableWidget : TableWidget,
              sheetUIContext : SheetUIContext) : View
     {
         val viewBuilder = NumberCellViewBuilder(this,
-                                                rowFormat,
+                                                row,
                                                 column,
                                                 rowIndex,
                                                 tableWidget,
                                                 sheetUIContext)
+        this.column = column
         return viewBuilder.view()
     }
+
 
 }
 
@@ -391,6 +469,8 @@ data class TableWidgetNumberCell(override val id : UUID,
 data class TableWidgetTextCell(override val id : UUID,
                                val format : Comp<TextCellFormat>,
                                val variableValue : Sum<TextVariableValue>,
+                               val action : Maybe<Comp<Action>>,
+                               val actionName : Maybe<Prim<ActionName>>,
                                var variableId : VariableId?)
                                 : TableWidgetCell(), Model
 {
@@ -399,7 +479,9 @@ data class TableWidgetTextCell(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var viewId : Maybe<Int> = Nothing()
+    var viewId : Int? = null
+
+    var namespace : VariableNamespace? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -410,6 +492,14 @@ data class TableWidgetTextCell(override val id : UUID,
     {
         this.format.name        = "format"
         this.variableValue.name = "variable_value"
+
+        when (this.action) {
+            is Just -> this.action.value.name       = "action"
+        }
+
+        when (this.actionName) {
+            is Just -> this.actionName.value.name = "action_name"
+        }
     }
 
 
@@ -421,30 +511,49 @@ data class TableWidgetTextCell(override val id : UUID,
         : this(UUID.randomUUID(),
                Comp(TextCellFormat.default()),
                Sum(variableValue),
+               Nothing(),
+               Nothing(),
                null)
 
     constructor(format : TextCellFormat,
-                variableValue : TextVariableValue)
+                variableValue : TextVariableValue,
+                action : Maybe<Action>,
+                actionName : Maybe<ActionName>)
         : this(UUID.randomUUID(),
                Comp(format),
                Sum(variableValue),
+               maybeLiftComp(action),
+               maybeLiftPrim(actionName),
                null)
 
 
     companion object : Factory<TableWidgetTextCell>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetTextCell> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetTextCell> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::TableWidgetTextCell,
-                         // Format
-                         split(doc.maybeAt("format"),
-                               effValue(TextCellFormat.default()),
-                                { TextCellFormat.fromDocument(it) }),
-                         // Variable Value
-                         doc.at("variable_value") ap { TextVariableValue.fromDocument(it) }
-                        )
+                apply(::TableWidgetTextCell,
+                      // Model Id
+                      effValue(UUID.randomUUID()),
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(Comp.default(TextCellFormat.default())),
+                             { apply(::Comp, TextCellFormat.fromDocument(it)) }),
+                      // Variable Value
+                      doc.at("variable_value") ap {
+                          apply(::Sum, TextVariableValue.fromDocument(it))
+                      },
+                      // Action
+                      split(doc.maybeAt("action"),
+                            effValue<ValueError,Maybe<Comp<Action>>>(Nothing()),
+                            { effApply({x -> Just(Comp(x))}, Action.fromDocument(it)) } ),
+                       // Action Name
+                       split(doc.maybeAt("action_name"),
+                             effValue<ValueError,Maybe<Prim<ActionName>>>(Nothing()),
+                             { effApply({x -> Just(Prim(x))}, ActionName.fromDocument(it)) } ),
+                      effValue(null)
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -459,6 +568,8 @@ data class TableWidgetTextCell(override val id : UUID,
         "format" to this.format().toDocument(),
         "variable_value" to this.variableValue().toDocument()
     ))
+    .maybeMerge(this.action().apply {
+        Just(Pair("action", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -481,6 +592,15 @@ data class TableWidgetTextCell(override val id : UUID,
         state.textVariableWithId(variableId)
     } }
 
+
+    fun action() : Maybe<Action> = getMaybeComp(this.action)
+
+
+    fun actionName() : Maybe<ActionName> = _getMaybePrim(this.actionName)
+
+
+    fun actionNameString() : Maybe<String> = this.actionName() ap { Just(it.value) }
+
 //
 //    fun valueVariable(sheetContext : SheetContext) : Maybe<TextVariable> =
 //        this.variableId ap { variableId ->
@@ -496,11 +616,23 @@ data class TableWidgetTextCell(override val id : UUID,
 //        }
 
 
+    fun resolveAction(column : TableWidgetTextColumn) : Maybe<Action> =
+        when (this.action)
+        {
+            is Just -> this.action()
+            else    -> column.action()
+        }
+
+
     // -----------------------------------------------------------------------------------------
     // CELL
     // -----------------------------------------------------------------------------------------
 
     override fun type() : TableWidgetCellType = TableWidgetCellType.TEXT
+
+
+    override fun updateView(sheetUIContext : SheetUIContext) {
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -633,11 +765,10 @@ data class CellFormat(override val id : UUID,
         }
 
 
-        val default : CellFormat =
-                CellFormat(UUID.randomUUID(),
-                           Comp.default(defaultTextStyle),
-                           Prim.default(defaultAlignment),
-                           Prim.default(defaultBackgroundColorTheme))
+        fun default() = CellFormat(UUID.randomUUID(),
+                                   Comp.default(defaultTextStyle),
+                                   Prim.default(defaultAlignment),
+                                   Prim.default(defaultBackgroundColorTheme))
 
     }
 
@@ -701,8 +832,8 @@ object TableWidgetCellView
         } else {
             layout.gravity          = cellFormat.alignment().gravityConstant() or
                                         Gravity.CENTER_VERTICAL
-            layout.layoutGravity          = cellFormat.alignment().gravityConstant() or
-                                                Gravity.CENTER_VERTICAL
+//            layout.layoutGravity          = cellFormat.alignment().gravityConstant() or
+//                                                Gravity.CENTER_VERTICAL
         }
 
         if (cellFormat.backgroundColorTheme.isDefault()) {

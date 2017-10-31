@@ -18,6 +18,7 @@ import com.kispoko.tome.lib.ui.FormattedString
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.style.NumberFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -28,6 +29,7 @@ import effect.*
 import effect.Nothing
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
@@ -52,7 +54,8 @@ data class NumberWidgetFormat(override val id : UUID,
                               val valuePostfix : Maybe<Prim<NumberWidgetValuePostfix>>,
                               val valuePostfixStyle : Comp<TextStyle>,
                               val valueSeparator : Maybe<Prim<ValueSeparator>>,
-                              val valueSeparatorFormat : Comp<TextFormat>)
+                              val valueSeparatorFormat : Comp<TextFormat>,
+                              val numberFormat : Prim<NumberFormat>)
                                : ToDocument, Model, Serializable
 {
 
@@ -99,6 +102,8 @@ data class NumberWidgetFormat(override val id : UUID,
         }
 
         this.valueSeparatorFormat.name                  = "value_separator_format"
+
+        this.numberFormat.name                          = "number_format"
     }
 
 
@@ -119,7 +124,8 @@ data class NumberWidgetFormat(override val id : UUID,
                 valuePostfix : Maybe<NumberWidgetValuePostfix>,
                 valuePostfixStyle : TextStyle,
                 valueSeparator : Maybe<ValueSeparator>,
-                valueSeparatorFormat : TextFormat)
+                valueSeparatorFormat : TextFormat,
+                numberFormat : NumberFormat)
         : this(UUID.randomUUID(),
                Comp(widgetFormat),
                Prim(height),
@@ -134,7 +140,8 @@ data class NumberWidgetFormat(override val id : UUID,
                maybeLiftPrim(valuePostfix),
                Comp(valuePostfixStyle),
                maybeLiftPrim(valueSeparator),
-               Comp(valueSeparatorFormat))
+               Comp(valueSeparatorFormat),
+               Prim(numberFormat))
 
 
     companion object : Factory<NumberWidgetFormat>
@@ -151,6 +158,7 @@ data class NumberWidgetFormat(override val id : UUID,
         private val defaultValuePostfixStyle    = TextStyle.default()
         private val defaultValueSeparator       = Nothing<ValueSeparator>()
         private val defaultValueSeparatorFormat = TextFormat.default()
+        private val defaultNumberFormat         = NumberFormat.Normal
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<NumberWidgetFormat> = when (doc)
@@ -213,7 +221,11 @@ data class NumberWidgetFormat(override val id : UUID,
                          // Value Separator Format
                          split(doc.maybeAt("value_separator_format"),
                                effValue(defaultValueSeparatorFormat),
-                               { TextFormat.fromDocument(it) })
+                               { TextFormat.fromDocument(it) }),
+                         // Number Format
+                         split(doc.maybeAt("number_format"),
+                               effValue<ValueError,NumberFormat>(defaultNumberFormat),
+                               { NumberFormat.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -234,7 +246,8 @@ data class NumberWidgetFormat(override val id : UUID,
                                    Nothing(),
                                    defaultValuePostfixStyle,
                                    defaultValueSeparator,
-                                   defaultValueSeparatorFormat)
+                                   defaultValueSeparatorFormat,
+                                   defaultNumberFormat)
 
     }
 
@@ -306,6 +319,8 @@ data class NumberWidgetFormat(override val id : UUID,
     fun valueSeparatorString() : String? = getMaybePrim(this.valueSeparator)?.value
 
     fun valueSeparatorFormat() : TextFormat = this.valueSeparatorFormat.value
+
+    fun numberFormat() : NumberFormat = this.numberFormat.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -697,15 +712,20 @@ object NumberWidgetView
         layout.gravity = format.valueFormat().alignment().gravityConstant() or
                                     format.valueFormat().verticalAlignment().gravityConstant()
 
+        layout.layoutGravity = format.valueFormat().alignment().gravityConstant() or
+                format.valueFormat().verticalAlignment().gravityConstant()
+
         return layout.linearLayout(context)
     }
 
 
     private fun valueTextView(numberWidget : NumberWidget,
                               format : NumberWidgetFormat,
-                              sheetUIContext: SheetUIContext) : TextView
+                              sheetUIContext : SheetUIContext) : TextView
     {
         val value = TextViewBuilder()
+
+        val sheetContext = SheetContext(sheetUIContext)
 
         numberWidget.viewId = Util.generateViewId()
         value.id            = numberWidget.viewId
@@ -715,6 +735,9 @@ object NumberWidgetView
 
         value.gravity       = format.valueFormat().alignment().gravityConstant() or
                                 format.valueFormat().verticalAlignment().gravityConstant()
+
+        value.layoutGravity       = format.valueFormat().alignment().gravityConstant() or
+                format.valueFormat().verticalAlignment().gravityConstant()
 
         if (numberWidget.description() != null)
         {
@@ -735,7 +758,7 @@ object NumberWidgetView
                         format.insideLabelFormat().style().font())
 
             val valueSpan =
-                FormattedString.Span(numberWidget.valueString(SheetContext(sheetUIContext)),
+                FormattedString.Span(numberWidget.valueString(sheetContext),
                                      sheetUIContext.context.getString(R.string.placeholder_value),
                                      SheetManager.color(sheetUIContext.sheetId,
                                                         format.valueFormat().style().colorTheme()),
@@ -753,7 +776,11 @@ object NumberWidgetView
         }
         else
         {
-            value.text  = numberWidget.valueString(SheetContext(sheetUIContext))
+            var valueString = ""
+            valueString = numberWidget.valueString(sheetContext)
+
+            value.text = valueString
+
             format.valueFormat().style().styleTextViewBuilder(value, sheetUIContext)
         }
 

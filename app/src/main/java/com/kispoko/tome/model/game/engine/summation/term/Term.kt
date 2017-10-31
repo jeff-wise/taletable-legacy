@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
-import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -11,6 +10,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.reference.*
+import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
@@ -42,11 +42,7 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>)
                 "summation_term_number"      -> SummationTermNumber.fromDocument(doc)
                 "summation_term_dice_roll"   -> SummationTermDiceRoll.fromDocument(doc)
                 "summation_term_conditional" -> SummationTermConditional.fromDocument(doc)
-                else                         -> {
-                    Log.d("***TERM", "case: " + doc.case())
-                    effError<ValueError,SummationTerm>(
-                            UnknownCase(doc.case(), doc.path))
-                }
+                else                         -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -68,7 +64,8 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>)
     abstract fun dependencies(): Set<VariableReference>
 
 
-    abstract fun value(sheetContext : SheetContext) : Maybe<Double>
+    abstract fun value(sheetContext : SheetContext,
+                       context : Maybe<VariableNamespace> = Nothing()) : Maybe<Double>
 
 
     abstract fun summary(sheetContext : SheetContext) : TermSummary?
@@ -134,9 +131,10 @@ data class SummationTermNumber(override val id : UUID,
     override fun dependencies(): Set<VariableReference> = this.numberReference().dependencies()
 
 
-    override fun value(sheetContext : SheetContext) : Maybe<Double>
+    override fun value(sheetContext : SheetContext,
+                       context : Maybe<VariableNamespace>) : Maybe<Double>
     {
-        val numbers = SheetData.numbers(sheetContext, this.numberReference())
+        val numbers = SheetData.numbers(sheetContext, this.numberReference(), context)
 
         when (numbers)
         {
@@ -251,7 +249,7 @@ data class SummationTermDiceRoll(override val id : UUID,
             this.diceRollReference().dependencies()
 
 
-    override fun value(sheetContext : SheetContext) : Maybe<Double>
+    override fun value(sheetContext : SheetContext, context : Maybe<VariableNamespace>) : Maybe<Double>
     {
         val diceRoll = SheetData.diceRoll(sheetContext, diceRollReference())
 
@@ -341,7 +339,8 @@ data class SummationTermConditional(override val id : UUID,
                                          effValue<ValueError,Maybe<TermName>>(Nothing()),
                                          { effApply(::Just, TermName.fromDocument(it)) }),
                                    // Condition
-                                   doc.at("condition") ap { BooleanReference.fromDocument(it) },
+                                   doc.at("condition") ap {
+                                       BooleanReference.fromDocument(it) },
                                    // When True
                                    doc.at("when_true") ap { NumberReference.fromDocument(it) },
                                    // When False
@@ -397,7 +396,8 @@ data class SummationTermConditional(override val id : UUID,
             .plus(falseValueReference.value.dependencies())
 
 
-    override fun value(sheetContext : SheetContext) : Maybe<Double>
+    override fun value(sheetContext : SheetContext,
+                       context : Maybe<VariableNamespace>) : Maybe<Double>
     {
         val number = SheetData.boolean(sheetContext, conditionalValueReference())
                         .apply { condition ->

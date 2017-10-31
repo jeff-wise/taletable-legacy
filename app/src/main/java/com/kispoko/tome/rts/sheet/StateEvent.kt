@@ -23,10 +23,29 @@ data class VariableAdded(val variableId : VariableId) : StateEvent()
 }
 
 
+data class VariableRemoved(val variableId : VariableId) : StateEvent()
+{
+    override fun debugMessage() : String = """Variable Removed:
+            |    Variable Id: $variableId""".trimMargin()
+
+    override fun logMessage(): String = debugMessage()
+}
+
+
 data class VariableUpdated(val variableId : VariableId) : StateEvent()
 {
     override fun debugMessage() : String = """Variable Updated:
             |    Variable Id: $variableId""".trimMargin()
+
+    override fun logMessage(): String = debugMessage()
+}
+
+
+data class VariableRenamed(val variableId : VariableId, val newVariableId : VariableId) : StateEvent()
+{
+    override fun debugMessage() : String = """Variable Updated:
+            |    Old Variable Id: $variableId
+            |    New Variable Id: $newVariableId""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
 }

@@ -11,6 +11,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.campaign.CampaignId
+import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
@@ -20,7 +21,6 @@ import com.kispoko.tome.rts.sheet.*
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -34,6 +34,7 @@ data class Sheet(override val id : UUID,
                  val sheetId : Prim<SheetId>,
                  val campaignId : Prim<CampaignId>,
                  val sections : Coll<Section>,
+                 val engine : Comp<Engine>,
                  val variables : Conj<Variable>,
                  val settings : Comp<Settings>) : Model, ToDocument, Serializable
 {
@@ -47,6 +48,7 @@ data class Sheet(override val id : UUID,
         this.sheetId.name       = "sheet_id"
         this.campaignId.name    = "campaign_id"
         this.sections.name      = "sections"
+        this.engine.name        = "engine"
         this.variables.name     = "variables"
         this.settings.name      = "settings"
     }
@@ -93,40 +95,44 @@ data class Sheet(override val id : UUID,
     constructor(sheetId : SheetId,
                 campaignId : CampaignId,
                 sections : MutableList<Section>,
+                engine : Engine,
                 variables : MutableSet<Variable>,
                 settings : Settings)
         : this(UUID.randomUUID(),
                Prim(sheetId),
                Prim(campaignId),
                Coll(sections),
+               Comp(engine),
                Conj(variables),
                Comp(settings))
 
 
     companion object : Factory<Sheet>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Sheet> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Sheet> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::Sheet,
-                         // Sheet Id
-                         doc.at("id") ap { SheetId.fromDocument(it) },
-                         // Campaign Id
-                         doc.at("campaign_id") ap { CampaignId.fromDocument(it) },
-                         // Section List
-                         doc.list("sections") ap { docList ->
-                             docList.mapMut { Section.fromDocument(it) }
-                         },
-                         // Variables
-                         split(doc.maybeList("variables"),
-                               effValue(mutableSetOf()),
-                               { it.mapSetMut { Variable.fromDocument(it) } }),
-                         // Sheet Settings
-                         split(doc.maybeAt("settings"),
-                               effValue(Settings.default()),
-                               { Settings.fromDocument(it) })
-                         )
+                apply(::Sheet,
+                      // Sheet Id
+                      doc.at("id") ap { SheetId.fromDocument(it) },
+                      // Campaign Id
+                      doc.at("campaign_id") ap { CampaignId.fromDocument(it) },
+                      // Section List
+                      doc.list("sections") ap { docList ->
+                          docList.mapMut { Section.fromDocument(it) }
+                      },
+                      // Engine
+                      doc.at("engine") ap { Engine.fromDocument(it) },
+                      // Variables
+                      split(doc.maybeList("variables"),
+                            effValue(mutableSetOf()),
+                            { it.mapSetMut { Variable.fromDocument(it) } }),
+                      // Sheet Settings
+                      split(doc.maybeAt("settings"),
+                            effValue(Settings.default()),
+                            { Settings.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -142,6 +148,8 @@ data class Sheet(override val id : UUID,
     fun campaignId() : CampaignId = this.campaignId.value
 
     fun sections() : List<Section> = this.sections.list
+
+    fun engine() : Engine = this.engine.value
 
     fun sectionWithName(sectionName : SectionName) : Section? =
         this.sections().filter { it.name().equals(sectionName) }
@@ -203,13 +211,13 @@ data class Sheet(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(sheetContext : SheetContext)
+    fun onActive(sheetUIContext : SheetUIContext)
     {
         this.variables().forEach {
-            SheetManager.addVariable(sheetContext.sheetId, it)
+            SheetManager.addVariable(sheetUIContext.sheetId, it)
         }
 
-        sections.list.forEach { it.onActive(sheetContext) }
+        sections.list.forEach { it.onActive(sheetUIContext) }
     }
 
 

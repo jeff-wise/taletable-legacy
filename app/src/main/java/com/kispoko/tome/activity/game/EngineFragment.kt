@@ -108,9 +108,9 @@ class EngineFragment : Fragment()
 
         // Value Sets
         val valueSetsOnClick = View.OnClickListener {
-            val intent = Intent(activity, ValueSetsActivity::class.java)
-            intent.putExtra("game_id", engine.gameId)
-            activity.startActivity(intent)
+            //val intent = Intent(activity, ValueSetsActivity::class.java)
+            // intent.putExtra("game_id", engine.gameId)
+            //activity.startActivity(intent)
         }
 
         layout.addView(this.buttonView(R.string.engine_value_sets,
@@ -129,9 +129,9 @@ class EngineFragment : Fragment()
 
         // Functions
         val functionsOnClick = View.OnClickListener {
-            val intent = Intent(activity, FunctionListActivity::class.java)
-            intent.putExtra("game_id", engine.gameId)
-            activity.startActivity(intent)
+//            val intent = Intent(activity, FunctionListActivity::class.java)
+//            intent.putExtra("game_id", engine.gameId)
+//            activity.startActivity(intent)
         }
         layout.addView(this.buttonView(R.string.engine_functions,
                                        R.string.engine_functions_description,

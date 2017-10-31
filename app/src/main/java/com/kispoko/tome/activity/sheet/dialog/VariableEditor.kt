@@ -3,12 +3,14 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.util.Log
+import com.kispoko.tome.R.string.value
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.UpdateTarget
 import effect.Err
@@ -82,6 +84,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                                    sheetUIContext : SheetUIContext)
 {
     val variableValue = numberVariable.variableValue()
+    val sheetContext = SheetContext(sheetUIContext)
 
     val sheetActivity = sheetUIContext.context as SheetActivity
 
@@ -116,8 +119,9 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
         }
         is NumberVariableSummationValue ->
         {
-            val summation = GameManager.engine(sheetUIContext.gameId)
-                                       .apply{ it.summation(variableValue.summationId) }
+//            val summation = GameManager.engine(sheetUIContext.gameId)
+//                                       .apply{ it.summation(variableValue.summationId) }
+            val summation = SheetManager.summation(variableValue.summationId, sheetContext)
             when (summation)
             {
                 is Val ->
@@ -185,6 +189,26 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                         }
                         is Err -> ApplicationLog.error(value.error)
                     }
+                }
+                is Err -> ApplicationLog.error(valueSet.error)
+            }
+        }
+        is TextVariableValueUnknownValue -> {
+            val valueSet = GameManager.engine(sheetUIContext.gameId)
+                                      .apply { it.valueSet(variableValue.valueSetId) }
+
+            when (valueSet)
+            {
+                is Val ->
+                {
+                    val sheetActivity = sheetUIContext.context as SheetActivity
+                    val chooseDialog =
+                            ValueChooserDialogFragment.newInstance(
+                                            valueSet.value,
+                                            null,
+                                            updateTarget,
+                                            SheetContext(sheetUIContext))
+                    chooseDialog.show(sheetActivity.supportFragmentManager, "")
                 }
                 is Err -> ApplicationLog.error(valueSet.error)
             }

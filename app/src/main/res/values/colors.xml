@@ -245,6 +245,7 @@
 
     <color name="dark_theme_green_15">#31362B</color>
 
+    <color name="dark_theme_light_grey_10">#BCBCBC</color>
     <color name="dark_theme_light_grey_12">#B5B5B5</color>
     <color name="dark_theme_light_grey_17">#A1A1A1</color>
     <color name="dark_theme_light_grey_25">#818181</color>

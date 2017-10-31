@@ -9,7 +9,7 @@ import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.util.Util
-import effect.effApply
+import effect.apply
 import effect.effError
 import effect.effValue
 import effect.split
@@ -63,34 +63,37 @@ data class Spacing(override val id : UUID,
     companion object : Factory<Spacing>
     {
 
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Spacing> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Spacing> = when (doc)
         {
-            is DocDict -> effApply(::Spacing,
-                                   // Left
-                                   split(doc.maybeAt("left"),
-                                         effValue(LeftSpacing.default()),
-                                         { LeftSpacing.fromDocument(it) }),
-                                   // Top
-                                   split(doc.maybeAt("top"),
-                                         effValue(TopSpacing.default()),
-                                         { TopSpacing.fromDocument(it) }),
-                                   // Right
-                                   split(doc.maybeAt("right"),
-                                         effValue(RightSpacing.default()),
-                                         { RightSpacing.fromDocument(it) }),
-                                   // Bottom
-                                   split(doc.maybeAt("bottom"),
-                                         effValue(BottomSpacing.default()),
-                                         { BottomSpacing.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                apply(::Spacing,
+                      // Left
+                      split(doc.maybeAt("left"),
+                            effValue(LeftSpacing.default()),
+                            { LeftSpacing.fromDocument(it) }),
+                      // Top
+                      split(doc.maybeAt("top"),
+                            effValue(TopSpacing.default()),
+                            { TopSpacing.fromDocument(it) }),
+                      // Right
+                      split(doc.maybeAt("right"),
+                            effValue(RightSpacing.default()),
+                            { RightSpacing.fromDocument(it) }),
+                      // Bottom
+                      split(doc.maybeAt("bottom"),
+                            effValue(BottomSpacing.default()),
+                            { BottomSpacing.fromDocument(it) })
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() : Spacing = Spacing(LeftSpacing(0.0f),
-                                          TopSpacing(0.0f),
-                                          RightSpacing(0.0f),
-                                          BottomSpacing(0.0f))
+        fun default() = Spacing(LeftSpacing(0.0f),
+                                TopSpacing(0.0f),
+                                RightSpacing(0.0f),
+                                BottomSpacing(0.0f))
 
     }
 

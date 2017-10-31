@@ -2,17 +2,19 @@
 package com.kispoko.tome.activity.sheet
 
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.PagerAdapter
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.kispoko.tome.lib.ui.ScrollViewBuilder
 import com.kispoko.tome.model.sheet.page.Page
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -125,6 +127,19 @@ class PageFragment : Fragment()
     {
         val fragmentView = this.view()
 
+        fragmentView.viewTreeObserver.addOnScrollChangedListener {
+//            val scrollY = rootScrollView.getScrollY() // For ScrollView
+//            val scrollX = rootScrollView.getScrollX() // For HorizontalScrollView
+            // DO SOMETHING WITH THE SCROLL COORDINATES
+            // Log.d("***PAGE", "on scroll")
+            SheetActivityGlobal.cancelLongPressRunnable()
+        }
+
+//        fragmentView.setOnTouchListener  { _, motionEvent ->
+//            if (motionEvent != null)
+//                Log.d("***PAGE", motionEvent.action.toString())
+//            false
+//        }
 
         val currentSheetGameContext = this.sheetContext
 
@@ -146,15 +161,53 @@ class PageFragment : Fragment()
     // INTERNAL
     // -----------------------------------------------------------------------------------------
 
-
     fun view() : ScrollView
     {
-        val scrollView = ScrollViewBuilder()
+        val scrollView = ScrollView(context)
 
-        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT
-        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                     LinearLayout.LayoutParams.MATCH_PARENT)
 
-        return scrollView.scrollView(context)
+        scrollView.layoutParams = layoutParams
+
+        return scrollView
     }
+
+
+}
+
+
+class PageScrollView(context : Context) : ScrollView(context)
+{
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?) : Boolean
+    {
+        if (ev != null)
+        {
+            Log.d("***PAGE", ev.action.toString())
+            when (ev.action)
+            {
+                MotionEvent.ACTION_UP ->
+                {
+                    Log.d("***PAGE", "page action up")
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_OUTSIDE ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_SCROLL ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_CANCEL ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+            }
+        }
+        return false
+    }
+
 
 }

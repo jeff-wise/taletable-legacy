@@ -39,6 +39,8 @@ public class ScrollViewBuilder implements ViewBuilder
     public Margins                  margin;
     public Padding                  padding;
 
+    public Boolean                  fadingEnabled;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -60,6 +62,8 @@ public class ScrollViewBuilder implements ViewBuilder
 
         this.margin             = new Margins();
         this.padding            = new Padding();
+
+        this.fadingEnabled      = null;
     }
 
 
@@ -110,6 +114,12 @@ public class ScrollViewBuilder implements ViewBuilder
 
         if (this.backgroundResource != null)
             scrollView.setBackgroundResource(this.backgroundResource);
+
+        // Fading Enabled
+        // --------------------------------------------------------------------------------------
+
+        if (this.fadingEnabled != null)
+            scrollView.setScrollbarFadingEnabled(this.fadingEnabled);
 
 
         // [2] Layout Parameters

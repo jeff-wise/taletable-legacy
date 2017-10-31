@@ -2,18 +2,29 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor._getMaybePrim
+import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.theme.ColorId
-import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.*
+import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -25,9 +36,10 @@ import java.util.*
  */
 data class LogEntry(override val id : UUID,
                     val title : Prim<EntryTitle>,
+                    val date : Prim<EntryDate>,
                     val author : Prim<EntryAuthor>,
-                    val summary : Prim<EntrySummary>,
-                    val text : Prim<EntryText>) : ToDocument, Model
+                    val summary : Maybe<Prim<EntrySummary>>,
+                    val text : Prim<EntryText>) : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -37,8 +49,13 @@ data class LogEntry(override val id : UUID,
     init
     {
         this.title.name     = "title"
+        this.date.name      = "date"
         this.author.name    = "author"
-        this.summary.name   = "summary"
+
+        when (this.summary) {
+            is Just -> this.summary.value.name = "summary"
+        }
+
         this.text.name      = "text"
     }
 
@@ -48,30 +65,39 @@ data class LogEntry(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(title : EntryTitle,
+                date : EntryDate,
                 author : EntryAuthor,
-                summary : EntrySummary,
+                summary : Maybe<EntrySummary>,
                 text : EntryText)
         : this(UUID.randomUUID(),
                Prim(title),
+               Prim(date),
                Prim(author),
-               Prim(summary),
+               maybeLiftPrim(summary),
                Prim(text))
 
 
     companion object : Factory<LogEntry>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<LogEntry> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<LogEntry> = when (doc)
         {
-            is DocDict -> effApply(::LogEntry,
-                                   // Title
-                                   doc.at("title") ap { EntryTitle.fromDocument(it) },
-                                   // Author
-                                   doc.at("author") ap { EntryAuthor.fromDocument(it) },
-                                   // Summary
-                                   doc.at("summary") ap { EntrySummary.fromDocument(it) },
-                                   // text
-                                   doc.at("text") ap { EntryText.fromDocument(it) }
-                                   )
+            is DocDict ->
+            {
+                apply(::LogEntry,
+                      // Title
+                      doc.at("title") ap { EntryTitle.fromDocument(it) },
+                      // Date
+                      doc.at("date") ap { EntryDate.fromDocument(it) },
+                      // Author
+                      doc.at("author") ap { EntryAuthor.fromDocument(it) },
+                      // Summary
+                      split(doc.maybeAt("summary"),
+                            effValue<ValueError,Maybe<EntrySummary>>(Nothing()),
+                            { apply(::Just, EntrySummary.fromDocument(it)) }),
+                      // text
+                      doc.at("text") ap { EntryText.fromDocument(it) }
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -84,9 +110,10 @@ data class LogEntry(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "title" to this.title().toDocument(),
         "author" to this.author().toDocument(),
-        "summary" to this.summary().toDocument(),
         "text" to this.text().toDocument()
     ))
+    .maybeMerge(this.summary().apply {
+        Just(Pair("summary", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -97,7 +124,7 @@ data class LogEntry(override val id : UUID,
 
     fun author() : EntryAuthor = this.author.value
 
-    fun summary() : EntrySummary = this.summary.value
+    fun summary() : Maybe<EntrySummary> = _getMaybePrim(this.summary)
 
     fun text() : EntryText = this.text.value
 
@@ -127,9 +154,45 @@ data class EntryTitle(val value : String) : ToDocument, SQLSerializable, Seriali
 
     companion object : Factory<EntryTitle>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<EntryTitle> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<EntryTitle> = when (doc)
         {
             is DocText -> effValue(EntryTitle(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Entry Date
+ */
+data class EntryDate(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<EntryDate>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<EntryDate> = when (doc)
+        {
+            is DocText -> effValue(EntryDate(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
@@ -260,11 +323,55 @@ data class EntryText(val value : String) : ToDocument, SQLSerializable, Serializ
 
 
 /**
+ * Entry View Type
+ */
+sealed class EntryViewType : ToDocument, SQLSerializable, Serializable
+{
+
+    object Vertical : EntryViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({"vertical"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("vertical")
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<EntryViewType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "vertical"  -> effValue<ValueError,EntryViewType>(EntryViewType.Vertical)
+                else        -> effError<ValueError,EntryViewType>(
+                                            UnexpectedValue("EntryViewType", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+}
+
+
+/**
  * Log Widget Format
  */
 data class LogWidgetFormat(override val id : UUID,
                            val widgetFormat : Comp<WidgetFormat>,
-                           val dividerColorTheme : Prim<ColorTheme>) : ToDocument, Model
+                           val entryFormat : Comp<LogEntryFormat>,
+                           val entryViewType : Prim<EntryViewType>)
+                            : ToDocument, Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -273,8 +380,9 @@ data class LogWidgetFormat(override val id : UUID,
 
     init
     {
-        this.widgetFormat.name      = "widget_format"
-        this.dividerColorTheme.name = "divider_color_theme"
+        this.widgetFormat.name  = "widget_format"
+        this.entryFormat.name   = "entry_format"
+        this.entryViewType.name = "entry_view_type"
     }
 
 
@@ -282,23 +390,49 @@ data class LogWidgetFormat(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(widgetFormat : WidgetFormat,
+                entryFormat : LogEntryFormat,
+                entryViewType : EntryViewType)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Comp(entryFormat),
+               Prim(entryViewType))
+
+
     companion object : Factory<LogWidgetFormat>
     {
+
+        private val defaultWidgetFormat  = WidgetFormat.default()
+        private val defaultEntryFormat   = LogEntryFormat.default()
+        private val defaultEntryViewType = EntryViewType.Vertical
+
+
         override fun fromDocument(doc: SchemaDoc): ValueParser<LogWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::LogWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   },
-                                   // Divider Color
-                                   doc.at("divider_color_theme") ap {
-                                       effApply(::Prim, ColorTheme.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                apply(::LogWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat),
+                            { WidgetFormat.fromDocument(it) }),
+                      // Entry Format
+                      split(doc.maybeAt("entry_format"),
+                            effValue(defaultEntryFormat),
+                            { LogEntryFormat.fromDocument(it) }),
+                      // View Type
+                      split(doc.maybeAt("entry_view_type"),
+                            effValue<ValueError,EntryViewType>(defaultEntryViewType),
+                            { EntryViewType.fromDocument(it) })
+                )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() = LogWidgetFormat(defaultWidgetFormat,
+                                        defaultEntryFormat,
+                                        defaultEntryViewType)
     }
 
 
@@ -308,7 +442,8 @@ data class LogWidgetFormat(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "widget_format" to this.widgetFormat().toDocument(),
-        "divider_color_theme" to this.dividerColorTheme().toDocument()
+        "entry_format" to this.entryFormat().toDocument(),
+        "entry_view_type" to this.entryViewType().toDocument()
     ))
 
 
@@ -318,7 +453,9 @@ data class LogWidgetFormat(override val id : UUID,
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
 
-    fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
+    fun entryFormat() : LogEntryFormat = this.entryFormat.value
+
+    fun entryViewType() : EntryViewType = this.entryViewType.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -332,6 +469,358 @@ data class LogWidgetFormat(override val id : UUID,
     override val modelObject = this
 
 }
+
+
+
+/**
+ * Log Entry Format
+ */
+data class LogEntryFormat(override val id : UUID,
+                          val titleFormat : Comp<ElementFormat>,
+                          val titleStyle : Comp<TextStyle>,
+                          val authorFormat : Comp<ElementFormat>,
+                          val authorStyle : Comp<TextStyle>,
+                          val summaryFormat : Comp<ElementFormat>,
+                          val summaryStyle : Comp<TextStyle>,
+                          val bodyFormat : Comp<ElementFormat>,
+                          val bodyStyle : Comp<TextStyle>,
+                          val entryFormat : Comp<ElementFormat>)
+                           : ToDocument, Model, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.titleFormat.name       = "title_format"
+        this.titleStyle.name        = "title_style"
+        this.authorFormat.name      = "author_format"
+        this.authorStyle.name       = "author_style"
+        this.summaryFormat.name     = "summary_format"
+        this.summaryStyle.name      = "summary_style"
+        this.bodyFormat.name        = "body_format"
+        this.bodyStyle.name         = "body_style"
+        this.entryFormat.name       = "entry_format"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(titleFormat : ElementFormat,
+                titleStyle : TextStyle,
+                authorFormat : ElementFormat,
+                authorStyle : TextStyle,
+                summaryFormat : ElementFormat,
+                summaryStyle : TextStyle,
+                bodyFormat : ElementFormat,
+                bodyStyle : TextStyle,
+                entryFormat : ElementFormat)
+        : this(UUID.randomUUID(),
+               Comp(titleFormat),
+               Comp(titleStyle),
+               Comp(authorFormat),
+               Comp(authorStyle),
+               Comp(summaryFormat),
+               Comp(summaryStyle),
+               Comp(bodyFormat),
+               Comp(bodyStyle),
+               Comp(entryFormat))
+
+
+    companion object : Factory<LogEntryFormat>
+    {
+
+        private val defaultTitleFormat   = ElementFormat.default()
+        private val defaultTitleStyle    = TextStyle.default()
+        private val defaultAuthorFormat  = ElementFormat.default()
+        private val defaultAuthorStyle   = TextStyle.default()
+        private val defaultSummaryFormat = ElementFormat.default()
+        private val defaultSummaryStyle  = TextStyle.default()
+        private val defaultBodyFormat    = ElementFormat.default()
+        private val defaultBodyStyle     = TextStyle.default()
+        private val defaultEntryFormat   = ElementFormat.default()
+
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<LogEntryFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::LogEntryFormat,
+                      // Title Format
+                      split(doc.maybeAt("title_format"),
+                            effValue(defaultTitleFormat),
+                            { ElementFormat.fromDocument(it) }),
+                      // Title Style
+                      split(doc.maybeAt("title_style"),
+                            effValue(defaultTitleStyle),
+                            { TextStyle.fromDocument(it) }),
+                      // Author Format
+                      split(doc.maybeAt("author_format"),
+                            effValue(defaultAuthorFormat),
+                            { ElementFormat.fromDocument(it) }),
+                      // Author Style
+                      split(doc.maybeAt("author_style"),
+                            effValue(defaultAuthorStyle),
+                            { TextStyle.fromDocument(it) }),
+                      // Summary Format
+                      split(doc.maybeAt("summary_format"),
+                            effValue(defaultSummaryFormat),
+                            { ElementFormat.fromDocument(it) }),
+                      // Summary Style
+                      split(doc.maybeAt("summary_style"),
+                            effValue(defaultSummaryStyle),
+                            { TextStyle.fromDocument(it) }),
+                      // Body Format
+                      split(doc.maybeAt("body_format"),
+                            effValue(defaultBodyFormat),
+                            { ElementFormat.fromDocument(it) }),
+                      // Body Style
+                      split(doc.maybeAt("body_style"),
+                            effValue(defaultBodyStyle),
+                            { TextStyle.fromDocument(it) }),
+                      // Entry Format
+                      split(doc.maybeAt("entry_format"),
+                            effValue(defaultEntryFormat),
+                            { ElementFormat.fromDocument(it) })
+                    )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = LogEntryFormat(defaultTitleFormat,
+                                       defaultTitleStyle,
+                                       defaultAuthorFormat,
+                                       defaultAuthorStyle,
+                                       defaultSummaryFormat,
+                                       defaultSummaryStyle,
+                                       defaultBodyFormat,
+                                       defaultBodyStyle,
+                                       defaultEntryFormat)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "title_format" to this.titleFormat().toDocument(),
+        "title_style" to this.titleStyle().toDocument(),
+        "author_format" to this.titleFormat().toDocument(),
+        "author_style" to this.titleStyle().toDocument(),
+        "summary_format" to this.titleFormat().toDocument(),
+        "summary_style" to this.titleStyle().toDocument(),
+        "body_format" to this.titleFormat().toDocument(),
+        "body_style" to this.titleStyle().toDocument(),
+        "entry_format" to this.titleFormat().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun titleFormat() : ElementFormat = this.titleFormat.value
+
+    fun titleStyle() : TextStyle = this.titleStyle.value
+
+    fun authorFormat() : ElementFormat = this.authorFormat.value
+
+    fun authorStyle() : TextStyle = this.authorStyle.value
+
+    fun summaryFormat() : ElementFormat = this.summaryFormat.value
+
+    fun summaryStyle() : TextStyle = this.summaryStyle.value
+
+    fun bodyFormat() : ElementFormat = this.bodyFormat.value
+
+    fun bodyStyle() : TextStyle = this.bodyStyle.value
+
+    fun entryFormat() : ElementFormat = this.entryFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+    override val name : String = "log_entry_format"
+
+    override val modelObject = this
+
+}
+
+
+class LogViewBuilder(val logWidget : LogWidget,
+                     val sheetUIContext : SheetUIContext)
+{
+
+
+    fun view() : View
+    {
+        val layout = WidgetView.layout(logWidget.widgetFormat(), sheetUIContext)
+
+        layout.addView(entriesView())
+
+        return layout
+    }
+
+
+    private fun entriesView() : LinearLayout
+    {
+        val layout = this.entriesViewLayout()
+
+        logWidget.entries().forEach {
+            layout.addView(this.entryView(it))
+        }
+
+        return layout
+    }
+
+
+    private fun entriesViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+
+    // ENTRY VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun entryView(entry : LogEntry) : LinearLayout
+    {
+        val layout = this.entryViewLayout()
+
+        val entryFormat = logWidget.format().entryFormat()
+
+        // Title
+        layout.addView(titleView(entry.title(),
+                                 entryFormat.titleFormat(),
+                                 entryFormat.titleStyle()))
+
+        // Author
+        layout.addView(authorView(entry.author(),
+                                  entryFormat.authorFormat(),
+                                  entryFormat.authorStyle()))
+
+        // Summary
+        val maybeSummary = entry.summary()
+        when (maybeSummary) {
+            is Just -> layout.addView(summaryView(maybeSummary.value,
+                                                  entryFormat.summaryFormat(),
+                                                  entryFormat.summaryStyle()))
+        }
+
+        return layout
+    }
+
+
+    private fun entryViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+        val format                  = logWidget.format().entryFormat().entryFormat()
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId,
+                                                         format.backgroundColorTheme())
+
+        layout.marginSpacing        = format.margins()
+        layout.paddingSpacing       = format.padding()
+
+        layout.corners              = format.corners()
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun titleView(entryTitle : EntryTitle,
+                          format : ElementFormat,
+                          style : TextStyle) : TextView
+    {
+        val title               = TextViewBuilder()
+
+        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        title.text              = entryTitle.value
+
+        title.color             = SheetManager.color(sheetUIContext.sheetId, style.colorTheme())
+
+        title.font              = Font.typeface(style.font(),
+                                                style.fontStyle(),
+                                                sheetUIContext.context)
+
+        title.sizeSp            = style.sizeSp()
+
+        return title.textView(sheetUIContext.context)
+    }
+
+
+    private fun authorView(entryAuthor : EntryAuthor,
+                           format : ElementFormat,
+                           style : TextStyle) : TextView
+    {
+        val author               = TextViewBuilder()
+
+        author.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        author.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        author.text              = entryAuthor.value
+
+        author.color             = SheetManager.color(sheetUIContext.sheetId, style.colorTheme())
+
+        author.font              = Font.typeface(style.font(),
+                                                style.fontStyle(),
+                                                sheetUIContext.context)
+
+        author.sizeSp            = style.sizeSp()
+
+        return author.textView(sheetUIContext.context)
+    }
+
+
+    private fun summaryView(entrySummary : EntrySummary,
+                            format : ElementFormat,
+                            style : TextStyle) : TextView
+    {
+        val summary             = TextViewBuilder()
+
+        summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        summary.text            = entrySummary.value
+
+        summary.color           = SheetManager.color(sheetUIContext.sheetId, style.colorTheme())
+
+        summary.font            = Font.typeface(style.font(),
+                                                style.fontStyle(),
+                                                sheetUIContext.context)
+
+        summary.sizeSp          = style.sizeSp()
+
+        return summary.textView(sheetUIContext.context)
+    }
+
+}
+
 
 //
 //

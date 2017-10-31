@@ -62,26 +62,28 @@ data class ModelSaved(val model : Model, val duration : Long) : ORMEvent()
                                            "saved in : $duration ms"
 
     override fun prettyEventMessage() : String = """
-            Model saved:
-                Model Name: ${model.name}
-                Model Id: ${model.id}
-                Time (ms): ${Util.timeDifferenceString(duration)}
-            """
+            |Model saved:
+            |    Model Name: ${model.name}
+            |    Model Id: ${model.id}
+            |    Time (ms): ${Util.timeDifferenceString(duration)}
+            """.trimMargin()
 }
 
 
-data class RowInsert(val tableName : String, val rowId : UUID, val duration : Long) : ORMEvent()
+data class RowInsert(val tableName : String,
+                     private val rowId : UUID,
+                     private val duration : Long) : ORMEvent()
 {
     override fun eventMessage() : String = "Inserted row with id '$rowId' into table '$tableName'" +
                                            " in $duration ms."
 
 
     override fun prettyEventMessage() : String = """
-            Row inserted:
-                Table Name: $tableName
-                Row Id: $rowId
-                Time (ms): ${Util.timeDifferenceString(duration)}
-            """
+            |Row inserted:
+            |    Table Name: $tableName
+            |    Row Id: $rowId
+            |    Time (ms): ${Util.timeDifferenceString(duration)}
+            """.trimMargin()
 }
 
 
@@ -114,15 +116,16 @@ data class BeginTranscation(val modelName : String) : ORMEvent()
 }
 
 
-data class EndTranscation(val modelName : String) : ORMEvent()
+data class EndTranscation(val modelName : String, var totalRowInserts : Int? = null) : ORMEvent()
 {
     override fun eventMessage() : String = "End of transaction to save '$modelName'"
 
 
     override fun prettyEventMessage() : String = """
-            End Of Transaction:
-                Model Name: $modelName
-            """
+            |End Of Transaction:
+            |    Model Name: $modelName
+            |    Row Inserts: ${totalRowInserts ?: "N/A"}
+            """.trimMargin()
 }
 
 

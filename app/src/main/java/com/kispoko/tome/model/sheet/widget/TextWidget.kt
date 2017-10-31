@@ -18,6 +18,7 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.FormattedString
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.rts.sheet.*
@@ -37,6 +38,7 @@ import java.util.*
  */
 data class TextWidgetFormat(override val id : UUID,
                             val widgetFormat : Comp<WidgetFormat>,
+                            val height : Prim<Height>,
                             val insideLabel : Maybe<Prim<TextWidgetLabel>>,
                             val insideLabelFormat : Comp<TextFormat>,
                             val outsideLabel : Maybe<Prim<TextWidgetLabel>>,
@@ -53,6 +55,8 @@ data class TextWidgetFormat(override val id : UUID,
     init
     {
         this.widgetFormat.name                      = "widget_format"
+
+        this.height.name                            = "height"
 
         when (this.insideLabel) {
             is Just -> this.insideLabel.value.name  = "inside_label"
@@ -77,6 +81,7 @@ data class TextWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
+                height : Height,
                 insideLabel : Maybe<TextWidgetLabel>,
                 insideLabelFormat : TextFormat,
                 outsideLabel : Maybe<TextWidgetLabel>,
@@ -85,6 +90,7 @@ data class TextWidgetFormat(override val id : UUID,
                 descriptionStyle : TextStyle)
         : this(UUID.randomUUID(),
                Comp(widgetFormat),
+               Prim(height),
                maybeLiftPrim(insideLabel),
                Comp(insideLabelFormat),
                maybeLiftPrim(outsideLabel),
@@ -97,6 +103,7 @@ data class TextWidgetFormat(override val id : UUID,
     {
 
         private val defaultWidgetFormat       = WidgetFormat.default()
+        private val defaultHeight             = Height.Wrap
         private val defaultInsideLabel        = Nothing<TextWidgetLabel>()
         private val defaultInsideLabelFormat  = TextFormat.default()
         private val defaultOutsideLabel       = Nothing<TextWidgetLabel>()
@@ -114,6 +121,10 @@ data class TextWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("widget_format"),
                             effValue(defaultWidgetFormat),
                             { WidgetFormat.fromDocument(it) }),
+                      // Height
+                      split(doc.maybeAt("height"),
+                            effValue<ValueError,Height>(defaultHeight),
+                            { Height.fromDocument(it) }),
                       // Inside Label
                       split(doc.maybeAt("inside_label"),
                             effValue<ValueError,Maybe<TextWidgetLabel>>(defaultInsideLabel),
@@ -145,6 +156,7 @@ data class TextWidgetFormat(override val id : UUID,
 
 
         fun default() = TextWidgetFormat(defaultWidgetFormat,
+                                         defaultHeight,
                                          defaultInsideLabel,
                                          defaultInsideLabelFormat,
                                          defaultOutsideLabel,
@@ -177,6 +189,8 @@ data class TextWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+    fun height() : Height = this.height.value
 
     fun insideLabelMaybe() : Maybe<TextWidgetLabel> = _getMaybePrim(this.insideLabel)
 
@@ -417,7 +431,14 @@ object TextWidgetView
                                             .position().linearLayoutOrientation()
 
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        val height = format.height()
+        when (height)
+        {
+            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+        }
+        //layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
 //        layout.backgroundColor      = SheetManager.color(
 //                                                sheetUIContext.sheetId,

@@ -95,6 +95,13 @@ types:
         of sheets. Simple sheets may only have one, but complex sheets could have many, 
         although there is a maximum of 5 on mobile. On mobile, sections are represented 
         by the bottom navigation menu.
+    - name: engine
+      type: 
+        type: custom_type
+        custom_type: engine
+      presence: required
+      description: >
+        Game rules and data specific to this sheet.
     - name: variables
       type: 
         type: custom_coll_type
@@ -923,8 +930,8 @@ types:
         The entry title.
     - name: date
       type: 
-        type: custom_type
-        custom_type: datetime
+        type: prim_type
+        prim_type: string
       presence: required
       description: >
         The entry title.
@@ -964,6 +971,91 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
+    - name: entry_format
+      type: 
+        type: custom_type
+        custom_type: log_entry_format
+      presence: optional
+      description: >
+        The formatting options for the log entries.
+    - name: entry_view_type
+      type: 
+        type: prim_type
+        prim_type: string 
+      presence: optional
+      description: >
+        The entry view type.
+- type: product_type
+  product_type:
+    name: log_entry_format
+    label: Log Entry Format
+    description: >
+      Log Entry formatting options.
+    group: 'Widget: Log'
+    fields:
+    - name: title_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: >
+        The title format.
+    - name: title_style
+      type: 
+        type: custom_type
+        custom_type: text_style
+      presence: optional
+      description: >
+        The title text style.
+    - name: author_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: >
+        The author format.
+    - name: author_style
+      type: 
+        type: custom_type
+        custom_type: text_style
+      presence: optional
+      description: >
+        The author text style.
+    - name: summary_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: >
+        The summary format.
+    - name: summary_style
+      type: 
+        type: custom_type
+        custom_type: text_style
+      presence: optional
+      description: >
+        The summary text style.
+    - name: body_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: >
+        The body format.
+    - name: body_style
+      type: 
+        type: custom_type
+        custom_type: text_style
+      presence: optional
+      description: >
+        The body text style.
+    - name: entry_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: >
+        The entry format.
 - type: product_type
   product_type:
     name: widget_mechanic
@@ -1199,6 +1291,13 @@ types:
       presence: optional
       description: >
         Base value separator style.
+    - name: number_format
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The number format.
 - type: product_type
   product_type:
     name: widget_option
@@ -1592,7 +1691,14 @@ types:
     - name: format
       type:
         type: custom_type
-        custom_type: text_format
+        custom_type: element_format
+      presence: optional
+      description: >
+        The text style.
+    - name: text_style
+      type:
+        type: custom_type
+        custom_type: text_style
       presence: optional
       description: >
         The text style.
@@ -1607,7 +1713,14 @@ types:
     - name: format
       type: 
         type: custom_type
-        custom_type: text_format
+        custom_type: element_format
+      presence: optional
+      description: >
+        The text style.
+    - name: text_style
+      type: 
+        type: custom_type
+        custom_type: text_style
       presence: optional
       description: >
         The text style.
@@ -1625,6 +1738,13 @@ types:
       presence: optional
       description: >
         The numeric editor type (if is number value).
+    - name: number_format
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The number format (if applicable).
 - type: product_type
   product_type:
     name: story_part_icon
@@ -1674,10 +1794,17 @@ types:
       presence: optional
       description: >
         The procedure id.
-    - name: text_format
+    - name: format
       type:
         type: custom_type
-        custom_type: text_format
+        custom_type: element_format
+      presence: optional
+      description: >
+        The format.
+    - name: text_style
+      type:
+        type: custom_type
+        custom_type: text_style
       presence: optional
       description: >
         The text style.
@@ -1937,7 +2064,7 @@ types:
     - name: false_style
       type:
         type: custom_type
-        custom_type: false_style
+        custom_type: text_style
       presence: optional
       description: >
         The false value text style.
@@ -2039,6 +2166,13 @@ types:
       presence: optional
       description: >
         The column value prefix.
+    - name: number_format
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The number format.
 - type: product_type
   product_type:
     name: table_widget_text_column
@@ -2080,6 +2214,13 @@ types:
       presence: optional
       description: >
         Do cells in this column define a namespace for the other cells in the row?
+    - name: action
+      type:
+        type: custom_type
+        custom_type: action
+      presence: optional
+      description: >
+        Action for the cells.
     - name: is_namespaced
       type:
         type: prim_type
@@ -2375,6 +2516,13 @@ types:
       presence: optional
       description: >
         The cell value prefix.
+    - name: number_format
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The number format for the cell value.
 - type: product_type
   product_type:
     name: table_widget_text_cell
@@ -2397,6 +2545,20 @@ types:
       presence: optional
       description: >
         The cell format.
+    - name: action
+      type:
+        type: custom_type
+        custom_type: action
+      presence: optional
+      description: >
+        Action for the cells.
+    - name: action_name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        Action for the cells.
 - type: product_type
   product_type:
     name: table_widget_text_cell_format
@@ -2557,6 +2719,13 @@ types:
       presence: optional
       description: >
         The standard widget formatting options.
+    - name: height
+      type:
+        type: custom_type
+        custom_type: height
+      presence: optional
+      description: >
+        Widget height.
     - name: inside_label
       type: 
         type: prim_type
@@ -2634,6 +2803,35 @@ types:
       presence: optional
       description: >
         The description style.
+- type: product_type
+  product_type:
+    name: action
+    label: Action
+    description: >
+      An action that can be performed on the sheet.
+    group: Widget
+    fields:
+    - name: name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The action name.
+    - name: roll_summation_id
+      type: 
+        type: custom_type
+        custom_type: summation_id
+      presence: optional
+      description: >
+        The id of the summation that represents the roll.
+    - name: procedure_id
+      type: 
+        type: custom_type
+        custom_type: procedure_id
+      presence: optional
+      description: >
+        The procedure identifier.
 - type: product_type
   product_type:
     name: widget_format

@@ -4,6 +4,7 @@ package com.kispoko.tome.lib.ui;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TableRow;
 
@@ -12,6 +13,7 @@ import com.kispoko.tome.model.sheet.style.Spacing;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -47,6 +49,8 @@ public class TableRowBuilder implements ViewBuilder
     public Spacing                  paddingSpacing;
 
     public View.OnClickListener     onClick;
+    public View.OnLongClickListener onLongClick;
+    public View.OnTouchListener     onTouch;
 
     public List<View>               rows;
 
@@ -77,6 +81,8 @@ public class TableRowBuilder implements ViewBuilder
         this.paddingSpacing     = null;
 
         this.onClick            = null;
+        this.onLongClick        = null;
+        this.onTouch            = null;
 
         this.rows               = new ArrayList<>();
     }
@@ -146,6 +152,18 @@ public class TableRowBuilder implements ViewBuilder
 
         if (this.onClick != null)
             tableRow.setOnClickListener(this.onClick);
+
+        // > On Long Click Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onLongClick != null)
+            tableRow.setOnLongClickListener(this.onLongClick);
+
+        // > On Touch Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onTouch != null)
+            tableRow.setOnTouchListener(this.onTouch);
 
         // > Background Color
         // --------------------------------------------------------------------------------------

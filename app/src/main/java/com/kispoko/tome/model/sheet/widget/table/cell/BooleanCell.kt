@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -75,7 +76,7 @@ data class BooleanCellFormat(override val id : UUID,
     companion object : Factory<BooleanCellFormat>
     {
 
-        private val defaultCellFormat    = CellFormat.default
+        private val defaultCellFormat    = CellFormat.default()
         private val defaultShowTrueIcon  = ShowTrueIcon(false)
         private val defaultShowFalseIcon = ShowFalseIcon(false)
 
@@ -374,11 +375,13 @@ object BooleanCellView
             valueView.text = column.format().falseTextString()
 
             // No false style, but need to undo true style
-            if (falseStyle == null && trueStyle != null)
+            if (falseStyle == null && trueStyle != null) {
                 defaultStyle.styleTextView(valueView, sheetUIContext)
-            else
+                Log.d("***BooleanCell", defaultStyle.toString())
+            }
+            else {
                 falseStyle?.styleTextView(valueView, sheetUIContext)
-
+            }
         }
         else
         {
@@ -389,7 +392,6 @@ object BooleanCellView
             // No true style, but need to undo false style
             if (trueStyle == null && falseStyle != null)
                 defaultStyle.styleTextView(valueView, sheetUIContext)
-            // Set true style
             else
                 trueStyle?.styleTextView(valueView, sheetUIContext)
         }

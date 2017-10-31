@@ -195,12 +195,11 @@ data class OptionWidgetFormat(override val id : UUID,
         }
 
 
-        val default : OptionWidgetFormat =
-                OptionWidgetFormat(defaultWidgetFormat,
-                                   defaultDescriptionStyle,
-                                   defaultValueStyle,
-                                   defaultValueItemStyle,
-                                   defaultHeight)
+        fun default() = OptionWidgetFormat(defaultWidgetFormat,
+                                           defaultDescriptionStyle,
+                                           defaultValueStyle,
+                                           defaultValueItemStyle,
+                                           defaultHeight)
 
     }
 

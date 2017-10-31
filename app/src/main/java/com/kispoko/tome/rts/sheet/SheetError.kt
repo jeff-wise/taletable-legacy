@@ -60,6 +60,17 @@ class SectionDoesNotExist(val sheetId : SheetId, val sectionName : SectionName) 
 }
 
 
+class NoActiveSheet(val context : String = "Unknown") : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            Sheet Error: No Active Sheet
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
 
 /**
  * The theme does not have a color with the given id.

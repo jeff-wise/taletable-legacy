@@ -32,10 +32,9 @@ sealed class BooleanReference : ToDocument, SumModel, Serializable
         override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanReference> =
             when (doc.case())
             {
-                "literal"  -> BooleanReferenceLiteral.fromDocument(doc)
-                "variable" -> BooleanReferenceVariable.fromDocument(doc)
-                else                 -> effError<ValueError,BooleanReference>(
-                                            UnknownCase(doc.case(), doc.path))
+                "literal"            -> BooleanReferenceLiteral.fromDocument(doc.nextCase())
+                "variable_reference" -> BooleanReferenceVariable.fromDocument(doc.nextCase())
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 

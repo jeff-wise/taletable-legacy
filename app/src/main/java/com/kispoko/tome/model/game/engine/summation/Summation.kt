@@ -2,6 +2,9 @@
 package com.kispoko.tome.model.game.engine.summation
 
 
+import android.util.Log
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Conj
@@ -15,7 +18,10 @@ import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
 import com.kispoko.tome.model.game.engine.summation.term.SummationTermDiceRoll
 import com.kispoko.tome.model.game.engine.summation.term.SummationTermNumber
 import com.kispoko.tome.model.game.engine.summation.term.TermSummary
+import com.kispoko.tome.model.game.engine.variable.VariableName
+import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.rts.game.engine.SummationIsNotDiceRoll
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
@@ -144,7 +150,8 @@ data class Summation(override val id : UUID,
             this.terms().mapNotNull { it.summary(sheetContext) }
 
 
-    fun diceRoll(sheetContext : SheetContext) : DiceRoll?
+    fun diceRoll(sheetContext : SheetContext,
+                 context : Maybe<VariableNamespace> = Nothing()) : AppEff<DiceRoll>
     {
         val quantities : MutableSet<DiceQuantity> = mutableSetOf()
         val modifiers  : MutableSet<RollModifier> = mutableSetOf()
@@ -168,7 +175,8 @@ data class Summation(override val id : UUID,
                 // Add dice modifier
                 is SummationTermNumber ->
                 {
-                    val maybeModValue = SheetData.number(sheetContext, term.numberReference())
+                    val maybeModValue = SheetData.number(sheetContext, term.numberReference(), context)
+                    Log.d("***SUMMATION", "number term reference: ${term.numberReference()}")
                     when (maybeModValue)
                     {
                         is Val -> {
@@ -189,9 +197,9 @@ data class Summation(override val id : UUID,
         }
 
         return if (quantities.isEmpty())
-            null
+            effError(AppEngineError(SummationIsNotDiceRoll(summationId())))
         else
-            DiceRoll(quantities, modifiers, Just(DiceRollName(this.summationNameString())))
+            effValue(DiceRoll(quantities, modifiers, Just(DiceRollName(this.summationNameString()))))
     }
 
 

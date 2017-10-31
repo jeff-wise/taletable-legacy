@@ -75,7 +75,7 @@ data class Game(override val id : UUID,
                              // Description
                              doc.at("description") apply { GameDescription.fromDocument(it) },
                              // Engine
-                             doc.at("engine") apply { Engine.fromDocument(it, gameId) },
+                             doc.at("engine") apply { Engine.fromDocument(it) },
                              // Rulebook
                              doc.at("rulebook") apply { Rulebook.fromDocument(it) }
                              )

@@ -13,6 +13,7 @@ import com.kispoko.tome.model.game.engine.variable.TextVariableValue
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
@@ -226,6 +227,7 @@ data class TableWidgetNumberColumn(
             override val isColumnNamespaced: Prim<IsColumnNamespaced>,
             val defaultValue : Sum<NumberVariableValue>,
             val format : Comp<NumberColumnFormat>,
+            val action : Maybe<Comp<Action>>,
             val editorType : Prim<NumericEditorType>)
              : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
@@ -241,6 +243,11 @@ data class TableWidgetNumberColumn(
         this.isColumnNamespaced.name    = "is_column_namespaced"
         this.defaultValue.name          = "default_value"
         this.format.name                = "format"
+
+        when (this.action) {
+            is Just -> this.action.value.name       = "action"
+        }
+
         this.editorType.name            = "editor_type"
     }
 
@@ -254,6 +261,7 @@ data class TableWidgetNumberColumn(
                 isColumnNamespaced : IsColumnNamespaced,
                 defaultValue : NumberVariableValue,
                 format : NumberColumnFormat,
+                action : Maybe<Action>,
                 editorType : NumericEditorType)
         : this(UUID.randomUUID(),
                Prim(columnName),
@@ -261,6 +269,7 @@ data class TableWidgetNumberColumn(
                Prim(isColumnNamespaced),
                Sum(defaultValue),
                Comp(format),
+               maybeLiftComp(action),
                Prim(editorType))
 
 
@@ -287,8 +296,12 @@ data class TableWidgetNumberColumn(
                          doc.at("default_value") ap { NumberVariableValue.fromDocument(it) },
                          // Format
                          split(doc.maybeAt("format"),
-                               effValue(NumberColumnFormat.default),
+                               effValue(NumberColumnFormat.default()),
                                { NumberColumnFormat.fromDocument(it) }),
+                         // Action
+                         split(doc.maybeAt("action"),
+                               effValue<ValueError,Maybe<Action>>(Nothing()),
+                               { apply(::Just, Action.fromDocument(it)) }),
                          // Editor Type
                          split(doc.maybeAt("editor_type"),
                                effValue<ValueError,NumericEditorType>(defaultEditorType),
@@ -312,6 +325,8 @@ data class TableWidgetNumberColumn(
         "format" to this.format().toDocument(),
         "editor_type" to this.editorType().toDocument()
     ))
+    .maybeMerge(this.action().apply {
+        Just(Pair("action", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -323,6 +338,8 @@ data class TableWidgetNumberColumn(
     fun format() : NumberColumnFormat = this.format.value
 
     fun editorType() : NumericEditorType = this.editorType.value
+
+    fun action() : Maybe<Action> = getMaybeComp(this.action)
 
 
     // -----------------------------------------------------------------------------------------
@@ -379,6 +396,7 @@ data class TableWidgetTextColumn(
                         override val isColumnNamespaced: Prim<IsColumnNamespaced>,
                         val defaultValue : Sum<TextVariableValue>,
                         val format : Comp<TextColumnFormat>,
+                        val action : Maybe<Comp<Action>>,
                         val definesNamespace : Prim<DefinesNamespace>)
                         : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
@@ -395,6 +413,10 @@ data class TableWidgetTextColumn(
         this.defaultValue.name          = "default_value"
         this.format.name                = "format"
         this.definesNamespace.name      = "defines_namespace"
+
+        when (this.action) {
+            is Just -> this.action.value.name       = "action"
+        }
     }
 
 
@@ -407,6 +429,7 @@ data class TableWidgetTextColumn(
                 isColumnNamespaced : IsColumnNamespaced,
                 defaultValue : TextVariableValue,
                 format : TextColumnFormat,
+                action : Maybe<Action>,
                 definesNamespace: DefinesNamespace)
         : this(UUID.randomUUID(),
                Prim(columnName),
@@ -414,6 +437,7 @@ data class TableWidgetTextColumn(
                Prim(isColumnNamespaced),
                Sum(defaultValue),
                Comp(format),
+               maybeLiftComp(action),
                Prim(definesNamespace))
 
 
@@ -424,26 +448,30 @@ data class TableWidgetTextColumn(
         {
             is DocDict ->
             {
-                effApply(::TableWidgetTextColumn,
-                         // Name
-                         doc.at("name") ap { ColumnName.fromDocument(it) },
-                         // Variable Prefix
-                         doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
-                         // Is Column Namespaced
-                         split(doc.maybeAt("is_namespaced"),
-                               effValue(IsColumnNamespaced(false)),
-                               { IsColumnNamespaced.fromDocument(it) }),
-                         // Default Value
-                         doc.at("default_value") ap { TextVariableValue.fromDocument(it) },
-                         // Format
-                         split(doc.maybeAt("format"),
-                               effValue(TextColumnFormat.default),
-                               { TextColumnFormat.fromDocument(it) }),
-                         // Defines Namespace?
-                         split(doc.maybeAt("defines_namespace"),
-                               effValue(DefinesNamespace(false)),
-                               { DefinesNamespace.fromDocument(it) })
-                        )
+                apply(::TableWidgetTextColumn,
+                      // Name
+                      doc.at("name") ap { ColumnName.fromDocument(it) },
+                      // Variable Prefix
+                      doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
+                      // Is Column Namespaced
+                      split(doc.maybeAt("is_namespaced"),
+                            effValue(IsColumnNamespaced(false)),
+                            { IsColumnNamespaced.fromDocument(it) }),
+                      // Default Value
+                      doc.at("default_value") ap { TextVariableValue.fromDocument(it) },
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(TextColumnFormat.default()),
+                            { TextColumnFormat.fromDocument(it) }),
+                      // Action
+                      split(doc.maybeAt("action"),
+                            effValue<ValueError,Maybe<Action>>(Nothing()),
+                            { apply(::Just, Action.fromDocument(it)) }),
+                      // Defines Namespace?
+                      split(doc.maybeAt("defines_namespace"),
+                            effValue(DefinesNamespace(false)),
+                            { DefinesNamespace.fromDocument(it) })
+                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -475,6 +503,8 @@ data class TableWidgetTextColumn(
     fun definesNamespaceBoolean() : Boolean = this.definesNamespace.value.value
 
     fun defaultValue() : TextVariableValue = this.defaultValue.value
+
+    fun action() : Maybe<Action> = getMaybeComp(this.action)
 
 
     // -----------------------------------------------------------------------------------------

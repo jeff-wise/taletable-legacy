@@ -62,7 +62,7 @@ data class TextColumnFormat(override val id : UUID,
         }
 
 
-        val default : TextColumnFormat = TextColumnFormat(defaultColumnFormat)
+        fun default() = TextColumnFormat(defaultColumnFormat)
 
     }
 

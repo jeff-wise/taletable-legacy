@@ -3,8 +3,14 @@ package com.kispoko.tome.model.sheet.group
 
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.PaintDrawable
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -22,6 +28,7 @@ import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -130,9 +137,9 @@ data class GroupRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext)
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
     {
-        this.widgets.list.forEach { it.onSheetComponentActive(sheetContext) }
+        this.widgets.list.forEach { it.onSheetComponentActive(sheetUIContext) }
     }
 
 
@@ -158,23 +165,73 @@ data class GroupRow(override val id : UUID,
 
     private fun viewLayout(sheetUIContext : SheetUIContext) : LinearLayout
     {
-        val layout              = LinearLayoutBuilder()
 
-        layout.orientation      = LinearLayout.VERTICAL
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//        val layout              = LinearLayoutBuilder()
+//
+//        layout.orientation      = LinearLayout.VERTICAL
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.marginSpacing    = this.format().margins()
+//
+//        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
+//                                                     this.format().backgroundColortheme())
+//
+//        layout.gravity          = this.format().alignment().gravityConstant() or
+//                                    this.format().verticalAlignment().gravityConstant()
+//
+//        layout.corners          = this.format().corners()
+//
+//        return layout.linearLayout(sheetUIContext.context)
 
-        layout.marginSpacing    = this.format().margins()
+        val layout = GroupRowTouchView(sheetUIContext.context)
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     this.format().backgroundColortheme())
 
-        layout.gravity          = this.format().alignment().gravityConstant() or
+        layout.orientation = LinearLayout.VERTICAL
+
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                     LinearLayout.LayoutParams.WRAP_CONTENT)
+
+        layout.gravity = this.format().alignment().gravityConstant() or
                                     this.format().verticalAlignment().gravityConstant()
 
-        layout.corners          = this.format().corners()
+        val margins = this.format().margins()
+        layoutParams.leftMargin = margins.leftPx()
+        layoutParams.rightMargin = margins.rightPx()
+        layoutParams.topMargin = margins.topPx()
+        layoutParams.bottomMargin = margins.bottomPx()
 
-        return layout.linearLayout(sheetUIContext.context)
+        layout.layoutParams = layoutParams
+
+//        val padding = widgetFormat.padding()
+//        layout.setPadding(padding.leftPx(),
+//                          padding.topPx(),
+//                          padding.rightPx(),
+//                          padding.bottomPx())
+
+
+        // Background
+        val bgDrawable = PaintDrawable()
+
+        val corners = this.format().corners()
+        val topLeft  = Util.dpToPixel(corners.topLeftCornerRadiusDp()).toFloat()
+        val topRight : Float   = Util.dpToPixel(corners.topRightCornerRadiusDp()).toFloat()
+        val bottomRight : Float = Util.dpToPixel(corners.bottomRightCornerRadiusDp()).toFloat()
+        val bottomLeft :Float = Util.dpToPixel(corners.bottomLeftCornerRadiusDp()).toFloat()
+
+        val radii = floatArrayOf(topLeft, topLeft, topRight, topRight,
+                         bottomRight, bottomRight, bottomLeft, bottomLeft)
+
+        bgDrawable.setCornerRadii(radii)
+
+        val bgColor = SheetManager.color(sheetUIContext.sheetId,
+                                         this.format().backgroundColorTheme())
+
+        bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
+
+        layout.background = bgDrawable
+
+        return layout
     }
 
 
@@ -223,6 +280,48 @@ data class GroupRow(override val id : UUID,
 
         return divider.linearLayout(sheetUIContext.context)
     }
+
+}
+
+
+class GroupRowTouchView(context : Context) : LinearLayout(context)
+{
+
+    override fun onTouchEvent(ev: MotionEvent?) : Boolean
+    {
+        if (ev != null)
+        {
+            Log.d("***GROUPROW", ev.action.toString())
+            when (ev.action)
+            {
+                MotionEvent.ACTION_DOWN ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                    //return true
+                }
+                MotionEvent.ACTION_UP ->
+                {
+                    Log.d("***GROUPROW", "action up")
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_OUTSIDE ->
+                {
+                    //SheetActivityGlobal.touchHandler.removeCallbacks(runnable)
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_SCROLL ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_CANCEL ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+            }
+        }
+        return false
+    }
+
 
 }
 
@@ -358,7 +457,7 @@ data class GroupRowFormat(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "alignment" to this.alignment().toDocument(),
         "vertical_alignment" to this.alignment().toDocument(),
-        "background_color_theme" to this.backgroundColortheme().toDocument(),
+        "background_color_theme" to this.backgroundColorTheme().toDocument(),
         "margins" to this.margins().toDocument(),
         "padding" to this.padding().toDocument(),
         "show_divider" to this.showDivider.value.toDocument(),
@@ -374,7 +473,7 @@ data class GroupRowFormat(override val id : UUID,
 
     fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
 
-    fun backgroundColortheme() : ColorTheme = this.backgroundColorTheme.value
+    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
 
     fun margins() : Spacing = this.margins.value
 

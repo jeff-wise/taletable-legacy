@@ -2,16 +2,25 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.util.Log
+import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.game.engine.variable.VariableName
+import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
@@ -52,7 +61,7 @@ data class TextCellFormat(override val id : UUID,
     companion object : Factory<TextCellFormat>
     {
 
-        private val defaultCellFormat = CellFormat.default
+        private val defaultCellFormat = CellFormat.default()
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextCellFormat> = when (doc)
         {
@@ -122,6 +131,24 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
                           val sheetUIContext : SheetUIContext)
 {
 
+    val sheetContext = SheetContext(sheetUIContext)
+    val sheetActivity = sheetUIContext.context as SheetActivity
+
+
+    private fun openEditorDialog()
+    {
+        val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
+        when (valueVariable)
+        {
+            is Val -> openTextVariableEditorDialog(
+                                        valueVariable.value,
+                                        UpdateTargetTextCell(tableWidget.id, cell.id),
+                                        sheetUIContext)
+            is Err -> ApplicationLog.error(valueVariable.error)
+        }
+    }
+
+
     fun view() : View
     {
         val layout = TableWidgetCellView.layout(rowFormat,
@@ -129,31 +156,130 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
                                                 cell.format().cellFormat(),
                                                 sheetUIContext)
 
-        layout.addView(this.valueTextView())
+        layout.addView(this.valueView())
 
-        layout.setOnClickListener {
-            val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
-            when (valueVariable)
+
+        var clickTime : Long = 0
+        val CLICK_DURATION = 500
+
+        layout.setOnTouchListener { _, motionEvent ->
+            when (motionEvent.action)
             {
-                is Val -> openTextVariableEditorDialog(
-                                            valueVariable.value,
-                                            UpdateTargetTextCell(tableWidget.id, cell.id),
-                                            sheetUIContext)
-                is Err -> ApplicationLog.error(valueVariable.error)
-            }
-        }
+                MotionEvent.ACTION_DOWN -> {
+                    clickTime = System.currentTimeMillis()
+                }
+                MotionEvent.ACTION_UP -> {
 
-        // On Long Click
-        layout.setOnLongClickListener {
-            val sheetActivity = sheetUIContext.context as SheetActivity
-            val updateTarget = UpdateTargetInsertTableRow(tableWidget)
-            tableWidget.selectedRow = rowIndex
-            sheetActivity.showTableEditor(updateTarget, SheetContext(sheetUIContext))
+                    val upTime = System.currentTimeMillis()
+                    if ((upTime - clickTime) < CLICK_DURATION) {
+                        Log.d("***TEXTCELL", "on click")
+                        val cellAction = cell.resolveAction(column)
+                        Log.d("***TEXTCELL", "cell action: $cellAction")
+                        val cellActionRollSummationId =  cellAction ap { it.rollSummationId() }
+                        Log.d("***TEXTCELL", "cell action summation id: $cellActionRollSummationId")
+                        when (cellActionRollSummationId) {
+                            is Just -> {
+                                Log.d("***TEXTCELL", "is summation id")
+                                val cellNS = cell.namespace
+                                val rowContext = if (cellNS != null) Just(cellNS)
+                                                    else Nothing<VariableNamespace>()
+                                val summation =
+                                        SheetManager.summation(cellActionRollSummationId.value,
+                                                               SheetContext(sheetUIContext))
+                                                .apply { it.diceRoll(sheetContext, rowContext) }
+
+                                when (summation) {
+                                    is Val -> {
+                                        val dialog = DiceRollDialog.newInstance(summation.value,
+                                                                    cell.actionNameString(),
+                                                                SheetContext(sheetUIContext))
+                                        dialog.show(sheetActivity.supportFragmentManager, "")
+                                    }
+                                    is Err -> ApplicationLog.error(summation.error)
+                                }
+                            }
+                            else -> {
+                                Log.d("***TEXTCELL", "open editor")
+                                this.openEditorDialog()
+                            }
+                        }
+                    }
+                }
+            }
+
             true
         }
 
         return layout
     }
+
+
+    private fun valueView() : LinearLayout
+    {
+        val layout = this.valueViewLayout()
+
+
+        when (this.cell.resolveAction(column)) {
+            is Just -> layout.addView(this.rollIconView())
+        }
+
+        layout.addView(this.valueTextView())
+
+        return layout
+    }
+
+
+    private fun valueViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        val valueStyle      = this.cell.format().resolveTextStyle(column.format())
+        layout.gravity              = Gravity.CENTER_VERTICAL or valueStyle.alignment().gravityConstant()
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollIconView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout = LinearLayoutBuilder()
+        val icon   = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp        = 19
+        icon.heightDp       = 19
+
+        icon.image          = R.drawable.icon_dice_roll_filled
+
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+
+        val valueStyle      = this.cell.format().resolveTextStyle(column.format())
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, valueStyle.colorTheme())
+
+        icon.margin.rightDp = 5f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
 
 
     private fun valueTextView() : TextView
@@ -162,7 +288,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 
         // > VIEW ID
         val viewId          = Util.generateViewId()
-        cell.viewId         = Just(viewId)
+        cell.viewId         = viewId
         value.id            = viewId
 
         // > LAYOUT
@@ -171,6 +297,8 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 
         val valueStyle      = this.cell.format().resolveTextStyle(column.format())
         valueStyle.styleTextViewBuilder(value, sheetUIContext)
+
+//        value.layoutGravity = valueStyle.alignment().gravityConstant()
 
         // > VALUE
         val cellValue = cell.valueString(SheetContext(sheetUIContext))

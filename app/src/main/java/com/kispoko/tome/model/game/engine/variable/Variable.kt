@@ -43,7 +43,7 @@ sealed class Variable(open var variableId : Prim<VariableId>,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var onUpdateListener : () -> Unit = fun() : Unit {}
+    private var onUpdateListener : () -> Unit = fun() : Unit {}
 
 
     // -----------------------------------------------------------------------------------------
@@ -59,8 +59,7 @@ sealed class Variable(open var variableId : Prim<VariableId>,
                 "variable_dice_roll" -> DiceRollVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_number"    -> NumberVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_text"      -> TextVariable.fromDocument(doc) as ValueParser<Variable>
-                else                 -> effError<ValueError, Variable>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -147,6 +146,11 @@ sealed class Variable(open var variableId : Prim<VariableId>,
     }
 
 
+    fun setOnUpdateListener(listener : () -> Unit) {
+        this.onUpdateListener = listener
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // UPDATE
     // -----------------------------------------------------------------------------------------
@@ -161,7 +165,8 @@ sealed class Variable(open var variableId : Prim<VariableId>,
     // VALUE STRING
     // -----------------------------------------------------------------------------------------
 
-    open fun valueString(sheetContext : SheetContext) : AppEff<String> = when (this)
+    open fun valueString(sheetContext : SheetContext)
+                          : AppEff<String> = when (this)
     {
         is BooleanVariable  -> this.value() ap { effValue<AppError,String>(it.toString()) }
         is DiceRollVariable -> effValue(this.value().toString())
@@ -295,7 +300,8 @@ data class BooleanVariable(override val id : UUID,
         when (this.variableValue())
         {
             is BooleanVariableLiteralValue -> {
-                this.variableValue = Sum(BooleanVariableLiteralValue(value))
+                Log.d("***VARIABLE", "update boolean literal called")
+                this.variableValue.value = BooleanVariableLiteralValue(value)
                 SheetManager.sheetState(sheetId) apDo { it.onVariableUpdate(this) }
             }
         }
@@ -585,11 +591,27 @@ data class NumberVariable(override val id : UUID,
     {
         fun maybeString(mDouble : Maybe<Double>) : AppEff<String> =
             when (mDouble) {
-                is Just -> effValue<AppError,String>(Util.doubleString(mDouble.value))
+                is Just -> effValue(Util.doubleString(mDouble.value))
                 else    -> effValue("")
             }
 
         return this.value(sheetContext).apply(::maybeString)
+    }
+
+
+    fun valueOrZero(sheetContext : SheetContext) : Double
+    {
+        val valueEff = this.value(sheetContext)
+        when (valueEff) {
+            is Val -> {
+                val maybeValue = valueEff.value
+                when (maybeValue) {
+                    is Just -> return maybeValue.value
+                }
+            }
+        }
+
+        return 0.0
     }
 
 
@@ -732,7 +754,7 @@ data class TextVariable(override val id : UUID,
     {
         fun maybeString(mString : Maybe<String>) : AppEff<String> =
             when (mString) {
-                is Just -> effValue<AppError,String>(mString.value)
+                is Just -> effValue(mString.value)
                 else    -> effValue("")
             }
 
@@ -764,6 +786,12 @@ data class TextVariable(override val id : UUID,
                 this.variableValue = Sum(TextVariableValueValue(newValueReference))
                 SheetManager.onVariableUpdate(sheetId, this)
             }
+            is TextVariableValueUnknownValue -> {
+                val valueSetId = currentVariableValue.valueSetId
+                val newValueReference = ValueReference(valueSetId, valueId)
+                this.variableValue = Sum(TextVariableValueValue(newValueReference))
+                SheetManager.onVariableUpdate(sheetId, this)
+            }
         }
     }
 
@@ -783,18 +811,18 @@ enum class VariableType
 /**
  * Variable NameSpace
  */
-data class VariableNameSpace(val value : String) : SQLSerializable, Serializable
+data class VariableNamespace(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<VariableNameSpace>
+    companion object : Factory<VariableNamespace>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableNameSpace> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableNamespace> = when (doc)
         {
-            is DocText -> effValue(VariableNameSpace(doc.text))
+            is DocText -> effValue(VariableNamespace(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
@@ -847,15 +875,13 @@ sealed class VariableReference : ToDocument, SQLSerializable, Serializable
 
     companion object : Factory<VariableReference>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableReference> =
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableReference> =
             when (doc.case())
             {
-                "variable_id"  -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
-                "variable_tag" -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
-                else           -> {
-                    Log.d("***VARIABLE", "case is: " + doc.case())
-                    effError(UnknownCase(doc.case(), doc.path))
-                }
+                "variable_id"      -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_tag"     -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_context" -> VariableContext.fromDocument(doc) as ValueParser<VariableReference>
+                else               -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 }
@@ -864,7 +890,7 @@ sealed class VariableReference : ToDocument, SQLSerializable, Serializable
 /**
  * Variable Id
  */
-data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
+data class VariableId(val namespace : Maybe<Prim<VariableNamespace>>,
                       val name : Prim<VariableName>) : VariableReference(), Serializable
 {
 
@@ -876,31 +902,40 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
         : this(Nothing(), Prim(VariableName(name)))
 
 
-    constructor(namespace : Maybe<VariableNameSpace>, name : VariableName)
+    constructor(namespace : String, name : String)
+            : this(Just(Prim(VariableNamespace(namespace))), Prim(VariableName(name)))
+
+
+    constructor(namespace : Maybe<VariableNamespace>, name : VariableName)
             : this(maybeLiftPrim(namespace), Prim(name))
 
 
-    constructor(namespace : VariableNameSpace, name : VariableName)
+    constructor(namespace : VariableNamespace, name : VariableName)
             : this(Just(Prim(namespace)), Prim(name))
 
 
     companion object : Factory<VariableId>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableId> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableId> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::VariableId,
                          // Namespace
                          split(doc.maybeAt("namespace"),
-                               effValue<ValueError,Maybe<VariableNameSpace>>(Nothing()),
-                               { effApply(::Just, VariableNameSpace.fromDocument(it)) }),
+                               effValue<ValueError,Maybe<VariableNamespace>>(Nothing()),
+                               { effApply(::Just, VariableNamespace.fromDocument(it)) }),
                          // Name
                          doc.at("name") ap { VariableName.fromDocument(it) }
                          )
             }
             is DocText -> {
-                effApply(::VariableId, effValue(doc.text))
+                val pieces = doc.text.split("::")
+                if (pieces.size == 2) {
+                    effValue(VariableId(VariableNamespace(pieces[0]), VariableName(pieces[1])))
+                } else {
+                    effValue(VariableId(doc.text))
+                }
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -971,6 +1006,42 @@ data class VariableTag(val value : String) : VariableReference(), Serializable
         override fun fromDocument(doc: SchemaDoc): ValueParser<VariableTag> = when (doc)
         {
             is DocText -> effValue(VariableTag(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Variable Context
+ */
+data class VariableContext(val value : String) : VariableReference(), Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<VariableContext>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableContext> = when (doc)
+        {
+            is DocText -> effValue(VariableContext(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

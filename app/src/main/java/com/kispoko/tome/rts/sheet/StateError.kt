@@ -79,3 +79,15 @@ class VariableIsOfUnexpectedType(val sheetId : SheetId,
     override fun logMessage(): String = userMessage()
 }
 
+
+class NoContext(val variableReference : VariableReference) : StateError()
+{
+    override fun debugMessage(): String =
+            """
+            State Error: No Context Given for Context Variable Reference
+                Variable Reference: $variableReference
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+

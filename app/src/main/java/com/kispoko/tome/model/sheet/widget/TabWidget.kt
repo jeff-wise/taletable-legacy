@@ -302,17 +302,16 @@ data class TabWidgetFormat(override val id : UUID,
         }
 
 
-        val default : TabWidgetFormat =
-                TabWidgetFormat(defaultWidgetFormat,
-                                defaultTabDefaultStyle,
-                                defaultTabSelectedStyle,
-                                defaultUnderlineSelected,
-                                defaultUnderlineThickness,
-                                defaultTabMargins,
-                                defaultTabPaddingVertical,
-                                defaultTabHeight,
-                                defaultBackgroundColorTheme,
-                                defaultTabCorners)
+        fun default() = TabWidgetFormat(defaultWidgetFormat,
+                                        defaultTabDefaultStyle,
+                                        defaultTabSelectedStyle,
+                                        defaultUnderlineSelected,
+                                        defaultUnderlineThickness,
+                                        defaultTabMargins,
+                                        defaultTabPaddingVertical,
+                                        defaultTabHeight,
+                                        defaultBackgroundColorTheme,
+                                        defaultTabCorners)
 
     }
 

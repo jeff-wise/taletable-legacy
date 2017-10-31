@@ -1,0 +1,20 @@
+summaries:
+- name: Village Guard 1
+  type: Common
+  description: >
+    He patrols the streets of the town, making small talk with the familiar townspeople and
+    shopkeepers while keeping a vigilant eye on any out-of-towners. He likes to make jokes about
+    how nothing ever happens and about how he has the easiest job in the kingdom. He's not
+    particularly observant. He was a soldier for a short time but was injured from tripping over
+    his own spear and was sent back to be a guard.
+  cr: 1
+- name: Village Guard 2
+  type: Common
+  description: >
+    She was always a fighter, even since she was a kid. She bested all all her male peers with the
+    sword. Though instead of earning respect, she got resentment and sneers. She never felt like
+    she belonged. When she was 14 she ran away to join the army, but she was rejected because they
+    only accepted men. Out of money and hope, she returned to the village and took this job. She
+    still waits for that chance that will come one day for a real adventure, a chance to prove
+    herself.
+  cr: 1

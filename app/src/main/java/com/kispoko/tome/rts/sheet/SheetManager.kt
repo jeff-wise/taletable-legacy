@@ -8,11 +8,14 @@ import android.util.Log
 import android.view.View
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.*
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.summation.Summation
+import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
@@ -29,6 +32,8 @@ import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.theme.ThemeDoesNotHaveColor
 import com.kispoko.tome.rts.theme.ThemeNotSupported
 import effect.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import java.io.Serializable
 
 
@@ -46,15 +51,17 @@ object SheetManager
     // -----------------------------------------------------------------------------------------
 
 
-    private val sheet = "sheet"
-
     private val sheetById : MutableMap<SheetId,SheetRecord> = hashMapOf()
 
+    // TODO only need one of these?
     private var currentSheet : SheetId? = null
+    private var currentSheetContext : SheetContext? = null
+
+    // TODO remove
     private var currentSheetUI : SheetUI? = null
 
 
-    private val listenerBySheet : MutableMap<SheetId,SheetListener> = hashMapOf()
+    //private val listenerBySheet : MutableMap<SheetId,SheetListener> = hashMapOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -66,6 +73,9 @@ object SheetManager
 
     fun sheetRecord(sheetId : SheetId) : AppEff<SheetRecord> =
             note(this.sheetById[sheetId], AppSheetError(SheetDoesNotExist(sheetId)))
+
+
+    fun currentSheetContext() : SheetContext? = this.currentSheetContext
 
 
     fun sheet(sheetId : SheetId) : AppEff<Sheet> =
@@ -155,38 +165,38 @@ object SheetManager
     {
         if (this.sheetById.values.isEmpty())
         {
-            val casmeyOfficialSheet = OfficialSheet(SheetId("casmey_beginner"),
-                                                    CampaignId("harmony"),
-                                                    GameId("amanace"))
+            val casmeyOfficialSheet = OfficialSheet(SheetId("character_olan_level_1"),
+                                                    CampaignId("isara"),
+                                                    GameId("magic_of_heroes"))
             val lastSession = Session(listOf(SessionSheetOfficial(casmeyOfficialSheet)))
 
-            loadSessionSheets(lastSession, sheetUI.context())
+            loadSessionSheets(lastSession, sheetUI)
         }
         else
         {
             Log.d("***SHEETMANAGER", "set sheet active")
             val lastActiveSheet = this.sheetById.values.first().sheet()
 
-
-            val listener = this.listenerBySheet[lastActiveSheet.sheetId()]
-            if (listener != null)
-                listener.onSheetAdd(lastActiveSheet)
+//            val listener = this.listenerBySheet[lastActiveSheet.sheetId()]
+//            if (listener != null)
+//                listener.onSheetAdd(lastActiveSheet)
+            sheetUI.onSheetActive(lastActiveSheet)
         }
     }
 
 
-    private suspend fun loadSessionSheets(session : Session, context : Context)
+    private suspend fun loadSessionSheets(session : Session, sheetUI : SheetUI)
     {
+        // Is new or in DB?
         session.sheets.forEach {
             when (it) {
-                is SessionSheetOfficial -> OfficialManager.loadSheet(it.officialSheet, context)
+                is SessionSheetOfficial -> OfficialManager.loadSheet(it.officialSheet, sheetUI)
             }
         }
-
     }
 
 
-    fun addSheetToSession(sheet : Sheet)
+    fun addSheetToSession(sheet : Sheet, sheetUI : SheetUI, isSaved : Boolean = true)
     {
         SheetManager.sheetContext(sheet)        apDo { sheetContext ->
         GameManager.engine(sheetContext.gameId) apDo { engine ->
@@ -196,11 +206,17 @@ object SheetManager
             // Create & Index Sheet Record
             this.sheetById.put(sheet.sheetId(), sheetRecord)
             this.currentSheet = sheet.sheetId()
+            this.currentSheetContext = sheetRecord.sheetContext
 
-            val listener = this.listenerBySheet[sheet.sheetId()]
-            if (listener != null)
-                listener.onSheetAdd(sheet)
+            // Save if needed
+            if (!isSaved)
+                launch(UI) { sheetRecord.save() }
 
+//            val listener = this.listenerBySheet[sheet.sheetId()]
+//            if (listener != null)
+//                listener.onSheetAdd(sheet)
+
+            sheetUI.onSheetActive(sheet)
         } }
     }
 
@@ -220,10 +236,10 @@ object SheetManager
     }
 
 
-    fun addSheetListener(sheetId : SheetId, sheetListener : SheetListener)
-    {
-        this.listenerBySheet.put(sheetId, sheetListener)
-    }
+//    fun addSheetListener(sheetListener : SheetListener)
+//    {
+//        this.listenerBySheet.put(sheetId, sheetListener)
+//    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -270,7 +286,7 @@ object SheetManager
                         sheetUI.pagePagerAdatper()
                                 .setPages(selectedSection.pages(), sheetRecord.sheetContext)
                     }
-//                    sheetUI.hideActionBar()
+                    sheetUI.hideActionBar()
                     true
                 }
 
@@ -423,6 +439,28 @@ object SheetManager
                  AppThemeError(ThemeDoesNotHaveColor(theme.themeId(), colorId)))
 
 
+
+    // -----------------------------------------------------------------------------------------
+    // ENGINE
+    // -----------------------------------------------------------------------------------------
+
+    fun summation(summationId : SummationId, sheetContext : SheetContext) : AppEff<Summation>
+    {
+        // Reverse apply for when keep going if is error / until success
+        val sheetSummation = SheetManager.sheetRecord(sheetContext.sheetId) ap {
+            it.sheet().engine().summation(summationId)
+        }
+
+        return when (sheetSummation)
+        {
+            is Val -> sheetSummation
+            is Err -> GameManager.engine(sheetContext.gameId) ap {
+                          it.summation(summationId)
+                      }
+        }
+    }
+
+
 }
 
 
@@ -477,9 +515,21 @@ data class SheetRecord(val sheet : Comp<Sheet>,
 
         when (sheetContext)
         {
-            is Val -> this.sheet().onActive(sheetContext.value)
+            is Val -> this.sheet().onActive(SheetUIContext(sheetContext.value, context))
             is Err -> ApplicationLog.error(sheetContext.error)
         }
+    }
+
+
+    /**
+     * This method saves the entire sheet in the database. It is intended to be used to save
+     * a sheet that has just been loaded and has not ever been saved.
+     *
+     * This method is run asynchronously in the `CommonPool` context.
+     */
+    suspend fun save()
+    {
+        this.sheet.saveAsync(true, true)
     }
 
 }
@@ -518,7 +568,7 @@ data class SheetSummary(val name : String, val description : String)
 
 interface SheetComponent
 {
-    fun onSheetComponentActive(sheetContext : SheetContext)
+    fun onSheetComponentActive(sheetUIContext : SheetUIContext)
 
 }
 
@@ -550,7 +600,9 @@ interface SheetUI
 
     fun rootSheetView() : View?
 
-//    fun hideActionBar()
+    fun hideActionBar()
+
+    fun onSheetActive(sheet : Sheet)
 //
 //    fun showActionBar(sheetAction : SheetAction,
 //                      sheetContext : SheetContext)

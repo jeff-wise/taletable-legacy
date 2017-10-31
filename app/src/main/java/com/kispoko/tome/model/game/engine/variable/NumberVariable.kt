@@ -423,8 +423,11 @@ data class NumberVariableSummationValue(val summationId : SummationId)
 
     override fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
     {
-        val deps = GameManager.engine(sheetContext.gameId)
-                         .apply { it.summation(summationId) }
+//        val deps = GameManager.engine(sheetContext.gameId)
+//                         .apply { it.summation(summationId) }
+//                         .apply { effValue<AppError,Set<VariableReference>>(it.dependencies()) }
+
+        val deps = SheetManager.summation(summationId, sheetContext)
                          .apply { effValue<AppError,Set<VariableReference>>(it.dependencies()) }
 
         when (deps) {
@@ -441,8 +444,7 @@ data class NumberVariableSummationValue(val summationId : SummationId)
     // -----------------------------------------------------------------------------------------
 
     override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
-            = GameManager.engine(sheetContext.gameId)
-                    .apply { it.summation(summationId) }
+            = SheetManager.summation(summationId, sheetContext)
                     .apply { effValue<AppError,Double>(it.value(sheetContext)) }
                     .apply { effValue<AppError,Maybe<Double>>(Just(it)) }
 

@@ -346,7 +346,7 @@ object TableWidgetView
              format : TableWidgetFormat,
              sheetUIContext : SheetUIContext) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.widgetTouchLayout(format.widgetFormat(), sheetUIContext)
 
         val tableLayout = this.tableLayout(format, sheetUIContext)
         val tableLayoutId = Util.generateViewId()
@@ -435,8 +435,8 @@ object TableWidgetView
 
             val cellView = this.headerCellView(format.headerFormat(),
                                                column,
-                                               CellFormat.default,
-                    sheetUIContext)
+                                               CellFormat.default(),
+                                               sheetUIContext)
             tableRow.rows.add(cellView)
         }
 
@@ -452,7 +452,7 @@ object TableWidgetView
         val layout = TableWidgetCellView.layout(rowFormat,
                                                 column.columnFormat(),
                                                 cellFormat,
-                sheetUIContext)
+                                                sheetUIContext)
 
         val textView = TextViewBuilder()
 

@@ -2,21 +2,29 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
-import android.view.View
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.util.Log
+import android.view.MotionEvent
 import android.widget.TableLayout
+import android.widget.TableRow
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.ui.LayoutType
-import com.kispoko.tome.lib.ui.TableRowBuilder
-import com.kispoko.tome.model.game.engine.variable.VariableNameSpace
+import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidget
+import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.model.theme.ThemeColorId
+import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -40,7 +48,10 @@ data class TableWidgetRow(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var namespace : VariableNameSpace? = null
+    var namespace : VariableNamespace? = null
+
+    var viewId : Int? = null
+    var backgroundColor : Int? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -128,8 +139,82 @@ data class TableWidgetRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext) {
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {
         TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun openEditor(tableWidget : TableWidget,
+                   rowIndex : Int,
+                   sheetUIContext : SheetUIContext)
+    {
+        Log.d("***TABLEWIDGETROW", "opening editor")
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val updateTarget = UpdateTargetInsertTableRow(tableWidget)
+        tableWidget.selectedRow = rowIndex
+        this.addHighlight(sheetUIContext)
+        sheetActivity.showTableEditor(this, updateTarget, SheetContext(sheetUIContext))
+    }
+
+
+    fun onEditorClose(sheetUIContext : SheetUIContext)
+    {
+        Log.d("***TABLEWIDGETROW", "on editor close")
+        this.removeHighlight(sheetUIContext)
+    }
+
+
+    fun addHighlight(sheetUIContext : SheetUIContext)
+    {
+        val viewId = this.viewId
+        if (viewId != null)
+        {
+            val activity = sheetUIContext.context as SheetActivity
+
+            val tableRow = activity.findViewById(viewId) as TableRow?
+
+            val bgDrawable = GradientDrawable()
+
+            val color = SheetManager.color(sheetUIContext.sheetId,
+                                           this.format().backgroundColorTheme())
+
+            bgDrawable.setColor(this.backgroundColor ?: color)
+
+
+            val strokeColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_red_5")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+            val strokeColor = SheetManager.color(sheetUIContext.sheetId, strokeColorTheme)
+            bgDrawable.setStroke(1, strokeColor)
+
+            tableRow?.background = bgDrawable
+        }
+    }
+
+
+    fun removeHighlight(sheetUIContext : SheetUIContext)
+    {
+        val viewId = this.viewId
+        if (viewId != null)
+        {
+            val activity = sheetUIContext.context as SheetActivity
+
+            val tableRow = activity.findViewById(viewId) as TableRow?
+
+            val bgDrawable = GradientDrawable()
+
+            val color = SheetManager.color(sheetUIContext.sheetId,
+                                           this.format().backgroundColorTheme())
+
+            bgDrawable.setColor(this.backgroundColor ?: color)
+            bgDrawable.setStroke(0, Color.WHITE)
+
+            tableRow?.background = bgDrawable
+        }
     }
 
 
@@ -139,29 +224,99 @@ data class TableWidgetRow(override val id : UUID,
 
     fun view(tableWidget : TableWidget,
              rowIndex : Int,
-             sheetUIContext : SheetUIContext) : View
+             sheetUIContext : SheetUIContext) : TableRow
     {
-        val tableRow                = TableRowBuilder()
+        val tableRow = TableRowWidgetView(this, tableWidget, rowIndex, sheetUIContext)
 
-        tableRow.layoutType         = LayoutType.TABLE
-        tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT
-        tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT
+        val layoutParams = TableLayout.LayoutParams()
+        layoutParams.width  = TableLayout.LayoutParams.MATCH_PARENT
+        layoutParams.height  = TableLayout.LayoutParams.WRAP_CONTENT
 
-        tableRow.marginSpacing      = tableWidget.format().rowFormat().margins()
-        tableRow.paddingSpacing     = tableWidget.format().rowFormat().padding()
+        val margins = tableWidget.format().rowFormat().margins()
+        layoutParams.leftMargin = margins.leftPx()
+        layoutParams.rightMargin = margins.rightPx()
+        layoutParams.topMargin = margins.topPx()
+        layoutParams.bottomMargin = margins.bottomPx()
 
-        tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
-                tableWidget.format().rowFormat().backgroundColorTheme())
+        tableRow.layoutParams = layoutParams
+
+        val viewId = Util.generateViewId()
+        this.viewId = viewId
+        tableRow.id = viewId
+
+        val padding = tableWidget.format().rowFormat().padding()
+        tableRow.setPadding(padding.leftPx(),
+                            padding.topPx(),
+                            padding.rightPx(),
+                            padding.bottomPx())
+
+        val bgColor = SheetManager.color(sheetUIContext.sheetId,
+                                         tableWidget.format().rowFormat().backgroundColorTheme())
+        tableRow.setBackgroundColor(bgColor)
+        this.backgroundColor = bgColor
+
+//        val tableRow                = TableRowBuilder()
+//
+//        val viewId = Util.generateViewId()
+//        this.viewId = viewId
+//        tableRow.id                 = viewId
+//
+//        tableRow.layoutType         = LayoutType.TABLE
+//        tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT
+//        tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT
+//
+//        tableRow.marginSpacing      = tableWidget.format().rowFormat().margins()
+//        tableRow.paddingSpacing     = tableWidget.format().rowFormat().padding()
+//
+//        tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
+//                tableWidget.format().rowFormat().backgroundColorTheme())
+//
+//        this.backgroundColor = tableRow.backgroundColor
 
 
-        tableRow.onClick            = View.OnClickListener {
+//        tableRow.onClick            = View.OnClickListener {
 //            val sheetActivity = sheetUIContext.context as SheetActivity
 //            val tableRowAction = SheetAction.TableRow(tableWidget.id,
 //                                                      rowIndex,
 //                                                      tableWidget.tableNameString(),
 //                                                      tableWidget.columns())
-//            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
-        }
+////            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
+//        }
+
+//
+//        tableRow.setOnLongClickListener {
+//            true
+//        }
+
+
+//         val sheetActivity = sheetUIContext.context as SheetActivity
+//
+//        val gd = GestureDetectorCompat(sheetActivity,
+//            object: GestureDetector.SimpleOnGestureListener() {
+//
+////                override fun onDown(e: MotionEvent?): Boolean {
+////                    Log.d("***WIDGET", "on down table row")
+////                    return super.onDown(e)
+////                }
+//
+//                override fun onLongPress(e: MotionEvent?) {
+//                    val updateTarget = UpdateTargetInsertTableRow(tableWidget)
+//                    Log.d("***TABLEWIDGETROW", "on long press")
+//                    tableWidget.selectedRow = rowIndex
+//                    toggleHighlight(sheetUIContext)
+//                    sheetActivity.showTableEditor(updateTarget, SheetContext(sheetUIContext))
+//                }
+//
+////                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+////                    return super.onSingleTapConfirmed(e)
+////                }
+//            })
+//
+//
+//        tableRow.setOnTouchListener { _, event ->
+//            gd.onTouchEvent(event)
+//            false
+//        }
 
 
         this.cells().forEachIndexed { i, tableWidgetCell ->
@@ -173,7 +328,7 @@ data class TableWidgetRow(override val id : UUID,
                     when (column)
                     {
                         is TableWidgetBooleanColumn ->
-                            tableRow.rows.add(tableWidgetCell.view(this.format(),
+                            tableRow.addView(tableWidgetCell.view(this.format(),
                                                                    column,
                                     sheetUIContext))
                         else -> ApplicationLog.error(
@@ -187,7 +342,7 @@ data class TableWidgetRow(override val id : UUID,
                     when (column)
                     {
                         is TableWidgetNumberColumn ->
-                            tableRow.rows.add(tableWidgetCell.view(this.format(),
+                            tableRow.addView(tableWidgetCell.view(this,
                                                                    column,
                                                                    rowIndex,
                                                                    tableWidget,
@@ -203,7 +358,7 @@ data class TableWidgetRow(override val id : UUID,
                     when (column)
                     {
                         is TableWidgetTextColumn ->
-                            tableRow.rows.add(tableWidgetCell.view(this.format(),
+                            tableRow.addView(tableWidgetCell.view(this.format(),
                                                                    column,
                                                                    rowIndex,
                                                                    tableWidget,
@@ -216,8 +371,67 @@ data class TableWidgetRow(override val id : UUID,
             }
         }
 
-        return tableRow.tableRow(sheetUIContext.context)
+        return tableRow //.tableRow(sheetUIContext.context)
     }
+
+}
+
+
+class TableRowWidgetView(val tableWidgetRow : TableWidgetRow,
+                         val tableWidget : TableWidget,
+                         val rowIndex : Int,
+                         val sheetUIContext : SheetUIContext) : TableRow(sheetUIContext.context)
+{
+
+
+    var clickTime : Long = 0
+    var CLICK_DURATION = 500
+
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?) : Boolean
+    {
+        if (ev != null)
+        {
+            Log.d("***TABLEWIDGETROW", ev.action.toString())
+            when (ev.action)
+            {
+                MotionEvent.ACTION_DOWN ->
+                {
+                    clickTime = System.currentTimeMillis()
+                    SheetActivityGlobal.setLongPressRunnable(Runnable {
+                        tableWidgetRow.openEditor(tableWidget, rowIndex, sheetUIContext)
+                    })
+                    Log.d("***TABLEROW", "action down")
+                }
+                MotionEvent.ACTION_UP ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                    Log.d("***TABLEROW", "action up")
+//                    val upTime = System.currentTimeMillis()
+//                    if ((upTime - clickTime) > CLICK_DURATION) {
+//                        tableWidgetRow.openEditor(tableWidget, rowIndex, sheetUIContext)
+//                        Log.d("***TABLEROW", "on long click")
+//                    }
+                }
+                MotionEvent.ACTION_OUTSIDE ->
+                {
+                    //SheetActivityGlobal.touchHandler.removeCallbacks(runnable)
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_SCROLL ->
+                {
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+                MotionEvent.ACTION_CANCEL ->
+                {
+                    //SheetActivityGlobal.touchHandler.removeCallbacks(runnable)
+                    SheetActivityGlobal.cancelLongPressRunnable()
+                }
+            }
+        }
+        return false
+    }
+
 
 }
 

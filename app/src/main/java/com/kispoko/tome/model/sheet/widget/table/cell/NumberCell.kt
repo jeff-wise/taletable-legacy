@@ -2,10 +2,12 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
@@ -13,11 +15,18 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.NumberFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
+import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.model.theme.ThemeColorId
+import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -35,7 +44,8 @@ import java.util.*
  */
 data class NumberCellFormat(override val id : UUID,
                             val cellFormat : Comp<CellFormat>,
-                            val valuePrefix : Maybe<Prim<NumberCellValuePrefix>>)
+                            val valuePrefix : Maybe<Prim<NumberCellValuePrefix>>,
+                            val numberFormat : Prim<NumberFormat>)
                             : ToDocument, Model, Serializable
 {
 
@@ -50,6 +60,9 @@ data class NumberCellFormat(override val id : UUID,
         when (this.valuePrefix) {
             is Just -> this.valuePrefix.value.name  = "value_prefix"
         }
+
+
+        this.numberFormat.name                      = "number_format"
     }
 
 
@@ -60,33 +73,39 @@ data class NumberCellFormat(override val id : UUID,
     companion object : Factory<NumberCellFormat>
     {
 
-        private val defaultCellFormat  = CellFormat.default
+        private val defaultCellFormat   = CellFormat.default()
+        private val defaultNumberFormat = NumberFormat.Normal
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<NumberCellFormat> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::NumberCellFormat,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
-                         // Cell Format
-                         split(doc.maybeAt("cell_format"),
-                               effValue(Comp.default(defaultCellFormat)),
-                               { effApply(::Comp, CellFormat.fromDocument(it)) }),
-                         // Value Prefix
-                         split(doc.maybeAt("value_prefix"),
-                               effValue<ValueError,Maybe<Prim<NumberCellValuePrefix>>>(Nothing()),
-                               { effApply({x -> Just(Prim(x))}, NumberCellValuePrefix.fromDocument(it)) })
-                         )
+                apply(::NumberCellFormat,
+                      // Model Id
+                      effValue(UUID.randomUUID()),
+                      // Cell Format
+                      split(doc.maybeAt("cell_format"),
+                            effValue(Comp.default(defaultCellFormat)),
+                            { effApply(::Comp, CellFormat.fromDocument(it)) }),
+                      // Value Prefix
+                      split(doc.maybeAt("value_prefix"),
+                            effValue<ValueError,Maybe<Prim<NumberCellValuePrefix>>>(Nothing()),
+                            { effApply({x -> Just(Prim(x))}, NumberCellValuePrefix.fromDocument(it)) }),
+                      // Number Format
+                      split(doc.maybeAt("number_format"),
+                            effValue<ValueError,Prim<NumberFormat>>(Prim.default(defaultNumberFormat)),
+                            { effApply(::Prim, NumberFormat.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
         fun default() = NumberCellFormat(UUID.randomUUID(),
-                                         Comp(defaultCellFormat),
-                                         Nothing())
+                                         Comp.default(defaultCellFormat),
+                                         Nothing(),
+                                         Prim.default(defaultNumberFormat))
 
     }
 
@@ -112,6 +131,8 @@ data class NumberCellFormat(override val id : UUID,
 
     fun valuePrefixString() : String? = getMaybePrim(this.valuePrefix)?.value
 
+    fun numberFormat() : NumberFormat = this.numberFormat.value
+
 
     // -----------------------------------------------------------------------------------------
     // RESOLVERS
@@ -122,6 +143,13 @@ data class NumberCellFormat(override val id : UUID,
             columnFormat.columnFormat().textStyle()
         else
             this.cellFormat().textStyle()
+
+
+    fun resolveNumberFormat(columnFormat : NumberColumnFormat) : NumberFormat =
+        if (this.numberFormat.isDefault())
+            columnFormat.numberFormat()
+        else
+            this.numberFormat()
 
 
     // -----------------------------------------------------------------------------------------
@@ -174,51 +202,130 @@ data class NumberCellValuePrefix(val value : String) : ToDocument, SQLSerializab
 
 
 class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
-                            val rowFormat : TableWidgetRowFormat,
+                            val row : TableWidgetRow,
                             val column : TableWidgetNumberColumn,
                             val rowIndex : Int,
                             val tableWidget : TableWidget,
                             val sheetUIContext : SheetUIContext)
 {
 
+    fun openEditorDialog()
+    {
+        val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
+        when (valueVariable)
+        {
+            is Val ->
+            {
+                val editorType = cell.resolveEditorType(column)
+                openNumberVariableEditorDialog(valueVariable.value,
+                                               editorType,
+                                               UpdateTargetNumberCell(tableWidget.id, cell.id),
+                                               sheetUIContext)
+            }
+            is Err -> ApplicationLog.error(valueVariable.error)
+        }
+    }
+
 
     fun view() : View
     {
-        val layout = TableWidgetCellView.layout(rowFormat,
+        val layout = TableWidgetCellView.layout(row.format(),
                                                 column.format().columnFormat(),
                                                 cell.format().cellFormat(),
                                                 sheetUIContext)
 
-        layout.addView(this.valueTextView())
+        layout.addView(this.valueView())
 
 
+        var clickTime : Long = 0
+        val CLICK_DURATION = 500
 
-        layout.setOnClickListener {
-            val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
-            when (valueVariable)
+        layout.setOnTouchListener { _, motionEvent ->
+            when (motionEvent.action)
             {
-                is Val ->
-                {
-                    openNumberVariableEditorDialog(valueVariable.value,
-                                                   cell.resolveEditorType(column),
-                                                   UpdateTargetNumberCell(tableWidget.id, cell.id),
-                                                   sheetUIContext)
+                MotionEvent.ACTION_DOWN -> {
+                    clickTime = System.currentTimeMillis()
+                    Log.d("***NUMBERCELL", "action down")
                 }
-                is Err -> ApplicationLog.error(valueVariable.error)
+                MotionEvent.ACTION_UP -> {
+                    Log.d("***NUMBERCELL", "action up")
+                    val upTime = System.currentTimeMillis()
+                    if ((upTime - clickTime) < CLICK_DURATION) {
+                        this.openEditorDialog()
+                        Log.d("***NUMBERCELL", "on single click")
+                    }
+                }
             }
-        }
-
-        // On Long Click
-        layout.setOnLongClickListener {
-            val sheetActivity = sheetUIContext.context as SheetActivity
-            val updateTarget = UpdateTargetInsertTableRow(tableWidget)
-            tableWidget.selectedRow = rowIndex
-            sheetActivity.showTableEditor(updateTarget, SheetContext(sheetUIContext))
 
             true
         }
 
         return layout
+    }
+
+
+    private fun valueView() : LinearLayout
+    {
+        val layout = this.valueViewLayout()
+
+        when (this.cell.action()) {
+            is Just -> layout.addView(this.rollIconView())
+        }
+
+        layout.addView(this.valueTextView())
+
+        return layout
+    }
+
+
+    private fun valueViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+
+        //val valueStyle = this.cell.format().resolveTextStyle(this.column.format())
+
+//        layout.gravity              = Gravity.CENTER_VERTICAL or
+//                                        valueStyle.alignment().gravityConstant()
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollIconView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout = LinearLayoutBuilder()
+        val icon   = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp        = 19
+        icon.heightDp       = 19
+
+        icon.image          = R.drawable.icon_dice_roll_filled
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -228,7 +335,7 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
 
         // > VIEW ID
         val viewId = Util.generateViewId()
-        cell.viewId = Just(viewId)
+        cell.viewId = viewId
         value.id    = viewId
 
         // > LAYOUT
@@ -239,17 +346,23 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
         val valueStyle = this.cell.format().resolveTextStyle(this.column.format())
         valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
+        //value.layoutGravity = valueStyle.alignment().gravityConstant()
+
         // > VALUE
-        val maybeValue = cell.valueString(SheetContext(sheetUIContext))
+        val maybeValue = cell.value(SheetContext(sheetUIContext))
         when (maybeValue)
         {
-            is Val    -> value.text = maybeValue.value
-        }
-
-        val valueString = cell.valueString(SheetContext(sheetUIContext))
-        when (valueString) {
-            is Val -> value.text = valueString.value
-            is Err -> ApplicationLog.error(valueString.error)
+            is Val    -> {
+                val numberFormat = this.cell.format().resolveNumberFormat(this.column.format())
+                when (numberFormat) {
+                    is NumberFormat.Modifier -> {
+                        value.text = numberFormat.formattedString(maybeValue.value)
+                    }
+                    else -> {
+                        value.text = Util.doubleString(maybeValue.value)
+                    }
+                }
+            }
         }
 
         return value.textView(sheetUIContext.context)

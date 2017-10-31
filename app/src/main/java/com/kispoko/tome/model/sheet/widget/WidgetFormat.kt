@@ -12,10 +12,7 @@ import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.theme.ColorTheme
-import effect.effApply
-import effect.effError
-import effect.effValue
-import effect.split
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -82,34 +79,38 @@ data class WidgetFormat(override val id : UUID,
         private val defaultPadding              = Spacing.default()
 
 
-        override fun fromDocument(doc: SchemaDoc): ValueParser<WidgetFormat> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<WidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::WidgetFormat,
-                                   // Width
-                                   split(doc.maybeAt("width"),
-                                         effValue(defaultWidth),
-                                         { WidgetWidth.fromDocument(it) }),
-                                   // Alignment
-                                   split(doc.maybeAt("alignment"),
-                                         effValue<ValueError,Alignment>(defaultAlignment),
-                                         { Alignment.fromDocument(it) }),
-                                   // Background Color Theme
-                                   split(doc.maybeAt("background_color_theme"),
-                                         effValue(defaultBackgroundColorTheme),
-                                         { ColorTheme.fromDocument(it) }),
-                                   // Corners
-                                   split(doc.maybeAt("corners"),
-                                         effValue<ValueError,Corners>(defaultCorners),
-                                         { Corners.fromDocument(it) }),
-                                   // Margins
-                                   split(doc.maybeAt("margins"),
-                                         effValue(defaultMargins),
-                                         { Spacing.fromDocument(it) }),
-                                   // Padding
-                                   split(doc.maybeAt("padding"),
-                                         effValue(defaultPadding),
-                                         { Spacing.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                apply(::WidgetFormat,
+                      // Width
+                      split(doc.maybeAt("width"),
+                            effValue(defaultWidth),
+                            { WidgetWidth.fromDocument(it) }),
+                      // Alignment
+                      split(doc.maybeAt("alignment"),
+                            effValue<ValueError,Alignment>(defaultAlignment),
+                            { Alignment.fromDocument(it) }),
+                      // Background Color Theme
+                      split(doc.maybeAt("background_color_theme"),
+                            effValue(defaultBackgroundColorTheme),
+                            { ColorTheme.fromDocument(it) }),
+                      // Corners
+                      split(doc.maybeAt("corners"),
+                            effValue(defaultCorners),
+                            { Corners.fromDocument(it) }),
+                      // Margins
+                      split(doc.maybeAt("margins"),
+                            effValue(defaultMargins),
+                            { Spacing.fromDocument(it) }),
+                      // Padding
+                      split(doc.maybeAt("padding"),
+                            effValue(defaultPadding),
+                            { Spacing.fromDocument(it) })
+                      )
+            }
+
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
