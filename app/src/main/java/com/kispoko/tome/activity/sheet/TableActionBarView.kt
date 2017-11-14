@@ -100,7 +100,9 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
                         val tableUpdate = TableWidgetUpdateInsertRowBefore(
                                                             updateTarget.tableWidget.id,
                                                             selectedRow)
-                        SheetManager.updateSheet(this.sheetUIContext.sheetId, tableUpdate)
+                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
+                                                 tableUpdate,
+                                                 this.sheetUIContext.sheetUI())
                     }
                 }
             }
@@ -123,7 +125,9 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
                         val tableUpdate = TableWidgetUpdateInsertRowAfter(
                                                             updateTarget.tableWidget.id,
                                                             selectedRow)
-                        SheetManager.updateSheet(this.sheetUIContext.sheetId, tableUpdate)
+                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
+                                                 tableUpdate,
+                                                 this.sheetUIContext.sheetUI())
                     }
                 }
             }
@@ -181,10 +185,7 @@ class TableActionBarViewBuilder(val updateTarget : UpdateTarget,
             sheetActivity.hideActionBar()
         }
 
-        iconLayout.corners              = Corners(TopLeftCornerRadius(3f),
-                                              TopRightCornerRadius(3f),
-                                              BottomRightCornerRadius(3f),
-                                              BottomLeftCornerRadius(3f))
+        iconLayout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_red_7")),

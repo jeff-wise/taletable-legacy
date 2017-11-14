@@ -2,9 +2,10 @@
 package com.kispoko.tome.model.sheet
 
 
+import com.kispoko.tome.db.DB_SheetSettings
+import com.kispoko.tome.db.dbSheetSettings
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -23,23 +24,11 @@ import java.util.*
  * Sheet Settings
  */
 data class Settings(override val id : UUID,
-                    val themeId : Prim<ThemeId>,
-                    val sheetName : Prim<SheetName>,
-                    val sheetSummary: Prim<SheetSummary>)
-                     : Model, ToDocument
+                    val themeId : ThemeId,
+                    val sheetName : SheetName,
+                    val sheetSummary: SheetSummary)
+                     : ProdType, ToDocument
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.themeId.name       = "theme_id"
-        this.sheetName.name     = "sheet_name"
-        this.sheetSummary.name  = "sheet_summary"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -49,45 +38,45 @@ data class Settings(override val id : UUID,
                 sheetName : SheetName,
                 sheetSummary: SheetSummary)
         : this(UUID.randomUUID(),
-               Prim(themeId),
-               Prim(sheetName),
-               Prim(sheetSummary))
+               themeId,
+               sheetName,
+               sheetSummary)
 
 
     companion object : Factory<Settings>
     {
 
-        private val defaultThemeId      = ThemeId.Dark
-        private val defaultSheetName    = SheetName("")
-        private val defaultSheetSummary = SheetSummary("")
+        private fun defaultThemeId()      = ThemeId.Dark
+        private fun defaultSheetName()    = SheetName("")
+        private fun defaultSheetSummary() = SheetSummary("")
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<Settings> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::Settings,
-                         // Theme Id
-                         split(doc.maybeAt("theme_id"),
-                               effValue<ValueError,ThemeId>(defaultThemeId),
-                               { ThemeId.fromDocument(it) }),
-                         // Sheet Name
-                         split(doc.maybeAt("sheet_name"),
-                               effValue(defaultSheetName),
-                               { SheetName.fromDocument(it) }),
-                         // Sheet Summary
-                         split(doc.maybeAt("sheet_summary"),
-                               effValue(defaultSheetSummary),
-                               { SheetSummary.fromDocument(it) })
-                         )
+                apply(::Settings,
+                      // Theme Id
+                      split(doc.maybeAt("theme_id"),
+                            effValue<ValueError,ThemeId>(defaultThemeId()),
+                            { ThemeId.fromDocument(it) }),
+                      // Sheet Name
+                      split(doc.maybeAt("sheet_name"),
+                            effValue(defaultSheetName()),
+                            { SheetName.fromDocument(it) }),
+                      // Sheet Summary
+                      split(doc.maybeAt("sheet_summary"),
+                            effValue(defaultSheetSummary()),
+                            { SheetSummary.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = Settings(defaultThemeId,
-                                 defaultSheetName,
-                                 defaultSheetSummary)
+        fun default() = Settings(defaultThemeId(),
+                                 defaultSheetName(),
+                                 defaultSheetSummary())
 
     }
 
@@ -96,11 +85,11 @@ data class Settings(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun themeId() : ThemeId = this.themeId.value
+    fun themeId() : ThemeId = this.themeId
 
-    fun sheetName() : String = this.sheetName.value.value
+    fun sheetName() : String = this.sheetName.value
 
-    fun sheetSummary() : String = this.sheetSummary.value.value
+    fun sheetSummary() : String = this.sheetSummary.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -120,9 +109,12 @@ data class Settings(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "sheet_settings"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_SheetSettings =
+            dbSheetSettings(this.themeId, this.sheetName, this.sheetSummary)
 
 }
 
@@ -168,14 +160,14 @@ data class SheetSummary(val value : String) : SQLSerializable, Serializable
 
 
 
-//public class Settings extends Model
+//public class Settings extends ProdType
 //                      implements ToYaml, Serializable
 //{
 //
 //    // PROPERTIES
 //    // -----------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // -----------------------------------------------------------------------------------------
 //
 //    private UUID                                id;
@@ -246,7 +238,7 @@ data class SheetSummary(val value : String) : SQLSerializable, Serializable
 //    // API
 //    // -----------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // --------------------------------------------------------------------------------------
 //
 //    // ** Id

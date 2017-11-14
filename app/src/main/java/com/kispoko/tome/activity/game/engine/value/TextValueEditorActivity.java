@@ -84,7 +84,7 @@ package com.kispoko.tome.activity.game.engine.value;
 //
 //        try
 //        {
-//            fields = Model.fields(this.textValue, this);
+//            fields = ProdType.fields(this.textValue, this);
 //        }
 //        catch (FunctorException exception)
 //        {

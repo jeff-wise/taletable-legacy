@@ -125,7 +125,7 @@ public class RollModifierEditorActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            fields.addAll(Model.fields(this.rollModifier, this));
+//            fields.addAll(ProdType.fields(this.rollModifier, this));
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

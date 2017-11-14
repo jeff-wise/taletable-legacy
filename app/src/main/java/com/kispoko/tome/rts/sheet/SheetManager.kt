@@ -8,9 +8,15 @@ import android.util.Log
 import android.view.View
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.*
-import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.db.DB_Session
+import com.kispoko.tome.db.DB_SessionSheetRecord
+import com.kispoko.tome.db.dbSession
+import com.kispoko.tome.db.dbSessionSheetRecord
+import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Prod
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
@@ -34,7 +40,11 @@ import com.kispoko.tome.rts.theme.ThemeNotSupported
 import effect.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import lulo.document.*
+import lulo.value.UnexpectedType
+import lulo.value.ValueParser
 import java.io.Serializable
+import java.util.*
 
 
 
@@ -50,40 +60,39 @@ object SheetManager
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-
-    private val sheetById : MutableMap<SheetId,SheetRecord> = hashMapOf()
-
-    // TODO only need one of these?
-    private var currentSheet : SheetId? = null
-    private var currentSheetContext : SheetContext? = null
-
-    // TODO remove
-    private var currentSheetUI : SheetUI? = null
+    private var session : Prod<Session> = Prod(Session())
 
 
-    //private val listenerBySheet : MutableMap<SheetId,SheetListener> = hashMapOf()
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init {
+        // TODO do this lazily
+        session = Prod(Session())
+        launch(UI) {
+            Log.d("***SHEETMANAGER", "saving sheet session")
+            session.saveAsync(true, true)
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
     // SHEET
     // -----------------------------------------------------------------------------------------
 
-    fun openSheets() : List<Sheet> = this.sheetById.values.map { it.sheet() }
+    fun openSheets() : List<Sheet> = this.session.value.sheets()
 
 
-    fun sheetRecord(sheetId : SheetId) : AppEff<SheetRecord> =
-            note(this.sheetById[sheetId], AppSheetError(SheetDoesNotExist(sheetId)))
+    fun sheetRecord(sheetId : SheetId) : AppEff<SessionSheetRecord> =
+            session.value.sheetRecordWithId(sheetId)
 
 
-    fun currentSheetContext() : SheetContext? = this.currentSheetContext
+    fun currentSheetContext() : AppEff<SheetContext> =
+        session.value.activeSheet().apply { sheetContext(it) }
 
 
-    fun sheet(sheetId : SheetId) : AppEff<Sheet> =
-            note(this.sheetById[sheetId]?.sheet(), AppSheetError(SheetDoesNotExist(sheetId)))
-
-
-    fun state(sheetId : SheetId) : SheetEff<SheetState> =
-            note(this.sheetById[sheetId]?.state, SheetDoesNotExist(sheetId))
+    fun sheet(sheetId : SheetId) : AppEff<Sheet> = session.value.sheetWithId(sheetId)
 
 
     fun sheetContext(sheet : Sheet) : AppEff<SheetContext>
@@ -104,38 +113,36 @@ object SheetManager
 
 
     fun sheetState(sheetId : SheetId) : AppEff<SheetState> =
-            note(this.sheetById[sheetId]?.state,
-                    AppSheetError(SheetDoesNotExist(sheetId)))
-
+            this.sheetRecord(sheetId) ap { effValue<AppError,SheetState>(it.state()) }
 
 
     fun addVariable(sheetId : SheetId, variableId : VariableId) =
         SheetManager.sheetRecord(sheetId) apDo {
             val variable = it.sheet().variableWithId(variableId)
             if (variable != null)
-                it.state.addVariable(variable)
+                it.state().addVariable(variable)
         }
 
 
     fun addVariable(sheetId : SheetId, variable : Variable) =
         SheetManager.sheetRecord(sheetId) apDo {
-                it.state.addVariable(variable)
+                it.state().addVariable(variable)
         }
 
 
     fun onVariableUpdate(sheetId : SheetId, variable : Variable) =
         SheetManager.sheetRecord(sheetId) apDo {
-            it.state.onVariableUpdate(variable)
+            it.state().onVariableUpdate(variable)
         }
 
 
-    fun evalSheetName(sheetId : SheetId, sheetName : SheetName) : String
+    fun evalSheetName(sheetName : SheetName) : String
     {
         return sheetName.value
     }
 
 
-    fun evalSheetSummary(sheetId : SheetId, sheetSummary : SheetSummary) : String
+    fun evalSheetSummary(sheetSummary : SheetSummary) : String
     {
         return sheetSummary.value
     }
@@ -145,7 +152,7 @@ object SheetManager
                                     variableId : VariableId,
                                     onChangeListener : OnVariableChangeListener) =
         SheetManager.sheetRecord(sheetId)
-                .apDo { it.state.addVariableOnChangeListener(variableId, onChangeListener) }
+                .apDo { it.state().addVariableOnChangeListener(variableId, onChangeListener) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -163,19 +170,28 @@ object SheetManager
      */
     suspend fun startSession(sheetUI : SheetUI)
     {
-        if (this.sheetById.values.isEmpty())
+        // There are no active sheets in memory. Load the last session from the DB or present
+        // the user with an option to open a new sheet.
+        if (this.session.value.isEmpty())
         {
+            // Testing Case
             val casmeyOfficialSheet = OfficialSheet(SheetId("character_olan_level_1"),
                                                     CampaignId("isara"),
                                                     GameId("magic_of_heroes"))
-            val lastSession = Session(listOf(SessionSheetOfficial(casmeyOfficialSheet)))
 
-            loadSessionSheets(lastSession, sheetUI)
+            OfficialManager.loadSheet(casmeyOfficialSheet, sheetUI)
+
+            //loadSessionSheets(lastSession, sheetUI)
+
+
+            // query for last session
+            // load sheets
         }
+        // There is an active sheet in memory. Render it.
         else
         {
             Log.d("***SHEETMANAGER", "set sheet active")
-            val lastActiveSheet = this.sheetById.values.first().sheet()
+            val lastActiveSheet = this.session.value.sheets().first()
 
 //            val listener = this.listenerBySheet[lastActiveSheet.sheetId()]
 //            if (listener != null)
@@ -185,61 +201,26 @@ object SheetManager
     }
 
 
-    private suspend fun loadSessionSheets(session : Session, sheetUI : SheetUI)
-    {
-        // Is new or in DB?
-        session.sheets.forEach {
-            when (it) {
-                is SessionSheetOfficial -> OfficialManager.loadSheet(it.officialSheet, sheetUI)
-            }
-        }
-    }
+//    private suspend fun loadSessionSheets(session : Session, sheetUI : SheetUI)
+//    {
+//        // Is new or in DB?
+//        session.sheets.forEach {
+//            when (it) {
+//                is SessionSheetOfficial -> OfficialManager.loadSheet(it.officialSheet, sheetUI)
+//            }
+//        }
+//    }
 
 
     fun addSheetToSession(sheet : Sheet, sheetUI : SheetUI, isSaved : Boolean = true)
     {
-        SheetManager.sheetContext(sheet)        apDo { sheetContext ->
-        GameManager.engine(sheetContext.gameId) apDo { engine ->
-            val sheetRecord = SheetRecord.withDefaultView(sheet, sheetContext,
-                                        SheetState(sheetContext, engine.mechanicSet()))
+        session.value.addSheet(sheet, isSaved, sheetUI)
 
-            // Create & Index Sheet Record
-            this.sheetById.put(sheet.sheetId(), sheetRecord)
-            this.currentSheet = sheet.sheetId()
-            this.currentSheetContext = sheetRecord.sheetContext
-
-            // Save if needed
-            if (!isSaved)
-                launch(UI) { sheetRecord.save() }
-
-//            val listener = this.listenerBySheet[sheet.sheetId()]
-//            if (listener != null)
-//                listener.onSheetAdd(sheet)
-
-            sheetUI.onSheetActive(sheet)
-        } }
+        // TODO this should be inside addSheet
+//        launch(UI) {
+//            session.saveAsync(true, true)
+//        }
     }
-
-
-    fun setSheetActive(sheetId : SheetId, sheetUI : SheetUI)
-    {
-        SheetManager.sheetRecord(sheetId) apDo {
-
-            this.currentSheetUI = sheetUI
-
-            // Initialize Sheet
-            it.onActive(sheetUI.context())
-
-            // Render
-            SheetManager.render(sheetId, sheetUI)
-        }
-    }
-
-
-//    fun addSheetListener(sheetListener : SheetListener)
-//    {
-//        this.listenerBySheet.put(sheetId, sheetListener)
-//    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -248,23 +229,20 @@ object SheetManager
 
     fun render(sheetId : SheetId, sheetUI : SheetUI)
     {
-
-        Log.d("***SHEETMANAGER", "render")
-
         val sheetRecordEff = this.sheetRecord(sheetId)
 
         when (sheetRecordEff)
         {
-            is Val -> {
+            is effect.Val -> {
                 val sheetRecord = sheetRecordEff.value
-                val selectedSectionName = sheetRecord.viewState.selectedSection
+                val selectedSectionName = sheetRecord.viewState().selectedSection
                 val section = sheetRecord.sheet().sectionWithName(selectedSectionName)
 
                 // Theme UI
-                val theme = ThemeManager.theme(sheetRecord.sheet.value.settings().themeId())
+                val theme = ThemeManager.theme(sheetRecord.sheet().settings().themeId())
                 when (theme)
                 {
-                    is Val -> sheetUI.applyTheme(sheetId, theme.value.uiColors())
+                    is effect.Val -> sheetUI.applyTheme(sheetId, theme.value.uiColors())
                     is Err -> ApplicationLog.error(theme.error)
                 }
 
@@ -272,7 +250,7 @@ object SheetManager
 
                 if (section != null) {
                     sheetUI.pagePagerAdatper()
-                           .setPages(section.pages(), sheetRecord.sheetContext)
+                           .setPages(section.pages(), sheetRecord.sheetContext())
                     Log.d("***SHEETMANAGER", "set pages")
                 }
                 else {
@@ -284,13 +262,13 @@ object SheetManager
                     val selectedSection = sheetRecord.sheet().sectionWithIndex(position)
                     if (selectedSection != null) {
                         sheetUI.pagePagerAdatper()
-                                .setPages(selectedSection.pages(), sheetRecord.sheetContext)
+                                .setPages(selectedSection.pages(), sheetRecord.sheetContext())
                     }
                     sheetUI.hideActionBar()
                     true
                 }
 
-                sheetUI.initializeSidebars(sheetRecord.sheetContext)
+                sheetUI.initializeSidebars(sheetRecord.sheetContext())
 
                 val end = System.currentTimeMillis()
 
@@ -305,12 +283,12 @@ object SheetManager
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
-    fun updateSheet(sheetId : SheetId, sheetUpdate : SheetUpdate)
+    fun updateSheet(sheetId : SheetId, sheetUpdate : SheetUpdate, sheetUI : SheetUI)
     {
         val sheetRecordEff = SheetManager.sheetRecord(sheetId)
         when (sheetRecordEff)
         {
-            is Val ->
+            is effect.Val ->
             {
                 val sheetRecord = sheetRecordEff.value
                 val sheetUpdateEvent = SheetUpdateEvent(sheetUpdate, sheetId)
@@ -320,12 +298,12 @@ object SheetManager
                 {
                     is WidgetUpdate ->
                     {
-                        val rootView = this.currentSheetUI?.rootSheetView()
-                        val context = this.currentSheetUI?.context()
-                        if (rootView != null && context != null)
+                        val rootView = sheetUI.rootSheetView()
+                        val context = sheetUI.context()
+                        if (rootView != null)
                         {
                             sheetRecord.sheet().update(sheetUpdate,
-                                                       sheetRecord.sheetContext,
+                                                       sheetRecord.sheetContext(),
                                                        rootView,
                                                        context)
                         }
@@ -346,7 +324,7 @@ object SheetManager
 
         when (color)
         {
-            is Val -> return color.value
+            is effect.Val -> return color.value
             is Err -> ApplicationLog.error(color.error)
         }
 
@@ -360,7 +338,7 @@ object SheetManager
 
         when (color)
         {
-            is Val -> return color.value
+            is effect.Val -> return color.value
             is Err -> ApplicationLog.error(color.error)
         }
 
@@ -376,7 +354,7 @@ object SheetManager
 
         when (color)
         {
-            is Val -> return color.value
+            is effect.Val -> return color.value
             is Err -> ApplicationLog.error(color.error)
         }
 
@@ -407,24 +385,17 @@ object SheetManager
 
 
     private fun sheetThemeId(sheetId : SheetId) : AppEff<ThemeId> =
-            note(this.sheetById[sheetId]?.sheet()?.settings()?.themeId(),
-                 AppSheetError(SheetDoesNotExist(sheetId)))
+        this.session.value.sheetWithId(sheetId)
+            .apply { effValue<AppError,ThemeId>(it.settings().themeId()) }
 
 
-    private fun uiSheetThemeId(sheetId : SheetId) : AppEff<ThemeId>
-    {
-        val themeId = this.sheetById[sheetId]?.sheet()?.settings()?.themeId()
-
-        if (themeId != null) {
-            when (themeId) {
-                is ThemeId.Custom -> return effValue(ThemeId.Dark)
-                else              -> return effValue(themeId)
+    private fun uiSheetThemeId(sheetId : SheetId) : AppEff<ThemeId> =
+        sheetThemeId(sheetId) ap {
+            when (it) {
+                is ThemeId.Custom -> effValue<AppError,ThemeId>(ThemeId.Dark)
+                else              -> effValue(it)
             }
         }
-        else {
-            return effError(AppSheetError(SheetDoesNotExist(sheetId)))
-        }
-    }
 
 
     private fun colorId(sheetId : SheetId,
@@ -453,7 +424,7 @@ object SheetManager
 
         return when (sheetSummation)
         {
-            is Val -> sheetSummation
+            is effect.Val -> sheetSummation
             is Err -> GameManager.engine(sheetContext.gameId) ap {
                           it.summation(summationId)
                       }
@@ -471,10 +442,15 @@ object SheetManager
 data class SheetViewState(val selectedSection : SectionName)
 
 
-data class SheetRecord(val sheet : Comp<Sheet>,
-                       val sheetContext : SheetContext,
-                       val state : SheetState,
-                       val viewState : SheetViewState)
+data class SessionSheetRecord(override val id : UUID,
+                              private val sheet : Sheet,
+                              private val sheetId : SheetId,
+                              private var sessionIndex : SessionRecordIndex,
+                              private var lastActive : SheetLastActiveTime,
+                              private val sheetContext : SheetContext,
+                              private val state : SheetState,
+                              private val viewState : SheetViewState)
+                               : ProdType
 {
 
     // -----------------------------------------------------------------------------------------
@@ -485,7 +461,7 @@ data class SheetRecord(val sheet : Comp<Sheet>,
     {
         fun withDefaultView(sheet : Sheet,
                             sheetContext : SheetContext,
-                            state : SheetState) : SheetRecord
+                            state : SheetState) : SessionSheetRecord
         {
             val sections = sheet.sections()
 
@@ -493,16 +469,40 @@ data class SheetRecord(val sheet : Comp<Sheet>,
                                                          else SectionName("NA")
 
             val viewState = SheetViewState(sectionName)
-            return SheetRecord(Comp(sheet), sheetContext, state, viewState)
+            return SessionSheetRecord(UUID.randomUUID(),
+                                      sheet,
+                                      sheet.sheetId(),
+                                      SessionRecordIndex(1),
+                                      SheetLastActiveTime(System.currentTimeMillis()),
+                                      sheetContext,
+                                      state,
+                                      viewState)
         }
     }
 
 
     // -----------------------------------------------------------------------------------------
-    // GETTERS
+    // STATE
     // -----------------------------------------------------------------------------------------
 
-    fun sheet() : Sheet = this.sheet.value
+    fun sheet() : Sheet = this.sheet
+
+
+    fun state() : SheetState = this.state
+
+
+    fun viewState() : SheetViewState = this.viewState
+
+
+    fun sheetId() : SheetId = this.sheet.sheetId()
+
+
+    fun sheetContext() : SheetContext = this.sheetContext
+
+
+    fun setIndex(index : Int) {
+        this.sessionIndex = SessionRecordIndex(index)
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -515,7 +515,7 @@ data class SheetRecord(val sheet : Comp<Sheet>,
 
         when (sheetContext)
         {
-            is Val -> this.sheet().onActive(SheetUIContext(sheetContext.value, context))
+            is effect.Val -> this.sheet().onActive(SheetUIContext(sheetContext.value, context))
             is Err -> ApplicationLog.error(sheetContext.error)
         }
     }
@@ -527,12 +527,29 @@ data class SheetRecord(val sheet : Comp<Sheet>,
      *
      * This method is run asynchronously in the `CommonPool` context.
      */
-    suspend fun save()
+    suspend fun saveSheet()
     {
-        this.sheet.saveAsync(true, true)
+        this.sheet.save()
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_SessionSheetRecord =
+            dbSessionSheetRecord(this.sheetId,
+                                 this.sessionIndex,
+                                 this.lastActive)
+
 }
+
 
 
 open class SheetContext(open val sheetId : SheetId,
@@ -560,6 +577,9 @@ data class SheetUIContext(val sheetId : SheetId,
                sheetContext.gameId,
                context)
 
+
+    fun sheetUI() : SheetUI = this.context as SheetUI
+
 }
 
 
@@ -574,15 +594,6 @@ interface SheetComponent
 
 
 typealias SheetEff<A> = Eff<SheetError,Identity,A>
-
-
-fun <A> fromSheetEff(sheetEff : SheetEff<A>) : AppEff<A> = when (sheetEff)
-{
-    is Val -> effValue(sheetEff.value)
-    is Err -> effError(AppSheetError(sheetEff.error))
-}
-
-// fun <A> sheetEffValue(value : A) : SheetEff<A> = Val(value, Identity())
 
 
 interface SheetUI
@@ -603,14 +614,8 @@ interface SheetUI
     fun hideActionBar()
 
     fun onSheetActive(sheet : Sheet)
-//
-//    fun showActionBar(sheetAction : SheetAction,
-//                      sheetContext : SheetContext)
 
 }
-
-
-data class Session(val sheets : List<SessionSheet>)
 
 
 sealed class SessionSheet
@@ -620,7 +625,248 @@ data class SessionSheetOfficial(val officialSheet : OfficialSheet) : SessionShee
 data class SessionSheetDatabase(val sheetContext : SheetContext) : SessionSheet()
 
 
+// Query({ Session() })
+//   .filter
 
-data class SheetListener(val onSheetAdd : (Sheet) -> Unit)
 
+
+data class Session(override val id : UUID,
+                   val sessionName : SessionName,
+                   val lastActiveTime : SessionLastActiveTime,
+                   var activeSheetId : Maybe<SheetId>,
+                   val sheetRecords : MutableList<SessionSheetRecord>)
+                    : ProdType
+{
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor() : this(UUID.randomUUID(),
+                         SessionName("Untitled Session"),
+                         SessionLastActiveTime(System.currentTimeMillis()),
+                         Nothing(),
+                         mutableListOf())
+
+
+    // -----------------------------------------------------------------------------------------
+    // INDEXES
+    // -----------------------------------------------------------------------------------------
+
+    private val sheetRecordById : MutableMap<SheetId, SessionSheetRecord> =
+                                this.sheetRecords.associateBy { it.sheetId() }
+                                        as MutableMap<SheetId, SessionSheetRecord>
+
+
+    // -----------------------------------------------------------------------------------------
+    // READ
+    // -----------------------------------------------------------------------------------------
+
+    fun sheetRecords() : List<SessionSheetRecord> = this.sheetRecords
+
+
+    fun isEmpty() : Boolean = this.sheetRecords().isEmpty()
+
+
+    fun sheets() : List<Sheet> = this.sheetRecords().map { it.sheet() }
+
+
+    fun activeSheet() : AppEff<Sheet>
+    {
+        val activeSheetId = this.activeSheetId
+        return when (activeSheetId) {
+            is Just -> sheetWithId(activeSheetId.value)
+            else    -> effError(AppSheetError(NoActiveSheetInSession()))
+        }
+    }
+
+
+    fun sheetRecordWithId(sheetId : SheetId) : AppEff<SessionSheetRecord> =
+        note(this.sheetRecordById[sheetId], AppSheetError(SessionDoesNotHaveSheet(sheetId)))
+
+
+    fun sheetWithId(sheetId : SheetId) : AppEff<Sheet> =
+        note(this.sheetRecordById[sheetId]?.sheet(), AppSheetError(SessionDoesNotHaveSheet(sheetId)))
+
+
+    // -----------------------------------------------------------------------------------------
+    // WRITE
+    // -----------------------------------------------------------------------------------------
+
+    fun addSheet(sheet : Sheet, isSaved : Boolean, sheetUI : SheetUI)
+    {
+
+        SheetManager.sheetContext(sheet)        apDo { sheetContext ->
+        GameManager.engine(sheetContext.gameId) apDo { engine ->
+            val sheetRecord = SessionSheetRecord.withDefaultView(sheet, sheetContext,
+                                        SheetState(sheetContext, engine.mechanics()))
+
+            sheetRecord.setIndex(sheetRecords().size)
+
+            this.sheetRecords.add(sheetRecord)
+            this.sheetRecordById.put(sheet.sheetId(), sheetRecord)
+
+            if (!isSaved)
+                launch(UI) { sheetRecord.saveSheet() }
+
+            setSheetActive(sheet.sheetId(), sheetUI)
+
+            sheetUI.onSheetActive(sheet)
+
+            launch(UI) { sheetRecords.save() }
+        } }
+    }
+
+
+    fun setSheetActive(sheetId : SheetId, sheetUI : SheetUI)
+    {
+        this.sheetRecordWithId(sheetId) apDo {
+            // Initialize Sheet
+            it.onActive(sheetUI.context())
+
+            // Set Active
+            this.activeSheetId = Just(sheetId)
+          // this.activeSheetId.doMaybe { it.save(this) }
+
+            // Render
+            SheetManager.render(sheetId, sheetUI)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Session = dbSession(this.sessionName,
+                                                this.lastActiveTime,
+                                                this.activeSheetId,
+                                                this.sheetRecords)
+
+}
+
+
+
+/**
+ * Session Name
+ */
+data class SessionName(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<SessionName>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SessionName> = when (doc)
+        {
+            is DocText -> effValue(SessionName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Session Record Index
+ */
+data class SessionRecordIndex(val value : Int) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<SessionRecordIndex>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SessionRecordIndex> = when (doc)
+        {
+            is DocNumber -> effValue(SessionRecordIndex(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value.toLong()})
+
+}
+
+
+/**
+ * Session Record Index
+ */
+data class SessionLastActiveTime(val value : Long) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<SessionLastActiveTime>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SessionLastActiveTime> = when (doc)
+        {
+            is DocNumber -> effValue(SessionLastActiveTime(doc.number.toLong()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+
+}
+
+
+
+/**
+ * Session Record Index
+ */
+data class SheetLastActiveTime(val value : Long) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<SheetLastActiveTime>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SheetLastActiveTime> = when (doc)
+        {
+            is DocNumber -> effValue(SheetLastActiveTime(doc.number.toLong()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+
+}
 

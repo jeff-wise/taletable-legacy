@@ -2,9 +2,15 @@
 package com.kispoko.tome.model.game.engine.mechanic
 
 
+import com.kispoko.tome.R.string.label
+import com.kispoko.tome.db.DB_Mechanic
+import com.kispoko.tome.db.DB_MechanicCategory
+import com.kispoko.tome.db.dbMechanic
+import com.kispoko.tome.db.dbMechanicCategory
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -26,31 +32,15 @@ import kotlin.collections.ArrayList
  * Mechanic
  */
 data class Mechanic(override val id : UUID,
-                    val mechanicId : Prim<MechanicId>,
-                    val label : Prim<MechanicLabel>,
-                    val description : Prim<MechanicDescription>,
-                    val summary : Prim<MechanicSummary>,
-                    val categoryId : Prim<MechanicCategoryId>,
-                    val requirements : Prim<MechanicRequirements>,
-                    val variables : Conj<Variable>)
-                     : ToDocument, Model, Serializable
+                    val mechanicId : MechanicId,
+                    val label : MechanicLabel,
+                    val description : MechanicDescription,
+                    val summary : MechanicSummary,
+                    val categoryId : MechanicCategoryId,
+                    val requirements : MutableList<VariableId>,
+                    val variables : MutableList<Variable>)
+                     : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.mechanicId.name                    = "mechanic_name"
-        this.label.name                         = "labelString"
-        this.description.name                   = "description"
-        this.summary.name                       = "summary"
-        this.categoryId.name                    = "category_id"
-        this.requirements.name                  = "requirements"
-        this.variables.name                     = "variables"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -61,16 +51,16 @@ data class Mechanic(override val id : UUID,
                 description : MechanicDescription,
                 summary : MechanicSummary,
                 categoryId : MechanicCategoryId,
-                requirements : MechanicRequirements,
-                variables : MutableSet<Variable>)
+                requirements : List<VariableId>,
+                variables : List<Variable>)
         : this(UUID.randomUUID(),
-               Prim(mechanicId),
-               Prim(label),
-               Prim(description),
-               Prim(summary),
-               Prim(categoryId),
-               Prim(requirements),
-               Conj(variables))
+               mechanicId,
+               label,
+               description,
+               summary,
+               categoryId,
+               requirements.toMutableList(),
+               variables.toMutableList())
 
 
     companion object : Factory<Mechanic>
@@ -79,23 +69,24 @@ data class Mechanic(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::Mechanic,
-                         // Mechanic Id
-                         doc.at("id") ap { MechanicId.fromDocument(it) },
-                         // Label
-                         doc.at("label") ap { MechanicLabel.fromDocument(it) },
-                         // Description
-                         doc.at("description") ap { MechanicDescription.fromDocument(it) },
-                         // Summary
-                         doc.at("summary") ap { MechanicSummary.fromDocument(it) },
-                         // Category Id
-                         doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) },
-                         // Requirements
-                         doc.at("requirements") ap { MechanicRequirements.fromDocument(it) },
-                         // Variables
-                         doc.list("variables") ap { docList ->
-                             docList.mapSetMut { Variable.fromDocument(it) }
-                         })
+                apply(::Mechanic,
+                      // Mechanic Id
+                      doc.at("id") ap { MechanicId.fromDocument(it) },
+                      // Label
+                      doc.at("label") ap { MechanicLabel.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { MechanicDescription.fromDocument(it) },
+                      // Summary
+                      doc.at("summary") ap { MechanicSummary.fromDocument(it) },
+                      // Category Id
+                      doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) },
+                      // Requirements
+                      doc.list("requirements") ap { docList ->
+                          docList.map { VariableId.fromDocument(it) }},
+                      // Variables
+                      doc.list("variables") ap { docList ->
+                          docList.map { Variable.fromDocument(it) }
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -121,25 +112,34 @@ data class Mechanic(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun mechanicId() : MechanicId = this.mechanicId.value
+    fun mechanicId() : MechanicId = this.mechanicId
 
-    fun label() : MechanicLabel = this.label.value
 
-    fun labelString() : String = this.label.value.value
+    fun label() : MechanicLabel = this.label
 
-    fun description() : MechanicDescription = this.description.value
 
-    fun descriptionString() : String = this.description.value.value
+    fun labelString() : String = this.label.value
 
-    fun summary() : MechanicSummary = this.summary.value
 
-    fun summaryString() : String = this.summary.value.value
+    fun description() : MechanicDescription = this.description
 
-    fun categoryId() : MechanicCategoryId = this.categoryId.value
 
-    fun requirements() : Set<VariableId> = this.requirements.value.variables.toSet()
+    fun descriptionString() : String = this.description.value
 
-    fun variables() : Set<Variable> = this.variables.set
+
+    fun summary() : MechanicSummary = this.summary
+
+
+    fun summaryString() : String = this.summary.value
+
+
+    fun categoryId() : MechanicCategoryId = this.categoryId
+
+
+    fun requirements() : List<VariableId> = this.requirements
+
+
+    fun variables() : List<Variable> = this.variables
 
 
     // -----------------------------------------------------------------------------------------
@@ -148,9 +148,17 @@ data class Mechanic(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "mechanic"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Mechanic = dbMechanic(this.mechanicId,
+                                                  this.label,
+                                                  this.description,
+                                                  this.summary,
+                                                  this.categoryId,
+                                                  this.requirements,
+                                                  this.variables)
 
 }
 
@@ -301,23 +309,11 @@ data class MechanicSummary(val value : String) : ToDocument, SQLSerializable, Se
  * Mechanic Category
  */
 data class MechanicCategory(override val id : UUID,
-                            val categoryId : Prim<MechanicCategoryId>,
-                            val label : Prim<MechanicCategoryLabel>,
-                            val description : Prim<MechanicCategoryDescription>)
-                             : ToDocument, Model, Serializable
+                            val categoryId : MechanicCategoryId,
+                            val label : MechanicCategoryLabel,
+                            val description : MechanicCategoryDescription)
+                             : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.categoryId.name    = "category_id"
-        this.label.name         = "labelString"
-        this.description.name   = "description"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -327,25 +323,25 @@ data class MechanicCategory(override val id : UUID,
                 label : MechanicCategoryLabel,
                 description : MechanicCategoryDescription)
         : this(UUID.randomUUID(),
-               Prim(categoryId),
-               Prim(label),
-               Prim(description))
+               categoryId,
+               label,
+               description)
 
 
     companion object : Factory<MechanicCategory>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicCategory> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<MechanicCategory> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::MechanicCategory,
-                         // Category Id
-                         doc.at("id") ap { MechanicCategoryId.fromDocument(it) },
-                         // Label
-                         doc.at("label") ap { MechanicCategoryLabel.fromDocument(it) },
-                         // Description
-                         doc.at("description") ap { MechanicCategoryDescription.fromDocument(it) }
-                         )
+                apply(::MechanicCategory,
+                      // Category Id
+                      doc.at("id") ap { MechanicCategoryId.fromDocument(it) },
+                      // Label
+                      doc.at("label") ap { MechanicCategoryLabel.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { MechanicCategoryDescription.fromDocument(it) }
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -367,15 +363,19 @@ data class MechanicCategory(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun categoryId() : MechanicCategoryId = this.categoryId.value
+    fun categoryId() : MechanicCategoryId = this.categoryId
 
-    fun label() : MechanicCategoryLabel  = this.label.value
 
-    fun labelString() : String = this.label.value.value
+    fun label() : MechanicCategoryLabel  = this.label
 
-    fun description() : MechanicCategoryDescription = this.description.value
 
-    fun descriptionString() : String = this.description.value.value
+    fun labelString() : String = this.label.value
+
+
+    fun description() : MechanicCategoryDescription = this.description
+
+
+    fun descriptionString() : String = this.description.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -384,9 +384,11 @@ data class MechanicCategory(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "mechanic_category"
+    override val prodTypeObject = this
 
-    override val modelObject = this
+
+    override fun row() : DB_MechanicCategory =
+            dbMechanicCategory(this.categoryId, this.label, this.description)
 
 }
 
@@ -500,7 +502,7 @@ data class MechanicCategoryDescription(val value : String)
 /**
  * Mechanic Requirements
  */
-data class MechanicRequirements(val variables : ArrayList<VariableId>)
+data class MechanicRequirements(val variableIds : List<VariableId>)
                 : SQLSerializable, Serializable
 {
 
@@ -510,10 +512,10 @@ data class MechanicRequirements(val variables : ArrayList<VariableId>)
 
     companion object : Factory<MechanicRequirements>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicRequirements> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<MechanicRequirements> = when (doc)
         {
-            is DocList -> effApply(::MechanicRequirements,
-                                   doc.mapArrayList { VariableId.fromDocument(it) })
+            is DocList -> apply(::MechanicRequirements,
+                                   doc.map { VariableId.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.LIST, docType(doc), doc.path))
         }
     }
@@ -523,7 +525,8 @@ data class MechanicRequirements(val variables : ArrayList<VariableId>)
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLBlob({SerializationUtils.serialize(this.variables)})
+    override fun asSQLValue() : SQLValue =
+            SQLText({ variableIds.map { it.toString() }.joinToString("")  })
 
 }
 

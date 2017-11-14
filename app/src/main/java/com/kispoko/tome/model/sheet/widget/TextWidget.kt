@@ -2,31 +2,26 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_WidgetTextFormat
+import com.kispoko.tome.db.dbWidgetTextFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.lib.ui.FormattedString
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
-import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -37,132 +32,68 @@ import java.util.*
  * Text Widget Format
  */
 data class TextWidgetFormat(override val id : UUID,
-                            val widgetFormat : Comp<WidgetFormat>,
-                            val height : Prim<Height>,
-                            val insideLabel : Maybe<Prim<TextWidgetLabel>>,
-                            val insideLabelFormat : Comp<TextFormat>,
-                            val outsideLabel : Maybe<Prim<TextWidgetLabel>>,
-                            val outsideLabelFormat : Comp<TextFormat>,
-                            val valueFormat : Comp<TextFormat>,
-                            val descriptionStyle : Comp<TextStyle>)
-                             : ToDocument, Model, Serializable
+                            val widgetFormat : WidgetFormat,
+                            val insideLabelFormat : TextFormat,
+                            val outsideLabelFormat : TextFormat,
+                            val valueFormat : TextFormat)
+                             : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name                      = "widget_format"
-
-        this.height.name                            = "height"
-
-        when (this.insideLabel) {
-            is Just -> this.insideLabel.value.name  = "inside_label"
-        }
-
-        this.insideLabelFormat.name                 = "inside_label_format"
-
-        when (this.outsideLabel) {
-            is Just -> this.outsideLabel.value.name = "outside_label"
-        }
-
-        this.outsideLabelFormat.name                = "outside_label_format"
-
-        this.valueFormat.name                       = "value_format"
-
-        this.descriptionStyle.name                  = "description_style"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                height : Height,
-                insideLabel : Maybe<TextWidgetLabel>,
                 insideLabelFormat : TextFormat,
-                outsideLabel : Maybe<TextWidgetLabel>,
                 outsideLabelFormat : TextFormat,
-                valueFormat : TextFormat,
-                descriptionStyle : TextStyle)
+                valueFormat : TextFormat)
         : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Prim(height),
-               maybeLiftPrim(insideLabel),
-               Comp(insideLabelFormat),
-               maybeLiftPrim(outsideLabel),
-               Comp(outsideLabelFormat),
-               Comp(valueFormat),
-               Comp(descriptionStyle))
+               widgetFormat,
+               insideLabelFormat,
+               outsideLabelFormat,
+               valueFormat)
 
 
     companion object : Factory<TextWidgetFormat>
     {
 
-        private val defaultWidgetFormat       = WidgetFormat.default()
-        private val defaultHeight             = Height.Wrap
-        private val defaultInsideLabel        = Nothing<TextWidgetLabel>()
-        private val defaultInsideLabelFormat  = TextFormat.default()
-        private val defaultOutsideLabel       = Nothing<TextWidgetLabel>()
-        private val defaultOutsideLabelFormat = TextFormat.default()
-        private val defaultValueFormat        = TextFormat.default()
-        private val defaultDescriptionStyle   = TextStyle.default()
+        private fun defaultWidgetFormat()       = WidgetFormat.default()
+        private fun defaultInsideLabelFormat()  = TextFormat.default()
+        private fun defaultOutsideLabelFormat() = TextFormat.default()
+        private fun defaultValueFormat()        = TextFormat.default()
 
 
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TextWidgetFormat> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TextWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
                 apply(::TextWidgetFormat,
                       // Widget Format
                       split(doc.maybeAt("widget_format"),
-                            effValue(defaultWidgetFormat),
+                            effValue(defaultWidgetFormat()),
                             { WidgetFormat.fromDocument(it) }),
-                      // Height
-                      split(doc.maybeAt("height"),
-                            effValue<ValueError,Height>(defaultHeight),
-                            { Height.fromDocument(it) }),
-                      // Inside Label
-                      split(doc.maybeAt("inside_label"),
-                            effValue<ValueError,Maybe<TextWidgetLabel>>(defaultInsideLabel),
-                            { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
                       // Inside Label Format
                       split(doc.maybeAt("inside_label_format"),
-                            effValue(defaultInsideLabelFormat),
+                            effValue(defaultInsideLabelFormat()),
                             { TextFormat.fromDocument(it) }),
-                      // Outside Label
-                      split(doc.maybeAt("outside_label"),
-                            effValue<ValueError,Maybe<TextWidgetLabel>>(defaultOutsideLabel),
-                            { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
                       // Outside Label Format
                       split(doc.maybeAt("outside_label_format"),
-                            effValue(defaultOutsideLabelFormat),
+                            effValue(defaultOutsideLabelFormat()),
                             { TextFormat.fromDocument(it) }),
                       // Value Format
                       split(doc.maybeAt("value_format"),
-                            effValue(defaultValueFormat),
-                            { TextFormat.fromDocument(it) }),
-                      // Description Style
-                      split(doc.maybeAt("description_style"),
-                            effValue(defaultDescriptionStyle),
-                            { TextStyle.fromDocument(it) })
+                            effValue(defaultValueFormat()),
+                            { TextFormat.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = TextWidgetFormat(defaultWidgetFormat,
-                                         defaultHeight,
-                                         defaultInsideLabel,
-                                         defaultInsideLabelFormat,
-                                         defaultOutsideLabel,
-                                         defaultOutsideLabelFormat,
-                                         defaultValueFormat,
-                                         defaultDescriptionStyle)
+        fun default() = TextWidgetFormat(defaultWidgetFormat(),
+                                         defaultInsideLabelFormat(),
+                                         defaultOutsideLabelFormat(),
+                                         defaultValueFormat())
 
     }
 
@@ -175,38 +106,24 @@ data class TextWidgetFormat(override val id : UUID,
         "widget_format" to this.widgetFormat().toDocument(),
         "inside_label_format" to this.insideLabelFormat().toDocument(),
         "outside_label_format" to this.outsideLabelFormat().toDocument(),
-        "value_format" to this.valueFormat().toDocument(),
-        "description_style" to this.descriptionStyle().toDocument()
+        "value_format" to this.valueFormat().toDocument()
     ))
-    .maybeMerge(this.insideLabelMaybe().apply {
-        Just(Pair("inside_label", it.toDocument() as SchemaDoc)) })
-    .maybeMerge(this.outsideLabelMaybe().apply {
-        Just(Pair("outside_label", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
 
-    fun height() : Height = this.height.value
 
-    fun insideLabelMaybe() : Maybe<TextWidgetLabel> = _getMaybePrim(this.insideLabel)
+    fun insideLabelFormat() : TextFormat = this.insideLabelFormat
 
-    fun insideLabel() : String? = getMaybePrim(this.insideLabel)?.value
 
-    fun insideLabelFormat() : TextFormat = this.insideLabelFormat.value
+    fun outsideLabelFormat() : TextFormat = this.outsideLabelFormat
 
-    fun outsideLabelMaybe() : Maybe<TextWidgetLabel> = _getMaybePrim(this.outsideLabel)
 
-    fun outsideLabel() : String? = getMaybePrim(this.outsideLabel)?.value
-
-    fun outsideLabelFormat() : TextFormat = this.outsideLabelFormat.value
-
-    fun valueFormat() : TextFormat = this.valueFormat.value
-
-    fun descriptionStyle() : TextStyle = this.descriptionStyle.value
+    fun valueFormat() : TextFormat = this.valueFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -215,77 +132,16 @@ data class TextWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "text_widget_format"
 
-    override val modelObject = this
-
-}
+    override val prodTypeObject = this
 
 
-/**
- * Text Widget Description
- */
-data class TextWidgetDescription(val value : String) : SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<TextWidgetDescription>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TextWidgetDescription> = when (doc)
-        {
-            is DocText -> effValue(TextWidgetDescription(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLText({this.value})
+    override fun row() : DB_WidgetTextFormat = dbWidgetTextFormat(this.widgetFormat,
+                                                                  this.insideLabelFormat,
+                                                                  this.outsideLabelFormat,
+                                                                  this.valueFormat)
 
 }
-
-
-/**
- * Text Widget Description
- */
-data class TextWidgetLabel(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<TextWidgetLabel>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TextWidgetLabel> = when (doc)
-        {
-            is DocText -> effValue(TextWidgetLabel(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLText({this.value})
-
-}
-
 
 
 object TextWidgetView
@@ -327,23 +183,23 @@ object TextWidgetView
         val layout = this.mainLayout(textWidget, sheetUIContext)
 
         // > Outside Top/Left Label View
-        if (format.outsideLabel() != null) {
-            if (format.outsideLabelFormat().position().isTop() ||
-                format.outsideLabelFormat().position().isLeft()) {
-                layout.addView(this.outsideLabelView(format, sheetUIContext))
-            }
-        }
+//        if (format.outsideLabel() != null) {
+//            if (format.outsideLabelFormat().position().isTop() ||
+//                format.outsideLabelFormat().position().isLeft()) {
+//                layout.addView(this.outsideLabelView(format, sheetUIContext))
+//            }
+//        }
 
         // > Value
         layout.addView(this.valueMainView(textWidget, format, sheetUIContext))
 
         // > Outside Bottom/Right Label View
-        if (format.outsideLabel() != null) {
-            if (format.outsideLabelFormat().position().isBottom() ||
-                format.outsideLabelFormat().position().isRight()) {
-                layout.addView(this.outsideLabelView(format, sheetUIContext))
-            }
-        }
+//        if (format.outsideLabel() != null) {
+//            if (format.outsideLabelFormat().position().isBottom() ||
+//                format.outsideLabelFormat().position().isRight()) {
+//                layout.addView(this.outsideLabelView(format, sheetUIContext))
+//            }
+//        }
 
         // On Click
         // -------------------------------------------------------------------------------------
@@ -351,7 +207,7 @@ object TextWidgetView
         layout.setOnClickListener {
             val valueVar = textWidget.valueVariable(SheetContext(sheetUIContext))
             when (valueVar) {
-                is Val ->
+                is effect.Val ->
                 {
                     val textWidgetViewId = textWidget.viewId
                     if (textWidgetViewId != null)
@@ -379,12 +235,13 @@ object TextWidgetView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.orientation          = textWidget.format().outsideLabelFormat()
-                                            .position().linearLayoutOrientation()
+//        layout.orientation          = textWidget.format().outsideLabelFormat()
+//                                            .position().linearLayoutOrientation()
 
-        layout.gravity              = textWidget.widgetFormat().alignment().gravityConstant()
+        layout.gravity              = textWidget.widgetFormat().elementFormat().alignment().gravityConstant()
+        Log.d("***TEXTWIDGET", "${textWidget.widgetFormat().elementFormat().alignment()}" )
 
-        layout.marginSpacing        = textWidget.widgetFormat().margins()
+        layout.marginSpacing        = textWidget.widgetFormat().elementFormat().margins()
 
 
         return layout.linearLayout(sheetUIContext.context)
@@ -401,22 +258,22 @@ object TextWidgetView
         val layout = this.valueMainViewLayout(format, sheetUIContext)
 
         // > Inside Top/Left Label View
-        if (format.insideLabel() != null && textWidget.description() == null) {
-            if (format.insideLabelFormat().position().isTop() ||
-                format.insideLabelFormat().position().isLeft()) {
-                layout.addView(this.insideLabelView(format, sheetUIContext))
-            }
-        }
+//        if (format.insideLabel() != null && textWidget.description() == null) {
+//            if (format.insideLabelFormat().position().isTop() ||
+//                format.insideLabelFormat().position().isLeft()) {
+//                layout.addView(this.insideLabelView(format, sheetUIContext))
+//            }
+//        }
 
         layout.addView(valueTextView(textWidget, format, sheetUIContext))
 
         // > Inside Bottom/Right Label View
-        if (format.insideLabel() != null && textWidget.description() == null) {
-            if (format.insideLabelFormat().position().isBottom() ||
-                format.insideLabelFormat().position().isRight()) {
-                layout.addView(this.insideLabelView(format, sheetUIContext))
-            }
-        }
+//        if (format.insideLabel() != null && textWidget.description() == null) {
+//            if (format.insideLabelFormat().position().isBottom() ||
+//                format.insideLabelFormat().position().isRight()) {
+//                layout.addView(this.insideLabelView(format, sheetUIContext))
+//            }
+//        }
 
         return layout
     }
@@ -427,12 +284,12 @@ object TextWidgetView
     {
         val layout = LinearLayoutBuilder()
 
-        layout.orientation          = format.insideLabelFormat()
-                                            .position().linearLayoutOrientation()
+//        layout.orientation          = format.insideLabelFormat()
+//                                            .position().linearLayoutOrientation()
 
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val height = format.height()
+        val height = format.widgetFormat().elementFormat().height()
         when (height)
         {
             is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -444,16 +301,16 @@ object TextWidgetView
 //                                                sheetUIContext.sheetId,
 //                                                format.widgetFormat().backgroundColorTheme())
 
-        layout.gravity              = format.valueFormat().alignment().gravityConstant() or
+        layout.gravity              = format.valueFormat().elementFormat().alignment().gravityConstant() or
                                         Gravity.CENTER_VERTICAL
 
 //        layout.backgroundResource   = format.valueFormat().height()
 //                                            .resourceId(format.widgetFormat().corners())
 
-        if (format.valueFormat().height().isWrap())
+        if (format.valueFormat().elementFormat().height().isWrap())
         {
-            layout.padding.topDp    = format.valueFormat().padding().topDp()
-            layout.padding.bottomDp = format.valueFormat().padding().bottomDp()
+            layout.padding.topDp    = format.valueFormat().elementFormat().padding().topDp()
+            layout.padding.bottomDp = format.valueFormat().elementFormat().padding().bottomDp()
         }
 
 //        if (format.widgetFormat.background() == BackgroundColor.EMPTY)
@@ -485,47 +342,13 @@ object TextWidgetView
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        value.layoutGravity = format.valueFormat().alignment().gravityConstant() or
+        value.layoutGravity = format.valueFormat().elementFormat().alignment().gravityConstant() or
                                 Gravity.CENTER_VERTICAL
-        value.gravity       = format.valueFormat().alignment().gravityConstant()
+        value.gravity       = format.valueFormat().elementFormat().alignment().gravityConstant()
 
-        if (textWidget.description() != null)
-        {
-            format.descriptionStyle().styleTextViewBuilder(value, sheetUIContext)
+        value.text      = textWidget.valueString(SheetContext(sheetUIContext))
 
-            val spans = mutableListOf<FormattedString.Span>()
-
-            val labelSpan =
-                FormattedString.Span(
-                        format.insideLabel(),
-                        SheetManager.color(sheetUIContext.sheetId,
-                                           format.insideLabelFormat().style().colorTheme()),
-                        format.insideLabelFormat().style().sizeSp(),
-                        format.insideLabelFormat().style().font())
-
-            val valueSpan =
-                FormattedString.Span(textWidget.valueString(SheetContext(sheetUIContext)),
-                                     sheetUIContext.context.getString(R.string.placeholder_value),
-                                     SheetManager.color(sheetUIContext.sheetId,
-                                                        format.valueFormat().style().colorTheme()),
-                                     format.valueFormat().style().sizeSp(),
-                                     format.valueFormat().style().font())
-
-
-            if (format.insideLabel() != null)
-                spans.add(labelSpan)
-
-            spans.add(valueSpan)
-
-//            value.textSpan  = FormattedString.spannableStringBuilder(textWidget.description(),
-//                                                                     spans)
-        }
-        else
-        {
-            value.text      = textWidget.valueString(SheetContext(sheetUIContext))
-
-            format.valueFormat().style().styleTextViewBuilder(value, sheetUIContext)
-        }
+        format.valueFormat().styleTextViewBuilder(value, sheetUIContext)
 
         return value.textView(sheetUIContext.context)
     }
@@ -539,13 +362,13 @@ object TextWidgetView
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.layoutGravity     = format.outsideLabelFormat().alignment().gravityConstant()
+        label.layoutGravity     = format.outsideLabelFormat().elementFormat().alignment().gravityConstant()
 
-        label.text              = format.outsideLabel()
+        //label.text              = format.outsideLabel()
 
-        format.outsideLabelFormat().style().styleTextViewBuilder(label, sheetUIContext)
+        format.outsideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
 
-        label.marginSpacing     = format.outsideLabelFormat().margins()
+        label.marginSpacing     = format.outsideLabelFormat().elementFormat().margins()
 
         return label.textView(sheetUIContext.context)
     }
@@ -559,11 +382,11 @@ object TextWidgetView
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.text              = format.insideLabel()
+        //label.text              = format.insideLabel()
 
-        format.insideLabelFormat().style().styleTextViewBuilder(label, sheetUIContext)
+        format.insideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
 
-        label.marginSpacing     = format.insideLabelFormat().margins()
+        label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
 
         return label.textView(sheetUIContext.context)
     }

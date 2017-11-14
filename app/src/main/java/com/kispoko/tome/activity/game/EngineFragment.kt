@@ -258,10 +258,7 @@ class EngineFragment : Fragment()
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         return layout.relativeLayout(context)
     }

@@ -4,9 +4,12 @@ package com.kispoko.tome.model.game.engine.value
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
+import com.kispoko.tome.db.DB_ValueNumber
+import com.kispoko.tome.db.DB_ValueText
+import com.kispoko.tome.db.dbValueNumber
+import com.kispoko.tome.db.dbValueText
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -28,12 +31,12 @@ import java.util.*
  * Value
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Value(open val valueId : Prim<ValueId>,
-                   open val description : Maybe<Prim<ValueDescription>>,
-                   open val rulebookReference : Maybe<Comp<RulebookReference>>,
-                   open val variables : Conj<Variable>,
+sealed class Value(open val valueId : ValueId,
+                   open val description : ValueDescription,
+                   open val rulebookReference : Maybe<RulebookReference>,
+                   open val variables : List<Variable>,
                    open val valueSetId : ValueSetId)
-                    : ToDocument, Model, Serializable
+                    : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -64,17 +67,19 @@ sealed class Value(open val valueId : Prim<ValueId>,
     // GETTER
     // -----------------------------------------------------------------------------------------
 
-    fun valueId() : ValueId = this.valueId.value
+    fun valueId() : ValueId = this.valueId
+
 
     fun valueSetId() : ValueSetId = this.valueSetId
 
-    fun description() : String? = getMaybePrim(this.description)?.value
 
-    fun maybeDescription() : Maybe<ValueDescription> = _getMaybePrim(this.description)
+    fun description() : ValueDescription = this.description
 
-    fun rulebookReference() : Maybe<RulebookReference> = getMaybeComp(this.rulebookReference)
 
-    fun variables() : Set<Variable> = this.variables.set
+    fun rulebookReference() : Maybe<RulebookReference> = this.rulebookReference
+
+
+    fun variables() : List<Variable> = this.variables
 
 
     // -----------------------------------------------------------------------------------------
@@ -83,11 +88,8 @@ sealed class Value(open val valueId : Prim<ValueId>,
 
     abstract fun type() : ValueType
 
+
     abstract fun valueString() : String
-
-    fun isNumber() = this.type() == ValueType.NUMBER
-
-    fun isText() = this.type() == ValueType.TEXT
 
 
     fun numberValue() : AppEff<ValueNumber> = when (this)
@@ -96,7 +98,7 @@ sealed class Value(open val valueId : Prim<ValueId>,
         else           -> effError(AppEngineError(
                                 ValueIsOfUnexpectedType(this.valueSetId(),
                                                         this.valueId(),
-                                                        ValueType.NUMBER,
+                                                        ValueType.Number,
                                                         this.type())))
     }
 
@@ -107,7 +109,7 @@ sealed class Value(open val valueId : Prim<ValueId>,
         else         -> effError(AppEngineError(
                                 ValueIsOfUnexpectedType(this.valueSetId(),
                                                         this.valueId(),
-                                                        ValueType.TEXT,
+                                                        ValueType.Text,
                                                         this.type())))
     }
 
@@ -128,48 +130,32 @@ sealed class Value(open val valueId : Prim<ValueId>,
  * Number Value
  */
 data class ValueNumber(override val id : UUID,
-                       override val valueId : Prim<ValueId>,
-                       override val description: Maybe<Prim<ValueDescription>>,
-                       override val rulebookReference : Maybe<Comp<RulebookReference>>,
-                       override val variables : Conj<Variable>,
+                       override val valueId : ValueId,
+                       override val description : ValueDescription,
+                       override val rulebookReference : Maybe<RulebookReference>,
+                       override val variables : List<Variable>,
                        override val valueSetId : ValueSetId,
-                       val value : Prim<NumberValue>)
+                       val value : NumberValue)
                         : Value(valueId, description, rulebookReference, variables, valueSetId)
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.valueId.name                           = "value_id"
-
-        when (this.description) {
-            is Just -> this.description.value.name  = "description"
-        }
-
-        this.value.name                             = "value"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(valueId : ValueId,
-                description : Maybe<ValueDescription>,
+                description : ValueDescription,
                 rulebookReference : Maybe<RulebookReference>,
-                variables : MutableSet<Variable>,
+                variables : List<Variable>,
                 valueSetId : ValueSetId,
                 value : NumberValue)
         : this(UUID.randomUUID(),
-               Prim(valueId),
-               maybeLiftPrim(description),
-               maybeLiftComp(rulebookReference),
-               Conj(variables),
+               valueId,
+               description,
+               rulebookReference,
+               variables,
                valueSetId,
-               Prim(value))
+               value)
 
 
     companion object
@@ -179,26 +165,24 @@ data class ValueNumber(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::ValueNumber,
-                         // Value Id
-                         doc.at("value_id") ap { ValueId.fromDocument(it) },
-                         // Description
-                         split(doc.maybeAt("description"),
-                               effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
-                               { effApply(::Just, ValueDescription.fromDocument(it)) }),
-                         // Rulebook Reference
-                         split(doc.maybeAt("rulebook_reference"),
-                               effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
-                               { effApply(::Just, RulebookReference.fromDocument(it)) }),
-                         // Variables
-                         doc.list("variables") ap { docList ->
-                             docList.mapSetMut { Variable.fromDocument(it) }
-                         },
-                         // Value Set Id
-                         effValue(valueSetId),
-                         // Value
-                         doc.at("value") ap { NumberValue.fromDocument(it) }
-                         )
+                apply(::ValueNumber,
+                      // Value Id
+                      doc.at("value_id") ap { ValueId.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { ValueDescription.fromDocument(it) },
+                      // Rulebook Reference
+                      split(doc.maybeAt("rulebook_reference"),
+                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
+                            { apply(::Just, RulebookReference.fromDocument(it)) }),
+                      // Variables
+                      doc.list("variables") ap { docList ->
+                          docList.map { Variable.fromDocument(it) }
+                      },
+                      // Value Set Id
+                      effValue(valueSetId),
+                      // Value
+                      doc.at("value") ap { NumberValue.fromDocument(it) }
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -212,10 +196,9 @@ data class ValueNumber(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "value_id" to this.valueId().toDocument(),
         "variables" to DocList(this.variables().map { it.toDocument() }),
-        "value" to this.value.value.toDocument()
+        "value" to this.value.toDocument(),
+        "description" to this.description.toDocument()
     ))
-    .maybeMerge(this.maybeDescription().apply {
-        Just(Pair("description", it.toDocument() as SchemaDoc)) })
     .maybeMerge(this.rulebookReference().apply {
         Just(Pair("rulebook_reference", it.toDocument() as SchemaDoc)) })
 
@@ -224,14 +207,15 @@ data class ValueNumber(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun value() : Double = this.value.value.value
+    fun value() : Double = this.value.value
 
 
     // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun type() : ValueType = ValueType.NUMBER
+    override fun type() : ValueType = ValueType.Number
+
 
     override fun valueString() : String = Util.doubleString(this.value())
 
@@ -242,10 +226,15 @@ data class ValueNumber(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "value_text"
 
-    override val modelObject = this
+    override val prodTypeObject = this
 
+
+    override fun row() : DB_ValueNumber = dbValueNumber(this.valueId,
+                                                        this.description,
+                                                        this.rulebookReference,
+                                                        this.variables,
+                                                        this.value)
 
     // -----------------------------------------------------------------------------------------
     // EQUALS
@@ -264,50 +253,32 @@ data class ValueNumber(override val id : UUID,
  * Text Value
  */
 data class ValueText(override val id : UUID,
-                     override val valueId : Prim<ValueId>,
-                     override val description : Maybe<Prim<ValueDescription>>,
-                     override val rulebookReference : Maybe<Comp<RulebookReference>>,
-                     override val variables : Conj<Variable>,
+                     override val valueId : ValueId,
+                     override val description : ValueDescription,
+                     override val rulebookReference : Maybe<RulebookReference>,
+                     override val variables : MutableList<Variable>,
                      override val valueSetId : ValueSetId,
-                     val value : Prim<TextValue>)
+                     val value : TextValue)
                       : Value(valueId, description, rulebookReference, variables, valueSetId)
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.valueId.name                           = "value_id"
-
-        when (this.description) {
-            is Just -> this.description.value.name  = "description"
-        }
-
-        this.value.name                             = "value"
-
-        this.variables.name                         = "variables"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(valueId : ValueId,
-                description : Maybe<ValueDescription>,
+                description : ValueDescription,
                 rulebookReference : Maybe<RulebookReference>,
-                variables : MutableSet<Variable>,
+                variables : List<Variable>,
                 valueSetId : ValueSetId,
                 value : TextValue)
         : this(UUID.randomUUID(),
-               Prim(valueId),
-               maybeLiftPrim(description),
-               maybeLiftComp(rulebookReference),
-               Conj(variables),
+               valueId,
+               description,
+               rulebookReference,
+               variables.toMutableList(),
                valueSetId,
-               Prim(value))
+               value)
 
 
     companion object
@@ -321,17 +292,15 @@ data class ValueText(override val id : UUID,
                       // Value Id
                       doc.at("value_id") ap { ValueId.fromDocument(it) },
                       // Description
-                      split(doc.maybeAt("description"),
-                            effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
-                            { effApply(::Just, ValueDescription.fromDocument(it)) }),
+                      doc.at("description") ap { ValueDescription.fromDocument(it) },
                       // Rulebook Reference
                       split(doc.maybeAt("rulebook_reference"),
                             effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
                             { effApply(::Just, RulebookReference.fromDocument(it)) }),
                       // Variables
                       split(doc.maybeList("variables"),
-                            effValue(mutableSetOf()),
-                            { it.mapSetMut { Variable.fromDocument(it) } }),
+                            effValue(listOf()),
+                            { it.map{ Variable.fromDocument(it) } }),
                       // Value Set Id
                       effValue(valueSetId),
                       // Value
@@ -350,10 +319,9 @@ data class ValueText(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "value_id" to this.valueId().toDocument(),
         "variables" to DocList(this.variables().map { it.toDocument() }),
-        "value" to this.value.value.toDocument()
+        "value" to this.value.toDocument(),
+        "description" to this.description.toDocument()
     ))
-    .maybeMerge(this.maybeDescription().apply {
-        Just(Pair("description", it.toDocument() as SchemaDoc)) })
     .maybeMerge(this.rulebookReference().apply {
         Just(Pair("rulebook_reference", it.toDocument() as SchemaDoc)) })
 
@@ -362,16 +330,16 @@ data class ValueText(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value() : String = this.value.value.value
+    fun value() : String = this.value.value
+
 
     fun valueMinusThe() : String
     {
         val valueString = this.value()
-
-        if (valueString.startsWith("the ", true))
-            return valueString.drop(4)
+        return if (valueString.startsWith("the ", true))
+            valueString.drop(4)
         else
-            return valueString
+            valueString
     }
 
 
@@ -379,7 +347,7 @@ data class ValueText(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun type() : ValueType = ValueType.TEXT
+    override fun type() : ValueType = ValueType.Text
 
     override fun valueString() : String = this.value()
 
@@ -390,9 +358,15 @@ data class ValueText(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "value_text"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_ValueText = dbValueText(this.valueId,
+                                                    this.description,
+                                                    this.rulebookReference,
+                                                    this.variables,
+                                                    this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -412,11 +386,78 @@ data class ValueText(override val id : UUID,
 }
 
 
-enum class ValueType
+sealed class ValueType : ToDocument, SQLSerializable, Serializable
 {
-    NUMBER,
-    TEXT
+
+    object Number : ValueType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({"number"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("number")
+
+    }
+
+
+    object Text : ValueType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({"text"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("text")
+
+    }
+
+
+    object Any : ValueType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({"any"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("any")
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<ValueType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "number" -> effValue<ValueError,ValueType>(ValueType.Number)
+                "text"   -> effValue<ValueError,ValueType>(ValueType.Text)
+                "any"    -> effValue<ValueError,ValueType>(ValueType.Any)
+                else     -> effError<ValueError,ValueType>(
+                                    UnexpectedValue("ValueType", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
 }
+
 
 
 /**

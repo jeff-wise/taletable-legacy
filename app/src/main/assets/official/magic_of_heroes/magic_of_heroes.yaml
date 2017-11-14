@@ -1,8 +1,7 @@
 id: magic_of_heroes
-description:
-  summary: 'A low-magic fantasy game with creative combat mechanics'
-  game_name: 'The Magic of Heroes'
-  authors:
+summary: 'A low-magic fantasy game with creative combat mechanics'
+game_name: 'The Magic of Heroes'
+authors:
 engine:
   value_sets:
   - type: value_set_base
@@ -5028,7 +5027,7 @@ rulebook:
           As an action, you can spill these tiny metal balls from their pouch to cover a level,
           square area that is 10 feet on a side. A creature moving across the covered area must
           succeed on a DC 10 Dexterity saving throw or fall prone. A creature moving through the
-          area at half speed doesn't need to make the save.
+          area at half speed doesn't need to make the saveSheet.
       - id: block_and_tackle
         title: Block and Tackle
         body: >
@@ -5048,7 +5047,7 @@ rulebook:
           a side. Any creature that enters the area must succeed on a DC 15 Dexterity saving throw
           or stop moving this turn and take 1 piercing damage. Taking this damage reduces the
           creature's walking speed by 10 feet until the creature regains at least 1 hit point.
-          A creature moving through the area at half speed doesn't need to make the save.
+          A creature moving through the area at half speed doesn't need to make the saveSheet.
       - id: candle
         title: Candle
         body: >

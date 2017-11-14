@@ -17,7 +17,7 @@ sealed class ORMError
 
 object ModelClassDoesNotHaveName : ORMError()
 {
-    override fun errorMessage() : String = "ORM Error: Model class does not have a name."
+    override fun errorMessage() : String = "ORM Error: ProdType class does not have a name."
 
     override fun prettyErrorMessage() : String = this.errorMessage()
 }

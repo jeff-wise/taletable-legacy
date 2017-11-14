@@ -197,10 +197,7 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(3f),
-                                          TopRightCornerRadius(3f),
-                                          BottomRightCornerRadius(3f),
-                                          BottomLeftCornerRadius(3f))
+        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -232,10 +229,7 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         header.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        header.corners          = Corners(TopLeftCornerRadius(3f),
-                                          TopRightCornerRadius(3f),
-                                          BottomRightCornerRadius(0f),
-                                          BottomLeftCornerRadius(0f))
+        header.corners          = Corners(3.0, 3.0, 0.0, 0.0)
 
         header.sizeSp           = 16f
 
@@ -335,10 +329,7 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners               = Corners(TopLeftCornerRadius(0f),
-                                               TopRightCornerRadius(0f),
-                                               BottomRightCornerRadius(3f),
-                                               BottomLeftCornerRadius(3f))
+        layout.corners              = Corners(0.0, 0.0, 3.0, 3.0)
 
         layout.padding.leftDp       = 8f
         layout.padding.topDp        = 8f

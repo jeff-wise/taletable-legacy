@@ -444,10 +444,7 @@ class SummationViewBuilder(val summation : Summation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor          = ThemeManager.color(themeId, colorTheme)
 
-        layout.corners                  = Corners(TopLeftCornerRadius(2f),
-                                                  TopRightCornerRadius(2f),
-                                                  BottomRightCornerRadius(2f),
-                                                  BottomLeftCornerRadius(2f))
+        layout.corners                  = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.onClick                  = View.OnClickListener {
             val term = termSummary.term

@@ -300,7 +300,7 @@ palette:
   color: '#633A3A'
 ui_colors:
   toolbar_background: dark_grey_12
-  toolbar_icons: light_grey_14
+  toolbar_icons: light_grey_10
   title: light_grey_6
   tab_bar_background: dark_grey_12
   tab_text_normal: light_grey_6

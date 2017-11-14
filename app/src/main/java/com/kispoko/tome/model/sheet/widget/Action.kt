@@ -2,11 +2,10 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import com.kispoko.tome.db.DB_Action
+import com.kispoko.tome.db.dbAction
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.functor._getMaybePrim
-import com.kispoko.tome.lib.functor.maybeLiftPrim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -26,29 +25,11 @@ import java.util.*
  * Action
  */
 data class Action(override val id : UUID,
-                  val actionName : Prim<ActionName>,
-                  val rollSummationId : Maybe<Prim<SummationId>>,
-                  val procedureId : Maybe<Prim<ProcedureId>>)
-                   : Model, ToDocument, Serializable
+                  val actionName : ActionName,
+                  val rollSummationId : Maybe<SummationId>,
+                  val procedureId : Maybe<ProcedureId>)
+                   : ProdType, ToDocument, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.actionName.name      = "section_name"
-
-        when (this.rollSummationId) {
-            is Just -> this.rollSummationId.value.name = "roll_summation_id"
-        }
-
-        when (this.procedureId) {
-            is Just -> this.procedureId.value.name = "procedure_id"
-        }
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -58,9 +39,9 @@ data class Action(override val id : UUID,
                 rollSummationId : Maybe<SummationId>,
                 procedureId : Maybe<ProcedureId>)
         : this(UUID.randomUUID(),
-               Prim(name),
-               maybeLiftPrim(rollSummationId),
-               maybeLiftPrim(procedureId))
+               name,
+               rollSummationId,
+               procedureId)
 
 
     companion object : Factory<Action>
@@ -91,11 +72,11 @@ data class Action(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun name() : ActionName = this.actionName.value
+    fun name() : ActionName = this.actionName
 
-    fun rollSummationId() : Maybe<SummationId> = _getMaybePrim(this.rollSummationId)
+    fun rollSummationId() : Maybe<SummationId> = this.rollSummationId
 
-    fun procedureId() : Maybe<ProcedureId> = _getMaybePrim(this.procedureId)
+    fun procedureId() : Maybe<ProcedureId> = this.procedureId
 
 
     // -----------------------------------------------------------------------------------------
@@ -117,9 +98,12 @@ data class Action(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "action"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Action =
+            dbAction(this.actionName, this.rollSummationId, this.procedureId)
 
 }
 

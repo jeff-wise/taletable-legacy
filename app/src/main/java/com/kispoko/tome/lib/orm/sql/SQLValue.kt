@@ -2,12 +2,15 @@
 package com.kispoko.tome.lib.orm.sql
 
 
+import android.content.ContentValues
 
 
 
 sealed class SQLValue
 {
     abstract fun type() : SQLValueType
+
+
 }
 
 
@@ -17,10 +20,10 @@ object SQLNull : SQLValue()
 }
 
 
-class SQLInt(val lazyValue : () -> Int) : SQLValue()
+class SQLInt(val lazyValue : () -> Long) : SQLValue()
 {
 
-    fun value() : Int = lazyValue()
+    fun value() : Long = lazyValue()
 
     override fun type() : SQLValueType = SQLValueType.INTEGER
 

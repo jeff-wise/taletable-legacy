@@ -12,7 +12,7 @@ package com.kispoko.tome.model.campaign;
 //    // PROPERTIES
 //    // -----------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // -----------------------------------------------------------------------------------------
 //
 //    private UUID                            id;
@@ -57,15 +57,15 @@ package com.kispoko.tome.model.campaign;
 //    // API
 //    // -----------------------------------------------------------------------------------------
 //
-//    // API > Model
+//    // API > ProdType
 //    // -----------------------------------------------------------------------------------------
 //
-//    // API > Model > Id
+//    // API > ProdType > Id
 //    // -----------------------------------------------------------------------------------------
 //
 //    /**
-//     * Get the model identifier.
-//     * @return The model UUID.
+//     * Get the prodType identifier.
+//     * @return The prodType UUID.
 //     */
 //    public UUID getId()
 //    {
@@ -74,8 +74,8 @@ package com.kispoko.tome.model.campaign;
 //
 //
 //    /**
-//     * Set the model identifier.
-//     * @param id The new model UUID.
+//     * Set the prodType identifier.
+//     * @param id The new prodType UUID.
 //     */
 //    public void setId(UUID id)
 //    {
@@ -83,7 +83,7 @@ package com.kispoko.tome.model.campaign;
 //    }
 //
 //
-//    // API > Model > On Load
+//    // API > ProdType > On Load
 //    // -----------------------------------------------------------------------------------------
 //
 //    /**

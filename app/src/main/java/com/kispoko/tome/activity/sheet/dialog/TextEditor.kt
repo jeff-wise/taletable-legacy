@@ -3,7 +3,6 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -20,7 +19,6 @@ import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.sheet.*
-import java.util.*
 
 
 
@@ -91,7 +89,7 @@ class TextEditorDialogFragment : DialogFragment()
         {
             val sheetUIContext = SheetUIContext(sheetContext, context)
 
-            val dialogLayout = this.dialogLayout(sheetUIContext)
+            val dialogLayout = this.dialogLayout()
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -144,7 +142,7 @@ class TextEditorDialogFragment : DialogFragment()
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
 
-    fun dialogLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    fun dialogLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -212,10 +210,7 @@ class TextEditorViewBuilder(val title : String,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(3f),
-                                              TopRightCornerRadius(3f),
-                                              BottomRightCornerRadius(3f),
-                                              BottomLeftCornerRadius(3f))
+        layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -261,10 +256,7 @@ class TextEditorViewBuilder(val title : String,
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.corners              = Corners(TopLeftCornerRadius(3f),
-                                              TopRightCornerRadius(3f),
-                                              BottomRightCornerRadius(0f),
-                                              BottomLeftCornerRadius(0f))
+        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -418,10 +410,7 @@ class TextEditorViewBuilder(val title : String,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(0f),
-                                           TopRightCornerRadius(0f),
-                                           BottomRightCornerRadius(2f),
-                                           BottomLeftCornerRadius(0f))
+        layout.corners              = Corners(0.0, 0.0, 2.0, 0.0)
 
         layout.margin.leftDp    = 1f
 
@@ -438,7 +427,9 @@ class TextEditorViewBuilder(val title : String,
                     {
                         val textWidgetUpdate = TextWidgetUpdateSetText(updateTarget.textWidgetId,
                                                                        currentValue)
-                        SheetManager.updateSheet(sheetUIContext.sheetId, textWidgetUpdate)
+                        SheetManager.updateSheet(sheetUIContext.sheetId,
+                                                 textWidgetUpdate,
+                                                 sheetUIContext.sheetUI())
                         dialog.dismiss()
                     }
                 }
@@ -512,10 +503,7 @@ class TextEditorViewBuilder(val title : String,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners           = Corners(TopLeftCornerRadius(0f),
-                                           TopRightCornerRadius(0f),
-                                           BottomRightCornerRadius(0f),
-                                           BottomLeftCornerRadius(2f))
+        layout.corners           = Corners(0.0, 0.0, 0.0, 2.0)
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f

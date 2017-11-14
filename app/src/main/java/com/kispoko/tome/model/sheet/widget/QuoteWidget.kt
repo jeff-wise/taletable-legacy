@@ -7,9 +7,13 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.db.DB_WidgetQuoteFormat
+import com.kispoko.tome.db.dbWidgetQuoteFormat
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.Row
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -17,7 +21,7 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.IconFormat
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -111,78 +115,77 @@ sealed class QuoteViewType : ToDocument, SQLSerializable, Serializable
  * Quote Widget Format
  */
 data class QuoteWidgetFormat(override val id : UUID,
-                             val widgetFormat : Comp<WidgetFormat>,
-                             val quoteStyle : Comp<TextStyle>,
-                             val sourceStyle : Comp<TextStyle>,
-                             val iconFormat : Comp<IconFormat>)
-                             : ToDocument, Model, Serializable
+                             val widgetFormat : WidgetFormat,
+                             val viewType : QuoteViewType,
+                             val quoteFormat : TextFormat,
+                             val sourceFormat : TextFormat,
+                             val iconFormat : IconFormat)
+                             : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name      = "widget_format"
-        this.quoteStyle.name        = "quote_style"
-        this.sourceStyle.name       = "source_style"
-        this.iconFormat.name        = "icon_format"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                quoteStyle : TextStyle,
-                sourceStyle : TextStyle,
+                viewType : QuoteViewType,
+                quoteStyle : TextFormat,
+                sourceStyle : TextFormat,
                 iconFormat : IconFormat)
         : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Comp(quoteStyle),
-               Comp(sourceStyle),
-               Comp(iconFormat))
+               widgetFormat,
+               viewType,
+               quoteStyle,
+               sourceStyle,
+               iconFormat)
 
 
     companion object : Factory<QuoteWidgetFormat>
     {
 
-        val defaultWidgetFormat   = WidgetFormat.default()
-        val defaultQuoteStyle     = TextStyle.default()
-        val defaultSoureStyle     = TextStyle.default()
-        val defaultIconFormat     = IconFormat.default()
+        private fun defaultWidgetFormat() = WidgetFormat.default()
+        private fun defaultViewType()     = QuoteViewType.Source
+        private fun defaultQuoteStyle()   = TextFormat.default()
+        private fun defaultSoureStyle()   = TextFormat.default()
+        private fun defaultIconFormat()   = IconFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<QuoteWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::QuoteWidgetFormat,
-                                   // Widget Format
-                                   split(doc.maybeAt("widget_format"),
-                                         effValue(defaultWidgetFormat),
-                                         { WidgetFormat.fromDocument(it) }),
-                                   // Quote Style
-                                   split(doc.maybeAt("quote_style"),
-                                         effValue(defaultQuoteStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Source Style
-                                   split(doc.maybeAt("source_style"),
-                                         effValue(defaultSoureStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Icon Format
-                                   split(doc.maybeAt("icon_format"),
-                                         effValue(defaultIconFormat),
-                                         { IconFormat.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                apply(::QuoteWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat()),
+                            { WidgetFormat.fromDocument(it) }),
+                      // View Type
+                      split(doc.maybeAt("view_type"),
+                            effValue<ValueError,QuoteViewType>(QuoteViewType.Source),
+                            { QuoteViewType.fromDocument(it) }),
+                      // Quote Style
+                      split(doc.maybeAt("quote_style"),
+                            effValue(defaultQuoteStyle()),
+                            { TextFormat.fromDocument(it) }),
+                      // Source Style
+                      split(doc.maybeAt("source_style"),
+                            effValue(defaultSoureStyle()),
+                            { TextFormat.fromDocument(it) }),
+                      // Icon Format
+                      split(doc.maybeAt("icon_format"),
+                            effValue(defaultIconFormat()),
+                            { IconFormat.fromDocument(it) })
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = QuoteWidgetFormat(defaultWidgetFormat,
-                                          defaultQuoteStyle,
-                                          defaultSoureStyle,
-                                          defaultIconFormat)
+        fun default() = QuoteWidgetFormat(defaultWidgetFormat(),
+                                          defaultViewType(),
+                                          defaultQuoteStyle(),
+                                          defaultSoureStyle(),
+                                          defaultIconFormat())
 
     }
 
@@ -192,10 +195,11 @@ data class QuoteWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "quote_style" to this.quoteStyle().toDocument(),
-        "source_style" to this.sourceStyle().toDocument(),
-        "icon_format" to this.iconFormat().toDocument()
+        "widget_format" to this.widgetFormat.toDocument(),
+        "view_type" to this.viewType.toDocument(),
+        "quote_format" to this.quoteFormat.toDocument(),
+        "source_format" to this.sourceFormat.toDocument(),
+        "icon_format" to this.iconFormat.toDocument()
     ))
 
 
@@ -203,13 +207,15 @@ data class QuoteWidgetFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
 
-    fun quoteStyle() : TextStyle = this.quoteStyle.value
+    fun viewType() : QuoteViewType = this.viewType
 
-    fun sourceStyle() : TextStyle = this.sourceStyle.value
+    fun quoteFormat() : TextFormat = this.quoteFormat
 
-    fun iconFormat() : IconFormat = this.iconFormat.value
+    fun sourceFormat() : TextFormat = this.sourceFormat
+
+    fun iconFormat() : IconFormat = this.iconFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -218,12 +224,18 @@ data class QuoteWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "quote_widget_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetQuoteFormat =
+            dbWidgetQuoteFormat(this.widgetFormat,
+                                this.viewType,
+                                this.quoteFormat,
+                                this.sourceFormat,
+                                this.iconFormat)
 
 }
-
 
 
 class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
@@ -271,7 +283,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
 
     private fun addSourceView(source : String, layout : LinearLayout) =
-        when (quoteWidget.viewType())
+        when (quoteWidget.format().viewType())
         {
             is QuoteViewType.Source ->
                 layout.addView(this.sourceNormalView(source))
@@ -295,7 +307,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
         layout.orientation      = LinearLayout.VERTICAL
 
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     widgetFormat.backgroundColorTheme())
+                                                     widgetFormat.elementFormat().backgroundColorTheme())
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -310,9 +322,9 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         quote.text          = this.quoteWidget.quote(sheetContext)
 
-        quote.gravity       = quoteWidget.format().quoteStyle().alignment().gravityConstant()
+        quote.gravity       = quoteWidget.format().quoteFormat().elementFormat().alignment().gravityConstant()
 
-        quoteWidget.format().quoteStyle().styleTextViewBuilder(quote, sheetUIContext)
+        quoteWidget.format().quoteFormat().styleTextViewBuilder(quote, sheetUIContext)
 
         return quote.textView(sheetUIContext.context)
     }
@@ -366,7 +378,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         source.text                 = sourceText
 
-        format.sourceStyle().styleTextViewBuilder(source, sheetUIContext)
+        format.sourceFormat().styleTextViewBuilder(source, sheetUIContext)
 
 
         return layout.linearLayout(sheetUIContext.context)
@@ -421,7 +433,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         source.gravity          = Gravity.CENTER
 
-        format.sourceStyle().styleTextViewBuilder(source, sheetUIContext)
+        format.sourceFormat().styleTextViewBuilder(source, sheetUIContext)
 
 
         return layout.linearLayout(sheetUIContext.context)
@@ -443,7 +455,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         source.margin.topDp     = 7f
 
-        format.sourceStyle().styleTextViewBuilder(source, sheetUIContext)
+        format.sourceFormat().styleTextViewBuilder(source, sheetUIContext)
 
         return source.textView(sheetUIContext.context)
     }

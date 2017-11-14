@@ -4,14 +4,14 @@ package com.kispoko.tome.util.promise;
 
 import android.os.AsyncTask;
 
-import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.model.ProdType;
 
 
 
 /**
  * Promise: Load ModelLib Value
  */
-public class ValuePromise<A extends Model>
+public class ValuePromise<A extends ProdType>
 {
 
     // PROPERTIES

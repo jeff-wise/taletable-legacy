@@ -2,18 +2,17 @@
 package com.kispoko.tome.model.sheet.section
 
 
+import com.kispoko.tome.db.DB_Section
+import com.kispoko.tome.db.dbSection
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.page.Page
 import com.kispoko.tome.model.sheet.style.Icon
-import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
-import effect.effApply
+import effect.apply
 import effect.effError
 import effect.effValue
 import lulo.document.*
@@ -28,53 +27,42 @@ import java.util.*
  * Section
  */
 data class Section(override val id : UUID,
-                   val sectionName : Prim<SectionName>,
-                   val pages : Coll<Page>,
-                   val icon : Prim<Icon>) : Model, ToDocument, Serializable
+                   private var sectionName : SectionName,
+                   private var pages : List<Page>,
+                   private var icon : Icon)
+                    : ProdType, ToDocument, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.sectionName.name   = "section_name"
-        this.pages.name         = "pages"
-        this.icon.name          = "icon"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(name : SectionName,
-                pages : MutableList<Page>,
+                pages : List<Page>,
                 icon : Icon)
         : this(UUID.randomUUID(),
-               Prim(name),
-               Coll(pages),
-               Prim(icon))
+               name,
+               pages,
+               icon)
 
 
     companion object : Factory<Section>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Section> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Section> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::Section,
-                         // Section Name
-                         doc.at("name") ap { SectionName.fromDocument(it) },
-                         // Page List
-                         doc.list("pages") ap { docList ->
-                             docList.mapIndexed { doc, index ->
-                                 Page.fromDocument(doc, index)
-                             } },
-                         // Icon
-                         doc.at("icon") ap { Icon.fromDocument(it) }
-                         )
+                apply(::Section,
+                      // Section Name
+                      doc.at("name") ap { SectionName.fromDocument(it) },
+                      // Page List
+                      doc.list("pages") ap { docList ->
+                          docList.mapIndexed { doc, index ->
+                              Page.fromDocument(doc, index)
+                          } },
+                      // Icon
+                      doc.at("icon") ap { Icon.fromDocument(it) }
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -85,13 +73,13 @@ data class Section(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun name() : SectionName = this.sectionName.value
+    fun name() : SectionName = this.sectionName
 
-    fun nameString() : String = this.sectionName.value.value
+    fun nameString() : String = this.sectionName.value
 
-    fun pages() : List<Page> = this.pages.list
+    fun pages() : List<Page> = this.pages
 
-    fun icon() : Icon = this.icon.value
+    fun icon() : Icon = this.icon
 
 
     // -----------------------------------------------------------------------------------------
@@ -104,19 +92,6 @@ data class Section(override val id : UUID,
         "icon" to this.icon().toDocument()
     ))
 
-//        effApply(::Section,
-//                         // Campaign Name
-//                         doc.at("name") ap { SectionName.fromDocument(it) },
-//                         // Page List
-//                         doc.list("pages") ap { docList ->
-//                             docList.mapIndexed { doc, index ->
-//                                 Page.fromDocument(doc, index)
-//                             } },
-//                         // Icon
-//                         doc.at("icon") ap { Icon.fromDocument(it) }
-//                         )
-//            }
-
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -124,9 +99,11 @@ data class Section(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "section"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Section = dbSection(sectionName, pages, icon)
 
 
     // -----------------------------------------------------------------------------------------
@@ -135,7 +112,7 @@ data class Section(override val id : UUID,
 
     fun onActive(sheetUIContext : SheetUIContext)
     {
-        this.pages.list.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.pages.forEach { it.onSheetComponentActive(sheetUIContext) }
     }
 
 }

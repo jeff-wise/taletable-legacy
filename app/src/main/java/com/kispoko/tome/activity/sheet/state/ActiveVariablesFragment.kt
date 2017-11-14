@@ -137,9 +137,7 @@ class ActiveVariablesFragment : Fragment()
     }
 
 
-    private fun activeVariablesRecyclerView(sheetItems : List<ActiveVariable>,
-                                            themeId : ThemeId,
-                                            context : Context) : RecyclerView
+    private fun activeVariablesRecyclerView(context : Context) : RecyclerView
     {
         val recyclerView                = RecyclerViewBuilder()
 

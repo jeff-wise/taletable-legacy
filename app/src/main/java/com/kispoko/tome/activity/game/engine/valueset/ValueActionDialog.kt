@@ -200,11 +200,7 @@ class ValueActionViewBuilder(val valueReference : ValueReference,
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
 
-        layout.corners         = Corners(TopLeftCornerRadius(3f),
-                                        TopRightCornerRadius(3f),
-                                        BottomRightCornerRadius(3f),
-                                        BottomLeftCornerRadius(3f))
-
+        layout.corners         = Corners(3.0, 3.0, 3.0, 3.0)
 
         return layout.linearLayout(context)
     }

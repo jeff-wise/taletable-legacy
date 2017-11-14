@@ -538,10 +538,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         number.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        number.corners              = Corners(TopLeftCornerRadius(2f),
-                                              TopRightCornerRadius(2f),
-                                              BottomRightCornerRadius(2f),
-                                              BottomLeftCornerRadius(2f))
+        number.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
         number.onClick              = onClick
 
@@ -571,10 +568,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.onClick          = View.OnClickListener {
             val sheetActivity = sheetUIContext.context as SheetActivity

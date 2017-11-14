@@ -10,9 +10,13 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import com.kispoko.tome.R
+import com.kispoko.tome.db.DB_WidgetTable
+import com.kispoko.tome.db.DB_WidgetTableFormat
+import com.kispoko.tome.db.dbWidgetTableFormat
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -21,9 +25,10 @@ import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TableLayoutBuilder
 import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.Divider
+import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.widget.table.*
-import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.util.Util
@@ -42,28 +47,13 @@ import java.util.*
  * Table Widget Format
  */
 data class TableWidgetFormat(override val id : UUID,
-                             val widgetFormat : Comp<WidgetFormat>,
-                             val headerFormat : Comp<TableWidgetRowFormat>,
-                             val rowFormat : Comp<TableWidgetRowFormat>,
-                             val showDivider : Prim<ShowTableDividers>,
-                             val dividerColorTheme : Prim<ColorTheme>,
-                             val cellHeight : Prim<Height>) : ToDocument, Model, Serializable
+                             val widgetFormat : WidgetFormat,
+                             val headerFormat : TableWidgetRowFormat,
+                             val rowFormat : TableWidgetRowFormat,
+                             val divider : Maybe<Divider>,
+                             val cellHeight : Height)
+                              : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name      = "widget_format"
-        this.headerFormat.name      = "header_format"
-        this.rowFormat.name         = "row_format"
-        this.showDivider.name       = "show_divider"
-        this.dividerColorTheme.name = "divider_color_theme"
-        this.cellHeight.name        = "cell_height"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -72,67 +62,62 @@ data class TableWidgetFormat(override val id : UUID,
     constructor(widgetFormat : WidgetFormat,
                 headerFormat : TableWidgetRowFormat,
                 rowFormat : TableWidgetRowFormat,
-                showDivider : ShowTableDividers,
-                dividerColorTheme : ColorTheme,
+                divider : Maybe<Divider>,
                 cellHeight : Height)
         : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Comp(headerFormat),
-               Comp(rowFormat),
-               Prim(showDivider),
-               Prim(dividerColorTheme),
-               Prim(cellHeight))
+               widgetFormat,
+               headerFormat,
+               rowFormat,
+               divider,
+               cellHeight)
 
 
     companion object : Factory<TableWidgetFormat>
     {
 
-        private val defaultWidgetFormat      = WidgetFormat.default()
-        private val defaultHeaderFormat      = TableWidgetRowFormat.default()
-        private val defaultRowFormat         = TableWidgetRowFormat.default()
-        private val defaultShowDivider       = ShowTableDividers(false)
-        private val defaultDividerColorTheme = ColorTheme.black
-        private val defaultCellHeight        = Height.Wrap
+        private fun defaultWidgetFormat()      = WidgetFormat.default()
+        private fun defaultHeaderFormat()      = TableWidgetRowFormat.default()
+        private fun defaultRowFormat()         = TableWidgetRowFormat.default()
+        private fun defaultDivider()           = Nothing<Divider>()
+        private fun defaultCellHeight()        = Height.Wrap
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::TableWidgetFormat,
-                                   // Widget Format
-                                   split(doc.maybeAt("widget_format"),
-                                         effValue(defaultWidgetFormat),
-                                         { WidgetFormat.fromDocument(it) }),
-                                   // Header Format
-                                   split(doc.maybeAt("header_format"),
-                                         effValue(defaultHeaderFormat),
-                                         { TableWidgetRowFormat.fromDocument(it) }),
-                                   // Row Format
-                                   split(doc.maybeAt("row_format"),
-                                         effValue(defaultRowFormat),
-                                         { TableWidgetRowFormat.fromDocument(it) }),
-                                   // Show Divider
-                                   split(doc.maybeAt("show_divider"),
-                                         effValue(defaultShowDivider),
-                                         { ShowTableDividers.fromDocument(it) }),
-                                   // Divider Color
-                                   split(doc.maybeAt("divider_color_theme"),
-                                         effValue(defaultDividerColorTheme),
-                                         { ColorTheme.fromDocument(it) }),
-                                   // Height
-                                   split(doc.maybeAt("height"),
-                                         effValue<ValueError,Height>(defaultCellHeight),
-                                         { Height.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                apply(::TableWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat()),
+                            { WidgetFormat.fromDocument(it) }),
+                      // Header Format
+                      split(doc.maybeAt("header_format"),
+                            effValue(defaultHeaderFormat()),
+                            { TableWidgetRowFormat.fromDocument(it) }),
+                      // Row Format
+                      split(doc.maybeAt("row_format"),
+                            effValue(defaultRowFormat()),
+                            { TableWidgetRowFormat.fromDocument(it) }),
+                      // Divider
+                      split(doc.maybeAt("divider"),
+                            effValue<ValueError,Maybe<Divider>>(defaultDivider()),
+                            { apply(::Just, Divider.fromDocument(it)) }),
+                      // Height
+                      split(doc.maybeAt("height"),
+                            effValue<ValueError,Height>(defaultCellHeight()),
+                            { Height.fromDocument(it) })
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = TableWidgetFormat(defaultWidgetFormat,
-                                          defaultHeaderFormat,
-                                          defaultRowFormat,
-                                          defaultShowDivider,
-                                          defaultDividerColorTheme,
-                                          defaultCellHeight)
+        fun default() = TableWidgetFormat(defaultWidgetFormat(),
+                                          defaultHeaderFormat(),
+                                          defaultRowFormat(),
+                                          defaultDivider(),
+                                          defaultCellHeight())
 
     }
 
@@ -145,40 +130,47 @@ data class TableWidgetFormat(override val id : UUID,
         "widget_format" to this.widgetFormat().toDocument(),
         "header_format" to this.headerFormat().toDocument(),
         "row_format" to this.rowFormat().toDocument(),
-        "show_divider" to this.showDivider().toDocument(),
-        "divider_color_theme" to this.dividerColorTheme().toDocument(),
         "height" to this.cellHeight().toDocument()
     ))
+    .maybeMerge(this.divider.apply {
+        Just(Pair("divider", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
 
-    fun headerFormat() : TableWidgetRowFormat = this.headerFormat.value
 
-    fun rowFormat() : TableWidgetRowFormat = this.rowFormat.value
+    fun headerFormat() : TableWidgetRowFormat = this.headerFormat
 
-    fun showDivider() : ShowTableDividers = this.showDivider.value
 
-    fun showDividerBool() : Boolean = this.showDivider.value.value
+    fun rowFormat() : TableWidgetRowFormat = this.rowFormat
 
-    fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
 
-    fun cellHeight() : Height = this.cellHeight.value
+    fun divider() : Maybe<Divider> = this.divider
+
+
+    fun cellHeight() : Height = this.cellHeight
 
 
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
-    override val name : String = "table_widget_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetTableFormat =
+            dbWidgetTableFormat(this.widgetFormat,
+                                this.headerFormat,
+                                this.rowFormat,
+                                this.divider,
+                                this.cellHeight)
 
 }
 
@@ -381,22 +373,26 @@ object TableWidgetView
 
         layout.backgroundColor      = SheetManager.color(
                                             sheetUIContext.sheetId,
-                                            format.widgetFormat().backgroundColorTheme())
+                                            format.widgetFormat().elementFormat().backgroundColorTheme())
 
         // Divider
         // -------------------------------------------------------------------------------------
 
-        if (format.showDividerBool())
+        val divider = format.divider()
+        when (divider)
         {
-            val dividerDrawable = ContextCompat.getDrawable(sheetUIContext.context,
-                                                            R.drawable.table_row_divider)
+            is Just ->
+            {
+                val dividerDrawable = ContextCompat.getDrawable(sheetUIContext.context,
+                                                                R.drawable.table_row_divider)
 
-            val dividerColor = SheetManager.color(sheetUIContext.sheetId,
-                                                  format.dividerColorTheme())
+                val dividerColor = SheetManager.color(sheetUIContext.sheetId,
+                                                      divider.value.colorTheme())
 
-            dividerDrawable.colorFilter =
-                    PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
-            layout.divider = dividerDrawable
+                dividerDrawable.colorFilter =
+                        PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
+                layout.divider = dividerDrawable
+            }
         }
 
 //
@@ -425,17 +421,16 @@ object TableWidgetView
         tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
         tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
 
-        tableRow.paddingSpacing = format.headerFormat().padding()
-        tableRow.marginSpacing  = format.headerFormat().margins()
+        tableRow.paddingSpacing = format.headerFormat().elementFormat().padding()
+        tableRow.marginSpacing  = format.headerFormat().elementFormat().margins()
 
         tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
-                                        format.headerFormat().backgroundColorTheme())
+                                        format.headerFormat().elementFormat().backgroundColorTheme())
 
         columns.forEach { column ->
 
             val cellView = this.headerCellView(format.headerFormat(),
                                                column,
-                                               CellFormat.default(),
                                                sheetUIContext)
             tableRow.rows.add(cellView)
         }
@@ -446,12 +441,9 @@ object TableWidgetView
 
     private fun headerCellView(rowFormat : TableWidgetRowFormat,
                                column : TableWidgetColumn,
-                               cellFormat : CellFormat,
                                sheetUIContext: SheetUIContext) : LinearLayout
     {
-        val layout = TableWidgetCellView.layout(rowFormat,
-                                                column.columnFormat(),
-                                                cellFormat,
+        val layout = TableWidgetCellView.layout(column.columnFormat(),
                                                 sheetUIContext)
 
         val textView = TextViewBuilder()
@@ -462,7 +454,7 @@ object TableWidgetView
 
         textView.text           = column.nameString()
 
-        rowFormat.textStyle().styleTextViewBuilder(textView, sheetUIContext)
+        rowFormat.textFormat().styleTextViewBuilder(textView, sheetUIContext)
 
         layout.addView(textView.textView(sheetUIContext.context))
 
@@ -556,7 +548,7 @@ object TableWidgetView
 //            TextVariable headerCellValue =
 //                    TextVariable.asText(UUID.randomUUID(),
 //                                        columnUnion.column().name().toUpperCase());
-//            TextStyle headerCellStyle = new TextStyle(UUID.randomUUID(),
+//            TextFormat headerCellStyle = new TextFormat(UUID.randomUUID(),
 //                                                      TextColor.THEME_DARK,
 //                                                      TextSize.SUPER_SMALL);
 //

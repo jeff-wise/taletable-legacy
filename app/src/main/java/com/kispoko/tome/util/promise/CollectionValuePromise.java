@@ -4,7 +4,7 @@ package com.kispoko.tome.util.promise;
 
 import android.os.AsyncTask;
 
-import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.model.ProdType;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Promise: Load Collection Value
  */
-public class CollectionValuePromise<A extends Model>
+public class CollectionValuePromise<A extends ProdType>
 {
 
     // PROPERTIES

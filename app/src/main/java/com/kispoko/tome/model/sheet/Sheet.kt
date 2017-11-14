@@ -4,9 +4,14 @@ package com.kispoko.tome.model.sheet
 
 import android.content.Context
 import android.view.View
+import com.kispoko.tome.R.string.*
+import com.kispoko.tome.db.DB_Sheet
+import com.kispoko.tome.db.dbSheet
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.Row
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -31,28 +36,14 @@ import java.util.*
  * Sheet
  */
 data class Sheet(override val id : UUID,
-                 val sheetId : Prim<SheetId>,
-                 val campaignId : Prim<CampaignId>,
-                 val sections : Coll<Section>,
-                 val engine : Comp<Engine>,
-                 val variables : Conj<Variable>,
-                 val settings : Comp<Settings>) : Model, ToDocument, Serializable
+                 private var sheetId : SheetId,
+                 private var campaignId : CampaignId,
+                 private var sections : MutableList<Section>,
+                 private var engine : Engine,
+                 private var variables : MutableList<Variable>,
+                 private var settings : Settings)
+                  : ProdType, ToDocument, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // SCHEMA
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.sheetId.name       = "sheet_id"
-        this.campaignId.name    = "campaign_id"
-        this.sections.name      = "sections"
-        this.engine.name        = "engine"
-        this.variables.name     = "variables"
-        this.settings.name      = "settings"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // INDEXES
@@ -94,17 +85,17 @@ data class Sheet(override val id : UUID,
 
     constructor(sheetId : SheetId,
                 campaignId : CampaignId,
-                sections : MutableList<Section>,
+                sections : List<Section>,
                 engine : Engine,
-                variables : MutableSet<Variable>,
+                variables : List<Variable>,
                 settings : Settings)
         : this(UUID.randomUUID(),
-               Prim(sheetId),
-               Prim(campaignId),
-               Coll(sections),
-               Comp(engine),
-               Conj(variables),
-               Comp(settings))
+               sheetId,
+               campaignId,
+               sections.toMutableList(),
+               engine,
+               variables.toMutableList(),
+               settings)
 
 
     companion object : Factory<Sheet>
@@ -126,8 +117,8 @@ data class Sheet(override val id : UUID,
                       doc.at("engine") ap { Engine.fromDocument(it) },
                       // Variables
                       split(doc.maybeList("variables"),
-                            effValue(mutableSetOf()),
-                            { it.mapSetMut { Variable.fromDocument(it) } }),
+                            effValue(mutableListOf()),
+                            { it.mapMut { Variable.fromDocument(it) } }),
                       // Sheet Settings
                       split(doc.maybeAt("settings"),
                             effValue(Settings.default()),
@@ -143,23 +134,30 @@ data class Sheet(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun sheetId() : SheetId = this.sheetId.value
+    fun sheetId() : SheetId = this.sheetId
 
-    fun campaignId() : CampaignId = this.campaignId.value
 
-    fun sections() : List<Section> = this.sections.list
+    fun campaignId() : CampaignId = this.campaignId
 
-    fun engine() : Engine = this.engine.value
+
+    fun sections() : List<Section> = this.sections
+
+
+    fun engine() : Engine = this.engine
+
 
     fun sectionWithName(sectionName : SectionName) : Section? =
         this.sections().filter { it.name().equals(sectionName) }
                        .firstOrNull()
 
+
     fun sectionWithIndex(index : Int) : Section? = this.sections()[index]
 
-    fun settings() : Settings = this.settings.value
 
-    fun variables() : Set<Variable> = this.variables.set
+    fun settings() : Settings = this.settings
+
+
+    fun variables() : List<Variable> = this.variables
 
 
     // -----------------------------------------------------------------------------------------
@@ -168,9 +166,12 @@ data class Sheet(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "sheet"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Sheet =
+        dbSheet(sheetId, campaignId, sections, engine, variables, settings)
 
 
     // -----------------------------------------------------------------------------------------
@@ -217,7 +218,7 @@ data class Sheet(override val id : UUID,
             SheetManager.addVariable(sheetUIContext.sheetId, it)
         }
 
-        sections.list.forEach { it.onActive(sheetUIContext) }
+        this.sections.forEach { it.onActive(sheetUIContext) }
     }
 
 

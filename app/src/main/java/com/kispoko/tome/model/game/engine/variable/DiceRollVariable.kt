@@ -4,9 +4,10 @@ package com.kispoko.tome.model.game.engine.variable
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Prod
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.effApply
@@ -24,7 +25,7 @@ import java.io.Serializable
 /**
  * Dice Variable Value
  */
-sealed class DiceRollVariableValue : ToDocument, Serializable
+sealed class DiceRollVariableValue : ToDocument, SumType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -62,8 +63,7 @@ sealed class DiceRollVariableValue : ToDocument, Serializable
 /**
  * Literal Value
  */
-data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll)
-            : DiceRollVariableValue(), Model
+data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll) : DiceRollVariableValue()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -90,100 +90,21 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll)
 
     override fun value() : DiceRoll = this.diceRoll
 
+
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() = this.diceRoll.onLoad()
+    override val sumModelObject = this
 
-    override val id = this.diceRoll.id
 
-    override val name = this.diceRoll.name
+    override fun case() = "literal"
 
-    override val modelObject : Model = this.diceRoll
+
+    override fun functor() = Prod(this.diceRoll)
 
 }
-
-
-fun liftDiceRollVariableValue(varValue : DiceRollVariableValue) : Func<DiceRollVariableValue>
-    = when (varValue)
-    {
-        is DiceRollVariableLiteralValue -> Comp(varValue, "literal")
-    }
-
-
-//
-//
-//
-//    private void initializeFunctors()
-//    {
-//        // Name
-//        this.name.setName("name");
-//        this.name.setLabelId(R.string.variable_field_name_label);
-//        this.name.setDescriptionId(R.string.variable_field_name_description);
-//
-//        // Label
-//        this.label.setName("label");
-//        this.label.setLabelId(R.string.variable_field_label_label);
-//        this.label.setDescriptionId(R.string.variable_field_label_description);
-//
-//        // Description
-//        this.description.setName("description");
-//        this.description.setLabelId(R.string.variable_field_description_label);
-//        this.description.setDescriptionId(R.string.variable_field_description_description);
-//
-//        // Dice Roll
-//        this.diceRoll.setName("dice_roll");
-//        this.diceRoll.setLabelId(R.string.dice_roll_variable_field_value_dice_label);
-//        this.diceRoll.setDescriptionId(R.string.dice_roll_variable_field_value_dice_description);
-//
-//        // Is Namespaced?
-//        this.isNamespaced.setName("is_namespaced");
-//        this.isNamespaced.setLabelId(R.string.variable_field_is_namespaced_label);
-//        this.isNamespaced.setDescriptionId(R.string.variable_field_is_namespaced_description);
-//    }
-//
-//
-//    // > To Yaml
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The Dice Variable's yaml representation.
-//     * @return
-//     */
-//    public YamlBuilder toYaml()
-//    {
-//        return YamlBuilder.map()
-//                .putString("name", this.name())
-//                .putString("label", this.label())
-//                .putYaml("dice", this.diceRoll())
-//                .putBoolean("namespaced", this.isNamespaced());
-//    }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Dice Roll
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the dice roll.
-//     * @return The dice roll.
-//     */
-//    public DiceRoll diceRoll()
-//    {
-//        return this.diceRoll.getValue();
-//    }
-//
-//
-//    public Integer rollValue()
-//    {
-//        return this.diceRoll().roll();
-
-//    }
-

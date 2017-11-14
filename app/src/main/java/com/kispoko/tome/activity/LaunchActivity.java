@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.activity.sheet.SheetActivity;
-import com.kispoko.tome.lib.database.DatabaseException;
-import com.kispoko.tome.lib.database.query.CountQuery;
 
 
 
@@ -21,7 +18,6 @@ import com.kispoko.tome.lib.database.query.CountQuery;
  * activity.
  */
 public class LaunchActivity extends AppCompatActivity
-                            implements CountQuery.OnCountListener
 {
 
     @Override
@@ -68,12 +64,12 @@ public class LaunchActivity extends AppCompatActivity
 //        startActivity(intent);
     }
 
-
-    public void onCountError(DatabaseException exception)
-    {
-        ApplicationFailure.database(exception);
-    }
-
+//
+//    public void onCountError(DatabaseException exception)
+//    {
+//        ApplicationFailure.database(exception);
+//    }
+//
 
 
 

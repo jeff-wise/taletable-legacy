@@ -222,10 +222,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         val activity = this
         layout.onClick          = View.OnClickListener {

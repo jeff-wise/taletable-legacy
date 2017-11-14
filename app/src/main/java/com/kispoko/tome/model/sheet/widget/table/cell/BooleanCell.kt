@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -10,22 +9,25 @@ import android.widget.TableRow
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_WidgetTableCellBooleanFormat
+import com.kispoko.tome.db.dbWidgetTableCellBooleanFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLInt
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.style.ElementFormat
+import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
+import com.kispoko.tome.model.sheet.widget.table.column.ShowFalseIcon
+import com.kispoko.tome.model.sheet.widget.table.column.ShowTrueIcon
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
+import effect.Nothing
+import effect.Val
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -39,89 +41,71 @@ import java.util.*
  * Boolean Cell Format
  */
 data class BooleanCellFormat(override val id : UUID,
-                             val cellFormat : Comp<CellFormat>,
-                             val trueStyle : Maybe<Comp<TextStyle>>,
-                             val falseStyle : Maybe<Comp<TextStyle>>,
-                             val showTrueIcon : Prim<ShowTrueIcon>,
-                             val showFalseIcon : Prim<ShowFalseIcon>)
-                              : ToDocument, Model, Serializable
+                             val elementFormat : Maybe<ElementFormat>,
+                             val trueFormat : Maybe<TextFormat>,
+                             val falseFormat : Maybe<TextFormat>,
+                             val showTrueIcon : Maybe<ShowTrueIcon>,
+                             val showFalseIcon : Maybe<ShowFalseIcon>)
+                              : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.cellFormat.name                        = "cell_format"
-
-        when (this.trueStyle) {
-            is Just -> this.trueStyle.value.name    = "true_style"
-        }
-
-        when (this.falseStyle) {
-            is Just -> this.falseStyle.value.name   = "false_style"
-        }
-
-        this.showTrueIcon.name                      = "show_true_icon"
-
-        this.showFalseIcon.name                     = "show_false_icon"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(elementFormat : Maybe<ElementFormat>,
+                trueFormat : Maybe<TextFormat>,
+                falseFormat : Maybe<TextFormat>,
+                showTrueIcon : Maybe<ShowTrueIcon>,
+                showFalseIcon : Maybe<ShowFalseIcon>)
+        : this(UUID.randomUUID(),
+               elementFormat,
+               trueFormat,
+               falseFormat,
+               showTrueIcon,
+               showFalseIcon)
+
+
     companion object : Factory<BooleanCellFormat>
     {
 
-        private val defaultCellFormat    = CellFormat.default()
-        private val defaultShowTrueIcon  = ShowTrueIcon(false)
-        private val defaultShowFalseIcon = ShowFalseIcon(false)
-
-
-        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanCellFormat> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BooleanCellFormat> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::BooleanCellFormat,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
-                         // Cell Format
-                         split(doc.maybeAt("cell_format"),
-                               effValue(Comp.default(defaultCellFormat)),
-                               { effApply(::Comp, CellFormat.fromDocument(it)) }),
-                         // True Style
-                         split(doc.maybeAt("true_style"),
-                               effValue(Nothing()),
-                               { TextStyle.fromDocument(it) ap {
-                                   effValue<ValueError,Maybe<Comp<TextStyle>>>(Just(Comp(it)))} }),
-                         // False Style
-                         split(doc.maybeAt("false_style"),
-                               effValue(Nothing()),
-                               { TextStyle.fromDocument(it) ap {
-                                    effValue<ValueError,Maybe<Comp<TextStyle>>>(Just(Comp(it)))} }),
-                         // Show True Icon?
-                         split(doc.maybeAt("show_true_icon"),
-                               effValue(Prim.default(defaultShowTrueIcon)),
-                               { effApply(::Prim, ShowTrueIcon.fromDocument(it)) }),
-                         // Show False Icon?
-                         split(doc.maybeAt("show_false_icon"),
-                               effValue(Prim.default(defaultShowFalseIcon)),
-                               { effApply(::Prim, ShowFalseIcon.fromDocument(it)) })
-                         )
+                apply(::BooleanCellFormat,
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue<ValueError,Maybe<ElementFormat>>(Nothing()),
+                            { apply(::Just, ElementFormat.fromDocument(it)) }),
+                      // True Format
+                      split(doc.maybeAt("true_format"),
+                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            { apply(::Just, TextFormat.fromDocument(it)) }),
+                      // False Format
+                      split(doc.maybeAt("false_format"),
+                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            { apply(::Just, TextFormat.fromDocument(it)) }),
+                      // Show True Icon?
+                      split(doc.maybeAt("show_true_icon"),
+                            effValue<ValueError,Maybe<ShowTrueIcon>>(Nothing()),
+                            { apply(::Just, ShowTrueIcon.fromDocument(it)) }),
+                      // Show False Icon?
+                      split(doc.maybeAt("show_false_icon"),
+                            effValue<ValueError,Maybe<ShowFalseIcon>>(Nothing()),
+                            { apply(::Just, ShowFalseIcon.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
         fun default() = BooleanCellFormat(UUID.randomUUID(),
-                                          Comp.default(defaultCellFormat),
                                           Nothing(),
                                           Nothing(),
-                                          Prim.default(defaultShowTrueIcon),
-                                          Prim.default(defaultShowFalseIcon))
+                                          Nothing(),
+                                          Nothing(),
+                                          Nothing())
 
     }
 
@@ -130,73 +114,61 @@ data class BooleanCellFormat(override val id : UUID,
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocDict(mapOf(
-        "cell_format" to this.cellFormat().toDocument(),
-        "show_true_icon" to this.showTrueIcon().toDocument(),
-        "show_false_icon" to this.showFalseIcon().toDocument()
-        ))
-        .maybeMerge(this.trueStyle().apply {
-            Just(Pair("true_style", it.toDocument() as SchemaDoc)) })
-        .maybeMerge(this.falseStyle().apply {
-            Just(Pair("false_style", it.toDocument() as SchemaDoc)) })
+    override fun toDocument() = DocDict(mapOf())
+        .maybeMerge(this.elementFormat.apply {
+            Just(Pair("element_format", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.trueFormat.apply {
+            Just(Pair("true_format", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.falseFormat.apply {
+            Just(Pair("true_format", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.showTrueIcon.apply {
+            Just(Pair("show_true_icon", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.showFalseIcon.apply {
+            Just(Pair("show_false_icon", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun cellFormat() : CellFormat = this.cellFormat.value
+    fun elementFormat() : Maybe<ElementFormat> = this.elementFormat
 
-    fun trueStyle() : Maybe<TextStyle> = getMaybeComp(this.trueStyle)
 
-    fun falseStyle() : Maybe<TextStyle> = getMaybeComp(this.falseStyle)
+    fun trueFormat() : Maybe<TextFormat> = this.trueFormat
 
-    fun showTrueIcon() : ShowTrueIcon = this.showTrueIcon.value
 
-    fun showTrueIconBool() : Boolean = this.showTrueIcon.value.value
+    fun falseFormat() : Maybe<TextFormat> = this.falseFormat
 
-    fun showFalseIcon() : ShowFalseIcon = this.showFalseIcon.value
 
-    fun showFalseIconBool() : Boolean = this.showFalseIcon.value.value
+    fun showTrueIcon() : Maybe<ShowTrueIcon> = this.showTrueIcon
+
+
+    fun showFalseIcon() : Maybe<ShowFalseIcon> = this.showFalseIcon
 
 
     // -----------------------------------------------------------------------------------------
     // RESOLVERS
     // -----------------------------------------------------------------------------------------
 
-    fun resolveTextStyle(columnFormat : BooleanColumnFormat) : TextStyle =
-        if (this.cellFormat().textStyle.isDefault())
-            columnFormat.columnFormat().textStyle()
-        else
-            this.cellFormat().textStyle()
+//    fun resolveTextStyle(columnFormat : BooleanColumnFormat) : TextFormat =
+//        if (this.cellFormat().textStyle.isDefault())
+//            columnFormat.columnFormat().textStyle()
+//        else
+//            this.cellFormat().textStyle()
 
 
-    fun resolveTrueStyle(columnFormat : BooleanColumnFormat) : TextStyle?
-    {
-        when (this.trueStyle) {
-            is Just -> return this.trueStyle.value.value
+    fun resolveTrueFormat(columnFormat : BooleanColumnFormat) : TextFormat =
+        when (this.trueFormat) {
+            is Just -> this.trueFormat.value
+            is Nothing -> columnFormat.trueFormat()
         }
 
-        when (columnFormat.trueStyle) {
-            is Just -> return columnFormat.trueStyle.value.value
+
+    fun resolveFalseFormat(columnFormat : BooleanColumnFormat) : TextFormat =
+        when (this.falseFormat) {
+            is Just -> this.falseFormat.value
+            is Nothing -> columnFormat.falseFormat()
         }
-
-        return null
-    }
-
-
-    fun resolveFalseStyle(columnFormat : BooleanColumnFormat) : TextStyle?
-    {
-        when (this.falseStyle) {
-            is Just -> return this.falseStyle.value.value
-        }
-
-        when (columnFormat.falseStyle) {
-            is Just -> return columnFormat.falseStyle.value.value
-        }
-
-        return null
-    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -205,80 +177,17 @@ data class BooleanCellFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "boolean_cell_format"
 
-    override val modelObject = this
-
-}
+    override val prodTypeObject = this
 
 
-/**
- * Show True Icon
- */
-data class ShowTrueIcon(val value : Boolean) : ToDocument, SQLSerializable, Serializable
-{
+    override fun row() : DB_WidgetTableCellBooleanFormat =
+            dbWidgetTableCellBooleanFormat(this.elementFormat,
+                                           this.trueFormat,
+                                           this.falseFormat,
+                                           this.showTrueIcon,
+                                           this.showFalseIcon)
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ShowTrueIcon>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowTrueIcon> = when (doc)
-        {
-            is DocBoolean -> effValue(ShowTrueIcon(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocBoolean(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLInt({ if(this.value) 1 else 0 })
-
-}
-
-
-/**
- * Show False Icon
- */
-data class ShowFalseIcon(val value : Boolean) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ShowFalseIcon>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowFalseIcon> = when (doc)
-        {
-            is DocBoolean -> effValue(ShowFalseIcon(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocBoolean(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLInt({ if(this.value) 1 else 0 })
 
 }
 
@@ -293,9 +202,7 @@ object BooleanCellView
              sheetUIContext : SheetUIContext) : View
     {
 
-        val layout = TableWidgetCellView.layout(rowFormat,
-                                                column.format().columnFormat(),
-                                                cellFormat.cellFormat(),
+        val layout = TableWidgetCellView.layout(column.format().columnFormat(),
                                                 sheetUIContext)
 
         // Text View
@@ -326,9 +233,6 @@ object BooleanCellView
                               column : TableWidgetBooleanColumn,
                               sheetUIContext : SheetUIContext)
     {
-        val cellFormat = cell.format()
-
-
         // Value Text View
         // -------------------------------------------------------------------------------------
 
@@ -364,9 +268,8 @@ object BooleanCellView
         val cellFormat = cell.format()
         val sheetContext = SheetContext(sheetUIContext)
 
-        val trueStyle    = cellFormat.resolveTrueStyle(column.format())
-        val falseStyle   = cellFormat.resolveFalseStyle(column.format())
-        val defaultStyle = cellFormat.resolveTextStyle(column.format())
+        val trueFormat  = cellFormat.resolveTrueFormat(column.format())
+        val falseFormat = cellFormat.resolveFalseFormat(column.format())
 
         if (value)
         {
@@ -375,13 +278,14 @@ object BooleanCellView
             valueView.text = column.format().falseTextString()
 
             // No false style, but need to undo true style
-            if (falseStyle == null && trueStyle != null) {
-                defaultStyle.styleTextView(valueView, sheetUIContext)
-                Log.d("***BooleanCell", defaultStyle.toString())
-            }
-            else {
-                falseStyle?.styleTextView(valueView, sheetUIContext)
-            }
+//            if (falseStyle == null && trueStyle != null) {
+//                defaultStyle.styleTextView(valueView, sheetUIContext)
+//                Log.d("***BooleanCell", defaultStyle.toString())
+//            }
+//            else {
+//                falseStyle?.styleTextView(valueView, sheetUIContext)
+//            }
+            falseFormat.styleTextView(valueView, sheetUIContext)
         }
         else
         {
@@ -390,10 +294,12 @@ object BooleanCellView
             valueView.text = column.format().trueTextString()
 
             // No true style, but need to undo false style
-            if (trueStyle == null && falseStyle != null)
-                defaultStyle.styleTextView(valueView, sheetUIContext)
-            else
-                trueStyle?.styleTextView(valueView, sheetUIContext)
+//            if (trueStyle == null && falseStyle != null)
+//                defaultStyle.styleTextView(valueView, sheetUIContext)
+//            else
+//                trueStyle?.styleTextView(valueView, sheetUIContext)
+
+            trueFormat.styleTextView(valueView, sheetUIContext)
         }
 
     }
@@ -420,21 +326,17 @@ object BooleanCellView
         icon.margin.rightDp = 4f
 
         // > COLOR
-        val trueStyle   = cellFormat.resolveTrueStyle(columnFormat)
-        val falseStyle  = cellFormat.resolveFalseStyle(columnFormat)
-        val normalStyle = cellFormat.resolveTextStyle(columnFormat)
-        if (cellValue && trueStyle != null)
-        {
+        val trueStyle   = cellFormat.resolveTrueFormat(columnFormat)
+        val falseStyle  = cellFormat.resolveFalseFormat(columnFormat)
+        //val normalStyle = cellFormat.resolveTextStyle(columnFormat)
+        if (cellValue)
             icon.color      = SheetManager.color(sheetUIContext.sheetId, trueStyle.colorTheme())
-        }
-        else if (!cellValue && falseStyle != null)
-        {
-            icon.color      = SheetManager.color(sheetUIContext.sheetId, falseStyle.colorTheme())
-        }
         else
-        {
-            icon.color      = SheetManager.color(sheetUIContext.sheetId, normalStyle.colorTheme())
-        }
+            icon.color      = SheetManager.color(sheetUIContext.sheetId, falseStyle.colorTheme())
+//        else
+//        {
+//            icon.color      = SheetManager.color(sheetUIContext.sheetId, normalStyle.colorTheme())
+//        }
 
         return icon.imageView(sheetUIContext.context)
     }
@@ -460,16 +362,16 @@ object BooleanCellView
             value.text          = column.format().falseTextString()
 
         // > STYLE
-        val defaultStyle  = cellFormat.resolveTextStyle(column.format())
-        val trueStyle     = cellFormat.resolveTrueStyle(column.format())
-        val falseStyle    = cellFormat.resolveFalseStyle(column.format())
+        //val defaultStyle  = cellFormat.resolveTextStyle(column.format())
+        val trueStyle     = cellFormat.resolveTrueFormat(column.format())
+        val falseStyle    = cellFormat.resolveFalseFormat(column.format())
 
-        if (cellValue && trueStyle != null)
+        if (cellValue)
             trueStyle.styleTextViewBuilder(value, sheetUIContext)
-        else if (!cellValue && falseStyle != null)
-            falseStyle.styleTextViewBuilder(value, sheetUIContext)
         else
-            defaultStyle.styleTextViewBuilder(value, sheetUIContext)
+            falseStyle.styleTextViewBuilder(value, sheetUIContext)
+//        else
+//            defaultStyle.styleTextViewBuilder(value, sheetUIContext)
 
         return value.textView(sheetUIContext.context)
     }
@@ -548,8 +450,8 @@ object BooleanCellView
 //    private void setColumnState(BooleanColumn column)
 //    {
 //        this.defaultStyle  = this.format().resolveStyle(column.format().style());
-//        this.trueStyle     = this.format().resolveTrueStyle(column.format().trueStyle());
-//        this.falseStyle    = this.format().resolveFalseStyle(column.format().falseStyle());
+//        this.trueStyle     = this.format().resolveTrueFormat(column.format().trueStyle());
+//        this.falseStyle    = this.format().resolveFalseFormat(column.format().falseStyle());
 //    }
 //
 //

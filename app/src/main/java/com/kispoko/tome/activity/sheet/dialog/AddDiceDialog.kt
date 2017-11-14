@@ -315,7 +315,7 @@ class DiceViewBuilder(val operation : DiceOperation,
             else
                 null
         }
-        val diceRoll = DiceRoll(quantities.toMutableSet(), mutableSetOf())
+        val diceRoll = DiceRoll(quantities, listOf())
 
         return adderState.copy(diceRolls = adderState.diceRolls.plusElement(diceRoll))
     }
@@ -711,10 +711,7 @@ class DiceViewBuilder(val operation : DiceOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         dice.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        dice.corners            = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        dice.corners            = Corners(2.0, 2.0, 2.0, 2.0)
 
         dice.onClick            = onClick
 
@@ -850,10 +847,7 @@ class DiceViewBuilder(val operation : DiceOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.margin.leftDp    = 2f
         layout.margin.rightDp   = 2f
@@ -922,10 +916,7 @@ class DiceViewBuilder(val operation : DiceOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.onClick          = View.OnClickListener {
             if (this.rollOptionsVisible) {
@@ -1005,10 +996,7 @@ class DiceViewBuilder(val operation : DiceOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners            = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.onClick          = View.OnClickListener {
             val sheetActivity = sheetUIContext.context as SheetActivity

@@ -5,12 +5,12 @@ package com.kispoko.tome.model.game.engine
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.AppError
+import com.kispoko.tome.db.DB_Engine
+import com.kispoko.tome.db.dbEngine
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Conj
 import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
@@ -40,13 +40,13 @@ import java.util.*
  * Engine
  */
 data class Engine(override val id : UUID,
-                  val valueSets : Conj<ValueSet>,
-                  val mechanics : Conj<Mechanic>,
-                  val mechanicCategories : Conj<MechanicCategory>,
-                  val functions : Conj<Function>,
-                  val programs : Conj<Program>,
-                  val summations : Conj<Summation>)
-                   : ToDocument, Model, Serializable
+                  val valueSets : List<ValueSet>,
+                  val mechanics : List<Mechanic>,
+                  val mechanicCategories : List<MechanicCategory>,
+                  val functions : List<Function>,
+                  val programs : List<Program>,
+                  val summations : List<Summation>)
+                   : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     private val valueSetById : MutableMap<ValueSetId,ValueSet> =
-                                            valueSets.set.associateBy { it.valueSetId.value }
+                                            valueSets.associateBy { it.valueSetId.value }
                                                 as MutableMap<ValueSetId, ValueSet>
 
 
@@ -63,49 +63,34 @@ data class Engine(override val id : UUID,
 
 
     private val mechanicCategoryById : MutableMap<MechanicCategoryId,MechanicCategory> =
-                                    mechanicCategories.set.associateBy { it.categoryId() }
+                                    mechanicCategories.associateBy { it.categoryId() }
                                             as MutableMap<MechanicCategoryId,MechanicCategory>
 
 
     private val programById : MutableMap<ProgramId,Program> =
-                                            programs.set.associateBy { it.programId() }
+                                            programs.associateBy { it.programId() }
                                                     as MutableMap<ProgramId,Program>
 
 
     private val functionById : MutableMap<FunctionId,Function> =
-                                            functions.set.associateBy { it.functionId() }
+                                            functions.associateBy { it.functionId() }
                                                     as MutableMap<FunctionId,Function>
 
 
     private val summationById : MutableMap<SummationId,Summation> =
-                                            summations.set.associateBy { it.summationId() }
+                                            summations.associateBy { it.summationId() }
                                                     as MutableMap<SummationId,Summation>
 
 
     init
     {
-        this.mechanicSet().forEach {
+        this.mechanics.forEach {
             if (!mechanicsByCategoryId.containsKey(it.categoryId()))
                 mechanicsByCategoryId.put(it.categoryId(), mutableSetOf())
             val mechanicsInCategorySet = mechanicsByCategoryId[it.categoryId()]
             mechanicsInCategorySet?.add(it)
         }
 
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.valueSets.name             = "value_sets"
-        this.mechanics.name             = "mechanics"
-        this.mechanicCategories.name    = "mechanic_categories"
-        this.functions.name             = "functions"
-        this.programs.name              = "programs"
-        this.summations.name            = "summations"
     }
 
 
@@ -120,32 +105,31 @@ data class Engine(override val id : UUID,
             is DocDict ->
             {
                 apply(::Engine,
-                      // Model Id
+                      // ID
                       effValue(UUID.randomUUID()),
                       // Value Sets
                       doc.list("value_sets") apply {
-                          effApply(::Conj, it.mapSetMut { ValueSet.fromDocument(it) })
+                          it.map { ValueSet.fromDocument(it) }
                       },
                       // Mechanics
                       doc.list("mechanics") apply {
-                          effApply(::Conj, it.mapSetMut { Mechanic.fromDocument(it) })
+                          it.map { Mechanic.fromDocument(it) }
                       },
                       // Mechanic Categories
                       doc.list("mechanic_categories") apply {
-                          effApply(::Conj, it.mapSetMut { MechanicCategory.fromDocument(it) })
+                          it.map { MechanicCategory.fromDocument(it) }
                       },
                       // Functions
                       doc.list("functions") apply {
-                          effApply(::Conj, it.mapSetMut { Function.fromDocument(it) })
+                          it.map { Function.fromDocument(it) }
                       },
                       // Programs
                       doc.list("programs") apply {
-                          effApply(::Conj, it.mapSetMut { Program.fromDocument(it) })
+                          it.map { Program.fromDocument(it) }
                       },
                       // Summations
                       doc.list("summations") apply {
-                          effApply(::Conj, it.mapSetMut { Summation.fromDocument(it) })
-                      }
+                          it.map { Summation.fromDocument(it) } }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -158,12 +142,12 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "value_sets" to DocList(this.valueSets().map { it.toDocument() }),
-        "mechanics" to DocList(this.mechanicSet().map { it.toDocument() }),
-        "mechanic_categories" to DocList(this.mechanicCategorySet().map { it.toDocument() }),
-        "functions" to DocList(this.functionSet().map { it.toDocument() }),
-        "programs" to DocList(this.programSet().map { it.toDocument() }),
-        "summations" to DocList(this.summationSet().map { it.toDocument() })
+        "value_sets" to DocList(this.valueSets.map { it.toDocument() }),
+        "mechanics" to DocList(this.mechanics.map { it.toDocument() }),
+        "mechanic_categories" to DocList(this.mechanicCategories.map { it.toDocument() }),
+        "functions" to DocList(this.functions.map { it.toDocument() }),
+        "programs" to DocList(this.programs.map { it.toDocument() }),
+        "summations" to DocList(this.summations.map { it.toDocument() })
     ))
 
 
@@ -173,10 +157,16 @@ data class Engine(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "engine"
 
-    override val modelObject = this
+    override val prodTypeObject = this
 
+
+    override fun row() : DB_Engine = dbEngine(this.valueSets,
+                                              this.mechanics,
+                                              this.mechanicCategories,
+                                              this.functions,
+                                              this.programs,
+                                              this.summations)
 
     // -----------------------------------------------------------------------------------------
     // ENGINE DATA
@@ -185,7 +175,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Value Sets
     // -----------------------------------------------------------------------------------------
 
-    fun valueSets() : Set<ValueSet> = this.valueSets.value
+    fun valueSets() : List<ValueSet> = this.valueSets
 
 
     fun valueSet(valueSetId : ValueSetId) : AppEff<ValueSet> =
@@ -266,7 +256,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Functions
     // -----------------------------------------------------------------------------------------
 
-    fun functionSet() : Set<Function> = this.functions.set
+    fun functions() : List<Function> = this.functions
 
 
     fun function(functionId : FunctionId) : AppEff<Function> =
@@ -277,7 +267,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Programs
     // -----------------------------------------------------------------------------------------
 
-    fun programSet() : Set<Program> = this.programs.value
+    fun programs() : List<Program> = this.programs
 
 
     fun program(programId : ProgramId) : AppEff<Program> =
@@ -288,7 +278,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Mechanics
     // -----------------------------------------------------------------------------------------
 
-    fun mechanicSet() : Set<Mechanic> = this.mechanics.set
+    fun mechanics() : List<Mechanic> = this.mechanics
 
 
     fun mechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic> =
@@ -298,7 +288,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Mechanic Categories
     // -----------------------------------------------------------------------------------------
 
-    fun mechanicCategorySet() : Set<MechanicCategory> = this.mechanicCategories.set
+    fun mechanicCategories() : List<MechanicCategory> = this.mechanicCategories
 
 
     fun mechanicCategoryWithId(categoryId : MechanicCategoryId) : MechanicCategory? =
@@ -308,7 +298,7 @@ data class Engine(override val id : UUID,
     // Engine Data > Summations
     // -----------------------------------------------------------------------------------------
 
-    fun summationSet() : Set<Summation> = this.summations.set
+    fun summations() : List<Summation> = this.summations
 
 
     fun summation(summationid : SummationId) : AppEff<Summation> =
@@ -433,7 +423,7 @@ sealed class EngineValueType : ToDocument, SQLSerializable, Serializable
  * Engine Value
  */
 @Suppress("UNCHECKED_CAST")
-sealed class EngineValue : ToDocument, SumModel, Serializable
+sealed class EngineValue : ToDocument, SumType, Serializable
 {
 
     companion object : Factory<EngineValue>
@@ -505,7 +495,11 @@ data class EngineValueNumber(val value : Double) : EngineValue(), SQLSerializabl
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "number")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "number"
+
 
     override val sumModelObject = this
 
@@ -556,7 +550,11 @@ data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "text")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "text"
+
 
     override val sumModelObject = this
 
@@ -608,7 +606,11 @@ data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializa
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "boolean")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "boolean"
+
 
     override val sumModelObject = this
 
@@ -618,7 +620,7 @@ data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializa
 /**
  * Engine Dice Roll Value
  */
-data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), Model
+data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -647,27 +649,27 @@ data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), Model
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() = this.value.onLoad()
-
-    override val id = this.value.id
-
-    override val name = this.value.name
-
-    override val modelObject = this.value
-
-
-    // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Comp(this, "dice_roll")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "dice_roll"
+
 
     override val sumModelObject = this
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this) })
+
+
 }
+
 
 /**
  * Engine Text List Value
@@ -718,7 +720,11 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "list_text")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "list_text"
+
 
     override val sumModelObject = this
 

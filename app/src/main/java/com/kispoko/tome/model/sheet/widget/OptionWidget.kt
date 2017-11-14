@@ -4,12 +4,13 @@ package com.kispoko.tome.model.sheet.widget
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Height
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.style.TextFormat
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -118,131 +119,141 @@ sealed class OptionViewType : ToDocument, SQLSerializable, Serializable
 /**
  * Option Widget Format
  */
-data class OptionWidgetFormat(override val id : UUID,
-                              val widgetFormat : Comp<WidgetFormat>,
-                              val descriptionStyle : Comp<TextStyle>,
-                              val valueStyle : Comp<TextStyle>,
-                              val valueItemStyle : Comp<TextStyle>,
-                              val height : Prim<Height>) : ToDocument, Model
-{
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name      = "widget_format"
-        this.descriptionStyle.name  = "description_style"
-        this.valueStyle.name        = "value_style"
-        this.valueItemStyle.name    = "value_item_style"
-        this.height.name            = "height"
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                descriptionStyle : TextStyle,
-                valueStyle : TextStyle,
-                valueItemStyle : TextStyle,
-                height : Height)
-        : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Comp(descriptionStyle),
-               Comp(valueStyle),
-               Comp(valueItemStyle),
-               Prim(height))
-
-
-    companion object : Factory<OptionWidgetFormat>
-    {
-
-        val defaultWidgetFormat     = WidgetFormat.default()
-        val defaultDescriptionStyle = TextStyle.default()
-        val defaultValueStyle       = TextStyle.default()
-        val defaultValueItemStyle   = TextStyle.default()
-        val defaultHeight           = Height.Wrap
-
-
-        override fun fromDocument(doc: SchemaDoc): ValueParser<OptionWidgetFormat> = when (doc)
-        {
-            is DocDict -> effApply(::OptionWidgetFormat,
-                                   // Widget Format
-                                   split(doc.maybeAt("widget_format"),
-                                         effValue(defaultWidgetFormat),
-                                         { WidgetFormat.fromDocument(it) }),
-                                   // Description Style
-                                   split(doc.maybeAt("description_style"),
-                                         effValue(defaultDescriptionStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Value Style
-                                   split(doc.maybeAt("value_style"),
-                                         effValue(defaultValueStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Value Item Style
-                                   split(doc.maybeAt("value_item_style"),
-                                         effValue(defaultValueItemStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Height
-                                   split(doc.maybeAt("height"),
-                                         effValue<ValueError,Height>(defaultHeight),
-                                         { Height.fromDocument(it) })
-                                   )
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-
-
-        fun default() = OptionWidgetFormat(defaultWidgetFormat,
-                                           defaultDescriptionStyle,
-                                           defaultValueStyle,
-                                           defaultValueItemStyle,
-                                           defaultHeight)
-
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "description_style" to this.descriptionStyle().toDocument(),
-        "value_style" to this.valueStyle().toDocument(),
-        "value_item_style" to this.valueItemStyle().toDocument(),
-        "height" to this.height().toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-
-    fun descriptionStyle() : TextStyle = this.descriptionStyle.value
-
-    fun valueStyle() : TextStyle = this.valueStyle.value
-
-    fun valueItemStyle() : TextStyle = this.valueItemStyle.value
-
-    fun height() : Height = this.height.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name : String = "option_widget_format"
-
-    override val modelObject = this
-
-}
+//data class OptionWidgetFormat(override val id : UUID,
+//                              val widgetFormat : Prod<WidgetFormat>,
+//                              val descriptionStyle : Prod<TextFormat>,
+//                              val valueStyle : Prod<TextFormat>,
+//                              val valueItemStyle : Prod<TextFormat>,
+//                              val height : Prim<Height>) : ToDocument, ProdType
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // INIT
+//    // -----------------------------------------------------------------------------------------
+//
+//    init
+//    {
+//        this.widgetFormat.name      = "widget_format"
+//        this.descriptionStyle.name  = "description_style"
+//        this.valueStyle.name        = "value_style"
+//        this.valueItemStyle.name    = "value_item_style"
+//        this.height.name            = "height"
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    constructor(widgetFormat : WidgetFormat,
+//                descriptionStyle : TextFormat,
+//                valueStyle : TextFormat,
+//                valueItemStyle : TextFormat,
+//                height : Height)
+//        : this(UUID.randomUUID(),
+//               Prod(widgetFormat),
+//               Prod(descriptionStyle),
+//               Prod(valueStyle),
+//               Prod(valueItemStyle),
+//               Prim(height))
+//
+//
+//    companion object : Factory<OptionWidgetFormat>
+//    {
+//
+//        private fun defaultWidgetFormat()     = WidgetFormat.default()
+//        private fun defaultDescriptionStyle() = TextFormat.default()
+//        private fun defaultValueStyle()       = TextFormat.default()
+//        private fun defaultValueItemStyle()   = TextFormat.default()
+//        private fun defaultHeight()           = Height.Wrap
+//
+//
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<OptionWidgetFormat> = when (doc)
+//        {
+//            is DocDict ->
+//            {
+//                apply(::OptionWidgetFormat,
+//                      // Widget Format
+//                      split(doc.maybeAt("widget_format"),
+//                            effValue(defaultWidgetFormat()),
+//                            { WidgetFormat.fromDocument(it) }),
+//                      // Description Style
+//                      split(doc.maybeAt("description_style"),
+//                            effValue(defaultDescriptionStyle()),
+//                            { TextFormat.fromDocument(it) }),
+//                      // Value Style
+//                      split(doc.maybeAt("value_style"),
+//                            effValue(defaultValueStyle()),
+//                            { TextFormat.fromDocument(it) }),
+//                      // Value Item Style
+//                      split(doc.maybeAt("value_item_style"),
+//                            effValue(defaultValueItemStyle()),
+//                            { TextFormat.fromDocument(it) }),
+//                      // Height
+//                      split(doc.maybeAt("height"),
+//                            effValue<ValueError,Height>(defaultHeight()),
+//                            { Height.fromDocument(it) })
+//                      )
+//            }
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//
+//
+//        fun default() = OptionWidgetFormat(defaultWidgetFormat(),
+//                                           defaultDescriptionStyle(),
+//                                           defaultValueStyle(),
+//                                           defaultValueItemStyle(),
+//                                           defaultHeight())
+//
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "widget_format" to this.widgetFormat().toDocument(),
+//        "description_style" to this.descriptionStyle().toDocument(),
+//        "value_style" to this.valueStyle().toDocument(),
+//        "value_item_style" to this.valueItemStyle().toDocument(),
+//        "height" to this.height().toDocument()
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+//
+//    fun descriptionStyle() : TextFormat = this.descriptionStyle.value
+//
+//    fun valueStyle() : TextFormat = this.valueStyle.value
+//
+//    fun valueItemStyle() : TextFormat = this.valueItemStyle.value
+//
+//    fun height() : Height = this.height.value
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name : String = "option_widget_format"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.widgetFormat,
+//                   this.descriptionStyle,
+//                   this.valueStyle,
+//                   this.valueItemStyle,
+//                   this.height)
+//
+//}
 
 
 /**

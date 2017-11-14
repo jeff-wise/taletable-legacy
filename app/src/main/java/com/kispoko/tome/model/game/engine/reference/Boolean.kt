@@ -3,9 +3,9 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.variable.*
@@ -15,7 +15,6 @@ import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 
@@ -24,7 +23,7 @@ import java.io.Serializable
 /**
  * Boolean Reference
  */
-sealed class BooleanReference : ToDocument, SumModel, Serializable
+sealed class BooleanReference : ToDocument, SumType, Serializable
 {
 
     companion object : Factory<BooleanReference>
@@ -79,7 +78,11 @@ data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference(), SQ
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() : Func<BooleanReference> = Prim(this, "literal")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "literal"
+
 
     override val sumModelObject = this
 
@@ -123,7 +126,11 @@ data class BooleanReferenceVariable(val variableReference : VariableReference)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() : Func<BooleanReference> = Prim(this, "variable")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "variable"
+
 
     override val sumModelObject = this
 
@@ -142,86 +149,3 @@ data class BooleanReferenceVariable(val variableReference : VariableReference)
     override fun asSQLValue() = this.variableReference.asSQLValue()
 
 }
-
-//
-//
-//fun liftBooleanReference(reference : BooleanReference) : Func<BooleanReference>
-//    = when (reference)
-//    {
-//        is BooleanReferenceLiteral  -> Prim(reference, "literal")
-//        is BooleanReferenceVariable -> Prim(reference, "variable")
-//    }
-//
-
-
-
-//
-//    /**
-//     * Get the value of the boolean term. It may be a static boolean value, or the value of a
-//     * boolean variable.
-//     * @return The boolean value.
-//     * @throws VariableException
-//     */
-//    public Boolean value()
-//           throws VariableException
-//    {
-//        switch (this.kind.getValue())
-//        {
-//            case LITERAL:
-//                return this.booleanValue.getValue();
-//            case VARIABLE:
-//                return this.variableValue(this.variableName.getValue());
-//        }
-//
-//        return null;
-//    }
-//
-//
-//    /**
-//     * Get the name of the boolean variable of the term. If the term is not a variable, then
-//     * null is returned.
-//     * @return The variable name, or null.
-//     */
-//    public VariableReference variableDependency()
-//    {
-//        switch (this.kind.getValue())
-//        {
-//            case LITERAL:
-//                return null;
-//            case VARIABLE:
-//                return VariableReference.asByName(this.variableName());
-//        }
-//
-//        return null;
-//    }
-//
-//
-//    /**
-//     * Get the value of the term's boolean variable.
-//     * @param variableName The boolean variable name.
-//     * @return The boolean variable's value.
-//     */
-//    private Boolean variableValue(String variableName)
-//            throws VariableException
-//    {
-//        // > If variable does not exist, throw exception
-//        if (!State.hasVariable(variableName)) {
-//            throw VariableException.undefinedVariable(
-//                    new UndefinedVariableError(variableName));
-//        }
-//
-//        // [1] Get the variable
-//        VariableUnion variableUnion = State.variableWithName(variableName);
-//
-//        // > If variable is not a number, throw exception
-//        if (!variableUnion.type().equals(VariableType.BOOLEAN)) {
-//            throw VariableException.unexpectedVariableType(
-//                    new UnexpectedVariableTypeError(variableName,
-//                                                    VariableType.BOOLEAN,
-//                                                    variableUnion.type()));
-//        }
-//
-//        return variableUnion.booleanVariable().value();
-//    }
-//
-

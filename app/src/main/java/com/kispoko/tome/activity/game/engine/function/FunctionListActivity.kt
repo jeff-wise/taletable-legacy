@@ -92,7 +92,7 @@ class FunctionListActivity : AppCompatActivity()
         if (gameId != null)
         {
             val functions = GameManager.engine(gameId).apply {
-                                effValue<AppError,Set<Function>>(it.functionSet()) }
+                                effValue<AppError,List<Function>>(it.functions()) }
 
             when (functions) {
                 is Val -> {
@@ -536,10 +536,7 @@ class FunctionItemViewBuilder(val themeId : ThemeId, val context : Context)
         type.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        type.corners            = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        type.corners            = Corners(2.0, 2.0, 2.0, 2.0)
 
         val colorTheme = ColorTheme(setOf(
                             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
@@ -590,10 +587,7 @@ class FunctionItemViewBuilder(val themeId : ThemeId, val context : Context)
         type.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        type.corners            = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        type.corners            = Corners(2.0, 2.0, 2.0, 2.0)
 
         val textColorTheme = ColorTheme(setOf(
                             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),

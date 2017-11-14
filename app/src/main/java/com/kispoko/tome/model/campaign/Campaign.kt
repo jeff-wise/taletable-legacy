@@ -2,14 +2,15 @@
 package com.kispoko.tome.model.campaign
 
 
+import com.kispoko.tome.db.DB_Campaign
+import com.kispoko.tome.db.dbCampaign
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
-import effect.effApply
+import effect.apply
 import effect.effError
 import effect.effValue
 import lulo.document.*
@@ -24,25 +25,12 @@ import java.util.*
  * Campaign
  */
 data class Campaign(override val id : UUID,
-                    val campaignId : Prim<CampaignId>,
-                    val campaignName : Prim<CampaignName>,
-                    val campaignSummary : Prim<CampaignSummary>,
-                    val gameId : Prim<GameId>)
-                     : Model, Serializable
+                    val campaignId : CampaignId,
+                    val campaignName : CampaignName,
+                    val campaignSummary : CampaignSummary,
+                    val gameId : GameId)
+                     : ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.campaignId.name        = "campaign_id"
-        this.campaignName.name      = "campaign_name"
-        this.campaignSummary.name   = "campaign_summary"
-        this.gameId.name            = "game_id"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -53,28 +41,28 @@ data class Campaign(override val id : UUID,
                 campaignSummary : CampaignSummary,
                 gameId : GameId)
         : this(UUID.randomUUID(),
-               Prim(campaignId),
-               Prim(campaignName),
-               Prim(campaignSummary),
-               Prim(gameId))
+               campaignId,
+               campaignName,
+               campaignSummary,
+               gameId)
 
 
     companion object : Factory<Campaign>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Campaign> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Campaign> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::Campaign,
-                         // Campaign Id
-                         doc.at("id") ap { CampaignId.fromDocument(it) },
-                         // Campaign Name
-                         doc.at("campaign_name") ap { CampaignName.fromDocument(it) },
-                         // Campaign Summary
-                         doc.at("campaign_summary") ap { CampaignSummary.fromDocument(it) },
-                         // Game Id
-                         doc.at("game_id") ap { GameId.fromDocument(it) }
-                         )
+                apply(::Campaign,
+                      // Campaign Id
+                      doc.at("id") ap { CampaignId.fromDocument(it) },
+                      // Campaign Name
+                      doc.at("campaign_name") ap { CampaignName.fromDocument(it) },
+                      // Campaign Summary
+                      doc.at("campaign_summary") ap { CampaignSummary.fromDocument(it) },
+                      // Game Id
+                      doc.at("game_id") ap { GameId.fromDocument(it) }
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -85,13 +73,16 @@ data class Campaign(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun campaignId() : CampaignId = this.campaignId.value
+    fun campaignId() : CampaignId = this.campaignId
 
-    fun campaignName() : String = this.campaignName.value.value
 
-    fun campaignSummary() : String = this.campaignSummary.value.value
+    fun campaignName() : String = this.campaignName.value
 
-    fun gameId() : GameId = this.gameId.value
+
+    fun campaignSummary() : String = this.campaignSummary.value
+
+
+    fun gameId() : GameId = this.gameId
 
 
     // -----------------------------------------------------------------------------------------
@@ -100,14 +91,14 @@ data class Campaign(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "campaign"
 
-    override val modelObject = this
+    override val prodTypeObject = this
 
 
-    // -----------------------------------------------------------------------------------------
-    // API
-    // -----------------------------------------------------------------------------------------
+    override fun row() : DB_Campaign = dbCampaign(this.campaignId,
+                                                  this.campaignName,
+                                                  this.campaignSummary,
+                                                  this.gameId)
 }
 
 
@@ -210,7 +201,7 @@ data class CampaignSummary(val value : String) : SQLSerializable, Serializable
 //    // PROPERTIES
 //    // -----------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // -----------------------------------------------------------------------------------------
 //
 //    private UUID                                id;
@@ -261,10 +252,10 @@ data class CampaignSummary(val value : String) : SQLSerializable, Serializable
 //    // API
 //    // -----------------------------------------------------------------------------------------
 //
-//    // API > Model
+//    // API > ProdType
 //    // ------------------------------------------------------------------------------------------
 //
-//    // API > Model > Id
+//    // API > ProdType > Id
 //    // ------------------------------------------------------------------------------------------
 //
 //    public UUID getId()
@@ -279,7 +270,7 @@ data class CampaignSummary(val value : String) : SQLSerializable, Serializable
 //    }
 //
 //
-//    // API > Model > On Load
+//    // API > ProdType > On Load
 //    // ------------------------------------------------------------------------------------------
 //
 //    /**

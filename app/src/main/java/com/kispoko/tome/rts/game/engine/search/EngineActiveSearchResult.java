@@ -2,7 +2,6 @@
 package com.kispoko.tome.rts.game.engine.search;
 
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.model.game.engine.mechanic.ActiveMechanicSearchResult;
 import com.kispoko.tome.rts.game.engine.ActiveVariableSearchResult;
 import com.kispoko.tome.error.InvalidCaseError;
@@ -78,11 +77,11 @@ public class EngineActiveSearchResult
      */
     public ActiveVariableSearchResult variableSearchResult()
     {
-        if (this.type() != Type.VARIABLE) {
-            ApplicationFailure.union(
-                    UnionException.invalidCase(
-                            new InvalidCaseError("variable", this.type.toString())));
-        }
+//        if (this.type() != Type.VARIABLE) {
+//            ApplicationFailure.union(
+//                    UnionException.invalidCase(
+//                            new InvalidCaseError("variable", this.type.toString())));
+//        }
         return this.variableResult;
     }
 
@@ -93,11 +92,11 @@ public class EngineActiveSearchResult
      */
     public ActiveMechanicSearchResult mechanicSearchResult()
     {
-        if (this.type() != Type.MECHANIC) {
-            ApplicationFailure.union(
-                    UnionException.invalidCase(
-                            new InvalidCaseError("mechanic", this.type.toString())));
-        }
+//        if (this.type() != Type.MECHANIC) {
+//            ApplicationFailure.union(
+//                    UnionException.invalidCase(
+//                            new InvalidCaseError("mechanic", this.type.toString())));
+//        }
         return this.mechanicResult;
     }
 

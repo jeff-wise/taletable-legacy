@@ -100,7 +100,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                     val adderState = AdderState(variableValue.value,
                                                 0.0,
                                                 setOf(),
-                                                numberVariable.labelString(),
+                                                numberVariable.label().value,
                                                 updateTarget)
                     val adderDialog = AdderDialogFragment.newInstance(adderState,
                                                                       SheetContext(sheetUIContext))
@@ -110,7 +110,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
 
                 {
                     val simpleDialog = NumberEditorDialog.newInstance(variableValue.value,
-                                                                      numberVariable.labelString(),
+                                                                      numberVariable.label().value,
                                                                       updateTarget,
                                                                       SheetContext(sheetUIContext))
                     simpleDialog.show(sheetActivity.supportFragmentManager, "")
@@ -128,7 +128,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                 {
                     val dialog = SummationDialogFragment.newInstance(
                                             summation.value,
-                                            numberVariable.labelString(),
+                                            numberVariable.label().value,
                                             SheetContext(sheetUIContext))
                     dialog.show(sheetActivity.supportFragmentManager, "")
                 }
@@ -150,7 +150,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
     {
         is TextVariableLiteralValue ->
         {
-            val title = textVariable.labelString()
+            val title = textVariable.label().value
             val text  = variableValue.value
 
             val sheetActivity = sheetUIContext.context as SheetActivity

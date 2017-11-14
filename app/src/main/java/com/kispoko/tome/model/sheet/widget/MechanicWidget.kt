@@ -5,10 +5,10 @@ package com.kispoko.tome.model.sheet.widget
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.db.DB_WidgetMechanicFormat
+import com.kispoko.tome.db.dbWidgetMechanicFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -18,10 +18,7 @@ import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
-import effect.effApply
-import effect.effError
-import effect.effValue
-import effect.split
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
@@ -36,29 +33,17 @@ import java.util.*
  * Mechanic Widget Format
  */
 data class MechanicWidgetFormat(override val id : UUID,
-                                val widgetFormat : Comp<WidgetFormat>,
-                                val viewType : Prim<MechanicWidgetViewType>,
-                                val headerFormat : Comp<TextFormat>,
-                                val mechanicHeaderFormat : Comp<TextFormat>,
-                                val mechanicSummaryFormat : Comp<TextFormat>,
-                                val mechanicFormat : Comp<ElementFormat>)
-                                 : ToDocument, Model, Serializable
+                                val widgetFormat : WidgetFormat,
+                                val viewType : MechanicWidgetViewType,
+                                val mechanicFormat : ElementFormat,
+                                val headerFormat : ElementFormat,
+                                val headerStyle : TextFormat,
+                                val mechanicHeaderFormat : ElementFormat,
+                                val mechanicHeaderStyle : TextFormat,
+                                val mechanicSummaryFormat : ElementFormat,
+                                val mechanicSummaryStyle : TextFormat)
+                                 : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name          = "widget_format"
-        this.viewType.name              = "view_tyep"
-        this.headerFormat.name          = "header_style"
-        this.mechanicHeaderFormat.name  = "mechanic_header_format"
-        this.mechanicSummaryFormat.name = "mechanic_summary_format"
-        this.mechanicFormat.name        = "mechanic_format"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -66,71 +51,94 @@ data class MechanicWidgetFormat(override val id : UUID,
 
     constructor(widgetFormat : WidgetFormat,
                 viewType : MechanicWidgetViewType,
-                headerFormat : TextFormat,
-                mechanicHeaderFormat : TextFormat,
-                mechanicSummaryFormat : TextFormat,
-                mechanicFormat : ElementFormat)
+                mechanicFormat : ElementFormat,
+                headerFormat : ElementFormat,
+                headerStyle : TextFormat, mechanicHeaderFormat : ElementFormat,
+                mechanicHeaderStyle : TextFormat,
+                mechanicSummaryFormat : ElementFormat,
+                mechanicSummaryStyle : TextFormat)
         : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Prim(viewType),
-               Comp(headerFormat),
-               Comp(mechanicHeaderFormat),
-               Comp(mechanicSummaryFormat),
-               Comp(mechanicFormat))
+               widgetFormat,
+               viewType,
+               mechanicFormat,
+               headerFormat,
+               headerStyle,
+               mechanicHeaderFormat,
+               mechanicHeaderStyle,
+               mechanicSummaryFormat,
+               mechanicSummaryStyle)
 
 
     companion object : Factory<MechanicWidgetFormat>
     {
 
-        val defaultWidgetFormat             = WidgetFormat.default()
-        val defaultViewType                 = MechanicWidgetViewType.Boxes
-        val defaultHeaderFormat             = TextFormat.default()
-        val defaultMechanicHeaderFormat     = TextFormat.default()
-        val defaultMechanicSummaryFormat    = TextFormat.default()
-        val defaultMechanicFormat           = ElementFormat.default()
+        private fun defaultWidgetFormat()          = WidgetFormat.default()
+        private fun defaultViewType()              = MechanicWidgetViewType.Boxes
+        private fun defaultMechanicFormat()        = ElementFormat.default()
+        private fun defaultHeaderFormat()          = ElementFormat.default()
+        private fun defaultHeaderStyle()           = TextFormat.default()
+        private fun defaultMechanicHeaderFormat()  = ElementFormat.default()
+        private fun defaultMechanicHeaderStyle()   = TextFormat.default()
+        private fun defaultMechanicSummaryFormat() = ElementFormat.default()
+        private fun defaultMechanicSummaryStyle()  = TextFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::MechanicWidgetFormat,
-                         // Widget Format
-                         split(doc.maybeAt("widget_format"),
-                               effValue(defaultWidgetFormat),
-                               { WidgetFormat.fromDocument(it) }),
-                         // View Type
-                         split(doc.maybeAt("view_type"),
-                               effValue<ValueError,MechanicWidgetViewType>(defaultViewType),
-                               { MechanicWidgetViewType.fromDocument(it) }),
-                         // Header Format
-                         split(doc.maybeAt("header_format"),
-                               effValue(defaultHeaderFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Mechanic Header Style
-                         split(doc.maybeAt("mechanic_header_format"),
-                               effValue(defaultMechanicHeaderFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Mechanic Summary Style
-                         split(doc.maybeAt("mechanic_summary_format"),
-                               effValue(defaultMechanicSummaryFormat),
-                               { TextFormat.fromDocument(it) }),
-                         // Mechanic Format
-                         split(doc.maybeAt("mechanic_format"),
-                               effValue(defaultMechanicFormat),
-                                { ElementFormat.fromDocument(it) })
-                         )
+                apply(::MechanicWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat()),
+                            { WidgetFormat.fromDocument(it) }),
+                      // View Type
+                      split(doc.maybeAt("view_type"),
+                            effValue<ValueError,MechanicWidgetViewType>(defaultViewType()),
+                            { MechanicWidgetViewType.fromDocument(it) }),
+                      // Mechanic Format
+                      split(doc.maybeAt("mechanic_format"),
+                            effValue(defaultMechanicFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Header Format
+                      split(doc.maybeAt("header_format"),
+                            effValue(defaultHeaderFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Header Style
+                      split(doc.maybeAt("header_style"),
+                            effValue(defaultHeaderStyle()),
+                            { TextFormat.fromDocument(it) }),
+                      // Mechanic Header Format
+                      split(doc.maybeAt("mechanic_header_format"),
+                            effValue(defaultMechanicHeaderFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Mechanic Header Style
+                      split(doc.maybeAt("mechanic_header_style"),
+                            effValue(defaultMechanicHeaderStyle()),
+                            { TextFormat.fromDocument(it) }),
+                      // Mechanic Summary Format
+                      split(doc.maybeAt("mechanic_summary_format"),
+                            effValue(defaultMechanicSummaryFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Mechanic Summary Style
+                      split(doc.maybeAt("mechanic_summary_style"),
+                            effValue(defaultMechanicSummaryStyle()),
+                            { TextFormat.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = MechanicWidgetFormat(defaultWidgetFormat,
-                                             defaultViewType,
-                                             defaultHeaderFormat,
-                                             defaultMechanicHeaderFormat,
-                                             defaultMechanicSummaryFormat,
-                                             defaultMechanicFormat)
+        fun default() = MechanicWidgetFormat(defaultWidgetFormat(),
+                                             defaultViewType(),
+                                             defaultMechanicFormat(),
+                                             defaultHeaderFormat(),
+                                             defaultHeaderStyle(),
+                                             defaultMechanicHeaderFormat(),
+                                             defaultMechanicHeaderStyle(),
+                                             defaultMechanicSummaryFormat(),
+                                             defaultMechanicSummaryStyle())
 
     }
 
@@ -154,17 +162,23 @@ data class MechanicWidgetFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
 
-    fun viewType() : MechanicWidgetViewType = this.viewType.value
+    fun viewType() : MechanicWidgetViewType = this.viewType
 
-    fun headerFormat() : TextFormat = this.headerFormat.value
+    fun mechanicFormat() : ElementFormat = this.mechanicFormat
 
-    fun mechanicHeaderFormat() : TextFormat = this.mechanicHeaderFormat.value
+    fun headerFormat() : ElementFormat = this.headerFormat
 
-    fun mechanicSummaryFormat() : TextFormat = this.mechanicSummaryFormat.value
+    fun headerStyle() : TextFormat = this.headerStyle
 
-    fun mechanicFormat() : ElementFormat = this.mechanicFormat.value
+    fun mechanicHeaderFormat() : ElementFormat = this.mechanicHeaderFormat
+
+    fun mechanicHeaderStyle() : TextFormat = this.mechanicHeaderStyle
+
+    fun mechanicSummaryFormat() : ElementFormat = this.mechanicSummaryFormat
+
+    fun mechanicSummaryStyle() : TextFormat = this.mechanicSummaryStyle
 
 
     // -----------------------------------------------------------------------------------------
@@ -173,9 +187,20 @@ data class MechanicWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "mechanic_widget_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetMechanicFormat =
+            dbWidgetMechanicFormat(this.widgetFormat,
+                                   this.viewType,
+                                   this.mechanicFormat,
+                                   this.headerFormat,
+                                   this.headerStyle,
+                                   this.mechanicHeaderFormat,
+                                   this.mechanicHeaderStyle,
+                                   this.mechanicSummaryFormat,
+                                   this.mechanicSummaryStyle)
 
 }
 
@@ -281,7 +306,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         header.text             = headerString
 
-        mechanicWidget.format().headerFormat().style()
+        mechanicWidget.format().headerStyle()
                       .styleTextViewBuilder(header, sheetUIContext)
 
         return header.textView(sheetUIContext.context)
@@ -337,7 +362,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         header.text             = headerString
 
-        mechanicWidget.format().mechanicHeaderFormat().style()
+        mechanicWidget.format().mechanicHeaderStyle()
                       .styleTextViewBuilder(header, sheetUIContext)
 
         return header.textView(sheetUIContext.context)
@@ -353,7 +378,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         header.text             = summaryString
 
-        mechanicWidget.format().mechanicSummaryFormat().style()
+        mechanicWidget.format().mechanicSummaryStyle()
                       .styleTextViewBuilder(header, sheetUIContext)
 
         return header.textView(sheetUIContext.context)

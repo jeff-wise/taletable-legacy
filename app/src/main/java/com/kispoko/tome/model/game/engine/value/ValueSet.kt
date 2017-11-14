@@ -6,27 +6,28 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_ValueSetBase
+import com.kispoko.tome.db.DB_ValueSetCompound
+import com.kispoko.tome.db.dbValueSetBase
+import com.kispoko.tome.db.dbValueSetCompound
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.ValueSetDoesNotContainValue
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
+import effect.Val
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.HashSet
 
 
 
@@ -34,12 +35,12 @@ import kotlin.collections.HashSet
  * Value Set
  */
 @Suppress("UNCHECKED_CAST")
-sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
-                      open val label : Prim<ValueSetLabel>,
-                      open val labelSingular: Prim<ValueSetLabelSingular>,
-                      open val description : Prim<ValueSetDescription>,
-                      open val valueType : Maybe<Prim<EngineValueType>>)
-                       : ToDocument, Model, Serializable
+sealed class ValueSet(open val valueSetId : ValueSetId,
+                      open val label : ValueSetLabel,
+                      open val labelSingular : ValueSetLabelSingular,
+                      open val description : ValueSetDescription,
+                      open val valueType : ValueType)
+                       : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -48,7 +49,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     companion object : Factory<ValueSet>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSet> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ValueSet> = when (doc)
         {
             is DocDict ->
             {
@@ -81,23 +82,25 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
     // Getters
     // -----------------------------------------------------------------------------------------
 
-    fun valueSetId() : ValueSetId = this.valueSetId.value
+    fun valueSetId() : ValueSetId = this.valueSetId
 
-    fun label() : ValueSetLabel = this.label.value
 
-    fun labelString() : String = this.label.value.value
+    fun label() : ValueSetLabel = this.label
 
-    fun labelSingular() : ValueSetLabelSingular = this.labelSingular.value
 
-    fun labelSingularString() : String = this.labelSingular.value.value
+    fun labelString() : String = this.label.value
 
-    fun description() : ValueSetDescription = this.description.value
 
-    fun descriptionString() : String = this.description.value.value
+    fun labelSingular() : ValueSetLabelSingular = this.labelSingular
 
-    fun maybeValueType() : Maybe<EngineValueType> = _getMaybePrim(this.valueType)
 
-    fun valueType() : EngineValueType? = getMaybePrim(this.valueType)
+    fun description() : ValueSetDescription = this.description
+
+
+    fun descriptionString() : String = this.description.value
+
+
+    fun valueType() : ValueType = this.valueType
 
 
     // Lookup
@@ -105,9 +108,12 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     abstract fun value(valueId : ValueId, gameId : GameId) : AppEff<Value>
 
+
     abstract fun numberValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueNumber>
 
+
     abstract fun textValue(valueId : ValueId, sheetContext: SheetContext) : AppEff<ValueText>
+
 
     abstract fun values(gameId : GameId) : AppEff<Set<Value>>
 
@@ -118,42 +124,21 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
  * Base Value Set
  */
 data class ValueSetBase(override val id : UUID,
-                        override val valueSetId : Prim<ValueSetId>,
-                        override val label : Prim<ValueSetLabel>,
-                        override val labelSingular: Prim<ValueSetLabelSingular>,
-                        override val description: Prim<ValueSetDescription>,
-                        override val valueType : Maybe<Prim<EngineValueType>>,
-                        val values : Conj<Value>)
+                        override val valueSetId : ValueSetId,
+                        override val label : ValueSetLabel,
+                        override val labelSingular : ValueSetLabelSingular,
+                        override val description : ValueSetDescription,
+                        override val valueType : ValueType,
+                        val values : MutableList<Value>)
                          : ValueSet(valueSetId, label, labelSingular, description, valueType)
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.valueSetId.name                        = "value_set_id"
-        this.label.name                             = "labelString"
-        this.labelSingular.name                     = "label_singular"
-        this.description.name                       = "description"
-
-        when (this.valueType) {
-            is Just -> this.valueType.value.name    = "value_type"
-        }
-
-        this.values.name                            = "values"
-
-
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     private val valuesById : MutableMap<ValueId,Value> =
-                                        values.set.associateBy { it.valueId.value }
+                                        values.associateBy { it.valueId.value }
                                                 as MutableMap<ValueId,Value>
 
 
@@ -165,15 +150,15 @@ data class ValueSetBase(override val id : UUID,
                 label : ValueSetLabel,
                 labelSingular : ValueSetLabelSingular,
                 description : ValueSetDescription,
-                valueType : Maybe<EngineValueType>,
-                values : MutableSet<Value>)
+                valueType : ValueType,
+                values : List<Value>)
         : this(UUID.randomUUID(),
-               Prim(valueSetId),
-               Prim(label),
-               Prim(labelSingular),
-               Prim(description),
-               maybeLiftPrim(valueType),
-               Conj(values))
+               valueSetId,
+               label,
+               labelSingular,
+               description,
+               valueType,
+               values.toMutableList())
 
 
     companion object : Factory<ValueSetBase>
@@ -183,23 +168,23 @@ data class ValueSetBase(override val id : UUID,
             is DocDict ->
             {
                 doc.at("value_set_id") ap { ValueSetId.fromDocument(it) } ap { valueSetId ->
-                    effApply(::ValueSetBase,
-                             // Value Set Id
-                             effValue(valueSetId),
-                             // Label
-                             doc.at("label") ap { ValueSetLabel.fromDocument(it) },
-                             // Label Singular
-                             doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
-                             // Description
-                             doc.at("description") ap { ValueSetDescription.fromDocument(it) },
-                             // Value Type
-                             split(doc.maybeAt("value_type"),
-                                   effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                                   { effApply(::Just, EngineValueType.fromDocument(it)) }),
-                             // Values,
-                             doc.list("values") ap { docList ->
-                                 docList.mapSetMut { Value.fromDocument(it, valueSetId) }
-                             })
+                    apply(::ValueSetBase,
+                          // Value Set Id
+                          effValue(valueSetId),
+                          // Label
+                          doc.at("label") ap { ValueSetLabel.fromDocument(it) },
+                          // Label Singular
+                          doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
+                          // Description
+                          doc.at("description") ap { ValueSetDescription.fromDocument(it) },
+                          // Value Type
+                          split(doc.maybeAt("value_type"),
+                                effValue<ValueError,ValueType>(ValueType.Any),
+                                { ValueType.fromDocument(it) }),
+                          // Values,
+                          doc.list("values") ap { docList ->
+                              docList.map { Value.fromDocument(it, valueSetId) }
+                          })
                 }
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -216,10 +201,9 @@ data class ValueSetBase(override val id : UUID,
         "label" to this.label().toDocument(),
         "label_singular" to this.labelSingular().toDocument(),
         "description" to this.description().toDocument(),
-        "values" to DocList(this.values.set.map { it.toDocument() })
+        "value_type" to this.valueType().toDocument(),
+        "values" to DocList(this.values.map { it.toDocument() })
     ))
-    .maybeMerge(this.maybeValueType().apply {
-        Just(Pair("value_type", it.toDocument())) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -228,9 +212,17 @@ data class ValueSetBase(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "value_set_base"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_ValueSetBase =
+            dbValueSetBase(this.valueSetId,
+                           this.label,
+                           this.labelSingular,
+                           this.description,
+                           this.valueType,
+                           this.values)
 
 
     // -----------------------------------------------------------------------------------------
@@ -252,15 +244,15 @@ data class ValueSetBase(override val id : UUID,
 
 
     override fun values(gameId : GameId) : AppEff<Set<Value>> =
-            effValue(this.values.set.toSet())
+            effValue(this.values.toSet())
 
 
     fun sortedValues() : List<Value> =
         when (this.valueType())
         {
-            is EngineValueType.Number -> numberValues().sortedBy { it.value() }
-            is EngineValueType.Text -> textValues().sortedBy { it.valueMinusThe() }
-            else                      ->
+            is ValueType.Number -> numberValues().sortedBy { it.value() }
+            is ValueType.Text   -> textValues().sortedBy { it.valueMinusThe() }
+            is ValueType.Any    ->
             {
                 numberValues().sortedBy { it.value() }
                     .plus(textValues().sortedBy { it.value() })
@@ -269,7 +261,7 @@ data class ValueSetBase(override val id : UUID,
 
 
     fun numberValues() : List<ValueNumber> =
-        this.values.set.mapNotNull {
+        this.values.mapNotNull {
             when (it) {
                 is ValueNumber -> it
                 else           -> null
@@ -278,7 +270,7 @@ data class ValueSetBase(override val id : UUID,
 
 
     fun textValues() : List<ValueText> =
-        this.values.set.mapNotNull {
+        this.values.mapNotNull {
             when (it) {
                 is ValueText -> it
                 else         -> null
@@ -295,7 +287,7 @@ data class ValueSetBase(override val id : UUID,
         val indicesUsed : MutableSet<Int> = mutableSetOf()
         val newTextValueRegex = Regex("^New Value (\\d+)$")
 
-        this.values.set.forEach {
+        this.values.forEach {
             when (it)
             {
                 is ValueText ->
@@ -316,9 +308,9 @@ data class ValueSetBase(override val id : UUID,
         val defaultValue = "New Value " + i.toString()
 
         return ValueText(ValueId(defaultValueId),
-                         Just(ValueDescription(defaultValue)),
+                         ValueDescription(defaultValue),
                          Nothing(),
-                         mutableSetOf(),
+                         listOf(),
                          this.valueSetId(),
                          TextValue(defaultValue))
     }
@@ -330,7 +322,7 @@ data class ValueSetBase(override val id : UUID,
 
     fun addValue(value : Value)
     {
-        this.values.set.add(value)
+        this.values.add(value)
         this.valuesById.put(value.valueId(), value)
     }
 
@@ -339,17 +331,17 @@ data class ValueSetBase(override val id : UUID,
     {
         val newValues : MutableSet<Value> = mutableSetOf()
 
-        this.values.set.forEach {
+        this.values.forEach {
             if (it.valueId() != valueId)
                 newValues.add(it)
         }
 
-        val removed = newValues.size != this.values.set.size
+        val removed = newValues.size != this.values.size
 
-        this.values.set.clear()
+        this.values.clear()
 
         newValues.forEach {
-            this.values.set.add(it)
+            this.values.add(it)
         }
 
         return removed
@@ -362,33 +354,14 @@ data class ValueSetBase(override val id : UUID,
  * Compound Value Set
  */
 data class ValueSetCompound(override val id : UUID,
-                            override val valueSetId : Prim<ValueSetId>,
-                            override val label : Prim<ValueSetLabel>,
-                            override val labelSingular: Prim<ValueSetLabelSingular>,
-                            override val description: Prim<ValueSetDescription>,
-                            override val valueType : Maybe<Prim<EngineValueType>>,
-                            val valueSetIds : Prim<ValueSetIdSet>)
+                            override val valueSetId : ValueSetId,
+                            override val label : ValueSetLabel,
+                            override val labelSingular: ValueSetLabelSingular,
+                            override val description: ValueSetDescription,
+                            override val valueType : ValueType,
+                            val valueSetIds : MutableList<ValueSetId>)
                             : ValueSet(valueSetId, label, labelSingular, description, valueType)
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.valueSetId.name                        = "value_set_id"
-        this.label.name                             = "labelString"
-        this.labelSingular.name                     = "label_singular"
-        this.description.name                       = "description"
-
-        when (this.valueType) {
-            is Just -> this.valueType.value.name    = "value_type"
-        }
-
-        this.valueSetIds.name                        = "value_set_ids"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -398,15 +371,15 @@ data class ValueSetCompound(override val id : UUID,
                 label : ValueSetLabel,
                 labelSingular : ValueSetLabelSingular,
                 description : ValueSetDescription,
-                valueType : Maybe<EngineValueType>,
-                valueSetIds : Set<ValueSetId>)
+                valueType : ValueType,
+                valueSetIds : List<ValueSetId>)
         : this(UUID.randomUUID(),
-               Prim(valueSetId),
-               Prim(label),
-               Prim(labelSingular),
-               Prim(description),
-               maybeLiftPrim(valueType),
-               Prim(ValueSetIdSet(valueSetIds.toHashSet())))
+               valueSetId,
+               label,
+               labelSingular,
+               description,
+               valueType,
+               valueSetIds.toMutableList())
 
 
     companion object : Factory<ValueSetCompound>
@@ -426,11 +399,11 @@ data class ValueSetCompound(override val id : UUID,
                       doc.at("description") ap { ValueSetDescription.fromDocument(it) },
                       // Value Type
                       split(doc.maybeAt("value_type"),
-                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                            effValue<ValueError,ValueType>(ValueType.Any),
+                            { ValueType.fromDocument(it) }),
                       // Value Set Ids
                       doc.list("value_set_ids") ap { docList ->
-                          docList.mapSet { ValueSetId.fromDocument(it) }
+                          docList.map { ValueSetId.fromDocument(it) }
                       })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -447,17 +420,16 @@ data class ValueSetCompound(override val id : UUID,
         "label" to this.label().toDocument(),
         "label_singular" to this.labelSingular().toDocument(),
         "description" to this.description().toDocument(),
+        "value_type" to this.valueType().toDocument(),
         "value_set_ids" to DocList(this.valueSetIds().map { it.toDocument() })
     ))
-    .maybeMerge(this.maybeValueType().apply {
-        Just(Pair("value_type", it.toDocument())) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun valueSetIds() : Set<ValueSetId> = this.valueSetIds.value.idSet()
+    fun valueSetIds() : List<ValueSetId> = this.valueSetIds
 
 
     // -----------------------------------------------------------------------------------------
@@ -466,9 +438,17 @@ data class ValueSetCompound(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "value_set_compound"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_ValueSetCompound =
+            dbValueSetCompound(this.valueSetId,
+                               this.label,
+                               this.labelSingular,
+                               this.description,
+                               this.valueType,
+                               this.valueSetIds)
 
 
     // -----------------------------------------------------------------------------------------
@@ -541,7 +521,7 @@ data class ValueSetCompound(override val id : UUID,
 /**
  * ValueSet Id Set
  */
-data class ValueSetIdSet(val idSet : HashSet<ValueSetId>) : SQLSerializable, Serializable
+data class ValueSetIdSet(val ids : List<ValueSetId>) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -550,26 +530,19 @@ data class ValueSetIdSet(val idSet : HashSet<ValueSetId>) : SQLSerializable, Ser
 
     companion object : Factory<ValueSetIdSet>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueSetIdSet> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ValueSetIdSet> = when (doc)
         {
-            is DocList -> effApply(::ValueSetIdSet, doc.mapHashSet { ValueSetId.fromDocument(it) })
+            is DocList -> apply(::ValueSetIdSet, doc.map { ValueSetId.fromDocument(it) })
             else       -> effError(lulo.value.UnexpectedType(DocType.LIST, docType(doc), doc.path))
         }
     }
 
 
     // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun idSet() : Set<ValueSetId> = this.idSet
-
-
-    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLBlob({SerializationUtils.serialize(idSet)})
+    override fun asSQLValue() : SQLValue = SQLText({ ids.joinToString(",") })
 
 }
 
@@ -863,77 +836,3 @@ data class ValueSetDescription(val value : String) : ToDocument, SQLSerializable
 //        this.sort       = Sort.ASC;
 //    }
 //
-//
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeValueSet()
-//    {
-//        // [1] Index the VALUES
-//        // -------------------------------------------------------------------------------------
-//
-//        this.valueIndex = new HashMap<>();
-//
-//        for (ValueUnion valueUnion : this.values())
-//        {
-//            switch (valueUnion.type())
-//            {
-//                case TEXT:
-//                    valueIndex.put(valueUnion.textValue().name(), valueUnion);
-//                    break;
-//                case NUMBER:
-//                    valueIndex.put(valueUnion.numberValue().name(), valueUnion);
-//                    break;
-//            }
-//        }
-//
-//        // [2] Set pattern to match default IDs
-//        // -------------------------------------------------------------------------------------
-//
-//        this.defaultTextValueIdPattern = Pattern.compile("^new_value_(\\d+)$");
-//    }
-//
-//
-//    private void initializeFunctors()
-//    {
-//        // Name
-//        this.name.setName("name");
-//        this.name.setLabelId(R.string.value_set_field_id_label);
-//        this.name.setDescriptionId(R.string.value_set_field_id_description);
-//
-//        // Label
-//        this.label.setName("label");
-//        this.label.setLabelId(R.string.value_set_field_name_label);
-//        this.label.setDescriptionId(R.string.value_set_field_name_description);
-//
-//        // Label Singular
-//        this.labelSingular.setName("label_singular");
-//        this.labelSingular.setLabelId(R.string.value_set_field_name_singular_label);
-//        this.labelSingular.setDescriptionId(R.string.value_set_field_name_singular_description);
-//
-//        // Description
-//        this.description.setName("description");
-//        this.description.setLabelId(R.string.value_set_field_description_label);
-//        this.description.setDescriptionId(R.string.value_set_field_description_description);
-//
-//        // Value Type
-//        this.valueType.setName("value_type");
-//        this.valueType.setLabelId(R.string.value_set_field_value_type_label);
-//        this.valueType.setDescriptionId(R.string.value_set_field_value_type_description);
-//
-//        // Values
-//        this.values.setName("values");
-//        this.values.setLabelId(R.string.value_set_field_values_label);
-//        this.values.setDescriptionId(R.string.value_set_field_values_description);
-//    }
-//
-//
-//
-//    // SORT
-//    // ------------------------------------------------------------------------------------------
-//
-//    private enum Sort {
-//        ASC,
-//        DESC
-//    }
-

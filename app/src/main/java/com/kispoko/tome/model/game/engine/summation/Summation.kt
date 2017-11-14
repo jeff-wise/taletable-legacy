@@ -6,10 +6,10 @@ import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_Summation
+import com.kispoko.tome.db.dbSummation
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Conj
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -18,7 +18,6 @@ import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
 import com.kispoko.tome.model.game.engine.summation.term.SummationTermDiceRoll
 import com.kispoko.tome.model.game.engine.summation.term.SummationTermNumber
 import com.kispoko.tome.model.game.engine.summation.term.TermSummary
-import com.kispoko.tome.model.game.engine.variable.VariableName
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.game.engine.SummationIsNotDiceRoll
@@ -37,23 +36,11 @@ import java.util.*
  * Summation
  */
 data class Summation(override val id : UUID,
-                     val summationId : Prim<SummationId>,
-                     val summationName : Prim<SummationName>,
-                     val terms : Conj<SummationTerm>)
-                      : ToDocument, Model, Serializable
+                     val summationId : SummationId,
+                     val summationName : SummationName,
+                     val terms : MutableList<SummationTerm>)
+                      : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.summationId.name   = "summation_id"
-        this.summationName.name = "summation_name"
-        this.terms.name         = "terms"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -61,11 +48,11 @@ data class Summation(override val id : UUID,
 
     constructor(summationId : SummationId,
                 summationName : SummationName,
-                terms : MutableSet<SummationTerm>)
+                terms : List<SummationTerm>)
         : this(UUID.randomUUID(),
-               Prim(summationId),
-               Prim(summationName),
-               Conj(terms))
+               summationId,
+               summationName,
+               terms.toMutableList())
 
 
     companion object : Factory<Summation>
@@ -74,15 +61,15 @@ data class Summation(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::Summation,
-                         // Summation Id
-                         doc.at("summation_id") ap { SummationId.fromDocument(it) },
-                         // Summation Name
-                         doc.at("summation_name") ap { SummationName.fromDocument(it) },
-                         // Terms
-                         doc.list("terms") ap { docList ->
-                             docList.mapSetMut { SummationTerm.fromDocument(it) }
-                         })
+                apply(::Summation,
+                      // Summation Id
+                      doc.at("summation_id") ap { SummationId.fromDocument(it) },
+                      // Summation Name
+                      doc.at("summation_name") ap { SummationName.fromDocument(it) },
+                      // Terms
+                      doc.list("terms") ap { docList ->
+                          docList.map { SummationTerm.fromDocument(it) }
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -104,13 +91,16 @@ data class Summation(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun summationId() : SummationId = this.summationId.value
+    fun summationId() : SummationId = this.summationId
 
-    fun summationName() : SummationName = this.summationName.value
 
-    fun summationNameString() : String = this.summationName.value.value
+    fun summationName() : SummationName = this.summationName
 
-    fun terms() : Set<SummationTerm> = this.terms.set
+
+    fun summationNameString() : String = this.summationName.value
+
+
+    fun terms() : List<SummationTerm> = this.terms
 
 
     // -----------------------------------------------------------------------------------------
@@ -119,9 +109,12 @@ data class Summation(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "summation"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Summation =
+            dbSummation(this.summationId, this.summationName, this.terms)
 
 
     // -----------------------------------------------------------------------------------------
@@ -129,7 +122,7 @@ data class Summation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun dependencies() : Set<VariableReference> =
-        this.terms.set.fold(setOf(), {
+        this.terms.fold(setOf(), {
             accSet, term -> accSet.plus(term.dependencies())
         })
 
@@ -153,8 +146,8 @@ data class Summation(override val id : UUID,
     fun diceRoll(sheetContext : SheetContext,
                  context : Maybe<VariableNamespace> = Nothing()) : AppEff<DiceRoll>
     {
-        val quantities : MutableSet<DiceQuantity> = mutableSetOf()
-        val modifiers  : MutableSet<RollModifier> = mutableSetOf()
+        val quantities : MutableList<DiceQuantity> = mutableListOf()
+        val modifiers  : MutableList<RollModifier> = mutableListOf()
 
         for (term in this.terms())
         {
@@ -165,7 +158,7 @@ data class Summation(override val id : UUID,
                 {
                     val diceRoll = SheetData.diceRoll(sheetContext, term.diceRollReference())
                     when (diceRoll) {
-                        is Val -> {
+                        is effect.Val -> {
                             quantities.addAll(diceRoll.value.quantities())
                             modifiers.addAll(diceRoll.value.modifiers())
                         }
@@ -179,11 +172,11 @@ data class Summation(override val id : UUID,
                     Log.d("***SUMMATION", "number term reference: ${term.numberReference()}")
                     when (maybeModValue)
                     {
-                        is Val -> {
-                            val termName = term.termName()
-                            val maybeTermName = if (termName != null)
-                                                    Just(RollModifierName(termName))
-                                                    else Nothing<RollModifierName>()
+                        is effect.Val -> {
+                            val maybeTermName = term.termName() ap { Just(RollModifierName(it.value)) }
+//                            val maybeTermName = if (termName != null)
+//                                                    Just(RollModifierName(termName))
+//                                                    else Nothing<RollModifierName>()
                             val modValue = maybeModValue.value
                             when (modValue) {
                                 is Just -> modifiers.add(RollModifier(RollModifierValue(modValue.value),

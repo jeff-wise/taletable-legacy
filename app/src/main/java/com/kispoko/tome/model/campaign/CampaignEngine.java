@@ -2,14 +2,6 @@
 package com.kispoko.tome.model.campaign;
 
 
-import com.kispoko.tome.lib.functor.ModelFunctor;
-import com.kispoko.tome.lib.model.Model;
-
-import java.io.Serializable;
-import java.util.UUID;
-
-
-
 /**
  * Campaign Engine
  *
@@ -21,7 +13,7 @@ import java.util.UUID;
 //    // PROPERTIES
 //    // -----------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // -----------------------------------------------------------------------------------------
 //
 //    private UUID                                id;
@@ -68,15 +60,15 @@ import java.util.UUID;
 //    // API
 //    // -----------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // -----------------------------------------------------------------------------------------
 //
 //    // ** Id
 //    // -----------------------------------------------------------------------------------------
 //
 //    /**
-//     * Get the model identifier.
-//     * @return The model UUID.
+//     * Get the prodType identifier.
+//     * @return The prodType UUID.
 //     */
 //    public UUID getId()
 //    {
@@ -85,8 +77,8 @@ import java.util.UUID;
 //
 //
 //    /**
-//     * Set the model identifier.
-//     * @param id The new model UUID.
+//     * Set the prodType identifier.
+//     * @param id The new prodType UUID.
 //     */
 //    public void setId(UUID id)
 //    {

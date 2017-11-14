@@ -7,8 +7,9 @@ import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -33,7 +34,7 @@ import java.util.*
 /**
  * Number Variable
  */
-sealed class NumberVariableValue : ToDocument, SumModel, Serializable
+sealed class NumberVariableValue : ToDocument, SumType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -114,10 +115,14 @@ data class NumberVariableLiteralValue(val value : Double)
 
 
     // -----------------------------------------------------------------------------------------
-    // SUM MODEL
+    // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "literal")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "literal"
+
 
     override val sumModelObject = this
 
@@ -181,7 +186,11 @@ class NumberVariableUnknownLiteralValue() : NumberVariableValue(), SQLSerializab
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "literal")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "unknown_literal"
+
 
     override val sumModelObject = this
 
@@ -246,7 +255,11 @@ data class NumberVariableVariableValue(val variableId : VariableId)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "variable")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "variable"
+
 
     override val sumModelObject = this
 
@@ -264,8 +277,7 @@ data class NumberVariableVariableValue(val variableId : VariableId)
 /**
  * Program Value
  */
-data class NumberVariableProgramValue(val invocation : Invocation)
-            : NumberVariableValue(), Model
+data class NumberVariableProgramValue(val invocation : Invocation) : NumberVariableValue()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -309,22 +321,13 @@ data class NumberVariableProgramValue(val invocation : Invocation)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Comp(this, "program")
+    override fun functor() = Prod(this.invocation)
+
+
+    override fun case() = "program"
+
 
     override val sumModelObject = this
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() = this.invocation.onLoad()
-
-    override val id = this.invocation.id
-
-    override val name = this.invocation.name
-
-    override val modelObject : Model = this.invocation
 
 }
 
@@ -375,14 +378,18 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
         GameManager.engine(sheetContext.gameId)
                 .apply { it.value(this.valueReference, sheetContext.gameId) }
-                .apply { effValue<AppError,Set<Variable>>(it.variables()) }
+                .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
 
 
     // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "value")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "value"
+
 
     override val sumModelObject = this
 
@@ -431,7 +438,7 @@ data class NumberVariableSummationValue(val summationId : SummationId)
                          .apply { effValue<AppError,Set<VariableReference>>(it.dependencies()) }
 
         when (deps) {
-            is Val -> return deps.value
+            is effect.Val -> return deps.value
             is Err -> ApplicationLog.error(deps.error)
         }
 
@@ -457,7 +464,11 @@ data class NumberVariableSummationValue(val summationId : SummationId)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "summation")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "summation"
+
 
     override val sumModelObject = this
 
@@ -478,19 +489,10 @@ data class NumberVariableSummationValue(val summationId : SummationId)
 /**
  * Number Variable History
  */
-data class NumberVariableHistory(override val id : UUID,
-                                 val entries : Coll<NumberVariableHistoryEntry>)
-                                  : Model, Serializable
+data class NumberVariableHistory(val id : UUID,
+                                 val entries : MutableList<NumberVariableHistoryEntry>)
+                                  : Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.entries.name    = "entries"
-    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -502,7 +504,7 @@ data class NumberVariableHistory(override val id : UUID,
 
     constructor(entries : MutableList<NumberVariableHistoryEntry>)
         : this(UUID.randomUUID(),
-               Coll(entries))
+               entries)
 
 
     companion object : Factory<NumberVariableHistory>
@@ -526,7 +528,7 @@ data class NumberVariableHistory(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun entries() : List<NumberVariableHistoryEntry> = this.entries.value
+    fun entries() : List<NumberVariableHistoryEntry> = this.entries
 
 
     // -----------------------------------------------------------------------------------------
@@ -535,20 +537,21 @@ data class NumberVariableHistory(override val id : UUID,
 
     fun append(value : NumberVariableValue)
     {
-        this.entries.value.add(NumberVariableHistoryEntry(value, Nothing()))
+        this.entries.add(NumberVariableHistoryEntry(value, Nothing()))
     }
 
 
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() {}
-
-    override val name = "variable_number_history"
-
-    override val modelObject : Model = this
-
+//
+//    override fun onLoad() {}
+//
+//    override val name = "variable_number_history"
+//
+//    override val prodTypeObject: ProdType = this
+//
+//    override fun persistentFunctors() : List<Val<*>> = listOf(entries)
 
 }
 
@@ -558,25 +561,11 @@ data class NumberVariableHistory(override val id : UUID,
  * Number Variable History Entry
  */
 data class NumberVariableHistoryEntry(
-                            override val id : UUID,
-                            val value : Sum<NumberVariableValue>,
-                            val description : Maybe<Prim<NumberVariableHistoryEntryDescription>>)
-                             : Model, Serializable
+                            val id : UUID,
+                            val value : NumberVariableValue,
+                            val description : Maybe<NumberVariableHistoryEntryDescription>)
+                             : Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.value.name       = "value"
-
-        when (this.description) {
-            is Just -> this.description.value.name = "description"
-        }
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -585,8 +574,8 @@ data class NumberVariableHistoryEntry(
     constructor(value : NumberVariableValue,
                 description : Maybe<NumberVariableHistoryEntryDescription>)
         : this(UUID.randomUUID(),
-               Sum(value),
-               maybeLiftPrim(description))
+               value,
+               description)
 
 
     companion object : Factory<NumberVariableHistoryEntry>
@@ -613,20 +602,23 @@ data class NumberVariableHistoryEntry(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun value() : NumberVariableValue = this.value.value
+    fun value() : NumberVariableValue = this.value
 
-    fun description() : String? = getMaybePrim(this.description)?.value
+    fun description() : Maybe<NumberVariableHistoryEntryDescription> = this.description
 
 
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() {}
+//
+//
+//    override val name = "variable_number_history_entry"
+//
+//
+//    override val prodTypeObject: ProdType = this
 
-    override fun onLoad() {}
-
-    override val name = "variable_number_history_entry"
-
-    override val modelObject : Model = this
 
 }
 

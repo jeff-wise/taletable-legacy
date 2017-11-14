@@ -126,7 +126,7 @@ public class ProgramEditorActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            fields.addAll(Model.fields(this.program, this));
+//            fields.addAll(ProdType.fields(this.program, this));
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

@@ -198,10 +198,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(2f),
-                                              TopRightCornerRadius(2f),
-                                              BottomRightCornerRadius(2f),
-                                              BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -242,10 +239,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         layout.margin.bottomDp      = 1f
 
-        layout.corners              = Corners(TopLeftCornerRadius(2f),
-                                              TopRightCornerRadius(2f),
-                                              BottomRightCornerRadius(0f),
-                                              BottomLeftCornerRadius(0f))
+        layout.corners          = Corners(2.0, 2.0, 0.0, 0.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -262,7 +256,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         when (this.title) {
             is Just    -> name.text = this.title.value
-            is Nothing -> name.text = diceRoll.rollNameString() ?: ""
+            is Nothing -> name.text = diceRoll.rollName().toNullable()?.value ?: ""
         }
 
         val colorTheme = ColorTheme(setOf(
@@ -311,10 +305,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp             = 60
 
-        layout.corners              = Corners(TopLeftCornerRadius(0f),
-                                              TopRightCornerRadius(0f),
-                                              BottomRightCornerRadius(2f),
-                                              BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(0.0, 0.0, 2.0, 2.0)
 
 //        val colorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
@@ -353,10 +344,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         description.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        description.corners              = Corners(TopLeftCornerRadius(0f),
-                                                   TopRightCornerRadius(0f),
-                                                   BottomRightCornerRadius(0f),
-                                                   BottomLeftCornerRadius(2f))
+        description.corners          = Corners(0.0, 0.0, 0.0, 2.0)
 
 
         return description.textView(sheetUIContext.context)
@@ -391,10 +379,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners               = Corners(TopLeftCornerRadius(0f),
-                                               TopRightCornerRadius(0f),
-                                               BottomRightCornerRadius(2f),
-                                               BottomLeftCornerRadius(0f))
+        layout.corners          = Corners(0.0, 0.0, 2.0, 0.0)
 
 //        layout.padding.topDp        = 10f
 //        layout.padding.bottomDp     = 10f
@@ -628,7 +613,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         when (this.title) {
             is Just    -> description.text = this.title.value
-            is Nothing -> description.text = diceRoll.rollNameString() ?: ""
+            is Nothing -> description.text = diceRoll.rollName().toNullable()?.value ?: ""
         }
 
         val textColorTheme = ColorTheme(setOf(
@@ -705,10 +690,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners               = Corners(TopLeftCornerRadius(2f),
-                                               TopRightCornerRadius(2f),
-                                               BottomRightCornerRadius(2f),
-                                               BottomLeftCornerRadius(2f))
+        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
         if (rollPartSummary.tag.isNotBlank())
             layout.child(description)

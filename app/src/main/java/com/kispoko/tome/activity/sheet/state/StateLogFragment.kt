@@ -48,7 +48,7 @@ class StateLogFragment : Fragment()
 
     companion object
     {
-        fun newInstance(sheetId : SheetId, themeId : ThemeId) : StateLogFragment
+        fun newInstance(themeId : ThemeId) : StateLogFragment
         {
             val fragment = StateLogFragment()
 
@@ -114,7 +114,7 @@ class StateLogFragment : Fragment()
             }
 
             when (game) {
-                is Val -> gameName = game.value.description().gameNameString()
+                is Val -> gameName = game.value.gameName().value
                 is Err -> ApplicationLog.error(game.error)
             }
 

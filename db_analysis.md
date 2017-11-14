@@ -1,8 +1,8 @@
 ORM System
 
-We use the code as the database model, so there are no problems of having different models in the database and in the code. The code determines how the database is created. The program is the model.
+We use the code as the database prodType, so there are no problems of having different models in the database and in the code. The code determines how the database is created. The program is the prodType.
 
-But this is where the problems are. We get a lot of safety by relying on the program itself to be the database model, but that also means that changes to the program will affect hte data model. This is a good thing for prototyping, but could be bad when the app is in production. 
+But this is where the problems are. We get a lot of safety by relying on the program itself to be the database prodType, but that also means that changes to the program will affect hte data prodType. This is a good thing for prototyping, but could be bad when the app is in production.
 
 
 Problem 1: Schema is defined in one place.

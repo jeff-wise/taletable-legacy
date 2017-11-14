@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
@@ -12,16 +13,20 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_WidgetTableCellTextFormat
+import com.kispoko.tome.db.dbWidgetTableCellTextFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Prod
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.variable.VariableName
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.style.ElementFormat
+import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
@@ -30,6 +35,7 @@ import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -40,45 +46,44 @@ import java.util.*
  * Text Cell Format
  */
 data class TextCellFormat(override val id : UUID,
-                          val cellFormat : Comp<CellFormat>)
-                           : ToDocument, Model, Serializable
+                          val elementFormat : Maybe<ElementFormat>,
+                          val textFormat : Maybe<TextFormat>)
+                           : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.cellFormat.name        = "cell_format"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(elementFormat: Maybe<ElementFormat>,
+                textFormat: Maybe<TextFormat>)
+        : this(UUID.randomUUID(),
+              elementFormat,
+               textFormat)
+
     companion object : Factory<TextCellFormat>
     {
 
-        private val defaultCellFormat = CellFormat.default()
-
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextCellFormat> = when (doc)
         {
-            is DocDict -> effApply(::TextCellFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Cell Format
-                                   split(doc.maybeAt("cell_format"),
-                                         effValue(Comp.default(defaultCellFormat)),
-                                         { effApply(::Comp, CellFormat.fromDocument(it)) })
-                                   )
+            is DocDict ->
+            {
+                apply(::TextCellFormat,
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue<ValueError,Maybe<ElementFormat>>(Nothing()),
+                            { apply(::Just, ElementFormat.fromDocument(it)) }),
+                      // Text Format
+                      split(doc.maybeAt("text_format"),
+                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            { apply(::Just, TextFormat.fromDocument(it)) })
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = TextCellFormat(UUID.randomUUID(),
-                                       Comp.default(defaultCellFormat))
+        fun default() = TextCellFormat(UUID.randomUUID(), Nothing(), Nothing())
 
     }
 
@@ -87,27 +92,32 @@ data class TextCellFormat(override val id : UUID,
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocDict(mapOf(
-        "cell_format" to this.cellFormat().toDocument()
-    ))
+    override fun toDocument() = DocDict(mapOf())
+        .maybeMerge(this.elementFormat.apply {
+            Just(Pair("element_format", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.textFormat.apply {
+            Just(Pair("text_format", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun cellFormat() : CellFormat = this.cellFormat.value
+    fun elementFormat() : Maybe<ElementFormat> = this.elementFormat
+
+
+    fun textFormat() : Maybe<TextFormat> = this.textFormat
 
 
     // -----------------------------------------------------------------------------------------
     // RESOLVERS
     // -----------------------------------------------------------------------------------------
 
-    fun resolveTextStyle(columnFormat : TextColumnFormat) : TextStyle =
-        if (this.cellFormat().textStyle.isDefault())
-            columnFormat.columnFormat().textStyle()
-        else
-            this.cellFormat().textStyle()
+    fun resolveTextFormat(columnFormat : TextColumnFormat) : TextFormat =
+        when (this.textFormat) {
+            is Just -> this.textFormat.value
+            else    -> columnFormat.columnFormat().textFormat()
+        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -116,9 +126,12 @@ data class TextCellFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "text_cell_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetTableCellTextFormat =
+            dbWidgetTableCellTextFormat(this.elementFormat, this.textFormat)
 
 }
 
@@ -140,7 +153,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
         when (valueVariable)
         {
-            is Val -> openTextVariableEditorDialog(
+            is effect.Val -> openTextVariableEditorDialog(
                                         valueVariable.value,
                                         UpdateTargetTextCell(tableWidget.id, cell.id),
                                         sheetUIContext)
@@ -149,11 +162,10 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     fun view() : View
     {
-        val layout = TableWidgetCellView.layout(rowFormat,
-                                                column.format().columnFormat(),
-                                                cell.format().cellFormat(),
+        val layout = TableWidgetCellView.layout(column.format().columnFormat(),
                                                 sheetUIContext)
 
         layout.addView(this.valueView())
@@ -161,6 +173,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 
         var clickTime : Long = 0
         val CLICK_DURATION = 500
+
 
         layout.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action)
@@ -189,9 +202,9 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
                                                 .apply { it.diceRoll(sheetContext, rowContext) }
 
                                 when (summation) {
-                                    is Val -> {
+                                    is effect.Val -> {
                                         val dialog = DiceRollDialog.newInstance(summation.value,
-                                                                    cell.actionNameString(),
+                                                                    cell.action() ap { Just(it.name().value) },
                                                                 SheetContext(sheetUIContext))
                                         dialog.show(sheetActivity.supportFragmentManager, "")
                                     }
@@ -231,14 +244,14 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 
     private fun valueViewLayout() : LinearLayout
     {
-        val layout                  = LinearLayoutBuilder()
+        val layout              = LinearLayoutBuilder()
 
-        layout.orientation          = LinearLayout.HORIZONTAL
-        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.orientation      = LinearLayout.HORIZONTAL
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val valueStyle      = this.cell.format().resolveTextStyle(column.format())
-        layout.gravity              = Gravity.CENTER_VERTICAL or valueStyle.alignment().gravityConstant()
+        val valueStyle          = this.cell.format().resolveTextFormat(column.format())
+        layout.gravity          = Gravity.CENTER_VERTICAL or valueStyle.elementFormat().alignment().gravityConstant()
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -272,7 +285,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
 
-        val valueStyle      = this.cell.format().resolveTextStyle(column.format())
+        val valueStyle      = this.cell.format().resolveTextFormat(column.format())
         icon.color          = SheetManager.color(sheetUIContext.sheetId, valueStyle.colorTheme())
 
         icon.margin.rightDp = 5f
@@ -295,7 +308,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val valueStyle      = this.cell.format().resolveTextStyle(column.format())
+        val valueStyle      = this.cell.format().resolveTextFormat(column.format())
         valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
 //        value.layoutGravity = valueStyle.alignment().gravityConstant()
@@ -304,7 +317,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         val cellValue = cell.valueString(SheetContext(sheetUIContext))
         when (cellValue)
         {
-            is Val -> value.text = cellValue.value
+            is effect.Val -> value.text = cellValue.value
             is Err -> ApplicationLog.error(cellValue.error)
         }
 

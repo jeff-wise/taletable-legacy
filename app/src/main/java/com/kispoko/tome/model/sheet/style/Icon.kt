@@ -3,15 +3,15 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.R
+import com.kispoko.tome.db.DB_IconFormat
+import com.kispoko.tome.db.dbIconFormat
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.theme.ColorTheme
-import effect.effApply
-import effect.effError
-import effect.effValue
-import effect.split
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
@@ -228,20 +228,10 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
  * Icon Format
  */
 data class IconFormat(override val id : UUID,
-                      val colorTheme : Prim<ColorTheme>,
-                      val size : Prim<IconSize>) : ToDocument, Model, Serializable
+                      val colorTheme : ColorTheme,
+                      val size : IconSize)
+                       : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.colorTheme.name    = "color_theme"
-        this.size.name          = "size"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -250,37 +240,37 @@ data class IconFormat(override val id : UUID,
     constructor(colorTheme : ColorTheme,
                 size : IconSize)
         : this(UUID.randomUUID(),
-               Prim(colorTheme),
-               Prim(size))
+               colorTheme,
+               size)
 
 
     companion object : Factory<IconFormat>
     {
 
-        private val defaultColorTheme   = ColorTheme.black
-        private val defaultIconSize     = IconSize.default()
+        private fun defaultColorTheme()   = ColorTheme.black
+        private fun defaultIconSize()     = IconSize.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<IconFormat> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::IconFormat,
-                         // Color Theme
-                         split(doc.maybeAt("color_theme"),
-                               effValue(defaultColorTheme),
-                               { ColorTheme.fromDocument(it) }),
-                         // Size
-                         split(doc.maybeAt("size"),
-                             effValue(defaultIconSize),
-                             { IconSize.fromDocument(it) })
-                         )
+                apply(::IconFormat,
+                      // Color Theme
+                      split(doc.maybeAt("color_theme"),
+                            effValue(defaultColorTheme()),
+                            { ColorTheme.fromDocument(it) }),
+                      // Size
+                      split(doc.maybeAt("size"),
+                          effValue(defaultIconSize()),
+                          { IconSize.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = IconFormat(defaultColorTheme, defaultIconSize)
+        fun default() = IconFormat(defaultColorTheme(), defaultIconSize())
 
     }
 
@@ -299,9 +289,9 @@ data class IconFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun colorTheme() : ColorTheme = this.colorTheme.value
+    fun colorTheme() : ColorTheme = this.colorTheme
 
-    fun size() : IconSize = this.size.value
+    fun size() : IconSize = this.size
 
 
     // -----------------------------------------------------------------------------------------
@@ -310,9 +300,11 @@ data class IconFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "icon_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_IconFormat = dbIconFormat(this.colorTheme, this.size)
 
 }
 

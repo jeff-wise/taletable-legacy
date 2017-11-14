@@ -178,10 +178,7 @@ class GameInfoViewBuilder(val game : Game,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.margin.topDp     = 8f
         layout.margin.leftDp    = 8f

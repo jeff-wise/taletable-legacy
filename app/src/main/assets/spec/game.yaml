@@ -31,13 +31,28 @@ types:
       presence: required
       description: >
         The name of the game.
-    - name: description
-      type:
+    - name: summary
+      type: 
         type: custom_type
-        custom_type: game_description
+        custom_type: game_summary
       presence: required
       description: >
-        The name of the game.
+        A brief description of the game.
+    - name: game_name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The game name.
+    - name: authors
+      type: 
+        type: custom_coll_type
+        custom_coll_type: author
+      presence: required
+      description: >
+        The game's authors.
+
     - name: rulebook
       type:
         type: custom_type
@@ -62,36 +77,6 @@ types:
     base_type: 
       type: prim_type
       prim_type: string
-- type: product_type
-  product_type:
-    name: game_description
-    label: Game Description
-    description: >
-      The game description.
-    group: Game
-    type: product
-    fields:
-    - name: summary
-      type: 
-        type: custom_type
-        custom_type: game_summary
-      presence: required
-      description: >
-        A brief description of the game.
-    - name: game_name
-      type:
-        type: prim_type
-        prim_type: string
-      presence: required
-      description: >
-        The game name.
-    - name: authors
-      type: 
-        type: custom_coll_type
-        custom_coll_type: author
-      presence: required
-      description: >
-        The game's authors.
 - type: primitive_type
   primitive_type:
     name: game_summary

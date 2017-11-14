@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import com.kispoko.tome.lib.orm.DatabaseManager
 import com.kispoko.tome.lib.orm.ORMLog
+import com.kispoko.tome.lib.orm.ORMLogLevel
 import com.kispoko.tome.lib.orm.RowInsert
 import com.kispoko.tome.lib.orm.sql.SQL
 import java.util.*
@@ -33,7 +34,10 @@ data class UpsertQuery(val tableName : String, val rowId : UUID, val row : Conte
 
         val endTime = System.nanoTime()
 
-        ORMLog.event(RowInsert(validTableName, rowId, (endTime - startTime)))
+        if (ORMLog.logLevel < ORMLogLevel.EVERYTHING)
+            ORMLog.event(RowInsert(validTableName, rowId, (endTime - startTime)))
+        else
+            ORMLog.event(RowInsert(validTableName, rowId, (endTime - startTime), row))
     }
 
 

@@ -124,7 +124,7 @@ public class VariableReferenceActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            fields.addAll(Model.fields(this.variableReference, this));
+//            fields.addAll(ProdType.fields(this.variableReference, this));
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

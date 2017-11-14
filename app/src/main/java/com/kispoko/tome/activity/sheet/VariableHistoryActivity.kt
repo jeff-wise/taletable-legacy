@@ -83,7 +83,7 @@ class VariableHistoryActivity : AppCompatActivity()
         // > Toolbar
         val variable = this.variable
         if (variable != null) {
-            val toolbarTitle = variable.labelString() + " " + this.getString(R.string.history)
+            val toolbarTitle = variable.label().value + " " + this.getString(R.string.history)
             this.configureToolbar(toolbarTitle)
         }
 
@@ -185,7 +185,7 @@ fun variableEntryItems(variable : Variable, sheetContext : SheetContext) : List<
                     is Val -> {
                         val value = valueEff.value
                         when (value) {
-                            is Just -> EntryItem(Util.doubleString(value.value), it.description())
+                            is Just -> EntryItem(Util.doubleString(value.value), it.description().toNullable()?.value)
                             else -> null
                         }
                     }

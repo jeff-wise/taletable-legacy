@@ -11,14 +11,14 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_WidgetPointsBarFormat
+import com.kispoko.tome.db.DB_WidgetPointsFormat
+import com.kispoko.tome.db.dbWidgetPointsBarFormat
+import com.kispoko.tome.db.dbWidgetPointsFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLInt
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextFormat
@@ -43,35 +43,13 @@ import java.util.*
  * Points Widget Format
  */
 data class PointsWidgetFormat(override val id : UUID,
-                              val widgetFormat : Comp<WidgetFormat>,
-                              val limitTextFormat : Comp<TextFormat>,
-                              val currentTextFormat : Comp<TextFormat>,
-                              val labelTextFormat : Comp<TextFormat>,
-                              val limitColorTheme : Prim<ColorTheme>,
-                              val currentColorTheme : Prim<ColorTheme>,
-                              val pointsBarStyle : Prim<PointsBarStyle>,
-                              val pointsAboveBarStyle : Prim<PointsAboveBarStyle>,
-                              val barHeight : Prim<PointsBarHeight>)
-                               : ToDocument, Model, Serializable
+                              val widgetFormat : WidgetFormat,
+                              val limitTextFormat : TextFormat,
+                              val currentTextFormat : TextFormat,
+                              val labelTextFormat : TextFormat,
+                              val barFormat : PointsBarFormat)
+                               : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name          = "widget_format"
-        this.limitTextFormat.name       = "limit_text_format"
-        this.currentTextFormat.name     = "current_text_format"
-        this.labelTextFormat.name       = "label_text_format"
-        this.limitColorTheme.name       = "limit_color_theme"
-        this.currentColorTheme.name     = "current_color_theme"
-        this.pointsBarStyle.name        = "points_bar_style"
-        this.pointsAboveBarStyle.name   = "points_bar_style"
-        this.barHeight.name             = "bar_height"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -81,35 +59,23 @@ data class PointsWidgetFormat(override val id : UUID,
                 limitTextFormat : TextFormat,
                 currentTextFormat : TextFormat,
                 labelTextFormat : TextFormat,
-                limitColorTheme : ColorTheme,
-                currentColorTheme : ColorTheme,
-                pointsBarStyle : PointsBarStyle,
-                pointsAboveBarStyle : PointsAboveBarStyle,
-                barHeight : PointsBarHeight)
+                barFormat : PointsBarFormat)
         : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Comp(limitTextFormat),
-               Comp(currentTextFormat),
-               Comp(labelTextFormat),
-               Prim(limitColorTheme),
-               Prim(currentColorTheme),
-               Prim(pointsBarStyle),
-               Prim(pointsAboveBarStyle),
-               Prim(barHeight))
+               widgetFormat,
+               limitTextFormat,
+               currentTextFormat,
+               labelTextFormat,
+               barFormat)
 
 
     companion object : Factory<PointsWidgetFormat>
     {
 
-        val defaultWidgetFormat         = WidgetFormat.default()
-        val defaultLimitTextFormat      = TextFormat.default()
-        val defaultCurrentTextFormat    = TextFormat.default()
-        val defaultLabelTextFormat      = TextFormat.default()
-        val defaultLimitColorTheme      = ColorTheme.black
-        val defaultCurrentColorTheme    = ColorTheme.white
-        val defaultPointsBarStyle       = PointsBarStyle.Simple
-        val defaultPointsAboveBarStyle  = PointsAboveBarStyle.LimitLabelMaxRight
-        val defaultBarHeight            = PointsBarHeight(20)
+        private fun defaultWidgetFormat()      = WidgetFormat.default()
+        private fun defaultLimitTextFormat()   = TextFormat.default()
+        private fun defaultCurrentTextFormat() = TextFormat.default()
+        private fun defaultLabelTextFormat()   = TextFormat.default()
+        private fun defaultBarFormat()         = PointsBarFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<PointsWidgetFormat> = when (doc)
@@ -119,55 +85,35 @@ data class PointsWidgetFormat(override val id : UUID,
                 apply(::PointsWidgetFormat,
                       // Widget Format
                       split(doc.maybeAt("widget_format"),
-                            effValue(defaultWidgetFormat),
+                            effValue(defaultWidgetFormat()),
                             { WidgetFormat.fromDocument(it) }),
                       // Limit Text Format
                       split(doc.maybeAt("limit_text_format"),
-                            effValue(defaultLimitTextFormat),
+                            effValue(defaultLimitTextFormat()),
                             { TextFormat.fromDocument(it) }),
                       // Current Text Format
                       split(doc.maybeAt("current_text_format"),
-                            effValue(defaultCurrentTextFormat),
+                            effValue(defaultCurrentTextFormat()),
                             { TextFormat.fromDocument(it) }),
                       // Label Text Format
                       split(doc.maybeAt("label_text_format"),
-                            effValue(defaultLabelTextFormat),
+                            effValue(defaultLabelTextFormat()),
                             { TextFormat.fromDocument(it) }),
-                      // Limit Color Theme
-                      split(doc.maybeAt("limit_color_theme"),
-                            effValue(defaultLimitColorTheme),
-                            { ColorTheme.fromDocument(it) }),
-                      // Current Color Theme
-                      split(doc.maybeAt("current_color_theme"),
-                            effValue(defaultCurrentColorTheme),
-                            { ColorTheme.fromDocument(it) }),
-                      // Bar Style
-                      split(doc.maybeAt("bar_style"),
-                            effValue<ValueError,PointsBarStyle>(defaultPointsBarStyle),
-                            { PointsBarStyle.fromDocument(it) }),
-                      // Bar Style
-                      split(doc.maybeAt("above_bar_style"),
-                            effValue<ValueError,PointsAboveBarStyle>(defaultPointsAboveBarStyle),
-                            { PointsAboveBarStyle.fromDocument(it) }),
-                      // Bar Height
-                      split(doc.maybeAt("bar_height"),
-                            effValue(defaultBarHeight),
-                            { PointsBarHeight.fromDocument(it) })
+                      // Bar Format
+                      split(doc.maybeAt("bar_format"),
+                            effValue(defaultBarFormat()),
+                            { PointsBarFormat.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = PointsWidgetFormat(defaultWidgetFormat,
-                                           defaultLimitTextFormat,
-                                           defaultCurrentTextFormat,
-                                           defaultLabelTextFormat,
-                                           defaultLimitColorTheme,
-                                           defaultCurrentColorTheme,
-                                           defaultPointsBarStyle,
-                                           defaultPointsAboveBarStyle,
-                                           defaultBarHeight)
+        fun default() = PointsWidgetFormat(defaultWidgetFormat(),
+                                           defaultLimitTextFormat(),
+                                           defaultCurrentTextFormat(),
+                                           defaultLabelTextFormat(),
+                                           defaultBarFormat())
 
     }
 
@@ -177,15 +123,11 @@ data class PointsWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "limit_text_format" to this.limitTextFormat().toDocument(),
-        "current_text_format" to this.currentTextFormat().toDocument(),
-        "label_text_format" to this.labelTextFormat().toDocument(),
-        "limit_color_theme" to this.limitColorTheme().toDocument(),
-        "current_color_theme" to this.currentColorTheme().toDocument(),
-        "bar_style" to this.barStyle().toDocument(),
-        "above_bar_style" to this.aboveBarStyle().toDocument(),
-        "bar_height" to this.barHeight().toDocument()
+        "widget_format" to this.widgetFormat.toDocument(),
+        "limit_text_format" to this.limitTextFormat.toDocument(),
+        "current_text_format" to this.currentTextFormat.toDocument(),
+        "label_text_format" to this.labelTextFormat.toDocument(),
+        "bar_format" to this.barFormat.toDocument()
     ))
 
 
@@ -193,25 +135,15 @@ data class PointsWidgetFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
 
-    fun limitTextFormat() : TextFormat = this.limitTextFormat.value
+    fun limitTextFormat() : TextFormat = this.limitTextFormat
 
-    fun currentTextFormat() : TextFormat = this.currentTextFormat.value
+    fun currentTextFormat() : TextFormat = this.currentTextFormat
 
-    fun labelTextFormat() : TextFormat = this.labelTextFormat.value
+    fun labelTextFormat() : TextFormat = this.labelTextFormat
 
-    fun limitColorTheme() : ColorTheme = this.limitColorTheme.value
-
-    fun currentColorTheme() : ColorTheme = this.currentColorTheme.value
-
-    fun barStyle() : PointsBarStyle = this.pointsBarStyle.value
-
-    fun aboveBarStyle() : PointsAboveBarStyle = this.pointsAboveBarStyle.value
-
-    fun barHeight() : PointsBarHeight = this.barHeight.value
-
-    fun barHeightInt() : Int  = this.barHeight.value.value
+    fun barFormat() : PointsBarFormat  = this.barFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -220,9 +152,16 @@ data class PointsWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "points_widget_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetPointsFormat =
+            dbWidgetPointsFormat(this.widgetFormat,
+                                 this.limitTextFormat,
+                                 this.currentTextFormat,
+                                 this.labelTextFormat,
+                                 this.barFormat)
 
 }
 
@@ -293,7 +232,7 @@ data class PointsBarHeight(val value : Int) : ToDocument, SQLSerializable, Seria
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt( {this.value} )
+    override fun asSQLValue() = this.value.asSQLValue()
 
 }
 
@@ -399,6 +338,146 @@ sealed class PointsAboveBarStyle : ToDocument, SQLSerializable, Serializable
 }
 
 
+// Bar Format
+
+
+//val limitColorTheme : ColorTheme,
+//                              val currentColorTheme : ColorTheme,
+//                              val pointsBarStyle : PointsBarStyle,
+//                              val pointsAboveBarStyle : PointsAboveBarStyle,
+//                              val barHeight : PointsBarHeight)
+
+
+
+/**
+ * Bar Format
+ */
+data class PointsBarFormat(override val id : UUID,
+                           val barStyle : PointsBarStyle,
+                           val barAboveStyle : PointsAboveBarStyle,
+                           val barHeight : PointsBarHeight,
+                           val limitColorTheme : ColorTheme,
+                           val currentColorTheme : ColorTheme)
+                            : ToDocument, ProdType, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(barStyle : PointsBarStyle,
+                barAboveStyle : PointsAboveBarStyle,
+                barHeight : PointsBarHeight,
+                limitColorTheme : ColorTheme,
+                currentColorTheme : ColorTheme)
+        : this(UUID.randomUUID(),
+               barStyle,
+               barAboveStyle,
+               barHeight,
+               limitColorTheme,
+               currentColorTheme)
+
+
+    companion object : Factory<PointsBarFormat>
+    {
+
+        private fun defaultBarStyle()           = PointsBarStyle.Simple
+        private fun defaultBarAboveStyle()      = PointsAboveBarStyle.LimitLabelMaxRight
+        private fun defaultBarHeight()          = PointsBarHeight(8)
+        private fun defaultLimitColorTheme()    = ColorTheme.black
+        private fun defaultCurrentColorTheme()  = ColorTheme.white
+
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<PointsBarFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::PointsBarFormat,
+                      // Bar Style
+                      split(doc.maybeAt("bar_style"),
+                            effValue<ValueError,PointsBarStyle>(defaultBarStyle()),
+                            { PointsBarStyle.fromDocument(it) }),
+                      // Above Bar Style
+                      split(doc.maybeAt("bar_above_style"),
+                            effValue<ValueError,PointsAboveBarStyle>(defaultBarAboveStyle()),
+                            { PointsAboveBarStyle.fromDocument(it) }),
+                      // Bar Height
+                      split(doc.maybeAt("bar_height"),
+                            effValue(defaultBarHeight()),
+                            { PointsBarHeight.fromDocument(it) }),
+                      // Limit Color Theme
+                      split(doc.maybeAt("limit_color_theme"),
+                            effValue(defaultLimitColorTheme()),
+                            { ColorTheme.fromDocument(it) }),
+                      // Current Color Theme
+                      split(doc.maybeAt("current_color_theme"),
+                            effValue(defaultCurrentColorTheme()),
+                            { ColorTheme.fromDocument(it) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = PointsBarFormat(defaultBarStyle(),
+                                        defaultBarAboveStyle(),
+                                        defaultBarHeight(),
+                                        defaultLimitColorTheme(),
+                                        defaultCurrentColorTheme())
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "bar_style" to this.barStyle().toDocument(),
+        "above_bar_style" to this.aboveBarStyle().toDocument(),
+        "bar_height" to this.barHeight().toDocument(),
+        "limit_color_theme" to this.limitColorTheme().toDocument(),
+        "current_color_theme" to this.currentColorTheme().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+
+    fun barStyle() : PointsBarStyle = this.barStyle
+
+    fun aboveBarStyle() : PointsAboveBarStyle = this.barAboveStyle
+
+    fun barHeight() : PointsBarHeight = this.barHeight
+
+    fun limitColorTheme() : ColorTheme = this.limitColorTheme
+
+    fun currentColorTheme() : ColorTheme = this.currentColorTheme
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetPointsBarFormat =
+            dbWidgetPointsBarFormat(this.barStyle,
+                                    this.barAboveStyle,
+                                    this.barHeight,
+                                    this.limitColorTheme,
+                                    this.currentColorTheme)
+
+}
+
+
+
 object PointsWidgetView
 {
 
@@ -424,7 +503,7 @@ object PointsWidgetView
 
             when (currentValueVariable)
             {
-                is Val ->
+                is effect.Val ->
                 {
                     openNumberVariableEditorDialog(currentValueVariable.value,
                                                    NumericEditorType.Adder,
@@ -450,7 +529,7 @@ object PointsWidgetView
         val currentPointsString = pointsWidget.currentValueString(SheetContext(sheetUIContext))
         val limitPointsString = pointsWidget.limitValueString(SheetContext(sheetUIContext))
 
-        when (pointsWidget.format().aboveBarStyle())
+        when (pointsWidget.format().barFormat().aboveBarStyle())
         {
             is PointsAboveBarStyle.LimitLabelMaxRight ->
             {
@@ -460,15 +539,17 @@ object PointsWidgetView
                                                           sheetUIContext))
                 }
 
-                val label = pointsWidget.labelString()
-                if (label != null) {
-                    val labelView = this.labelView(label,
+                val label = pointsWidget.label()
+                when (label) {
+                    is Just -> {
+                        val labelView = this.labelView(label.value.value,
                                                   pointsWidget.format().labelTextFormat(),
                                                   sheetUIContext)
-                    val layoutParams = labelView.layoutParams as RelativeLayout.LayoutParams
-                    layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.points_bar_current)
-                    labelView.layoutParams = layoutParams
-                    layout.addView(labelView)
+                        val layoutParams = labelView.layoutParams as RelativeLayout.LayoutParams
+                        layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.points_bar_current)
+                        labelView.layoutParams = layoutParams
+                        layout.addView(labelView)
+                    }
                 }
 
                 if (limitPointsString != null) {
@@ -507,7 +588,7 @@ object PointsWidgetView
 
     fun barView(pointsWidget : PointsWidget, sheetUIContext : SheetUIContext) : View
     {
-        val layout = this.standardViewLayout(pointsWidget.format().barHeightInt(),
+        val layout = this.standardViewLayout(pointsWidget.format().barFormat().barHeight().value,
                                              sheetUIContext.context)
 
         layout.addView(this.standardBarView(pointsWidget, sheetUIContext))
@@ -582,7 +663,7 @@ object PointsWidgetView
         current.weight              = currentWeight
 
         current.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
-                                            pointsWidget.format().currentColorTheme())
+                                            pointsWidget.format().barFormat().currentColorTheme())
 
         // (3 B) Limit
         // -------------------------------------------------------------------------------------
@@ -592,7 +673,7 @@ object PointsWidgetView
         limit.weight                = limitWeight
 
         limit.backgroundColor       = SheetManager.color(sheetUIContext.sheetId,
-                                                         pointsWidget.format().limitColorTheme())
+                                                         pointsWidget.format().barFormat().limitColorTheme())
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -619,20 +700,20 @@ object PointsWidgetView
         current.text                = currentString
 
         current.color               = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.style().colorTheme())
+                                                         textFormat.colorTheme())
 
-        current.sizeSp              = textFormat.style().sizeSp()
+        current.sizeSp              = textFormat.sizeSp()
 
-        current.font                = Font.typeface(textFormat.style().font(),
-                                                    textFormat.style().fontStyle(),
+        current.font                = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
                                                     sheetUIContext.context)
 
-        current.paddingSpacing      = textFormat.padding()
-        current.marginSpacing       = textFormat.margins()
+        current.paddingSpacing      = textFormat.elementFormat().padding()
+        current.marginSpacing       = textFormat.elementFormat().margins()
 
 //        current.addRule(RelativeLayout.ALIGN_PARENT_START)
-        Log.d("***POINTSWIDGET", "current vert align: ${textFormat.verticalAlignment()}")
-        current.addRule(textFormat.verticalAlignment().relativeLayoutRule())
+        Log.d("***POINTSWIDGET", "current vert align: ${textFormat.elementFormat().verticalAlignment()}")
+        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
 
 //        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
@@ -654,21 +735,21 @@ object PointsWidgetView
         limit.text                  = limitString
 
         limit.color                 = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.style().colorTheme())
+                                                         textFormat.colorTheme())
 
-        limit.sizeSp                = textFormat.style().sizeSp()
+        limit.sizeSp                = textFormat.sizeSp()
 
-        limit.font                  = Font.typeface(textFormat.style().font(),
-                                                    textFormat.style().fontStyle(),
+        limit.font                  = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
                                                     sheetUIContext.context)
 
-        limit.paddingSpacing        = textFormat.padding()
-        limit.marginSpacing         = textFormat.margins()
+        limit.paddingSpacing        = textFormat.elementFormat().padding()
+        limit.marginSpacing         = textFormat.elementFormat().margins()
 
 //        limit.addRule(RelativeLayout.ALIGN_PARENT_END)
 
-        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.verticalAlignment()}")
-        limit.addRule(textFormat.verticalAlignment().relativeLayoutRule())
+        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.elementFormat().verticalAlignment()}")
+        limit.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
 //        limit.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
         return limit.textView(sheetUIContext.context)
@@ -691,20 +772,20 @@ object PointsWidgetView
         label.text                  = labelString
 
         label.color                 = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.style().colorTheme())
+                                                         textFormat.colorTheme())
 
-        label.sizeSp                = textFormat.style().sizeSp()
+        label.sizeSp                = textFormat.sizeSp()
 
-        label.font                  = Font.typeface(textFormat.style().font(),
-                                                    textFormat.style().fontStyle(),
+        label.font                  = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
                                                     sheetUIContext.context)
 
-        label.paddingSpacing        = textFormat.padding()
-        label.marginSpacing         = textFormat.margins()
+        label.paddingSpacing        = textFormat.elementFormat().padding()
+        label.marginSpacing         = textFormat.elementFormat().margins()
 //
 //        label.addRule(RelativeLayout.ALIGN_PARENT_END)
-        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.verticalAlignment()}")
-        label.addRule(textFormat.verticalAlignment().relativeLayoutRule())
+        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.elementFormat().verticalAlignment()}")
+        label.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
 
 //        label.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 

@@ -333,7 +333,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
     private fun diceRoll() : DiceRoll
     {
         var diceRoll = this.adderState.diceRolls.fold(DiceRoll(),
-                                                          {roll1, roll2 -> roll1.add(roll2)})
+                                                      {roll1, roll2 -> roll1.add(roll2)})
 
         if (this.delta != 0.0)
             diceRoll = diceRoll.addModifier(RollModifier(this.delta))
@@ -382,7 +382,9 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                         PointsWidgetUpdateSetCurrentValue(
                                 adderState.updateTarget.pointsWidgetId,
                                 finalValue)
-                SheetManager.updateSheet(sheetUIContext.sheetId, pointsWidgeUpdate)
+                SheetManager.updateSheet(sheetUIContext.sheetId,
+                                         pointsWidgeUpdate,
+                                         sheetUIContext.sheetUI())
             }
             is UpdateTargetNumberCell ->
             {
@@ -390,7 +392,9 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                         TableWidgetUpdateSetNumberCell(adderState.updateTarget.tableWidgetId,
                                                        adderState.updateTarget.cellId,
                                                        finalValue)
-                SheetManager.updateSheet(sheetUIContext.sheetId, numberCellUpdate)
+                SheetManager.updateSheet(sheetUIContext.sheetId,
+                                         numberCellUpdate,
+                                         sheetUIContext.sheetUI())
             }
             is UpdateTargetStoryWidgetPart ->
             {
@@ -398,7 +402,9 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                         StoryWidgetUpdateNumberPart(adderState.updateTarget.storyWidgetId,
                                                     adderState.updateTarget.partIndex,
                                                     finalValue)
-                SheetManager.updateSheet(sheetUIContext.sheetId, numberPartUpdate)
+                SheetManager.updateSheet(sheetUIContext.sheetId,
+                                         numberPartUpdate,
+                                         sheetUIContext.sheetUI())
             }
         }
 
@@ -786,10 +792,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                                                 TextFontStyle.Light,
                                                 sheetUIContext.context)
 
-        value.corners           = Corners(TopLeftCornerRadius(1f),
-                                          TopRightCornerRadius(1f),
-                                          BottomRightCornerRadius(1f),
-                                          BottomLeftCornerRadius(1f))
+        value.corners           = Corners(1.0, 1.0, 1.0, 1.0)
 
         value.sizeSp            = 23f
 
@@ -910,10 +913,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         button.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        button.corners              = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
+        button.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         button.onClick              = onClick
 
@@ -1085,10 +1085,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners           = Corners(TopLeftCornerRadius(1f),
-                                           TopRightCornerRadius(1f),
-                                           BottomRightCornerRadius(1f),
-                                           BottomLeftCornerRadius(1f))
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.child(icon)
               .child(label)
@@ -1157,10 +1154,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(1f),
-                                           TopRightCornerRadius(1f),
-                                           BottomRightCornerRadius(1f),
-                                           BottomLeftCornerRadius(1f))
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.onClick              = View.OnClickListener {
             val simpleDialog = NumberEditorDialog.newInstance(adderState.originalValue,
@@ -1245,10 +1239,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(1f),
-                                           TopRightCornerRadius(1f),
-                                           BottomRightCornerRadius(1f),
-                                           BottomLeftCornerRadius(1f))
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.onClick              = View.OnClickListener {
             this.finishWithResult()
@@ -1328,10 +1319,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(1f),
-                                              TopRightCornerRadius(1f),
-                                              BottomRightCornerRadius(1f),
-                                              BottomLeftCornerRadius(1f))
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
 
         layout.onClick              = View.OnClickListener {

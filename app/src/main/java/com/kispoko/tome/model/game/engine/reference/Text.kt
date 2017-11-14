@@ -3,8 +3,9 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.model.game.engine.value.ValueReference
@@ -20,10 +21,11 @@ import lulo.value.ValueParser
 import java.io.Serializable
 
 
+
 /**
  * Text Reference
  */
-sealed class TextReference : Serializable
+sealed class TextReference : SumType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -78,6 +80,19 @@ data class TextReferenceLiteral(val value : String) : TextReference(), SQLSerial
 
     override fun asSQLValue() = SQLText({ this.value })
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM TYPE
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "literal"
+
+
+    override val sumModelObject = this
+
 }
 
 
@@ -105,6 +120,19 @@ data class TextReferenceValue(val valueReference : ValueReference)
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() = this.valueReference.asSQLValue()
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM TYPE
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "value"
+
+
+    override val sumModelObject = this
 
 }
 
@@ -140,15 +168,19 @@ data class TextReferenceVariable(val variableReference : VariableReference)
 
     override fun asSQLValue() = this.variableReference.asSQLValue()
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM TYPE
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "variable"
+
+
+    override val sumModelObject = this
+
 }
-
-
-fun liftBooleanReference(reference : TextReference) : Func<TextReference>
-    = when (reference)
-    {
-        is TextReferenceLiteral  -> Prim(reference, "literal")
-        is TextReferenceVariable -> Prim(reference, "variable")
-        is TextReferenceValue    -> Prim(reference, "value")
-    }
 
 

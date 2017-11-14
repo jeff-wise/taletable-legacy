@@ -370,21 +370,13 @@ types:
     group: Page
     type: product
     fields:
-    - name: background_color_theme
+    - name: element_format
       type:
         type: custom_type
-        custom_type: color_theme
+        custom_type: element_format
       presence: optional
       description: >
-        The background color theme of the entire page.
-    - name: padding
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The space between the page's border and the groups within the page. This space 
-        is part of the background and will be colored according to the background color.
+        The element format.
 - type: product_type
   product_type:
     name: group
@@ -457,36 +449,13 @@ types:
       The group formatting options.
     group: Group
     fields:
-    - name: background_color_theme
+    - name: element_format
       type: 
         type: custom_type
-        custom_type: color_theme
+        custom_type: element_format
       presence: optional
       description: >
-        The background color theme.
-    - name: margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The space between the group's border and the content outside of the group (inside 
-        the page).
-    - name: padding
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The space between the groups's border and the rows insides the group. This space 
-        is part of the background and will be colored according to the background color.
-    - name: corners
-      type:
-        type: custom_type
-        custom_type: corners
-      presence: optional
-      description: >
-        The corner radius of the group border.
+        The element_format.
 - type: product_type
   product_type:
     name: group_row
@@ -2719,69 +2688,6 @@ types:
       presence: optional
       description: >
         The standard widget formatting options.
-    - name: height
-      type:
-        type: custom_type
-        custom_type: height
-      presence: optional
-      description: >
-        Widget height.
-    - name: inside_label
-      type: 
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        Inside label.
-    - name: inside_label_position
-      type:
-        type: custom_type
-        custom_type: position
-      presence: optional
-      description: >
-        Inside label position.
-    - name: inside_label_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        Inside label text style.
-    - name: inside_label_margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        Inside label margins.
-    - name: outside_label
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        Outside label.
-    - name: outside_label_position
-      type:
-        type: custom_type
-        custom_type: position
-      presence: optional
-      description: >
-        Outside label position.
-    - name: outside_label_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        Outside label text style.
-    - name: outside_label_margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        Outside label margins.
     - name: value_format
       type:
         type: custom_type
@@ -2789,20 +2695,6 @@ types:
       presence: optional
       description: >
         Value format.
-    - name: value_height
-      type:
-        type: custom_type
-        custom_type: widget_height
-      presence: optional
-      description: >
-        The value height.
-    - name: description_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The description style.
 - type: product_type
   product_type:
     name: action
@@ -2847,41 +2739,13 @@ types:
       presence: optional
       description: >
         The widget width.
-    - name: alignment
-      type: 
-        type: custom_type
-        custom_type: alignment
-      presence: optional
-      description: >
-        The widget alignment.
-    - name: background_color_theme
+    - name: element_format
       type:
         type: custom_type
-        custom_type: color_theme
+        custom_type: element_format
       presence: optional
       description: >
-        The widget background color theme.
-    - name: corners
-      type:
-        type: custom_type
-        custom_type: corners
-      presence: optional
-      description: >
-        The widget corners
-    - name: margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The widget margins.
-    - name: padding
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The widget padding.
+        The element format.
 - type: product_type
   product_type:
     name: element_format
@@ -2929,10 +2793,10 @@ types:
         custom_type: corners
       presence: optional
       description: Corners
-    - name: alignment
+    - name: horizontal_alignment
       type:
         type: custom_type
-        custom_type: alignment
+        custom_type: horizontal_alignment
       presence: optional
       description: >
         The text horizontal alignment.
@@ -2947,63 +2811,6 @@ types:
   product_type:
     name: text_format
     label: Text Format
-    description: >
-      Text format options.
-    group: Style
-    fields:
-    - name: style
-      type: 
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The text style.
-    - name: position
-      type:
-        type: custom_type
-        custom_type: position
-      presence: optional
-      description: >
-        The text position.
-    - name: height
-      type:
-        type: custom_type
-        custom_type: height
-      presence: optional
-      description: >
-        The text height.
-    - name: padding
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The text padding.
-    - name: margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The text margins.
-    - name: alignment
-      type:
-        type: custom_type
-        custom_type: alignment
-      presence: optional
-      description: >
-        The text horizontal alignment.
-    - name: vertical_alignment
-      type:
-        type: custom_type
-        custom_type: vertical_alignment
-      presence: optional
-      description: >
-        The text vertical alignment.
-- type: product_type
-  product_type:
-    name: text_style
-    label: Text Style
     description: >
       Text style options.
     group: Style
@@ -3043,20 +2850,20 @@ types:
       presence: optional
       description: >
         True if the text is underlined.
-    - name: alignment
+    - name: number_format
       type:
         type: custom_type
-        custom_type: alignment
+        custom_type: number_format
       presence: optional
       description: >
-        The text alignment
-    - name: background_color_theme
+        True if the text is underlined.
+    - name: element_format
       type:
         type: custom_type
-        custom_type: color_theme
+        custom_type: element_format
       presence: optional
       description: >
-        The text background color theme.
+        The element format.
 - type: product_type
   product_type:
     name: corners
@@ -3192,16 +2999,16 @@ types:
     - numeric_editor_type_set
 - type: primitive_type
   primitive_type:
-    name: alignment
-    label: Alignment
+    name: horizontal_alignment
+    label: Horizontal Alignment
     description: >
-      The alignment options.
+      The horizontal alignment options.
     group: Style
     base_type:
       type: prim_type
       prim_type: string
     constraints:
-    - alignment_set
+    - horizontal_alignment_set
 - type: primitive_type
   primitive_type:
     name: vertical_alignment

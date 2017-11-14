@@ -5,10 +5,11 @@ package com.kispoko.tome.model.game.engine.variable
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Prod
+import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -28,7 +29,7 @@ import java.io.Serializable
 /**
  * Text Variable Value
  */
-sealed class TextVariableValue : ToDocument, SumModel, Serializable
+sealed class TextVariableValue : ToDocument, SumType, Serializable
 {
 
     companion object : Factory<TextVariableValue>
@@ -107,7 +108,11 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "literal")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "literal"
+
 
     override val sumModelObject = this
 
@@ -171,7 +176,11 @@ class TextVariableUnknownLiteralValue() : TextVariableValue(), SQLSerializable
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "literal")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "unknown_literal"
+
 
     override val sumModelObject = this
 
@@ -221,14 +230,18 @@ data class TextVariableValueValue(val valueReference : ValueReference)
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
         GameManager.engine(sheetContext.gameId)
                    .apply { it.value(this.valueReference, sheetContext.gameId) }
-                   .apply { effValue<AppError,Set<Variable>>(it.variables()) }
+                   .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
 
 
     // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "value")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "value"
+
 
     override val sumModelObject = this
 
@@ -280,7 +293,11 @@ data class TextVariableValueUnknownValue(val valueSetId : ValueSetId)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "value")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "unknown_value"
+
 
     override val sumModelObject = this
 
@@ -294,7 +311,7 @@ data class TextVariableValueUnknownValue(val valueSetId : ValueSetId)
 }
 
 
-data class TextVariableProgramValue(val invocation : Invocation) : TextVariableValue(), Model
+data class TextVariableProgramValue(val invocation : Invocation) : TextVariableValue()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -333,77 +350,13 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Comp(this, "program")
+    override fun functor() = Prod(this.invocation)
+
+
+    override fun case() = "program"
+
 
     override val sumModelObject = this
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() = this.invocation.onLoad()
-
-    override val id = this.invocation.id
-
-    override val name = this.invocation.name
-
-    override val modelObject : Model = this.invocation
-
-
 }
 
-
-
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Initialize
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeTextVariable()
-//    {
-//        // [1] Create reaction value (if program variable)
-//        // --------------------------------------------------------------------------------------
-//
-//        if (this.kind.getValue() == Kind.PROGRAM) {
-//            this.reactiveValue = new ReactiveValue<>(this.invocation.getValue(),
-//                                                     VariableType.TEXT);
-//        }
-//        else {
-//            this.reactiveValue = null;
-//        }
-//    }
-//
-//
-//    // ** Variable State
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Add any variables associated with the current value to the state.
-//     */
-//    private void addToState()
-//    {
-//        if (this.kind() != Kind.VALUE)
-//            return;
-//
-//        Dictionary dictionary = SheetManagerOld.dictionary();
-//        if (dictionary != null)
-//        {
-//            TextValue textValue = dictionary.textValue(this.valueReference());
-//            if (textValue != null)
-//                textValue.addToState();
-//        }
-//    }
-//
-//
-//    private void removeFromState()
-//    {
-//        if (this.kind() != Kind.VALUE)
-//            return;
-//
-//        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
-//        dictionary.textValue(this.valueReference()).removeFromState();
-//    }
-//
-//}

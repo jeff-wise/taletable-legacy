@@ -4,280 +4,315 @@ package com.kispoko.tome.lib.orm
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteDatabaseLockedException
 import android.util.Log
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.lib.orm.sql.query.UpdateQuery
 import com.kispoko.tome.lib.orm.sql.query.UpsertQuery
-import effect.Eff
-import effect.Identity
-import java.util.*
 
 
 
-typealias ORMEff<A> = Eff<ORMError,Identity,A>
-
-
-
-
-
-object ORM
+fun savePrim(sqlValue : SQLValue, columnName : String, prodType : ProdType)
 {
 
-
-    fun saveModel(model : Model,
-                  oneToManyRelations : Set<OneToManyRelation>,
-                  isRecursive : Boolean,
-                  isTransaction : Boolean)
+    DatabaseManager.database().beginTransaction()
+    try
     {
         val startTime = System.nanoTime()
+        ORMLog.event(BeginTranscation(prodType.row().name))
 
-        try
-        {
-            if (isTransaction)
-            {
-                DatabaseManager.database().beginTransaction()
-                ORMLog.event(BeginTranscation(model.name))
-            }
+        Schema.defineTable(prodType, listOf())
 
-            // (1) Save the model's row.
-            // ---------------------------------------------------------------------------------
+        val updateQuery = UpdateQuery(prodType.row().tableName(),
+                                      columnName,
+                                      prodType.id,
+                                      sqlValue)
+        updateQuery.run()
 
-            Schema.defineTable(model)
+        DatabaseManager.database().setTransactionSuccessful()
+        val endTime = System.nanoTime()
 
-            // (1) Save the model's row.
-            // ---------------------------------------------------------------------------------
-
-            insertModelRow(model, oneToManyRelations)
-
-            // (2) [IF RECURSIVE] Save the model's child model rows.
-            // ---------------------------------------------------------------------------------
-
-            if (isRecursive)
-                insertModelChildRows(model, isRecursive)
-
-            // (3) Finish.
-            // ---------------------------------------------------------------------------------
-
-            if (isTransaction)
-                DatabaseManager.database().setTransactionSuccessful()
-
-            val endTime = System.nanoTime()
-
-            ORMLog.event(ModelSaved(model, (endTime - startTime)))
-        }
-        finally
-        {
-            if (isTransaction) {
-                DatabaseManager.database().endTransaction()
-                ORMLog.event(EndTranscation(model.name))
-            }
-        }
     }
-
-
-    private fun insertModelRow(model : Model, oneToManyRelations : Set<OneToManyRelation>)
+    finally
     {
-        val row = ContentValues()
-
-        // (1) Collect Row Data
-        // -------------------------------------------------------------------------------------
-
-        // () Save Id
-        row.put("_id", model.id.toString())
-
-        // (2) Save Primitive Values
-        ORM.modelValueRelations(model).forEach {
-            insertPrimitiveRowValue(it, row)
-        }
-
-        // (3) Save Foreign Keys (One-to-One)
-        ORM.modelOneToOneRelations(model).forEach {
-            insertProductRowValue(it, row)
-        }
-
-        // (4) Save Foreign Keys (One-to-Many)
-        oneToManyRelations.forEach {
-            insertCollValue(it, row)
-        }
-
-        // (2) Insert Row Data
-        // -------------------------------------------------------------------------------------
-
-        val upsertQuery = UpsertQuery(model.name, model.id, row)
-
-        upsertQuery.run()
-
+        DatabaseManager.database().endTransaction()
+        ORMLog.event(EndTranscation(prodType.row().name))
     }
-
-
-    private fun insertModelChildRows(model : Model, recursive : Boolean)
-    {
-        // Save Child Models (One-to-One)
-        Model.functors(model).forEach {
-            when (it) {
-                is Comp<*> -> it.save(recursive)
-            }
-        }
-
-        // Save Collections (One-to-Many)
-        oneToManyRelations(model).forEach {
-            it.first.save(recursive, it.second)
-        }
-
-    }
-
-
-
-
-    private fun insertPrimitiveRowValue(valueRelation : ValueRelation, row : ContentValues)
-    {
-        val columnName = SQL.validIdentifier(valueRelation.name)
-        val sqlValue = valueRelation.value
-
-        when (sqlValue)
-        {
-            is SQLInt  -> row.put(columnName, sqlValue.value())
-            is SQLReal -> row.put(columnName, sqlValue.value())
-            is SQLText -> row.put(columnName, sqlValue.value())
-            is SQLBlob -> row.put(columnName, sqlValue.value())
-            is SQLNull -> row.putNull(columnName)
-        }
-    }
-
-
-    private fun insertProductRowValue(oneToOneRelation : OneToOneRelation, row : ContentValues)
-    {
-        val columnName = SQL.validIdentifier(oneToOneRelation.name)
-        row.put(columnName, oneToOneRelation.childRowId.toString())
-    }
-
-
-    private fun insertCollValue(oneToManyRelation : OneToManyRelation, row : ContentValues)
-    {
-        val columnName = ORM.collectionColumnName(oneToManyRelation)
-
-        row.put(columnName, oneToManyRelation.oneRowId.toString())
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // RELATIONS
-    // -----------------------------------------------------------------------------------------
-
-
-    data class ValueRelation(val name : String,
-                             val value : SQLValue)
-
-
-    data class OneToOneRelation(val name : String,
-                                val childTableName : String,
-                                val childRowId : UUID)
-
-
-    data class OneToManyRelation(val oneTableName : String,
-                                 val oneFieldName : String,
-                                 val oneRowId : UUID)
-
-
-    fun modelValueRelations(model : Model) : List<ValueRelation> =
-        Model.functors(model).mapNotNull {
-            when (it)
-            {
-                is Prim<*> ->
-                {
-                    val funcName = it.name
-                    if (funcName != null) {
-                        ValueRelation(funcName, it.asSQLValue())
-                    }
-                    else {
-                        ORMLog.event(FunctorIsMissingNameField(model.name))
-                        null
-                    }
-                }
-                else -> null
-            }
-        }
-
-
-    fun modelOneToOneRelations(model : Model) : List<OneToOneRelation> =
-        Model.functors(model).mapNotNull {
-            when (it)
-            {
-                is Comp<*> ->
-                {
-                    val funcName = it.name
-                    if (funcName != null) {
-                        OneToOneRelation(funcName, it.value.name, it.value.id)
-                    }
-                    else {
-                        ORMLog.event(FunctorIsMissingNameField(model.name))
-                        null
-                    }
-                }
-                else -> null
-            }
-        }
-
-
-    fun oneToManyRelations(model : Model) : List<Pair<CollFunc, OneToManyRelation>>
-    {
-        fun funcRelations(func : Func<*>) : Pair<CollFunc, OneToManyRelation>?
-        {
-            val collName = func.name
-            if (collName == null) {
-                ORMLog.event(FunctorIsMissingNameField(model.name))
-                return null
-            }
-
-            when (func)
-            {
-                is Coll<*>  ->
-                {
-                    val rel = OneToManyRelation(ORM.modelTableName(model), collName, model.id)
-                    return Pair(func, rel)
-                }
-                is CollS<*> ->
-                {
-                    val rel = OneToManyRelation(ORM.modelTableName(model), collName, model.id)
-                    return Pair(func, rel)
-                }
-            }
-
-            return null
-        }
-
-        return Model.functors(model).mapNotNull { funcRelations(it) }
-    }
-
-
-    /**
-     * The model's SQL table name.
-     */
-    fun <A : Model> modelTableName(model : A) : String = SQL.validIdentifier(model.name)
-
-
-    fun collectionColumnName(tableName : String, fieldName : String) : String =
-        "parent_" + fieldName + "_" + tableName + "_id"
-
-
-    fun collectionColumnName(oneToManyRelation : OneToManyRelation) : String =
-            "parent_" + oneToManyRelation.oneFieldName + "_" +
-                        oneToManyRelation.oneTableName + "_id"
-
 
 }
 
+
+fun saveProdType(prodType : ProdType,
+                 oneToManyRelationRows : List<OneToManyRelationRow>,
+                 isRecursive : Boolean,
+                 isTransaction : Boolean)
+{
+    val startTime = System.nanoTime()
+
+    if (isTransaction)
+    {
+        // TODO need to run separate transactions for each model, but need to do it in single thread?
+        // I don't currently understand why I'm getting an error without the try, though it make sense.
+        // Need to find a better way to resolve this.
+        try {
+            DatabaseManager.database().beginTransaction()
+            ORMLog.event(BeginTranscation(prodType.row().name))
+        }
+        catch (e : SQLiteDatabaseLockedException) {
+            Log.d("***ORM", "sqlite db locked exception")
+        }
+    }
+
+    // TODO what if transaction doesn't start. need to figure out what's going on
+    // here on real device
+
+    try
+    {
+
+        // (1) Make sure the prodType's table is defined.
+        // ---------------------------------------------------------------------------------
+
+        Schema.defineTable(prodType, oneToManyRelationRows.map { it.oneToManyRelation() })
+
+        // (2) Save the prodType's row.
+        // ---------------------------------------------------------------------------------
+
+        insertModelRow(prodType, oneToManyRelationRows)
+
+        // (3) [IF RECURSIVE] Save the prodType's child prodType rows.
+        // ---------------------------------------------------------------------------------
+
+        if (isRecursive)
+            insertModelChildRows(prodType, isRecursive)
+
+        // (4) Finish.
+        // ---------------------------------------------------------------------------------
+
+        if (isTransaction)
+            DatabaseManager.database().setTransactionSuccessful()
+
+        val endTime = System.nanoTime()
+
+        ORMLog.event(ModelSaved(prodType, (endTime - startTime)))
+    }
+    finally
+    {
+        if (isTransaction) {
+            DatabaseManager.database().endTransaction()
+            ORMLog.event(EndTranscation(prodType.row().name))
+        }
+    }
+}
+
+
+fun insertModelRow(prodType : ProdType, oneToManyRelationRows : List<OneToManyRelationRow>)
+{
+    val contentValues = ContentValues()
+
+    val row = prodType.row()
+
+    // (1) Collect Row Data
+    // -------------------------------------------------------------------------------------
+
+    // (A) Save Id
+    contentValues.put("_id", prodType.id.toString())
+
+    // (B) Save Primitive Values
+    modelValueRelations(prodType).forEach {
+        insertPrimitiveRowValue(it, contentValues)
+    }
+
+    // (C) Save Foreign Keys (One-to-One)
+    modelOneToOneRelations(prodType).forEach {
+        insertProductRowValue(it, contentValues)
+    }
+
+    // (D) Save Foreign Keys (One-to-Many)
+    oneToManyRelationRows.forEach {
+        insertCollValue(it, contentValues)
+    }
+
+    // (E) Save Sum Types (Primitive or One-to-One)
+    sumRelations(prodType).forEach {
+        when (it.relation) {
+            is ValueRelation -> {
+                insertPrimitiveRowValue(it.relation, contentValues)
+                insertSumTypeRowValue(typeColumnName(it.relation.name), it.path, contentValues)
+            }
+            is OneToOneRelation -> {
+                insertProductRowValue(it.relation, contentValues)
+                insertSumTypeRowValue(typeColumnName(it.relation.name), it.path, contentValues)
+            }
+            else -> {
+                ORMLog.event(SumFunctorNotSupported(prodType.row().name))
+            }
+        }
+    }
+
+    // (2) Insert Row Data
+    // -------------------------------------------------------------------------------------
+
+    val upsertQuery = UpsertQuery(row.tableName(), prodType.id, contentValues)
+
+    upsertQuery.run()
+}
+
+
+private fun insertModelChildRows(prodType : ProdType, recursive : Boolean)
+{
+    // Save Child Models (One-to-One)
+    prodType.row().columns().forEach { column ->
+        when (column.value) {
+            is Prod<*> -> column.value.save(recursive)
+        }
+    }
+
+    // Save Collections (One-to-Many)
+    oneToManyRelations(prodType).forEach {
+        it.first.save(recursive, it.second)
+    }
+}
+
+
+private fun insertPrimitiveRowValue(valueRelation : ValueRelation, row : ContentValues)
+{
+    val columnName = valueRelation.columnName()
+    val sqlValue = valueRelation.value
+
+    when (sqlValue)
+    {
+        is SQLInt  -> row.put(columnName, sqlValue.value())
+        is SQLReal -> row.put(columnName, sqlValue.value())
+        is SQLText -> row.put(columnName, sqlValue.value())
+        is SQLBlob -> row.put(columnName, sqlValue.value())
+        is SQLNull -> row.putNull(columnName)
+    }
+}
+
+
+private fun insertProductRowValue(oneToOneRelation : OneToOneRelation, row : ContentValues)
+{
+    val columnName = SQL.validIdentifier(oneToOneRelation.name)
+    row.put(columnName, oneToOneRelation.childRowId.toString())
+}
+
+
+private fun insertCollValue(oneToManyRelationRow : OneToManyRelationRow, row : ContentValues)
+{
+    row.put(oneToManyRelationRow.columnName(), oneToManyRelationRow.oneRowId.toString())
+}
+
+
+private fun insertSumTypeRowValue(columnName : String, path : String, row : ContentValues)
+{
+    row.put(columnName, path)
+}
+
+
+
+private fun modelValueRelations(prodType : ProdType) : List<ValueRelation> =
+    prodType.row().columns().mapNotNull {
+        when (it.value) {
+            is Prim<*> -> ValueRelation(it.columnName(), it.value.asSQLValue())
+            else       -> null
+        }
+    }
+
+//
+//private fun primFunctorRelation(functor : Prim<*>, parentModelName : String) : ValueRelation =
+//{
+//
+//}
+
+
+private fun modelOneToOneRelations(prodType : ProdType) : List<OneToOneRelation> =
+    prodType.row().columns().mapNotNull {
+        when (it.value)
+        {
+            is Prod<*> -> OneToOneRelation(it.name, it.value.value.id)
+            else       -> null
+        }
+    }
+
+//
+//private fun prodFunctorRelation(functor : Prod<*>, parentModelName : String) : OneToOneRelation?
+//{
+//    val funcName = functor.name
+//    return if (funcName != null) {
+//
+//    }
+//    else {
+//        ORMLog.event(FunctorIsMissingNameField(parentModelName))
+//        null
+//    }
+//}
+
+
+private fun oneToManyRelations(prodType : ProdType) : List<Pair<Coll<*>, OneToManyRelationRow>>
+{
+    fun funcRelations(column : Col<*>) : Pair<Coll<*>, OneToManyRelationRow>? = when (column.value)
+    {
+        is Coll<*> -> {
+            val rel = OneToManyRelationRow(prodType.row().name, column.name, prodType.id)
+            Pair(column.value, rel)
+        }
+        else       -> null
+    }
+
+    return prodType.row().columns().mapNotNull { funcRelations(it) }
+}
+
+
+// -----------------------------------------------------------------------------------------
+// SUM RELATIONS
+// -----------------------------------------------------------------------------------------
+
+private fun resolveFunctor(functor : Val<*>,
+                            path : List<String>) : Pair<String, Val<*>> = when (functor)
+{
+    is Sum<*> -> resolveFunctor(functor.value.functor(),
+                                path.plus(functor.value.case()))
+    else      -> Pair(path.joinToString(":"), functor)
+}
+
+
+//private fun resolveFunctor(functor : Val<*>, case : String) : Pair<String, Val<*>> =
+//        _resolveFunctor(functor, listOf(case))
+
+
+private fun sumRelations(prodType: ProdType) : List<SumRelation> =
+    prodType.row().columns().mapNotNull {
+        when (it.value)
+        {
+            is Sum<*> ->
+            {
+                val result = resolveFunctor(it.value.value.functor(), listOf(it.value.value.case()))
+                val (path, functor) = result
+                when (functor)
+                {
+                    is Prim<*> -> SumRelation(ValueRelation(it.columnName(), functor.asSQLValue()), path)
+                    is Prod<*> -> SumRelation(OneToOneRelation(it.columnName(), functor.value.id), path)
+                    else       -> null
+                }
+            }
+            else      -> null
+        }
+    }
 
 
 
 object ORMLog
 {
 
-    var logLevel : ORMLogLevel = ORMLogLevel.DEBUG
+    var logLevel : ORMLogLevel = ORMLogLevel.NORMAL
 
 
+    // STATISTICS
     var transactionInserts = 0
+    var timeSpentCreatingSchemaObjectsNS : Long = 0
+    var transactionStartTime : Long = 0
 
 
     fun event(event : ORMEvent)
@@ -308,7 +343,14 @@ object ORMLog
             }
             is DefineTable ->
             {
-                if (logLevel >= ORMLogLevel.DEBUG)
+                if (logLevel >= ORMLogLevel.NORMAL)
+                    Log.d("***ORM EVENT", event.prettyEventMessage())
+
+                timeSpentCreatingSchemaObjectsNS += event.duration
+            }
+            is ColumnAdded ->
+            {
+                if (logLevel >= ORMLogLevel.NORMAL)
                     Log.d("***ORM EVENT", event.prettyEventMessage())
             }
             is BeginTranscation ->
@@ -316,6 +358,8 @@ object ORMLog
                 if (logLevel >= ORMLogLevel.NORMAL) {
                     // TODO track multiple transactions
                     transactionInserts = 0
+                    timeSpentCreatingSchemaObjectsNS = 0
+                    transactionStartTime = System.nanoTime()
                     Log.d("***ORM EVENT", event.prettyEventMessage())
                 }
             }
@@ -323,6 +367,8 @@ object ORMLog
             {
                 if (logLevel >= ORMLogLevel.NORMAL) {
                     event.totalRowInserts = transactionInserts
+                    event.timeSpentCreatingSchemaObjectsNS = timeSpentCreatingSchemaObjectsNS
+                    event.totalDurationNS = (System.nanoTime() - transactionStartTime)
                     Log.d("***ORM EVENT", event.prettyEventMessage())
                 }
             }
@@ -338,11 +384,14 @@ object ORMLog
 }
 
 
+
+
 enum class ORMLogLevel
 {
     NORMAL,
     VERBOSE,
-    DEBUG
+    DEBUG,
+    EVERYTHING
 }
 
 
@@ -371,3 +420,4 @@ object DatabaseManager
     }
 
 }
+

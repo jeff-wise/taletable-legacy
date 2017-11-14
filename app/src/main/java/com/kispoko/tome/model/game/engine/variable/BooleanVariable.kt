@@ -4,9 +4,9 @@ package com.kispoko.tome.model.game.engine.variable
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Prod
 import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -27,7 +27,7 @@ import java.io.Serializable
 /**
  * Boolean Variable
  */
-sealed class BooleanVariableValue : ToDocument, SumModel, Serializable
+sealed class BooleanVariableValue : ToDocument, SumType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -103,7 +103,11 @@ data class BooleanVariableLiteralValue(var value : Boolean)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this, "literal")
+    override fun functor() = Prim(this)
+
+
+    override fun case() = "literal"
+
 
     override val sumModelObject = this
 
@@ -162,7 +166,11 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Comp(this.invocation, "program")
+    override fun functor() = Prod(this.invocation)
+
+
+    override fun case() = "program"
+
 
     override val sumModelObject = this
 

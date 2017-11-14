@@ -3,16 +3,19 @@ package com.kispoko.tome.model.sheet.widget.table
 
 
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.variable.BooleanVariableValue
 import com.kispoko.tome.model.game.engine.variable.NumberVariableValue
 import com.kispoko.tome.model.game.engine.variable.TextVariableValue
 import com.kispoko.tome.model.sheet.style.Alignment
+import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.NumericEditorType
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
@@ -33,10 +36,10 @@ import java.util.*
  * Table Widget Column
  */
 @Suppress("UNCHECKED_CAST")
-sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
-                               open val variablePrefix : Prim<ColumnVariablePrefix>,
-                               open val isColumnNamespaced : Prim<IsColumnNamespaced>)
-                                : ToDocument, Model, Serializable
+sealed class TableWidgetColumn(open val columnName : ColumnName,
+                               open val variablePrefix : ColumnVariablePrefix,
+                               open val isColumnNamespaced : IsColumnNamespaced)
+                                : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -70,17 +73,19 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun columnName() : ColumnName = this.columnName.value
+    fun columnName() : ColumnName = this.columnName
 
-    fun nameString() : String = this.columnName.value.value
 
-    fun variablePrefix() : ColumnVariablePrefix = this.variablePrefix.value
+    fun nameString() : String = this.columnName.value
 
-    fun variablePrefixString() : String = this.variablePrefix.value.value
 
-    fun isColumnNamespaced() : IsColumnNamespaced = this.isColumnNamespaced.value
+    fun variablePrefix() : ColumnVariablePrefix = this.variablePrefix
 
-    fun isColumnNamespacedBoolean() : Boolean = this.isColumnNamespaced.value.value
+
+    fun variablePrefixString() : String = this.variablePrefix.value
+
+
+    fun isColumnNamespacedBoolean() : Boolean = this.isColumnNamespaced.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -101,27 +106,13 @@ sealed class TableWidgetColumn(open val columnName : Prim<ColumnName>,
  */
 data class TableWidgetBooleanColumn(
         override val id : UUID,
-        override val columnName : Prim<ColumnName>,
-        override val variablePrefix : Prim<ColumnVariablePrefix>,
-        override val isColumnNamespaced: Prim<IsColumnNamespaced>,
-        val defaultValue : Sum<BooleanVariableValue>,
-        val format : Comp<BooleanColumnFormat>)
+        override val columnName : ColumnName,
+        override val variablePrefix : ColumnVariablePrefix,
+        override val isColumnNamespaced:  IsColumnNamespaced,
+        val defaultValue : BooleanVariableValue,
+        val format : BooleanColumnFormat)
           : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.columnName.name            = "column_name"
-        this.variablePrefix.name        = "variable_prefix"
-        this.isColumnNamespaced.name    = "is_column_namespaced"
-        this.defaultValue.name          = "default_value"
-        this.format.name                = "format"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -133,11 +124,11 @@ data class TableWidgetBooleanColumn(
                 defaultValue : BooleanVariableValue,
                 format : BooleanColumnFormat)
         : this(UUID.randomUUID(),
-               Prim(columnName),
-               Prim(variablePrefix),
-               Prim(isColumnNamespaced),
-               Sum(defaultValue),
-               Comp(format))
+               columnName,
+               variablePrefix,
+               isColumnNamespaced,
+               defaultValue,
+               format)
 
 
     companion object : Factory<TableWidgetBooleanColumn>
@@ -175,7 +166,7 @@ data class TableWidgetBooleanColumn(
     override fun toDocument() = DocDict(mapOf(
         "name" to this.columnName().toDocument(),
         "variable_prefix" to this.variablePrefix().toDocument(),
-        "is_namespaced" to this.isColumnNamespaced().toDocument(),
+        "is_namespaced" to this.isColumnNamespaced.toDocument(),
         "default_value" to this.defaultValue().toDocument(),
         "format" to this.format().toDocument()
     ))
@@ -185,9 +176,10 @@ data class TableWidgetBooleanColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun defaultValue() : BooleanVariableValue = this.defaultValue.value
+    fun defaultValue() : BooleanVariableValue = this.defaultValue
 
-    fun format() : BooleanColumnFormat = this.format.value
+
+    fun format() : BooleanColumnFormat = this.format
 
 
     // -----------------------------------------------------------------------------------------
@@ -210,9 +202,15 @@ data class TableWidgetBooleanColumn(
 
     override fun onLoad() {}
 
-    override val name : String = "table_widget_boolean_column"
+    override val prodTypeObject = this
 
-    override val modelObject = this
+
+    override fun row() : DB_WidgetTableColumnBoolean =
+            dbWidgetTableColumnBoolean(this.columnName,
+                                       this.variablePrefix,
+                                       this.isColumnNamespaced,
+                                       this.defaultValue,
+                                       this.format)
 
 }
 
@@ -221,36 +219,16 @@ data class TableWidgetBooleanColumn(
  * Table Widget Number Column
  */
 data class TableWidgetNumberColumn(
-            override val id : UUID,
-            override val columnName : Prim<ColumnName>,
-            override val variablePrefix : Prim<ColumnVariablePrefix>,
-            override val isColumnNamespaced: Prim<IsColumnNamespaced>,
-            val defaultValue : Sum<NumberVariableValue>,
-            val format : Comp<NumberColumnFormat>,
-            val action : Maybe<Comp<Action>>,
-            val editorType : Prim<NumericEditorType>)
-             : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
+                override val id : UUID,
+                override val columnName : ColumnName,
+                override val variablePrefix : ColumnVariablePrefix,
+                override val isColumnNamespaced : IsColumnNamespaced,
+                val defaultValue : NumberVariableValue,
+                val format : NumberColumnFormat,
+                val action : Maybe<Action>,
+                val editorType : NumericEditorType)
+                 : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.columnName.name            = "column_name"
-        this.variablePrefix.name        = "variable_prefix"
-        this.isColumnNamespaced.name    = "is_column_namespaced"
-        this.defaultValue.name          = "default_value"
-        this.format.name                = "format"
-
-        when (this.action) {
-            is Just -> this.action.value.name       = "action"
-        }
-
-        this.editorType.name            = "editor_type"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -264,13 +242,13 @@ data class TableWidgetNumberColumn(
                 action : Maybe<Action>,
                 editorType : NumericEditorType)
         : this(UUID.randomUUID(),
-               Prim(columnName),
-               Prim(variablePrefix),
-               Prim(isColumnNamespaced),
-               Sum(defaultValue),
-               Comp(format),
-               maybeLiftComp(action),
-               Prim(editorType))
+               columnName,
+               variablePrefix,
+               isColumnNamespaced,
+               defaultValue,
+               format,
+               action,
+               editorType)
 
 
     companion object : Factory<TableWidgetNumberColumn>
@@ -283,30 +261,30 @@ data class TableWidgetNumberColumn(
         {
             is DocDict ->
             {
-                effApply(::TableWidgetNumberColumn,
-                         // Name
-                         doc.at("name") ap { ColumnName.fromDocument(it) },
-                         // Variable Prefix
-                         doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
-                         // Is Column Namespaced
-                         split(doc.maybeAt("is_namespaced"),
-                               effValue(IsColumnNamespaced(false)),
-                               { IsColumnNamespaced.fromDocument(it) }),
-                         // Default Value
-                         doc.at("default_value") ap { NumberVariableValue.fromDocument(it) },
-                         // Format
-                         split(doc.maybeAt("format"),
-                               effValue(NumberColumnFormat.default()),
-                               { NumberColumnFormat.fromDocument(it) }),
-                         // Action
-                         split(doc.maybeAt("action"),
-                               effValue<ValueError,Maybe<Action>>(Nothing()),
-                               { apply(::Just, Action.fromDocument(it)) }),
-                         // Editor Type
-                         split(doc.maybeAt("editor_type"),
-                               effValue<ValueError,NumericEditorType>(defaultEditorType),
-                               { NumericEditorType.fromDocument(it) })
-                        )
+                apply(::TableWidgetNumberColumn,
+                      // Name
+                      doc.at("name") ap { ColumnName.fromDocument(it) },
+                      // Variable Prefix
+                      doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
+                      // Is Column Namespaced
+                      split(doc.maybeAt("is_namespaced"),
+                            effValue(IsColumnNamespaced(false)),
+                            { IsColumnNamespaced.fromDocument(it) }),
+                      // Default Value
+                      doc.at("default_value") ap { NumberVariableValue.fromDocument(it) },
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(NumberColumnFormat.default()),
+                            { NumberColumnFormat.fromDocument(it) }),
+                      // Action
+                      split(doc.maybeAt("action"),
+                            effValue<ValueError,Maybe<Action>>(Nothing()),
+                            { apply(::Just, Action.fromDocument(it)) }),
+                      // Editor Type
+                      split(doc.maybeAt("editor_type"),
+                            effValue<ValueError,NumericEditorType>(defaultEditorType),
+                            { NumericEditorType.fromDocument(it) })
+                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -320,7 +298,7 @@ data class TableWidgetNumberColumn(
     override fun toDocument() = DocDict(mapOf(
         "name" to this.columnName().toDocument(),
         "variable_prefix" to this.variablePrefix().toDocument(),
-        "is_namespaced" to this.isColumnNamespaced().toDocument(),
+        "is_namespaced" to this.isColumnNamespaced.toDocument(),
         "default_value" to this.defaultValue().toDocument(),
         "format" to this.format().toDocument(),
         "editor_type" to this.editorType().toDocument()
@@ -333,13 +311,13 @@ data class TableWidgetNumberColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun defaultValue() : NumberVariableValue = this.defaultValue.value
+    fun defaultValue() : NumberVariableValue = this.defaultValue
 
-    fun format() : NumberColumnFormat = this.format.value
+    fun format() : NumberColumnFormat = this.format
 
-    fun editorType() : NumericEditorType = this.editorType.value
+    fun editorType() : NumericEditorType = this.editorType
 
-    fun action() : Maybe<Action> = getMaybeComp(this.action)
+    fun action() : Maybe<Action> = this.action
 
 
     // -----------------------------------------------------------------------------------------
@@ -357,7 +335,7 @@ data class TableWidgetNumberColumn(
         val maybeValue = this.defaultValue().value(sheetContext)
         when (maybeValue)
         {
-            is Val ->
+            is effect.Val ->
             {
                 val value = maybeValue.value
                 when (value)
@@ -379,9 +357,18 @@ data class TableWidgetNumberColumn(
 
     override fun onLoad() {}
 
-    override val name : String = "table_widget_number_column"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetTableColumnNumber =
+            dbWidgetTableColumnNumber(this.columnName,
+                                      this.variablePrefix,
+                                      this.isColumnNamespaced,
+                                      this.defaultValue,
+                                      this.format,
+                                      this.action,
+                                      this.editorType)
 
 }
 
@@ -390,35 +377,16 @@ data class TableWidgetNumberColumn(
  * Table Widget Text Column
  */
 data class TableWidgetTextColumn(
-                        override val id : UUID,
-                        override val columnName : Prim<ColumnName>,
-                        override val variablePrefix : Prim<ColumnVariablePrefix>,
-                        override val isColumnNamespaced: Prim<IsColumnNamespaced>,
-                        val defaultValue : Sum<TextVariableValue>,
-                        val format : Comp<TextColumnFormat>,
-                        val action : Maybe<Comp<Action>>,
-                        val definesNamespace : Prim<DefinesNamespace>)
-                        : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
+        override val id : UUID,
+        override val columnName : ColumnName,
+        override val variablePrefix : ColumnVariablePrefix,
+        override val isColumnNamespaced : IsColumnNamespaced,
+        val defaultValue : TextVariableValue,
+        val format : TextColumnFormat,
+        val action : Maybe<Action>,
+        val definesNamespace : DefinesNamespace)
+         : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.columnName.name            = "column_name"
-        this.variablePrefix.name        = "variable_prefix"
-        this.isColumnNamespaced.name    = "is_column_namespaced"
-        this.defaultValue.name          = "default_value"
-        this.format.name                = "format"
-        this.definesNamespace.name      = "defines_namespace"
-
-        when (this.action) {
-            is Just -> this.action.value.name       = "action"
-        }
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -432,13 +400,13 @@ data class TableWidgetTextColumn(
                 action : Maybe<Action>,
                 definesNamespace: DefinesNamespace)
         : this(UUID.randomUUID(),
-               Prim(columnName),
-               Prim(variablePrefix),
-               Prim(isColumnNamespaced),
-               Sum(defaultValue),
-               Comp(format),
-               maybeLiftComp(action),
-               Prim(definesNamespace))
+               columnName,
+               variablePrefix,
+               isColumnNamespaced,
+               defaultValue,
+               format,
+               action,
+               definesNamespace)
 
 
     companion object : Factory<TableWidgetTextColumn>
@@ -485,7 +453,7 @@ data class TableWidgetTextColumn(
     override fun toDocument() = DocDict(mapOf(
         "name" to this.columnName().toDocument(),
         "variable_prefix" to this.variablePrefix().toDocument(),
-        "is_namespaced" to this.isColumnNamespaced().toDocument(),
+        "is_namespaced" to this.isColumnNamespaced.toDocument(),
         "default_value" to this.defaultValue().toDocument(),
         "format" to this.format().toDocument(),
         "defines_namespace" to this.definesNamespace().toDocument()
@@ -496,15 +464,19 @@ data class TableWidgetTextColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun format() : TextColumnFormat = this.format.value
+    fun format() : TextColumnFormat = this.format
 
-    fun definesNamespace() : DefinesNamespace = this.definesNamespace.value
 
-    fun definesNamespaceBoolean() : Boolean = this.definesNamespace.value.value
+    fun definesNamespace() : DefinesNamespace = this.definesNamespace
 
-    fun defaultValue() : TextVariableValue = this.defaultValue.value
 
-    fun action() : Maybe<Action> = getMaybeComp(this.action)
+    fun definesNamespaceBoolean() : Boolean = this.definesNamespace.value
+
+
+    fun defaultValue() : TextVariableValue = this.defaultValue
+
+
+    fun action() : Maybe<Action> = this.action
 
 
     // -----------------------------------------------------------------------------------------
@@ -522,7 +494,7 @@ data class TableWidgetTextColumn(
         val maybeValue = this.defaultValue().value(sheetContext)
         when (maybeValue)
         {
-            is Val -> {
+            is effect.Val -> {
                 val value = maybeValue.value
                 when (value) {
                     is Just -> return value.value
@@ -541,9 +513,18 @@ data class TableWidgetTextColumn(
 
     override fun onLoad() {}
 
-    override val name : String = "table_widget_text_column"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetTableColumnText =
+            dbWidgetTableColumnText(this.columnName,
+                                    this.variablePrefix,
+                                    this.isColumnNamespaced,
+                                    this.defaultValue,
+                                    this.format,
+                                    this.action,
+                                    this.definesNamespace)
 
 }
 
@@ -734,78 +715,59 @@ data class DefinesNamespace(val value : Boolean) : ToDocument, SQLSerializable, 
  * Table Widget Column Format
  */
 data class ColumnFormat(override val id : UUID,
-                        val textStyle : Comp<TextStyle>,
-                        val alignment : Prim<Alignment>,
-                        val width : Prim<ColumnWidth>,
-                        val backgroundColorTheme : Prim<ColorTheme>)
-                         : ToDocument, Model, Serializable
+                        val textFormat : TextFormat,
+                        val elementFormat : ElementFormat,
+                        val width : ColumnWidth)
+                         : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.textStyle.name             = "text_style"
-        this.alignment.name             = "alignment"
-        this.width.name                 = "width"
-        this.backgroundColorTheme.name  = "background_color_theme"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(textStyle : TextStyle,
-                alignment : Alignment,
-                width : ColumnWidth,
-                backgroundColorTheme : ColorTheme)
+    constructor(textFormat : TextFormat,
+                elementFormat : ElementFormat,
+                width : ColumnWidth)
         : this(UUID.randomUUID(),
-               Comp(textStyle),
-               Prim(alignment),
-               Prim(width),
-               Prim(backgroundColorTheme))
+               textFormat,
+               elementFormat,
+               width)
 
 
     companion object : Factory<ColumnFormat>
     {
 
-        private val defaultTextStyle            = TextStyle.default()
-        private val defaultAlignment            = Alignment.Center
-        private val defaultWidth                = ColumnWidth(1.0f)
-        private val defaultBackgroundColorTheme = ColorTheme.transparent
+        private fun defaultTextFormat()    = TextFormat.default()
+        private fun defaultElementFormat() = ElementFormat.default()
+        private fun defaultWidth()         = ColumnWidth(1.0f)
 
 
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ColumnFormat> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ColumnFormat> = when (doc)
         {
-            is DocDict -> effApply(::ColumnFormat,
-                                   // Text Style
-                                   split(doc.maybeAt("text_style"),
-                                         effValue(defaultTextStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Alignment
-                                   split(doc.maybeAt("alignment"),
-                                         effValue<ValueError,Alignment>(defaultAlignment),
-                                         { Alignment.fromDocument(it) }),
-                                   // Width
-                                   split(doc.maybeAt("width"),
-                                         effValue(defaultWidth),
-                                         { ColumnWidth.fromDocument(it) }),
-                                   // Background Color
-                                   split(doc.maybeAt("background_color_theme"),
-                                         effValue(defaultBackgroundColorTheme),
-                                         { ColorTheme.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                apply(::ColumnFormat,
+                      // Text Format
+                      split(doc.maybeAt("text_format"),
+                            effValue(defaultTextFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue(defaultElementFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Width
+                      split(doc.maybeAt("width"),
+                            effValue(defaultWidth()),
+                            { ColumnWidth.fromDocument(it) })
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = ColumnFormat(defaultTextStyle,
-                                     defaultAlignment,
-                                     defaultWidth,
-                                     defaultBackgroundColorTheme)
+        fun default() = ColumnFormat(defaultTextFormat(),
+                                     defaultElementFormat(),
+                                     defaultWidth())
 
     }
 
@@ -815,10 +777,9 @@ data class ColumnFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "text_style" to this.textStyle().toDocument(),
-        "alignment" to this.alignment().toDocument(),
-        "width" to this.width().toDocument(),
-        "background_color_theme" to this.backgroundColorTheme().toDocument()
+        "text_format" to this.textFormat.toDocument(),
+        "element_format" to this.elementFormat.toDocument(),
+        "width" to this.width().toDocument()
     ))
 
 
@@ -826,15 +787,17 @@ data class ColumnFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun textStyle() : TextStyle = this.textStyle.value
+    fun textFormat() : TextFormat = this.textFormat
 
-    fun alignment() : Alignment = this.alignment.value
 
-    fun width() : ColumnWidth = this.width.value
+    fun elementFormat() : ElementFormat = this.elementFormat
 
-    fun widthFloat() : Float = this.width.value.value
 
-    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+    fun width() : ColumnWidth = this.width
+
+
+    fun widthFloat() : Float = this.width.value
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -843,10 +806,12 @@ data class ColumnFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "table_widget_column_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
 
+
+    override fun row() : DB_WidgetTableColumnFormat =
+            dbWidgetTableColumnFormat(this.textFormat, this.elementFormat, this.width)
 }
 
 

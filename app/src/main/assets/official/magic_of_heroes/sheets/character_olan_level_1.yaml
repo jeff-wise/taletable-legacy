@@ -658,21 +658,23 @@ sections:
   pages:
   - name: Stats
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_9
-    groups:
-    - format:
+      element_format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
-            color_id: dark_grey_7
-        padding:
-          top: 20
-          left: 8
-          right: 8
-          bottom: 15
+            color_id: dark_grey_9
+    groups:
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_7
+          padding:
+            top: 20
+            left: 8
+            right: 8
+            bottom: 15
       rows:
       - widgets:
         - type: widget_text
@@ -680,19 +682,20 @@ sections:
             id: name_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
-                  font_style: regular
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
+                font_style: regular
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             value_variable_id: name_label
       - format:
-          margins:
-            top: 5
+          element_format:
+            margins:
+              top: 5
         widgets:
         - type: widget_text
           widget_text:
@@ -700,12 +703,18 @@ sections:
             value_variable_id: name
             format:
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
-                  font_style: bold
-                  size: 24
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                font_style: bold
+                size: 24
+- name: Action!
+  icon: sword_outline
+  pages:
+- name: Adventure
+  icon: adventure
+  pages:

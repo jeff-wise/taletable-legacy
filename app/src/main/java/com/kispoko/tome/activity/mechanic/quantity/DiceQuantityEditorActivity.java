@@ -125,7 +125,7 @@ public class DiceQuantityEditorActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            fields.addAll(Model.fields(this.diceQuantity, this));
+//            fields.addAll(ProdType.fields(this.diceQuantity, this));
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

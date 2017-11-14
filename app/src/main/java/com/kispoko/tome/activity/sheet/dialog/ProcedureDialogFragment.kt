@@ -18,7 +18,6 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.sheet.style.TextFont
@@ -155,318 +154,318 @@ class ProcedureDialogFragment : DialogFragment()
 }
 
 
-
-object ProcedureView
-{
-
-    fun view(procedure : Procedure, sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        val layout = this.viewLayout(sheetUIContext)
-
-        // Header View
-        layout.addView(this.headerView(procedure.procedureName(), sheetUIContext))
-
-        // Programs View
-        val programs = procedure.programIds().mapM { programId ->
-                            GameManager.engine(sheetUIContext.gameId)
-                                    .apply { it.program(programId) }
-                       }
-        when (programs) {
-            is Val -> layout.addView(this.programsView(programs.value, sheetUIContext))
-            is Err -> ApplicationLog.error(programs.error)
-        }
-
-        // Buttons View
-        layout.addView(this.buttonsView(sheetUIContext))
-
-        return layout
-    }
-
-
-    private fun viewLayout(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        val layout = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // HEADER VIEW
-    // -----------------------------------------------------------------------------------------
-
-    private fun headerView(procedureName : String,
-                           sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        val layout = this.headerViewLayout(sheetUIContext.context)
-
-        layout.addView(this.procedureNameView(procedureName, sheetUIContext))
-
-        return layout
-    }
-
-
-    private fun headerViewLayout(context : Context) : LinearLayout
-    {
-        val layout = LinearLayoutBuilder()
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun procedureNameView(procedureName : String,
-                                  sheetUIContext : SheetUIContext) : TextView
-    {
-        val name            = TextViewBuilder()
-
-        name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
-        name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        name.text           = procedureName
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        name.font               = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                sheetUIContext.context)
-
-        name.sizeSp             = 15f
-
-        return name.textView(sheetUIContext.context)
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // PROGRAMS VIEW
-    // -----------------------------------------------------------------------------------------
-
-    private fun programsView(programs : Set<Program>,
-                             sheetUIContext : SheetUIContext) : ScrollView
-    {
-        val scrollView = this.programsScrollView(sheetUIContext.context)
-
-        scrollView.addView(this.programsListView(programs, sheetUIContext))
-
-        return scrollView
-    }
-
-
-    private fun programsScrollView(context : Context) : ScrollView
-    {
-        val scrollView = ScrollViewBuilder()
-
-        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT
-        scrollView.height       = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        return scrollView.scrollView(context)
-    }
-
-
-    private fun programsListView(programs : Set<Program>,
-                                 sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        val layout = this.programsListViewLayout(sheetUIContext.context)
-
-        programs.forEach {
-            layout.addView(this.programView(it, sheetUIContext))
-        }
-
-        return layout
-    }
-
-
-    private fun programsListViewLayout(context : Context) : LinearLayout
-    {
-        val layout = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun programView(program : Program,
-                            sheetUIContext : SheetUIContext) : TextView
-    {
-        val description             = TextViewBuilder()
-
-        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT
-        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        description.text            = program.descriptionString()
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        description.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        description.font            = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                sheetUIContext.context)
-
-        description.sizeSp          = 15f
-
-        return description.textView(sheetUIContext.context)
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // BUTTONS VIEW
-    // -----------------------------------------------------------------------------------------
-
-    private fun buttonsView(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        val layout          = this.buttonsViewLayout(sheetUIContext.context)
-
-        layout.addView(this.cancelButtonView(sheetUIContext))
-
-        layout.addView(this.okButtonView(sheetUIContext))
-
-        return layout
-    }
-
-
-    private fun buttonsViewLayout(context : Context) : LinearLayout
-    {
-        val layout = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 60
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun cancelButtonView(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout      = LinearLayoutBuilder()
-        val icon        = ImageViewBuilder()
-        val label       = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width                = 0
-        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.weight               = 1f
-
-        layout.orientation          = LinearLayout.HORIZONTAL
-
-        layout.child(icon)
-              .child(label)
-
-        // (3 A) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp                = 20
-        icon.heightDp               = 20
-
-        icon.image                  = R.drawable.icon_delete
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
-
-        // (3 B) Label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.textId            = R.string.cancel
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        label.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        label.font              = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                sheetUIContext.context)
-
-        label.sizeSp            = 15f
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-
-    private fun okButtonView(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout      = LinearLayoutBuilder()
-        val icon        = ImageViewBuilder()
-        val label       = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width                = 0
-        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.weight               = 1f
-
-        layout.orientation          = LinearLayout.HORIZONTAL
-
-        layout.child(icon)
-              .child(label)
-
-        // (3 A) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp                = 20
-        icon.heightDp               = 20
-
-        icon.image                  = R.drawable.icon_check
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
-
-        // (3 B) Label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.textId            = R.string.ok
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        label.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        label.font              = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                sheetUIContext.context)
-
-        label.sizeSp            = 15f
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-}
-
-
+//
+//object ProcedureView
+//{
+//
+//    fun view(procedure : Procedure, sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        val layout = this.viewLayout(sheetUIContext)
+//
+//        // Header View
+//        layout.addView(this.headerView(procedure.procedureName(), sheetUIContext))
+//
+//        // Programs View
+//        val programs = procedure.programIds().mapM { programId ->
+//                            GameManager.engine(sheetUIContext.gameId)
+//                                    .apply { it.program(programId) }
+//                       }
+//        when (programs) {
+//            is Val -> layout.addView(this.programsView(programs.value, sheetUIContext))
+//            is Err -> ApplicationLog.error(programs.error)
+//        }
+//
+//        // Buttons View
+//        layout.addView(this.buttonsView(sheetUIContext))
+//
+//        return layout
+//    }
+//
+//
+//    private fun viewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        val layout = LinearLayoutBuilder()
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation      = LinearLayout.VERTICAL
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // HEADER VIEW
+//    // -----------------------------------------------------------------------------------------
+//
+//    private fun headerView(procedureName : String,
+//                           sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        val layout = this.headerViewLayout(sheetUIContext.context)
+//
+//        layout.addView(this.procedureNameView(procedureName, sheetUIContext))
+//
+//        return layout
+//    }
+//
+//
+//    private fun headerViewLayout(context : Context) : LinearLayout
+//    {
+//        val layout = LinearLayoutBuilder()
+//
+//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        return layout.linearLayout(context)
+//    }
+//
+//
+//    private fun procedureNameView(procedureName : String,
+//                                  sheetUIContext : SheetUIContext) : TextView
+//    {
+//        val name            = TextViewBuilder()
+//
+//        name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
+//        name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        name.text           = procedureName
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//
+//        name.font               = Font.typeface(TextFont.FiraSans,
+//                                                TextFontStyle.Regular,
+//                                                sheetUIContext.context)
+//
+//        name.sizeSp             = 15f
+//
+//        return name.textView(sheetUIContext.context)
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // PROGRAMS VIEW
+//    // -----------------------------------------------------------------------------------------
+//
+//    private fun programsView(programs : Set<Program>,
+//                             sheetUIContext : SheetUIContext) : ScrollView
+//    {
+//        val scrollView = this.programsScrollView(sheetUIContext.context)
+//
+//        scrollView.addView(this.programsListView(programs, sheetUIContext))
+//
+//        return scrollView
+//    }
+//
+//
+//    private fun programsScrollView(context : Context) : ScrollView
+//    {
+//        val scrollView = ScrollViewBuilder()
+//
+//        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT
+//        scrollView.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        return scrollView.scrollView(context)
+//    }
+//
+//
+//    private fun programsListView(programs : Set<Program>,
+//                                 sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        val layout = this.programsListViewLayout(sheetUIContext.context)
+//
+//        programs.forEach {
+//            layout.addView(this.programView(it, sheetUIContext))
+//        }
+//
+//        return layout
+//    }
+//
+//
+//    private fun programsListViewLayout(context : Context) : LinearLayout
+//    {
+//        val layout = LinearLayoutBuilder()
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation      = LinearLayout.VERTICAL
+//
+//        return layout.linearLayout(context)
+//    }
+//
+//
+//    private fun programView(program : Program,
+//                            sheetUIContext : SheetUIContext) : TextView
+//    {
+//        val description             = TextViewBuilder()
+//
+//        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+//        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        description.text            = program.descriptionString()
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        description.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//
+//        description.font            = Font.typeface(TextFont.FiraSans,
+//                                                TextFontStyle.Regular,
+//                                                sheetUIContext.context)
+//
+//        description.sizeSp          = 15f
+//
+//        return description.textView(sheetUIContext.context)
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // BUTTONS VIEW
+//    // -----------------------------------------------------------------------------------------
+//
+//    private fun buttonsView(sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        val layout          = this.buttonsViewLayout(sheetUIContext.context)
+//
+//        layout.addView(this.cancelButtonView(sheetUIContext))
+//
+//        layout.addView(this.okButtonView(sheetUIContext))
+//
+//        return layout
+//    }
+//
+//
+//    private fun buttonsViewLayout(context : Context) : LinearLayout
+//    {
+//        val layout = LinearLayoutBuilder()
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.heightDp         = 60
+//
+//        layout.orientation      = LinearLayout.HORIZONTAL
+//
+//        return layout.linearLayout(context)
+//    }
+//
+//
+//    private fun cancelButtonView(sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
+//
+//        val layout      = LinearLayoutBuilder()
+//        val icon        = ImageViewBuilder()
+//        val label       = TextViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.width                = 0
+//        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.weight               = 1f
+//
+//        layout.orientation          = LinearLayout.HORIZONTAL
+//
+//        layout.child(icon)
+//              .child(label)
+//
+//        // (3 A) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        icon.widthDp                = 20
+//        icon.heightDp               = 20
+//
+//        icon.image                  = R.drawable.icon_delete
+//
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//
+//        // (3 B) Label
+//        // -------------------------------------------------------------------------------------
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        label.textId            = R.string.cancel
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        label.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//
+//        label.font              = Font.typeface(TextFont.FiraSans,
+//                                                TextFontStyle.Regular,
+//                                                sheetUIContext.context)
+//
+//        label.sizeSp            = 15f
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
+//
+//
+//    private fun okButtonView(sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
+//
+//        val layout      = LinearLayoutBuilder()
+//        val icon        = ImageViewBuilder()
+//        val label       = TextViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.width                = 0
+//        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.weight               = 1f
+//
+//        layout.orientation          = LinearLayout.HORIZONTAL
+//
+//        layout.child(icon)
+//              .child(label)
+//
+//        // (3 A) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        icon.widthDp                = 20
+//        icon.heightDp               = 20
+//
+//        icon.image                  = R.drawable.icon_check
+//
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//
+//        // (3 B) Label
+//        // -------------------------------------------------------------------------------------
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        label.textId            = R.string.ok
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        label.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//
+//        label.font              = Font.typeface(TextFont.FiraSans,
+//                                                TextFontStyle.Regular,
+//                                                sheetUIContext.context)
+//
+//        label.sizeSp            = 15f
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
+//
+//}
+//
+//
 

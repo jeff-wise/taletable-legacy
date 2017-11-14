@@ -3,15 +3,17 @@ package com.kispoko.tome.model.theme
 
 
 import android.graphics.Color
+import com.kispoko.tome.db.DB_Theme
+import com.kispoko.tome.db.DB_UIColors
+import com.kispoko.tome.db.dbTheme
+import com.kispoko.tome.db.dbUIColors
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Conj
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import effect.apply
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -29,42 +31,42 @@ import java.util.*
  * Theme
  */
 data class Theme(override val id : UUID,
-                 val themeId : Prim<ThemeId>,
-                 val palette : Conj<ThemeColor>,
-                 val uiColors : Comp<UIColors>) : Model, Serializable
+                 val themeId : ThemeId,
+                 val palette : MutableList<ThemeColor>,
+                 val uiColors : UIColors)
+                  : ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(themeId : ThemeId, palette : Set<ThemeColor>, uiColors : UIColors)
+    constructor(themeId : ThemeId,
+                palette : List<ThemeColor>,
+                uiColors : UIColors)
         : this(UUID.randomUUID(),
-               Prim(themeId),
-               Conj(palette.toMutableSet()),
-               Comp(uiColors))
+               themeId,
+               palette.toMutableList(),
+               uiColors)
 
 
     companion object : Factory<Theme>
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<Theme> = when (doc)
         {
-            is DocDict -> effApply(::Theme,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Theme Id
-                                   doc.at("id") ap {
-                                       effApply(::Prim, ThemeId.fromDocument(it))
-                                   },
-                                   // Theme Colors
-                                   doc.list("palette") ap {
-                                       effApply(::Conj,
-                                                it.mapSetMut { ThemeColor.fromDocument(it) })
-                                   },
-                                   // UI Colors
-                                   doc.at("ui_colors") ap {
-                                       effApply(::Comp, UIColors.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                apply(::Theme,
+                      // Theme Id
+                      doc.at("id") ap { ThemeId.fromDocument(it) },
+                      // Theme Colors
+                      doc.list("palette") ap {
+                           it.map { ThemeColor.fromDocument(it) }
+                      },
+                      // UI Colors
+                      doc.at("ui_colors") ap { UIColors.fromDocument(it) }
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -74,16 +76,17 @@ data class Theme(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun themeId() : ThemeId = this.themeId.value
+    fun themeId() : ThemeId = this.themeId
 
-    fun uiColors() : UIColors = this.uiColors.value
+
+    fun uiColors() : UIColors = this.uiColors
 
 
     // -----------------------------------------------------------------------------------------
     // INITIALIZATION
     // -----------------------------------------------------------------------------------------
 
-    private val colorById : MutableMap<ColorId,Int> = this.palette.set
+    private val colorById : MutableMap<ColorId,Int> = this.palette
                                                           .associateBy({it.colorId}, {it.color})
                                                           .toMutableMap()
 
@@ -94,9 +97,11 @@ data class Theme(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "theme"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Theme = dbTheme(this.themeId, this.palette, this.uiColors)
 
 
     // -----------------------------------------------------------------------------------------
@@ -115,36 +120,17 @@ data class Theme(override val id : UUID,
 
 
 data class UIColors(override val id: UUID,
-                    val toolbarBackgroundColorId : Prim<ColorId>,
-                    val toolbarIconsColorId : Prim<ColorId>,
-                    val toolbarTitleColorId : Prim<ColorId>,
-                    val tabBarBackgroundColorId : Prim<ColorId>,
-                    val tabTextNormalColorId : Prim<ColorId>,
-                    val tabTextSelectedColorId : Prim<ColorId>,
-                    val tabUnderlineColorId : Prim<ColorId>,
-                    val bottomBarBackgroundColorId : Prim<ColorId>,
-                    val bottomBarActiveColorId : Prim<ColorId>,
-                    val bottomBarInactiveColorId : Prim<ColorId>) : Model
+                    val toolbarBackgroundColorId : ColorId,
+                    val toolbarIconsColorId : ColorId,
+                    val toolbarTitleColorId : ColorId,
+                    val tabBarBackgroundColorId : ColorId,
+                    val tabTextNormalColorId : ColorId,
+                    val tabTextSelectedColorId : ColorId,
+                    val tabUnderlineColorId : ColorId,
+                    val bottomBarBackgroundColorId : ColorId,
+                    val bottomBarActiveColorId : ColorId,
+                    val bottomBarInactiveColorId : ColorId) : ProdType
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.toolbarBackgroundColorId.name      = "toolbar_background"
-        this.toolbarIconsColorId.name           = "toolbar_icons"
-        this.toolbarTitleColorId.name           = "toolbar_icons"
-        this.tabBarBackgroundColorId.name       = "tab_bar_background"
-        this.tabTextNormalColorId.name          = "tab_text_normal"
-        this.tabTextSelectedColorId.name        = "tab_text_selected"
-        this.tabUnderlineColorId.name           = "tab_underline"
-        this.bottomBarBackgroundColorId.name    = "bottom_bar_background"
-        this.bottomBarActiveColorId.name        = "bottom_bar_active"
-        this.bottomBarInactiveColorId.name      = "bottom_bar_inactive"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -161,44 +147,48 @@ data class UIColors(override val id: UUID,
                 bottomBarActiveColorId : ColorId,
                 bottomBarInactiveColorId : ColorId)
         : this(UUID.randomUUID(),
-               Prim(toolbarBackgroundColorId),
-               Prim(toolbarIconsColorId),
-               Prim(toolbarTitleColorId),
-               Prim(tabBarBackgroundColorId),
-               Prim(tabTextNormalColorId),
-               Prim(tabTextSelectedColorId),
-               Prim(tabUnderlineColorId),
-               Prim(bottomBarBackgroundColorId),
-               Prim(bottomBarActiveColorId),
-               Prim(bottomBarInactiveColorId))
+               toolbarBackgroundColorId,
+               toolbarIconsColorId,
+               toolbarTitleColorId,
+               tabBarBackgroundColorId,
+               tabTextNormalColorId,
+               tabTextSelectedColorId,
+               tabUnderlineColorId,
+               bottomBarBackgroundColorId,
+               bottomBarActiveColorId,
+               bottomBarInactiveColorId)
 
 
     companion object : Factory<UIColors>
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<UIColors> = when (doc)
         {
-            is DocDict -> effApply(::UIColors,
-                                   // Toolbar Color
-                                   doc.at("toolbar_background") ap { ColorId.fromDocument(it) },
-                                   // Toolbar Icons
-                                   doc.at("toolbar_icons") ap { ColorId.fromDocument(it) },
-                                   // Title
-                                   doc.at("title") ap { ColorId.fromDocument(it) },
-                                   // Tab Bar
-                                   doc.at("tab_bar_background") ap { ColorId.fromDocument(it) },
-                                   // Tab Text Normal
-                                   doc.at("tab_text_normal") ap { ColorId.fromDocument(it) },
-                                   // Tab Text Selected
-                                   doc.at("tab_text_selected") ap { ColorId.fromDocument(it) },
-                                   // Tab Underline
-                                   doc.at("tab_underline") ap { ColorId.fromDocument(it) },
-                                   // Bottom Bar
-                                   doc.at("bottom_bar_background") ap { ColorId.fromDocument(it) },
-                                   // Bottom Bar Active
-                                   doc.at("bottom_bar_active") ap { ColorId.fromDocument(it) },
-                                   // Bottom Bar Inactive
-                                   doc.at("bottom_bar_inactive") ap { ColorId.fromDocument(it) }
-                                   )
+            is DocDict ->
+            {
+                apply(::UIColors,
+                      // Toolbar Color
+                      doc.at("toolbar_background") ap { ColorId.fromDocument(it) },
+                      // Toolbar Icons
+                      doc.at("toolbar_icons") ap { ColorId.fromDocument(it) },
+                      // Title
+                      doc.at("title") ap { ColorId.fromDocument(it) },
+                      // Tab Bar
+                      doc.at("tab_bar_background") ap { ColorId.fromDocument(it) },
+                      // Tab Text Normal
+                      doc.at("tab_text_normal") ap { ColorId.fromDocument(it) },
+                      // Tab Text Selected
+                      doc.at("tab_text_selected") ap { ColorId.fromDocument(it) },
+                      // Tab Underline
+                      doc.at("tab_underline") ap { ColorId.fromDocument(it) },
+                      // Bottom Bar
+                      doc.at("bottom_bar_background") ap { ColorId.fromDocument(it) },
+                      // Bottom Bar Active
+                      doc.at("bottom_bar_active") ap { ColorId.fromDocument(it) },
+                      // Bottom Bar Inactive
+                      doc.at("bottom_bar_inactive") ap { ColorId.fromDocument(it) }
+                      )
+            }
+
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -208,25 +198,34 @@ data class UIColors(override val id: UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun toolbarBackgroundColorId() : ColorId = this.toolbarBackgroundColorId.value
+    fun toolbarBackgroundColorId() : ColorId = this.toolbarBackgroundColorId
 
-    fun tabBarBackgroundColorId() : ColorId = this.tabBarBackgroundColorId.value
 
-    fun tabTextNormalColorId() : ColorId = this.tabTextNormalColorId.value
+    fun tabBarBackgroundColorId() : ColorId = this.tabBarBackgroundColorId
 
-    fun tabTextSelectedColorId() : ColorId = this.tabTextSelectedColorId.value
 
-    fun tabUnderlineColorId() : ColorId = this.tabUnderlineColorId.value
+    fun tabTextNormalColorId() : ColorId = this.tabTextNormalColorId
 
-    fun toolbarTitleColorId() : ColorId = this.toolbarTitleColorId.value
 
-    fun toolbarIconsColorId() : ColorId = this.toolbarIconsColorId.value
+    fun tabTextSelectedColorId() : ColorId = this.tabTextSelectedColorId
 
-    fun bottomBarBackgroundColorId() : ColorId = this.bottomBarBackgroundColorId.value
 
-    fun bottomBarActiveColorId() : ColorId = this.bottomBarActiveColorId.value
+    fun tabUnderlineColorId() : ColorId = this.tabUnderlineColorId
 
-    fun bottomBarInactiveColorId() : ColorId = this.bottomBarInactiveColorId.value
+
+    fun toolbarTitleColorId() : ColorId = this.toolbarTitleColorId
+
+
+    fun toolbarIconsColorId() : ColorId = this.toolbarIconsColorId
+
+
+    fun bottomBarBackgroundColorId() : ColorId = this.bottomBarBackgroundColorId
+
+
+    fun bottomBarActiveColorId() : ColorId = this.bottomBarActiveColorId
+
+
+    fun bottomBarInactiveColorId() : ColorId = this.bottomBarInactiveColorId
 
 
     // -----------------------------------------------------------------------------------------
@@ -235,9 +234,20 @@ data class UIColors(override val id: UUID,
 
     override fun onLoad() { }
 
-    override val name = "ui_colors"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_UIColors = dbUIColors(this.toolbarBackgroundColorId,
+                                                  this.toolbarIconsColorId,
+                                                  this.toolbarTitleColorId,
+                                                  this.tabBarBackgroundColorId,
+                                                  this.tabTextNormalColorId,
+                                                  this.tabTextSelectedColorId,
+                                                  this.tabUnderlineColorId,
+                                                  this.bottomBarBackgroundColorId,
+                                                  this.bottomBarActiveColorId,
+                                                  this.bottomBarInactiveColorId)
 
 }
 
@@ -359,7 +369,7 @@ sealed class ThemeId : ToDocument, SQLSerializable, Serializable
  * Theme Color Id
  */
 data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId)
-                : ToDocument, Serializable
+                : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -368,14 +378,17 @@ data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId)
 
     companion object : Factory<ThemeColorId>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ThemeColorId> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ThemeColorId> = when (doc)
         {
-            is DocDict -> effApply(::ThemeColorId,
-                                   // Theme Id
-                                   doc.at("theme_id") ap { ThemeId.fromDocument(it) },
-                                   // Color Id
-                                   doc.at("color_id") ap { ColorId.fromDocument(it) }
-                                   )
+            is DocDict ->
+            {
+                apply(::ThemeColorId,
+                      // Theme Id
+                      doc.at("theme_id") ap { ThemeId.fromDocument(it) },
+                      // Color Id
+                      doc.at("color_id") ap { ColorId.fromDocument(it) }
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -389,36 +402,87 @@ data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId)
         "theme_id" to this.themeId.toDocument(),
         "color_id" to this.colorId.toDocument()
     ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLText({ "${this.themeId}:$this.colorId" })
+
 }
 
 
 /**
  * Theme Color
  */
-data class ThemeColor(val colorId : ColorId, val color : Int) : Serializable
+data class ThemeColor(val colorId : ColorId, val color : Int) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(colorId : ColorId, colorHexString : String)
-        : this(colorId, Color.parseColor(colorHexString))
+    constructor(colorId : ColorId,
+                colorHexString : String)
+        : this(colorId,
+               Color.parseColor(colorHexString))
 
 
     companion object : Factory<ThemeColor>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ThemeColor> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ThemeColor> = when (doc)
         {
-            is DocDict -> effApply(::ThemeColor,
-                                   // Color Id
-                                   doc.at("color_id") ap { ColorId.fromDocument(it) },
-                                   // Color
-                                   effApply({Color.parseColor(it) }, doc.text("color"))
-                                   )
+            is DocDict -> apply(::ThemeColor,
+                                // Color Id
+                                doc.at("color_id") ap { ColorId.fromDocument(it) },
+                                // Color
+                                effApply({Color.parseColor(it) }, doc.text("color"))
+                                )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLText({ "$this.colorId:$this.color" })
+
+}
+
+
+/**
+ * Theme Color Set
+ */
+data class ThemeColorSet(val themeColors : List<ThemeColor>) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ThemeColorSet>
+    {
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ThemeColorSet> = when (doc)
+        {
+            is DocList -> effect.apply(::ThemeColorSet, doc.map { ThemeColor.fromDocument(it) })
+            else       -> effError(UnexpectedType(DocType.LIST, docType(doc), doc.path))
+        }
+
+
+        fun empty() = ThemeColorSet(mutableListOf())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLText({ this.themeColors.joinToString(",") })
+
 }
 
 

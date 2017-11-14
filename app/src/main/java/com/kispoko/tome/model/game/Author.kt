@@ -2,12 +2,10 @@
 package com.kispoko.tome.model.game
 
 
+import com.kispoko.tome.db.DB_Author
+import com.kispoko.tome.db.dbAuthor
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.functor._getMaybePrim
-import com.kispoko.tome.lib.functor.getMaybePrim
-import com.kispoko.tome.lib.functor.maybeLiftPrim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -26,28 +24,11 @@ import java.util.*
  * Author
  */
 data class Author(override val id : UUID,
-                  val authorName : Prim<AuthorName>,
-                  val organization : Maybe<Prim<AuthorOrganization>>,
-                  val userName : Maybe<Prim<UserName>>) : ToDocument, Model
+                  val authorName : AuthorName,
+                  val organization : Maybe<AuthorOrganization>,
+                  val userName : Maybe<UserName>)
+                   : ToDocument, ProdType
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.authorName.name                        = "author_name"
-
-        when (this.organization) {
-            is Just -> this.organization.value.name = "organization"
-        }
-
-        when (this.userName) {
-            is Just -> this.userName.value.name     = "user_name"
-        }
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -57,9 +38,9 @@ data class Author(override val id : UUID,
                 organization : Maybe<AuthorOrganization>,
                 userName : Maybe<UserName>)
         : this(UUID.randomUUID(),
-               Prim(name),
-               maybeLiftPrim(organization),
-               maybeLiftPrim(userName))
+               name,
+               organization,
+               userName)
 
 
     companion object : Factory<Author>
@@ -104,11 +85,11 @@ data class Author(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun name() : AuthorName = this.authorName.value
+    fun name() : AuthorName = this.authorName
 
-    fun organization() : Maybe<AuthorOrganization> = _getMaybePrim(this.organization)
+    fun organization() : Maybe<AuthorOrganization> = this.organization
 
-    fun userName() : Maybe<UserName> = _getMaybePrim(this.userName)
+    fun userName() : Maybe<UserName> = this.userName
 
 
     // -----------------------------------------------------------------------------------------
@@ -117,9 +98,11 @@ data class Author(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "author"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Author = dbAuthor(this.authorName, this.organization, this.userName)
 
 }
 

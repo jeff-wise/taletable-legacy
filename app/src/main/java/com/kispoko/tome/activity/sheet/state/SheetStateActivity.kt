@@ -190,8 +190,8 @@ class SheetStatePagerAdapter(fragmentManager : FragmentManager,
         when (position)
         {
             0    -> ActiveVariablesFragment.newInstance(this.sheetId, this.appThemeId)
-            1    -> ActiveMechanicsFragment.newInstance(this.sheetId, this.appThemeId)
-            2    -> StateLogFragment.newInstance(this.sheetId, this.appThemeId)
+            1    -> ActiveMechanicsFragment.newInstance(this.appThemeId)
+            2    -> StateLogFragment.newInstance(this.appThemeId)
             else -> ActiveVariablesFragment.newInstance(this.sheetId, this.appThemeId)
         }
 

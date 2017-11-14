@@ -4,7 +4,7 @@ package com.kispoko.tome.model.game.engine.reference
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Sum
-import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.effApply
 import effect.effError
@@ -19,7 +19,7 @@ import java.io.Serializable
  * Value Reference
  */
 @Suppress("UNCHECKED_CAST")
-sealed class DataReference : ToDocument, SumModel, Serializable
+sealed class DataReference : ToDocument, SumType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -83,10 +83,14 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
 
 
     // -----------------------------------------------------------------------------------------
-    // SUM MODEL
+    // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Sum(this.reference, "boolean")
+    override fun functor() = Sum(this.reference)
+
+
+    override fun case() = "boolean"
+
 
     override val sumModelObject = this.reference
 
@@ -135,7 +139,11 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Sum(this.reference, "dice_roll")
+    override fun functor() = Sum(this.reference)
+
+
+    override fun case() = "dice_roll"
+
 
     override val sumModelObject = this.reference
 
@@ -185,34 +193,12 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Sum(this.reference, "number")
+    override fun functor() = Sum(this.reference)
+
+
+    override fun case() = "number"
+
 
     override val sumModelObject = this.reference
 
 }
-
-//
-//fun liftDataReference(dataReference : DataReference) : Func<DataReference>
-//    = when (dataReference)
-//    {
-//        is DataReferenceBoolean ->
-//        {
-//            val booleanRefernece = dataReference.reference
-//            when (booleanRefernece)
-//            {
-//                is BooleanReferenceLiteral  -> Prim(dataReference, "boolean_literal")
-//                is BooleanReferenceVariable -> Prim(dataReference, "boolean_variable")
-//            }
-//        }
-//        is DataReferenceDiceRoll ->
-//        {
-//            val diceRollReference = dataReference.reference
-//            when (booleanRefernece)
-//            {
-//                is BooleanReferenceLiteral  -> Prim(dataReference, "boolean_literal")
-//                is BooleanReferenceVariable -> Prim(dataReference, "boolean_variable")
-//            }
-//        }
-//
-//
-//    }

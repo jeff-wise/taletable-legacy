@@ -4,19 +4,12 @@ package com.kispoko.tome.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.database.DatabaseException;
-import com.kispoko.tome.lib.functor.CollectionFunctor;
-
-import java.util.List;
-
 
 
 /**

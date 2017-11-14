@@ -48,7 +48,7 @@ class ActiveMechanicsFragment : Fragment()
 
     companion object
     {
-        fun newInstance(sheetId : SheetId, themeId : ThemeId) : ActiveMechanicsFragment
+        fun newInstance(themeId : ThemeId) : ActiveMechanicsFragment
         {
             val fragment = ActiveMechanicsFragment()
 
@@ -114,7 +114,7 @@ class ActiveMechanicsFragment : Fragment()
             }
 
             when (game) {
-                is Val -> gameName = game.value.description().gameNameString()
+                is Val -> gameName = game.value.gameName().value
                 is Err -> ApplicationLog.error(game.error)
             }
 

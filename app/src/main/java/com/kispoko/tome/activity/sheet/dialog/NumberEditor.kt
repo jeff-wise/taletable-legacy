@@ -476,10 +476,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         number.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        number.corners              = Corners(TopLeftCornerRadius(2f),
-                                              TopRightCornerRadius(2f),
-                                              BottomRightCornerRadius(2f),
-                                              BottomLeftCornerRadius(2f))
+        number.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
         number.onClick              = onClick
 
@@ -509,10 +506,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.margin.leftDp    = 2f
         layout.margin.rightDp   = 2f
@@ -527,7 +521,9 @@ class NumberEditorViewBuilder(val currentValue : Double,
                             TableWidgetUpdateSetNumberCell(updateTarget.tableWidgetId,
                                                            updateTarget.cellId,
                                                            this.valueString.toDouble())
-                    SheetManager.updateSheet(sheetUIContext.sheetId, numberCellUpdate)
+                    SheetManager.updateSheet(sheetUIContext.sheetId,
+                                             numberCellUpdate,
+                                             sheetUIContext.sheetUI())
                     dialog.dismiss()
                 }
                 is UpdateTargetPointsWidget ->
@@ -535,7 +531,9 @@ class NumberEditorViewBuilder(val currentValue : Double,
                     val pointsWidgeUpdate = PointsWidgetUpdateSetCurrentValue(
                                                         updateTarget.pointsWidgetId,
                                                         this.valueString.toDouble())
-                    SheetManager.updateSheet(sheetUIContext.sheetId, pointsWidgeUpdate)
+                    SheetManager.updateSheet(sheetUIContext.sheetId,
+                                             pointsWidgeUpdate,
+                                             sheetUIContext.sheetUI())
                     dialog.dismiss()
                 }
                 is UpdateTargetStoryWidgetPart ->
@@ -544,7 +542,9 @@ class NumberEditorViewBuilder(val currentValue : Double,
                             StoryWidgetUpdateNumberPart(updateTarget.storyWidgetId,
                                                         updateTarget.partIndex,
                                                         this.valueString.toDouble())
-                    SheetManager.updateSheet(sheetUIContext.sheetId, numberPartUpdate)
+                    SheetManager.updateSheet(sheetUIContext.sheetId,
+                                             numberPartUpdate,
+                                             sheetUIContext.sheetUI())
                     dialog.dismiss()
                 }
                 is UpdateTargetSummationNumberTerm ->

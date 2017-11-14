@@ -126,7 +126,7 @@ public class FunctionEditorActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            fields.addAll(Model.fields(this.function, this));
+//            fields.addAll(ProdType.fields(this.function, this));
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

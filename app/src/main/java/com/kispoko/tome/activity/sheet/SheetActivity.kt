@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -161,7 +160,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
 
-        val navButtonView = this.findViewById(R.id.toolbar_nav_button) as ImageButton
+        val navButtonView = this.findViewById(R.id.toolbar_nav_button) as ImageView
         navButtonView.setOnClickListener {
             val intent = Intent(this, NavigationActivity::class.java)
             this.startActivity(intent)
@@ -192,7 +191,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         // Right Sidebar
         // -------------------------------------------------------------------------------------
-        val menuRight = findViewById(R.id.toolbar_options_button) as ImageButton
+        val menuRight = findViewById(R.id.toolbar_options_button) as ImageView
 
         val rightNavView = findViewById(R.id.right_nav_view) as NavigationView
         val sheetOptionsViewBuilder = SheetOptionsViewBuilder(SheetUIContext(sheetContext, this))
@@ -295,9 +294,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
         //viewPager?.setPadding(0, 0, 0, 0)
         this.viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
 
-        val sheetContext = SheetManager.currentSheetContext()
-        if (sheetContext != null) {
-            val sheetUIContext = SheetUIContext(sheetContext, this)
+        SheetManager.currentSheetContext() apDo {
+            val sheetUIContext = SheetUIContext(it, this)
             this.activeTableRow?.onEditorClose(sheetUIContext)
             this.activeTableRow = null
         }
@@ -366,13 +364,13 @@ class SheetActivity : AppCompatActivity(), SheetUI
         // Toolbar > Icons
         var iconColor = SheetManager.color(sheetId, uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.menuLeft) as ImageButton
+        val menuLeftButton = this.findViewById(R.id.menuLeft) as ImageView
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val navButton = this.findViewById(R.id.toolbar_nav_button) as ImageButton
+        val navButton = this.findViewById(R.id.toolbar_nav_button) as ImageView
         navButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val optionsButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+        val optionsButton = this.findViewById(R.id.toolbar_options_button) as ImageView
         optionsButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
@@ -416,8 +414,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         val coordinatorLayout = this.findViewById(R.id.coordinator_layout) as CoordinatorLayout
         coordinatorLayout.visibility = View.VISIBLE
-
-        SheetManager.setSheetActive(sheet.sheetId(), this)
 
 
         // Configure toolbar to be character name

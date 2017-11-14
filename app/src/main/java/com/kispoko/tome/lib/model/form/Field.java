@@ -73,7 +73,7 @@ public class Field implements Serializable
 
     /**
      * Create a text field.
-     * @param modelId The model ID.
+     * @param modelId The prodType ID.
      * @param fieldName The field name.
      * @param fieldLabel The field label.
      * @param fieldValue The field value as a string.
@@ -92,7 +92,7 @@ public class Field implements Serializable
 
     /**
      * Create an option field.
-     * @param modelId The model ID.
+     * @param modelId The prodType ID.
      * @param fieldName The field name.
      * @param fieldLabel The field label.
      * @param fieldDescription The field description.
@@ -111,11 +111,11 @@ public class Field implements Serializable
 
 
     /**
-     * Create a model field.
+     * Create a prodType field.
      * @param fieldName The field name.
      * @param fieldLabel The field label.
      * @param fieldDescription The field description.
-     * @return The model Field.
+     * @return The prodType Field.
      */
     public static Field model(String fieldName,
                               String fieldLabel,
@@ -311,7 +311,7 @@ public class Field implements Serializable
 
 
     /**
-     * Model Field View
+     * ProdType Field View
      * @param context
      * @return
      */

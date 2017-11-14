@@ -2,9 +2,12 @@
 package com.kispoko.tome.model.game.engine.dice
 
 
+import com.kispoko.tome.db.DB_DiceRoll
+import com.kispoko.tome.db.DB_RollModifier
+import com.kispoko.tome.db.dbDiceRoll
+import com.kispoko.tome.db.dbRollModifier
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -21,60 +24,59 @@ import java.util.*
  * Dice Roll
  */
 data class DiceRoll(override val id : UUID,
-                    val quantities : Conj<DiceQuantity>,
-                    val modifiers : Conj<RollModifier>,
-                    val rollName : Maybe<Prim<DiceRollName>>)
-                     : ToDocument, Model, Serializable
+                    val quantities : MutableList<DiceQuantity>,
+                    val modifiers : MutableList<RollModifier>,
+                    val rollName : Maybe<DiceRollName>)
+                     : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(quantities : MutableSet<DiceQuantity>,
-                modifiers : MutableSet<RollModifier>)
-        : this(UUID.randomUUID(),
-               Conj(quantities),
-               Conj(modifiers),
-               Nothing())
-
-
-    constructor(quantities : MutableSet<DiceQuantity>,
-                modifiers : MutableSet<RollModifier>,
+    constructor(quantities : List<DiceQuantity>,
+                modifiers : List<RollModifier>,
                 rollName : Maybe<DiceRollName>)
         : this(UUID.randomUUID(),
-               Conj(quantities),
-               Conj(modifiers),
-               maybeLiftPrim(rollName))
+               quantities.toMutableList(),
+               modifiers.toMutableList(),
+               rollName)
 
 
-    constructor()
+    constructor(quantities : List<DiceQuantity>,
+                modifiers : List<RollModifier>)
         : this(UUID.randomUUID(),
-               Conj(mutableSetOf()),
-               Conj(mutableSetOf()),
+               quantities.toMutableList(),
+               modifiers.toMutableList(),
                Nothing())
+
+
+    constructor() : this(UUID.randomUUID(),
+                         mutableListOf(),
+                         mutableListOf(),
+                         Nothing())
 
 
     companion object : Factory<DiceRoll>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRoll> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<DiceRoll> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::DiceRoll,
-                         // Quantity
-                         doc.list("quantities") ap { docList ->
-                             docList.mapSetMut { DiceQuantity.fromDocument(it) }
-                         },
-                         // Modifier
-                         split(doc.maybeList("modifiers"),
-                               effValue(mutableSetOf()),
-                              { it.mapSetMut { RollModifier.fromDocument(it) } }),
-                         // Name
-                         split(doc.maybeAt("name"),
-                               effValue<ValueError,Maybe<DiceRollName>>(Nothing()),
-                               { effApply(::Just, DiceRollName.fromDocument(it))}
-                         ))
+                apply(::DiceRoll,
+                      // Quantity
+                      doc.list("quantities") ap {
+                          it.map { DiceQuantity.fromDocument(it) }
+                      },
+                      // Modifier
+                      split(doc.maybeList("modifiers"),
+                            effValue(listOf()),
+                           { it.map { RollModifier.fromDocument(it) } }),
+                      // Name
+                      split(doc.maybeAt("name"),
+                           effValue<ValueError,Maybe<DiceRollName>>(Nothing()),
+                           { apply(::Just, DiceRollName.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -86,10 +88,10 @@ data class DiceRoll(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "quantities" to DocList(this.quantities().map { it.toDocument() }),
-        "modifiers" to DocList(this.modifiers().map { it.toDocument() })
+        "quantities" to DocList(this.quantities.map { it.toDocument() }),
+        "modifiers" to DocList(this.modifiers.map { it.toDocument() })
     ))
-    .maybeMerge(this.rollName().apply {
+    .maybeMerge(this.rollName.apply {
         Just(Pair("name", it.toDocument() as SchemaDoc)) })
 
 
@@ -97,13 +99,13 @@ data class DiceRoll(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun quantities() : Set<DiceQuantity> = this.quantities.set
+    fun quantities() : List<DiceQuantity> = this.quantities
 
-    fun modifiers() : Set<RollModifier> = this.modifiers.set
 
-    fun rollName() : Maybe<DiceRollName> = _getMaybePrim(this.rollName)
+    fun modifiers() : List<RollModifier> = this.modifiers
 
-    fun rollNameString() : String? = getMaybePrim(this.rollName)?.value
+
+    fun rollName() : Maybe<DiceRollName> = this.rollName
 
 
     // -----------------------------------------------------------------------------------------
@@ -112,9 +114,11 @@ data class DiceRoll(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "dice_roll"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_DiceRoll = dbDiceRoll(this.quantities, this.modifiers, this.rollName)
 
 
     // -----------------------------------------------------------------------------------------
@@ -137,7 +141,7 @@ data class DiceRoll(override val id : UUID,
         val modifierSummaries = this.modifiers()
                                     .filter { it.valueInt() != 0 }
                                     .sortedByDescending { it.valueInt() }
-                                    .map { RollPartSummary(it.valueInt(), "", it.nameString() ?: "") }
+                                    .map { RollPartSummary(it.valueInt(), "", it.name().toNullable()?.value ?: "") }
 
         val total = quantitySummaries.map { it.value }.sum() +
                     modifierSummaries.map { it.value }.sum()
@@ -149,8 +153,8 @@ data class DiceRoll(override val id : UUID,
 
     fun add(diceRoll : DiceRoll) : DiceRoll
     {
-        val quantities = this.quantities().plus(diceRoll.quantities()).toMutableSet()
-        val modifiers = this.modifiers().plus(diceRoll.modifiers()).toMutableSet()
+        val quantities = this.quantities().plus(diceRoll.quantities())
+        val modifiers = this.modifiers().plus(diceRoll.modifiers())
 
         return DiceRoll(quantities, modifiers)
     }
@@ -160,7 +164,7 @@ data class DiceRoll(override val id : UUID,
     {
         val modifiers = this.modifiers().plusElement(modifier)
 
-        return DiceRoll(this.quantities().toMutableSet(), modifiers.toMutableSet())
+        return DiceRoll(this.quantities(), modifiers)
     }
 
 
@@ -209,29 +213,25 @@ data class DiceRoll(override val id : UUID,
 /**
  * Dice Quantity
  */
-data class DiceQuantity(override val id : UUID,
-                        val sides : Prim<DiceSides>,
-                        val quantity : Prim<DiceRollQuantity>)
-                         : ToDocument, Model, Serializable
+data class DiceQuantity(val sides : DiceSides,
+                        val quantity : DiceRollQuantity)
+                         : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(sides : DiceSides, quantity : DiceRollQuantity)
-        : this(UUID.randomUUID(), Prim(sides), Prim(quantity))
-
     companion object : Factory<DiceQuantity>
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<DiceQuantity> = when (doc)
         {
-            is DocDict -> effApply(::DiceQuantity,
-                                   // Sides
-                                   doc.at("sides") ap { DiceSides.fromDocument(it) },
-                                   // Quantity
-                                   doc.at("quantity") ap { DiceRollQuantity.fromDocument(it) }
-                                   )
+            is DocDict -> apply(::DiceQuantity,
+                                // Sides
+                                doc.at("sides") ap { DiceSides.fromDocument(it) },
+                                // Quantity
+                                doc.at("quantity") ap { DiceRollQuantity.fromDocument(it) }
+                                 )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -251,24 +251,16 @@ data class DiceQuantity(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun sides() : DiceSides = this.sides.value
-
-    fun sidesInt() : Int = this.sides.value.value
-
-    fun quantity() : DiceRollQuantity = this.quantity.value
-
-    fun quantityInt() : Int = this.quantity.value.value
+    fun sides() : DiceSides = this.sides
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
+    fun sidesInt() : Int = this.sides.value
 
-    override fun onLoad() { }
 
-    override val name : String = "dice_quantity"
+    fun quantity() : DiceRollQuantity = this.quantity
 
-    override val modelObject = this
+
+    fun quantityInt() : Int = this.quantity.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -291,6 +283,43 @@ data class DiceQuantity(override val id : UUID,
 
     override fun toString() : String =
             this.quantityInt().toString() + "d" + this.sidesInt().toString()
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ "${sidesInt()},${quantityInt()}" })
+
+}
+
+
+/**
+ * Dice Quantity Set
+ */
+data class DiceQuantitySet(val quantities : List<DiceQuantity>) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DiceQuantitySet>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<DiceQuantitySet> = when (doc)
+        {
+            is DocList -> apply(::DiceQuantitySet, doc.map { DiceQuantity.fromDocument(it) })
+            else       -> effError(lulo.value.UnexpectedType(DocType.LIST, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ quantities.joinToString(",") })
+
 }
 
 
@@ -361,7 +390,7 @@ data class DiceSides(val value : Int) : ToDocument, SQLSerializable, Serializabl
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+    override fun asSQLValue() = this.value.asSQLValue()
 
 }
 
@@ -397,7 +426,7 @@ data class DiceRollQuantity(val value : Int) : ToDocument, SQLSerializable, Seri
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+    override fun asSQLValue() = this.value.asSQLValue()
 
 }
 
@@ -406,9 +435,9 @@ data class DiceRollQuantity(val value : Int) : ToDocument, SQLSerializable, Seri
  * Dice Modifier
  */
 data class RollModifier(override val id : UUID,
-                        val value : Prim<RollModifierValue>,
-                        val modifierName : Maybe<Prim<RollModifierName>>)
-                         : ToDocument, Model, Serializable
+                        val value : RollModifierValue,
+                        val modifierName : Maybe<RollModifierName>)
+                         : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -417,29 +446,32 @@ data class RollModifier(override val id : UUID,
 
     constructor(modifier : Double)
         : this(UUID.randomUUID(),
-               Prim(RollModifierValue(modifier)),
+               RollModifierValue(modifier),
                Nothing())
 
 
     constructor(value : RollModifierValue,
                 name : Maybe<RollModifierName>)
         : this(UUID.randomUUID(),
-               Prim(value),
-               maybeLiftPrim(name))
+               value,
+               name)
 
 
     companion object : Factory<RollModifier>
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<RollModifier> = when (doc)
         {
-            is DocDict -> effApply(::RollModifier,
-                                   // Value
-                                   doc.at("value") ap { RollModifierValue.fromDocument(it) },
-                                   // Name
-                                   split(doc.maybeAt("name"),
-                                         effValue<ValueError,Maybe<RollModifierName>>(Nothing()),
-                                         { effApply(::Just, RollModifierName.fromDocument(it)) } )
-                                   )
+            is DocDict ->
+            {
+                apply(::RollModifier,
+                      // Value
+                      doc.at("value") ap { RollModifierValue.fromDocument(it) },
+                      // Name
+                      split(doc.maybeAt("name"),
+                            effValue<ValueError,Maybe<RollModifierName>>(Nothing()),
+                            { effApply(::Just, RollModifierName.fromDocument(it)) } )
+                      )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -460,13 +492,13 @@ data class RollModifier(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun value() : RollModifierValue = this.value.value
+    fun value() : RollModifierValue = this.value
 
-    fun valueInt() : Int = this.value.value.value.toInt()
 
-    fun name() : Maybe<RollModifierName> = _getMaybePrim(this.modifierName)
+    fun valueInt() : Int = this.value.value.toInt()
 
-    fun nameString() : String? = getMaybePrim(this.modifierName)?.value
+
+    fun name() : Maybe<RollModifierName> = this.modifierName
 
 
     // -----------------------------------------------------------------------------------------
@@ -475,9 +507,11 @@ data class RollModifier(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "roll_modifier"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_RollModifier = dbRollModifier(this.value, this.modifierName)
 
 }
 

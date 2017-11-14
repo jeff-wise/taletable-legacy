@@ -3,10 +3,10 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.lib.functor.Prod
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.model.sheet.style.TextFormat
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -20,85 +20,79 @@ import java.util.*
 /**
  * List Widget Format
  */
-data class ListWidgetFormat(override val id : UUID,
-                            val widgetFormat : Comp<WidgetFormat>,
-                            val listStyle : Func<TextStyle>,
-                            val annotationStyle : Func<TextStyle>) : ToDocument, Model
-{
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name      = "widget_format"
-        this.listStyle.name         = "list_style"
-        this.annotationStyle.name   = "annotation_style"
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ListWidgetFormat>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ListWidgetFormat> = when (doc)
-        {
-            is DocDict -> effApply(::ListWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   },
-                                   // List Style
-                                   doc.at("list_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
-                                   // Annotation Style
-                                   doc.at("annotation_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "list_style" to this.listStyle().toDocument(),
-        "annotation_style" to this.annotationStyle().toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-
-    fun listStyle() : TextStyle = this.listStyle.value
-
-    fun annotationStyle() : TextStyle = this.annotationStyle.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name = "list_widget_format"
-
-    override val modelObject = this
-
-}
+//data class ListWidgetFormat(override val id : UUID,
+//                            val widgetFormat : Prod<WidgetFormat>,
+//                            val listStyle : Val<TextFormat>,
+//                            val annotationStyle : Val<TextFormat>) : ToDocument, ProdType
+//{
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<ListWidgetFormat>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<ListWidgetFormat> = when (doc)
+//        {
+//            is DocDict -> effApply(::ListWidgetFormat,
+//                                   // ProdType Id
+//                                   effValue(UUID.randomUUID()),
+//                                   // Widget Format
+//                                   doc.at("widget_format") ap {
+//                                       effApply(::Prod, WidgetFormat.fromDocument(it))
+//                                   },
+//                                   // List Style
+//                                   doc.at("list_style") ap {
+//                                       effApply(::Prod, TextFormat.fromDocument(it))
+//                                   },
+//                                   // Annotation Style
+//                                   doc.at("annotation_style") ap {
+//                                       effApply(::Prod, TextFormat.fromDocument(it))
+//                                   })
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "widget_format" to this.widgetFormat().toDocument(),
+//        "list_style" to this.listStyle().toDocument(),
+//        "annotation_style" to this.annotationStyle().toDocument()
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+//
+//    fun listStyle() : TextFormat = this.listStyle.value
+//
+//    fun annotationStyle() : TextFormat = this.annotationStyle.value
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name = "list_widget_format"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.widgetFormat,
+//                   this.listStyle,
+//                   this.annotationStyle)
+//
+//}
 
 
 

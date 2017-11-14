@@ -3,9 +3,11 @@ package com.kispoko.tome.model.game.engine.summation.term
 
 
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -26,8 +28,8 @@ import java.util.*
 /**
  * Summation Term
  */
-sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>)
-                    : ToDocument, Model, Serializable
+sealed class SummationTerm(open val termName : Maybe<TermName>)
+                    : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -51,10 +53,7 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>)
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun maybeTermName() : Maybe<TermName> = _getMaybePrim(this.termName)
-
-
-    fun termName() : String? = getMaybePrim(this.termName)?.value
+    fun termName() : Maybe<TermName> = this.termName
 
 
     // -----------------------------------------------------------------------------------------
@@ -74,8 +73,8 @@ sealed class SummationTerm(open val termName : Maybe<Prim<TermName>>)
 
 
 data class SummationTermNumber(override val id : UUID,
-                               override val termName : Maybe<Prim<TermName>>,
-                               val numberReference : Sum<NumberReference>)
+                               override val termName : Maybe<TermName>,
+                               val numberReference : NumberReference)
                                 : SummationTerm(termName)
 {
 
@@ -86,21 +85,21 @@ data class SummationTermNumber(override val id : UUID,
     constructor(termName : Maybe<TermName>,
                 numberReference : NumberReference)
         : this(UUID.randomUUID(),
-               maybeLiftPrim(termName),
-               Sum(numberReference))
+               termName,
+               numberReference)
 
 
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SummationTerm> = when (doc)
         {
-            is DocDict -> effApply(::SummationTermNumber,
-                                   // Term Name
-                                   split(doc.maybeAt("term_name"),
-                                         effValue<ValueError,Maybe<TermName>>(Nothing()),
-                                         { effApply(::Just, TermName.fromDocument(it)) }),
-                                   // Value
-                                   doc.at("value") ap { NumberReference.fromDocument(it) })
+            is DocDict -> apply(::SummationTermNumber,
+                                // Term Name
+                                split(doc.maybeAt("term_name"),
+                                      effValue<ValueError,Maybe<TermName>>(Nothing()),
+                                      { apply(::Just, TermName.fromDocument(it)) }),
+                                // Value
+                                doc.at("value") ap { NumberReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -113,7 +112,7 @@ data class SummationTermNumber(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "value" to this.numberReference().toDocument()
     ))
-    .maybeMerge(this.maybeTermName().apply {
+    .maybeMerge(this.termName.apply {
         Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
     .withCase("summation_term_number")
 
@@ -122,7 +121,8 @@ data class SummationTermNumber(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun numberReference() = this.numberReference.value
+    fun numberReference() = this.numberReference
+
 
     // -----------------------------------------------------------------------------------------
     // TERM
@@ -138,7 +138,7 @@ data class SummationTermNumber(override val id : UUID,
 
         when (numbers)
         {
-            is Val -> return Just(numbers.value.filterJust().sum())
+            is effect.Val -> return Just(numbers.value.filterJust().sum())
             is Err -> ApplicationLog.error(numbers.error)
         }
 
@@ -152,22 +152,25 @@ data class SummationTermNumber(override val id : UUID,
 
         if (components.isNotEmpty())
         {
-            return TermSummary(this.termName(), components, this)
+            return TermSummary(this.termName().toNullable()?.value, components, this)
         }
         else
         {
             val termName = this.termName()
-            if (termName != null)
+            when (termName)
             {
-                val value = SheetData.number(sheetContext, this.numberReference())
-                when (value)
+                is Just ->
                 {
-                    is Val -> {
-                        return TermSummary(termName(),
-                                           listOf(TermComponent(termName, value.value.toString())),
-                                           this)
+                    val value = SheetData.number(sheetContext, this.numberReference())
+                    when (value)
+                    {
+                        is effect.Val -> {
+                            return TermSummary(termName().toNullable()?.value,
+                                               listOf(TermComponent(termName.value.value, value.value.toString())),
+                                               this)
+                        }
+                        is Err -> ApplicationLog.error(value.error)
                     }
-                    is Err -> ApplicationLog.error(value.error)
                 }
             }
         }
@@ -182,16 +185,18 @@ data class SummationTermNumber(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "summation_term_number"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_TermNumber = dbTermNumber(this.termName, this.numberReference)
 
 }
 
 
 data class SummationTermDiceRoll(override val id : UUID,
-                                 override val termName : Maybe<Prim<TermName>>,
-                                 val diceRollReference : Sum<DiceRollReference>)
+                                 override val termName : Maybe<TermName>,
+                                 val diceRollReference : DiceRollReference)
                                   : SummationTerm(termName)
 {
 
@@ -202,21 +207,21 @@ data class SummationTermDiceRoll(override val id : UUID,
     constructor(termName : Maybe<TermName>,
                 diceRollReference : DiceRollReference)
         : this(UUID.randomUUID(),
-               maybeLiftPrim(termName),
-               Sum(diceRollReference))
+               termName,
+               diceRollReference)
 
 
     companion object : Factory<SummationTerm>
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> = when (doc)
         {
-            is DocDict -> effApply(::SummationTermDiceRoll,
-                                   // Term Name
-                                   split(doc.maybeAt("term_name"),
-                                         effValue<ValueError,Maybe<TermName>>(Nothing()),
-                                         { effApply(::Just, TermName.fromDocument(it)) }),
-                                   // Value
-                                   doc.at("value") ap { DiceRollReference.fromDocument(it) })
+            is DocDict -> apply(::SummationTermDiceRoll,
+                                // Term Name
+                                split(doc.maybeAt("term_name"),
+                                      effValue<ValueError,Maybe<TermName>>(Nothing()),
+                                      { effApply(::Just, TermName.fromDocument(it)) }),
+                                // Value
+                                doc.at("value") ap { DiceRollReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -229,7 +234,7 @@ data class SummationTermDiceRoll(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "value" to this.diceRollReference().toDocument()
     ))
-    .maybeMerge(this.maybeTermName().apply {
+    .maybeMerge(this.termName.apply {
         Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
     .withCase("summation_term_dice_roll")
 
@@ -238,7 +243,7 @@ data class SummationTermDiceRoll(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun diceRollReference() = this.diceRollReference.value
+    fun diceRollReference() = this.diceRollReference
 
 
     // -----------------------------------------------------------------------------------------
@@ -255,7 +260,7 @@ data class SummationTermDiceRoll(override val id : UUID,
 
         when (diceRoll)
         {
-            is Val -> return Just(diceRoll.value.roll().toDouble())
+            is effect.Val -> return Just(diceRoll.value.roll().toDouble())
             is Err -> ApplicationLog.error(diceRoll.error)
         }
 
@@ -269,23 +274,27 @@ data class SummationTermDiceRoll(override val id : UUID,
 
         if (components.isNotEmpty())
         {
-            return TermSummary(this.termName(), components, this)
+            return TermSummary(this.termName.toNullable()?.value, components, this)
         }
         else
         {
             val termName = this.termName()
-            if (termName != null)
+            when (termName)
             {
-                val value = SheetData.diceRoll(sheetContext, this.diceRollReference())
-                when (value)
+                is Just ->
                 {
-                    is Val -> {
-                        return TermSummary(termName(),
-                                           listOf(TermComponent(termName, value.value.toString())),
-                                           this)
+                    val value = SheetData.diceRoll(sheetContext, this.diceRollReference())
+                    when (value)
+                    {
+                        is effect.Val -> {
+                            return TermSummary(termName().toNullable()?.value,
+                                               listOf(TermComponent(termName.value.value, value.value.toString())),
+                                               this)
+                        }
+                        is Err -> ApplicationLog.error(value.error)
                     }
-                    is Err -> ApplicationLog.error(value.error)
                 }
+
             }
         }
 
@@ -299,18 +308,20 @@ data class SummationTermDiceRoll(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "summation_term_dice_roll"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_TermDiceRoll = dbTermDiceRoll(this.termName, this.diceRollReference)
 
 }
 
 
 data class SummationTermConditional(override val id : UUID,
-                                    override val termName : Maybe<Prim<TermName>>,
-                                    val conditionalValueReference : Sum<BooleanReference>,
-                                    val trueValueReference : Sum<NumberReference>,
-                                    val falseValueReference: Sum<NumberReference>)
+                                    override val termName : Maybe<TermName>,
+                                    val conditionalValueReference : BooleanReference,
+                                    val trueValueReference : NumberReference,
+                                    val falseValueReference: NumberReference)
                                       : SummationTerm(termName)
 {
 
@@ -319,32 +330,36 @@ data class SummationTermConditional(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(termName : Maybe<TermName>,
-                conditionalValueReference: BooleanReference,
-                trueValueReference: NumberReference,
-                falseValueReference: NumberReference)
+                conditionalValueReference : BooleanReference,
+                trueValueReference : NumberReference,
+                falseValueReference : NumberReference)
         : this(UUID.randomUUID(),
-               maybeLiftPrim(termName),
-               Sum(conditionalValueReference),
-               Sum(trueValueReference),
-               Sum(falseValueReference))
+               termName,
+               conditionalValueReference,
+               trueValueReference,
+               falseValueReference)
 
 
     companion object : Factory<SummationTerm>
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> = when (doc)
         {
-            is DocDict -> effApply(::SummationTermConditional,
-                                   // Term Name
-                                   split(doc.maybeAt("term_name"),
-                                         effValue<ValueError,Maybe<TermName>>(Nothing()),
-                                         { effApply(::Just, TermName.fromDocument(it)) }),
-                                   // Condition
-                                   doc.at("condition") ap {
-                                       BooleanReference.fromDocument(it) },
-                                   // When True
-                                   doc.at("when_true") ap { NumberReference.fromDocument(it) },
-                                   // When False
-                                   doc.at("when_false") ap { NumberReference.fromDocument(it) })
+            is DocDict ->
+            {
+                apply(::SummationTermConditional,
+                      // Term Name
+                      split(doc.maybeAt("term_name"),
+                            effValue<ValueError,Maybe<TermName>>(Nothing()),
+                            { effApply(::Just, TermName.fromDocument(it)) }),
+                      // Condition
+                      doc.at("condition") ap {
+                          BooleanReference.fromDocument(it) },
+                      // When True
+                      doc.at("when_true") ap { NumberReference.fromDocument(it) },
+                      // When False
+                      doc.at("when_false") ap { NumberReference.fromDocument(it) })
+            }
+
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -359,7 +374,7 @@ data class SummationTermConditional(override val id : UUID,
         "when_true" to this.trueValueReference().toDocument(),
         "when_false" to this.falseValueReference().toDocument()
     ))
-    .maybeMerge(this.maybeTermName().apply {
+    .maybeMerge(this.termName.apply {
         Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
     .withCase("summation_term_conditional")
 
@@ -368,11 +383,13 @@ data class SummationTermConditional(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun conditionalValueReference() : BooleanReference = this.conditionalValueReference.value
+    fun conditionalValueReference() : BooleanReference = this.conditionalValueReference
 
-    fun trueValueReference() : NumberReference = this.trueValueReference.value
 
-    fun falseValueReference() : NumberReference = this.falseValueReference.value
+    fun trueValueReference() : NumberReference = this.trueValueReference
+
+
+    fun falseValueReference() : NumberReference = this.falseValueReference
 
 
     // -----------------------------------------------------------------------------------------
@@ -381,9 +398,15 @@ data class SummationTermConditional(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "summation_term_conditional"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_TermConditional =
+            dbTermConditional(this.termName,
+                              this.conditionalValueReference,
+                              this.trueValueReference,
+                              this.falseValueReference)
 
 
     // -----------------------------------------------------------------------------------------
@@ -391,9 +414,9 @@ data class SummationTermConditional(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> =
-        conditionalValueReference.value.dependencies()
-            .plus(trueValueReference.value.dependencies())
-            .plus(falseValueReference.value.dependencies())
+        conditionalValueReference.dependencies()
+            .plus(trueValueReference.dependencies())
+            .plus(falseValueReference.dependencies())
 
 
     override fun value(sheetContext : SheetContext,
@@ -409,7 +432,7 @@ data class SummationTermConditional(override val id : UUID,
 
         when (number)
         {
-            is Val -> return number.value
+            is effect.Val -> return number.value
             is Err -> ApplicationLog.error(number.error)
         }
 
@@ -423,7 +446,7 @@ data class SummationTermConditional(override val id : UUID,
 
         when (isTrueEff)
         {
-            is Val ->
+            is effect.Val ->
             {
                 val valueRef = if (isTrueEff.value) this.trueValueReference()
                                     else this.falseValueReference()
@@ -432,23 +455,26 @@ data class SummationTermConditional(override val id : UUID,
 
                 if (components.isNotEmpty())
                 {
-                    return TermSummary(this.termName(), components, this)
+                    return TermSummary(this.termName().toNullable()?.value, components, this)
                 }
                 else
                 {
                     val termName = this.termName()
-                    if (termName != null)
+                    when (termName)
                     {
-                        val value = SheetData.number(sheetContext, valueRef)
-                        when (value)
+                        is Just ->
                         {
-                            is Val -> {
-                                return TermSummary(termName(),
-                                                   listOf(TermComponent(termName,
-                                                                        value.value.toString())),
-                                                   this)
+                            val value = SheetData.number(sheetContext, valueRef)
+                            when (value)
+                            {
+                                is effect.Val -> {
+                                    return TermSummary(termName().toNullable()?.value,
+                                                       listOf(TermComponent(termName.value.value,
+                                                                            value.value.toString())),
+                                                       this)
+                                }
+                                is Err -> ApplicationLog.error(value.error)
                             }
-                            is Err -> ApplicationLog.error(value.error)
                         }
                     }
                 }

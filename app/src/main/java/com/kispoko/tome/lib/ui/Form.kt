@@ -30,7 +30,7 @@ object Form
 
     fun toolbarView(themeId : ThemeId, context : Context) : LinearLayout
     {
-        val layout = this.toolbarViewLayout(themeId, context)
+        val layout = this.toolbarViewLayout(context)
 
         // Help Button
         layout.addView(this.toolbarButtonView(R.drawable.ic_form_toolbar_help,
@@ -60,7 +60,7 @@ object Form
     }
 
 
-    private fun toolbarViewLayout(themeId : ThemeId, context : Context) : LinearLayout
+    private fun toolbarViewLayout(context : Context) : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 

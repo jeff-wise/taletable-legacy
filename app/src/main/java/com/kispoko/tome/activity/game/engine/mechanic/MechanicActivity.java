@@ -132,7 +132,7 @@ public class MechanicActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            //fields.addAll(Model.fields(this.mechanic, this));
+//            //fields.addAll(ProdType.fields(this.mechanic, this));
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

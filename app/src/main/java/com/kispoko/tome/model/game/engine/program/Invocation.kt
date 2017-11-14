@@ -2,12 +2,10 @@
 package com.kispoko.tome.model.game.engine.program
 
 
+import com.kispoko.tome.db.DB_Invocation
+import com.kispoko.tome.db.dbInvocation
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.functor.Sum
-import com.kispoko.tome.lib.functor.getMaybeSum
-import com.kispoko.tome.lib.functor.maybeLiftSum
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.*
@@ -23,41 +21,14 @@ import java.util.*
  * Program Invocation
  */
 data class Invocation(override val id : UUID,
-                      val programId : Prim<ProgramId>,
-                      val parameter1 : Sum<DataReference>,
-                      val parameter2 : Maybe<Sum<DataReference>>,
-                      val parameter3 : Maybe<Sum<DataReference>>,
-                      val parameter4 : Maybe<Sum<DataReference>>,
-                      val parameter5 : Maybe<Sum<DataReference>>)
-                       : ToDocument, Model, Serializable
+                      val programId : ProgramId,
+                      val parameter1 : DataReference,
+                      val parameter2 : Maybe<DataReference>,
+                      val parameter3 : Maybe<DataReference>,
+                      val parameter4 : Maybe<DataReference>,
+                      val parameter5 : Maybe<DataReference>)
+                       : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.programId.name                         = "program_id"
-        this.parameter1.name                        = "parameter1"
-
-        when (this.parameter2) {
-            is Just -> this.parameter2.value.name   = "parameter2"
-        }
-
-        when (this.parameter3) {
-            is Just -> this.parameter3.value.name   = "parameter3"
-        }
-
-        when (this.parameter4) {
-            is Just -> this.parameter4.value.name   = "parameter4"
-        }
-
-        when (this.parameter5) {
-            is Just -> this.parameter5.value.name   = "parameter5"
-        }
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -70,12 +41,12 @@ data class Invocation(override val id : UUID,
                 parameter4 : Maybe<DataReference>,
                 parameter5 : Maybe<DataReference>)
         : this(UUID.randomUUID(),
-               Prim(programId),
-               Sum(parameter1),
-               maybeLiftSum(parameter2),
-               maybeLiftSum(parameter3),
-               maybeLiftSum(parameter4),
-               maybeLiftSum(parameter5))
+               programId,
+               parameter1,
+               parameter2,
+               parameter3,
+               parameter4,
+               parameter5)
 
 
     companion object : Factory<Invocation>
@@ -84,28 +55,28 @@ data class Invocation(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::Invocation,
-                         // Program Name
-                         doc.at("program_id") ap { ProgramId.fromDocument(it) },
-                         // Parameter 1
-                         doc.at("parameter1") ap { DataReference.fromDocument(it) },
-                         // Parameter 2
-                         split(doc.maybeAt("parameter2"),
-                               effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                               { effApply(::Just, DataReference.fromDocument(it)) }),
-                         // Parameter 3
-                         split(doc.maybeAt("parameter3"),
-                               effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                               { effApply(::Just, DataReference.fromDocument(it)) }),
-                         // Parameter 4
-                         split(doc.maybeAt("parameter4"),
-                               effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                               { effApply(::Just, DataReference.fromDocument(it)) }),
-                         // Parameter 5
-                         split(doc.maybeAt("parameter5"),
-                               effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                               { effApply(::Just, DataReference.fromDocument(it)) })
-                         )
+                apply(::Invocation,
+                      // Program Name
+                      doc.at("program_id") ap { ProgramId.fromDocument(it) },
+                      // Parameter 1
+                      doc.at("parameter1") ap { DataReference.fromDocument(it) },
+                      // Parameter 2
+                      split(doc.maybeAt("parameter2"),
+                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
+                            { apply(::Just, DataReference.fromDocument(it)) }),
+                      // Parameter 3
+                      split(doc.maybeAt("parameter3"),
+                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
+                            { apply(::Just, DataReference.fromDocument(it)) }),
+                      // Parameter 4
+                      split(doc.maybeAt("parameter4"),
+                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
+                            { apply(::Just, DataReference.fromDocument(it)) }),
+                      // Parameter 5
+                      split(doc.maybeAt("parameter5"),
+                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
+                            { apply(::Just, DataReference.fromDocument(it)) })
+                      )
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -134,17 +105,22 @@ data class Invocation(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun programId() : ProgramId = this.programId.value
+    fun programId() : ProgramId = this.programId
 
-    fun parameter1() : DataReference = this.parameter1.value
 
-    fun parameter2() : Maybe<DataReference> = getMaybeSum(this.parameter2)
+    fun parameter1() : DataReference = this.parameter1
 
-    fun parameter3() : Maybe<DataReference> = getMaybeSum(this.parameter3)
 
-    fun parameter4() : Maybe<DataReference> = getMaybeSum(this.parameter4)
+    fun parameter2() : Maybe<DataReference> = this.parameter2
 
-    fun parameter5() : Maybe<DataReference> = getMaybeSum(this.parameter5)
+
+    fun parameter3() : Maybe<DataReference> = this.parameter3
+
+
+    fun parameter4() : Maybe<DataReference> = this.parameter4
+
+
+    fun parameter5() : Maybe<DataReference> = this.parameter5
 
 
     // -----------------------------------------------------------------------------------------
@@ -153,9 +129,16 @@ data class Invocation(override val id : UUID,
 
     override fun onLoad() {}
 
-    override val name = "invocation"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Invocation = dbInvocation(this.programId,
+                                                      this.parameter1,
+                                                      this.parameter2,
+                                                      this.parameter3,
+                                                      this.parameter4,
+                                                      this.parameter5)
 
 
     // -----------------------------------------------------------------------------------------

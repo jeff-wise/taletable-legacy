@@ -212,10 +212,7 @@ class SummationViewBuilder(val summation : Summation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(2f),
-                                              TopRightCornerRadius(2f),
-                                              BottomRightCornerRadius(2f),
-                                              BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -258,10 +255,7 @@ class SummationViewBuilder(val summation : Summation,
         layout.padding.leftDp   = 10f
         layout.padding.rightDp  = 10f
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(0f),
-                                          BottomLeftCornerRadius(0f))
+        layout.corners          = Corners(2.0, 2.0, 0.0, 0.0)
 
         return layout.relativeLayout(sheetUIContext.context)
     }
@@ -329,10 +323,7 @@ class SummationViewBuilder(val summation : Summation,
         layout.padding.leftDp    = 14f
         layout.padding.rightDp   = 14f
 
-        layout.corners           = Corners(TopLeftCornerRadius(2f),
-                                           TopRightCornerRadius(2f),
-                                           BottomRightCornerRadius(2f),
-                                           BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.child(icon)
               .child(total)

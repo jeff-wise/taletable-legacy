@@ -3,9 +3,11 @@ package com.kispoko.tome.app
 
 
 import android.graphics.Color
+import com.kispoko.tome.db.DB_AppSettings
+import com.kispoko.tome.db.dbAppSettings
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.Theme
@@ -29,37 +31,27 @@ import java.util.*
  * Application Settings
  */
 data class AppSettings(override val id : UUID,
-                       val themeId : Prim<ThemeId>) : Model, Serializable
+                       val themeId : ThemeId)
+                        : ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.themeId.name = "theme_id"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(themeId : ThemeId)
-        : this(UUID.randomUUID(),
-               Prim(themeId))
+        : this(UUID.randomUUID(), themeId)
 
 
     companion object : Factory<AppSettings>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<AppSettings> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<AppSettings> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::AppSettings,
-                         // Theme Id
-                         doc.at("theme_id") apply { ThemeId.fromDocument(it) })
+                apply(::AppSettings,
+                      // Theme Id
+                      doc.at("theme_id") apply { ThemeId.fromDocument(it) })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -70,7 +62,7 @@ data class AppSettings(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun themeId() : ThemeId = this.themeId.value
+    fun themeId() : ThemeId = this.themeId
 
 
     // -----------------------------------------------------------------------------------------
@@ -79,9 +71,11 @@ data class AppSettings(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "app_settings"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_AppSettings = dbAppSettings(this.themeId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -95,7 +89,7 @@ data class AppSettings(override val id : UUID,
 
         when (color)
         {
-            is Val -> return color.value
+            is effect.Val -> return color.value
             is Err -> ApplicationLog.error(color.error)
         }
 
@@ -112,7 +106,7 @@ data class AppSettings(override val id : UUID,
 
         when (color)
         {
-            is Val -> return color.value
+            is effect.Val -> return color.value
             is Err -> ApplicationLog.error(color.error)
         }
 

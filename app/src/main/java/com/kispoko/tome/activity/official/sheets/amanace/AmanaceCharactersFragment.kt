@@ -310,10 +310,7 @@ object SummaryItemView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(2f),
-                                          TopRightCornerRadius(2f),
-                                          BottomRightCornerRadius(2f),
-                                          BottomLeftCornerRadius(2f))
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f

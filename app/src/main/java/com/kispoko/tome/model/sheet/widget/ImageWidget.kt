@@ -3,8 +3,9 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Prod
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -18,67 +19,70 @@ import java.util.*
 /**
  * Image Widget Format
  */
-data class ImageWidgetFormat(override val id : UUID,
-                             val widgetFormat : Comp<WidgetFormat>) : ToDocument, Model
-{
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name      = "widget_format"
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ImageWidgetFormat>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ImageWidgetFormat> = when (doc)
-        {
-            is DocDict -> effApply(::ImageWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name : String = "image_widget_format"
-
-    override val modelObject = this
-
-}
+//data class ImageWidgetFormat(override val id : UUID,
+//                             val widgetFormat : Prod<WidgetFormat>) : ToDocument, ProdType
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // INIT
+//    // -----------------------------------------------------------------------------------------
+//
+//    init
+//    {
+//        this.widgetFormat.name      = "widget_format"
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<ImageWidgetFormat>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<ImageWidgetFormat> = when (doc)
+//        {
+//            is DocDict -> effApply(::ImageWidgetFormat,
+//                                   // ProdType Id
+//                                   effValue(UUID.randomUUID()),
+//                                   // Widget Format
+//                                   doc.at("widget_format") ap {
+//                                       effApply(::Prod, WidgetFormat.fromDocument(it))
+//                                   })
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "widget_format" to this.widgetFormat().toDocument()
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name : String = "image_widget_format"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.widgetFormat)
+//
+//}
 
 
 //

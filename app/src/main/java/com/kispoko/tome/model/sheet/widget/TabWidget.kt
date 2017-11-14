@@ -4,11 +4,9 @@ package com.kispoko.tome.model.sheet.widget
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLInt
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorTheme
@@ -25,80 +23,84 @@ import java.util.*
 /**
  * Tab
  */
-data class Tab(override val id : UUID,
-               val tabName : Func<TabName>,
-               val groups : Coll<Group>) : ToDocument, Model, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.tabName.name       = "tab_name"
-        this.groups.name        = "groups"
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<Tab>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Tab> = when (doc)
-        {
-            is DocDict ->
-            {
-                apply(::Tab,
-                      // Model Id
-                      effValue(UUID.randomUUID()),
-                      // Tab Name
-                      doc.at("name") ap {
-                          effApply(::Prim, TabName.fromDocument(it))
-                      },
-                      // Groups
-                      doc.list("groups") ap { docList ->
-                          effApply(::Coll, docList.mapIndexed {
-                              d,index -> Group.fromDocument(d,index) })
-                      })
-            }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "name" to this.tabName().toDocument(),
-        "groups" to DocList(this.groups().map { it.toDocument() })
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun tabName() : TabName = this.tabName.value
-
-    fun groups() : List<Group> = this.groups.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name : String = "tab"
-
-    override val modelObject = this
-
-}
+//data class Tab(override val id : UUID,
+//               val tabName : Val<TabName>,
+//               val groups : Coll<Group>) : ToDocument, ProdType, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // INIT
+//    // -----------------------------------------------------------------------------------------
+//
+//    init
+//    {
+//        this.tabName.name       = "tab_name"
+//        this.groups.name        = "groups"
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<Tab>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<Tab> = when (doc)
+//        {
+//            is DocDict ->
+//            {
+//                apply(::Tab,
+//                      // ProdType Id
+//                      effValue(UUID.randomUUID()),
+//                      // Tab Name
+//                      doc.at("name") ap {
+//                          effApply(::Prim, TabName.fromDocument(it))
+//                      },
+//                      // Groups
+//                      doc.list("groups") ap { docList ->
+//                          effApply(::Coll, docList.mapIndexed {
+//                              d,index -> Group.fromDocument(d,index) })
+//                      })
+//            }
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "name" to this.tabName().toDocument(),
+//        "groups" to DocList(this.groups().map { it.toDocument() })
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun tabName() : TabName = this.tabName.value
+//
+//    fun groups() : List<Group> = this.groups.value
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name : String = "tab"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.tabName,
+//                   this.groups)
+//
+//}
 
 
 /**
@@ -168,7 +170,7 @@ data class DefaultSelected(val value : Int) : ToDocument, SQLSerializable, Seria
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+    override fun asSQLValue() = this.value.asSQLValue()
 
 }
 
@@ -176,201 +178,213 @@ data class DefaultSelected(val value : Int) : ToDocument, SQLSerializable, Seria
 /**
  * Tab Widget Row Format
  */
-data class TabWidgetFormat(override val id : UUID,
-                           val widgetFormat : Comp<WidgetFormat>,
-                           val tabDefaultStyle : Comp<TextStyle>,
-                           val tabSelectedStyle : Comp<TextStyle>,
-                           val underlineSelected : Prim<TabUnderlineSelected>,
-                           val underlineThickness : Prim<TabUnderlineThickness>,
-                           val tabMargins : Comp<Spacing>,
-                           val tabPaddingVertical : Prim<TabVerticalPadding>,
-                           val tabHeight : Prim<Height>,
-                           val backgroundColorTheme : Prim<ColorTheme>,
-                           val tabCorners : Comp<Corners>)
-                            : ToDocument, Model, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name              = "widget_format"
-        this.tabDefaultStyle.name           = "tab_default_style"
-        this.tabSelectedStyle.name          = "tab_selected_style"
-        this.underlineSelected.name         = "underline_selected"
-        this.underlineThickness.name        = "underline_thickness"
-        this.tabMargins.name                = "tab_margins"
-        this.tabPaddingVertical.name        = "tab_padding_vertical"
-        this.tabHeight.name                 = "tab_height"
-        this.backgroundColorTheme.name      = "background_color_theme"
-        this.tabCorners.name                = "tab_corners"
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                tabDefaultStyle : TextStyle,
-                tabSelectedstyle : TextStyle,
-                underlineSelected : TabUnderlineSelected,
-                underlineThickness : TabUnderlineThickness,
-                tabMargins : Spacing,
-                tabPaddingVertical: TabVerticalPadding,
-                tabHeight : Height,
-                backgroundColorTheme : ColorTheme,
-                tabCorners : Corners)
-        : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Comp(tabDefaultStyle),
-               Comp(tabSelectedstyle),
-               Prim(underlineSelected),
-               Prim(underlineThickness),
-               Comp(tabMargins),
-               Prim(tabPaddingVertical),
-               Prim(tabHeight),
-               Prim(backgroundColorTheme),
-               Comp(tabCorners))
-
-
-    companion object : Factory<TabWidgetFormat>
-    {
-
-        private val defaultWidgetFormat         = WidgetFormat.default()
-        private val defaultTabDefaultStyle      = TextStyle.default()
-        private val defaultTabSelectedStyle     = TextStyle.default()
-        private val defaultUnderlineSelected    = TabUnderlineSelected(true)
-        private val defaultUnderlineThickness   = TabUnderlineThickness(2)
-        private val defaultTabMargins           = Spacing.default()
-        private val defaultTabPaddingVertical   = TabVerticalPadding(5)
-        private val defaultTabHeight            = Height.Wrap
-        private val defaultBackgroundColorTheme = ColorTheme.transparent
-        private val defaultTabCorners           = Corners.default()
-
-
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TabWidgetFormat> = when (doc)
-        {
-            is DocDict ->
-            {
-                effApply(::TabWidgetFormat,
-                         // Widget Format
-                         split(doc.maybeAt("widget_format"),
-                               effValue(defaultWidgetFormat),
-                               { WidgetFormat.fromDocument(it) }),
-                         // Tab Default Style
-                         split(doc.maybeAt("tab_default_style"),
-                               effValue(defaultTabDefaultStyle),
-                               { TextStyle.fromDocument(it) }),
-                         // Tab Selected Style
-                         split(doc.maybeAt("tab_selected_style"),
-                               effValue(defaultTabSelectedStyle),
-                               { TextStyle.fromDocument(it) }),
-                         // Underline Selected?
-                         split(doc.maybeAt("underline_selected"),
-                               effValue(defaultUnderlineSelected),
-                               { TabUnderlineSelected.fromDocument(it) }),
-                         // Underline Thickness
-                         split(doc.maybeAt("underline_thickness"),
-                               effValue(defaultUnderlineThickness),
-                               { TabUnderlineThickness.fromDocument(it) }),
-                         // Margins
-                         split(doc.maybeAt("tab_margins"),
-                               effValue(defaultTabMargins),
-                               { Spacing.fromDocument(it) }),
-                         // Tab Padding Vertical
-                         split(doc.maybeAt("tab_padding_vertical"),
-                               effValue(defaultTabPaddingVertical),
-                               { TabVerticalPadding.fromDocument(it) }),
-                         // Tab Height
-                         split(doc.maybeAt("tab_height"),
-                               effValue<ValueError,Height>(defaultTabHeight),
-                               { Height.fromDocument(it) }),
-                         // Background Color Theme
-                         split(doc.maybeAt("background_color_theme"),
-                               effValue(defaultBackgroundColorTheme),
-                               { ColorTheme.fromDocument(it) }),
-                         // Tab Corners
-                         split(doc.maybeAt("tab_corners"),
-                               effValue<ValueError,Corners>(defaultTabCorners),
-                               { Corners.fromDocument(it) })
-                      )
-            }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-
-
-        fun default() = TabWidgetFormat(defaultWidgetFormat,
-                                        defaultTabDefaultStyle,
-                                        defaultTabSelectedStyle,
-                                        defaultUnderlineSelected,
-                                        defaultUnderlineThickness,
-                                        defaultTabMargins,
-                                        defaultTabPaddingVertical,
-                                        defaultTabHeight,
-                                        defaultBackgroundColorTheme,
-                                        defaultTabCorners)
-
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "tab_default_style" to this.tabDefaultStyle().toDocument(),
-        "tab_selected_style" to this.tabSelectedStyle().toDocument(),
-        "underline_selected" to this.underlineSelected().toDocument(),
-        "underline_thickness" to this.underlineThickness().toDocument(),
-        "tab_margins" to this.tabMargins().toDocument(),
-        "tab_padding_vertical" to this.tabPaddingVertical().toDocument(),
-        "tab_height" to this.tabHeight().toDocument(),
-        "background_color_theme" to this.backgroundColorTheme().toDocument(),
-        "tab_corners" to this.tabCorners().toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-
-    fun tabDefaultStyle() : TextStyle = this.tabDefaultStyle.value
-
-    fun tabSelectedStyle() : TextStyle = this.tabSelectedStyle.value
-
-    fun underlineSelected() : TabUnderlineSelected = this.underlineSelected.value
-
-    fun underlineThickness() : TabUnderlineThickness = this.underlineThickness.value
-
-    fun tabMargins() : Spacing = this.tabMargins.value
-
-    fun tabPaddingVertical() : TabVerticalPadding = this.tabPaddingVertical.value
-
-    fun tabHeight() : Height = this.tabHeight.value
-
-    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
-
-    fun tabCorners() : Corners = this.tabCorners.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name : String = "tab_widget_format"
-
-    override val modelObject = this
-
-}
-
+//data class TabWidgetFormat(override val id : UUID,
+//                           val widgetFormat : Prod<WidgetFormat>,
+//                           val tabDefaultStyle : Prod<TextFormat>,
+//                           val tabSelectedStyle : Prod<TextFormat>,
+//                           val underlineSelected : Prim<TabUnderlineSelected>,
+//                           val underlineThickness : Prim<TabUnderlineThickness>,
+//                           val tabMargins : Prod<Spacing>,
+//                           val tabPaddingVertical : Prim<TabVerticalPadding>,
+//                           val tabHeight : Prim<Height>,
+//                           val backgroundColorTheme : Prim<ColorTheme>,
+//                           val tabCorners : Prod<Corners>)
+//                            : ToDocument, ProdType, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // INIT
+//    // -----------------------------------------------------------------------------------------
+//
+//    init
+//    {
+//        this.widgetFormat.name              = "widget_format"
+//        this.tabDefaultStyle.name           = "tab_default_style"
+//        this.tabSelectedStyle.name          = "tab_selected_style"
+//        this.underlineSelected.name         = "underline_selected"
+//        this.underlineThickness.name        = "underline_thickness"
+//        this.tabMargins.name                = "tab_margins"
+//        this.tabPaddingVertical.name        = "tab_padding_vertical"
+//        this.tabHeight.name                 = "tab_height"
+//        this.backgroundColorTheme.name      = "background_color_theme"
+//        this.tabCorners.name                = "tab_corners"
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    constructor(widgetFormat : WidgetFormat,
+//                tabDefaultStyle : TextFormat,
+//                tabSelectedstyle : TextFormat,
+//                underlineSelected : TabUnderlineSelected,
+//                underlineThickness : TabUnderlineThickness,
+//                tabMargins : Spacing,
+//                tabPaddingVertical: TabVerticalPadding,
+//                tabHeight : Height,
+//                backgroundColorTheme : ColorTheme,
+//                tabCorners : Corners)
+//        : this(UUID.randomUUID(),
+//               Prod(widgetFormat),
+//               Prod(tabDefaultStyle),
+//               Prod(tabSelectedstyle),
+//               Prim(underlineSelected),
+//               Prim(underlineThickness),
+//               Prod(tabMargins),
+//               Prim(tabPaddingVertical),
+//               Prim(tabHeight),
+//               Prim(backgroundColorTheme),
+//               Prod(tabCorners))
+//
+//
+//    companion object : Factory<TabWidgetFormat>
+//    {
+//
+//        private fun defaultWidgetFormat()         = WidgetFormat.default()
+//        private fun defaultTabDefaultStyle()      = TextFormat.default()
+//        private fun defaultTabSelectedStyle()     = TextFormat.default()
+//        private fun defaultUnderlineSelected()    = TabUnderlineSelected(true)
+//        private fun defaultUnderlineThickness()   = TabUnderlineThickness(2)
+//        private fun defaultTabMargins()           = Spacing.default()
+//        private fun defaultTabPaddingVertical()   = TabVerticalPadding(5)
+//        private fun defaultTabHeight()            = Height.Wrap
+//        private fun defaultBackgroundColorTheme() = ColorTheme.transparent
+//        private fun defaultTabCorners()           = Corners.default()
+//
+//
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<TabWidgetFormat> = when (doc)
+//        {
+//            is DocDict ->
+//            {
+//                apply(::TabWidgetFormat,
+//                      // Widget Format
+//                      split(doc.maybeAt("widget_format"),
+//                            effValue(defaultWidgetFormat()),
+//                            { WidgetFormat.fromDocument(it) }),
+//                      // Tab Default Style
+//                      split(doc.maybeAt("tab_default_style"),
+//                            effValue(defaultTabDefaultStyle()),
+//                            { TextFormat.fromDocument(it) }),
+//                      // Tab Selected Style
+//                      split(doc.maybeAt("tab_selected_style"),
+//                            effValue(defaultTabSelectedStyle()),
+//                            { TextFormat.fromDocument(it) }),
+//                      // Underline Selected?
+//                      split(doc.maybeAt("underline_selected"),
+//                            effValue(defaultUnderlineSelected()),
+//                            { TabUnderlineSelected.fromDocument(it) }),
+//                      // Underline Thickness
+//                      split(doc.maybeAt("underline_thickness"),
+//                            effValue(defaultUnderlineThickness()),
+//                            { TabUnderlineThickness.fromDocument(it) }),
+//                      // Margins
+//                      split(doc.maybeAt("tab_margins"),
+//                            effValue(defaultTabMargins()),
+//                            { Spacing.fromDocument(it) }),
+//                      // Tab Padding Vertical
+//                      split(doc.maybeAt("tab_padding_vertical"),
+//                            effValue(defaultTabPaddingVertical()),
+//                            { TabVerticalPadding.fromDocument(it) }),
+//                      // Tab Height
+//                      split(doc.maybeAt("tab_height"),
+//                            effValue<ValueError,Height>(defaultTabHeight()),
+//                            { Height.fromDocument(it) }),
+//                      // Background Color Theme
+//                      split(doc.maybeAt("background_color_theme"),
+//                            effValue(defaultBackgroundColorTheme()),
+//                            { ColorTheme.fromDocument(it) }),
+//                      // Tab Corners
+//                      split(doc.maybeAt("tab_corners"),
+//                            effValue<ValueError,Corners>(defaultTabCorners()),
+//                            { Corners.fromDocument(it) })
+//                   )
+//            }
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//
+//
+//        fun default() = TabWidgetFormat(defaultWidgetFormat(),
+//                                        defaultTabDefaultStyle(),
+//                                        defaultTabSelectedStyle(),
+//                                        defaultUnderlineSelected(),
+//                                        defaultUnderlineThickness(),
+//                                        defaultTabMargins(),
+//                                        defaultTabPaddingVertical(),
+//                                        defaultTabHeight(),
+//                                        defaultBackgroundColorTheme(),
+//                                        defaultTabCorners())
+//
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "widget_format" to this.widgetFormat().toDocument(),
+//        "tab_default_style" to this.tabDefaultStyle().toDocument(),
+//        "tab_selected_style" to this.tabSelectedStyle().toDocument(),
+//        "underline_selected" to this.underlineSelected().toDocument(),
+//        "underline_thickness" to this.underlineThickness().toDocument(),
+//        "tab_margins" to this.tabMargins().toDocument(),
+//        "tab_padding_vertical" to this.tabPaddingVertical().toDocument(),
+//        "tab_height" to this.tabHeight().toDocument(),
+//        "background_color_theme" to this.backgroundColorTheme().toDocument(),
+//        "tab_corners" to this.tabCorners().toDocument()
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+//
+//    fun tabDefaultStyle() : TextFormat = this.tabDefaultStyle.value
+//
+//    fun tabSelectedStyle() : TextFormat = this.tabSelectedStyle.value
+//
+//    fun underlineSelected() : TabUnderlineSelected = this.underlineSelected.value
+//
+//    fun underlineThickness() : TabUnderlineThickness = this.underlineThickness.value
+//
+//    fun tabMargins() : Spacing = this.tabMargins.value
+//
+//    fun tabPaddingVertical() : TabVerticalPadding = this.tabPaddingVertical.value
+//
+//    fun tabHeight() : Height = this.tabHeight.value
+//
+//    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+//
+//    fun tabCorners() : Corners = this.tabCorners.value
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name : String = "tab_widget_format"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.widgetFormat,
+//                   this.tabDefaultStyle,
+//                   this.tabSelectedStyle,
+//                   this.underlineSelected,
+//                   this.underlineThickness,
+//                   this.tabMargins,
+//                   this.tabPaddingVertical,
+//                   this.tabHeight,
+//                   this.backgroundColorTheme,
+//                   this.tabCorners)
+//
+//}
+//
 
 
 /**
@@ -439,7 +453,7 @@ data class TabUnderlineThickness(val value : Int) : ToDocument, SQLSerializable,
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+    override fun asSQLValue() = this.value.asSQLValue()
 
 }
 
@@ -475,7 +489,7 @@ data class TabVerticalPadding(val value : Int) : ToDocument, SQLSerializable, Se
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+    override fun asSQLValue() = this.value.asSQLValue()
 
 }
 

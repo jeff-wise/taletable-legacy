@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -10,16 +11,16 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_WidgetTableCellNumberFormat
+import com.kispoko.tome.db.dbWidgetTableCellNumberFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.NumberFormat
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
@@ -43,69 +44,43 @@ import java.util.*
  * Number Cell Format
  */
 data class NumberCellFormat(override val id : UUID,
-                            val cellFormat : Comp<CellFormat>,
-                            val valuePrefix : Maybe<Prim<NumberCellValuePrefix>>,
-                            val numberFormat : Prim<NumberFormat>)
-                            : ToDocument, Model, Serializable
+                            val elementFormat : Maybe<ElementFormat>,
+                            val textFormat : Maybe<TextFormat>)
+                            : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.cellFormat.name                        = "cell_format"
-
-        when (this.valuePrefix) {
-            is Just -> this.valuePrefix.value.name  = "value_prefix"
-        }
-
-
-        this.numberFormat.name                      = "number_format"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(elementFormat : Maybe<ElementFormat>,
+                textFormat : Maybe<TextFormat>)
+            : this(UUID.randomUUID(), elementFormat, textFormat)
+
+
     companion object : Factory<NumberCellFormat>
     {
-
-        private val defaultCellFormat   = CellFormat.default()
-        private val defaultNumberFormat = NumberFormat.Normal
-
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<NumberCellFormat> = when (doc)
         {
             is DocDict ->
             {
                 apply(::NumberCellFormat,
-                      // Model Id
-                      effValue(UUID.randomUUID()),
-                      // Cell Format
-                      split(doc.maybeAt("cell_format"),
-                            effValue(Comp.default(defaultCellFormat)),
-                            { effApply(::Comp, CellFormat.fromDocument(it)) }),
-                      // Value Prefix
-                      split(doc.maybeAt("value_prefix"),
-                            effValue<ValueError,Maybe<Prim<NumberCellValuePrefix>>>(Nothing()),
-                            { effApply({x -> Just(Prim(x))}, NumberCellValuePrefix.fromDocument(it)) }),
-                      // Number Format
-                      split(doc.maybeAt("number_format"),
-                            effValue<ValueError,Prim<NumberFormat>>(Prim.default(defaultNumberFormat)),
-                            { effApply(::Prim, NumberFormat.fromDocument(it)) })
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue<ValueError,Maybe<ElementFormat>>(Nothing()),
+                            { apply(::Just, ElementFormat.fromDocument(it)) }),
+                      // Text Format
+                      split(doc.maybeAt("text_format"),
+                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            { apply(::Just, TextFormat.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = NumberCellFormat(UUID.randomUUID(),
-                                         Comp.default(defaultCellFormat),
-                                         Nothing(),
-                                         Prim.default(defaultNumberFormat))
+        fun default() = NumberCellFormat(UUID.randomUUID(), Nothing(), Nothing())
 
     }
 
@@ -114,42 +89,32 @@ data class NumberCellFormat(override val id : UUID,
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocDict(mapOf(
-        "cell_format" to this.cellFormat().toDocument()
-        ))
-        .maybeMerge(this.valuePrefix().apply {
-            Just(Pair("value_prefix", it.toDocument() as SchemaDoc)) })
+    override fun toDocument() = DocDict(mapOf())
+        .maybeMerge(this.elementFormat.apply {
+            Just(Pair("element_format", it.toDocument() as SchemaDoc)) })
+        .maybeMerge(this.textFormat.apply {
+            Just(Pair("text_format", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun cellFormat() : CellFormat = this.cellFormat.value
+    fun elementFormat() : Maybe<ElementFormat> = this.elementFormat
 
-    fun valuePrefix() : Maybe<NumberCellValuePrefix> = _getMaybePrim(this.valuePrefix)
 
-    fun valuePrefixString() : String? = getMaybePrim(this.valuePrefix)?.value
-
-    fun numberFormat() : NumberFormat = this.numberFormat.value
+    fun textFormat() : Maybe<TextFormat> = this.textFormat
 
 
     // -----------------------------------------------------------------------------------------
     // RESOLVERS
     // -----------------------------------------------------------------------------------------
 
-    fun resolveTextStyle(columnFormat : NumberColumnFormat) : TextStyle =
-        if (this.cellFormat().textStyle.isDefault())
-            columnFormat.columnFormat().textStyle()
-        else
-            this.cellFormat().textStyle()
-
-
-    fun resolveNumberFormat(columnFormat : NumberColumnFormat) : NumberFormat =
-        if (this.numberFormat.isDefault())
-            columnFormat.numberFormat()
-        else
-            this.numberFormat()
+    fun resolveTextFormat(columnFormat : NumberColumnFormat) : TextFormat =
+        when (this.textFormat) {
+            is Just -> this.textFormat.value
+            else    -> columnFormat.columnFormat().textFormat()
+        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -158,45 +123,12 @@ data class NumberCellFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "number_cell_format"
 
-    override val modelObject = this
-
-}
+    override val prodTypeObject = this
 
 
-/**
- * Value Prefix
- */
-data class NumberCellValuePrefix(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<NumberCellValuePrefix>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<NumberCellValuePrefix> = when (doc)
-        {
-            is DocText -> effValue(NumberCellValuePrefix(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() = SQLText({ this.value })
+    override fun row() : DB_WidgetTableCellNumberFormat =
+            dbWidgetTableCellNumberFormat(this.elementFormat, this.textFormat)
 
 }
 
@@ -214,7 +146,7 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
         val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
         when (valueVariable)
         {
-            is Val ->
+            is effect.Val ->
             {
                 val editorType = cell.resolveEditorType(column)
                 openNumberVariableEditorDialog(valueVariable.value,
@@ -227,11 +159,10 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     fun view() : View
     {
-        val layout = TableWidgetCellView.layout(row.format(),
-                                                column.format().columnFormat(),
-                                                cell.format().cellFormat(),
+        val layout = TableWidgetCellView.layout(column.format().columnFormat(),
                                                 sheetUIContext)
 
         layout.addView(this.valueView())
@@ -343,7 +274,7 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
         value.height     = LinearLayout.LayoutParams.WRAP_CONTENT
 
         // > STYLE
-        val valueStyle = this.cell.format().resolveTextStyle(this.column.format())
+        val valueStyle = this.cell.format().resolveTextFormat(this.column.format())
         valueStyle.styleTextViewBuilder(value, sheetUIContext)
 
         //value.layoutGravity = valueStyle.alignment().gravityConstant()
@@ -352,8 +283,8 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
         val maybeValue = cell.value(SheetContext(sheetUIContext))
         when (maybeValue)
         {
-            is Val    -> {
-                val numberFormat = this.cell.format().resolveNumberFormat(this.column.format())
+            is effect.Val -> {
+                val numberFormat = this.cell.format().resolveTextFormat(this.column.format()).numberFormat()
                 when (numberFormat) {
                     is NumberFormat.Modifier -> {
                         value.text = numberFormat.formattedString(maybeValue.value)

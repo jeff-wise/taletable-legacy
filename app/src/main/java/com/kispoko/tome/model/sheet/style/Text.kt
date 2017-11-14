@@ -5,9 +5,10 @@ package com.kispoko.tome.model.sheet.style
 import android.util.Log
 import android.util.TypedValue
 import android.widget.TextView
+import com.kispoko.tome.db.DB_TextFormat
+import com.kispoko.tome.db.dbTextFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
@@ -29,191 +30,185 @@ import java.util.*
 /**
  * Text Format
  */
-data class TextFormat(override val id : UUID,
-                      val style : Comp<TextStyle>,
-                      val position : Prim<Position>,
-                      val height : Prim<Height>,
-                      val padding : Comp<Spacing>,
-                      val margins : Comp<Spacing>,
-                      val alignment: Prim<Alignment>,
-                      val verticalAlignment: Prim<VerticalAlignment>)
-                       : ToDocument, Model, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.style.name             = "style"
-        this.position.name          = "position"
-        this.height.name            = "height"
-        this.padding.name           = "padding"
-        this.margins.name           = "margins"
-        this.alignment.name         = "alignment"
-        this.verticalAlignment.name = "vertical_alignment"
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(style : TextStyle,
-                position : Position,
-                height : Height,
-                padding : Spacing,
-                margins : Spacing,
-                alignment : Alignment,
-                verticalAlignment : VerticalAlignment)
-        : this(UUID.randomUUID(),
-               Comp(style),
-               Prim(position),
-               Prim(height),
-               Comp(padding),
-               Comp(margins),
-               Prim(alignment),
-               Prim(verticalAlignment))
-
-
-    companion object : Factory<TextFormat>
-    {
-
-        private val defaultStyle             = TextStyle.default()
-        private val defaultPosition          = Position.Top
-        private val defaultHeight            = Height.Wrap
-        private val defaultPadding           = Spacing.default()
-        private val defaultMargins           = Spacing.default()
-        private val defaultAlignment         = Alignment.Center
-        private val defaultVerticalAlignment = VerticalAlignment.Middle
-
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TextFormat> = when (doc)
-        {
-            is DocDict ->
-            {
-                effApply(::TextFormat,
-                         // Style
-                         split(doc.maybeAt("style"),
-                               effValue(defaultStyle),
-                               { TextStyle.fromDocument(it) }),
-                         // Position
-                         split(doc.maybeAt("position"),
-                               effValue<ValueError,Position>(defaultPosition),
-                               { Position.fromDocument(it) }),
-                         // Height
-                         split(doc.maybeAt("height"),
-                               effValue<ValueError,Height>(defaultHeight),
-                               { Height.fromDocument(it) }),
-                         // Padding
-                         split(doc.maybeAt("padding"),
-                               effValue(defaultPadding),
-                               { Spacing.fromDocument(it) }),
-                         // Margins
-                         split(doc.maybeAt("margins"),
-                               effValue(defaultMargins),
-                               { Spacing.fromDocument(it) }),
-                         // Alignment
-                         split(doc.maybeAt("alignment"),
-                               effValue<ValueError,Alignment>(defaultAlignment),
-                               { Alignment.fromDocument(it) }),
-                         // Vertical Alignment
-                         split(doc.maybeAt("vertical_alignment"),
-                               effValue<ValueError,VerticalAlignment>(defaultVerticalAlignment),
-                               { VerticalAlignment.fromDocument(it) })
-                         )
-            }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-
-
-        fun default() = TextFormat(defaultStyle,
-                                   defaultPosition,
-                                   defaultHeight,
-                                   defaultPadding,
-                                   defaultMargins,
-                                   defaultAlignment,
-                                   defaultVerticalAlignment)
-
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "style" to this.style().toDocument(),
-        "position" to this.position().toDocument(),
-        "height" to this.height().toDocument(),
-        "padding" to this.padding().toDocument(),
-        "margins" to this.margins().toDocument(),
-        "alignment" to this.alignment().toDocument(),
-        "vertical_alignment" to this.alignment().toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun style() : TextStyle = this.style.value
-
-    fun position() : Position = this.position.value
-
-    fun height() : Height = this.height.value
-
-    fun padding() : Spacing = this.padding.value
-
-    fun margins() : Spacing = this.margins.value
-
-    fun alignment() : Alignment = this.alignment.value
-
-    fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name = "text_format"
-
-    override val modelObject = this
-
-}
+//data class TextFormat(override val id : UUID,
+//                      val style : Prod<TextFormat>,
+//                      val position : Prim<Position>,
+//                      val height : Prim<Height>,
+//                      val padding : Prod<Spacing>,
+//                      val margins : Prod<Spacing>,
+//                      val alignment: Prim<Alignment>,
+//                      val verticalAlignment : Prim<VerticalAlignment>)
+//                       : ToDocument, ProdType, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // INIT
+//    // -----------------------------------------------------------------------------------------
+//
+//    init
+//    {
+//        this.style.name             = "style"
+//        this.position.name          = "position"
+//        this.height.name            = "height"
+//        this.padding.name           = "padding"
+//        this.margins.name           = "margins"
+//        this.alignment.name         = "alignment"
+//        this.verticalAlignment.name = "vertical_alignment"
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    constructor(style : TextFormat,
+//                position : Position,
+//                height : Height,
+//                padding : Spacing,
+//                margins : Spacing,
+//                alignment : Alignment,
+//                verticalAlignment : VerticalAlignment)
+//        : this(UUID.randomUUID(),
+//               Prod(style),
+//               Prim(position),
+//               Prim(height),
+//               Prod(padding),
+//               Prod(margins),
+//               Prim(alignment),
+//               Prim(verticalAlignment))
+//
+//
+//    companion object : Factory<TextFormat>
+//    {
+//
+//        private fun defaultStyle()             = TextFormat.default()
+//        private fun defaultPosition()          = Position.Top
+//        private fun defaultHeight()            = Height.Wrap
+//        private fun defaultPadding()           = Spacing.default()
+//        private fun defaultMargins()           = Spacing.default()
+//        private fun defaultAlignment()         = Alignment.Center
+//        private fun defaultVerticalAlignment() = VerticalAlignment.Middle
+//
+//
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<TextFormat> = when (doc)
+//        {
+//            is DocDict ->
+//            {
+//                apply(::TextFormat,
+//                      // Style
+//                      split(doc.maybeAt("style"),
+//                            effValue(defaultStyle()),
+//                            { TextFormat.fromDocument(it) }),
+//                      // Position
+//                      split(doc.maybeAt("position"),
+//                            effValue<ValueError,Position>(defaultPosition()),
+//                            { Position.fromDocument(it) }),
+//                      // Height
+//                      split(doc.maybeAt("height"),
+//                            effValue<ValueError,Height>(defaultHeight()),
+//                            { Height.fromDocument(it) }),
+//                      // Padding
+//                      split(doc.maybeAt("padding"),
+//                            effValue(defaultPadding()),
+//                            { Spacing.fromDocument(it) }),
+//                      // Margins
+//                      split(doc.maybeAt("margins"),
+//                            effValue(defaultMargins()),
+//                            { Spacing.fromDocument(it) }),
+//                      // Alignment
+//                      split(doc.maybeAt("alignment"),
+//                            effValue<ValueError,Alignment>(defaultAlignment()),
+//                            { Alignment.fromDocument(it) }),
+//                      // Vertical Alignment
+//                      split(doc.maybeAt("vertical_alignment"),
+//                            effValue<ValueError,VerticalAlignment>(defaultVerticalAlignment()),
+//                            { VerticalAlignment.fromDocument(it) })
+//                      )
+//            }
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//
+//
+//        fun default() = TextFormat(defaultStyle(),
+//                                   defaultPosition(),
+//                                   defaultHeight(),
+//                                   defaultPadding(),
+//                                   defaultMargins(),
+//                                   defaultAlignment(),
+//                                   defaultVerticalAlignment())
+//
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "style" to this.style().toDocument(),
+//        "position" to this.position().toDocument(),
+//        "height" to this.height().toDocument(),
+//        "padding" to this.padding().toDocument(),
+//        "margins" to this.margins().toDocument(),
+//        "alignment" to this.alignment().toDocument(),
+//        "vertical_alignment" to this.alignment().toDocument()
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun style() : TextFormat = this.style.value
+//
+//    fun position() : Position = this.position.value
+//
+//    fun height() : Height = this.height.value
+//
+//    fun padding() : Spacing = this.padding.value
+//
+//    fun margins() : Spacing = this.margins.value
+//
+//    fun alignment() : Alignment = this.alignment.value
+//
+//    fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name = "text_format"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.style,
+//                   this.position,
+//                   this.height,
+//                   this.padding,
+//                   this.margins,
+//                   this.alignment,
+//                   this.verticalAlignment)
+//
+//}
 
 
 /**
  * Text Style
  */
-data class TextStyle(override val id : UUID,
-                     val colorTheme : Prim<ColorTheme>,
-                     val size : Prim<TextSize>,
-                     val font : Prim<TextFont>,
-                     val fontStyle : Prim<TextFontStyle>,
-                     val isUnderlined : Prim<IsUnderlined>,
-                     val alignment: Prim<Alignment>,
-                     val backgroundColorTheme : Prim<ColorTheme>)
-                      : ToDocument, Model, Serializable
+data class TextFormat(override val id : UUID,
+                      private val colorTheme : ColorTheme,
+                      private val size : TextSize,
+                      private val font : TextFont,
+                      private val fontStyle : TextFontStyle,
+                      private val isUnderlined : IsUnderlined,
+                      private val numberFormat : NumberFormat,
+                      private val elementFormat : ElementFormat)
+                      : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.colorTheme.name            = "color_theme"
-        this.size.name                  = "size"
-        this.font.name                  = "font"
-        this.fontStyle.name             = "font_style"
-        this.isUnderlined.name          = "is_underlined"
-        this.alignment.name             = "alignment"
-        this.backgroundColorTheme.name  = "background_color_theme"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -224,76 +219,76 @@ data class TextStyle(override val id : UUID,
                 font : TextFont,
                 fontStyle : TextFontStyle,
                 isUnderlined : IsUnderlined,
-                alignment : Alignment,
-                backgroundColorTheme: ColorTheme)
+                numberFormat : NumberFormat,
+                elementFormat : ElementFormat)
         : this(UUID.randomUUID(),
-               Prim(colorTheme),
-               Prim(size),
-               Prim(font),
-               Prim(fontStyle),
-               Prim(isUnderlined),
-               Prim(alignment),
-               Prim(backgroundColorTheme))
+               colorTheme,
+               size,
+               font,
+               fontStyle,
+               isUnderlined,
+               numberFormat,
+               elementFormat)
 
 
-    companion object : Factory<TextStyle>
+    companion object : Factory<TextFormat>
     {
 
-        private val defaultColorTheme           = ColorTheme.black
-        private val defaultTextSize             = TextSize(16.0f)
-        private val defaultFont                 = TextFont.FiraSans
-        private val defaultFontStyle            = TextFontStyle.Regular
-        private val defaultIsUnderlined         = IsUnderlined(false)
-        private val defaultAlignment            = Alignment.Center
-        private val defaultBackgroundColorTheme = ColorTheme.transparent
+        private fun defaultColorTheme()          = ColorTheme.black
+        private fun defaultTextSize()            = TextSize(16.0f)
+        private fun defaultFont()                = TextFont.FiraSans
+        private fun defaultFontStyle()           = TextFontStyle.Regular
+        private fun defaultIsUnderlined()        = IsUnderlined(false)
+        private fun defaultNumberFormat()        = NumberFormat.Normal
+        private fun defaultElementFormat()       = ElementFormat.default()
 
 
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TextStyle> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextFormat> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::TextStyle,
-                         // Color Theme
-                         split(doc.maybeAt("color_theme"),
-                               effValue(defaultColorTheme),
-                               { ColorTheme.fromDocument(it) }),
-                         // Size
-                         split(doc.maybeAt("size"),
-                               effValue(defaultTextSize),
-                               { TextSize.fromDocument(it) }),
-                         // Font
-                         split(doc.maybeAt("font"),
-                                effValue<ValueError,TextFont>(defaultFont),
-                                { TextFont.fromDocument(it) }),
-                         // Font Style
-                         split(doc.maybeAt("font_style"),
-                               effValue<ValueError,TextFontStyle>(defaultFontStyle),
-                              { TextFontStyle.fromDocument(it) }),
-                         // Is Underlined?
-                         split(doc.maybeAt("is_underlined"),
-                               effValue(defaultIsUnderlined),
-                               { IsUnderlined.fromDocument(it) }),
-                         // Alignment
-                         split(doc.maybeAt("alignment"),
-                               effValue<ValueError,Alignment>(defaultAlignment),
-                               { Alignment.fromDocument(it) }),
-                         // Color
-                         split(doc.maybeAt("background_color_theme"),
-                               effValue(defaultBackgroundColorTheme),
-                               { ColorTheme.fromDocument(it) })
-                         )
+                apply(::TextFormat,
+                      // Color Theme
+                      split(doc.maybeAt("color_theme"),
+                            effValue(defaultColorTheme()),
+                            { ColorTheme.fromDocument(it) }),
+                      // Size
+                      split(doc.maybeAt("size"),
+                            effValue(defaultTextSize()),
+                            { TextSize.fromDocument(it) }),
+                      // Font
+                      split(doc.maybeAt("font"),
+                             effValue<ValueError,TextFont>(defaultFont()),
+                             { TextFont.fromDocument(it) }),
+                      // Font Style
+                      split(doc.maybeAt("font_style"),
+                            effValue<ValueError,TextFontStyle>(defaultFontStyle()),
+                           { TextFontStyle.fromDocument(it) }),
+                      // Is Underlined?
+                      split(doc.maybeAt("is_underlined"),
+                            effValue(defaultIsUnderlined()),
+                            { IsUnderlined.fromDocument(it) }),
+                      // Number Format
+                      split(doc.maybeAt("number_format"),
+                            effValue<ValueError,NumberFormat>(NumberFormat.Normal),
+                            { NumberFormat.fromDocument(it) }),
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue(defaultElementFormat()),
+                            { ElementFormat.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = TextStyle(defaultColorTheme,
-                                  defaultTextSize,
-                                  defaultFont,
-                                  defaultFontStyle,
-                                  defaultIsUnderlined,
-                                  defaultAlignment,
-                                  defaultBackgroundColorTheme)
+        fun default() = TextFormat(defaultColorTheme(),
+                                  defaultTextSize(),
+                                  defaultFont(),
+                                  defaultFontStyle(),
+                                  defaultIsUnderlined(),
+                                  defaultNumberFormat(),
+                                  defaultElementFormat())
 
     }
 
@@ -304,12 +299,12 @@ data class TextStyle(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "color_theme" to this.colorTheme().toDocument(),
-        "size" to this.size.value.toDocument(),
-        "font" to this.font().toDocument(),
-        "font_style" to this.fontStyle().toDocument(),
-        "is_underlined" to this.isUnderlined.value.toDocument(),
-        "alignment" to this.alignment().toDocument(),
-        "background_color_theme" to this.alignment().toDocument()
+        "size" to this.size.toDocument(),
+        "font" to this.font.toDocument(),
+        "font_style" to this.fontStyle.toDocument(),
+        "is_underlined" to this.isUnderlined.toDocument(),
+        "number_format" to this.numberFormat.toDocument(),
+        "element_format" to this.elementFormat.toDocument()
     ))
 
 
@@ -317,19 +312,25 @@ data class TextStyle(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun colorTheme() : ColorTheme = this.colorTheme.value
+    fun colorTheme() : ColorTheme = this.colorTheme
 
-    fun sizeSp() : Float = this.size.value.sp
 
-    fun font() : TextFont = this.font.value
+    fun sizeSp() : Float = this.size.sp
 
-    fun fontStyle() : TextFontStyle = this.fontStyle.value
 
-    fun isUnderlined() : Boolean = this.isUnderlined.value.value
+    fun font() : TextFont = this.font
 
-    fun alignment() : Alignment = this.alignment.value
 
-    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+    fun fontStyle() : TextFontStyle = this.fontStyle
+
+
+    fun isUnderlined() : Boolean = this.isUnderlined.value
+
+
+    fun numberFormat() : NumberFormat = this.numberFormat
+
+
+    fun elementFormat() : ElementFormat = this.elementFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -338,9 +339,17 @@ data class TextStyle(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "text_style"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_TextFormat = dbTextFormat(this.colorTheme,
+                                                      this.size,
+                                                      this.font,
+                                                      this.fontStyle,
+                                                      this.isUnderlined,
+                                                      this.numberFormat,
+                                                      this.elementFormat)
 
 
     // -----------------------------------------------------------------------------------------
@@ -348,7 +357,7 @@ data class TextStyle(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     /**
-     * Set the TextViewBuilder style options according the values in the TextStyle.
+     * Set the TextViewBuilder style options according the values in the TextFormat.
      */
     fun styleTextViewBuilder(textViewBuilder : TextViewBuilder, sheetUIContext: SheetUIContext)
     {

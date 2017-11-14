@@ -2,21 +2,19 @@
 package com.kispoko.tome.model.sheet.widget.table.column
 
 
+import com.kispoko.tome.db.DB_WidgetTableColumnBooleanFormat
+import com.kispoko.tome.db.dbWidgetTableColumnBooleanFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.sheet.widget.FalseText
-import com.kispoko.tome.model.sheet.widget.TrueText
+import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -27,67 +25,47 @@ import java.util.*
  * Boolean Column Format
  */
 data class BooleanColumnFormat(override val id : UUID,
-                               val columnFormat : Comp<ColumnFormat>,
-                               val trueStyle : Maybe<Comp<TextStyle>>,
-                               val falseStyle : Maybe<Comp<TextStyle>>,
-                               val trueText : Prim<ColumnTrueText>,
-                               val falseText : Prim<ColumnFalseText>,
-                               val showTrueIcon : Prim<ShowTrueIcon>,
-                               val showFalseIcon : Prim<ShowFalseIcon>)
-                                : ToDocument, Model, Serializable
+                               val columnFormat : ColumnFormat,
+                               val trueFormat : TextFormat,
+                               val falseFormat : TextFormat,
+                               val trueText : ColumnTrueText,
+                               val falseText : ColumnFalseText,
+                               val showTrueIcon : ShowTrueIcon,
+                               val showFalseIcon : ShowFalseIcon)
+                                : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.columnFormat.name                      = "column_format"
-
-        when (this.trueStyle) {
-            is Just -> this.trueStyle.value.name    = "true_style"
-        }
-
-        when (this.falseStyle) {
-            is Just -> this.falseStyle.value.name   = "false_style"
-        }
-        this.trueText.name                          = "true_text"
-        this.falseText.name                         = "false_text"
-        this.showTrueIcon.name                      = "show_true_icon"
-        this.showFalseIcon.name                     = "show_false_icon"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(format : ColumnFormat,
-                trueStyle : Maybe<TextStyle>,
-                falseStyle : Maybe<TextStyle>,
+                trueStyle : TextFormat,
+                falseStyle : TextFormat,
                 trueText : ColumnTrueText,
                 falseText : ColumnFalseText,
                 showTrueIcon : ShowTrueIcon,
                 showFalseIcon : ShowFalseIcon)
         : this(UUID.randomUUID(),
-               Comp(format),
-               maybeLiftComp(trueStyle),
-               maybeLiftComp(falseStyle),
-               Prim(trueText),
-               Prim(falseText),
-               Prim(showTrueIcon),
-               Prim(showFalseIcon))
+               format,
+               trueStyle,
+               falseStyle,
+               trueText,
+               falseText,
+               showTrueIcon,
+               showFalseIcon)
 
 
     companion object : Factory<BooleanColumnFormat>
     {
 
-        private val defaultColumnFormat  = ColumnFormat.default()
-        private val defaultTrueText      = ColumnTrueText("True")
-        private val defaultFalseText     = ColumnFalseText("False")
-        private val defaultShowTrueIcon  = ShowTrueIcon(false)
-        private val defaultShowFalseIcon = ShowFalseIcon(false)
+        private fun defaultColumnFormat()  = ColumnFormat.default()
+        private fun defaultTrueFormat()    = TextFormat.default()
+        private fun defaultFalseFormat()   = TextFormat.default()
+        private fun defaultTrueText()      = ColumnTrueText("True")
+        private fun defaultFalseText()     = ColumnFalseText("False")
+        private fun defaultShowTrueIcon()  = ShowTrueIcon(false)
+        private fun defaultShowFalseIcon() = ShowFalseIcon(false)
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanColumnFormat> = when (doc)
@@ -97,31 +75,31 @@ data class BooleanColumnFormat(override val id : UUID,
                 apply(::BooleanColumnFormat,
                       // Column Format
                       split(doc.maybeAt("column_format"),
-                            effValue(defaultColumnFormat),
+                            effValue(defaultColumnFormat()),
                             { ColumnFormat.fromDocument(it) }),
-                      // True Style
-                      split(doc.maybeAt("true_style"),
-                            effValue<ValueError,Maybe<TextStyle>>(Nothing()),
-                            { effApply(::Just, TextStyle.fromDocument(it)) }),
-                      // False Style
-                      split(doc.maybeAt("false_style"),
-                            effValue<ValueError,Maybe<TextStyle>>(Nothing()),
-                            { effApply(::Just, TextStyle.fromDocument(it)) }),
+                      // True Format
+                      split(doc.maybeAt("true_format"),
+                            effValue(defaultTrueFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // False Format
+                      split(doc.maybeAt("false_format"),
+                            effValue(defaultFalseFormat()),
+                            { TextFormat.fromDocument(it) }),
                       // True Text
                       split(doc.maybeAt("true_text"),
-                            effValue(defaultTrueText),
+                            effValue(defaultTrueText()),
                             { ColumnTrueText.fromDocument(it) }),
                       // False Text
                       split(doc.maybeAt("false_text"),
-                            effValue(defaultFalseText),
+                            effValue(defaultFalseText()),
                             { ColumnFalseText.fromDocument(it) }),
                       // Show True Icon?
                       split(doc.maybeAt("show_true_icon"),
-                            effValue(defaultShowTrueIcon),
+                            effValue(defaultShowTrueIcon()),
                             { ShowTrueIcon.fromDocument(it) }),
                       // Show False Icon?
                       split(doc.maybeAt("show_false_icon"),
-                            effValue(defaultShowFalseIcon),
+                            effValue(defaultShowFalseIcon()),
                             { ShowFalseIcon.fromDocument(it) })
                       )
             }
@@ -129,13 +107,13 @@ data class BooleanColumnFormat(override val id : UUID,
         }
 
 
-        fun default() = BooleanColumnFormat(defaultColumnFormat,
-                                            Nothing(),
-                                            Nothing(),
-                                            defaultTrueText,
-                                            defaultFalseText,
-                                            defaultShowTrueIcon,
-                                            defaultShowFalseIcon)
+        fun default() = BooleanColumnFormat(defaultColumnFormat(),
+                                            defaultTrueFormat(),
+                                            defaultFalseFormat(),
+                                            defaultTrueText(),
+                                            defaultFalseText(),
+                                            defaultShowTrueIcon(),
+                                            defaultShowFalseIcon())
     }
 
 
@@ -143,45 +121,52 @@ data class BooleanColumnFormat(override val id : UUID,
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-
     override fun toDocument() = DocDict(mapOf(
         "column_format" to this.columnFormat().toDocument(),
+        "true_format" to this.trueFormat.toDocument(),
+        "false_format" to this.falseFormat.toDocument(),
         "true_text" to this.trueText().toDocument(),
         "false_text" to this.falseText().toDocument(),
         "show_true_icon" to this.showTrueIcon().toDocument(),
         "show_false_icon" to this.showFalseIcon().toDocument()
         ))
-        .maybeMerge(this.trueStyle().apply {
-            Just(Pair("true_style", it.toDocument() as SchemaDoc)) })
-        .maybeMerge(this.falseStyle().apply {
-            Just(Pair("false_style", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun columnFormat() : ColumnFormat = this.columnFormat.value
+    fun columnFormat() : ColumnFormat = this.columnFormat
 
-    fun trueStyle() : Maybe<TextStyle> = getMaybeComp(this.trueStyle)
 
-    fun falseStyle() : Maybe<TextStyle> = getMaybeComp(this.falseStyle)
+    fun trueFormat() : TextFormat = this.trueFormat
 
-    fun trueText() : ColumnTrueText = this.trueText.value
 
-    fun trueTextString() : String = this.trueText.value.value
+    fun falseFormat() : TextFormat = this.falseFormat
 
-    fun falseText() : ColumnFalseText = this.falseText.value
 
-    fun falseTextString() : String = this.falseText.value.value
+    fun trueText() : ColumnTrueText = this.trueText
 
-    fun showTrueIcon() : ShowTrueIcon = this.showTrueIcon.value
 
-    fun showTrueIconBoolean() : Boolean = this.showTrueIcon.value.value
+    fun trueTextString() : String = this.trueText.value
 
-    fun showFalseIcon() : ShowFalseIcon = this.showFalseIcon.value
 
-    fun showFalseIconBoolean() : Boolean = this.showFalseIcon.value.value
+    fun falseText() : ColumnFalseText = this.falseText
+
+
+    fun falseTextString() : String = this.falseText.value
+
+
+    fun showTrueIcon() : ShowTrueIcon = this.showTrueIcon
+
+
+    fun showTrueIconBoolean() : Boolean = this.showTrueIcon.value
+
+
+    fun showFalseIcon() : ShowFalseIcon = this.showFalseIcon
+
+
+    fun showFalseIconBoolean() : Boolean = this.showFalseIcon.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -190,9 +175,18 @@ data class BooleanColumnFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "boolean_column_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetTableColumnBooleanFormat =
+            dbWidgetTableColumnBooleanFormat(this.columnFormat,
+                                             this.trueFormat,
+                                             this.falseFormat,
+                                             this.trueText,
+                                             this.falseText,
+                                             this.showTrueIcon,
+                                             this.showFalseIcon)
 
 }
 

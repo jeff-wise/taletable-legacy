@@ -1,5 +1,5 @@
 
-how to arhitect software. model. data vs functional. constraints
+how to arhitect software. prodType. data vs functional. constraints
 compositional
 
 handling enums
@@ -12,7 +12,7 @@ reflection is nice. kind system has limits, but still fairly powerful generics
 still, hard after getting used to Haskell. though contraints are sometimes good
 becuase you have to stop somewhere. forces a reasonable boundary on kind safety
 
-the model abstraction. how to use abstraction in java. what is abstraction.
+the prodType abstraction. how to use abstraction in java. what is abstraction.
 abstracting getting/setting values as well as serialization. and connecting them.
 
 java sum refinementIndex
@@ -30,13 +30,13 @@ the valueVariable of constraints and elegant program modeling
 
 how to properly do async functions.
 
-fully flesh out dat model always, this includes errors. this is what actually saves time.
+fully flesh out dat prodType always, this includes errors. this is what actually saves time.
 always have exceptions. then don't ever need to have anxiety about testing app. if you see an error, 
 you will be able to know exactyl what caused it mos tof the time. this makes programming more efficient
 mentally because you don't ahve to feel stressed, can just have fun.
 
 
-more types is better. dry is not always the best method. kind safety and a clean data model are.
+more types is better. dry is not always the best method. kind safety and a clean data prodType are.
 just because something is in common does not make it unelegant. quite the opposite sometimes. 
 depends on the inteface.
 
@@ -92,3 +92,8 @@ encapsulation vs types
 encapsulation overly constrains, but is powerful in that it can fake a lot of what types can do.
 but find that it makes programs harder to maintain, but also harder to read because everything 
 is scoped, so have to see how everything relates within a scope.
+
+
+use interfaces to avoid encapsulation.
+
+can hide details with interfaces. don't need extra layers or constraints that are less flexible

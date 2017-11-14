@@ -15,7 +15,6 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -25,6 +24,7 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.lib.ui.EditDialog.headerTitleView
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
@@ -104,8 +104,6 @@ class ValueChooserDialogFragment : DialogFragment()
         val sheetContext = this.sheetContext
         if (sheetContext != null)
         {
-            val sheetUIContext = SheetUIContext(sheetContext, context)
-
             val dialogLayout = this.dialogLayout()
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -233,10 +231,7 @@ object ValueChooserView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.corners              = Corners(TopLeftCornerRadius(3f),
-                                              TopRightCornerRadius(3f),
-                                              BottomRightCornerRadius(3f),
-                                              BottomLeftCornerRadius(3f))
+        layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -252,7 +247,7 @@ object ValueChooserView
     {
         val layout = headerViewLayout(sheetUIContext)
 
-        val titleView = headerTitleView(title, sheetUIContext)
+        val titleView = headerTitleTextView(title, sheetUIContext)
         val iconView  = headerIconView(sheetUIContext)
 
         layout.addView(titleView)
@@ -324,38 +319,34 @@ object ValueChooserView
 
         layout.margin.bottomDp      = 1f
 
-        layout.corners              = Corners(TopLeftCornerRadius(3f),
-                                                TopRightCornerRadius(3f),
-                                                BottomRightCornerRadius(0f),
-                                                BottomLeftCornerRadius(0f))
+        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
         return layout.relativeLayout(sheetUIContext.context)
     }
 
 
-    private fun headerTitleView(titleString : String, sheetUIContext: SheetUIContext) : TextView
+    private fun headerTitleTextView(titleString : String,
+                                    sheetUIContext: SheetUIContext) : TextView
     {
-        val title               = TextViewBuilder()
+        val title             = TextViewBuilder()
 
-        title.layoutType        = LayoutType.RELATIVE
-        title.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
-        title.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        title.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.text              = titleString
+        title.text          = titleString
 
-        title.font              = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                sheetUIContext.context)
+        title.font          = Font.typeface(TextFont.FiraSans,
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        title.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        title.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        title.sizeSp            = 15f
+        title.sizeSp          = 13f
 
-        title.addRule(RelativeLayout.ALIGN_PARENT_START)
-        title.addRule(RelativeLayout.CENTER_VERTICAL)
+        title.margin.leftDp   = 0.5f
 
         return title.textView(sheetUIContext.context)
     }
@@ -871,9 +862,7 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                 else
                     viewHolder.setValueText(value.value())
 
-                val description = value.description()
-                if (description != null)
-                    viewHolder.setSummaryText(description)
+                viewHolder.setSummaryText(value.description().value)
 
                 viewHolder.setOnClick(View.OnClickListener {
                     when (updateTarget) {
@@ -884,14 +873,18 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                                         updateTarget.partIndex,
                                         value.valueId()
                                         )
-                            SheetManager.updateSheet(sheetUIContext.sheetId, textValuePartUpdate)
+                            SheetManager.updateSheet(sheetUIContext.sheetId,
+                                                     textValuePartUpdate,
+                                                     sheetUIContext.sheetUI())
                             dialog.dismiss()
                         }
                         is UpdateTargetTextCell -> {
                             val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
                                                                            updateTarget.cellId,
                                                                            value.valueId())
-                            SheetManager.updateSheet(sheetUIContext.sheetId, update)
+                            SheetManager.updateSheet(sheetUIContext.sheetId,
+                                                     update,
+                                                     sheetUIContext.sheetUI())
                             dialog.dismiss()
                         }
                     }
@@ -994,9 +987,7 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                     else
                         valueViewHolder.setValueText(item.value())
 
-                    val description = item.description()
-                    if (description != null)
-                        valueViewHolder.setSummaryText(description)
+                    valueViewHolder.setSummaryText(item.description().value)
 
                     viewHolder.setOnClick(View.OnClickListener {
                         when (updateTarget) {
@@ -1007,14 +998,18 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                                                 updateTarget.partIndex,
                                                 item.valueId()
                                         )
-                                SheetManager.updateSheet(sheetUIContext.sheetId, textValuePartUpdate)
+                                SheetManager.updateSheet(sheetUIContext.sheetId,
+                                        textValuePartUpdate,
+                                        sheetUIContext.sheetUI())
                                 dialog.dismiss()
                             }
                             is UpdateTargetTextCell -> {
                                 val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
                                         updateTarget.cellId,
                                         item.valueId())
-                                SheetManager.updateSheet(sheetUIContext.sheetId, update)
+                                SheetManager.updateSheet(sheetUIContext.sheetId,
+                                                         update,
+                                                         sheetUIContext.sheetUI())
                                 dialog.dismiss()
                             }
                         }

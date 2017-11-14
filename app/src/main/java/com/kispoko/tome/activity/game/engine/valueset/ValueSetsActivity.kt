@@ -92,7 +92,7 @@ class ValueSetsActivity : AppCompatActivity()
         if (gameId != null)
         {
             val valueSets = GameManager.engine(gameId)
-                                .apply { effValue<AppError,Set<ValueSet>>(it.valueSets()) }
+                                .apply { effValue<AppError,List<ValueSet>>(it.valueSets()) }
             when (valueSets) {
                 is Val ->
                 {

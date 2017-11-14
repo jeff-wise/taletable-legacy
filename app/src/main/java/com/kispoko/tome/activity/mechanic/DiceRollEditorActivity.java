@@ -128,7 +128,7 @@ public class DiceRollEditorActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            fields.addAll(Model.fields(this.diceRoll, this));
+//            fields.addAll(ProdType.fields(this.diceRoll, this));
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

@@ -71,7 +71,7 @@ class GameActivity : AppCompatActivity()
         // > Toolbar
         val game = this.game
         if (game != null)
-            this.configureToolbar(game.description().gameNameString())
+            this.configureToolbar(game.gameName().value)
 
         // > Theme
         val theme = ThemeManager.theme(this.appSettings.themeId())

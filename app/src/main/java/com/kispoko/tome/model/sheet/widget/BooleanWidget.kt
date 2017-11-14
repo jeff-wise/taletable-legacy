@@ -2,178 +2,165 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.sheet.style.TextStyle
-import effect.effApply
-import effect.effError
-import effect.effValue
-import lulo.document.*
-import lulo.value.UnexpectedType
-import lulo.value.ValueParser
-import java.io.Serializable
-import java.util.*
-
-
-
 /**
  * Boolean Widget Format
  */
-data class BooleanWidgetFormat(override val id : UUID,
-                               val widgetFormat : Comp<WidgetFormat>,
-                               val textStyle : Comp<TextStyle>,
-                               val trueText : Prim<TrueText>,
-                               val falseText : Prim<FalseText>)
-                                : ToDocument, Model, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                textStyle : TextStyle,
-                trueText : TrueText,
-                falseText : FalseText)
-        : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Comp(textStyle),
-               Prim(trueText),
-               Prim(falseText))
-
-
-    companion object : Factory<BooleanWidgetFormat>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanWidgetFormat> = when (doc)
-        {
-            is DocDict ->
-            {
-                effApply(::BooleanWidgetFormat,
-                         // Widget Format
-                         doc.at("widget_format") ap { WidgetFormat.fromDocument(it) },
-                         // Text Style
-                         doc.at("text_style") ap { TextStyle.fromDocument(it) },
-                         // True Text
-                         doc.at("true_text") ap { TrueText.fromDocument(it) },
-                         // False Text
-                         doc.at("false_text") ap { FalseText.fromDocument(it) }
-                         )
-            }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "text_style" to this.textStyle().toDocument(),
-        "true_text" to this.trueText.value.toDocument(),
-        "false_text" to this.falseText.value.toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-
-    fun textStyle() : TextStyle = this.textStyle.value
-
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name : String = "boolean_widget_format"
-
-    override val modelObject = this
-
-}
-
-
-/**
- * True Text
- */
-data class TrueText(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<TrueText>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TrueText> = when (doc)
-        {
-            is DocText -> effValue(TrueText(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLText({this.value})
-
-}
-
-
-/**
- * False Text
- */
-data class FalseText(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<FalseText>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<FalseText> = when (doc)
-        {
-            is DocText -> effValue(FalseText(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue(): SQLValue = SQLText({this.value})
-
-}
+//data class BooleanWidgetFormat(override val id : UUID,
+//                               val widgetFormat : Prod<WidgetFormat>,
+//                               val textStyle : Prod<TextFormat>,
+//                               val trueText : Prim<TrueText>,
+//                               val falseText : Prim<FalseText>)
+//                                : ToDocument, ProdType, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    constructor(widgetFormat : WidgetFormat,
+//                textStyle : TextFormat,
+//                trueText : TrueText,
+//                falseText : FalseText)
+//        : this(UUID.randomUUID(),
+//               Prod(widgetFormat),
+//               Prod(textStyle),
+//               Prim(trueText),
+//               Prim(falseText))
+//
+//
+//    companion object : Factory<BooleanWidgetFormat>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanWidgetFormat> = when (doc)
+//        {
+//            is DocDict ->
+//            {
+//                effApply(::BooleanWidgetFormat,
+//                         // Widget Format
+//                         doc.at("widget_format") ap { WidgetFormat.fromDocument(it) },
+//                         // Text Style
+//                         doc.at("text_style") ap { TextFormat.fromDocument(it) },
+//                         // True Text
+//                         doc.at("true_text") ap { TrueText.fromDocument(it) },
+//                         // False Text
+//                         doc.at("false_text") ap { FalseText.fromDocument(it) }
+//                         )
+//            }
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "widget_format" to this.widgetFormat().toDocument(),
+//        "text_style" to this.textStyle().toDocument(),
+//        "true_text" to this.trueText.value.toDocument(),
+//        "false_text" to this.falseText.value.toDocument()
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+//
+//    fun textStyle() : TextFormat = this.textStyle.value
+//
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name : String = "boolean_widget_format"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.widgetFormat,
+//                   this.textStyle,
+//                   this.trueText,
+//                   this.falseText)
+//
+//}
+//
+//
+///**
+// * True Text
+// */
+//data class TrueText(val value : String) : ToDocument, SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<TrueText>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<TrueText> = when (doc)
+//        {
+//            is DocText -> effValue(TrueText(doc.text))
+//            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocText(this.value)
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue(): SQLValue = SQLText({this.value})
+//
+//}
+//
+//
+///**
+// * False Text
+// */
+//data class FalseText(val value : String) : ToDocument, SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<FalseText>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<FalseText> = when (doc)
+//        {
+//            is DocText -> effValue(FalseText(doc.text))
+//            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocText(this.value)
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue(): SQLValue = SQLText({this.value})
+//
+//}
 
 
 //
@@ -187,7 +174,7 @@ data class FalseText(val value : String) : ToDocument, SQLSerializable, Serializ
 //    // PROPERTIES
 //    // ------------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // ------------------------------------------------------------------------------------------
 //
 //    private UUID                                id;
@@ -269,7 +256,7 @@ data class FalseText(val value : String) : ToDocument, SQLSerializable, Serializ
 //    // API
 //    // ------------------------------------------------------------------------------------------
 //
-//    // > Model
+//    // > ProdType
 //    // ------------------------------------------------------------------------------------------
 //
 //    // ** Id
@@ -458,7 +445,7 @@ data class FalseText(val value : String) : ToDocument, SQLSerializable, Serializ
 //
 //        // ** Label Style
 //        if (this.data().format().labelStyle() == null) {
-//            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+//            TextFormat defaultLabelStyle = new TextFormat(UUID.randomUUID(),
 //                                                        TextColor.THEME_DARK,
 //                                                        TextSize.SMALL,
 //                                                        Alignment.CENTER);

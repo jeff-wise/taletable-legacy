@@ -3,14 +3,14 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.functor.Prod
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Spacing
-import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.style.TextFormat
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -62,94 +62,101 @@ data class ExpanderLabel(val value : String) : ToDocument, SQLSerializable, Seri
 /**
  * Button Widget Format
  */
-data class ExpanderWidgetFormat(override val id : UUID,
-                                val widgetFormat : Comp<WidgetFormat>,
-                                val nameStyleClosed : Func<TextStyle>,
-                                val nameStyleOpen : Func<TextStyle>,
-                                val headerPadding : Func<Spacing>) : ToDocument, Model
-{
+//data class ExpanderWidgetFormat(override val id : UUID,
+//                                val widgetFormat : Prod<WidgetFormat>,
+//                                val nameStyleClosed : Val<TextFormat>,
+//                                val nameStyleOpen : Val<TextFormat>,
+//                                val headerPadding : Val<Spacing>) : ToDocument, ProdType
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // INIT
+//    // -----------------------------------------------------------------------------------------
+//
+//    init
+//    {
+//        this.widgetFormat.name      = "widget_format"
+//        this.nameStyleClosed.name   = "name_style_closed"
+//        this.nameStyleOpen.name     = "name_style_open"
+//        this.headerPadding.name     = "header_padding"
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<ExpanderWidgetFormat>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<ExpanderWidgetFormat> = when (doc)
+//        {
+//            is DocDict -> effApply(::ExpanderWidgetFormat,
+//                                   // ProdType Id
+//                                   effValue(UUID.randomUUID()),
+//                                   // Widget Format
+//                                   doc.at("widget_format") ap {
+//                                       effApply(::Prod, WidgetFormat.fromDocument(it))
+//                                   },
+//                                   // Name Style Closed
+//                                   doc.at("name_style_closed") ap {
+//                                       effApply(::Prod, TextFormat.fromDocument(it))
+//                                   },
+//                                   // Name Style Open
+//                                   doc.at("name_style_open") ap {
+//                                       effApply(::Prod, TextFormat.fromDocument(it))
+//                                   },
+//                                   // Header Padding
+//                                   doc.at("header_padding") ap {
+//                                       effApply(::Prod, Spacing.fromDocument(it))
+//                                    })
+//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocDict(mapOf(
+//        "widget_format" to this.widgetFormat().toDocument(),
+//        "name_style_closed" to this.nameStyleClosed().toDocument(),
+//        "name_style_open" to this.nameStyleOpen().toDocument(),
+//        "header_padding" to this.headerPadding().toDocument()
+//    ))
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // GETTERS
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+//
+//    fun nameStyleClosed() : TextFormat = this.nameStyleClosed.value
+//
+//    fun nameStyleOpen() : TextFormat = this.nameStyleOpen.value
+//
+//    fun headerPadding() : Spacing = this.headerPadding.value
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//    override val name : String = "expander_widget_format"
+//
+//    override val prodTypeObject = this
+//
+//    override fun persistentFunctors() : List<Val<*>> =
+//            listOf(this.widgetFormat,
+//                   this.nameStyleOpen,
+//                   this.nameStyleClosed,
+//                   this.headerPadding)
+//
+//}
 
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name      = "widget_format"
-        this.nameStyleClosed.name   = "name_style_closed"
-        this.nameStyleOpen.name     = "name_style_open"
-        this.headerPadding.name     = "header_padding"
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ExpanderWidgetFormat>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ExpanderWidgetFormat> = when (doc)
-        {
-            is DocDict -> effApply(::ExpanderWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   },
-                                   // Name Style Closed
-                                   doc.at("name_style_closed") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
-                                   // Name Style Open
-                                   doc.at("name_style_open") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
-                                   // Header Padding
-                                   doc.at("header_padding") ap {
-                                       effApply(::Comp, Spacing.fromDocument(it))
-                                    })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "name_style_closed" to this.nameStyleClosed().toDocument(),
-        "name_style_open" to this.nameStyleOpen().toDocument(),
-        "header_padding" to this.headerPadding().toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-
-    fun nameStyleClosed() : TextStyle = this.nameStyleClosed.value
-
-    fun nameStyleOpen() : TextStyle = this.nameStyleOpen.value
-
-    fun headerPadding() : Spacing = this.headerPadding.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-    override val name : String = "expander_widget_format"
-
-    override val modelObject = this
-
-}
 
 
 

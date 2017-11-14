@@ -177,8 +177,8 @@ class GameRecyclerViewAdapter(val games : List<Game>,
             activity.startActivity(intent)
         })
 
-        viewHolder.setNameText(game.description().gameNameString())
-        viewHolder.setSummaryText(game.description().summaryString())
+        viewHolder.setNameText(game.gameName().value)
+        viewHolder.setSummaryText(game.gameName().value)
     }
 
 
@@ -275,10 +275,7 @@ object OpenGameSummaryView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(1f),
-                                          TopRightCornerRadius(1f),
-                                          BottomRightCornerRadius(1f),
-                                          BottomLeftCornerRadius(1f))
+        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.margin.topDp     = 6f
 

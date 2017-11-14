@@ -26,7 +26,7 @@ interface State
  * Game data for a sheet.
  */
 class SheetState(val sheetContext : SheetContext,
-                 mechanics : Set<Mechanic>) : State, MechanicStateMachine
+                 mechanics : List<Mechanic>) : State, MechanicStateMachine
 {
 
     // -----------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ class SheetState(val sheetContext : SheetContext,
     {
         // TODO add log event for if variable with name already exist
         // TODO make sure variable does not depend on itself.
-        val variableId = variable.variableId.value
+        val variableId = variable.variableId()
 
         if (this.variableById.containsKey(variableId))
             return
@@ -106,7 +106,7 @@ class SheetState(val sheetContext : SheetContext,
         // -------------------------------------------------------------------------------------
 
         activeVariableIdTrie.put(variableId.toString(), variable)
-        activeVariableLabelTrie.put(variable.labelString(), variable)
+        activeVariableLabelTrie.put(variable.label().value, variable)
 
         // (3) Index the variable by tag
         // -------------------------------------------------------------------------------------
@@ -195,7 +195,7 @@ class SheetState(val sheetContext : SheetContext,
         // -------------------------------------------------------------------------------------
 
         activeVariableIdTrie.remove(variableId.toString())
-        activeVariableLabelTrie.remove(variable!!.labelString())
+        activeVariableLabelTrie.remove(variable!!.label().value)
 
         // (4) Un-index tags
         // -------------------------------------------------------------------------------------
@@ -295,7 +295,7 @@ class SheetState(val sheetContext : SheetContext,
         // (1) Update listeners of variable id
         // -------------------------------------------------------------------------------------
 
-        val variableId = variable.variableId.value
+        val variableId = variable.variableId()
         if (listenersById.containsKey(variableId))
         {
             for (listener in listenersById[variableId]!!)
@@ -344,7 +344,7 @@ class SheetState(val sheetContext : SheetContext,
         // (1) Update listeners of variable id
         // -------------------------------------------------------------------------------------
 
-        val variableId = variable.variableId.value
+        val variableId = variable.variableId()
         if (listenersById.containsKey(variableId))
         {
             Log.d("***SHEETSTATE", "update listeners for: ${variable.variableId()}")

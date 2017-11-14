@@ -2,9 +2,9 @@
 package com.kispoko.tome.model.game
 
 
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -16,7 +16,7 @@ import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
-
+import kotlin.text.Typography.section
 
 
 // ---------------------------------------------------------------------------------------------
@@ -27,23 +27,11 @@ import java.util.*
  * Rulebook
  */
 data class Rulebook(override val id : UUID,
-                    val title : Prim<RulebookTitle>,
-                    val abstract : Prim<RulebookAbstract>,
-                    val chapters : Coll<RulebookChapter>)
-                     : ToDocument, Model, Serializable
+                    val title : RulebookTitle,
+                    val abstract : RulebookAbstract,
+                    val chapters : MutableList<RulebookChapter>)
+                     : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.title.name    = "title"
-        this.abstract.name = "abstract"
-        this.chapters.name = "chapters"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // INDEXES
@@ -60,11 +48,11 @@ data class Rulebook(override val id : UUID,
 
     constructor(title : RulebookTitle,
                 abstract : RulebookAbstract,
-                chapters : MutableList<RulebookChapter>)
+                chapters : List<RulebookChapter>)
         : this(UUID.randomUUID(),
-               Prim(title),
-               Prim(abstract),
-               Coll(chapters))
+               title,
+               abstract,
+               chapters.toMutableList())
 
 
     companion object : Factory<Rulebook>
@@ -73,15 +61,15 @@ data class Rulebook(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply(::Rulebook,
-                         // Title
-                         doc.at("title") apply { RulebookTitle.fromDocument(it) },
-                         // Abstract
-                         doc.at("abstract") apply { RulebookAbstract.fromDocument(it) },
-                         // Chapters
-                         doc.list("chapters") apply {
-                             it.mapMut { RulebookChapter.fromDocument(it) }
-                         })
+                apply(::Rulebook,
+                      // Title
+                      doc.at("title") apply { RulebookTitle.fromDocument(it) },
+                      // Abstract
+                      doc.at("abstract") apply { RulebookAbstract.fromDocument(it) },
+                      // Chapters
+                      doc.list("chapters") apply {
+                          it.mapMut { RulebookChapter.fromDocument(it) }
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -103,11 +91,11 @@ data class Rulebook(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun title() : RulebookTitle = this.title.value
+    fun title() : RulebookTitle = this.title
 
-    fun abstract() : RulebookAbstract = this.abstract.value
+    fun abstract() : RulebookAbstract = this.abstract
 
-    fun chapters() : List<RulebookChapter> = this.chapters.value
+    fun chapters() : List<RulebookChapter> = this.chapters
 
 
     // -----------------------------------------------------------------------------------------
@@ -118,16 +106,29 @@ data class Rulebook(override val id : UUID,
     {
         val chapter = this.chapterById[rulebookReference.chapterId()]
 
-        val sectionId = rulebookReference.sectionId()
-        if (chapter != null && sectionId != null)
+        // TODO use as maybe refactoring example
+        if (chapter != null)
         {
-            val section = chapter.sectionWithId(sectionId)
-            val subsectionId = rulebookReference.subsectionId()
-            if (section != null && subsectionId != null)
+            val sectionId = rulebookReference.sectionId()
+            when (sectionId)
             {
-                val subsection = section.subsectionWithId(subsectionId)
-                if (subsection != null)
-                    return subsection
+                is Just ->
+                {
+                    val section = chapter.sectionWithId(sectionId.value)
+                    if (section != null)
+                    {
+                        val subsectionId = rulebookReference.subsectionId()
+                        when (subsectionId)
+                        {
+                            is Just ->
+                            {
+                                val subsection = section.subsectionWithId(subsectionId.value)
+                                if (subsection != null)
+                                    return subsection
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -139,27 +140,37 @@ data class Rulebook(override val id : UUID,
     {
         val chapter = this.chapterById[rulebookReference.chapterId()]
 
-        val sectionId = rulebookReference.sectionId()
-        if (chapter != null && sectionId != null)
+        if (chapter != null)
         {
-            val section = chapter.sectionWithId(sectionId)
-            val subsectionId = rulebookReference.subsectionId()
-            if (section != null && subsectionId != null)
+            val sectionId = rulebookReference.sectionId()
+            when (sectionId)
             {
-                val subsection = section.subsectionWithId(subsectionId)
-                if (subsection != null)
-                    return RulebookReferencePath(chapter.title(),
-                                                 Just(section.title()),
-                                                 Just(subsection.title()))
+                is Just ->
+                {
+                    val section = chapter.sectionWithId(sectionId.value)
+                    if (section != null)
+                    {
+                        val subsectionId = rulebookReference.subsectionId()
+                        when (subsectionId)
+                        {
+                            is Just ->
+                            {
+                                val subsection = section.subsectionWithId(subsectionId.value)
+                                if (subsection != null)
+                                    return RulebookReferencePath(chapter.title(),
+                                            Just(section.title()),
+                                            Just(subsection.title()))
+                            }
+                            else ->{
+                                return RulebookReferencePath(chapter.title(), Just(section.title()), Nothing())
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    return RulebookReferencePath(chapter.title(), Nothing(), Nothing())
+                }
             }
-            else if (section != null)
-            {
-                return RulebookReferencePath(chapter.title(), Just(section.title()), Nothing())
-            }
-        }
-        else if (chapter != null)
-        {
-            return RulebookReferencePath(chapter.title(), Nothing(), Nothing())
         }
 
         return null
@@ -172,9 +183,11 @@ data class Rulebook(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "game"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_Rulebook = dbRulebook(this.title, this.abstract, this.chapters)
 
 }
 
@@ -259,23 +272,11 @@ data class RulebookAbstract(val value : String) : ToDocument, SQLSerializable, S
  * Rulebook Chapter
  */
 data class RulebookChapter(override val id : UUID,
-                           val chapterId : Prim<RulebookChapterId>,
-                           val title : Prim<RulebookChapterTitle>,
-                           val sections : Coll<RulebookSection>)
-                            : ToDocument, Model, Serializable
+                           val chapterId : RulebookChapterId,
+                           val title : RulebookChapterTitle,
+                           val sections : MutableList<RulebookSection>)
+                            : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.chapterId.name = "chapter_id"
-        this.title.name     = "title"
-        this.sections.name  = "sections"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // INDEXES
@@ -292,28 +293,28 @@ data class RulebookChapter(override val id : UUID,
 
     constructor(chapterId : RulebookChapterId,
                 title : RulebookChapterTitle,
-                sections : MutableList<RulebookSection>)
+                sections : List<RulebookSection>)
         : this(UUID.randomUUID(),
-               Prim(chapterId),
-               Prim(title),
-               Coll(sections))
+               chapterId,
+               title,
+               sections.toMutableList())
 
 
     companion object : Factory<RulebookChapter>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookChapter> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RulebookChapter> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::RulebookChapter,
-                         // Chapter Id
-                         doc.at("id") apply { RulebookChapterId.fromDocument(it) },
-                         // Title
-                         doc.at("title") apply { RulebookChapterTitle.fromDocument(it) },
-                         // Sections
-                         doc.list("sections") apply {
-                             it.mapMut { RulebookSection.fromDocument(it) }
-                         })
+                apply(::RulebookChapter,
+                      // Chapter Id
+                      doc.at("id") apply { RulebookChapterId.fromDocument(it) },
+                      // Title
+                      doc.at("title") apply { RulebookChapterTitle.fromDocument(it) },
+                      // Sections
+                      doc.list("sections") apply {
+                          it.map { RulebookSection.fromDocument(it) }
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -335,11 +336,13 @@ data class RulebookChapter(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun chapterId() : RulebookChapterId = this.chapterId.value
+    fun chapterId() : RulebookChapterId = this.chapterId
 
-    fun title() : RulebookChapterTitle = this.title.value
 
-    fun sections() : List<RulebookSection> = this.sections.value
+    fun title() : RulebookChapterTitle = this.title
+
+
+    fun sections() : List<RulebookSection> = this.sections
 
 
     // -----------------------------------------------------------------------------------------
@@ -356,9 +359,12 @@ data class RulebookChapter(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "rulebook_section"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_RulebookChapter =
+            dbRulebookChapter(this.chapterId, this.title, this.sections)
 
 }
 
@@ -443,25 +449,12 @@ data class RulebookChapterTitle(val value : String) : ToDocument, SQLSerializabl
  * Rulebook Section
  */
 data class RulebookSection(override val id : UUID,
-                           val sectionId : Prim<RulebookSectionId>,
-                           val title : Prim<RulebookSectionTitle>,
-                           val body : Prim<RulebookSectionBody>,
-                           val subsections : Coll<RulebookSubsection>)
-                            : ToDocument, Model, Serializable
+                           val sectionId : RulebookSectionId,
+                           val title : RulebookSectionTitle,
+                           val body : RulebookSectionBody,
+                           val subsections : MutableList<RulebookSubsection>)
+                            : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.sectionId.name    = "section_id"
-        this.title.name        = "title"
-        this.body.name         = "body"
-        this.subsections.name  = "subsections"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // INDEXES
@@ -479,31 +472,31 @@ data class RulebookSection(override val id : UUID,
     constructor(sectionId : RulebookSectionId,
                 title : RulebookSectionTitle,
                 body : RulebookSectionBody,
-                subsections : MutableList<RulebookSubsection>)
+                subsections : List<RulebookSubsection>)
         : this(UUID.randomUUID(),
-               Prim(sectionId),
-               Prim(title),
-               Prim(body),
-               Coll(subsections))
+               sectionId,
+               title,
+               body,
+               subsections.toMutableList())
 
 
     companion object : Factory<RulebookSection>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSection> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RulebookSection> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::RulebookSection,
-                         // Section Id
-                         doc.at("id") apply { RulebookSectionId.fromDocument(it) },
-                         // Title
-                         doc.at("title") apply { RulebookSectionTitle.fromDocument(it) },
-                         // Body
-                         doc.at("body") apply { RulebookSectionBody.fromDocument(it) },
-                         // Subsections
-                         doc.list("subsections") apply {
-                             it.mapMut { RulebookSubsection.fromDocument(it) }
-                         })
+                apply(::RulebookSection,
+                      // Section Id
+                      doc.at("id") apply { RulebookSectionId.fromDocument(it) },
+                      // Title
+                      doc.at("title") apply { RulebookSectionTitle.fromDocument(it) },
+                      // Body
+                      doc.at("body") apply { RulebookSectionBody.fromDocument(it) },
+                      // Subsections
+                      doc.list("subsections") apply {
+                          it.map { RulebookSubsection.fromDocument(it) }
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -526,13 +519,16 @@ data class RulebookSection(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun sectionId() : RulebookSectionId = this.sectionId.value
+    fun sectionId() : RulebookSectionId = this.sectionId
 
-    fun title() : RulebookSectionTitle = this.title.value
 
-    fun body() : RulebookSectionBody = this.body.value
+    fun title() : RulebookSectionTitle = this.title
 
-    fun subsections() : List<RulebookSubsection> = this.subsections.value
+
+    fun body() : RulebookSectionBody = this.body
+
+
+    fun subsections() : List<RulebookSubsection> = this.subsections
 
 
     // -----------------------------------------------------------------------------------------
@@ -549,9 +545,12 @@ data class RulebookSection(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "rulebook_section"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_RulebookSection =
+            dbRulebookSection(this.sectionId, this.title, this.body, this.subsections)
 
 }
 
@@ -672,23 +671,11 @@ data class RulebookSectionBody(val value : String) : ToDocument, SQLSerializable
  * Rulebook Subection
  */
 data class RulebookSubsection(override val id : UUID,
-                              val subsectionId : Prim<RulebookSubsectionId>,
-                              val title : Prim<RulebookSubsectionTitle>,
-                              val body : Prim<RulebookSubsectionBody>)
-                                : ToDocument, Model, Serializable
+                              val subsectionId : RulebookSubsectionId,
+                              val title : RulebookSubsectionTitle,
+                              val body : RulebookSubsectionBody)
+                                : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.subsectionId.name = "subsection_id"
-        this.title.name        = "title"
-        this.body.name         = "body"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -698,24 +685,24 @@ data class RulebookSubsection(override val id : UUID,
                 title : RulebookSubsectionTitle,
                 body : RulebookSubsectionBody)
         : this(UUID.randomUUID(),
-               Prim(subsectionId),
-               Prim(title),
-               Prim(body))
+               subsectionId,
+               title,
+               body)
 
 
     companion object : Factory<RulebookSubsection>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookSubsection> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RulebookSubsection> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::RulebookSubsection,
-                         // Id
-                         doc.at("id") apply { RulebookSubsectionId.fromDocument(it) },
-                         // Title
-                         doc.at("title") apply { RulebookSubsectionTitle.fromDocument(it) },
-                         // Body
-                         doc.at("body") apply { RulebookSubsectionBody.fromDocument(it) })
+                apply(::RulebookSubsection,
+                      // Id
+                      doc.at("id") apply { RulebookSubsectionId.fromDocument(it) },
+                      // Title
+                      doc.at("title") apply { RulebookSubsectionTitle.fromDocument(it) },
+                      // Body
+                      doc.at("body") apply { RulebookSubsectionBody.fromDocument(it) })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -737,15 +724,19 @@ data class RulebookSubsection(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun subsectionId() : RulebookSubsectionId = this.subsectionId.value
+    fun subsectionId() : RulebookSubsectionId = this.subsectionId
 
-    fun title() : RulebookSubsectionTitle = this.title.value
 
-    fun titleString() : String = this.title.value.value
+    fun title() : RulebookSubsectionTitle = this.title
 
-    fun body() : RulebookSubsectionBody = this.body.value
 
-    fun bodyString() : String = this.body.value.value
+    fun titleString() : String = this.title.value
+
+
+    fun body() : RulebookSubsectionBody = this.body
+
+
+    fun bodyString() : String = this.body.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -754,9 +745,11 @@ data class RulebookSubsection(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "rulebook_subsection"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+    override fun row() : DB_RulebookSubsection =
+            dbRulebookSubection(this.subsectionId, this.title, this.body)
 
 }
 
@@ -877,29 +870,11 @@ data class RulebookSubsectionBody(val value : String) : ToDocument, SQLSerializa
  * Rulebook Reference
  */
 data class RulebookReference(override val id : UUID,
-                             val chapterId : Prim<RulebookChapterId>,
-                             val sectionId : Maybe<Prim<RulebookSectionId>>,
-                             val subsectionId : Maybe<Prim<RulebookSubsectionId>>)
-                              : ToDocument, Model, Serializable
+                             val chapterId : RulebookChapterId,
+                             val sectionId : Maybe<RulebookSectionId>,
+                             val subsectionId : Maybe<RulebookSubsectionId>)
+                              : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.chapterId.name    = "section_id"
-
-        when (this.sectionId) {
-            is Just -> this.sectionId.value.name = "section_id"
-        }
-
-        when (this.subsectionId) {
-            is Just -> this.subsectionId.value.name = "subsection_id"
-        }
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -909,14 +884,14 @@ data class RulebookReference(override val id : UUID,
                 sectionId : Maybe<RulebookSectionId>,
                 subsectionId : Maybe<RulebookSubsectionId>)
         : this(UUID.randomUUID(),
-               Prim(chapterId),
-               maybeLiftPrim(sectionId),
-               maybeLiftPrim(subsectionId))
+               chapterId,
+               sectionId,
+               subsectionId)
 
 
     companion object : Factory<RulebookReference>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookReference> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RulebookReference> = when (doc)
         {
             is DocDict ->
             {
@@ -945,9 +920,9 @@ data class RulebookReference(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "chapter_id" to this.chapterId().toDocument()
     ))
-    .maybeMerge(this.maybeSectionId().apply {
+    .maybeMerge(this.sectionId.apply {
         Just(Pair("section_id", it.toDocument() as SchemaDoc)) })
-    .maybeMerge(this.maybeSubsectionId().apply {
+    .maybeMerge(this.subsectionId.apply {
         Just(Pair("subsection_id", it.toDocument() as SchemaDoc)) })
 
 
@@ -955,15 +930,13 @@ data class RulebookReference(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun chapterId() : RulebookChapterId = this.chapterId.value
+    fun chapterId() : RulebookChapterId = this.chapterId
 
-    fun sectionId() : RulebookSectionId? = getMaybePrim(this.sectionId)
 
-    fun maybeSectionId() : Maybe<RulebookSectionId> = _getMaybePrim(this.sectionId)
+    fun sectionId() : Maybe<RulebookSectionId> = this.sectionId
 
-    fun subsectionId() : RulebookSubsectionId? = getMaybePrim(this.subsectionId)
 
-    fun maybeSubsectionId() : Maybe<RulebookSubsectionId> = _getMaybePrim(this.subsectionId)
+    fun subsectionId() : Maybe<RulebookSubsectionId> = this.subsectionId
 
 
     // -----------------------------------------------------------------------------------------
@@ -972,9 +945,13 @@ data class RulebookReference(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "rulebook_reference"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_RulebookReference =
+            dbRulebookReference(this.chapterId, this.sectionId, this.subsectionId)
+
 
 }
 

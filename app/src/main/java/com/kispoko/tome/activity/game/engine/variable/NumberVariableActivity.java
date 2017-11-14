@@ -129,7 +129,7 @@ public class NumberVariableActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
 //        try {
-//            fields = Model.fields(this.numberVariable, this);
+//            fields = ProdType.fields(this.numberVariable, this);
 //        }
 //        catch (FunctorException exception) {
 //            ApplicationFailure.functor(exception);

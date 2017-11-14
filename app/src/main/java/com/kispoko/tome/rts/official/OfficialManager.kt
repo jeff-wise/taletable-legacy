@@ -97,7 +97,7 @@ object OfficialManager
             {
                 val campaign = campaignLoader.value
                 ApplicationLog.event(OfficialCampaignLoaded(campaign.campaignName()))
-                CampaignManager.addCampaign(campaign)
+                CampaignManager.addCampaignToSession(campaign, false)
             }
             is Err -> ApplicationLog.error(campaignLoader.error)
         }
@@ -118,8 +118,8 @@ object OfficialManager
             is Val ->
             {
                 val game = gameLoader.value
-                GameManager.addGame(game)
-                ApplicationLog.event(OfficialGameLoaded(game.description().gameNameString()))
+                GameManager.addGameToSession(game, false)
+                ApplicationLog.event(OfficialGameLoaded(game.gameName().value))
             }
             is Err -> ApplicationLog.error(gameLoader.error)
         }

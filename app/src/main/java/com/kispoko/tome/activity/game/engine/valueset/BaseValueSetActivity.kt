@@ -283,9 +283,7 @@ class ValueRecyclerViewAdapter(var values : List<Value>,
 
         viewHolder.setValueText(value.valueString())
 
-        val descriptionString = value.description()
-        if (descriptionString != null)
-            viewHolder.setDescriptionText(descriptionString)
+        viewHolder.setDescriptionText(value.description().value)
 
         viewHolder.setOnClick(View.OnClickListener {
             val intent = Intent(activity, ValueActivity::class.java)

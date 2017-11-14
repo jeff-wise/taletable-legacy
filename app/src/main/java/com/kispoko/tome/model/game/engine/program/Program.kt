@@ -2,13 +2,15 @@
 package com.kispoko.tome.model.game.engine.program
 
 
+import com.kispoko.tome.db.DB_Program
+import com.kispoko.tome.db.DB_ProgramTypeSignature
+import com.kispoko.tome.db.dbProgram
+import com.kispoko.tome.db.dbProgramTypeSignature
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.orm.sql.SQLInt
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.EngineValueType
 import effect.*
 import lulo.document.*
@@ -24,29 +26,14 @@ import java.util.*
  * Program
  */
 data class Program(override val id : UUID,
-                   val programId : Prim<ProgramId>,
-                   val label : Prim<ProgramLabel>,
-                   val description : Prim<ProgramDescription>,
-                   val typeSignature : Comp<ProgramTypeSignature>,
-                   val statements : Coll<Statement>,
-                   val resultBindingName : Prim<StatementBindingName>)
-                    : ToDocument, Model, Serializable
+                   val programId : ProgramId,
+                   val label : ProgramLabel,
+                   val description : ProgramDescription,
+                   val typeSignature : ProgramTypeSignature,
+                   val statements : MutableList<Statement>,
+                   val resultBindingName : StatementBindingName)
+                    : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.programId.name         = "program_id"
-        this.label.name             = "labelString"
-        this.description.name       = "description"
-        this.typeSignature.name     = "type_signature"
-        this.statements.name        = "statements"
-        this.resultBindingName.name     = "result_binding"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -56,37 +43,37 @@ data class Program(override val id : UUID,
                 label : ProgramLabel,
                 description : ProgramDescription,
                 typeSignature : ProgramTypeSignature,
-                statements : MutableList<Statement>,
-                resultBindingName: StatementBindingName)
+                statements : List<Statement>,
+                resultBindingName : StatementBindingName)
         : this(UUID.randomUUID(),
-               Prim(programId),
-               Prim(label),
-               Prim(description),
-               Comp(typeSignature),
-               Coll(statements),
-               Prim(resultBindingName))
+               programId,
+               label,
+               description,
+               typeSignature,
+               statements.toMutableList(),
+               resultBindingName)
 
 
     companion object : Factory<Program>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Program> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Program> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::Program,
-                         // Program Id
-                         doc.at("program_id") ap { ProgramId.fromDocument(it) },
-                         // Label
-                         doc.at("label") ap { ProgramLabel.fromDocument(it) },
-                         // Description
-                         doc.at("description") ap { ProgramDescription.fromDocument(it) },
-                         // Type Signature
-                         doc.at("type_signature") ap { ProgramTypeSignature.fromDocument(it) },
-                         // Statements
-                         split(doc.maybeList("statements"),
-                               effValue(mutableListOf()),
-                               { it.mapMut { Statement.fromDocument(it) } }),
-                         doc.at("result_binding_name") ap { StatementBindingName.fromDocument(it) })
+                apply(::Program,
+                      // Program Id
+                      doc.at("program_id") ap { ProgramId.fromDocument(it) },
+                      // Label
+                      doc.at("label") ap { ProgramLabel.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { ProgramDescription.fromDocument(it) },
+                      // Type Signature
+                      doc.at("type_signature") ap { ProgramTypeSignature.fromDocument(it) },
+                      // Statements
+                      split(doc.maybeList("statements"),
+                            effValue(listOf()),
+                            { it.map { Statement.fromDocument(it) } }),
+                      doc.at("result_binding_name") ap { StatementBindingName.fromDocument(it) })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -111,23 +98,31 @@ data class Program(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun programId() : ProgramId = this.programId.value
+    fun programId() : ProgramId = this.programId
 
-    fun label() : ProgramLabel = this.label.value
 
-    fun labelString() : String = this.label.value.value
+    fun label() : ProgramLabel = this.label
 
-    fun description() : ProgramDescription = this.description.value
 
-    fun descriptionString() : String = this.description.value.value
+    fun labelString() : String = this.label.value
 
-    fun typeSignature() : ProgramTypeSignature = this.typeSignature.value
 
-    fun statements() : List<Statement> = this.statements.list
+    fun description() : ProgramDescription = this.description
 
-    fun resultBindingName() : StatementBindingName = this.resultBindingName.value
 
-    fun resultBindingNameString() : String = this.resultBindingName.value.value
+    fun descriptionString() : String = this.description.value
+
+
+    fun typeSignature() : ProgramTypeSignature = this.typeSignature
+
+
+    fun statements() : List<Statement> = this.statements
+
+
+    fun resultBindingName() : StatementBindingName = this.resultBindingName
+
+
+    fun resultBindingNameString() : String = this.resultBindingName.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -136,10 +131,16 @@ data class Program(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "program"
 
-    override val modelObject = this
+    override val prodTypeObject = this
 
+
+    override fun row() : DB_Program = dbProgram(this.programId,
+                                                this.label,
+                                                this.description,
+                                                this.typeSignature,
+                                                this.statements,
+                                                this.resultBindingName)
 }
 
 
@@ -147,42 +148,14 @@ data class Program(override val id : UUID,
  * Program Type Signature
  */
 data class ProgramTypeSignature(override val id : UUID,
-                                val parameter1Type : Prim<EngineValueType>,
-                                val parameter2Type : Maybe<Prim<EngineValueType>>,
-                                val parameter3Type : Maybe<Prim<EngineValueType>>,
-                                val parameter4Type : Maybe<Prim<EngineValueType>>,
-                                val parameter5Type : Maybe<Prim<EngineValueType>>,
-                                val resultType : Prim<EngineValueType>)
-                                : ToDocument, Model, Serializable
+                                val parameter1Type : EngineValueType,
+                                val parameter2Type : Maybe<EngineValueType>,
+                                val parameter3Type : Maybe<EngineValueType>,
+                                val parameter4Type : Maybe<EngineValueType>,
+                                val parameter5Type : Maybe<EngineValueType>,
+                                val resultType : EngineValueType)
+                                : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INITIALIZATION
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.parameter1Type.name = "parameter1_type"
-
-        when (this.parameter2Type) {
-            is Just -> this.parameter2Type.value.name = "parameter2_type"
-        }
-
-        when (this.parameter3Type) {
-            is Just -> this.parameter3Type.value.name = "parameter3_type"
-        }
-
-        when (this.parameter4Type) {
-            is Just -> this.parameter4Type.value.name = "parameter4_type"
-        }
-
-        when (this.parameter5Type) {
-            is Just -> this.parameter5Type.value.name = "parameter5_type"
-        }
-
-        this.resultType.name                          = "result_type"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -195,42 +168,42 @@ data class ProgramTypeSignature(override val id : UUID,
                 parameter5Type : Maybe<EngineValueType>,
                 resultType : EngineValueType)
         : this(UUID.randomUUID(),
-               Prim(parameter1Type),
-               maybeLiftPrim(parameter2Type),
-               maybeLiftPrim(parameter3Type),
-               maybeLiftPrim(parameter4Type),
-               maybeLiftPrim(parameter5Type),
-               Prim(resultType))
+               parameter1Type,
+               parameter2Type,
+               parameter3Type,
+               parameter4Type,
+               parameter5Type,
+               resultType)
 
 
     companion object : Factory<ProgramTypeSignature>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramTypeSignature> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramTypeSignature> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::ProgramTypeSignature,
-                         // Parameter 1 Type
-                         doc.at("parameter1_type") ap { EngineValueType.fromDocument(it) },
-                         // Parameter 2 Type
-                         split(doc.maybeAt("parameter2_type"),
-                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
-                         // Parameter 3 Type
-                         split(doc.maybeAt("parameter3_type"),
-                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
-                         // Parameter 4 Type
-                         split(doc.maybeAt("parameter4_type"),
-                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
-                         // Parameter 5 Type
-                         split(doc.maybeAt("parameter5_type"),
-                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
-                         // Result Type
-                         doc.at("result_type") ap { EngineValueType.fromDocument(it) }
-                         )
+                apply(::ProgramTypeSignature,
+                      // Parameter 1 Type
+                      doc.at("parameter1_type") ap { EngineValueType.fromDocument(it) },
+                      // Parameter 2 Type
+                      split(doc.maybeAt("parameter2_type"),
+                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                      // Parameter 3 Type
+                      split(doc.maybeAt("parameter3_type"),
+                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                      // Parameter 4 Type
+                      split(doc.maybeAt("parameter4_type"),
+                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                      // Parameter 5 Type
+                      split(doc.maybeAt("parameter5_type"),
+                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                      // Result Type
+                      doc.at("result_type") ap { EngineValueType.fromDocument(it) }
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -260,17 +233,22 @@ data class ProgramTypeSignature(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun parameter1Type() : EngineValueType = this.parameter1Type.value
+    fun parameter1Type() : EngineValueType = this.parameter1Type
 
-    fun parameter2Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter2Type)
 
-    fun parameter3Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter3Type)
+    fun parameter2Type() : Maybe<EngineValueType> = this.parameter2Type
 
-    fun parameter4Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter4Type)
 
-    fun parameter5Type() : Maybe<EngineValueType> = _getMaybePrim(this.parameter5Type)
+    fun parameter3Type() : Maybe<EngineValueType> = this.parameter3Type
 
-    fun resultType() : EngineValueType = this.resultType.value
+
+    fun parameter4Type() : Maybe<EngineValueType> = this.parameter4Type
+
+
+    fun parameter5Type() : Maybe<EngineValueType> = this.parameter5Type
+
+
+    fun resultType() : EngineValueType = this.resultType
 
 
     // -----------------------------------------------------------------------------------------
@@ -279,9 +257,17 @@ data class ProgramTypeSignature(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name = "program_type_signature"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_ProgramTypeSignature =
+            dbProgramTypeSignature(this.parameter1Type,
+                                   this.parameter2Type,
+                                   this.parameter3Type,
+                                   this.parameter4Type,
+                                   this.parameter5Type,
+                                   this.resultType)
 
 }
 
@@ -426,7 +412,7 @@ data class ProgramParameterIndex(val value : Int) : ToDocument, SQLSerializable,
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+    override fun asSQLValue() = this.value.asSQLValue()
 
 }
 

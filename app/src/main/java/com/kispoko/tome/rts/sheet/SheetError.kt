@@ -34,6 +34,30 @@ class SheetDoesNotExist(val sheetId : SheetId, val context : String = "Unknown")
 }
 
 
+class SessionDoesNotHaveSheet(val sheetId : SheetId,
+                              val context : String = "Unknown") : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            Session Does Not Have Sheet
+                Sheet Id: $sheetId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class NoActiveSheetInSession(val context : String = "Unknown") : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            |Session Does Not Have Active Sheet
+            """.trimMargin()
+
+    override fun logMessage(): String = userMessage()
+}
+
+
 class CampaignDoesNotExist(val sheetId : SheetId, val campaignId : CampaignId) : SheetError()
 {
     override fun debugMessage(): String =

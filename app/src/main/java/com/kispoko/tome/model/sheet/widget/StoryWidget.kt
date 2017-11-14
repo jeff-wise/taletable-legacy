@@ -23,10 +23,8 @@ import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
@@ -39,7 +37,9 @@ import lulo.value.UnexpectedType
 import java.io.Serializable
 import java.util.*
 import com.kispoko.tome.activity.sheet.dialog.*
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.functor.*
+import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
 
@@ -49,71 +49,50 @@ import com.kispoko.tome.model.game.engine.variable.NumberVariable
  * Story Widget Format
  */
 data class StoryWidgetFormat(override val id : UUID,
-                             val widgetFormat : Comp<WidgetFormat>,
-                             val verticalAlignment : Prim<VerticalAlignment>,
-                             val lineSpacing : Prim<LineSpacing>)
-                              : ToDocument, Model, Serializable
+                             val widgetFormat : WidgetFormat,
+                             val lineSpacing : LineSpacing)
+                              : ToDocument, ProdType, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.widgetFormat.name      = "widget_format"
-        this.verticalAlignment.name = "vertical_alignment"
-        this.lineSpacing.name       = "line_spacing"
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                verticalAlignment : VerticalAlignment,
                 lineSpacing : LineSpacing)
         : this(UUID.randomUUID(),
-               Comp(widgetFormat),
-               Prim(verticalAlignment),
-               Prim(lineSpacing))
+               widgetFormat,
+               lineSpacing)
 
 
     companion object : Factory<StoryWidgetFormat>
     {
 
-        private val defaultWidgetFormat         = WidgetFormat.default()
-        private val defaultVerticalAlignment    = VerticalAlignment.Bottom
-        private val defaultLineSpacing          = LineSpacing.default()
+        private fun defaultWidgetFormat()      = WidgetFormat.default()
+        private fun defaultLineSpacing()       = LineSpacing.default()
 
 
-        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryWidgetFormat> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<StoryWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
-                effApply(::StoryWidgetFormat,
-                         // Widget Format
-                         split(doc.maybeAt("widget_format"),
-                               effValue(defaultWidgetFormat),
-                               { WidgetFormat.fromDocument(it) }),
-                         // Vertical Alignment
-                         split(doc.maybeAt("vertical_alignment"),
-                               effValue<ValueError,VerticalAlignment>(defaultVerticalAlignment),
-                               { VerticalAlignment.fromDocument(it) }),
-                         // Line Spacing
-                         split(doc.maybeAt("line_spacing"),
-                               effValue(defaultLineSpacing),
-                               { LineSpacing.fromDocument(it) })
-                         )
+                apply(::StoryWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat()),
+                            { WidgetFormat.fromDocument(it) }),
+                      // Line Spacing
+                      split(doc.maybeAt("line_spacing"),
+                            effValue(defaultLineSpacing()),
+                            { LineSpacing.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = StoryWidgetFormat(defaultWidgetFormat,
-                                          defaultVerticalAlignment,
-                                          defaultLineSpacing)
+        fun default() = StoryWidgetFormat(defaultWidgetFormat(),
+                                          defaultLineSpacing())
 
     }
 
@@ -124,7 +103,6 @@ data class StoryWidgetFormat(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "widget_format" to this.widgetFormat().toDocument(),
-        "vertical_alignment" to this.verticalAlignment().toDocument(),
         "line_spacing" to this.lineSpacing().toDocument()
     ))
 
@@ -133,13 +111,13 @@ data class StoryWidgetFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
 
-    fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
 
-    fun lineSpacing() : LineSpacing = this.lineSpacing.value
+    fun lineSpacing() : LineSpacing = this.lineSpacing
 
-    fun lineSpacingFloat() : Float = this.lineSpacing.value.value
+
+    fun lineSpacingFloat() : Float = this.lineSpacing.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -148,15 +126,18 @@ data class StoryWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val name : String = "story_widget_format"
 
-    override val modelObject = this
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetStoryFormat =
+            dbWidgetStoryFormat(this.widgetFormat, this.lineSpacing)
 
 }
 
 
 @Suppress("UNCHECKED_CAST")
-sealed class StoryPart : ToDocument, Model, Serializable
+sealed class StoryPart : ToDocument, ProdType, Serializable
 {
 
     companion object : Factory<StoryPart>
@@ -169,10 +150,8 @@ sealed class StoryPart : ToDocument, Model, Serializable
                 "story_part_variable" -> StoryPartVariable.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_icon"     -> StoryPartIcon.fromDocument(doc) as ValueParser<StoryPart>
                 "story_part_action"   -> StoryPartAction.fromDocument(doc) as ValueParser<StoryPart>
-                else                  -> effError<ValueError,StoryPart>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                  -> effError(UnknownCase(doc.case(), doc.path))
             }
-
     }
 
 
@@ -185,7 +164,7 @@ sealed class StoryPart : ToDocument, Model, Serializable
         is StoryPartVariable -> {
             val variable = this.valueVariable(sheetContext)
             when (variable) {
-                is Val -> variable.value
+                is effect.Val -> variable.value
                 is Err -> {
                     ApplicationLog.error(variable.error)
                     null
@@ -205,22 +184,19 @@ sealed class StoryPart : ToDocument, Model, Serializable
  * Story Part Span
  */
 data class StoryPartSpan(override val id : UUID,
-                         val format : Comp<ElementFormat>,
-                         val textStyle : Comp<TextStyle>,
-                         val text : Prim<StoryPartText>) : StoryPart(), Serializable
+                         val textFormat : TextFormat,
+                         val text : StoryPartText) : StoryPart(), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : ElementFormat,
-                textStyle : TextStyle,
+    constructor(textFormat : TextFormat,
                 text : StoryPartText)
         : this(UUID.randomUUID(),
-               Comp(format),
-               Comp(textStyle),
-               Prim(text))
+               textFormat,
+               text)
 
 
     companion object : Factory<StoryPartSpan>
@@ -230,14 +206,10 @@ data class StoryPartSpan(override val id : UUID,
             is DocDict ->
             {
                 apply(::StoryPartSpan,
-                      // Element Format
-                      split(doc.maybeAt("format"),
-                            effValue(ElementFormat.default()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Text Style
-                      split(doc.maybeAt("text_style"),
-                            effValue(TextStyle.default()),
-                            { TextStyle.fromDocument(it) }),
+                      // Text Format
+                      split(doc.maybeAt("text_format"),
+                            effValue(TextFormat.default()),
+                            { TextFormat.fromDocument(it) }),
                       // Text
                       doc.at("text") ap { StoryPartText.fromDocument(it) }
                       )
@@ -252,8 +224,7 @@ data class StoryPartSpan(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "format" to this.format().toDocument(),
-        "text_style" to this.textStyle().toDocument(),
+        "text_format" to this.textFormat.toDocument(),
         "text" to this.text().toDocument()
     ))
 
@@ -262,13 +233,11 @@ data class StoryPartSpan(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun text() : StoryPartText = this.text.value
+    fun text() : StoryPartText = this.text
 
-    fun textString() : String = this.text.value.value
+    fun textString() : String = this.text.value
 
-    fun format() : ElementFormat = this.format.value
-
-    fun textStyle() : TextStyle = this.textStyle.value
+    fun textFormat() : TextFormat = this.textFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -277,15 +246,19 @@ data class StoryPartSpan(override val id : UUID,
 
     override fun wordCount() = this.textString().split(' ').size
 
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
-    override val modelObject = this
 
-    override val name = "story_part_span"
+    override val prodTypeObject : ProdType = this
+
+
+    override fun row() : DB_WidgetStoryPartSpan =
+            dbWidgetStoryPartSpan(this.textFormat, this.text)
 
 }
 
@@ -294,11 +267,9 @@ data class StoryPartSpan(override val id : UUID,
  * Story Part Variable
  */
 data class StoryPartVariable(override val id : UUID,
-                             val format : Comp<ElementFormat>,
-                             val textStyle : Comp<TextStyle>,
-                             val variableId : Prim<VariableId>,
-                             val numericEditorType : Maybe<Prim<NumericEditorType>>,
-                             val numberFormat : Prim<NumberFormat>)
+                             val textFormat : TextFormat,
+                             val variableId : VariableId,
+                             val numericEditorType : NumericEditorType)
                               : StoryPart(), Serializable
 {
 
@@ -313,17 +284,13 @@ data class StoryPartVariable(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : ElementFormat,
-                textStyle : TextStyle,
+    constructor(textFormat : TextFormat,
                 variableId : VariableId,
-                numericEditorType : Maybe<NumericEditorType>,
-                numberFormat : NumberFormat)
+                numericEditorType : NumericEditorType)
         : this(UUID.randomUUID(),
-               Comp(format),
-               Comp(textStyle),
-               Prim(variableId),
-               maybeLiftPrim(numericEditorType),
-               Prim(numberFormat))
+               textFormat,
+               variableId,
+               numericEditorType)
 
 
     companion object : Factory<StoryPartVariable>
@@ -333,24 +300,16 @@ data class StoryPartVariable(override val id : UUID,
             is DocDict ->
             {
                 apply(::StoryPartVariable,
-                      // Format
-                      split(doc.maybeAt("format"),
-                            effValue(ElementFormat.default()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Text Styel
-                      split(doc.maybeAt("text_style"),
-                             effValue(TextStyle.default()),
-                             { TextStyle.fromDocument(it) }),
+                      // Text Format
+                      split(doc.maybeAt("text_format"),
+                             effValue(TextFormat.default()),
+                             { TextFormat.fromDocument(it) }),
                       // Variable Id
                       doc.at("variable_id") ap { VariableId.fromDocument(it) },
                       // Numeric Editor Type
                       split(doc.maybeAt("numeric_editor_type"),
-                            effValue<ValueError,Maybe<NumericEditorType>>(Nothing()),
-                            { effApply(::Just, NumericEditorType.fromDocument(it)) }),
-                      // Number Format
-                      split(doc.maybeAt("number_format"),
-                            effValue<ValueError,NumberFormat>(NumberFormat.Normal),
-                            { NumberFormat.fromDocument(it) })
+                            effValue<ValueError,NumericEditorType>(NumericEditorType.Adder),
+                            { NumericEditorType.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -363,33 +322,28 @@ data class StoryPartVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "format" to this.format().toDocument(),
-        "text_style" to this.textStyle().toDocument(),
-        "variable_id" to this.variableId().toDocument()
+        "text_format" to this.textFormat.toDocument(),
+        "variable_id" to this.variableId.toDocument(),
+        "numeric_editor_type" to this.numericEditorType().toDocument()
     ))
-    .maybeMerge(this.numericEditorTypeMaybe().apply {
-        Just(Pair("numeric_editor_type", it.toDocument())) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun format() : ElementFormat = this.format.value
+    fun textFormat() : TextFormat = this.textFormat
 
-    fun textStyle() : TextStyle = this.textStyle.value
 
-    fun variableId() : VariableId = this.variableId.value
+    fun variableId() : VariableId = this.variableId
+
 
     fun valueVariable(sheetContext : SheetContext) : AppEff<Variable> =
         SheetManager.sheetState(sheetContext.sheetId)
                 .apply { it.variableWithId(this.variableId()) }
 
-    fun numericEditorTypeMaybe() : Maybe<NumericEditorType> = _getMaybePrim(this.numericEditorType)
 
-    fun numericEditorType() : NumericEditorType? = getMaybePrim(this.numericEditorType)
-
-    fun numberFormat() : NumberFormat = this.numberFormat.value
+    fun numericEditorType() : NumericEditorType = this.numericEditorType
 
 
     fun valueString(sheetContext : SheetContext) : String
@@ -397,7 +351,7 @@ data class StoryPartVariable(override val id : UUID,
         val str = this.variable(sheetContext)?.valueString(sheetContext)
         when (str)
         {
-            is Val -> return str.value
+            is effect.Val -> return str.value
             is Err -> {
                 ApplicationLog.error(str.error)
             }
@@ -420,9 +374,12 @@ data class StoryPartVariable(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val modelObject = this
 
-    override val name = "story_part_variable"
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetStoryPartVariable =
+            dbWidgetStoryPartVariable(this.textFormat, this.variableId, this.numericEditorType)
 
 }
 
@@ -431,8 +388,8 @@ data class StoryPartVariable(override val id : UUID,
  * Story Part Icon
  */
 data class StoryPartIcon(override val id : UUID,
-                         val icon : Prim<Icon>,
-                         val iconFormat : Comp<IconFormat>) : StoryPart(), Serializable
+                         val icon : Icon,
+                         val iconFormat : IconFormat) : StoryPart(), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -442,22 +399,22 @@ data class StoryPartIcon(override val id : UUID,
     constructor(icon : Icon,
                 format : IconFormat)
         : this(UUID.randomUUID(),
-               Prim(icon),
-               Comp(format))
+               icon,
+               format)
 
 
     companion object : Factory<StoryPartIcon>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartIcon> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<StoryPartIcon> = when (doc)
         {
-            is DocDict -> effApply(::StoryPartIcon,
-                                   // Icon
-                                   doc.at("icon") ap { Icon.fromDocument(it) },
-                                   // Format
-                                   split(doc.maybeAt("icon_format"),
-                                         effValue(IconFormat.default()),
-                                         { IconFormat.fromDocument(it) })
-                                   )
+            is DocDict -> apply(::StoryPartIcon,
+                                // Icon
+                                doc.at("icon") ap { Icon.fromDocument(it) },
+                                // Format
+                                split(doc.maybeAt("icon_format"),
+                                      effValue(IconFormat.default()),
+                                      { IconFormat.fromDocument(it) })
+                                )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -477,9 +434,9 @@ data class StoryPartIcon(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun icon() : Icon = this.icon.value
+    fun icon() : Icon = this.icon
 
-    fun iconFormat() : IconFormat = this.iconFormat.value
+    fun iconFormat() : IconFormat = this.iconFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -495,9 +452,12 @@ data class StoryPartIcon(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val modelObject = this
 
-    override val name = "story_part_variable"
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetStoryPartIcon =
+            dbWidgetStoryPartIcon(this.icon, this.iconFormat)
 
 }
 
@@ -506,13 +466,11 @@ data class StoryPartIcon(override val id : UUID,
  * Story Part Roll
  */
 data class StoryPartAction(override val id : UUID,
-                           val text : Prim<StoryPartText>,
-                           val rollSummationId : Maybe<Prim<SummationId>>,
-                           val procedureId : Maybe<Prim<ProcedureId>>,
-                           val format : Comp<ElementFormat>,
-                           val textStyle : Comp<TextStyle>,
-                           val iconFormat : Comp<IconFormat>,
-                           val showProcedureDialog : Prim<ShowProcedureDialog>)
+                           val text : StoryPartText,
+                           val action : Action,
+                           val textFormat : TextFormat,
+                           val iconFormat : IconFormat,
+                           val showProcedureDialog : ShowProcedureDialog)
                             : StoryPart(), Serializable
 {
 
@@ -521,47 +479,33 @@ data class StoryPartAction(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(text : StoryPartText,
-                rollSummationId : Maybe<SummationId>,
-                procedureId : Maybe<ProcedureId>,
-                format : ElementFormat,
-                textStyle : TextStyle,
+                action : Action,
+                textFormat : TextFormat,
                 iconFormat : IconFormat,
                 showProcedureDialog : ShowProcedureDialog)
         : this(UUID.randomUUID(),
-               Prim(text),
-               maybeLiftPrim(rollSummationId),
-               maybeLiftPrim(procedureId),
-               Comp(format),
-               Comp(textStyle),
-               Comp(iconFormat),
-               Prim(showProcedureDialog))
+               text,
+               action,
+               textFormat,
+               iconFormat,
+               showProcedureDialog)
 
 
     companion object : Factory<StoryPartAction>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartAction> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<StoryPartAction> = when (doc)
         {
             is DocDict ->
             {
                 apply(::StoryPartAction,
                       // Text
                       doc.at("text") ap { StoryPartText.fromDocument(it) },
-                      // Roll Summation Id
-                      split(doc.maybeAt("roll_summation_id"),
-                            effValue<ValueError,Maybe<SummationId>>(Nothing()),
-                            { effApply(::Just, SummationId.fromDocument(it)) }),
-                      // Procedure Id
-                      split(doc.maybeAt("procedure_id"),
-                            effValue<ValueError,Maybe<ProcedureId>>(Nothing()),
-                            { effApply(::Just, ProcedureId.fromDocument(it)) }),
-                      // Format
-                      split(doc.maybeAt("format"),
-                            effValue(ElementFormat.default()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Text Style
-                      split(doc.maybeAt("text_style"),
-                            effValue(TextStyle.default()),
-                            { TextStyle.fromDocument(it) }),
+                      // Action
+                      doc.at("action") ap { Action.fromDocument(it) },
+                      // Text Format
+                      split(doc.maybeAt("text_format"),
+                            effValue(TextFormat.default()),
+                            { TextFormat.fromDocument(it) }),
                       // Icon Format
                       split(doc.maybeAt("icon_format"),
                             effValue(IconFormat.default()),
@@ -582,41 +526,35 @@ data class StoryPartAction(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "text" to this.text().toDocument(),
-        "format" to this.format().toDocument(),
-        "text_style" to this.textStyle().toDocument(),
+        "text" to this.text.toDocument(),
+        "action" to this.action().toDocument(),
+        "text_format" to this.textFormat.toDocument(),
         "icon_format" to this.iconFormat().toDocument(),
         "show_procedure_dialog" to this.showProcedureDialog().toDocument()
         ))
-        .maybeMerge(this.rollSummationIdMaybe().apply {
-            Just(Pair("roll_summation_id", it.toDocument() as SchemaDoc)) })
-        .maybeMerge(this.procedureIdMaybe().apply {
-            Just(Pair("procedure_id", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun rollSummationIdMaybe() : Maybe<SummationId> = _getMaybePrim(this.rollSummationId)
 
-    fun rollSummationId() : SummationId? = getMaybePrim(this.rollSummationId)
+    fun text() : StoryPartText = this.text
 
-    fun procedureIdMaybe() : Maybe<ProcedureId> = _getMaybePrim(this.procedureId)
 
-    fun procedureId() : ProcedureId? = getMaybePrim(this.procedureId)
+    fun textString() : String = this.text.value
 
-    fun text() : StoryPartText = this.text.value
 
-    fun textString() : String = this.text.value.value
+    fun action() : Action = this.action
 
-    fun format() : ElementFormat = this.format.value
 
-    fun textStyle() : TextStyle = this.textStyle.value
+    fun textFormat() : TextFormat = this.textFormat
 
-    fun iconFormat() : IconFormat = this.iconFormat.value
 
-    fun showProcedureDialog() : ShowProcedureDialog = this.showProcedureDialog.value
+    fun iconFormat() : IconFormat = this.iconFormat
+
+
+    fun showProcedureDialog() : ShowProcedureDialog = this.showProcedureDialog
 
 
     // -----------------------------------------------------------------------------------------
@@ -632,9 +570,16 @@ data class StoryPartAction(override val id : UUID,
 
     override fun onLoad() { }
 
-    override val modelObject = this
 
-    override val name = "story_part_action"
+    override val prodTypeObject = this
+
+
+    override fun row() : DB_WidgetStoryPartAction =
+            dbWidgetStoryPartAction(this.text,
+                                    this.action,
+                                    this.textFormat,
+                                    this.iconFormat,
+                                    this.showProcedureDialog)
 
 }
 
@@ -816,14 +761,14 @@ object StoryWidgetView
         story.lineSpacingAdd    = 0f
         story.lineSpacingMult   = storyWidget.format().lineSpacingFloat()
 
-        story.gravity       = storyWidget.widgetFormat().alignment().gravityConstant()
-        story.layoutGravity = storyWidget.widgetFormat().alignment().gravityConstant()
+        story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
+        story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
 
-        when (storyWidget.format().verticalAlignment()) {
+        when (storyWidget.format().widgetFormat().elementFormat().verticalAlignment()) {
             is VerticalAlignment.Middle -> {
-                story.layoutGravity = storyWidget.widgetFormat().alignment().gravityConstant() or
+                story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant() or
                                         Gravity.CENTER_VERTICAL
-                story.gravity       = storyWidget.widgetFormat().alignment().gravityConstant() or
+                story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant() or
                                         Gravity.CENTER_VERTICAL
             }
         }
@@ -880,14 +825,14 @@ object StoryWidgetView
                     // TODO move this logic in variable
                     val text = when (valueVariableEff)
                     {
-                        is Val ->
+                        is effect.Val ->
                         {
                             val valueVar = valueVariableEff.value
                             when (valueVar)
                             {
                                 is NumberVariable -> {
                                     val number = valueVar.valueOrZero(sheetContext)
-                                    storyPart.numberFormat().formattedString(number)
+                                    storyPart.textFormat().numberFormat().formattedString(number)
                                 }
                                 else -> storyPart.valueString(SheetContext(sheetUIContext))
                             }
@@ -928,13 +873,13 @@ object StoryWidgetView
             {
                 is StoryPartSpan ->
                 {
-                    this.formatSpans(storyPart.textStyle(), sheetUIContext).forEach {
+                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
                 }
                 is StoryPartVariable ->
                 {
-                    this.formatSpans(storyPart.textStyle(), sheetUIContext).forEach {
+                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
 
@@ -1001,54 +946,56 @@ object StoryWidgetView
                     val imageSpan = CenteredImageSpan(vectorDrawable)
                     builder.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
 
-                    this.formatSpans(storyPart.textStyle(), sheetUIContext).forEach {
+                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
                         builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
 
-                    val procedureId = storyPart.procedureId()
-                    val summationId = storyPart.rollSummationId()
+                    val procedureId = storyPart.action().procedureId()
+                    val summationId = storyPart.action().rollSummationId()
                     Log.d("***STORYWIDGET", "here???")
-                    if (procedureId != null) {
-                        val clickSpan = object : ClickableSpan() {
-                            override fun onClick(view: View?) {
-                            }
+//                    if (procedureId != null) {
+//                        val clickSpan = object : ClickableSpan() {
+//                            override fun onClick(view: View?) {
+//                            }
+//
+//                            override fun updateDrawState(ds: TextPaint?) {
+//                            }
+//                        }
+//
+//                        builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+//                    }
+//                    else if (summationId != null)
+//                    {
 
-                            override fun updateDrawState(ds: TextPaint?) {
-                            }
-                        }
-
-                        builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
-                    else if (summationId != null)
+                    when (summationId)
                     {
-                        Log.d("***STORYWIDGET", "summation id is not null")
-
-                        val sheetContext = SheetContext(sheetUIContext)
-
-                        val diceRoll = SheetManager.summation(summationId, sheetContext)
-                                                    .apply { it.diceRoll(sheetContext) }
-
-                        when (diceRoll)
+                        is Just ->
                         {
-                            is Val ->
+                            val diceRoll = SheetManager.summation(summationId.value, sheetContext)
+                                                        .apply { it.diceRoll(sheetContext) }
+
+                            when (diceRoll)
                             {
-                                val sheetActivity = sheetUIContext.context as SheetActivity
-                                val clickSpan = object : ClickableSpan() {
-                                    override fun onClick(view: View?) {
-                                        val dialog = DiceRollDialog.newInstance(
-                                                                    diceRoll.value,
-                                                                    Nothing(),
-                                                                    SheetContext(sheetUIContext))
-                                        dialog.show(sheetActivity.supportFragmentManager, "")
+                                is effect.Val ->
+                                {
+                                    val sheetActivity = sheetUIContext.context as SheetActivity
+                                    val clickSpan = object : ClickableSpan() {
+                                        override fun onClick(view: View?) {
+                                            val dialog = DiceRollDialog.newInstance(
+                                                                        diceRoll.value,
+                                                                        Nothing(),
+                                                                        SheetContext(sheetUIContext))
+                                            dialog.show(sheetActivity.supportFragmentManager, "")
+                                        }
+
+                                        override fun updateDrawState(ds: TextPaint?) {
+                                        }
                                     }
 
-                                    override fun updateDrawState(ds: TextPaint?) {
-                                    }
+                                    builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                                 }
-
-                                builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                                is Err -> ApplicationLog.error(diceRoll.error)
                             }
-                            is Err -> ApplicationLog.error(diceRoll.error)
                         }
                     }
 
@@ -1060,7 +1007,7 @@ object StoryWidgetView
     }
 
 
-    fun formatSpans(textStyle : TextStyle, sheetUIContext : SheetUIContext) : List<Any>
+    fun formatSpans(textStyle : TextFormat, sheetUIContext : SheetUIContext) : List<Any>
     {
         val sizePx = Util.spToPx(textStyle.sizeSp(), sheetUIContext.context)
         val sizeSpan = AbsoluteSizeSpan(sizePx)
@@ -1101,14 +1048,14 @@ object StoryWidgetView
                     // TODO move this logic in variable
                     val text = when (valueVariableEff)
                     {
-                        is Val ->
+                        is effect.Val ->
                         {
                             val valueVar = valueVariableEff.value
                             when (valueVar)
                             {
                                 is NumberVariable -> {
                                     val number = valueVar.valueOrZero(sheetContext)
-                                    storyPart.numberFormat().formattedString(number)
+                                    storyPart.textFormat().numberFormat().formattedString(number)
                                 }
                                 else -> storyPart.valueString(SheetContext(sheetUIContext))
                             }
@@ -1159,7 +1106,7 @@ object StoryWidgetView
 //        layout.gravity          = format.alignment().gravityConstant() or
 //                                        format.alignment().gravityConstant()
 
-        when (format.widgetFormat().alignment()) {
+        when (format.widgetFormat().elementFormat().alignment()) {
             is Alignment.Center -> layout.justification = JustifyContent.CENTER
         }
 
@@ -1171,7 +1118,7 @@ object StoryWidgetView
         layout.direction        = FlexDirection.ROW
         layout.wrap             = FlexWrap.WRAP
 
-        when (format.verticalAlignment()) {
+        when (format.widgetFormat().elementFormat().verticalAlignment()) {
             is VerticalAlignment.Middle -> layout.itemAlignment = AlignItems.CENTER
         }
 
@@ -1193,16 +1140,16 @@ object StoryWidgetView
 
         text.text           = word
 
-        val formatPadding   = storyPartSpan.format().padding()
-        val padding         = Spacing(LeftSpacing(formatPadding.leftDp()),
-                                      TopSpacing(formatPadding.topDp() + format.lineSpacingFloat()),
-                                      RightSpacing(formatPadding.rightDp()),
-                                      BottomSpacing(formatPadding.bottomDp()))
+        val formatPadding   = storyPartSpan.textFormat().elementFormat().padding()
+        val padding         = Spacing(formatPadding.leftDp().toDouble(),
+                                      formatPadding.topDp().toDouble() + format.lineSpacingFloat(),
+                                      formatPadding.rightDp().toDouble(),
+                                      formatPadding.bottomDp().toDouble())
 
         text.paddingSpacing = padding
-        text.marginSpacing  = storyPartSpan.format().margins()
+        text.marginSpacing  = storyPartSpan.textFormat().elementFormat().margins()
 
-        storyPartSpan.textStyle().styleTextViewBuilder(text, sheetUIContext)
+        storyPartSpan.textFormat().styleTextViewBuilder(text, sheetUIContext)
 
         return text.textView(sheetUIContext.context)
     }
@@ -1226,16 +1173,16 @@ object StoryWidgetView
         storyPart.viewId   = Util.generateViewId()
         text.id            = storyPart.viewId
 
-        val formatPadding   = storyPart.format().padding()
-        val padding         = Spacing(LeftSpacing(formatPadding.leftDp()),
-                                      TopSpacing(formatPadding.topDp() + format.lineSpacingFloat()),
-                                      RightSpacing(formatPadding.rightDp()),
-                                      BottomSpacing(formatPadding.bottomDp()))
+        val formatPadding   = storyPart.textFormat().elementFormat().padding()
+        val padding         = Spacing(formatPadding.leftDp().toDouble(),
+                                    formatPadding.topDp().toDouble() + format.lineSpacingFloat(),
+                                    formatPadding.rightDp().toDouble(),
+                                    formatPadding.bottomDp().toDouble())
 
         text.paddingSpacing = padding
-        text.marginSpacing  = storyPart.format().margins()
+        text.marginSpacing  = storyPart.textFormat().elementFormat().margins()
 
-        storyPart.textStyle().styleTextViewBuilder(text, sheetUIContext)
+        storyPart.textFormat().styleTextViewBuilder(text, sheetUIContext)
 
         text.onClick        = View.OnClickListener {
             val variable = storyPart.variable(SheetContext(sheetUIContext))

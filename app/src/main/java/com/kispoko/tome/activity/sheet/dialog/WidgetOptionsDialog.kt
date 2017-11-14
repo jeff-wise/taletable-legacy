@@ -257,10 +257,7 @@ class OptionsViewBuidler(val widget : Widget,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.corners          = Corners(TopLeftCornerRadius(3f),
-                                          TopRightCornerRadius(3f),
-                                          BottomRightCornerRadius(3f),
-                                          BottomLeftCornerRadius(3f))
+        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
