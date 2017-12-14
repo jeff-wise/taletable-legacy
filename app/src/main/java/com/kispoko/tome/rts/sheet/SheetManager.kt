@@ -201,6 +201,37 @@ object SheetManager
     }
 
 
+    fun lastActiveSheetId()
+    {
+        // query sessions, order by last active time, top 1, select lastActiveSheetId
+
+        //class Query
+        //{
+        //
+        //}
+        //
+        //
+        //typealias MyRow = Row2<Prim<TextValue>, TextValue, Prim<NumberValue>, NumberValue>
+        //
+        //
+        //fun query(f : Query.() -> Unit) : Query {
+        //    val query = Query()
+        //    query.f()
+        //    return query
+        //}
+        //
+        //
+        //val q = Query() { myRow ->
+        //    val (_, x, _) = myRow
+        //    first()
+        //    sortBy(x, Sort.DESC)
+        //    where(x isEqualTo 123)
+        //}
+
+    }
+
+
+
 //    private suspend fun loadSessionSheets(session : Session, sheetUI : SheetUI)
 //    {
 //        // Is new or in DB?
@@ -529,7 +560,7 @@ data class SessionSheetRecord(override val id : UUID,
      */
     suspend fun saveSheet()
     {
-        this.sheet.save()
+        this.sheet.saveAll()
     }
 
 
@@ -719,7 +750,7 @@ data class Session(override val id : UUID,
     }
 
 
-    fun setSheetActive(sheetId : SheetId, sheetUI : SheetUI)
+    private fun setSheetActive(sheetId : SheetId, sheetUI : SheetUI)
     {
         this.sheetRecordWithId(sheetId) apDo {
             // Initialize Sheet
@@ -727,7 +758,9 @@ data class Session(override val id : UUID,
 
             // Set Active
             this.activeSheetId = Just(sheetId)
-          // this.activeSheetId.doMaybe { it.save(this) }
+            this.activeSheetId.doMaybe {
+                launch(UI) { save() }
+            }
 
             // Render
             SheetManager.render(sheetId, sheetUI)
@@ -869,4 +902,7 @@ data class SheetLastActiveTime(val value : Long) : SQLSerializable, Serializable
     override fun asSQLValue() : SQLValue = SQLInt({this.value})
 
 }
+
+
+
 

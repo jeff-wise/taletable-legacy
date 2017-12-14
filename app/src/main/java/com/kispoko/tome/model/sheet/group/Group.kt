@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
+import com.kispoko.tome.db.DB_GroupFormat
 import com.kispoko.tome.db.dbGroup
 import com.kispoko.tome.db.dbGroupFormat
 import com.kispoko.tome.lib.Factory
@@ -242,7 +243,7 @@ data class GroupFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : Row = dbGroupFormat(this.elementFormat, this.divider)
+    override fun row() : DB_GroupFormat = dbGroupFormat(this.elementFormat, this.divider)
 
 }
 

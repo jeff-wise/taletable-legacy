@@ -2,9 +2,8 @@
 package com.kispoko.tome.db
 
 
-import com.kispoko.tome.R.string.label
-import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.orm.*
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.campaign.CampaignName
 import com.kispoko.tome.model.campaign.CampaignSummary
@@ -51,1697 +50,1566 @@ import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.user.UserName
 import com.kispoko.tome.rts.sheet.*
 import effect.Maybe
+import lulo.schema.Prim
+import lulo.schema.Sum
 
 
 
-/**
- * Application Database Schema
- */
+//*********************************************************************************************//
+//                                Application Database Schema                                  //
+//*********************************************************************************************//
 
 // ACTION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Action = Row3<Prim<ActionName>, ActionName,
-                           MaybePrim<SummationId>, SummationId,
-                           MaybePrim<ProcedureId>, ProcedureId>
+val actionTable = Table3("action",
+                         "action_name",
+                         "roll_summation_id",
+                         "procedure_id")
 
-fun dbAction(actionName : ActionName,
-            rollSummationId : Maybe<SummationId>,
-            procedureId : Maybe<ProcedureId>) : DB_Action =
-        Row3("action",
-            Col("action_name", Prim(actionName)),
-            Col("roll_summation_id", MaybePrim(rollSummationId)),
-            Col("procedure_id", MaybePrim(procedureId)))
+typealias DB_ActionValue =
+    RowValue3<PrimValue<ActionName>,
+              MaybePrimValue<SummationId>,
+              MaybePrimValue<ProcedureId>>
+
 
 // APP SETTINGS
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_AppSettings = Row1<Prim<ThemeId>, ThemeId>
+val appSettingsTable = Table1("app_settings", "theme_id")
 
-fun dbAppSettings(themeId : ThemeId) : DB_AppSettings =
-        Row1("app_settings",
-            Col("theme_id", Prim(themeId)))
+typealias DB_AppSettingsValue = RowValue1<PrimValue<ThemeId>>
+
 
 // AUTHOR
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Author = Row3<Prim<AuthorName>, AuthorName,
-                           MaybePrim<AuthorOrganization>, AuthorOrganization,
-                           MaybePrim<UserName>, UserName>
+val authorTable = Table3("author",
+                         "author_name",
+                         "organization",
+                         "user_name")
 
-fun dbAuthor(authorName : AuthorName,
-             organization : Maybe<AuthorOrganization>,
-             userName : Maybe<UserName>) : DB_Author =
-        Row3("author",
-            Col("author_name", Prim(authorName)),
-            Col("organization", MaybePrim(organization)),
-            Col("user_name", MaybePrim(userName)))
+typealias DB_AuthorValue =
+    RowValue3<PrimValue<AuthorName>,
+              MaybePrimValue<AuthorOrganization>,
+              MaybePrimValue<UserName>>
+
 
 // CAMPAIGN
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Campaign = Row4<Prim<CampaignId>, CampaignId,
-                             Prim<CampaignName>, CampaignName,
-                             Prim<CampaignSummary>, CampaignSummary,
-                             Prim<GameId>, GameId>
+val campaignTable = Table4("campaign",
+                           "campaign_id",
+                           "name",
+                           "summary",
+                           "game_id")
 
-fun dbCampaign(campaignId : CampaignId,
-               campaignName : CampaignName,
-               campaignSummary : CampaignSummary,
-               gameId : GameId) : DB_Campaign =
-        Row4("campaign",
-            Col("campaign_id", Prim(campaignId)),
-            Col("campaign_name", Prim(campaignName)),
-            Col("campaign_summary", Prim(campaignSummary)),
-            Col("game_id", Prim(gameId)))
+typealias DB_CampaignValue =
+    RowValue4<PrimValue<CampaignId>,
+              PrimValue<CampaignName>,
+              PrimValue<CampaignSummary>,
+              PrimValue<GameId>>
+
 
 // DICE ROLL
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_DiceRoll = Row3<Prim<DiceQuantitySet>, DiceQuantitySet,
-                             Coll<RollModifier>, RollModifier,
-                             MaybePrim<DiceRollName>, DiceRollName>
+val diceRollTable = Table3("dice_roll",
+                           "quantities",
+                           "modifiers",
+                           "roll_name")
 
-fun dbDiceRoll(quantities : List<DiceQuantity>,
-               modifiers : List<RollModifier>,
-               rollName : Maybe<DiceRollName>) : DB_DiceRoll =
-        Row3("dice_roll",
-            Col("quantities", Prim(DiceQuantitySet(quantities))),
-            Col("modifiers", Coll(modifiers)),
-            Col("roll_name", MaybePrim(rollName)))
+typealias DB_DiceRollValue =
+    RowValue3<PrimValue<DiceQuantitySet>,
+              CollValue<RollModifier>,
+              MaybePrimValue<DiceRollName>>
+
 
 // DIVIDER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Divider = Row3<Prim<ColorTheme>, ColorTheme,
-                            Prim<Spacing>, Spacing,
-                            Prim<DividerThickness>, DividerThickness>
+val dividerTable = Table3("divider",
+                          "color_theme",
+                          "margins",
+                          "thickness")
 
-fun dbDivider(colorTheme : ColorTheme,
-              margins : Spacing,
-              thickness : DividerThickness) : DB_Divider =
-        Row3("divider",
-            Col("color_theme", Prim(colorTheme)),
-            Col("margins", Prim(margins)),
-            Col("thickness", Prim(thickness)))
+typealias DB_DividerValue =
+    RowValue3<PrimValue<ColorTheme>,
+              PrimValue<Spacing>,
+              PrimValue<DividerThickness>>
 
 // ENGINE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Engine = Row6<Coll<ValueSet>, ValueSet,
-                           Coll<Mechanic>, Mechanic,
-                           Coll<MechanicCategory>, MechanicCategory,
-                           Coll<Function>, Function,
-                           Coll<Program>, Program,
-                           Coll<Summation>, Summation>
+val engineTable = Table6("engine",
+                         "value_sets",
+                         "mechanics",
+                         "mechanic_categories",
+                         "functions",
+                         "programs",
+                         "summations")
 
-fun dbEngine(valueSets : List<ValueSet>,
-             mechanics : List<Mechanic>,
-             mechanicCategories : List<MechanicCategory>,
-             functions : List<Function>,
-             programs : List<Program>,
-             summations : List<Summation>) : DB_Engine =
-        Row6("engine",
-            Col("value_sets", Coll(valueSets)),
-            Col("mechanics", Coll(mechanics)),
-            Col("mechanic_categories", Coll(mechanicCategories)),
-            Col("functions", Coll(functions)),
-            Col("programs", Coll(programs)),
-            Col("summations", Coll(summations)))
+typealias DB_EngineValue =
+    RowValue6<CollValue<ValueSet>,
+              CollValue<Mechanic>,
+              CollValue<MechanicCategory>,
+              CollValue<Function>,
+              CollValue<Program>,
+              CollValue<Summation>>
+
 
 // ELEMENT FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_ElementFormat = Row8<Prim<Position>, Position,
-                                  Prim<Height>, Height,
-                                  Prim<Spacing>, Spacing,
-                                  Prim<Spacing>, Spacing,
-                                  Prim<ColorTheme>, ColorTheme,
-                                  Prim<Corners>, Corners,
-                                  Prim<Alignment>, Alignment,
-                                  Prim<VerticalAlignment>, VerticalAlignment>
+val elementFormatTable =
+    Table8("element_format",
+           "position",
+           "height",
+           "padding",
+           "margins",
+           "background_color_theme",
+           "corners",
+           "alignment",
+           "vertical_alignment")
 
-fun dbElementFormat(position : Position,
-                    height : Height,
-                    padding : Spacing,
-                    margins : Spacing,
-                    backgroundColorTheme : ColorTheme,
-                    corners : Corners,
-                    alignment: Alignment,
-                    verticalAlignment : VerticalAlignment) : DB_ElementFormat =
-        Row8("element_format",
-            Col("position", Prim(position)),
-            Col("height", Prim(height)),
-            Col("padding", Prim(padding)),
-            Col("margins", Prim(margins)),
-            Col("background_color_theme", Prim(backgroundColorTheme)),
-            Col("corners", Prim(corners)),
-            Col("alignment", Prim(alignment)),
-            Col("vertical_alignment", Prim(verticalAlignment)))
+typealias DB_ElementFormatValue =
+    RowValue8<PrimValue<Position>,
+              PrimValue<Height>,
+              PrimValue<Spacing>,
+              PrimValue<Spacing>,
+              PrimValue<ColorTheme>,
+              PrimValue<Corners>,
+              PrimValue<Alignment>,
+              PrimValue<VerticalAlignment>>
+
 
 // FUNCTION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Function = Row5<Prim<FunctionId>, FunctionId,
-                             Prim<FunctionLabel>, FunctionLabel,
-                             Prim<FunctionDescription>, FunctionDescription,
-                             Prod<FunctionTypeSignature>, FunctionTypeSignature,
-                             Coll<Tuple>, Tuple>
+val functionTable =
+    Table5("function",
+           "function_id",
+           "label",
+           "description",
+           "type_signature",
+           "tuples")
 
-fun dbFunction(functionId : FunctionId,
-               label : FunctionLabel,
-               description : FunctionDescription,
-               typeSignature : FunctionTypeSignature,
-               tuples : MutableList<Tuple>) : DB_Function =
-        Row5("function",
-            Col("function_id", Prim(functionId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)),
-            Col("type_signature", Prod(typeSignature)),
-            Col("tuples", Coll(tuples)))
+typealias DB_FunctionValue =
+    RowValue5<PrimValue<FunctionId>,
+              PrimValue<FunctionLabel>,
+              PrimValue<FunctionDescription>,
+              ProdValue<FunctionTypeSignature>,
+              CollValue<Tuple>>
+
 
 // FUNCTION TYPE SIGNATURE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_FunctionTypeSignature = Row6<Prim<EngineValueType>, EngineValueType,
-                                          MaybePrim<EngineValueType>, EngineValueType,
-                                          MaybePrim<EngineValueType>, EngineValueType,
-                                          MaybePrim<EngineValueType>, EngineValueType,
-                                          MaybePrim<EngineValueType>, EngineValueType,
-                                          Prim<EngineValueType>, EngineValueType>
+val functionTypeSignatureTable =
+    Table6("function_type_signature",
+           "parameter1_type",
+           "parameter2_type",
+           "parameter3_type",
+           "parameter4_type",
+           "parameter5_type",
+           "result_type")
 
-fun dbFunctionTypeSignature(parameter1Type : EngineValueType,
-                            parameter2Type : Maybe<EngineValueType>,
-                            parameter3Type : Maybe<EngineValueType>,
-                            parameter4Type : Maybe<EngineValueType>,
-                            parameter5Type : Maybe<EngineValueType>,
-                            resultType : EngineValueType) : DB_FunctionTypeSignature =
-        Row6("function_type_signature",
-            Col("parameter1_type", Prim(parameter1Type)),
-            Col("parameter2_type", MaybePrim(parameter2Type)),
-            Col("parameter3_type", MaybePrim(parameter3Type)),
-            Col("parameter4_type", MaybePrim(parameter4Type)),
-            Col("parameter5_type", MaybePrim(parameter5Type)),
-            Col("result_type", Prim(resultType)))
+typealias DB_FunctionTypeSignatureValue =
+    RowValue6<PrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              PrimValue<EngineValueType>>
+
 
 // INVOCATION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Invocation = Row6<Prim<ProgramId>, ProgramId,
-                               Sum<DataReference>, DataReference,
-                               MaybeSum<DataReference>, DataReference,
-                               MaybeSum<DataReference>, DataReference,
-                               MaybeSum<DataReference>, DataReference,
-                               MaybeSum<DataReference>, DataReference>
+val invocationTable =
+    Table6("invocation",
+           "parameter1_type",
+           "parameter2_type",
+           "parameter3_type",
+           "parameter4_type",
+           "parameter5_type",
+           "result_type")
 
-fun dbInvocation(programId : ProgramId,
-                 parameter1 : DataReference,
-                 parameter2 : Maybe<DataReference>,
-                 parameter3 : Maybe<DataReference>,
-                 parameter4 : Maybe<DataReference>,
-                 parameter5 : Maybe<DataReference>) : DB_Invocation =
-        Row6("invocation",
-            Col("program_id", Prim(programId)),
-            Col("parameter1", Sum(parameter1)),
-            Col("parameter2", MaybeSum(parameter2)),
-            Col("parameter3", MaybeSum(parameter3)),
-            Col("parameter4", MaybeSum(parameter4)),
-            Col("parameter5", MaybeSum(parameter5)))
+typealias DB_Invocation =
+    RowValue6<PrimValue<ProgramId>,
+              SumValue<DataReference>,
+              MaybeSumValue<DataReference>,
+              MaybeSumValue<DataReference>,
+              MaybeSumValue<DataReference>,
+              MaybeSumValue<DataReference>>
+
 
 // GAME
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Game = Row6<Prim<GameId>, GameId,
-                         Prim<GameName>, GameName,
-                         Prim<GameSummary>, GameSummary,
-                         Coll<Author>, Author,
-                         Prod<Engine>, Engine,
-                         Prod<Rulebook>, Rulebook>
+val gameTable =
+    Table6("game",
+           "game_id",
+           "name",
+           "summary",
+           "authors",
+           "engine",
+           "rulebook")
 
-fun dbGame(gameId : GameId,
-           gameName : GameName,
-           gameSummary : GameSummary,
-           authors : List<Author>,
-           engine : Engine,
-           rulebook : Rulebook) : DB_Game =
-        Row6("game",
-            Col("game_id", Prim(gameId)),
-            Col("game_name", Prim(gameName)),
-            Col("game_summary", Prim(gameSummary)),
-            Col("authors", Coll(authors)),
-            Col("engine", Prod(engine)),
-            Col("rulebook", Prod(rulebook)))
+typealias DB_GameValue =
+    RowValue6<PrimValue<GameId>,
+              PrimValue<GameName>,
+              PrimValue<GameSummary>,
+              CollValue<Author>,
+              ProdValue<Engine>,
+              ProdValue<Rulebook>>
+
 
 // GROUP
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Group = Row3<Prod<GroupFormat>, GroupFormat,
-                          Prim<GroupIndex>, GroupIndex,
-                          Coll<GroupRow>, GroupRow>
+val groupTable =
+    Table3("group",
+           "format",
+           "index",
+           "rows")
 
-fun dbGroup(format : GroupFormat,
-            index : GroupIndex,
-            rows : List<GroupRow>) : DB_Group =
-        Row3("group",
-            Col("format", Prod(format)),
-            Col("index", Prim(index)),
-            Col("rows", Coll(rows)))
+typealias DB_GroupValue =
+    RowValue3<ProdValue<GroupFormat>,
+              PrimValue<GroupIndex>,
+              CollValue<GroupRow>>
+
 
 // GROUP FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_GroupFormat = Row2<Prod<ElementFormat>, ElementFormat,
-                                Prod<Divider>, Divider>
+val groupFormatTable =
+    Table2("group_format",
+           "element_format",
+           "divider")
 
-fun dbGroupFormat(elementFormat : ElementFormat,
-                  divider : Divider) : DB_GroupFormat =
-        Row2("group_format",
-            Col("element_format", Prod(elementFormat)),
-            Col("divider", Prod(divider)))
+typealias DB_GroupFormatValue =
+    RowValue2<ProdValue<ElementFormat>,
+              ProdValue<Divider>>
+
 
 // GROUP ROW
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_GroupRow = Row3<Prod<GroupRowFormat>, GroupRowFormat,
-                             Prim<GroupRowIndex>, GroupRowIndex,
-                             Coll<Widget>, Widget>
+val groupRowTable =
+    Table3("group_row",
+            "format",
+            "index",
+            "widgets")
 
-fun dbGroupRow(format : GroupRowFormat,
-               index : GroupRowIndex,
-               widgets : List<Widget>) : DB_GroupRow =
-        Row3("group_row",
-            Col("format", Prod(format)),
-            Col("index", Prim(index)),
-            Col("widgets", Coll(widgets)))
+typealias DB_GroupRowValue =
+    RowValue3<ProdValue<GroupRowFormat>,
+              PrimValue<GroupRowIndex>,
+              CollValue<Widget>>
+
 
 // GROUP ROW FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_GroupRowFormat = Row2<Prod<ElementFormat>, ElementFormat,
-                                   Prod<Divider>, Divider>
+val groupRowFormatTable =
+    Table2("group_row_format",
+           "element_format",
+           "divider")
 
-fun dbGroupRowFromat(elementFormat : ElementFormat,
-               divider : Divider) : DB_GroupRowFormat =
-        Row2("group_row",
-            Col("element_format", Prod(elementFormat)),
-            Col("divider", Prod(divider)))
+typealias DB_GroupRowFormatValue =
+    RowValue2<ProdValue<ElementFormat>,
+              ProdValue<Divider>>
+
 
 // ICON FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_IconFormat = Row2<Prim<ColorTheme>, ColorTheme,
-                               Prim<IconSize>, IconSize>
+val iconFormatTable =
+    Table2("icon_format",
+           "color_theme",
+           "size")
 
-fun dbIconFormat(colorTheme : ColorTheme,
-                 size : IconSize) : DB_IconFormat =
-        Row2("icon_format",
-            Col("color_theme", Prim(colorTheme)),
-            Col("size", Prim(size)))
+typealias DB_IconFormatValue =
+    RowValue2<PrimValue<ColorTheme>,
+              PrimValue<IconSize>>
+
 
 // MECHANIC
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Mechanic = Row7<Prim<MechanicId>, MechanicId,
-                             Prim<MechanicLabel>, MechanicLabel,
-                             Prim<MechanicDescription>, MechanicDescription,
-                             Prim<MechanicSummary>, MechanicSummary,
-                             Prim<MechanicCategoryId>, MechanicCategoryId,
-                             Prim<MechanicRequirements>, MechanicRequirements,
-                             Coll<Variable>, Variable>
+val mechanicTable =
+    Table7("mechanic",
+           "mechanic_id",
+           "label",
+           "description",
+           "summary",
+           "category_id",
+           "requirements",
+           "variables")
 
-fun dbMechanic(mechanicId : MechanicId,
-               label : MechanicLabel,
-               description : MechanicDescription,
-               summary : MechanicSummary,
-               categoryId : MechanicCategoryId,
-               requirements : List<VariableId>,
-               variables : MutableList<Variable>) : DB_Mechanic =
-        Row7("mechanic",
-            Col("mechanic_id", Prim(mechanicId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)),
-            Col("summary", Prim(summary)),
-            Col("category_id", Prim(categoryId)),
-            Col("requirements", Prim(MechanicRequirements(requirements))),
-            Col("variables", Coll(variables)))
+typealias DB_Mechanic =
+    RowValue7<PrimValue<MechanicId>,
+              PrimValue<MechanicLabel>,
+              PrimValue<MechanicDescription>,
+              PrimValue<MechanicSummary>,
+              PrimValue<MechanicCategoryId>,
+              PrimValue<MechanicRequirements>,
+              CollValue<Variable>>
+
 
 // MECHANIC CATEGORY
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_MechanicCategory = Row3<Prim<MechanicCategoryId>, MechanicCategoryId,
-                                     Prim<MechanicCategoryLabel>, MechanicCategoryLabel,
-                                     Prim<MechanicCategoryDescription>, MechanicCategoryDescription>
+val mechanicCategoryTable =
+    Table3("mechanic_category",
+           "category_id",
+           "label",
+           "description")
 
-fun dbMechanicCategory(categoryId : MechanicCategoryId,
-                       label : MechanicCategoryLabel,
-                       description : MechanicCategoryDescription) : DB_MechanicCategory =
-        Row3("mechanic_category",
-            Col("category_id", Prim(categoryId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)))
+typealias DB_MechanicCategoryValue =
+    RowValue3<PrimValue<MechanicCategoryId>,
+              PrimValue<MechanicCategoryLabel>,
+              PrimValue<MechanicCategoryDescription>>
+
 
 // PAGE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Page = Row4<Prim<PageName>, PageName,
-                         Prod<PageFormat>, PageFormat,
-                         Prim<PageIndex>, PageIndex,
-                         Coll<Group>, Group>
+val pageTable =
+    Table4("page",
+           "page_name",
+           "format",
+           "index",
+           "groups")
 
-fun dbPage(pageName : PageName,
-           format : PageFormat,
-           index : PageIndex,
-           groups : List<Group>) : DB_Page =
-        Row4("page",
-            Col("page_name", Prim(pageName)),
-            Col("format", Prod(format)),
-            Col("index", Prim(index)),
-            Col("groups", Coll(groups)))
+typealias DB_PageValue =
+    RowValue4<PrimValue<PageName>,
+              ProdValue<PageFormat>,
+              PrimValue<PageIndex>,
+              CollValue<Group>>
+
 
 // PAGE FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_PageFormat = Row1<Prod<ElementFormat>, ElementFormat>
+val pageFormatTable =
+    Table1("page_format",
+           "element_format")
 
-fun dbPageFormat(elementFormat : ElementFormat) : DB_PageFormat =
-        Row1("element_format",
-            Col("padding", Prod(elementFormat)))
+typealias DB_PageFormatValue =
+    RowValue1<ProdValue<ElementFormat>>
+
 
 // PROGRAM
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Program = Row6<Prim<ProgramId>, ProgramId,
-                            Prim<ProgramLabel>, ProgramLabel,
-                            Prim<ProgramDescription>, ProgramDescription,
-                            Prod<ProgramTypeSignature>, ProgramTypeSignature,
-                            Coll<Statement>, Statement,
-                            Prim<StatementBindingName>, StatementBindingName>
+val programTable =
+    Table6("program",
+           "program_id",
+           "label",
+           "description",
+           "type_signature",
+           "statements",
+           "result_binding_name")
 
-fun dbProgram(programId : ProgramId,
-              label : ProgramLabel,
-              description : ProgramDescription,
-              typeSignature : ProgramTypeSignature,
-              statements : MutableList<Statement>,
-              resultBindingName : StatementBindingName) : DB_Program =
-        Row6("program",
-            Col("program_id", Prim(programId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)),
-            Col("type_signature", Prod(typeSignature)),
-            Col("statements", Coll(statements)),
-            Col("result_binding_name", Prim(resultBindingName)))
+typealias DB_ProgramValue =
+    RowValue6<PrimValue<ProgramId>,
+              PrimValue<ProgramLabel>,
+              PrimValue<ProgramDescription>,
+              ProdValue<ProgramTypeSignature>,
+              CollValue<Statement>,
+              PrimValue<StatementBindingName>>
+
 
 // PROGRAM TYPE SIGNATURE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_ProgramTypeSignature = Row6<Prim<EngineValueType>, EngineValueType,
-                                         MaybePrim<EngineValueType>, EngineValueType,
-                                         MaybePrim<EngineValueType>, EngineValueType,
-                                         MaybePrim<EngineValueType>, EngineValueType,
-                                         MaybePrim<EngineValueType>, EngineValueType,
-                                         Prim<EngineValueType>, EngineValueType>
+val programTypeSignatureTable =
+    Table6("program_type_signature",
+           "parameter1_type",
+           "parameter2_type",
+           "parameter3_type",
+           "parameter4_type",
+           "parameter5_type",
+           "result_type")
 
-fun dbProgramTypeSignature(parameter1Type : EngineValueType,
-                            parameter2Type : Maybe<EngineValueType>,
-                            parameter3Type : Maybe<EngineValueType>,
-                            parameter4Type : Maybe<EngineValueType>,
-                            parameter5Type : Maybe<EngineValueType>,
-                            resultType : EngineValueType) : DB_ProgramTypeSignature =
-        Row6("program_type_signature",
-            Col("parameter1_type", Prim(parameter1Type)),
-            Col("parameter2_type", MaybePrim(parameter2Type)),
-            Col("parameter3_type", MaybePrim(parameter3Type)),
-            Col("parameter4_type", MaybePrim(parameter4Type)),
-            Col("parameter5_type", MaybePrim(parameter5Type)),
-            Col("result_type", Prim(resultType)))
+typealias DB_ProgramTypeSignatureValue =
+    RowValue6<PrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              MaybePrimValue<EngineValueType>,
+              PrimValue<EngineValueType>>
+
 
 // ROLL MODIFIER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_RollModifier = Row2<Prim<RollModifierValue>, RollModifierValue,
-                                 MaybePrim<RollModifierName>, RollModifierName>
+val rollModifierTable =
+    Table2("roll_modifier",
+           "value",
+           "modifier_name")
 
+typealias DB_RollModifierValue =
+    RowValue2<PrimValue<RollModifierValue>,
+              MaybePrimValue<RollModifierName>>
 
-fun dbRollModifier(value : RollModifierValue,
-                   modifierName : Maybe<RollModifierName>) : DB_RollModifier =
-        Row2("roll_modifier",
-            Col("value", Prim(value)),
-            Col("modifier_name", MaybePrim(modifierName)))
 
 // RULEBOOK
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Rulebook = Row3<Prim<RulebookTitle>, RulebookTitle,
-                             Prim<RulebookAbstract>, RulebookAbstract,
-                             Coll<RulebookChapter>, RulebookChapter>
+val rulebookTable =
+    Table3("rulebook",
+           "title",
+           "abstract",
+           "chapters")
 
+typealias DB_RulebookValue =
+    RowValue3<PrimValue<RulebookTitle>,
+              PrimValue<RulebookAbstract>,
+              CollValue<RulebookChapter>>
 
-fun dbRulebook(title : RulebookTitle,
-               abstract : RulebookAbstract,
-               chapters : List<RulebookChapter>) : DB_Rulebook =
-        Row3("rulebook",
-            Col("title", Prim(title)),
-            Col("abstract", Prim(abstract)),
-            Col("chapters", Coll(chapters)))
 
 // RULEBOOK CHAPTER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_RulebookChapter = Row3<Prim<RulebookChapterId>, RulebookChapterId,
-                                    Prim<RulebookChapterTitle>, RulebookChapterTitle,
-                                    Coll<RulebookSection>, RulebookSection>
+val rulebookChapterTable =
+    Table3("rulebook_chapter",
+           "chapter_id",
+           "title",
+           "sections")
 
+typealias DB_RulebookChapterValue =
+    RowValue3<PrimValue<RulebookChapterId>,
+              PrimValue<RulebookChapterTitle>,
+              CollValue<RulebookSection>>
 
-fun dbRulebookChapter(chapterId : RulebookChapterId,
-                      title : RulebookChapterTitle,
-                      sections : MutableList<RulebookSection>) : DB_RulebookChapter =
-        Row3("rulebook_chapter",
-            Col("chapter_id", Prim(chapterId)),
-            Col("title", Prim(title)),
-            Col("sections", Coll(sections)))
 
 // RULEBOOK SECTION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_RulebookSection = Row4<Prim<RulebookSectionId>, RulebookSectionId,
-                                    Prim<RulebookSectionTitle>, RulebookSectionTitle,
-                                    Prim<RulebookSectionBody>, RulebookSectionBody,
-                                    Coll<RulebookSubsection>, RulebookSubsection>
+val rulebookSectionTable =
+    Table4("rulebook_section",
+           "section_id",
+           "title",
+           "body",
+           "subsections")
 
+typealias DB_RulebookSectionValue =
+    RowValue4<PrimValue<RulebookSectionId>,
+              PrimValue<RulebookSectionTitle>,
+              PrimValue<RulebookSectionBody>,
+              CollValue<RulebookSubsection>>
 
-fun dbRulebookSection(sectionId : RulebookSectionId,
-                      title : RulebookSectionTitle,
-                      body : RulebookSectionBody,
-                      subsections : List<RulebookSubsection>) : DB_RulebookSection =
-        Row4("rulebook_section",
-            Col("section_id", Prim(sectionId)),
-            Col("title", Prim(title)),
-            Col("body", Prim(body)),
-            Col("subsections", Coll(subsections)))
 
 // RULEBOOK SUBSECTION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_RulebookSubsection = Row3<Prim<RulebookSubsectionId>, RulebookSubsectionId,
-                                       Prim<RulebookSubsectionTitle>, RulebookSubsectionTitle,
-                                       Prim<RulebookSubsectionBody>, RulebookSubsectionBody>
+val rulebookSubsectionTable =
+    Table3("rulebook_subsection",
+           "subsection_id",
+           "title",
+           "body")
 
+typealias DB_RulebookSubsectionValue =
+    RowValue3<PrimValue<RulebookSubsectionId>,
+              PrimValue<RulebookSubsectionTitle>,
+              PrimValue<RulebookSubsectionBody>>
 
-fun dbRulebookSubection(subsectionId : RulebookSubsectionId,
-                        title : RulebookSubsectionTitle,
-                        body : RulebookSubsectionBody) : DB_RulebookSubsection =
-        Row3("rulebook_subsection",
-            Col("subsection_id", Prim(subsectionId)),
-            Col("title", Prim(title)),
-            Col("body", Prim(body)))
 
 // RULEBOOK REFERENCE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_RulebookReference = Row3<Prim<RulebookChapterId>, RulebookChapterId,
-                                      MaybePrim<RulebookSectionId>, RulebookSectionId,
-                                      MaybePrim<RulebookSubsectionId>, RulebookSubsectionId>
+val rulebookReferenceTable =
+    Table3("rulebook_reference",
+           "chapter_id",
+           "section_id",
+           "subsection_id")
 
+typealias DB_RulebookReferenceValue =
+    RowValue3<PrimValue<RulebookChapterId>,
+              MaybePrimValue<RulebookSectionId>,
+              MaybePrimValue<RulebookSubsectionId>>
 
-fun dbRulebookReference(chapterId : RulebookChapterId,
-                        sectionId : Maybe<RulebookSectionId>,
-                        subsectionId : Maybe<RulebookSubsectionId>) : DB_RulebookReference =
-        Row3("rulebook_reference",
-            Col("chapter_id", Prim(chapterId)),
-            Col("section_id", MaybePrim(sectionId)),
-            Col("subsection_id", MaybePrim(subsectionId)))
 
 // SECTION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Section = Row3<Prim<SectionName>, SectionName,
-                            Coll<Page>, Page,
-                            Prim<Icon>, Icon>
+val sectionTable =
+    Table3("section",
+           "section_name",
+           "pages",
+           "icon")
 
+typealias DB_SectionValue =
+    RowValue3<PrimValue<SectionName>,
+              CollValue<Page>,
+              PrimValue<Icon>>
 
-fun dbSection(sectionName : SectionName,
-              pages : List<Page>,
-              icon : Icon) : DB_Section =
-        Row3("section",
-            Col("section_name", Prim(sectionName)),
-            Col("pages", Coll(pages)),
-            Col("icon", Prim(icon)))
 
 // SESSION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Session = Row4<Prim<SessionName>, SessionName,
-                            Prim<SessionLastActiveTime>, SessionLastActiveTime,
-                            MaybePrim<SheetId>, SheetId,
-                            Coll<SessionSheetRecord>, SessionSheetRecord>
+val sessionTable =
+    Table4("session",
+           "name",
+           "time_last_active",
+           "active_sheet_id",
+           "sheet_records")
 
-fun dbSession(sessionName : SessionName,
-              lastActiveTime : SessionLastActiveTime,
-              activeSheetId : Maybe<SheetId>,
-              sheetRecords : List<SessionSheetRecord>) : DB_Session =
-        Row4("session",
-            Col("session_name", Prim(sessionName)),
-            Col("time_last_active", Prim(lastActiveTime)),
-            Col("active_sheet_id", MaybePrim(activeSheetId)),
-            Col("sheet_records", Coll(sheetRecords)))
+typealias DB_SessionValue =
+    RowValue4<PrimValue<SessionName>,
+              PrimValue<SessionLastActiveTime>,
+              MaybePrimValue<SheetId>,
+              CollValue<SessionSheetRecord>>
+
 
 // SESSION SHEET RECORD
 // ---------------------------------------------------------------------------------------------
+val sessionSheetRecordTable =
+    Table3("session_sheet_record",
+           "sheet_id",
+           "session_index",
+           "time_last_active")
 
-typealias DB_SessionSheetRecord = Row3<Prim<SheetId>, SheetId,
-                                       Prim<SessionRecordIndex>, SessionRecordIndex,
-                                       Prim<SheetLastActiveTime>, SheetLastActiveTime>
+typealias DB_SessionSheetRecordValue =
+    RowValue3<PrimValue<SheetId>,
+              PrimValue<SessionRecordIndex>,
+              PrimValue<SheetLastActiveTime>>
 
-fun dbSessionSheetRecord(sheetId : SheetId,
-                         sessionIndex : SessionRecordIndex,
-                         lastActive : SheetLastActiveTime) : DB_SessionSheetRecord =
-        Row3("session_sheet_record",
-            Col("sheet_id", Prim(sheetId)),
-            Col("session_index", Prim(sessionIndex)),
-            Col("time_last_active", Prim(lastActive)))
 
 // SETTINGS
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_SheetSettings = Row3<Prim<ThemeId>, ThemeId,
-                                  Prim<SheetName>, SheetName,
-                                  Prim<SheetSummary>, SheetSummary>
+val sheetSettingsTable =
+    Table3("sheet_settings",
+            "theme_id",
+            "sheet_name",
+            "sheet_summary")
 
-fun dbSheetSettings(themeId : ThemeId,
-                    sheetName : SheetName,
-                    sheetSummary : SheetSummary) : DB_SheetSettings =
-        Row3("sheet_settings",
-            Col("theme_id", Prim(themeId)),
-            Col("sheet_name", Prim(sheetName)),
-            Col("sheet_summary", Prim(sheetSummary)))
+typealias DB_SheetSettingsValue =
+    RowValue3<PrimValue<ThemeId>,
+              PrimValue<SheetName>,
+              PrimValue<SheetSummary>>
+
 
 // SHEET
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Sheet = Row6<Prim<SheetId>, SheetId,
-                          Prim<CampaignId>, CampaignId,
-                          Coll<Section>, Section,
-                          Prod<Engine>, Engine,
-                          Coll<Variable>, Variable,
-                          Prod<Settings>, Settings>
+val sheetTable =
+    Table6("sheet",
+           "sheet_id",
+           "campaign_id",
+           "sections",
+           "engine",
+           "variables",
+           "settings")
 
-fun dbSheet(sheetId : SheetId,
-            campaignId : CampaignId,
-            sections : List<Section>,
-            engine : Engine,
-            variables : List<Variable>,
-            settings : Settings) : DB_Sheet =
-        Row6("sheet",
-            Col("sheet_id", Prim(sheetId)),
-            Col("campaign_id", Prim(campaignId)),
-            Col("sections", Coll(sections)),
-            Col("engine", Prod(engine)),
-            Col("variables", Coll(variables)),
-            Col("settings", Prod(settings)))
+typealias DB_SheetValue =
+    RowValue6<PrimValue<SheetId>,
+              PrimValue<CampaignId>,
+              CollValue<Section>,
+              ProdValue<Engine>,
+              CollValue<Variable>,
+              ProdValue<Settings>>
+
 
 // STATEMENT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Statement = Row7<Prim<StatementBindingName>, StatementBindingName,
-                              Prim<FunctionId>, FunctionId,
-                              Sum<StatementParameter>, StatementParameter,
-                              MaybeSum<StatementParameter>, StatementParameter,
-                              MaybeSum<StatementParameter>, StatementParameter,
-                              MaybeSum<StatementParameter>, StatementParameter,
-                              MaybeSum<StatementParameter>, StatementParameter>
+val statementTable =
+    Table7("statement",
+           "binding_name",
+           "function_id",
+           "parameter_1",
+           "parameter_2",
+           "parameter_3",
+           "parameter_4",
+           "parameter_5")
 
-fun dbStatement(bindingName : StatementBindingName,
-                functionId : FunctionId,
-                parameter1 : StatementParameter,
-                parameter2 : Maybe<StatementParameter>,
-                parameter3 : Maybe<StatementParameter>,
-                parameter4 : Maybe<StatementParameter>,
-                parameter5 : Maybe<StatementParameter>) : DB_Statement =
-        Row7("statement",
-            Col("binding_name", Prim(bindingName)),
-            Col("function_id", Prim(functionId)),
-            Col("parameter_1", Sum(parameter1)),
-            Col("parameter_2", MaybeSum(parameter2)),
-            Col("parameter_3", MaybeSum(parameter3)),
-            Col("parameter_4", MaybeSum(parameter4)),
-            Col("parameter_5", MaybeSum(parameter5)))
+typealias DB_Statement =
+    RowValue7<PrimValue<StatementBindingName>,
+              PrimValue<FunctionId>,
+              SumValue<StatementParameter>,
+              MaybeSumValue<StatementParameter>,
+              MaybeSumValue<StatementParameter>,
+              MaybeSumValue<StatementParameter>,
+              MaybeSumValue<StatementParameter>>
+
 
 // SUMMATION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Summation = Row3<Prim<SummationId>, SummationId,
-                              Prim<SummationName>, SummationName,
-                              Coll<SummationTerm>, SummationTerm>
+val summationTable =
+    Table3("summation",
+           "summation_id",
+           "summation_name",
+           "terms")
 
-fun dbSummation(summationId : SummationId,
-                summationName : SummationName,
-                terms : List<SummationTerm>) : DB_Summation =
-        Row3("summation",
-            Col("summation_id", Prim(summationId)),
-            Col("summation_name", Prim(summationName)),
-            Col("terms", Coll(terms)))
+typealias DB_SummationValue =
+    RowValue3<PrimValue<SummationId>,
+              PrimValue<SummationName>,
+              CollValue<SummationTerm>>
+
 
 // TERM: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_TermNumber = Row2<MaybePrim<TermName>, TermName,
-                               Sum<NumberReference>, NumberReference>
+val summationTermNumberTable =
+    Table2("summation_term_number",
+           "term_name",
+           "value_reference")
 
-fun dbTermNumber(termName : Maybe<TermName>,
-                 numberReference : NumberReference) : DB_TermNumber =
-        Row2("summation_term_number",
-            Col("term_name", MaybePrim(termName)),
-            Col("value_reference", Sum(numberReference)))
+typealias DB_SummationTermNumberValue =
+    RowValue2<MaybePrimValue<TermName>,
+             SumValue<NumberReference>>
+
 
 // TERM: DICE ROLL
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_TermDiceRoll = Row2<MaybePrim<TermName>, TermName,
-                                 Sum<DiceRollReference>, DiceRollReference>
+val summationTermDiceRollTable =
+    Table2("summation_term_dice_roll",
+            "term_name",
+            "value_reference")
 
-fun dbTermDiceRoll(termName : Maybe<TermName>,
-                   diceRollReference : DiceRollReference) : DB_TermDiceRoll =
-        Row2("summation_term_dice_roll",
-            Col("term_name", MaybePrim(termName)),
-            Col("value_reference", Sum(diceRollReference)))
+typealias DB_SummationTermDiceRollValue =
+    RowValue2<MaybePrimValue<TermName>,
+              SumValue<DiceRollReference>>
+
 
 // TERM: CONDITIONAL
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_TermConditional = Row4<MaybePrim<TermName>, TermName,
-                                    Sum<BooleanReference>, BooleanReference,
-                                    Sum<NumberReference>, NumberReference,
-                                    Sum<NumberReference>, NumberReference>
+val summationTermConditionalTable =
+    Table4("summation_term_conditional",
+           "term_name",
+           "conditional_reference",
+           "true_reference",
+           "false_reference")
 
-fun dbTermConditional(termName : Maybe<TermName>,
-                      conditionalValueReference : BooleanReference,
-                      trueValueReference : NumberReference,
-                      falseValueReference: NumberReference) : DB_TermConditional =
-        Row4("summation_term_conditional",
-            Col("term_name", MaybePrim(termName)),
-            Col("conditional_reference", Sum(conditionalValueReference)),
-            Col("true_reference", Sum(trueValueReference)),
-            Col("false_reference", Sum(falseValueReference)))
+typealias DB_SummationTermConditionalValue =
+    RowValue4<MaybePrimValue<TermName>,
+              SumValue<BooleanReference>,
+              SumValue<NumberReference>,
+              SumValue<NumberReference>>
+
 
 // TEXT FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_TextFormat = Row7<Prim<ColorTheme>, ColorTheme,
-                              Prim<TextSize>, TextSize,
-                              Prim<TextFont>, TextFont,
-                              Prim<TextFontStyle>, TextFontStyle,
-                              Prim<IsUnderlined>, IsUnderlined,
-                              Prim<NumberFormat>, NumberFormat,
-                              Prod<ElementFormat>, ElementFormat>
+val textFormatTable =
+    Table7("text_format",
+           "color_theme",
+           "size",
+           "font",
+           "font_style",
+           "is_underlined",
+           "number_format",
+           "element_format")
 
-fun dbTextFormat(colorTheme : ColorTheme,
-                 size : TextSize,
-                 font : TextFont,
-                 fontStyle : TextFontStyle,
-                 isUnderlined : IsUnderlined,
-                 numberFormat : NumberFormat,
-                 elementFormat : ElementFormat) : DB_TextFormat =
-        Row7("text_style",
-            Col("color_theme", Prim(colorTheme)),
-            Col("size", Prim(size)),
-            Col("font", Prim(font)),
-            Col("font_style", Prim(fontStyle)),
-            Col("is_underlined", Prim(isUnderlined)),
-            Col("number_format", Prim(numberFormat)),
-            Col("element_format", Prod(elementFormat)))
+typealias DB_TextFormatValue =
+    RowValue7<PrimValue<ColorTheme>,
+              PrimValue<TextSize>,
+              PrimValue<TextFont>,
+              PrimValue<TextFontStyle>,
+              PrimValue<IsUnderlined>,
+              PrimValue<NumberFormat>,
+              ProdValue<ElementFormat>>
 
+
+//// projection
+//// restriction
+//
+//
+////class Query
+////{
+////
+////}
+////
+////
+////typealias MyRow = Row2<Prim<TextValue>, TextValue, Prim<NumberValue>, NumberValue>
+////
+////
+////fun query(f : Query.() -> Unit) : Query {
+////    val query = Query()
+////    query.f()
+////    return query
+////}
+////
+////
+////fun query(myRow : MyRow) : Query Row = query {
+////    val (_, x, _) = myRow
+////
+////}
+//
+//
+//
+//
+//
+////val query = Query { row : MyRow -> row
+////
+////}
+//
+//
 // THEME
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Theme = Row3<Prim<ThemeId>, ThemeId,
-                          Prim<ThemeColorSet>, ThemeColorSet,
-                          Prod<UIColors>, UIColors>
+val themeTable =
+    Table3("theme",
+           "theme_id",
+           "palette",
+           "ui_colors")
 
-fun dbTheme(themeId : ThemeId,
-            palette : List<ThemeColor>,
-            uiColors : UIColors) : DB_Theme =
-        Row3("theme",
-            Col("theme_id", Prim(themeId)),
-            Col("palette", Prim(ThemeColorSet(palette))),
-            Col("ui_colors", Prod(uiColors)))
+typealias DB_ThemeValue =
+    RowValue3<PrimValue<ThemeId>,
+              PrimValue<ThemeColorSet>,
+              ProdValue<UIColors>>
+
 
 // TUPLE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_Tuple = Row6<Sum<EngineValue>, EngineValue,
-                          MaybeSum<EngineValue>, EngineValue,
-                          MaybeSum<EngineValue>, EngineValue,
-                          MaybeSum<EngineValue>, EngineValue,
-                          MaybeSum<EngineValue>, EngineValue,
-                          Sum<EngineValue>, EngineValue>
+val tupleTable =
+    Table6("tuple",
+           "parameter1",
+           "parameter2",
+           "parameter3",
+           "parameter4",
+           "parameter5",
+           "result")
 
-fun dbTuple(parameter1 : EngineValue,
-            parameter2 : Maybe<EngineValue>,
-            parameter3 : Maybe<EngineValue>,
-            parameter4 : Maybe<EngineValue>,
-            parameter5 : Maybe<EngineValue>,
-            result : EngineValue) : DB_Tuple =
-        Row6("tuple",
-            Col("parameter1", Sum(parameter1)),
-            Col("parameter2", MaybeSum(parameter2)),
-            Col("parameter3", MaybeSum(parameter3)),
-            Col("parameter4", MaybeSum(parameter4)),
-            Col("parameter5", MaybeSum(parameter5)),
-            Col("result", Sum(result)))
+typealias DB_TupleValue =
+    RowValue6<SumValue<EngineValue>,
+              MaybeSumValue<EngineValue>,
+              MaybeSumValue<EngineValue>,
+              MaybeSumValue<EngineValue>,
+              MaybeSumValue<EngineValue>,
+              SumValue<EngineValue>>
+
 
 // UI COLORS
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_UIColors = Row10<Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId,
-                              Prim<ColorId>, ColorId>
+val uiColorsTable =
+    Table10("ui_colors",
+            "toolbar_background_color_id",
+            "toolbar_icons_color_id",
+            "toolbar_title_color_id",
+            "tab_bar_background_color_id",
+            "tab_text_normal_color_id",
+            "tab_text_selected_color_id",
+            "tab_underline_color_id",
+            "bottom_bar_background_color_id",
+            "bottom_bar_active_color_id",
+            "bottom_bar_inactive_color_id")
 
-fun dbUIColors(toolbarBackgroundColorId : ColorId,
-               toolbarIconsColorId : ColorId,
-               toolbarTitleColorId : ColorId,
-               tabBarBackgroundColorId : ColorId,
-               tabTextNormalColorId : ColorId,
-               tabTextSelectedColorId : ColorId,
-               tabUnderlineColorId : ColorId,
-               bottomBarBackgroundColorId : ColorId,
-               bottomBarActiveColorId : ColorId,
-               bottomBarInactiveColorId : ColorId) : DB_UIColors =
-        Row10("ui_colors",
-            Col("toolbar_background_color_id", Prim(toolbarBackgroundColorId)),
-            Col("toolbar_icons_color_id", Prim(toolbarIconsColorId)),
-            Col("toolbar_title_color_id", Prim(toolbarTitleColorId)),
-            Col("tab_bar_background_color_id", Prim(tabBarBackgroundColorId)),
-            Col("tab_text_normal_color_id", Prim(tabTextNormalColorId)),
-            Col("tab_text_selected_color_id", Prim(tabTextSelectedColorId)),
-            Col("tab_underline_color_id", Prim(tabUnderlineColorId)),
-            Col("bottom_bar_background_color_id", Prim(bottomBarBackgroundColorId)),
-            Col("bottom_bar_active_color_id", Prim(bottomBarActiveColorId)),
-            Col("bottom_bar_inactive_color_id", Prim(bottomBarInactiveColorId)))
+
+typealias DB_UIColors =
+    RowValue10<PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>,
+               PrimValue<ColorId>>
+
 
 // WIDGET: LOG
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetLog = Row3<Prim<WidgetId>, WidgetId,
-                              Prod<LogWidgetFormat>, LogWidgetFormat,
-                              Coll<LogEntry>, LogEntry>
+val widgetLogTable =
+    Table3("widget_log",
+           "widget_id",
+           "format",
+           "entries")
 
+typealias DB_WidgetLog =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<LogWidgetFormat>,
+              CollValue<LogEntry>>
 
-fun dbWidgetLog(widgetId : WidgetId,
-                format : LogWidgetFormat,
-                entries : List<LogEntry>) : DB_WidgetLog =
-        Row3("widget_log",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("entries", Coll(entries)))
 
 // WIDGET: LOG > ENTRY
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetLogEntry = Row5<Prim<EntryTitle>, EntryTitle,
-                                   Prim<EntryDate>, EntryDate,
-                                   Prim<EntryAuthor>, EntryAuthor,
-                                   MaybePrim<EntrySummary>, EntrySummary,
-                                   Prim<EntryText>, EntryText>
+val widgetLogEntryTable =
+    Table5("widget_log_entry",
+           "title",
+           "date",
+           "author",
+           "summary",
+           "text")
 
-fun dbWidgetLogEntry(title : EntryTitle,
-                     date : EntryDate,
-                     author : EntryAuthor,
-                     summary : Maybe<EntrySummary>,
-                     text : EntryText) : DB_WidgetLogEntry =
-        Row5("widget_log_entry",
-            Col("title", Prim(title)),
-            Col("date", Prim(date)),
-            Col("author", Prim(author)),
-            Col("summary", MaybePrim(summary)),
-            Col("text", Prim(text)))
+typealias DB_WidgetLogEntryValue =
+    RowValue5<PrimValue<EntryTitle>,
+              PrimValue<EntryDate>,
+              PrimValue<EntryAuthor>,
+              MaybePrimValue<EntrySummary>,
+              PrimValue<EntryText>>
+
 
 // WIDGET: LOG > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetLogFormat = Row3<Prod<WidgetFormat>, WidgetFormat,
-                                    Prod<LogEntryFormat>, LogEntryFormat,
-                                    Prim<EntryViewType>, EntryViewType>
+val widgetLogFormat =
+    Table3("widget_log_format",
+           "format",
+           "entry_format",
+           "entry_view_type")
 
-fun dbWidgetLogFormat(format : WidgetFormat,
-                      entryFormat : LogEntryFormat,
-                      entryViewType : EntryViewType) : DB_WidgetLogFormat =
-        Row3("widget_log_format",
-            Col("format", Prod(format)),
-            Col("entry_format", Prod(entryFormat)),
-            Col("entry_view_type", Prim(entryViewType)))
+typealias DB_WidgetLogFormatValue =
+    RowValue3<ProdValue<WidgetFormat>,
+              ProdValue<LogEntryFormat>,
+              PrimValue<EntryViewType>>
+
 
 // WIDGET: LOG > ENTRY FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetLogEntryFormat = Row9<Prod<ElementFormat>, ElementFormat,
-                                         Prod<TextFormat>, TextFormat,
-                                         Prod<ElementFormat>, ElementFormat,
-                                         Prod<TextFormat>, TextFormat,
-                                         Prod<ElementFormat>, ElementFormat,
-                                         Prod<TextFormat>, TextFormat,
-                                         Prod<ElementFormat>, ElementFormat,
-                                         Prod<TextFormat>, TextFormat,
-                                         Prod<ElementFormat>, ElementFormat>
+val widgetLogEntryFormat =
+    Table5("widget_log_entry_format",
+           "title_format",
+           "author_format",
+           "summary_format",
+           "body_format",
+           "entry_format")
 
-fun dbWidgetLogEntryFormat(titleFormat : ElementFormat,
-                           titleStyle : TextFormat,
-                           authorFormat : ElementFormat,
-                           authorStyle : TextFormat,
-                           summaryFormat : ElementFormat,
-                           summaryStyle : TextFormat,
-                           bodyFormat : ElementFormat,
-                           bodyStyle : TextFormat,
-                           entryFormat : ElementFormat) : DB_WidgetLogEntryFormat =
-        Row9("widget_log_entry_format",
-            Col("title_format", Prod(titleFormat)),
-            Col("title_style", Prod(titleStyle)),
-            Col("author_format", Prod(authorFormat)),
-            Col("author_style", Prod(authorStyle)),
-            Col("summary_format", Prod(summaryFormat)),
-            Col("summary_style", Prod(summaryStyle)),
-            Col("body_format", Prod(bodyFormat)),
-            Col("body_style", Prod(bodyStyle)),
-            Col("entry_format", Prod(entryFormat)))
+typealias DB_WidgetLogEntryFormatValue =
+    RowValue5<ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
+
 
 // WIDGET: MECHANIC
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetMechanic = Row3<Prim<WidgetId>, WidgetId,
-                                   Prod<MechanicWidgetFormat>, MechanicWidgetFormat,
-                                   Prim<MechanicCategoryId>, MechanicCategoryId>
+val widgetMechanicTable =
+    Table3("widget_mechanic",
+           "widget_id",
+           "format",
+           "entries")
 
+typealias DB_WidgetMechanicValue =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<MechanicWidgetFormat>,
+              PrimValue<MechanicCategoryId>>
 
-fun dbWidgetMechanic(widgetId : WidgetId,
-                     format : MechanicWidgetFormat,
-                     categoryId : MechanicCategoryId) : DB_WidgetMechanic =
-        Row3("widget_mechanic",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("entries", Prim(categoryId)))
 
 // WIDGET: MECHANIC > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetMechanicFormat = Row9<Prod<WidgetFormat>, WidgetFormat,
-                                         Prim<MechanicWidgetViewType>, MechanicWidgetViewType,
-                                         Prod<ElementFormat>, ElementFormat,
-                                         Prod<ElementFormat>, ElementFormat,
-                                         Prod<TextFormat>, TextFormat,
-                                         Prod<ElementFormat>, ElementFormat,
-                                         Prod<TextFormat>, TextFormat,
-                                         Prod<ElementFormat>, ElementFormat,
-                                         Prod<TextFormat>, TextFormat>
+val widgetMechanicFormatTable =
+    Table7("widget_mechanic_format",
+           "widget_id",
+           "widget_format",
+           "view_type",
+           "mechanic_format",
+           "header_format",
+           "mechanic_header_format",
+           "mechanic_summary_format")
 
+typealias DB_WidgetMechanicFormatValue =
+    RowValue7<PrimValue<WidgetId>,
+              ProdValue<WidgetFormat>,
+              PrimValue<MechanicWidgetViewType>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
 
-fun dbWidgetMechanicFormat(widgetFormat : WidgetFormat,
-                           viewType : MechanicWidgetViewType,
-                           mechanicFormat : ElementFormat,
-                           headerFormat : ElementFormat,
-                           headerStyle : TextFormat,
-                           mechanicHeaderFormat : ElementFormat,
-                           mechanicHeaderStyle : TextFormat,
-                           mechanicSummaryFormat : ElementFormat,
-                           mechanicSummaryStyle : TextFormat) : DB_WidgetMechanicFormat =
-        Row9("widget_mechanic_format",
-            Col("widget_format", Prod(widgetFormat)),
-                Col("view_type", Prim(viewType)),
-                Col("view_type", Prod(mechanicFormat)),
-                Col("view_type", Prod(headerFormat)),
-                Col("view_type", Prod(headerStyle)),
-                Col("view_type", Prod(mechanicHeaderFormat)),
-                Col("view_type", Prod(mechanicHeaderStyle)),
-                Col("view_type", Prod(mechanicSummaryFormat)),
-                Col("view_type", Prod(mechanicSummaryStyle)))
 
 // WIDGET: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetNumber = Row3<Prim<WidgetId>, WidgetId,
-                                 Prod<NumberWidgetFormat>, NumberWidgetFormat,
-                                 Prim<VariableId>, VariableId>
+val widgetNumberTable =
+    Table3("widget_number",
+           "widget_id",
+           "format",
+           "value_variable_id")
 
+typealias DB_WidgetNumber =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<NumberWidgetFormat>,
+              PrimValue<VariableId>>
 
-fun dbWidgetNumber(widgetId : WidgetId,
-                   format : NumberWidgetFormat,
-                   valueVariableId : VariableId) : DB_WidgetNumber =
-        Row3("widget_number",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("value_variable_id", Prim(valueVariableId)))
 
 // WIDGET: NUMBER > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetNumberFormat = Row8<Prod<WidgetFormat>, WidgetFormat,
-                                       Prod<ElementFormat>, ElementFormat,
-                                       Prod<TextFormat>, TextFormat,
-                                       Prod<ElementFormat>, ElementFormat,
-                                       Prod<TextFormat>, TextFormat,
-                                       Prod<ElementFormat>, ElementFormat,
-                                       Prod<TextFormat>, TextFormat,
-                                       Prim<NumberFormat>, NumberFormat>
+val widgetNumberFormatTable =
+    Table5("widget_number_format",
+           "widget_format",
+           "inside_label_format",
+           "outside_label_format",
+           "value_format",
+           "number_format")
 
-fun dbWidgetNumberFormat(widgetFormat : WidgetFormat,
-                         insideLabelFormat : ElementFormat,
-                         insideLabelStyle : TextFormat,
-                         outsideLabelFormat : ElementFormat,
-                         outsideLabelStyle : TextFormat,
-                         valueFormat : ElementFormat,
-                         valueStyle : TextFormat,
-                         numberFormat : NumberFormat) : DB_WidgetNumberFormat =
-        Row8("widget_number",
-            Col("widget_format", Prod(widgetFormat)),
-            Col("inside_label_format", Prod(insideLabelFormat)),
-            Col("inside_label_style", Prod(insideLabelStyle)),
-            Col("outside_label_format", Prod(insideLabelFormat)),
-            Col("outside_label_style", Prod(insideLabelStyle)),
-            Col("value_format", Prod(insideLabelFormat)),
-            Col("value_style", Prod(insideLabelStyle)),
-            Col("number_format", Prim(numberFormat)))
+typealias DB_WidgetNumberFormatValue =
+    RowValue5<ProdValue<WidgetFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
+
 
 // WIDGET FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetFormat = Row2<Prim<WidgetWidth>, WidgetWidth,
-                                 Prod<ElementFormat>, ElementFormat>
+val widgetFormatTable =
+    Table2("widget_format",
+           "width",
+           "element_format")
 
+typealias DB_WidgetFormatValue =
+    RowValue2<PrimValue<WidgetWidth>,
+              ProdValue<ElementFormat>>
 
-fun dbWidgetFormat(width : WidgetWidth,
-                   elementFormat : ElementFormat) : DB_WidgetFormat =
-        Row2("widget_number",
-            Col("width", Prim(width)),
-            Col("element_format", Prod(elementFormat)))
 
 // WIDGET: POINTS
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetPoints = Row5<Prim<WidgetId>, WidgetId,
-                                 Prod<PointsWidgetFormat>, PointsWidgetFormat,
-                                 Prim<VariableId>, VariableId,
-                                 Prim<VariableId>, VariableId,
-                                 MaybePrim<PointsWidgetLabel>, PointsWidgetLabel>
+val widgetPointsTable =
+    Table5("widget_points",
+           "widget_id",
+           "format",
+           "limit_value_variable_id",
+           "current_value_variable_id",
+           "label")
 
-fun dbWidgetPoints(widgetId : WidgetId,
-                   format : PointsWidgetFormat,
-                   limitValueVariableId : VariableId,
-                   currenttValueVariableId : VariableId,
-                   label : Maybe<PointsWidgetLabel>) : DB_WidgetPoints =
-        Row5("widget_number",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("limit_value_variable_id", Prim(limitValueVariableId)),
-            Col("current_value_variable_id", Prim(currenttValueVariableId)),
-            Col("label", MaybePrim(label)))
+typealias DB_WidgetPointsValue =
+    RowValue5<PrimValue<WidgetId>,
+              ProdValue<PointsWidgetFormat>,
+              PrimValue<VariableId>,
+              PrimValue<VariableId>,
+              MaybePrimValue<PointsWidgetLabel>>
+
 
 // WIDGET: POINTS > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetPointsFormat = Row5<Prod<WidgetFormat>, WidgetFormat,
-                                       Prod<TextFormat>, TextFormat,
-                                       Prod<TextFormat>, TextFormat,
-                                       Prod<TextFormat>, TextFormat,
-                                       Prod<PointsBarFormat>, PointsBarFormat>
+val widgetPointsFormatTable =
+    Table5("widget_points_format",
+           "widget_format",
+           "limit_text_format",
+           "current_text_format",
+           "label_text_format",
+           "bar_format")
 
-fun dbWidgetPointsFormat(widgetFormat : WidgetFormat,
-                         limitTextFormat : TextFormat,
-                         currentTextFormat : TextFormat,
-                         labelTextFormat : TextFormat,
-                         barFormat : PointsBarFormat) : DB_WidgetPointsFormat =
-        Row5("widget_points_format",
-            Col("widget_format", Prod(widgetFormat)),
-            Col("limit_text_format", Prod(limitTextFormat)),
-            Col("current_text_format", Prod(currentTextFormat)),
-            Col("label_text_format", Prod(labelTextFormat)),
-            Col("bar_format", Prod(barFormat)))
+typealias DB_WidgetPointsFormatValue =
+    RowValue5<ProdValue<WidgetFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<PointsBarFormat>>
+
 
 // WIDGET: POINTS > BAR FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetPointsBarFormat = Row5<Prim<PointsBarStyle>, PointsBarStyle,
-                                          Prim<PointsAboveBarStyle>, PointsAboveBarStyle,
-                                          Prim<PointsBarHeight>, PointsBarHeight,
-                                          Prim<ColorTheme>, ColorTheme,
-                                          Prim<ColorTheme>, ColorTheme>
+val widgetPointsBarFormatTable =
+    Table5("widget_points_bar_format",
+           "style",
+           "above_style",
+           "height",
+           "limit_color_theme",
+           "current_color_theme")
 
-fun dbWidgetPointsBarFormat(barStyle : PointsBarStyle,
-                            barAboveStyle : PointsAboveBarStyle,
-                            barHeight : PointsBarHeight,
-                            limitColorTheme : ColorTheme,
-                            currentColorTheme : ColorTheme) : DB_WidgetPointsBarFormat =
-        Row5("widget_points_bar_format",
-            Col("style", Prim(barStyle)),
-            Col("above_style", Prim(barAboveStyle)),
-            Col("height", Prim(barHeight)),
-            Col("limit_color_theme", Prim(limitColorTheme)),
-            Col("current_color_theme", Prim(currentColorTheme)))
+typealias DB_WidgetPointsBarFormatValue =
+    RowValue5<PrimValue<PointsBarStyle>,
+              PrimValue<PointsAboveBarStyle>,
+              PrimValue<PointsBarHeight>,
+              PrimValue<ColorTheme>,
+              PrimValue<ColorTheme>>
+
 
 // WIDGET: QUOTE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetQuote = Row4<Prim<WidgetId>, WidgetId,
-                                Prod<QuoteWidgetFormat>, QuoteWidgetFormat,
-                                Prim<VariableId>, VariableId,
-                                MaybePrim<VariableId>, VariableId>
+val widgetQuoteTable =
+    Table4("widget_quote",
+           "widget_id",
+           "format",
+           "quote_variable_id",
+           "source_variable_id")
 
-fun dbWidgetQuote(widgetId : WidgetId,
-                  format : QuoteWidgetFormat,
-                  quoteVariableId : VariableId,
-                  sourceVariableId : Maybe<VariableId>) : DB_WidgetQuote =
-        Row4("widget_quote",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("quote_variable_id", Prim(quoteVariableId)),
-            Col("source_variable_id", MaybePrim(sourceVariableId)))
+typealias DB_WidgetQuoteValue =
+    RowValue4<PrimValue<WidgetId>,
+              ProdValue<QuoteWidgetFormat>,
+              PrimValue<VariableId>,
+              MaybePrimValue<VariableId>>
+
 
 // WIDGET: QUOTE > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetQuoteFormat = Row5<Prod<WidgetFormat>, WidgetFormat,
-                                      Prim<QuoteViewType>, QuoteViewType,
-                                      Prod<TextFormat>, TextFormat,
-                                      Prod<TextFormat>, TextFormat,
-                                      Prod<IconFormat>, IconFormat>
+val widgetQuoteFormatTable =
+    Table5("widget_quote_format",
+           "widget_format",
+           "view_type",
+           "quote_format",
+           "source_format",
+           "icon_format")
 
-fun dbWidgetQuoteFormat(widgetFormat : WidgetFormat,
-                        viewType : QuoteViewType,
-                        quoteFormat : TextFormat,
-                        sourceFormat : TextFormat,
-                        iconFormat : IconFormat) : DB_WidgetQuoteFormat =
-        Row5("widget_quote",
-            Col("widget_format", Prod(widgetFormat)),
-            Col("view_type", Prim(viewType)),
-            Col("quote_format", Prod(quoteFormat)),
-            Col("source_format", Prod(sourceFormat)),
-            Col("icon_format", Prod(iconFormat)))
+typealias DB_WidgetQuoteFormatValue =
+    RowValue5<ProdValue<WidgetFormat>,
+              PrimValue<QuoteViewType>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<IconFormat>>
+
 
 // WIDGET: STORY
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetStory = Row3<Prim<WidgetId>, WidgetId,
-                                Prod<StoryWidgetFormat>, StoryWidgetFormat,
-                                Coll<StoryPart>, StoryPart>
+val widgetStoryTable =
+    Table3("widget_story",
+           "widget_id",
+           "format",
+           "story")
 
-fun dbWidgetStory(widgetId : WidgetId,
-                  format : StoryWidgetFormat,
-                  story : List<StoryPart>) : DB_WidgetStory =
-        Row3("widget_story",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("story", Coll(story)))
+typealias DB_WidgetStoryValue =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<StoryWidgetFormat>,
+              CollValue<StoryPart>>
+
 
 // WIDGET: STORY > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetStoryFormat = Row2<Prod<WidgetFormat>, WidgetFormat,
-                                      Prim<LineSpacing>, LineSpacing>
+val widgetStoryFormatTable =
+    Table2("widget_story_format",
+           "widget_format",
+           "line_spaceing")
 
-fun dbWidgetStoryFormat(widgetFormat : WidgetFormat,
-                        lineSpacing : LineSpacing) : DB_WidgetStoryFormat =
-        Row2("widget_quote",
-            Col("widget_format", Prod(widgetFormat)),
-            Col("line_spacing", Prim(lineSpacing)))
+typealias DB_WidgetStoryFormatValue =
+    RowValue2<ProdValue<WidgetFormat>,
+              PrimValue<LineSpacing>>
+
 
 // WIDGET: STORY > PART: SPAN
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetStoryPartSpan = Row2<Prod<TextFormat>, TextFormat,
-                                        Prim<StoryPartText>, StoryPartText>
+val widgetStoryPartSpanTable =
+    Table2("widget_story_part_span",
+            "text_format",
+            "text")
 
-fun dbWidgetStoryPartSpan(textFormat : TextFormat,
-                          text : StoryPartText) : DB_WidgetStoryPartSpan =
-        Row2("widget_story_part_span",
-            Col("text_format", Prod(textFormat)),
-            Col("text", Prim(text)))
+typealias DB_WidgetStoryPartSpanValue =
+    RowValue2<ProdValue<TextFormat>,
+              PrimValue<StoryPartText>>
+
 
 // WIDGET: STORY > PART: VARIABLE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetStoryPartVariable = Row3<Prod<TextFormat>, TextFormat,
-                                            Prim<VariableId>, VariableId,
-                                            Prim<NumericEditorType>, NumericEditorType>
+val widgetStoryPartVariableTable =
+    Table3("widget_story_part_variable",
+           "text_format",
+           "variable_id",
+           "numeric_editor_type")
 
-fun dbWidgetStoryPartVariable(textFormat : TextFormat,
-                              variableId : VariableId,
-                              numEditorType : NumericEditorType) : DB_WidgetStoryPartVariable =
-        Row3("widget_story_part_variable",
-            Col("text_format", Prod(textFormat)),
-            Col("variable_id", Prim(variableId)),
-            Col("numeric_editor_type", Prim(numEditorType)))
+typealias DB_WidgetStoryPartVariableValue =
+    RowValue3<ProdValue<TextFormat>,
+              PrimValue<VariableId>,
+              PrimValue<NumericEditorType>>
+
 
 // WIDGET: STORY > PART: ICON
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetStoryPartIcon = Row2<Prim<Icon>, Icon,
-                                        Prod<IconFormat>, IconFormat>
+val widgetStoryPartIconTable =
+    Table2("widget_story_part_icon",
+           "icon",
+           "icon_format")
 
-fun dbWidgetStoryPartIcon(icon : Icon,
-                          iconFormat : IconFormat) : DB_WidgetStoryPartIcon =
-        Row2("widget_story_part_icon",
-            Col("icon", Prim(icon)),
-            Col("icon_format", Prod(iconFormat)))
+typealias DB_WidgetStoryPartIconValue =
+    RowValue2<PrimValue<Icon>,
+              ProdValue<IconFormat>>
+
 
 // WIDGET: STORY > PART: ACTION
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetStoryPartAction = Row5<Prim<StoryPartText>, StoryPartText,
-                                          Prod<Action>, Action,
-                                          Prod<TextFormat>, TextFormat,
-                                          Prod<IconFormat>, IconFormat,
-                                          Prim<ShowProcedureDialog>, ShowProcedureDialog>
+val widgetStoryPartActionTable =
+    Table5("widget_story_part_action",
+           "text",
+           "action",
+           "text_format",
+           "icon_format",
+           "show_procedure_dialog")
 
-fun dbWidgetStoryPartAction(text : StoryPartText,
-                            action : Action,
-                            textFormat : TextFormat,
-                            iconFormat : IconFormat,
-                            showProcedureDialog : ShowProcedureDialog)
-                             : DB_WidgetStoryPartAction =
-        Row5("widget_story_part_action",
-            Col("text", Prim(text)),
-            Col("action", Prod(action)),
-            Col("text_format", Prod(textFormat)),
-            Col("icon_format", Prod(iconFormat)),
-            Col("show_procedure_dialog", Prim(showProcedureDialog)))
+typealias DB_WidgetStoryPartActionValue =
+    RowValue5<PrimValue<StoryPartText>,
+              ProdValue<Action>,
+              ProdValue<TextFormat>,
+              ProdValue<IconFormat>,
+              PrimValue<ShowProcedureDialog>>
+
 
 // WIDGET: TABLE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTable = Row5<Prim<WidgetId>, WidgetId,
-                                Prod<TableWidgetFormat>, TableWidgetFormat,
-                                Coll<TableWidgetColumn>, TableWidgetColumn,
-                                Coll<TableWidgetRow>, TableWidgetRow,
-                                MaybePrim<TableSort>, TableSort>
+val widgetTableTable =
+    Table5("widget_table",
+           "widget_id",
+           "format",
+           "columns",
+           "rows",
+           "sort")
 
-fun dbWidgetTable(widgetId : WidgetId,
-                  format : TableWidgetFormat,
-                  columns : MutableList<TableWidgetColumn>,
-                  rows : MutableList<TableWidgetRow>,
-                  sort : Maybe<TableSort>) : DB_WidgetTable =
-        Row5("widget_table",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("columns", Coll(columns)),
-            Col("rows", Coll(rows)),
-            Col("sort", MaybePrim(sort)))
+typealias DB_WidgetTableValue =
+    RowValue5<PrimValue<WidgetId>,
+              ProdValue<TableWidgetFormat>,
+              CollValue<TableWidgetColumn>,
+              CollValue<TableWidgetRow>,
+              MaybePrimValue<TableSort>>
+
 
 // WIDGET: TABLE > CELL: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableCellBoolean = Row2<Prod<BooleanCellFormat>, BooleanCellFormat,
-                                           Sum<BooleanVariableValue>, BooleanVariableValue>
+val widgetTableCellBooleanTable =
+    Table2("widget_table_cell_boolean",
+           "format",
+           "variable_value")
 
-fun dbWidgetTableCellBoolean(format : BooleanCellFormat,
-                             variableValue : BooleanVariableValue)
-                              : DB_WidgetTableCellBoolean =
-        Row2("widget_table_cell_boolean",
-            Col("format", Prod(format)),
-            Col("variable_value", Sum(variableValue)))
+typealias DB_WidgetTableCellBooleanValue =
+    RowValue2<ProdValue<BooleanCellFormat>,
+              SumValue<BooleanVariableValue>>
+
 
 // WIDGET: TABLE > CELL: BOOLEAN > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableCellBooleanFormat =
-                        Row5<MaybeProd<ElementFormat>, ElementFormat,
-                             MaybeProd<TextFormat>, TextFormat,
-                             MaybeProd<TextFormat>, TextFormat,
-                             MaybePrim<ShowTrueIcon>, ShowTrueIcon,
-                             MaybePrim<ShowFalseIcon>, ShowFalseIcon>
+val widgetTableCellBooleanFormatTable =
+    Table5("widget_table_cell_boolean_format",
+           "element_format",
+           "true_format",
+           "false_format",
+           "show_true_icon",
+           "show_false_icon")
 
-fun dbWidgetTableCellBooleanFormat(elementFormat : Maybe<ElementFormat>,
-                                   trueFormat : Maybe<TextFormat>,
-                                   falseFormat : Maybe<TextFormat>,
-                                   showTrueIcon : Maybe<ShowTrueIcon>,
-                                   showFalseIcon : Maybe<ShowFalseIcon>)
-                                    : DB_WidgetTableCellBooleanFormat =
-        Row5("widget_table_cell_boolean_format",
-            Col("element_format", MaybeProd(elementFormat)),
-            Col("true_format", MaybeProd(trueFormat)),
-            Col("false_format", MaybeProd(falseFormat)),
-            Col("show_true_icon", MaybePrim(showTrueIcon)),
-            Col("show_false_icon", MaybePrim(showFalseIcon)))
+typealias DB_WidgetTableCellBooleanFormatValue =
+    RowValue5<MaybeProdValue<ElementFormat>,
+              MaybeProdValue<TextFormat>,
+              MaybeProdValue<TextFormat>,
+              MaybePrimValue<ShowTrueIcon>,
+              MaybePrimValue<ShowFalseIcon>>
+
 
 // WIDGET: TABLE > CELL: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableCellNumber = Row4<Prod<NumberCellFormat>, NumberCellFormat,
-                                          Sum<NumberVariableValue>, NumberVariableValue,
-                                          MaybePrim<NumericEditorType>, NumericEditorType,
-                                          MaybeProd<Action>, Action>
+val widgetTableCellNumberTable =
+    Table4("widget_table_cell_number",
+           "format",
+           "variable_value",
+           "editor_type",
+           "action")
 
-fun dbWidgetTableCellNumber(format : NumberCellFormat,
-                            variableValue : NumberVariableValue,
-                            editorType : Maybe<NumericEditorType>,
-                            action : Maybe<Action>)
-                              : DB_WidgetTableCellNumber =
-        Row4("widget_table_cell_number",
-            Col("format", Prod(format)),
-            Col("variable_value", Sum(variableValue)),
-            Col("editor_type", MaybePrim(editorType)),
-            Col("action", MaybeProd(action)))
+typealias DB_WidgetTableCellNumberValue =
+    RowValue4<ProdValue<NumberCellFormat>,
+              SumValue<NumberVariableValue>,
+              MaybePrimValue<NumericEditorType>,
+              MaybeProdValue<Action>>
+
 
 // WIDGET: TABLE > CELL: NUMBER > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableCellNumberFormat =
-                        Row2<MaybeProd<ElementFormat>, ElementFormat,
-                             MaybeProd<TextFormat>, TextFormat>
+val widgetTableCellNumberFormatTable =
+        Table1("widget_table_cell_number_format",
+                "text_format")
 
-fun dbWidgetTableCellNumberFormat(elementFormat : Maybe<ElementFormat>,
-                                  textFormat : Maybe<TextFormat>)
-                                   : DB_WidgetTableCellNumberFormat =
-        Row2("widget_table_cell_number_format",
-            Col("element_format", MaybeProd(elementFormat)),
-            Col("text_format", MaybeProd(textFormat)))
+typealias DB_WidgetTableCellNumberFormatValue =
+    RowValue1<MaybeProdValue<ElementFormat>>
+
+
 
 // WIDGET: TABLE > CELL: TEXT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableCellText = Row3<Prod<TextCellFormat>, TextCellFormat,
-                                        Sum<TextVariableValue>, TextVariableValue,
-                                        MaybeProd<Action>, Action>
+val widgetTableCellTextTable =
+        Table3("widget_table_cell_text",
+               "format",
+               "variable_value",
+               "action")
 
-fun dbWidgetTableCellText(format : TextCellFormat,
-                          variableValue : TextVariableValue,
-                          action : Maybe<Action>)
-                           : DB_WidgetTableCellText =
-        Row3("widget_table_cell_text",
-            Col("format", Prod(format)),
-            Col("variable_value", Sum(variableValue)),
-            Col("action", MaybeProd(action)))
+typealias DB_WidgetTableCellTextValue =
+    RowValue3<ProdValue<TextCellFormat>,
+              SumValue<TextVariableValue>,
+              MaybeProdValue<Action>>
+
 
 // WIDGET: TABLE > CELL: TEXT > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableCellTextFormat =
-                        Row2<MaybeProd<ElementFormat>, ElementFormat,
-                             MaybeProd<TextFormat>, TextFormat>
+val widgetTableCellTextFormatTable =
+        Table1("widget_table_cell_text_format",
+               "text_format")
 
-fun dbWidgetTableCellTextFormat(elementFormat : Maybe<ElementFormat>,
-                                textFormat : Maybe<TextFormat>)
-                                   : DB_WidgetTableCellTextFormat =
-        Row2("widget_table_cell_text_format",
-            Col("element_format", MaybeProd(elementFormat)),
-            Col("text_format", MaybeProd(textFormat)))
+typealias DB_WidgetTableCellTextFormatValue =
+    RowValue1<MaybeProdValue<ElementFormat>>
+
 
 // WIDGET: TABLE > COLUMN: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableColumnBoolean = Row5<Prim<ColumnName>, ColumnName,
-                                             Prim<ColumnVariablePrefix>, ColumnVariablePrefix,
-                                             Prim<IsColumnNamespaced>, IsColumnNamespaced,
-                                             Sum<BooleanVariableValue>, BooleanVariableValue,
-                                             Prod<BooleanColumnFormat>, BooleanColumnFormat>
+val widgetTableColumnBooleanTable =
+    Table5("widget_table_column_boolean",
+           "column_name",
+           "variable_prefix",
+           "is_column_namespaced",
+           "default_value",
+           "format")
 
-fun dbWidgetTableColumnBoolean(columnName : ColumnName,
-                               variablePrefix : ColumnVariablePrefix,
-                               isColumnNamespaced:  IsColumnNamespaced,
-                               defaultValue : BooleanVariableValue,
-                               format : BooleanColumnFormat) : DB_WidgetTableColumnBoolean =
-        Row5("widget_table_column_boolean",
-            Col("column_name", Prim(columnName)),
-            Col("variable_prefix", Prim(variablePrefix)),
-            Col("is_column_namespaced", Prim(isColumnNamespaced)),
-            Col("default_value", Sum(defaultValue)),
-            Col("format", Prod(format)))
+typealias DB_WidgetTableColumnBooleanValue =
+    RowValue5<PrimValue<ColumnName>,
+              PrimValue<ColumnVariablePrefix>,
+              PrimValue<IsColumnNamespaced>,
+              SumValue<BooleanVariableValue>,
+              ProdValue<BooleanColumnFormat>>
+
 
 // WIDGET: TABLE > COLUMN: BOOLEAN > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableColumnBooleanFormat =
-                        Row7<Prod<ColumnFormat>, ColumnFormat,
-                             Prod<TextFormat>, TextFormat,
-                             Prod<TextFormat>, TextFormat,
-                             Prim<ColumnTrueText>, ColumnTrueText,
-                             Prim<ColumnFalseText>, ColumnFalseText,
-                             Prim<ShowTrueIcon>, ShowTrueIcon,
-                             Prim<ShowFalseIcon>, ShowFalseIcon>
+val widgetTableColumnBooleanFormatTable =
+    Table7("widget_table_column_boolean_format",
+           "column_name",
+           "true_format",
+           "false_format",
+           "true_text",
+           "false_text",
+           "show_true_icon",
+           "show_false_icon")
 
-fun dbWidgetTableColumnBooleanFormat(columnFormat : ColumnFormat,
-                                     trueFormat : TextFormat,
-                                     falseFormat : TextFormat,
-                                     trueText : ColumnTrueText,
-                                     falseText : ColumnFalseText,
-                                     showTrueIcon : ShowTrueIcon,
-                                     showFalseIcon : ShowFalseIcon)
-                                      : DB_WidgetTableColumnBooleanFormat =
-        Row7("widget_table_column_boolean_format",
-            Col("column_name", Prod(columnFormat)),
-            Col("true_format", Prod(trueFormat)),
-            Col("false_format", Prod(falseFormat)),
-            Col("true_text", Prim(trueText)),
-            Col("false_text", Prim(falseText)),
-            Col("show_true_icon", Prim(showTrueIcon)),
-            Col("show_false_icon", Prim(showFalseIcon)))
+typealias DB_WidgetTableColumnBooleanFormatValue =
+    RowValue7<ProdValue<ColumnFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              PrimValue<ColumnTrueText>,
+              PrimValue<ColumnFalseText>,
+              PrimValue<ShowTrueIcon>,
+              PrimValue<ShowFalseIcon>>
 
 
 // WIDGET: TABLE > COLUMN: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableColumnNumber = Row7<Prim<ColumnName>, ColumnName,
-                                            Prim<ColumnVariablePrefix>, ColumnVariablePrefix,
-                                            Prim<IsColumnNamespaced>, IsColumnNamespaced,
-                                            Sum<NumberVariableValue>, NumberVariableValue,
-                                            Prod<NumberColumnFormat>, NumberColumnFormat,
-                                            MaybeProd<Action>, Action,
-                                            Prim<NumericEditorType>, NumericEditorType>
+val widgetTableColumnNumberTable =
+    Table7("widget_table_column_number",
+           "column_name",
+           "variable_prefix",
+           "is_column_namespaced",
+           "default_value",
+           "format",
+           "action",
+           "editor_type")
 
-fun dbWidgetTableColumnNumber(columnName : ColumnName,
-                              variablePrefix : ColumnVariablePrefix,
-                              isColumnNamespaced:  IsColumnNamespaced,
-                              defaultValue : NumberVariableValue,
-                              format : NumberColumnFormat,
-                              action : Maybe<Action>,
-                              editorType : NumericEditorType)
-                                : DB_WidgetTableColumnNumber =
-        Row7("widget_table_column_number",
-            Col("column_name", Prim(columnName)),
-            Col("variable_prefix", Prim(variablePrefix)),
-            Col("is_column_namespaced", Prim(isColumnNamespaced)),
-            Col("default_value", Sum(defaultValue)),
-            Col("format", Prod(format)),
-            Col("action", MaybeProd(action)),
-            Col("editor_type", Prim(editorType)))
+typealias DB_WidgetTableColumnNumberValue =
+    RowValue7<PrimValue<ColumnName>,
+              PrimValue<ColumnVariablePrefix>,
+              PrimValue<IsColumnNamespaced>,
+              SumValue<NumberVariableValue>,
+              ProdValue<NumberColumnFormat>,
+              MaybeProdValue<Action>,
+              PrimValue<NumericEditorType>>
+
 
 // WIDGET: TABLE > COLUMN: NUMBER > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableColumnNumberFormat =
-                        Row1<Prod<ColumnFormat>, ColumnFormat>
+val widgetTableColumnNumberFormatTable =
+    Table1("widget_table_column_number_format",
+           "column_format")
 
-fun dbWidgetTableColumnNumberFormat(columnFormat : ColumnFormat)
-                                     : DB_WidgetTableColumnNumberFormat =
-        Row1("widget_table_column_number_format",
-            Col("column_format", Prod(columnFormat)))
+typealias DB_WidgetTableColumnNumberFormatValue =
+    RowValue1<ProdValue<ColumnFormat>>
+
 
 // WIDGET: TABLE > COLUMN: TEXT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableColumnText = Row7<Prim<ColumnName>, ColumnName,
-                                          Prim<ColumnVariablePrefix>, ColumnVariablePrefix,
-                                          Prim<IsColumnNamespaced>, IsColumnNamespaced,
-                                          Sum<TextVariableValue>, TextVariableValue,
-                                          Prod<TextColumnFormat>, TextColumnFormat,
-                                          MaybeProd<Action>, Action,
-                                          Prim<DefinesNamespace>, DefinesNamespace>
+val widgetTableColumnTextTable =
+    Table7("widget_table_column_text",
+           "column_name",
+           "variable_prefix",
+           "is_column_namespaced",
+           "default_value",
+           "format",
+           "action",
+           "defines_namespace")
 
-fun dbWidgetTableColumnText(columnName : ColumnName,
-                            variablePrefix : ColumnVariablePrefix,
-                            isColumnNamespaced:  IsColumnNamespaced,
-                            defaultValue : TextVariableValue,
-                            format : TextColumnFormat,
-                            action : Maybe<Action>,
-                            definesNamespace : DefinesNamespace)
-                             : DB_WidgetTableColumnText =
-        Row7("widget_table_column_text",
-            Col("column_name", Prim(columnName)),
-            Col("variable_prefix", Prim(variablePrefix)),
-            Col("is_column_namespaced", Prim(isColumnNamespaced)),
-            Col("default_value", Sum(defaultValue)),
-            Col("format", Prod(format)),
-            Col("action", MaybeProd(action)),
-            Col("defines_namespace", Prim(definesNamespace)))
+typealias DB_WidgetTableColumnTextValue =
+    RowValue7<PrimValue<ColumnName>,
+              PrimValue<ColumnVariablePrefix>,
+              PrimValue<IsColumnNamespaced>,
+              SumValue<TextVariableValue>,
+              ProdValue<TextColumnFormat>,
+              MaybeProdValue<Action>,
+              PrimValue<DefinesNamespace>>
+
 
 // WIDGET: TABLE > COLUMN: TEXT > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableColumnTextFormat =
-                        Row1<Prod<ColumnFormat>, ColumnFormat>
+val widgetTableColumnTextFormatTable =
+    Table1("widget_table_column_text_format",
+           "column_format")
 
-fun dbWidgetTableColumnTextFormat(columnFormat : ColumnFormat)
-                                    : DB_WidgetTableColumnTextFormat =
-        Row1("widget_table_column_text_format",
-            Col("column_format", Prod(columnFormat)))
+typealias DB_WidgetTableColumnTextFormatValue =
+    RowValue1<ProdValue<ColumnFormat>>
+
 
 // WIDGET: TABLE > COLUMN > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableColumnFormat = Row3<Prod<TextFormat>, TextFormat,
-                                            Prod<ElementFormat>, ElementFormat,
-                                            Prim<ColumnWidth>, ColumnWidth>
+val widgetTableColumnFormatTable =
+    Table3("widget_table_column_format",
+           "text_format",
+           "element_format",
+           "width")
 
-fun dbWidgetTableColumnFormat(textFormat : TextFormat,
-                              elementFormat : ElementFormat,
-                              width : ColumnWidth) : DB_WidgetTableColumnFormat =
-        Row3("widget_table_column_format",
-            Col("text_format", Prod(textFormat)),
-            Col("element_format", Prod(elementFormat)),
-            Col("width", Prim(width)))
+typealias DB_WidgetTableColumnFormatValue =
+    RowValue3<ProdValue<TextFormat>,
+              ProdValue<ElementFormat>,
+              PrimValue<ColumnWidth>>
+
 
 // WIDGET: TABLE > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableFormat = Row5<Prod<WidgetFormat>, WidgetFormat,
-                                      Prod<TableWidgetRowFormat>, TableWidgetRowFormat,
-                                      Prod<TableWidgetRowFormat>, TableWidgetRowFormat,
-                                      MaybeProd<Divider>, Divider,
-                                      Prim<Height>, Height>
+val widgetTableFormatTable =
+    Table5("widget_table_format",
+           "widget_format",
+           "header_format",
+           "row_format",
+           "divider",
+           "cell_height")
 
-fun dbWidgetTableFormat(widgetFormat : WidgetFormat,
-                        headerFormat : TableWidgetRowFormat,
-                        rowFormat : TableWidgetRowFormat,
-                        divider : Maybe<Divider>,
-                        cellHeight : Height) : DB_WidgetTableFormat =
-        Row5("widget_table_format",
-            Col("widget_format", Prod(widgetFormat)),
-            Col("header_format", Prod(headerFormat)),
-            Col("row_format", Prod(rowFormat)),
-            Col("divider", MaybeProd(divider)),
-            Col("cell_height", Prim(cellHeight)))
+typealias DB_WidgetTableFormatValue =
+    RowValue5<ProdValue<WidgetFormat>,
+              ProdValue<TableWidgetRowFormat>,
+              ProdValue<TableWidgetRowFormat>,
+              MaybeProdValue<Divider>,
+              PrimValue<Height>>
+
 
 // WIDGET: TABLE > ROW
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableRow = Row2<Prod<TableWidgetRowFormat>, TableWidgetRowFormat,
-                                   Coll<TableWidgetCell>, TableWidgetCell>
+val widgetTableRowTable =
+    Table2("widget_table_row",
+           "format",
+           "cells")
 
-fun dbWidgetTableRow(format : TableWidgetRowFormat,
-                     cells : List<TableWidgetCell>) : DB_WidgetTableRow =
-        Row2("widget_table_row",
-            Col("format", Prod(format)),
-            Col("cells", Coll(cells)))
+typealias DB_WidgetTableRowValue =
+    RowValue2<ProdValue<TableWidgetRowFormat>,
+              CollValue<TableWidgetCell>>
+
 
 // WIDGET: TABLE > ROW > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTableRowFormat = Row2<Prod<TextFormat>, TextFormat,
-                                         Prod<ElementFormat>, ElementFormat>
+val widgetTableRowFormatTable =
+    Table1("widget_table_row_format",
+           "text_format")
 
-fun dbWidgetTableRowFormat(textFormat : TextFormat,
-                           elementFormat : ElementFormat) : DB_WidgetTableRowFormat =
-        Row2("widget_table_row_format",
-            Col("text_format", Prod(textFormat)),
-            Col("element_format", Prod(elementFormat)))
+typealias DB_WidgetTableRowFormatValue =
+    RowValue1<ProdValue<TextFormat>>
+
 
 // WIDGET: TEXT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetText = Row3<Prim<WidgetId>, WidgetId,
-                               Prod<TextWidgetFormat>, TextWidgetFormat,
-                               Prim<VariableId>, VariableId>
+val widgetTextTable =
+    Table3("widget_text",
+           "widget_id",
+           "format",
+           "value_variable_id")
 
-fun dbWidgetText(widgetId : WidgetId,
-                 format : TextWidgetFormat,
-                 valueVariableId : VariableId) : DB_WidgetText =
-        Row3("widget_text",
-            Col("widget_id", Prim(widgetId)),
-            Col("format", Prod(format)),
-            Col("value_variable_id", Prim(valueVariableId)))
+typealias DB_WidgetTextValue =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<TextWidgetFormat>,
+              PrimValue<VariableId>>
+
 
 // WIDGET: TEXT > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_WidgetTextFormat = Row4<Prod<WidgetFormat>, WidgetFormat,
-                                     Prod<TextFormat>, TextFormat,
-                                     Prod<TextFormat>, TextFormat,
-                                     Prod<TextFormat>, TextFormat>
+val widgetTextFormatTable =
+    Table4("widget_text_format",
+           "widget_format",
+           "inside_label_format",
+           "outside_label_format",
+           "value_format")
 
-fun dbWidgetTextFormat(widgetFormat : WidgetFormat,
-                       insideLabelFormat : TextFormat,
-                       outsideLabelFormat : TextFormat,
-                       valueFormat : TextFormat) : DB_WidgetTextFormat =
-        Row4("widget_text_format",
-            Col("widget_format", Prod(widgetFormat)),
-            Col("inside_label_format", Prod(insideLabelFormat)),
-            Col("outside_label_format", Prod(outsideLabelFormat)),
-            Col("value_format", Prod(valueFormat)))
+typealias DB_WidgetTextFormat =
+    RowValue4<ProdValue<WidgetFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
+
 
 // VALUE: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_ValueNumber = Row5<Prim<ValueId>, ValueId,
-                                Prim<ValueDescription>, ValueDescription,
-                                MaybeProd<RulebookReference>, RulebookReference,
-                                Coll<Variable>, Variable,
-                                Prim<NumberValue>, NumberValue>
+val valueNumber =
+    Table5("value_number",
+           "value_id",
+           "description",
+           "rulebook_reference",
+           "variables",
+           "value")
 
-fun dbValueNumber(valueId : ValueId,
-                  description : ValueDescription,
-                  rulebookReference : Maybe<RulebookReference>,
-                  variables : List<Variable>,
-                  value : NumberValue) : DB_ValueNumber =
-        Row5("value_number",
-            Col("value_id", Prim(valueId)),
-            Col("description", Prim(description)),
-            Col("rulebook_reference", MaybeProd(rulebookReference)),
-            Col("variables", Coll(variables)),
-            Col("value", Prim(value)))
+typealias DB_ValueNumberValue =
+    RowValue5<PrimValue<ValueId>,
+              PrimValue<ValueDescription>,
+              MaybeProdValue<RulebookReference>,
+              CollValue<Variable>,
+              PrimValue<NumberValue>>
+
 
 // VALUE: TEXT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_ValueText = Row5<Prim<ValueId>, ValueId,
-                              Prim<ValueDescription>, ValueDescription,
-                              MaybeProd<RulebookReference>, RulebookReference,
-                              Coll<Variable>, Variable,
-                              Prim<TextValue>, TextValue>
+val valueText =
+    Table5("value_text",
+           "value_id",
+           "description",
+           "rulebook_reference",
+           "variables",
+           "value")
 
-fun dbValueText(valueId : ValueId,
-                description : ValueDescription,
-                rulebookReference : Maybe<RulebookReference>,
-                variables : List<Variable>,
-                value : TextValue) : DB_ValueText =
-        Row5("value_text",
-            Col("value_id", Prim(valueId)),
-            Col("description", Prim(description)),
-            Col("rulebook_reference", MaybeProd(rulebookReference)),
-            Col("variables", Coll(variables)),
-            Col("value", Prim(value)))
+typealias DB_ValueTextValue =
+    RowValue5<PrimValue<ValueId>,
+              PrimValue<ValueDescription>,
+              MaybeProdValue<RulebookReference>,
+              CollValue<Variable>,
+              PrimValue<TextValue>>
+
 
 // VALUE SET: BASE
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_ValueSetBase = Row6<Prim<ValueSetId>, ValueSetId,
-                                 Prim<ValueSetLabel>, ValueSetLabel,
-                                 Prim<ValueSetLabelSingular>, ValueSetLabelSingular,
-                                 Prim<ValueSetDescription>, ValueSetDescription,
-                                 Prim<ValueType>, ValueType,
-                                 Coll<Value>, Value>
+val valueSetBaseTable =
+    Table6("value_set_base",
+           "value_set_id",
+           "label",
+           "label_singular",
+           "description",
+           "value_type",
+           "values")
 
-fun dbValueSetBase(valueSetId : ValueSetId,
-                   label : ValueSetLabel,
-                   labelSingular : ValueSetLabelSingular,
-                   description : ValueSetDescription,
-                   valueType : ValueType,
-                   values : List<Value>) : DB_ValueSetBase =
-        Row6("widget_value_set_base",
-            Col("value_set_id", Prim(valueSetId)),
-            Col("label", Prim(label)),
-            Col("label_singular", Prim(labelSingular)),
-            Col("description", Prim(description)),
-            Col("value_type", Prim(valueType)),
-            Col("values", Coll(values)))
+typealias DB_ValueSetBaseValue =
+    RowValue6<PrimValue<ValueSetId>,
+              PrimValue<ValueSetLabel>,
+              PrimValue<ValueSetLabelSingular>,
+              PrimValue<ValueSetDescription>,
+              PrimValue<ValueType>,
+              CollValue<Value>>
+
 
 // VALUE SET: COMPOUND
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_ValueSetCompound = Row6<Prim<ValueSetId>, ValueSetId,
-                                     Prim<ValueSetLabel>, ValueSetLabel,
-                                     Prim<ValueSetLabelSingular>, ValueSetLabelSingular,
-                                     Prim<ValueSetDescription>, ValueSetDescription,
-                                     Prim<ValueType>, ValueType,
-                                     Prim<ValueSetIdSet>, ValueSetIdSet>
+val valueSetCompoundTable =
+    Table6("value_set_compound",
+           "value_set_id",
+           "label",
+           "label_singular",
+           "description",
+           "value_type",
+           "value_set_ids")
 
-fun dbValueSetCompound(valueSetId : ValueSetId,
-                       label : ValueSetLabel,
-                       labelSingular : ValueSetLabelSingular,
-                       description : ValueSetDescription,
-                       valueType : ValueType,
-                       values : List<ValueSetId>) : DB_ValueSetCompound =
-        Row6("widget_value_set_compound",
-            Col("value_set_id", Prim(valueSetId)),
-            Col("label", Prim(label)),
-            Col("label_singular", Prim(labelSingular)),
-            Col("description", Prim(description)),
-            Col("value_type", Prim(valueType)),
-            Col("value_set_ids", Prim(ValueSetIdSet(values))))
+typealias DB_ValueSetCompoundValue =
+    RowValue6<PrimValue<ValueSetId>,
+              PrimValue<ValueSetLabel>,
+              PrimValue<ValueSetLabelSingular>,
+              PrimValue<ValueSetDescription>,
+              PrimValue<ValueType>,
+              PrimValue<ValueSetIdSet>>
+
 
 // VARIABLE: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_VariableBoolean = Row5<Prim<VariableId>, VariableId,
-                                    Prim<VariableLabel>, VariableLabel,
-                                    Prim<VariableDescription>, VariableDescription,
-                                    Prim<VariableTagSet>, VariableTagSet,
-                                    Sum<BooleanVariableValue>, BooleanVariableValue>
+val variableBooleanTable =
+    Table5("variable_boolean",
+           "variable_id",
+           "label",
+           "description",
+           "tags",
+           "variable_value")
 
-fun dbVariableBoolean(variableId : VariableId,
-                      label : VariableLabel,
-                      description : VariableDescription,
-                      tags : List<VariableTag>,
-                      variableValue : BooleanVariableValue) : DB_VariableBoolean =
-        Row5("variable_boolean",
-            Col("variable_id", Prim(variableId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)),
-            Col("tags", Prim(VariableTagSet(tags))),
-            Col("variable_value", Sum(variableValue)))
+typealias DB_VariableBooleanValue =
+    RowValue5<PrimValue<VariableId>,
+              PrimValue<VariableLabel>,
+              PrimValue<VariableDescription>,
+              PrimValue<VariableTagSet>,
+              SumValue<BooleanVariableValue>>
+
 
 // VARIABLE: DICE ROLL
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_VariableDiceRoll = Row5<Prim<VariableId>, VariableId,
-                                     Prim<VariableLabel>, VariableLabel,
-                                     Prim<VariableDescription>, VariableDescription,
-                                     Prim<VariableTagSet>, VariableTagSet,
-                                     Sum<DiceRollVariableValue>, DiceRollVariableValue>
+val variableDiceRollTable =
+    Table5("variable_dice_roll",
+           "variable_id",
+           "label",
+           "description",
+           "tags",
+           "variable_value")
 
-fun dbVariableDiceRoll(variableId : VariableId,
-                       label : VariableLabel,
-                       description : VariableDescription,
-                       tags : List<VariableTag>,
-                       variableValue : DiceRollVariableValue) : DB_VariableDiceRoll =
-        Row5("variable_dice_roll",
-            Col("variable_id", Prim(variableId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)),
-            Col("tags", Prim(VariableTagSet(tags))),
-            Col("variable_value", Sum(variableValue)))
+typealias DB_VariableDiceRollValue =
+    RowValue5<PrimValue<VariableId>,
+              PrimValue<VariableLabel>,
+              PrimValue<VariableDescription>,
+              PrimValue<VariableTagSet>,
+              SumValue<DiceRollVariableValue>>
+
 
 // VARIABLE: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_VariableNumber = Row5<Prim<VariableId>, VariableId,
-                                   Prim<VariableLabel>, VariableLabel,
-                                   Prim<VariableDescription>, VariableDescription,
-                                   Prim<VariableTagSet>, VariableTagSet,
-                                   Sum<NumberVariableValue>, NumberVariableValue>
+val variableNumberTable =
+    Table5("variable_number",
+           "variable_id",
+           "label",
+           "description",
+           "tags",
+           "variable_value")
 
-fun dbVariableNumber(variableId : VariableId,
-                     label : VariableLabel,
-                     description : VariableDescription,
-                     tags : List<VariableTag>,
-                     variableValue : NumberVariableValue) : DB_VariableNumber =
-        Row5("variable_number",
-            Col("variable_id", Prim(variableId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)),
-            Col("tags", Prim(VariableTagSet(tags))),
-            Col("variable_value", Sum(variableValue)))
+typealias DB_VariableNumberValue =
+    RowValue5<PrimValue<VariableId>,
+              PrimValue<VariableLabel>,
+              PrimValue<VariableDescription>,
+              PrimValue<VariableTagSet>,
+              SumValue<NumberVariableValue>>
+
 
 // VARIABLE: TEXT
 // ---------------------------------------------------------------------------------------------
 
-typealias DB_VariableText = Row5<Prim<VariableId>, VariableId,
-                                 Prim<VariableLabel>, VariableLabel,
-                                 Prim<VariableDescription>, VariableDescription,
-                                 Prim<VariableTagSet>, VariableTagSet,
-                                 Sum<TextVariableValue>, TextVariableValue>
+val variableTextTable =
+    Table5("variable_text",
+           "variable_id",
+           "label",
+           "description",
+           "tags",
+           "variable_value")
 
-fun dbVariableText(variableId : VariableId,
-                   label : VariableLabel,
-                   description : VariableDescription,
-                   tags : List<VariableTag>,
-                   variableValue : TextVariableValue) : DB_VariableText =
-        Row5("variable_text",
-            Col("variable_id", Prim(variableId)),
-            Col("label", Prim(label)),
-            Col("description", Prim(description)),
-            Col("tags", Prim(VariableTagSet(tags))),
-            Col("variable_value", Sum(variableValue)))
+typealias DB_VariableTextValue =
+    RowValue5<PrimValue<VariableId>,
+              PrimValue<VariableLabel>,
+              PrimValue<VariableDescription>,
+              PrimValue<VariableTagSet>,
+              SumValue<TextVariableValue>>
 

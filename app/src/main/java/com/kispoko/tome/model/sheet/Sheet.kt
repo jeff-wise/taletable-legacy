@@ -4,14 +4,14 @@ package com.kispoko.tome.model.sheet
 
 import android.content.Context
 import android.view.View
-import com.kispoko.tome.R.string.*
-import com.kispoko.tome.db.DB_Sheet
-import com.kispoko.tome.db.dbSheet
+import com.kispoko.tome.db.DB_SheetValue
+import com.kispoko.tome.db.sheetTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.orm.Row
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -170,8 +170,13 @@ data class Sheet(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Sheet =
-        dbSheet(sheetId, campaignId, sections, engine, variables, settings)
+    override fun rowValue() : DB_SheetValue =
+            RowValue6(sheetTable, PrimValue(sheetId),
+                                  PrimValue(campaignId),
+                                  CollValue(sections),
+                                  ProdValue(engine),
+                                  CollValue(variables),
+                                  ProdValue(settings))
 
 
     // -----------------------------------------------------------------------------------------

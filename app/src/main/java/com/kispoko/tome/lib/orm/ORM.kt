@@ -6,12 +6,14 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabaseLockedException
 import android.util.Log
-import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.orm.sql.query.UpdateQuery
 import com.kispoko.tome.lib.orm.sql.query.UpsertQuery
-
+import effect.Just
+import effect.Val
+import lulo.schema.Prim
+import lulo.schema.Sum
 
 
 fun savePrim(sqlValue : SQLValue, columnName : String, prodType : ProdType)
@@ -216,15 +218,17 @@ private fun modelValueRelations(prodType : ProdType) : List<ValueRelation> =
     prodType.row().columns().mapNotNull {
         when (it.value) {
             is Prim<*> -> ValueRelation(it.columnName(), it.value.asSQLValue())
-            else       -> null
+            is MaybePrim<*> -> {
+                val maybeValue = it.value.value
+                when (maybeValue) {
+                    is Just -> ValueRelation(it.columnName(), maybeValue.value.asSQLValue())
+//                    else    -> ValueRelation(it.columnName(), SQLNull)
+                    else    -> null
+                }
+            }
+            else            -> null
         }
     }
-
-//
-//private fun primFunctorRelation(functor : Prim<*>, parentModelName : String) : ValueRelation =
-//{
-//
-//}
 
 
 private fun modelOneToOneRelations(prodType : ProdType) : List<OneToOneRelation> =
@@ -235,19 +239,6 @@ private fun modelOneToOneRelations(prodType : ProdType) : List<OneToOneRelation>
             else       -> null
         }
     }
-
-//
-//private fun prodFunctorRelation(functor : Prod<*>, parentModelName : String) : OneToOneRelation?
-//{
-//    val funcName = functor.name
-//    return if (funcName != null) {
-//
-//    }
-//    else {
-//        ORMLog.event(FunctorIsMissingNameField(parentModelName))
-//        null
-//    }
-//}
 
 
 private fun oneToManyRelations(prodType : ProdType) : List<Pair<Coll<*>, OneToManyRelationRow>>
@@ -270,7 +261,7 @@ private fun oneToManyRelations(prodType : ProdType) : List<Pair<Coll<*>, OneToMa
 // -----------------------------------------------------------------------------------------
 
 private fun resolveFunctor(functor : Val<*>,
-                            path : List<String>) : Pair<String, Val<*>> = when (functor)
+                           path : List<String>) : Pair<String, Val<*>> = when (functor)
 {
     is Sum<*> -> resolveFunctor(functor.value.functor(),
                                 path.plus(functor.value.case()))

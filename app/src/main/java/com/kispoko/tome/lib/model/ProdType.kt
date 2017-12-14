@@ -2,11 +2,11 @@
 package com.kispoko.tome.lib.model
 
 
-import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.orm.Row
+import com.kispoko.tome.lib.orm.RowValue
 import com.kispoko.tome.lib.orm.saveProdType
+import com.kispoko.tome.lib.orm.schema.ColumnValue
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.run
 import java.util.*
 
@@ -25,7 +25,7 @@ interface ProdType
 
     fun onLoad()
 
-    fun row() : Row
+    fun rowValue() : RowValue
 
 
     /**
@@ -34,6 +34,14 @@ interface ProdType
      */
     suspend fun save() = run(CommonPool, {
         saveProdType(this, listOf(), false, true)
+    })
+
+
+    /**
+     * Save recrusive
+     */
+    suspend fun saveAll() = run(CommonPool, {
+        saveProdType(this, listOf(), true, true)
     })
 
 
@@ -78,7 +86,9 @@ interface ProdType
 
 interface SumType
 {
-    fun functor() : Val<*>
+    //fun functor() : Val<*>
+
+    fun columnValue() : ColumnValue
 
     fun case() : String
 

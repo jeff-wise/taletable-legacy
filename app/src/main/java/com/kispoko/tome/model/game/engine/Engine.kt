@@ -8,7 +8,6 @@ import com.kispoko.tome.app.AppError
 import com.kispoko.tome.db.DB_Engine
 import com.kispoko.tome.db.dbEngine
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.sql.*
@@ -28,6 +27,7 @@ import com.kispoko.tome.rts.game.engine.*
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.*
+import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
 import org.apache.commons.lang3.SerializationUtils
@@ -180,7 +180,7 @@ data class Engine(override val id : UUID,
 
     fun valueSet(valueSetId : ValueSetId) : AppEff<ValueSet> =
             note(this.valueSetById[valueSetId],
-                    AppEngineError(ValueSetDoesNotExist(valueSetId)))
+                 AppEngineError(ValueSetDoesNotExist(valueSetId)))
 
 
     fun baseValueSet(valueSetId : ValueSetId) : AppEff<ValueSetBase> =
@@ -192,7 +192,7 @@ data class Engine(override val id : UUID,
             }
         }
 
-//
+
 //    fun removeValueSet(valueSetId : ValueSetId) : Boolean
 //    {
 //        val newValueSets : MutableSet<ValueSet> = mutableSetOf()

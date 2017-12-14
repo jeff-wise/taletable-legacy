@@ -10,11 +10,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
+import com.kispoko.tome.db.DB_GroupRowFormat
 import com.kispoko.tome.db.dbGroupRow
-import com.kispoko.tome.db.dbGroupRowFromat
+import com.kispoko.tome.db.dbGroupRowFormat
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
 import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.Row
 import com.kispoko.tome.lib.orm.sql.SQLInt
@@ -24,7 +23,6 @@ import com.kispoko.tome.lib.orm.sql.asSQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Widget
-import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -364,7 +362,7 @@ data class GroupRowFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : Row = dbGroupRowFromat(this.elementFormat, this.divider)
+    override fun row() : DB_GroupRowFormat = dbGroupRowFormat(this.elementFormat, this.divider)
 
 }
 

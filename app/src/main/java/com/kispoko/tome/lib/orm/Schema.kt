@@ -2,13 +2,24 @@
 package com.kispoko.tome.lib.orm
 
 
-import android.util.Log
+import com.kispoko.tome.R
+import com.kispoko.tome.R.string.name
+import com.kispoko.tome.R.string.value
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.orm.sql.SQL
-import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.lib.orm.sql.SQLValueType
-import com.kispoko.tome.lib.orm.sql.SQL_TEXT_TYPE_STRING
+import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.schema.*
+import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.game.engine.summation.SummationId
+import com.kispoko.tome.model.game.engine.summation.SummationName
+import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
+import com.kispoko.tome.model.game.engine.value.NumberValue
+import com.kispoko.tome.model.game.engine.value.TextValue
+import effect.Just
+import effect.Val
+import kotlinx.coroutines.experimental.CommonPool
+import lulo.schema.Prim
+import lulo.schema.Sum
 import java.util.*
 
 
@@ -35,22 +46,35 @@ object Schema
 
     fun defineTable(prodType : ProdType, oneToManyRelations : List<OneToManyRelation>)
     {
-        val row = prodType.row()
-        val tableName = row.tableName()
+        val rowValue = prodType.rowValue()
+        val tableName = rowValue.table().tableName
 
         // Check if table is already defined and has correct columns
         if (this.tables.containsKey(tableName))
         {
             val tableColumnNames = tables[tableName]!!.columnNames
 
-            row.columns().forEach {
-                when (it.value) {
-                    is Prim<*> ->
-                        if (!tableColumnNames.contains(it.columnName())) {
-                            addPrimColumnToTable(prodType.row().tableName(),
-                                    it.columnName(),
-                                    it.value.asSQLValue().type())
+            rowValue.columns().forEach { (columnName, columnValue) ->
+                when (columnValue) {
+                    is PrimValue<*> -> {
+                        if (!tableColumnNames.contains(columnName)) {
+                            addPrimColumnToTable(tableName,
+                                                 columnName,
+                                                 columnValue.prim.asSQLValue().type())
                         }
+                    }
+                    is MaybePrimValue<*> -> {
+                        val maybeValue = columnValue.maybePrim
+                        when (maybeValue) {
+                            is Just -> {
+                                if (!tableColumnNames.contains(columnName)) {
+                                    addPrimColumnToTable(tableName,
+                                                         columnName,
+                                                         maybeValue.value.asSQLValue().type())
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -70,7 +94,7 @@ object Schema
 
         DatabaseManager.database().execSQL(tableDefinition.definitionSQLString)
 
-        val table = Table(row.tableName(), tableDefinition.columnNames.toMutableSet())
+        val table = Table(tableName, tableDefinition.columnNames.toMutableSet())
         this.tables.put(tableName, table)
 
         val endTime = System.nanoTime()
@@ -80,20 +104,18 @@ object Schema
                                  (endTime-startTime)))
 
         // TODO This will need to be called beforehand when we add foreign key constraints
-        row.columns().forEach { column ->
-            val value = column.value
-            when (value)
+        rowValue.columns().forEach { (columnName, columnValue) ->
+            when (columnValue)
             {
-                is Prod<*> -> Schema.defineTable(value.value, listOf())
-                is Coll<*> -> value.list.forEach { itemValue ->
-                    val relation = OneToManyRelation(row.name, column.name)
+                is ProdValue<*> -> Schema.defineTable(columnValue.prod, listOf())
+                is CollValue<*> -> columnValue.list.forEach { itemValue ->
+                    val relation = OneToManyRelation(tableName, columnName)
                     Schema.defineTable(itemValue, listOf(relation))
                 }
             }
         }
 
     }
-
 
 
     // -----------------------------------------------------------------------------------------
@@ -111,12 +133,12 @@ object Schema
         val columnNames : MutableSet<String> = mutableSetOf()
         val query = StringBuilder()
 
-        val row = prodType.row()
+        val rowValue = prodType.rowValue()
 
         // (1) Create Table
         // --------------------------------------------------------------------------------------
         query.append("CREATE TABLE IF NOT EXISTS ")
-        query.append(row.tableName())
+        query.append(rowValue.table().tableName)
         query.append(" ( ")
 
         // (2) Id Column
@@ -130,38 +152,51 @@ object Schema
         // (3) Primitive & Foreign Key Columns
         // --------------------------------------------------------------------------------------
 
-        val columns = row.columns()
-
-        for (column in columns)
+        for ((columnName, columnValue) in rowValue.columns())
         {
-            when (column.value)
+            when (columnValue)
             {
-                is Prim<*> ->
+                is PrimValue<*> ->
                 {
-                    columnNames.add(column.columnName())
-                    val columnType = column.value.asSQLValue().type().name
+                    columnNames.add(columnName)
+                    val columnType = columnValue.prim.asSQLValue().type().name
 
                     query.append(", ")
-                    query.append(column.columnName())
+                    query.append(columnName)
                     query.append(" ")
                     query.append(columnType)
                 }
-                is Prod<*> ->
+                is MaybePrimValue<*> ->
                 {
-                    columnNames.add(column.columnName())
+                    val maybeValue = columnValue.maybePrim
+                    when (maybeValue) {
+                        is Just -> {
+                            columnNames.add(columnName)
+                            val columnType = maybeValue.value.asSQLValue().type().name
+
+                            query.append(", ")
+                            query.append(columnName)
+                            query.append(" ")
+                            query.append(columnType)
+                        }
+                    }
+                }
+                is ProdValue<*> ->
+                {
+                    columnNames.add(columnName)
 
                     query.append(", ")
-                    query.append(column.columnName())
+                    query.append(columnName)
                     query.append(" ")
                     query.append(SQL_TEXT_TYPE_STRING)
                 }
-                is Sum<*> ->
+                is SumValue<*> ->
                 {
-                    columnNames.add(column.columnName())
-                    val typeColumnName = "__type_${column.columnName()}"
+                    columnNames.add(columnName)
+                    val typeColumnName = "__type_$columnName"
 
                     query.append(", ")
-                    query.append(column.columnName())
+                    query.append(columnName)
                     query.append(" ")
                     query.append(SQL_TEXT_TYPE_STRING)
 
@@ -197,7 +232,7 @@ object Schema
     fun <A : ProdType> addCollectionColumnToTable(prodType : A, oneToManyRelation : OneToManyRelation)
     {
         // Define the Query
-        val tableName = prodType.row().tableName()
+        val tableName = prodType.rowValue().table().tableName
         val columnName = oneToManyRelation.columnName()
 
         val addColumnQuery = "ALTER TABLE $tableName ADD COLUMN $columnName $SQL_TEXT_TYPE_STRING"
@@ -314,34 +349,34 @@ data class SumRelation(val relation : RelationRow,
 
 
 
-data class Col<A>(val name : String, val value : A)
+data class Column(val name : String, val value : ColumnValue)
+
+
+sealed class RowValue()
 {
-
-    fun columnName() : String = SQL.validIdentifier(this.name)
-
+    abstract fun table() : Table
+    abstract fun columns() : List<Column>
 }
 
 
-sealed class Row(open val name : String)
-{
 
-    fun tableName() : String = SQL.validIdentifier(this.name)
-
-
-    abstract fun columns() : List<Col<*>>
-
-}
-
-
-// ROW 1
+// ---------------------------------------------------------------------------------------------
+// DB VALUE
 // ---------------------------------------------------------------------------------------------
 
-data class Row1<A,AA>(
-        override val name : String, val a : Col<A>) : Row(name)
-        where A : Val<AA>
+// DB VALUE 1
+// ---------------------------------------------------------------------------------------------
+
+data class RowValue1<A>(
+        val table : Table1,
+        val a : A)
+         : RowValue()
+        where A : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a)
+    override fun columns() = listOf(Column(table.column1Name, a))
+
+    override fun table() = table
 
 }
 
@@ -349,205 +384,269 @@ data class Row1<A,AA>(
 // ROW 2
 // ---------------------------------------------------------------------------------------------
 
-data class Row2<A,AA,B,BB>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>) : Row(name)
-        where A : Val<AA>, B : Val<BB>
+data class RowValue2<A,B>(
+        val table : Table2,
+        val a : A,
+        val b : B)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a, this.b)
+    override fun columns() =
+            listOf(Column(table.column1Name, a),
+                   Column(table.column2Name, b))
+
+    override fun table() = table
 
 }
+
+data class RowQuery2<A,B,C>(
+        val table : Table3,
+        val a : A,
+        val b : B,
+        val c : C)
+        where A : ColumnQuery, B : ColumnQuery, C : ColumnQuery
+
 
 // ROW 3
 // ---------------------------------------------------------------------------------------------
 
-data class Row3<A,AA,B,BB,C,CC>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>
+data class RowValue3<A,B,C>(
+        val table : Table3,
+        val a : A,
+        val b : B,
+        val c : C)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a, this.b, this.c)
+    override fun columns() =
+            listOf(Column(table.column1Name, a),
+                   Column(table.column2Name, b),
+                   Column(table.column3Name, c))
+
+    override fun table() = table
 
 }
+
+data class RowQuery3<A,B,C>(
+        val table : Table3,
+        val a : A,
+        val b : B,
+        val c : C)
+        where A : ColumnQuery, B : ColumnQuery, C : ColumnQuery
+
 
 // ROW 4
 // ---------------------------------------------------------------------------------------------
 
-data class Row4<A,AA,B,BB,C,CC,D,DD>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>,
-        val d : Col<D>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>, D : Val<DD>
+data class RowValue4<A,B,C,D>(
+        val table : Table4,
+        val a : A,
+        val b : B,
+        val c : C,
+        val d : D)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue, D : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a, this.b, this.c, this.d)
+    override fun columns() =
+        listOf(Column(table.column1Name, a),
+               Column(table.column2Name, b),
+               Column(table.column3Name, c),
+               Column(table.column4Name, d))
+
+    override fun table() = table
 
 }
+
 
 // ROW 5
 // ---------------------------------------------------------------------------------------------
 
-data class Row5<A,AA,B,BB,C,CC,D,DD,E,EE>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>,
-        val d : Col<D>,
-        val e : Col<E>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>, D : Val<DD>, E : Val<EE>
+data class RowValue5<A,B,C,D,E>(
+        val table : Table5,
+        val a : A,
+        val b : B,
+        val c : C,
+        val d : D,
+        val e : E)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue, D : ColumnValue, E : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a,
-                                                  this.b,
-                                                  this.c,
-                                                  this.d,
-                                                  this.e)
+    override fun columns() =
+        listOf(Column(table.column1Name, a),
+               Column(table.column2Name, b),
+               Column(table.column3Name, c),
+               Column(table.column4Name, d),
+               Column(table.column5Name, e))
+
+    override fun table() = table
 
 }
+
 
 // ROW 6
 // ---------------------------------------------------------------------------------------------
 
-data class Row6<A,AA,B,BB,C,CC,D,DD,E,EE,F,FF>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>,
-        val d : Col<D>,
-        val e : Col<E>,
-        val f : Col<F>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>, D : Val<DD>, E : Val<EE>, F : Val<FF>
+data class RowValue6<A,B,C,D,E,F>(
+        val table : Table6,
+        val a : A,
+        val b : B,
+        val c : C,
+        val d : D,
+        val e : E,
+        val f : F)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue, D : ColumnValue, E : ColumnValue,
+              F : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a,
-                                                  this.b,
-                                                  this.c,
-                                                  this.d,
-                                                  this.e,
-                                                  this.f)
+    override fun columns() =
+            listOf(Column(table.column1Name, a),
+                   Column(table.column2Name, b),
+                   Column(table.column3Name, c),
+                   Column(table.column4Name, d),
+                   Column(table.column5Name, e),
+                   Column(table.column6Name, f))
+
+    override fun table() = table
 
 }
+
 
 // ROW 7
 // ---------------------------------------------------------------------------------------------
 
-data class Row7<A,AA,B,BB,C,CC,D,DD,E,EE,F,FF,G,GG>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>,
-        val d : Col<D>,
-        val e : Col<E>,
-        val f : Col<F>,
-        val g : Col<G>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>, D : Val<DD>, E : Val<EE>, F : Val<FF>,
-              G : Val<GG>
+data class RowValue7<A,B,C,D,E,F,G>(
+        val table : Table7,
+        val a : A,
+        val b : B,
+        val c : C,
+        val d : D,
+        val e : E,
+        val f : F,
+        val g : G)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue, D : ColumnValue, E : ColumnValue,
+              F : ColumnValue, G : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a,
-                                                  this.b,
-                                                  this.c,
-                                                  this.d,
-                                                  this.e,
-                                                  this.f,
-                                                  this.g)
+    override fun columns() =
+            listOf(Column(table.column1Name, a),
+                   Column(table.column2Name, b),
+                   Column(table.column3Name, c),
+                   Column(table.column4Name, d),
+                   Column(table.column5Name, e),
+                   Column(table.column6Name, f),
+                   Column(table.column7Name, g))
+
+    override fun table() = table
 
 }
+
 
 // ROW 8
 // ---------------------------------------------------------------------------------------------
 
-data class Row8<A,AA,B,BB,C,CC,D,DD,E,EE,F,FF,G,GG,H,HH>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>,
-        val d : Col<D>,
-        val e : Col<E>,
-        val f : Col<F>,
-        val g : Col<G>,
-        val h : Col<H>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>, D : Val<DD>, E : Val<EE>, F : Val<FF>,
-              G : Val<GG>, H : Val<HH>
+data class RowValue8<A,B,C,D,E,F,G,H>(
+        val table : Table8,
+        val a : A,
+        val b : B,
+        val c : C,
+        val d : D,
+        val e : E,
+        val f : F,
+        val g : G,
+        val h : H)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue, D : ColumnValue, E : ColumnValue,
+              F : ColumnValue, G : ColumnValue, H : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a,
-                                                  this.b,
-                                                  this.c,
-                                                  this.d,
-                                                  this.e,
-                                                  this.f,
-                                                  this.g,
-                                                  this.h)
+    override fun columns() =
+        listOf(Column(table.column1Name, a),
+               Column(table.column2Name, b),
+               Column(table.column3Name, c),
+               Column(table.column4Name, d),
+               Column(table.column5Name, e),
+               Column(table.column6Name, f),
+               Column(table.column7Name, g),
+               Column(table.column8Name, h))
+
+    override fun table() = table
 
 }
+
 
 // ROW 9
 // ---------------------------------------------------------------------------------------------
 
-data class Row9<A,AA,B,BB,C,CC,D,DD,E,EE,F,FF,G,GG,H,HH,I,II>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>,
-        val d : Col<D>,
-        val e : Col<E>,
-        val f : Col<F>,
-        val g : Col<G>,
-        val h : Col<H>,
-        val i : Col<I>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>, D : Val<DD>, E : Val<EE>, F : Val<FF>,
-              G : Val<GG>, H : Val<HH>, I : Val<II>
+data class RowValue9<A,B,C,D,E,F,G,H,I>(
+        val table : Table9,
+        val a : A,
+        val b : B,
+        val c : C,
+        val d : D,
+        val e : E,
+        val f : F,
+        val g : G,
+        val h : H,
+        val i : I)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue, D : ColumnValue, E : ColumnValue,
+              F : ColumnValue, G : ColumnValue, H : ColumnValue, I : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a,
-                                                  this.b,
-                                                  this.c,
-                                                  this.d,
-                                                  this.e,
-                                                  this.f,
-                                                  this.g,
-                                                  this.h,
-                                                  this.i)
+    override fun columns() =
+        listOf(Column(table.column1Name, a),
+               Column(table.column2Name, b),
+               Column(table.column3Name, c),
+               Column(table.column4Name, d),
+               Column(table.column5Name, e),
+               Column(table.column6Name, f),
+               Column(table.column7Name, g),
+               Column(table.column8Name, h),
+               Column(table.column9Name, i))
+
+    override fun table() = table
 
 }
+
 
 // ROW 10
 // ---------------------------------------------------------------------------------------------
 
-data class Row10<A,AA,B,BB,C,CC,D,DD,E,EE,F,FF,G,GG,H,HH,I,II,J,JJ>(
-        override val name : String,
-        val a : Col<A>,
-        val b : Col<B>,
-        val c : Col<C>,
-        val d : Col<D>,
-        val e : Col<E>,
-        val f : Col<F>,
-        val g : Col<G>,
-        val h : Col<H>,
-        val i : Col<I>,
-        val j : Col<J>) : Row(name)
-        where A : Val<AA>, B : Val<BB>, C : Val<CC>, D : Val<DD>, E : Val<EE>, F : Val<FF>,
-              G : Val<GG>, H : Val<HH>, I : Val<II>, J : Val<JJ>
+data class RowValue10<A,B,C,D,E,F,G,H,I,J>(
+        val table : Table10,
+        val a : A,
+        val b : B,
+        val c : C,
+        val d : D,
+        val e : E,
+        val f : F,
+        val g : G,
+        val h : H,
+        val i : I,
+        val j : J)
+         : RowValue()
+        where A : ColumnValue, B : ColumnValue, C : ColumnValue, D : ColumnValue, E : ColumnValue,
+              F : ColumnValue, G : ColumnValue, H : ColumnValue, I : ColumnValue, J : ColumnValue
 {
 
-    override fun columns() : List<Col<*>> = listOf(this.a,
-                                                  this.b,
-                                                  this.c,
-                                                  this.d,
-                                                  this.e,
-                                                  this.f,
-                                                  this.g,
-                                                  this.h,
-                                                  this.i,
-                                                  this.j)
+    override fun columns() =
+        listOf(Column(table.column1Name, a),
+               Column(table.column2Name, b),
+               Column(table.column3Name, c),
+               Column(table.column4Name, d),
+               Column(table.column5Name, e),
+               Column(table.column6Name, f),
+               Column(table.column7Name, g),
+               Column(table.column8Name, h),
+               Column(table.column9Name, i),
+               Column(table.column10Name, j))
+
+    override fun table() = table
 
 }
-
