@@ -2,10 +2,15 @@
 package com.kispoko.tome.model.sheet.section
 
 
-import com.kispoko.tome.db.DB_Section
-import com.kispoko.tome.db.dbSection
+import com.kispoko.tome.db.DB_SectionValue
+import com.kispoko.tome.db.DB_ValueSetBaseValue
+import com.kispoko.tome.db.sectionTable
+import com.kispoko.tome.db.valueSetBaseTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -103,7 +108,11 @@ data class Section(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Section = dbSection(sectionName, pages, icon)
+    override fun rowValue() : DB_SectionValue =
+        RowValue3(sectionTable,
+                  PrimValue(this.sectionName),
+                  CollValue(this.pages),
+                  PrimValue(this.icon))
 
 
     // -----------------------------------------------------------------------------------------

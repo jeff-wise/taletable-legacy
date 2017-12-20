@@ -3,9 +3,8 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.model.game.engine.value.ValueReference
@@ -85,7 +84,7 @@ data class TextReferenceLiteral(val value : String) : TextReference(), SQLSerial
     // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "literal"
@@ -126,7 +125,7 @@ data class TextReferenceValue(val valueReference : ValueReference)
     // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "value"
@@ -173,7 +172,7 @@ data class TextReferenceVariable(val variableReference : VariableReference)
     // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "variable"

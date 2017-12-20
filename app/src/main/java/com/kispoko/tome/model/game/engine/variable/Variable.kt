@@ -3,13 +3,16 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import android.util.Log
+import com.kispoko.tome.R.string.name
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.value.ValueId
@@ -21,6 +24,7 @@ import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
+import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
 import org.apache.commons.lang3.SerializationUtils
@@ -280,11 +284,14 @@ data class BooleanVariable(override val id : UUID,
     override fun onLoad() {}
 
 
-    override fun row() : DB_VariableBoolean = dbVariableBoolean(this.variableId,
-                                                                this.label,
-                                                                this.description,
-                                                                this.tags,
-                                                                this.variableValue)
+    override fun rowValue() : DB_VariableBooleanValue =
+        RowValue5(variableBooleanTable,
+                  PrimValue(this.variableId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(VariableTagSet(this.tags)),
+                  SumValue(this.variableValue))
+
 
     // -----------------------------------------------------------------------------------------
     // VARIABLE
@@ -422,12 +429,13 @@ data class DiceRollVariable(override val id : UUID,
     override val prodTypeObject: ProdType = this
 
 
-    override fun row() : DB_VariableDiceRoll =
-            dbVariableDiceRoll(this.variableId,
-                               this.label,
-                               this.description,
-                               this.tags,
-                               this.variableValue)
+    override fun rowValue() : DB_VariableDiceRollValue =
+        RowValue5(variableDiceRollTable,
+                  PrimValue(this.variableId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(VariableTagSet(this.tags)),
+                  SumValue(this.variableValue))
 
 
     // -----------------------------------------------------------------------------------------
@@ -580,11 +588,13 @@ data class NumberVariable(override val id : UUID,
     override val prodTypeObject : ProdType = this
 
 
-    override fun row() : DB_VariableNumber = dbVariableNumber(this.variableId,
-                                                              this.label,
-                                                              this.description,
-                                                              this.tags,
-                                                              this.variableValue)
+    override fun rowValue() : DB_VariableNumberValue =
+        RowValue5(variableNumberTable,
+                  PrimValue(this.variableId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(VariableTagSet(this.tags)),
+                  SumValue(this.variableValue))
 
 
     // -----------------------------------------------------------------------------------------
@@ -760,11 +770,13 @@ data class TextVariable(override val id : UUID,
     override val prodTypeObject: ProdType = this
 
 
-    override fun row() : DB_VariableText = dbVariableText(this.variableId,
-                                                          this.label,
-                                                          this.description,
-                                                          this.tags,
-                                                          this.variableValue)
+    override fun rowValue() : DB_VariableTextValue =
+        RowValue5(variableTextTable,
+                  PrimValue(this.variableId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(VariableTagSet(this.tags)),
+                  SumValue(this.variableValue))
 
 
     // -----------------------------------------------------------------------------------------
@@ -929,8 +941,8 @@ sealed class VariableReference : ToDocument, SQLSerializable, Serializable
 /**
  * Variable Id
  */
-data class VariableId(val namespace : Maybe<Prim<VariableNamespace>>,
-                      val name : Prim<VariableName>) : VariableReference(), Serializable
+data class VariableId(val namespace : Maybe<VariableNamespace>,
+                      val name : VariableName) : VariableReference(), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -938,19 +950,15 @@ data class VariableId(val namespace : Maybe<Prim<VariableNamespace>>,
     // -----------------------------------------------------------------------------------------
 
     constructor(name : String)
-        : this(Nothing(), Prim(VariableName(name)))
+        : this(Nothing(), VariableName(name))
 
 
     constructor(namespace : String, name : String)
-            : this(Just(Prim(VariableNamespace(namespace))), Prim(VariableName(name)))
-
-
-    constructor(namespace : Maybe<VariableNamespace>, name : VariableName)
-            : this(maybeLiftPrim(namespace), Prim(name))
+            : this(Just(VariableNamespace(namespace)), VariableName(name))
 
 
     constructor(namespace : VariableNamespace, name : VariableName)
-            : this(Just(Prim(namespace)), Prim(name))
+            : this(Just(namespace), name)
 
 
     companion object : Factory<VariableId>
@@ -992,9 +1000,10 @@ data class VariableId(val namespace : Maybe<Prim<VariableNamespace>>,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun nameString() : String = this.name.value.value
+    fun nameString() : String = this.name.value
 
-    fun namespaceString() : String? = getMaybePrim(this.namespace)?.value
+
+    fun namespaceString() : Maybe<String> = this.namespace.apply { Just(it.value) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1005,10 +1014,12 @@ data class VariableId(val namespace : Maybe<Prim<VariableNamespace>>,
     {
         var s = ""
 
-        if (namespaceString() != null)
+        when (namespaceString())
         {
-            s += namespaceString()
-            s += "::"
+            is Just -> {
+                s += namespaceString()
+                s += "::"
+            }
         }
 
         s += nameString()

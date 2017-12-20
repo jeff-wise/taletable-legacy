@@ -4,7 +4,7 @@ package com.kispoko.tome.util.promise;
 
 import android.os.AsyncTask;
 
-import com.kispoko.tome.lib.model.ProdType;
+import com.kispoko.tome.lib.orm.ProdType;
 
 import java.util.List;
 

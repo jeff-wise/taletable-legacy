@@ -10,12 +10,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
-import com.kispoko.tome.db.DB_GroupRowFormat
-import com.kispoko.tome.db.dbGroupRow
-import com.kispoko.tome.db.dbGroupRowFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.orm.Row
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -113,7 +115,11 @@ data class GroupRow(override val id : UUID,
 
     override val prodTypeObject = this
 
-    override fun row() : Row = dbGroupRow(this.format, this.index, this.widgets)
+
+    override fun rowValue() : DB_GroupRowValue =
+        RowValue3(groupRowTable, ProdValue(this.format),
+                                 PrimValue(this.index),
+                                 CollValue(this.widgets))
 
 
     // -----------------------------------------------------------------------------------------
@@ -362,7 +368,9 @@ data class GroupRowFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_GroupRowFormat = dbGroupRowFormat(this.elementFormat, this.divider)
+    override fun rowValue() : DB_GroupRowFormatValue =
+        RowValue2(groupRowFormatTable, ProdValue(this.elementFormat),
+                                       ProdValue(this.divider))
 
 }
 

@@ -7,7 +7,7 @@ import android.view.View
 import com.kispoko.tome.db.DB_SheetValue
 import com.kispoko.tome.db.sheetTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue

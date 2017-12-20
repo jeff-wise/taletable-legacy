@@ -5,11 +5,9 @@ package com.kispoko.tome.model.game.engine.variable
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prod
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -20,6 +18,7 @@ import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.*
+import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
 import java.io.Serializable
@@ -108,7 +107,7 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "literal"
@@ -176,7 +175,7 @@ class TextVariableUnknownLiteralValue() : TextVariableValue(), SQLSerializable
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "unknown_literal"
@@ -237,7 +236,7 @@ data class TextVariableValueValue(val valueReference : ValueReference)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "value"
@@ -293,7 +292,7 @@ data class TextVariableValueUnknownValue(val valueSetId : ValueSetId)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "unknown_value"
@@ -350,7 +349,7 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prod(this.invocation)
+    override fun columnValue() = ProdValue(this.invocation)
 
 
     override fun case() = "program"

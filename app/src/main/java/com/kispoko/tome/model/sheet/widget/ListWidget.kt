@@ -2,20 +2,6 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prod
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.model.sheet.style.TextFormat
-import effect.effApply
-import effect.effError
-import effect.effValue
-import lulo.document.*
-import lulo.value.UnexpectedType
-import lulo.value.ValueParser
-import java.util.*
-
-
 
 /**
  * List Widget Format

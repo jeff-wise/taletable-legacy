@@ -1,10 +1,7 @@
 
-package com.kispoko.tome.lib.model
+package com.kispoko.tome.lib.orm
 
 
-import com.kispoko.tome.lib.orm.Row
-import com.kispoko.tome.lib.orm.RowValue
-import com.kispoko.tome.lib.orm.saveProdType
 import com.kispoko.tome.lib.orm.schema.ColumnValue
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
@@ -86,7 +83,7 @@ interface ProdType
 
 interface SumType
 {
-    //fun functor() : Val<*>
+    // fun functor() : Val<*>
 
     fun columnValue() : ColumnValue
 

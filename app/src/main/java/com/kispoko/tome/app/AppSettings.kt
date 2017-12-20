@@ -3,11 +3,12 @@ package com.kispoko.tome.app
 
 
 import android.graphics.Color
-import com.kispoko.tome.db.DB_AppSettings
-import com.kispoko.tome.db.dbAppSettings
+import com.kispoko.tome.db.DB_AppSettingsValue
+import com.kispoko.tome.db.appSettingsTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue1
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.Theme
@@ -75,7 +76,9 @@ data class AppSettings(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_AppSettings = dbAppSettings(this.themeId)
+    override fun rowValue() : DB_AppSettingsValue =
+            RowValue1(appSettingsTable, PrimValue(themeId))
+
 
 
     // -----------------------------------------------------------------------------------------

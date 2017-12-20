@@ -6,15 +6,16 @@ import android.view.View
 import android.widget.LinearLayout
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue1
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.ElementFormat
-import com.kispoko.tome.model.sheet.style.Spacing
-import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -123,7 +124,11 @@ data class Page(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Page = dbPage(this.pageName, this.format, this.index, this.groups)
+    override fun rowValue() : DB_PageValue =
+        RowValue4(pageTable, PrimValue(this.pageName),
+                             ProdValue(this.format),
+                             PrimValue(this.index),
+                             CollValue(this.groups))
 
 
     // -----------------------------------------------------------------------------------------
@@ -305,6 +310,7 @@ data class PageFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_PageFormat = dbPageFormat(this.elementFormat)
+    override fun rowValue() : DB_PageFormatValue =
+        RowValue1(pageFormatTable, ProdValue(this.elementFormat))
 
 }

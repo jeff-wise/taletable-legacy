@@ -6,12 +6,12 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_ValueSetBase
-import com.kispoko.tome.db.DB_ValueSetCompound
-import com.kispoko.tome.db.dbValueSetBase
-import com.kispoko.tome.db.dbValueSetCompound
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
@@ -138,7 +138,7 @@ data class ValueSetBase(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     private val valuesById : MutableMap<ValueId,Value> =
-                                        values.associateBy { it.valueId.value }
+                                        values.associateBy { it.valueId }
                                                 as MutableMap<ValueId,Value>
 
 
@@ -216,13 +216,13 @@ data class ValueSetBase(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_ValueSetBase =
-            dbValueSetBase(this.valueSetId,
-                           this.label,
-                           this.labelSingular,
-                           this.description,
-                           this.valueType,
-                           this.values)
+    override fun rowValue() : DB_ValueSetBaseValue =
+        RowValue6(valueSetBaseTable, PrimValue(this.valueSetId),
+                                     PrimValue(this.label),
+                                     PrimValue(this.labelSingular),
+                                     PrimValue(this.description),
+                                     PrimValue(this.valueType),
+                                     CollValue(this.values))
 
 
     // -----------------------------------------------------------------------------------------
@@ -442,13 +442,15 @@ data class ValueSetCompound(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_ValueSetCompound =
-            dbValueSetCompound(this.valueSetId,
-                               this.label,
-                               this.labelSingular,
-                               this.description,
-                               this.valueType,
-                               this.valueSetIds)
+
+    override fun rowValue() : DB_ValueSetCompoundValue =
+        RowValue6(valueSetCompoundTable,
+                  PrimValue(this.valueSetId),
+                  PrimValue(this.label),
+                  PrimValue(this.labelSingular),
+                  PrimValue(this.description),
+                  PrimValue(this.valueType),
+                  PrimValue(ValueSetIdSet(this.valueSetIds)))
 
 
     // -----------------------------------------------------------------------------------------

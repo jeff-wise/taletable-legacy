@@ -5,9 +5,15 @@ package com.kispoko.tome.model.sheet.widget
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R.string.style
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -121,11 +127,12 @@ data class LogEntry(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetLogEntry = dbWidgetLogEntry(this.title,
-                                                              this.date,
-                                                              this.author,
-                                                              this.summary,
-                                                              this.text)
+    override fun rowValue() : DB_WidgetLogEntryValue =
+        RowValue5(widgetLogEntryTable, PrimValue(this.title),
+                                       PrimValue(this.date),
+                                       PrimValue(this.author),
+                                       MaybePrimValue(this.summary),
+                                       PrimValue(this.text))
 
 }
 
@@ -444,8 +451,10 @@ data class LogWidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetLogFormat =
-            dbWidgetLogFormat(this.widgetFormat, this.entryFormat, this.entryViewType)
+    override fun rowValue() : DB_WidgetLogFormatValue =
+        RowValue3(widgetLogFormatTable, ProdValue(this.widgetFormat),
+                                        ProdValue(this.entryFormat),
+                                        PrimValue(this.entryViewType))
 
 }
 
@@ -455,15 +464,11 @@ data class LogWidgetFormat(override val id : UUID,
  * Log Entry Format
  */
 data class LogEntryFormat(override val id : UUID,
-                          private val titleFormat : ElementFormat,
-                          private val titleStyle : TextFormat,
-                          private val authorFormat : ElementFormat,
-                          private val authorStyle : TextFormat,
-                          private val summaryFormat : ElementFormat,
-                          private val summaryStyle : TextFormat,
-                          private val bodyFormat : ElementFormat,
-                          private val bodyStyle : TextFormat,
-                          private val entryFormat : ElementFormat)
+                          private val titleFormat : TextFormat,
+                          private val authorFormat : TextFormat,
+                          private val summaryFormat : TextFormat,
+                          private val bodyFormat : TextFormat,
+                          private val entryFormat : TextFormat)
                            : ToDocument, ProdType, Serializable
 {
 
@@ -472,39 +477,27 @@ data class LogEntryFormat(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(titleFormat : ElementFormat,
-                titleStyle : TextFormat,
-                authorFormat : ElementFormat,
-                authorStyle : TextFormat,
-                summaryFormat : ElementFormat,
-                summaryStyle : TextFormat,
-                bodyFormat : ElementFormat,
-                bodyStyle : TextFormat,
-                entryFormat : ElementFormat)
+    constructor(titleFormat : TextFormat,
+                authorFormat : TextFormat,
+                summaryFormat : TextFormat,
+                bodyFormat : TextFormat,
+                entryFormat : TextFormat)
         : this(UUID.randomUUID(),
                titleFormat,
-               titleStyle,
                authorFormat,
-               authorStyle,
                summaryFormat,
-               summaryStyle,
                bodyFormat,
-               bodyStyle,
                entryFormat)
 
 
     companion object : Factory<LogEntryFormat>
     {
 
-        private fun defaultTitleFormat()   = ElementFormat.default()
-        private fun defaultTitleStyle()    = TextFormat.default()
-        private fun defaultAuthorFormat()  = ElementFormat.default()
-        private fun defaultAuthorStyle()   = TextFormat.default()
-        private fun defaultSummaryFormat() = ElementFormat.default()
-        private fun defaultSummaryStyle()  = TextFormat.default()
-        private fun defaultBodyFormat()    = ElementFormat.default()
-        private fun defaultBodyStyle()     = TextFormat.default()
-        private fun defaultEntryFormat()   = ElementFormat.default()
+        private fun defaultTitleFormat()   = TextFormat.default()
+        private fun defaultAuthorFormat()  = TextFormat.default()
+        private fun defaultSummaryFormat() = TextFormat.default()
+        private fun defaultBodyFormat()    = TextFormat.default()
+        private fun defaultEntryFormat()   = TextFormat.default()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<LogEntryFormat> = when (doc)
@@ -515,39 +508,23 @@ data class LogEntryFormat(override val id : UUID,
                       // Title Format
                       split(doc.maybeAt("title_format"),
                             effValue(defaultTitleFormat()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Title Style
-                      split(doc.maybeAt("title_style"),
-                            effValue(defaultTitleStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Author Format
                       split(doc.maybeAt("author_format"),
                             effValue(defaultAuthorFormat()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Author Style
-                      split(doc.maybeAt("author_style"),
-                            effValue(defaultAuthorStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Summary Format
                       split(doc.maybeAt("summary_format"),
                             effValue(defaultSummaryFormat()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Summary Style
-                      split(doc.maybeAt("summary_style"),
-                            effValue(defaultSummaryStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Body Format
                       split(doc.maybeAt("body_format"),
                             effValue(defaultBodyFormat()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Body Style
-                      split(doc.maybeAt("body_style"),
-                            effValue(defaultBodyStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Entry Format
                       split(doc.maybeAt("entry_format"),
                             effValue(defaultEntryFormat()),
-                            { ElementFormat.fromDocument(it) })
+                            { TextFormat.fromDocument(it) })
                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -555,13 +532,9 @@ data class LogEntryFormat(override val id : UUID,
 
 
         fun default() = LogEntryFormat(defaultTitleFormat(),
-                                       defaultTitleStyle(),
                                        defaultAuthorFormat(),
-                                       defaultAuthorStyle(),
                                        defaultSummaryFormat(),
-                                       defaultSummaryStyle(),
                                        defaultBodyFormat(),
-                                       defaultBodyStyle(),
                                        defaultEntryFormat())
     }
 
@@ -572,14 +545,10 @@ data class LogEntryFormat(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "title_format" to this.titleFormat().toDocument(),
-        "title_style" to this.titleStyle().toDocument(),
-        "author_format" to this.titleFormat().toDocument(),
-        "author_style" to this.titleStyle().toDocument(),
-        "summary_format" to this.titleFormat().toDocument(),
-        "summary_style" to this.titleStyle().toDocument(),
-        "body_format" to this.titleFormat().toDocument(),
-        "body_style" to this.titleStyle().toDocument(),
-        "entry_format" to this.titleFormat().toDocument()
+        "author_format" to this.authorFormat().toDocument(),
+        "summary_format" to this.summaryFormat().toDocument(),
+        "body_format" to this.bodyFormat().toDocument(),
+        "entry_format" to this.entryFormat().toDocument()
     ))
 
 
@@ -587,23 +556,19 @@ data class LogEntryFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun titleFormat() : ElementFormat = this.titleFormat
+    fun titleFormat() : TextFormat = this.titleFormat
 
-    fun titleStyle() : TextFormat = this.titleStyle
 
-    fun authorFormat() : ElementFormat = this.authorFormat
+    fun authorFormat() : TextFormat = this.authorFormat
 
-    fun authorStyle() : TextFormat = this.authorStyle
 
-    fun summaryFormat() : ElementFormat = this.summaryFormat
+    fun summaryFormat() : TextFormat = this.summaryFormat
 
-    fun summaryStyle() : TextFormat = this.summaryStyle
 
-    fun bodyFormat() : ElementFormat = this.bodyFormat
+    fun bodyFormat() : TextFormat = this.bodyFormat
 
-    fun bodyStyle() : TextFormat = this.bodyStyle
 
-    fun entryFormat() : ElementFormat = this.entryFormat
+    fun entryFormat() : TextFormat = this.entryFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -616,16 +581,13 @@ data class LogEntryFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetLogEntryFormat =
-            dbWidgetLogEntryFormat(this.titleFormat,
-                                   this.titleStyle,
-                                   this.authorFormat,
-                                   this.authorStyle,
-                                   this.summaryFormat,
-                                   this.summaryStyle,
-                                   this.bodyFormat,
-                                   this.bodyStyle,
-                                   this.entryFormat)
+    override fun rowValue() : DB_WidgetLogEntryFormatValue =
+        RowValue5(widgetLogEntryFormatTable,
+                  ProdValue(this.titleFormat),
+                  ProdValue(this.authorFormat),
+                  ProdValue(this.summaryFormat),
+                  ProdValue(this.bodyFormat),
+                  ProdValue(this.entryFormat))
 
 }
 
@@ -681,20 +643,17 @@ class LogViewBuilder(val logWidget : LogWidget,
         val entryFormat = logWidget.format().entryFormat()
 
         // Title
-        layout.addView(titleView(entry.title(),
-                                 entryFormat.titleFormat(),
-                                 entryFormat.titleStyle()))
+        layout.addView(titleView(entry.title(), entryFormat.titleFormat()))
 
         // Author
         layout.addView(authorView(entry.author(),
-                                  entryFormat.authorStyle()))
+                                  entryFormat.authorFormat()))
 
         // Summary
         val maybeSummary = entry.summary()
         when (maybeSummary) {
             is Just -> layout.addView(summaryView(maybeSummary.value,
-                                                  entryFormat.summaryFormat(),
-                                                  entryFormat.summaryStyle()))
+                                                  entryFormat.summaryFormat()))
         }
 
         return layout
@@ -711,21 +670,21 @@ class LogViewBuilder(val logWidget : LogWidget,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId,
-                                                         format.backgroundColorTheme())
+        layout.backgroundColor      = SheetManager.color(
+                                                sheetUIContext.sheetId,
+                                                format.elementFormat().backgroundColorTheme())
 
-        layout.marginSpacing        = format.margins()
-        layout.paddingSpacing       = format.padding()
+        layout.marginSpacing        = format.elementFormat().margins()
+        layout.paddingSpacing       = format.elementFormat().padding()
 
-        layout.corners              = format.corners()
+        layout.corners              = format.elementFormat().corners()
 
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
     private fun titleView(entryTitle : EntryTitle,
-                          format : ElementFormat,
-                          style : TextFormat) : TextView
+                          format : TextFormat) : TextView
     {
         val title               = TextViewBuilder()
 
@@ -734,13 +693,13 @@ class LogViewBuilder(val logWidget : LogWidget,
 
         title.text              = entryTitle.value
 
-        title.color             = SheetManager.color(sheetUIContext.sheetId, style.colorTheme())
+        title.color             = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
 
-        title.font              = Font.typeface(style.font(),
-                                                style.fontStyle(),
+        title.font              = Font.typeface(format.font(),
+                                                format.fontStyle(),
                                                 sheetUIContext.context)
 
-        title.sizeSp            = style.sizeSp()
+        title.sizeSp            = format.sizeSp()
 
         return title.textView(sheetUIContext.context)
     }
@@ -769,8 +728,7 @@ class LogViewBuilder(val logWidget : LogWidget,
 
 
     private fun summaryView(entrySummary : EntrySummary,
-                            format : ElementFormat,
-                            style : TextFormat) : TextView
+                            format : TextFormat) : TextView
     {
         val summary             = TextViewBuilder()
 
@@ -779,13 +737,13 @@ class LogViewBuilder(val logWidget : LogWidget,
 
         summary.text            = entrySummary.value
 
-        summary.color           = SheetManager.color(sheetUIContext.sheetId, style.colorTheme())
+        summary.color           = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
 
-        summary.font            = Font.typeface(style.font(),
-                                                style.fontStyle(),
+        summary.font            = Font.typeface(format.font(),
+                                                format.fontStyle(),
                                                 sheetUIContext.context)
 
-        summary.sizeSp          = style.sizeSp()
+        summary.sizeSp          = format.sizeSp()
 
         return summary.textView(sheetUIContext.context)
     }

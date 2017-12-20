@@ -11,10 +11,13 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_WidgetTableCellNumberFormat
-import com.kispoko.tome.db.dbWidgetTableCellNumberFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue1
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
@@ -44,7 +47,6 @@ import java.util.*
  * Number Cell Format
  */
 data class NumberCellFormat(override val id : UUID,
-                            val elementFormat : Maybe<ElementFormat>,
                             val textFormat : Maybe<TextFormat>)
                             : ToDocument, ProdType, Serializable
 {
@@ -53,9 +55,8 @@ data class NumberCellFormat(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(elementFormat : Maybe<ElementFormat>,
-                textFormat : Maybe<TextFormat>)
-            : this(UUID.randomUUID(), elementFormat, textFormat)
+    constructor(textFormat : Maybe<TextFormat>)
+            : this(UUID.randomUUID(), textFormat)
 
 
     companion object : Factory<NumberCellFormat>
@@ -66,10 +67,6 @@ data class NumberCellFormat(override val id : UUID,
             is DocDict ->
             {
                 apply(::NumberCellFormat,
-                      // Element Format
-                      split(doc.maybeAt("element_format"),
-                            effValue<ValueError,Maybe<ElementFormat>>(Nothing()),
-                            { apply(::Just, ElementFormat.fromDocument(it)) }),
                       // Text Format
                       split(doc.maybeAt("text_format"),
                             effValue<ValueError,Maybe<TextFormat>>(Nothing()),
@@ -80,7 +77,7 @@ data class NumberCellFormat(override val id : UUID,
         }
 
 
-        fun default() = NumberCellFormat(UUID.randomUUID(), Nothing(), Nothing())
+        fun default() = NumberCellFormat(UUID.randomUUID(), Nothing())
 
     }
 
@@ -90,8 +87,6 @@ data class NumberCellFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf())
-        .maybeMerge(this.elementFormat.apply {
-            Just(Pair("element_format", it.toDocument() as SchemaDoc)) })
         .maybeMerge(this.textFormat.apply {
             Just(Pair("text_format", it.toDocument() as SchemaDoc)) })
 
@@ -100,10 +95,7 @@ data class NumberCellFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun elementFormat() : Maybe<ElementFormat> = this.elementFormat
-
-
-    fun textFormat() : Maybe<TextFormat> = this.textFormat
+    fun textformat() : Maybe<TextFormat> = this.textFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -127,8 +119,9 @@ data class NumberCellFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableCellNumberFormat =
-            dbWidgetTableCellNumberFormat(this.elementFormat, this.textFormat)
+    override fun rowValue() : DB_WidgetTableCellNumberFormatValue =
+        RowValue1(widgetTableCellNumberFormatTable,
+                  MaybeProdValue(this.textFormat))
 
 }
 

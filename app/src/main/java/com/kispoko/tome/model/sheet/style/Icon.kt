@@ -3,12 +3,11 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.R
-import com.kispoko.tome.db.DB_IconFormat
-import com.kispoko.tome.db.dbIconFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
@@ -304,7 +303,9 @@ data class IconFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_IconFormat = dbIconFormat(this.colorTheme, this.size)
+    override fun rowValue() : DB_IconFormatValue =
+        RowValue2(iconFormatTable, PrimValue(this.colorTheme),
+                                   PrimValue(this.size))
 
 }
 

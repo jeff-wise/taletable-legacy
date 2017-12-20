@@ -2,10 +2,11 @@
 package com.kispoko.tome.model.sheet.style
 
 
-import com.kispoko.tome.db.dbDivider
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.orm.Row
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.apply
@@ -116,7 +117,10 @@ data class Divider(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : Row = dbDivider(this.colorTheme, this.margins, this.thickness)
+    override fun rowValue() : DB_DividerValue =
+        RowValue3(dividerTable, PrimValue(this.colorTheme),
+                                PrimValue(this.margins),
+                                PrimValue(this.thickness))
 
 }
 

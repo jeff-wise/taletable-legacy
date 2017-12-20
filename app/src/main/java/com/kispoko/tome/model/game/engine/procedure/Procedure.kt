@@ -3,9 +3,6 @@ package com.kispoko.tome.model.game.engine.procedure
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -18,8 +15,6 @@ import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
-import java.util.*
-
 
 
 /**

@@ -1,7 +1,7 @@
-id: casmey_beginner
+id: character_casmey_level_1
 campaign_id: isara
 settings:
-  theme_id: dark
+  theme_id: light
   sheet_name: 'Casmey Dalseya'
   sheet_summary: 'Level 1 Human Rogue'
 engine:
@@ -658,21 +658,23 @@ sections:
   pages:
   - name: My Stats
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_11
-    groups:
-    - format:
+      element_format:
         background_color_theme:
           theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        padding:
-          top: 20
-          left: 8
-          right: 8
-          bottom: 15
+          - theme_id: light
+            color_id: light_grey_3
+    groups:
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_4
+          padding:
+            left: 12
+            right: 12
+            top: 18
+            bottom: 18
       rows:
       - widgets:
         - type: widget_text
@@ -680,19 +682,22 @@ sections:
             id: name_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
-                  font_style: regular
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_18
+                size: 14
+                font_style: regular
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             value_variable_id: name_label
       - format:
-          margins:
-            top: 5
+          element_format:
+            margins:
+              top: 10
         widgets:
         - type: widget_text
           widget_text:
@@ -700,27 +705,28 @@ sections:
             value_variable_id: name
             format:
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
-                  font_style: bold
-                  size: 24
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                  - theme_id: light
+                    color_id: cyan_1
+                font_style: bold
+                size: 24
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        margins:
-          top: 15
-        padding:
-          top: 15
-          bottom: 20
-          left: 8
-          right: 8
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_1
+          padding:
+            left: 12
+            right: 12
+            top: 18
+            bottom: 18
       rows:
       - widgets:
         - type: widget_text
@@ -728,157 +734,212 @@ sections:
             id: about_me_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
-                  font_style: regular
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_18
+                size: 14
+                font_style: regular
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             value_variable_id: about_me_label
       - format:
-          margins:
-            top: 12
+          element_format:
+            margins:
+              top: 12
         widgets:
         - type: widget_story
           widget_story:
             id: summary
             format:
-              line_spacing: 1.4
+              line_spacing: 20
+              text_size: 18
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             story:
             - type: story_part_span
               story_part_span:
-                text: 'In some lands I''m known as Cass, and in others they call me "Hey! Someone
-                       stop her! She''s getting away!". I am a '
-                text_style:
+                text: 'In some lands the call me Cass. In others they call me "Hey! Someone
+                       stop her! She''s getting away!". I''m a '
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_14
-                  size: 16
+                    - theme_id: light
+                      color_id: dark_grey_14
+                  size: 18
             - type: story_part_variable
               story_part_variable:
                 variable_id: race
-                text_style:
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: cyan_1
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_8
+                    - theme_id: light
+                      color_id: white
                   font_style: bold
                   size: 18
             - type: story_part_span
               story_part_span:
                 text: ' born in the sprawl of Tomol City. Since I was young, I performed alongside my
                         father in the Endless Carnival. But some things happened and I became a '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_14
-                  size: 16
+                    - theme_id: light
+                      color_id: dark_grey_14
+                  size: 18
             - type: story_part_variable
               story_part_variable:
                 variable_id: class
-                text_style:
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_4
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_8
+                    - theme_id: light
+                      color_id: dark_grey_14
                   font_style: bold
                   size: 18
             - type: story_part_span
               story_part_span:
                 text: ' and found a gig on a schooner called the Shark''s Fin. Guided by rough seas, I earned a
                       formidable reputation for just a '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_14
-                  size: 16
+                    - theme_id: light
+                      color_id: dark_grey_14
+                  size: 18
             - type: story_part_variable
               story_part_variable:
                 numeric_editor_type: simple
                 variable_id: age
-                text_style:
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_4
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_8
+                    - theme_id: light
+                      color_id: dark_grey_14
                   font_style: bold
-                  size: 20
+                  size: 19
             - type: story_part_span
               story_part_span:
                 text: ' year old girl. I am recognized for my '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_14
-                  size: 16
+                    - theme_id: light
+                      color_id: dark_grey_14
+                  size: 18
             - type: story_part_variable
               story_part_variable:
                 variable_id: eye_color
-                text_style:
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_4
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_8
+                    - theme_id: light
+                      color_id: dark_grey_14
                   font_style: bold
                   size: 18
             - type: story_part_span
               story_part_span:
                 text: ' eyes and curly '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_14
-                  size: 16
+                    - theme_id: light
+                      color_id: dark_grey_14
+                  size: 18
             - type: story_part_variable
               story_part_variable:
                 variable_id: hair_color
-                text_style:
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_4
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_8
+                    - theme_id: light
+                      color_id: dark_grey_14
                   font_style: bold
                   size: 18
             - type: story_part_span
               story_part_span:
                 text: ' hair, as well as for a few posters that may or may not say '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_14
-                  size: 16
+                    - theme_id: light
+                      color_id: dark_grey_14
+                  size: 18
             - type: story_part_span
               story_part_span:
                 text: 'WANTED.'
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_14
+                    - theme_id: light
+                      color_id: dark_grey_14
                   font_style: bold_italic
-                  size: 16
+                  size: 18
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        margins:
-          top: 15
-        padding:
-          top: 20
-          right: 10
-          bottom: 20
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          margins:
+            top: 15
+          padding:
+            top: 20
+            right: 10
+            bottom: 20
       rows:
       - widgets:
         - type: widget_text
@@ -886,16 +947,15 @@ sections:
             id: level_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
               widget_format:
-                alignment: center
-                margins:
-                  bottom: 2
+                element_format:
+                  margins:
+                    bottom: 2
                 width: 1
             value_variable_id: level_label
         - type: widget_text
@@ -903,138 +963,110 @@ sections:
             id: xp_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
               widget_format:
-                alignment: center
-                margins:
-                  bottom: 2
-                width: 3
-            value_variable_id: xp_label
-      - widgets:
-        - type: widget_number
-          widget_number:
-            id: level
-            value_variable_id: level
-            format:
-              widget_format:
-                width: 1
-              value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_5
-                  font_style: bold
-                  size: 30
-        - type: widget_points
-          widget_points:
-            id: xp
-            label: 'XP'
-            format:
-              widget_format:
-                margins:
-                  left: 8
-                  right: 8
-                width: 3
-              bar_height: 8
-              bar_style: simple
-              above_bar_style: limit_label_max_right
-              limit_text_format:
-                margins:
-                  right: 5
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_22
-                vertical_alignment: bottom
-              current_text_format:
+                element_format:
+                  vertical_alignment: bottom
+            text_format:
+              element_format:
                 margins:
                   left: 5
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_10
                 vertical_alignment: bottom
-              label_text_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_10
+            value_variable_id: xp_label
+      - widgets:
+        - type: widget_points
+          widget_points:
+            id: current_xp
+            label: Experience Points
+            format:
+              widget_format:
+                element_format:
+                  margins:
+                    left: 12
+                    right: 12
+              bar_height: 6
+              bar_style: simple
+              above_bar_style: limit_label_max_right
+            label_text_format:
+              element_format:
                 margins:
                   left: 5
                 padding:
                   bottom: 1.5
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_10
-                  size: 12
                 vertical_alignment: bottom
-              limit_color_theme:
+              color_theme:
                 theme_color_ids:
                 - theme_id: dark
-                  color_id: medium_grey_7
-              current_color_theme:
-                theme_color_ids:
-                - theme_id: dark
-                  color_id: light_blue_10
+                  color_id: light_grey_10
+              size: 12
+            limit_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: medium_grey_7
+            current_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_blue_10
             limit_value_variable_id: target_xp
             current_value_variable_id: current_xp
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        margins:
-          top: 15
-        padding:
-          bottom: 20
-          top: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          margins:
+            top: 15
+          padding:
+            bottom: 20
+            top: 15
       rows:
       - format:
-          margins:
-            top: 5
-            bottom: 5
+          element_format:
+            margins:
+              top: 5
+              bottom: 5
         widgets:
         - type: widget_text
           widget_text:
             id: strength_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: strength_label
         - type: widget_text
           widget_text:
             id: dexterity_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: dexterity_label
         - type: widget_text
           widget_text:
             id: constitution_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: constitution_label
       - widgets:
         - type: widget_story
@@ -1043,27 +1075,27 @@ sections:
             format:
               vertical_alignment: middle
               widget_format:
-                alignment: center
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_5
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  left: 8
-                  right: 8
-                padding:
-                  top: 5
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_5
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 8
+                    right: 8
+                  padding:
+                    top: 5
+                    bottom: 5
             story:
             - type: story_part_variable
               story_part_variable:
                 variable_id: strength
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1073,45 +1105,44 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: strength_modifier
-                format:
-                  margins:
-                    left: 8
-                  padding:
-                    top: 1
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_15
                   size: 16
+                  element_format:
+                    margins:
+                      left: 8
+                    padding:
+                      top: 1
                 number_format: modifier
         - type: widget_story
           widget_story:
             id: dexterity
             format:
-              vertical_alignment: middle
               widget_format:
-                alignment: center
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_5
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  left: 8
-                  right: 8
-                padding:
-                  top: 5
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_5
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 8
+                    right: 8
+                  padding:
+                    top: 5
+                    bottom: 5
             story:
             - type: story_part_variable
               story_part_variable:
                 variable_id: dexterity
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1121,12 +1152,12 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: dexterity_modifier
-                format:
-                  margins:
-                    left: 8
-                  padding:
-                    top: 1
-                text_style:
+                text_format:
+                  element_format:
+                    margins:
+                      left: 8
+                    padding:
+                      top: 1
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1137,29 +1168,28 @@ sections:
           widget_story:
             id: constitution
             format:
-              vertical_alignment: middle
               widget_format:
-                alignment: center
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_5
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  left: 8
-                  right: 8
-                padding:
-                  top: 5
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_5
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 8
+                    right: 8
+                  padding:
+                    top: 5
+                    bottom: 5
             story:
             - type: story_part_variable
               story_part_variable:
                 variable_id: constitution
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1169,87 +1199,84 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: constitution_modifier
-                format:
-                  margins:
-                    left: 8
-                  padding:
-                    top: 1
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_15
                   size: 16
+                  element_format:
+                    margins:
+                      left: 8
+                    padding:
+                      top: 1
                 number_format: modifier
       - format:
-          margins:
-            top: 25
-            bottom: 5
+          element_format:
+            margins:
+              top: 25
+              bottom: 5
         widgets:
         - type: widget_text
           widget_text:
             id: intelligence_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: intelligence_label
         - type: widget_text
           widget_text:
             id: wisdom_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: wisdom_label
         - type: widget_text
           widget_text:
             id: charisma_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: charisma_label
       - widgets:
         - type: widget_story
           widget_story:
             id: intelligence
             format:
-              vertical_alignment: middle
               widget_format:
-                alignment: center
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_5
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  left: 8
-                  right: 8
-                padding:
-                  top: 5
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_5
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 8
+                    right: 8
+                  padding:
+                    top: 5
+                    bottom: 5
             story:
             - type: story_part_variable
               story_part_variable:
                 variable_id: intelligence
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1259,45 +1286,44 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: intelligence_modifier
-                format:
-                  margins:
-                    left: 8
-                  padding:
-                    top: 1
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_15
                   size: 16
+                  element_format:
+                    margins:
+                      left: 8
+                    padding:
+                      top: 1
                 number_format: modifier
         - type: widget_story
           widget_story:
             id: wisdom
             format:
-              vertical_alignment: middle
               widget_format:
-                alignment: center
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_5
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  left: 8
-                  right: 8
-                padding:
-                  top: 5
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_5
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 8
+                    right: 8
+                  padding:
+                    top: 5
+                    bottom: 5
             story:
             - type: story_part_variable
               story_part_variable:
                 variable_id: wisdom
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1307,45 +1333,44 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: wisdom_modifier
-                format:
-                  margins:
-                    left: 8
-                  padding:
-                    top: 1
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_15
                   size: 16
+                  element_format:
+                    margins:
+                      left: 8
+                    padding:
+                      top: 1
                 number_format: modifier
         - type: widget_story
           widget_story:
             id: charisma
             format:
-              vertical_alignment: middle
               widget_format:
-                alignment: center
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_5
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  left: 8
-                  right: 8
-                padding:
-                  top: 5
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_5
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 8
+                    right: 8
+                  padding:
+                    top: 5
+                    bottom: 5
             story:
             - type: story_part_variable
               story_part_variable:
                 variable_id: charisma
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1355,30 +1380,31 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: charisma_modifier
-                format:
-                  margins:
-                    left: 8
-                  padding:
-                    top: 1
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_15
                   size: 16
+                  element_format:
+                    margins:
+                      left: 8
+                    padding:
+                      top: 1
                 number_format: modifier
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        margins:
-          top: 15
-        padding:
-          top: 10
-          left: 10
-          right: 10
-          bottom: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          margins:
+            top: 15
+          padding:
+            top: 10
+            left: 10
+            right: 10
+            bottom: 15
       rows:
       - widgets:
         - type: widget_text
@@ -1386,45 +1412,47 @@ sections:
             id: important_stuff_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
-                  font_style: regular
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
+                font_style: regular
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             value_variable_id: important_stuff_label
       - format:
-          padding:
-            top: 6
-            bottom: 8
-            left: 8
-            right: 8
-          margins:
-            top: 15
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_5
-          corners:
-            top_right_radius: 4
-            top_left_radius: 4
-            bottom_left_radius: 4
-            bottom_right_radius: 4
+          element_format:
+            padding:
+              top: 6
+              bottom: 8
+              left: 8
+              right: 8
+            margins:
+              top: 15
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: dark_grey_5
+            corners:
+              top_right_radius: 4
+              top_left_radius: 4
+              bottom_left_radius: 4
+              bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
             id: alignment
             format:
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             story:
             - type: story_part_span
               story_part_span:
                 text: 'I am '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1433,54 +1461,56 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: alignment
-                format:
-                  margins:
-                    left: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_5
                   font_style: bold
+                  element_format:
+                    margins:
+                      left: 10
                   size: 17
             - type: story_part_span
               story_part_span:
                 text: '. Usually more chaotic than good.'
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_12
                   size: 16
       - format:
-          padding:
-            top: 6
-            bottom: 8
-            left: 8
-            right: 8
-          margins:
-            top: 15
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_5
-          corners:
-            top_right_radius: 4
-            top_left_radius: 4
-            bottom_left_radius: 4
-            bottom_right_radius: 4
+          element_format:
+            padding:
+              top: 6
+              bottom: 8
+              left: 8
+              right: 8
+            margins:
+              top: 15
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: dark_grey_5
+            corners:
+              top_right_radius: 4
+              top_left_radius: 4
+              bottom_left_radius: 4
+              bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
             id: deity
             format:
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             story:
             - type: story_part_span
               story_part_span:
                 text: 'I worship '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1492,7 +1522,7 @@ sections:
                 format:
                   margins:
                     left: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1502,24 +1532,25 @@ sections:
             - type: story_part_span
               story_part_span:
                 text: '. Her churches are the streets and the open roads'
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_12
                   size: 16
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        margins:
-          top: 15
-        padding:
-          left: 10
-          right: 10
-          bottom: 20
-          top: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          margins:
+            top: 15
+          padding:
+            left: 10
+            right: 10
+            bottom: 20
+            top: 15
       rows:
       - widgets:
         - type: widget_text
@@ -1535,37 +1566,40 @@ sections:
                   size: 12
                   font_style: regular
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             value_variable_id: less_important_stuff_label
       - format:
-          padding:
-            top: 6
-            bottom: 8
-            left: 8
-            right: 8
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_5
-          margins:
-            top: 15
-          corners:
-            top_right_radius: 4
-            top_left_radius: 4
-            bottom_left_radius: 4
-            bottom_right_radius: 4
+          element_format:
+            padding:
+              top: 6
+              bottom: 8
+              left: 8
+              right: 8
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: dark_grey_5
+            margins:
+              top: 15
+            corners:
+              top_right_radius: 4
+              top_left_radius: 4
+              bottom_left_radius: 4
+              bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
             id: fears
             format:
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             story:
             - type: story_part_span
               story_part_span:
                 text: 'I am afraid of '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1574,54 +1608,56 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: bears
-                format:
-                  margins:
-                    left: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_5
+                  element_format:
+                    margins:
+                      left: 10
                   font_style: bold
                   size: 18
             - type: story_part_span
               story_part_span:
                 text: '. One escaped his cage in the Carnival when I was a kid. I never stopped having nightmares.'
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_12
                   size: 16
       - format:
-          padding:
-            top: 6
-            bottom: 8
-            left: 8
-            right: 8
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_5
-          margins:
-            top: 15
-          corners:
-            top_right_radius: 4
-            top_left_radius: 4
-            bottom_left_radius: 4
-            bottom_right_radius: 4
+          element_format:
+            padding:
+              top: 6
+              bottom: 8
+              left: 8
+              right: 8
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: dark_grey_5
+            margins:
+              top: 15
+            corners:
+              top_right_radius: 4
+              top_left_radius: 4
+              bottom_left_radius: 4
+              bottom_right_radius: 4
         widgets:
         - type: widget_story
           widget_story:
             id: fiddle_songs
             format:
               widget_format:
-                alignment: left
+                element_format:
+                  horizontal_alignment: left
             story:
             - type: story_part_span
               story_part_span:
                 text: 'I can play '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1630,35 +1666,36 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: fiddle_songs_can_play
-                format:
-                  margins:
-                    left: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_blue_5
+                  element_format:
+                    margins:
+                      left: 10
                   font_style: bold
                   size: 20
             - type: story_part_span
               story_part_span:
                 text: ' songs on the fiddle.'
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_12
                   size: 16
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        margins:
-          top: 15
-        padding:
-          top: 20
-          bottom: 20
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          margins:
+            top: 15
+          padding:
+            top: 20
+            bottom: 20
       rows:
       - widgets:
         - type: widget_quote
@@ -1668,16 +1705,17 @@ sections:
             source_variable_id: father_quote_source
             format:
               widget_format:
-                margins:
-                  left: 8
-                  right: 8
-              quote_style:
+                element_format:
+                  margins:
+                    left: 8
+                    right: 8
+              quote_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: light_grey_14
                 size: 15
-              source_style:
+              source_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -1690,19 +1728,21 @@ sections:
                     color_id: light_grey_25
   - name: My Stuff
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_11
-    groups:
-    - format:
+      element_format:
         background_color_theme:
           theme_color_ids:
           - theme_id: dark
-            color_id: dark_grey_9
-        padding:
-          top: 15
-          bottom: 15
+            color_id: dark_grey_11
+    groups:
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          padding:
+            top: 15
+            bottom: 15
       rows:
       - widgets:
         - type: widget_text
@@ -1710,17 +1750,17 @@ sections:
             id: armor_table_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
               widget_format:
-                alignment: left
-                margins:
-                  bottom: 5
-                  left: 5
+                element_format:
+                  horizontal_alignment: left
+                  margins:
+                    bottom: 5
+                    left: 5
             value_variable_id: armor_table_label
       - widgets:
         - type: widget_table
@@ -1729,9 +1769,10 @@ sections:
             table_name: 'Armor and Shields'
             format:
               widget_format:
-                margins:
-                  left: 8
-                  right: 8
+                element_format:
+                  margins:
+                    left: 8
+                    right: 8
               header_format:
                 background_color_theme:
                   theme_color_ids:
@@ -1741,7 +1782,7 @@ sections:
                   left: 8
                   top: 8
                   bottom: 8
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1768,8 +1809,8 @@ sections:
                   value_set_id: armor_and_shields
                 format:
                   column_format:
-                    alignment: left
-                    text_style:
+                    text_format:
+                      horizontal_alignment: left
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -1785,7 +1826,7 @@ sections:
                   boolean_literal: false
                 format:
                   column_format:
-                    text_style:
+                    text_format:
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -1809,15 +1850,16 @@ sections:
                     type: boolean_literal
                     boolean_literal: true
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        margins:
-          top: 15
-        padding:
-          top: 15
-          bottom: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          margins:
+            top: 15
+          padding:
+            top: 15
+            bottom: 15
       rows:
       - widgets:
         - type: widget_text
@@ -1825,17 +1867,17 @@ sections:
             id: weapon_table_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
               widget_format:
-                alignment: left
-                margins:
-                  bottom: 5
-                  left: 5
+                element_format:
+                  horizontal_alignment: left
+                  margins:
+                    bottom: 5
+                    left: 5
             value_variable_id: weapon_table_label
       - widgets:
         - type: widget_table
@@ -1844,9 +1886,10 @@ sections:
             table_name: 'Weapons'
             format:
               widget_format:
-                margins:
-                  left: 8
-                  right: 8
+                element_format:
+                  margins:
+                    left: 8
+                    right: 8
               header_format:
                 background_color_theme:
                   theme_color_ids:
@@ -1856,7 +1899,7 @@ sections:
                   left: 8
                   top: 8
                   bottom: 8
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1884,8 +1927,9 @@ sections:
                   value_set_id: weapons
                 format:
                   column_format:
-                    alignment: left
-                    text_style:
+                    text_format:
+                      element_format:
+                        horizontal_alignment: left
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -1901,7 +1945,7 @@ sections:
                   number_literal: 1
                 format:
                   column_format:
-                    text_style:
+                    text_format:
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -1918,7 +1962,7 @@ sections:
                   boolean_literal: false
                 format:
                   column_format:
-                    text_style:
+                    text_format:
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -1965,17 +2009,18 @@ sections:
                     type: boolean_literal
                     boolean_literal: true
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        padding:
-          top: 15
-          bottom: 15
-          left: 8
-          right: 8
-        margins:
-          top: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          padding:
+            top: 15
+            bottom: 15
+            left: 8
+            right: 8
+          margins:
+            top: 15
       rows:
       - widgets:
         - type: widget_text
@@ -1983,17 +2028,17 @@ sections:
             id: my_money_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
               widget_format:
-                alignment: left
-                margins:
-                  bottom: 5
-                  left: 0
+                element_format:
+                  horizontal_alignment: left
+                  margins:
+                    bottom: 5
+                    left: 0
             value_variable_id: my_money_label
       - widgets:
         - type: widget_text
@@ -2001,90 +2046,90 @@ sections:
             id: gold_label
             format:
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  top_right_radius: 2
-                  top_left_radius: 2
-                margins:
-                  right: 6
-                padding:
-                  top: 5
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                      color_id: dark_grey_6
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                  margins:
+                    right: 6
+                  padding:
+                    top: 5
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: gold_label
         - type: widget_text
           widget_text:
             id: silver_label
             format:
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  top_right_radius: 2
-                  top_left_radius: 2
-                padding:
-                  top: 5
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                      color_id: dark_grey_6
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                  padding:
+                    top: 5
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: silver_label
         - type: widget_text
           widget_text:
             id: copper_label
             format:
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  top_right_radius: 2
-                  top_left_radius: 2
-                margins:
-                  left: 6
-                padding:
-                  top: 5
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                      color_id: dark_grey_6
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                  margins:
+                    left: 6
+                  padding:
+                    top: 5
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
             value_variable_id: copper_label
       - widgets:
         - type: widget_story
           widget_story:
             id: gold
             format:
-              vertical_alignment: middle
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  right: 6
-                padding:
-                  top: 3
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                  corners:
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    right: 6
+                  padding:
+                    top: 3
+                    bottom: 5
             story:
             - type: story_part_icon
               story_part_icon:
@@ -2100,32 +2145,32 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: gold
-                format:
-                  margins:
-                    left: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_10
                   font_style: regular
                   size: 19
+                  element_format:
+                    margins:
+                      left: 10
         - type: widget_story
           widget_story:
             id: silver
             format:
-              vertical_alignment: middle
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                padding:
-                  top: 3
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                  corners:
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    top: 3
+                    bottom: 5
             story:
             - type: story_part_icon
               story_part_icon:
@@ -2141,34 +2186,34 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: silver
-                format:
-                  margins:
-                    left: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_10
                   font_style: regular
                   size: 19
+                  element_format:
+                    margins:
+                      left: 10
         - type: widget_story
           widget_story:
             id: copper
             format:
-              vertical_alignment: middle
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                corners:
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  left: 6
-                padding:
-                  top: 3
-                  bottom: 5
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                  corners:
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 6
+                  padding:
+                    top: 3
+                    bottom: 5
             story:
             - type: story_part_icon
               story_part_icon:
@@ -2184,26 +2229,27 @@ sections:
             - type: story_part_variable
               story_part_variable:
                 variable_id: copper
-                format:
-                  margins:
-                    left: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_10
                   font_style: regular
                   size: 19
+                  element_format:
+                    margins:
+                      left: 10
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        padding:
-          bottom: 15
-          top: 15
-        margins:
-          top: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          padding:
+            bottom: 15
+            top: 15
+          margins:
+            top: 15
       rows:
       - widgets:
         - type: widget_text
@@ -2211,17 +2257,17 @@ sections:
             id: backpack_table_label
             format:
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                  size: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                size: 12
               widget_format:
-                alignment: left
-                margins:
-                  bottom: 5
-                  left: 5
+                element_format:
+                  horizontal_alignment: left
+                  margins:
+                    bottom: 5
+                    left: 5
             value_variable_id: backpack_table_label
       - widgets:
         - type: widget_table
@@ -2230,9 +2276,10 @@ sections:
             table_name: 'Backpack'
             format:
               widget_format:
-                margins:
-                  left: 8
-                  right: 8
+                element_format:
+                  margins:
+                    left: 8
+                    right: 8
               header_format:
                 background_color_theme:
                   theme_color_ids:
@@ -2242,7 +2289,7 @@ sections:
                   left: 8
                   top: 8
                   bottom: 8
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2269,8 +2316,9 @@ sections:
                   value_set_id: adventuring_gear
                 format:
                   column_format:
-                    alignment: left
-                    text_style:
+                    text_format:
+                      element_format:
+                        horizontal_alignment: left
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -2286,7 +2334,7 @@ sections:
                   number_literal: 1
                 format:
                   column_format:
-                    text_style:
+                    text_format:
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -2387,15 +2435,16 @@ sections:
                     type: number_literal
                     number_literal: 1
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_9
-        padding:
-          bottom: 15
-          top: 15
-        margins:
-          top: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_9
+          padding:
+            bottom: 15
+            top: 15
+          margins:
+            top: 15
       rows:
       - widgets:
         - type: widget_story
@@ -2403,12 +2452,13 @@ sections:
             id: total_weight_gear
             format:
               widget_format:
-                alignment: center
+                element_format:
+                  horizontal_alignment: center
             story:
             - type: story_part_span
               story_part_span:
                 text: 'My gear''s total weight is '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2432,7 +2482,7 @@ sections:
                     bottom: 6
                     left: 6
                     right: 6
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2441,14 +2491,16 @@ sections:
                   size: 18
   - name: My Abilities
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_10
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_10
     groups:
     - format:
-        padding:
-          top: 12
+        element_format:
+          padding:
+            top: 12
       rows:
       - widgets:
         - type: widget_mechanic
@@ -2457,31 +2509,29 @@ sections:
             category_id: race_human
             format:
               widget_format:
-                margins:
-                  left: 8
-                  right: 8
+                element_format:
+                  margins:
+                    left: 8
+                    right: 8
               header_format:
-                style:
-                  size: 18
-                  font_style: bold
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_12
+                size: 18
+                font_style: bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_12
               mechanic_header_format:
-                style:
-                  size: 15
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_12
+                size: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_12
               mechanic_summary_format:
-                style:
-                  size: 13
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_26
+                size: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_26
               mechanic_format:
                 background_color_theme:
                   theme_color_ids:
@@ -2504,16 +2554,18 @@ sections:
   pages:
   - name: My Skills
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_9
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
     groups:
     - rows:
       - format:
-          margins:
-            top: 10
-            bottom: 10
+          element_format:
+            margins:
+              top: 10
+              bottom: 10
         widgets:
         - type: widget_table
           widget_table:
@@ -2521,10 +2573,11 @@ sections:
             table_name: 'Skills'
             format:
               widget_format:
-                margins:
-                  bottom: 20
-                  left: 8
-                  right: 8
+                element_format:
+                  margins:
+                    bottom: 20
+                    left: 8
+                    right: 8
               header_format:
                 background_color_theme:
                   theme_color_ids:
@@ -2534,7 +2587,7 @@ sections:
                   left: 8
                   top: 10
                   bottom: 10
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2562,8 +2615,9 @@ sections:
                   number_literal: 0
                 format:
                   column_format:
-                    alignment: left
-                    text_style:
+                    element_format:
+                      horizontal_alignment: left
+                    text_format:
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -2581,8 +2635,9 @@ sections:
                 defines_namespace: true
                 format:
                   column_format:
-                    alignment: left
-                    text_style:
+                    element_format:
+                      horizontal_alignment: left
+                    text_format:
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -2601,8 +2656,9 @@ sections:
                   boolean_literal: false
                 format:
                   column_format:
-                    alignment: center
-                    text_style:
+                    element_format:
+                      alignment: center
+                    text_format:
                       color_theme:
                         theme_color_ids:
                         - theme_id: dark
@@ -2611,7 +2667,7 @@ sections:
                     width: 1
                   true_text: 'Yes'
                   false_text: 'No'
-                  true_style:
+                  true_format:
                     color_theme:
                       theme_color_ids:
                       - theme_id: dark
@@ -2926,17 +2982,19 @@ sections:
                     boolean_literal: false
   - name: My Abilities
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_9
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
     groups:
   - name: Combat
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_9
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
     groups:
     - rows:
       - widgets:
@@ -2945,60 +3003,60 @@ sections:
             id: passive_perception_label
             format:
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                padding:
-                  top: 4
-                  bottom: 4
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_6
-                  size: 12
+                      color_id: dark_grey_6
+                  padding:
+                    top: 4
+                    bottom: 4
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_6
+                size: 12
             value_variable_id: passive_perception_label
         - type: widget_text
           widget_text:
             id: armor_class_label
             format:
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_blue_8
-                padding:
-                  top: 4
-                  bottom: 4
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_6
-                  size: 12
+                      color_id: dark_blue_8
+                  padding:
+                    top: 4
+                    bottom: 4
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_6
+                size: 12
             value_variable_id: armor_class_label
         - type: widget_text
           widget_text:
             id: speed_label
             format:
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                padding:
-                  top: 4
-                  bottom: 4
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_6
-                  size: 12
+                      color_id: dark_grey_6
+                  padding:
+                    top: 4
+                    bottom: 4
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_6
+                size: 12
             value_variable_id: speed_label
       - widgets:
         - type: widget_number
@@ -3007,20 +3065,21 @@ sections:
             value_variable_id: passive_perception
             format:
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_4
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_4
                 width: 1
               height: 48
               value_format:
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: white_5
-                  size: 22
-                vertical_alignment: middle
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: white_5
+                size: 22
+                element_format:
+                  vertical_alignment: middle
         - type: widget_number
           widget_number:
             id: armor_class
@@ -3028,19 +3087,20 @@ sections:
             format:
               height: 48
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_blue_6
-                width: 1
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: white_3
-                  size: 32
-                vertical_alignment: middle
+                      color_id: dark_blue_6
+                width: 1
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: white_3
+                size: 32
+                element_format:
+                  vertical_alignment: middle
         - type: widget_text
           widget_text:
             id: speed
@@ -3048,26 +3108,27 @@ sections:
             format:
               height: 48
               widget_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_4
-                width: 1
-              value_format:
-                style:
-                  color_theme:
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: white_5
-                  size: 21
+                      color_id: dark_grey_4
+                width: 1
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: white_5
+                size: 21
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_1
-        padding:
-          bottom: 25
-          top: 22
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_1
+          padding:
+            bottom: 25
+            top: 22
       rows:
       - widgets:
         - type: widget_points
@@ -3076,42 +3137,43 @@ sections:
             label: hit points
             format:
               widget_format:
-                margins:
-                  left: 12
-                  right: 12
+                element_format:
+                  margins:
+                    left: 12
+                    right: 12
               bar_height: 6
               bar_style: simple
               above_bar_style: limit_label_max_right
               limit_text_format:
-                margins:
-                  right: 5
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_7
-                  size: 20
-                vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_7
+                size: 20
+                element_format:
+                  margins:
+                    right: 5
+                  vertical_alignment: bottom
               current_text_format:
-                margins:
-                  left: 5
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_4
-                  size: 21
-                vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_4
+                size: 21
+                element_format:
+                  margins:
+                    left: 5
+                  vertical_alignment: bottom
               label_text_format:
-                margins:
-                  left: 5
-                style:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_7
-                  size: 20
-                vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_7
+                size: 20
+                element_format:
+                  margins:
+                    left: 5
+                  vertical_alignment: bottom
               limit_color_theme:
                 theme_color_ids:
                 - theme_id: dark
@@ -3123,13 +3185,14 @@ sections:
             limit_value_variable_id: current_hit_points
             current_value_variable_id: max_hit_points
     - format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_6
-        padding:
-          bottom: 15
-          top: 15
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: dark
+              color_id: dark_grey_6
+          padding:
+            bottom: 15
+            top: 15
       rows:
       - widgets:
         - type: widget_story
@@ -3137,19 +3200,20 @@ sections:
             id: roll_initiative
             format:
               widget_format:
-                alignment: center
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_6
-                margins:
-                  top: 15
-                  bottom: 15
+                element_format:
+                  alignment: center
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                  margins:
+                    top: 15
+                    bottom: 15
             story:
             - type: story_part_span
               story_part_span:
                 text: 'Let''s do this '
-                text_style:
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -3158,9 +3222,10 @@ sections:
             - type: story_part_action
               story_part_action:
                 text: 'Roll Initiative'
-                roll_name: Initiative
-                summation_id: initiative
-                text_style:
+                action:
+                  name: Initiative
+                  summation_id: initiative
+                text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -3180,14 +3245,16 @@ sections:
   pages:
   - name: Journal
     format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: dark
-          color_id: dark_grey_9
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_9
     groups:
     - format:
-        padding:
-          top: 12
+        element_format:
+          padding:
+            top: 12
       rows:
       - widgets:
         - type: widget_log
@@ -3195,23 +3262,24 @@ sections:
             id: journal
             format:
               widget_format:
-                margins:
-                  left: 10
-                  right: 10
+                element_format:
+                  margins:
+                    left: 10
+                    right: 10
               entry_format:
-                title_style:
+                title_format:
                   color_theme:
                       theme_color_ids:
                       - theme_id: dark
                         color_id: light_grey_5
                   size: 22
-                author_style:
+                author_format:
                   color_theme:
                       theme_color_ids:
                       - theme_id: dark
                         color_id: light_grey_22
                   size: 14
-                summary_style:
+                summary_format:
                   color_theme:
                       theme_color_ids:
                       - theme_id: dark

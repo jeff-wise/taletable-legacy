@@ -4,9 +4,9 @@ package com.kispoko.tome.model.game.engine.reference
 
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prod
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.summation.term.TermComponent
@@ -96,7 +96,7 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prod(this.value)
+    override fun columnValue() = ProdValue(this.value)
 
 
     override fun case() = "literal"
@@ -171,7 +171,7 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "variable"

@@ -6,10 +6,13 @@ import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_Summation
-import com.kispoko.tome.db.dbSummation
+import com.kispoko.tome.db.DB_SummationValue
+import com.kispoko.tome.db.summationTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -113,8 +116,11 @@ data class Summation(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Summation =
-            dbSummation(this.summationId, this.summationName, this.terms)
+    override fun rowValue() : DB_SummationValue =
+        RowValue3(summationTable,
+                  PrimValue(this.summationId),
+                  PrimValue(this.summationName),
+                  CollValue(this.terms))
 
 
     // -----------------------------------------------------------------------------------------

@@ -2,10 +2,15 @@
 package com.kispoko.tome.model.game
 
 
-import com.kispoko.tome.db.DB_Game
-import com.kispoko.tome.db.dbGame
+import com.kispoko.tome.db.DB_AuthorValue
+import com.kispoko.tome.db.DB_GameValue
+import com.kispoko.tome.db.gameTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -128,13 +133,13 @@ data class Game(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Game = dbGame(this.gameId,
-                                          this.gameName,
-                                          this.gameSummary,
-                                          this.authors,
-                                          this.engine,
-                                          this.rulebook)
-
+    override fun rowValue() : DB_GameValue =
+        RowValue6(gameTable, PrimValue(this.gameId),
+                             PrimValue(this.gameName),
+                             PrimValue(this.gameSummary),
+                             CollValue(this.authors),
+                             ProdValue(this.engine),
+                             ProdValue(this.rulebook))
 
 }
 

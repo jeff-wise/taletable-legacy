@@ -2,12 +2,15 @@
 package com.kispoko.tome.model.game.engine.dice
 
 
-import com.kispoko.tome.db.DB_DiceRoll
-import com.kispoko.tome.db.DB_RollModifier
-import com.kispoko.tome.db.dbDiceRoll
-import com.kispoko.tome.db.dbRollModifier
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -118,7 +121,10 @@ data class DiceRoll(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_DiceRoll = dbDiceRoll(this.quantities, this.modifiers, this.rollName)
+    override fun rowValue() : DB_DiceRollValue =
+        RowValue3(diceRollTable, PrimValue(DiceQuantitySet(this.quantities)),
+                                 CollValue(this.modifiers),
+                                 MaybePrimValue(this.rollName))
 
 
     // -----------------------------------------------------------------------------------------
@@ -511,7 +517,9 @@ data class RollModifier(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_RollModifier = dbRollModifier(this.value, this.modifierName)
+    override fun rowValue() : DB_RollModifierValue =
+        RowValue2(rollModifierTable, PrimValue(this.value),
+                                     MaybePrimValue(this.modifierName))
 
 }
 

@@ -2,10 +2,18 @@
 package com.kispoko.tome.model.campaign
 
 
-import com.kispoko.tome.db.DB_Campaign
-import com.kispoko.tome.db.dbCampaign
+import com.kispoko.tome.R.string.*
+import com.kispoko.tome.db.DB_CampaignValue
+import com.kispoko.tome.db.DB_SheetValue
+import com.kispoko.tome.db.campaignTable
+import com.kispoko.tome.db.sheetTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -95,10 +103,12 @@ data class Campaign(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Campaign = dbCampaign(this.campaignId,
-                                                  this.campaignName,
-                                                  this.campaignSummary,
-                                                  this.gameId)
+    override fun rowValue() : DB_CampaignValue =
+        RowValue4(campaignTable, PrimValue(campaignId),
+                                 PrimValue(campaignName),
+                                 PrimValue(campaignSummary),
+                                 PrimValue(gameId))
+
 }
 
 

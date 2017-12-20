@@ -2,16 +2,13 @@
 package com.kispoko.tome.model.game.engine.mechanic
 
 
-import com.kispoko.tome.R.string.label
-import com.kispoko.tome.db.DB_Mechanic
-import com.kispoko.tome.db.DB_MechanicCategory
-import com.kispoko.tome.db.dbMechanic
-import com.kispoko.tome.db.dbMechanicCategory
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.orm.sql.SQLBlob
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -21,10 +18,8 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 
@@ -152,13 +147,14 @@ data class Mechanic(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Mechanic = dbMechanic(this.mechanicId,
-                                                  this.label,
-                                                  this.description,
-                                                  this.summary,
-                                                  this.categoryId,
-                                                  this.requirements,
-                                                  this.variables)
+    override fun rowValue() : DB_MechanicValue =
+        RowValue7(mechanicTable, PrimValue(this.mechanicId),
+                                 PrimValue(this.label),
+                                 PrimValue(this.description),
+                                 PrimValue(this.summary),
+                                 PrimValue(this.categoryId),
+                                 PrimValue(MechanicRequirements(this.requirements)),
+                                 CollValue(this.variables))
 
 }
 
@@ -384,11 +380,15 @@ data class MechanicCategory(override val id : UUID,
 
     override fun onLoad() { }
 
+
     override val prodTypeObject = this
 
 
-    override fun row() : DB_MechanicCategory =
-            dbMechanicCategory(this.categoryId, this.label, this.description)
+    override fun rowValue() : DB_MechanicCategoryValue =
+        RowValue3(mechanicCategoryTable,
+                  PrimValue(this.categoryId),
+                  PrimValue(this.label),
+                  PrimValue(this.description))
 
 }
 

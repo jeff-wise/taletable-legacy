@@ -3,8 +3,8 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Sum
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.effApply
 import effect.effError
@@ -86,7 +86,7 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
     // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Sum(this.reference)
+    override fun columnValue() = SumValue(this.reference)
 
 
     override fun case() = "boolean"
@@ -139,7 +139,7 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Sum(this.reference)
+    override fun columnValue() = SumValue(this.reference)
 
 
     override fun case() = "dice_roll"
@@ -193,7 +193,7 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Sum(this.reference)
+    override fun columnValue() = SumValue(this.reference)
 
 
     override fun case() = "number"

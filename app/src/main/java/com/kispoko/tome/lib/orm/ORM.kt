@@ -6,28 +6,27 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabaseLockedException
 import android.util.Log
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.orm.sql.query.UpdateQuery
 import com.kispoko.tome.lib.orm.sql.query.UpsertQuery
 import effect.Just
-import effect.Val
-import lulo.schema.Prim
-import lulo.schema.Sum
 
 
 fun savePrim(sqlValue : SQLValue, columnName : String, prodType : ProdType)
 {
 
+    val tableName = prodType.rowValue().table().tableName
+
     DatabaseManager.database().beginTransaction()
     try
     {
         val startTime = System.nanoTime()
-        ORMLog.event(BeginTranscation(prodType.row().name))
+        ORMLog.event(BeginTranscation(tableName))
 
         Schema.defineTable(prodType, listOf())
 
-        val updateQuery = UpdateQuery(prodType.row().tableName(),
+        val updateQuery = UpdateQuery(tableName,
                                       columnName,
                                       prodType.id,
                                       sqlValue)
@@ -40,7 +39,7 @@ fun savePrim(sqlValue : SQLValue, columnName : String, prodType : ProdType)
     finally
     {
         DatabaseManager.database().endTransaction()
-        ORMLog.event(EndTranscation(prodType.row().name))
+        ORMLog.event(EndTranscation(tableName))
     }
 
 }
@@ -53,6 +52,8 @@ fun saveProdType(prodType : ProdType,
 {
     val startTime = System.nanoTime()
 
+    val tableName = prodType.rowValue().table().tableName
+
     if (isTransaction)
     {
         // TODO need to run separate transactions for each model, but need to do it in single thread?
@@ -60,7 +61,7 @@ fun saveProdType(prodType : ProdType,
         // Need to find a better way to resolve this.
         try {
             DatabaseManager.database().beginTransaction()
-            ORMLog.event(BeginTranscation(prodType.row().name))
+            ORMLog.event(BeginTranscation(tableName))
         }
         catch (e : SQLiteDatabaseLockedException) {
             Log.d("***ORM", "sqlite db locked exception")
@@ -103,7 +104,7 @@ fun saveProdType(prodType : ProdType,
     {
         if (isTransaction) {
             DatabaseManager.database().endTransaction()
-            ORMLog.event(EndTranscation(prodType.row().name))
+            ORMLog.event(EndTranscation(tableName))
         }
     }
 }
@@ -113,7 +114,7 @@ fun insertModelRow(prodType : ProdType, oneToManyRelationRows : List<OneToManyRe
 {
     val contentValues = ContentValues()
 
-    val row = prodType.row()
+    val tableName = prodType.rowValue().table().tableName
 
     // (1) Collect Row Data
     // -------------------------------------------------------------------------------------
@@ -143,12 +144,12 @@ fun insertModelRow(prodType : ProdType, oneToManyRelationRows : List<OneToManyRe
                 insertPrimitiveRowValue(it.relation, contentValues)
                 insertSumTypeRowValue(typeColumnName(it.relation.name), it.path, contentValues)
             }
-            is OneToOneRelation -> {
+            is OneToOneRelationRow -> {
                 insertProductRowValue(it.relation, contentValues)
                 insertSumTypeRowValue(typeColumnName(it.relation.name), it.path, contentValues)
             }
             else -> {
-                ORMLog.event(SumFunctorNotSupported(prodType.row().name))
+                ORMLog.event(SumFunctorNotSupported(tableName))
             }
         }
     }
@@ -156,7 +157,7 @@ fun insertModelRow(prodType : ProdType, oneToManyRelationRows : List<OneToManyRe
     // (2) Insert Row Data
     // -------------------------------------------------------------------------------------
 
-    val upsertQuery = UpsertQuery(row.tableName(), prodType.id, contentValues)
+    val upsertQuery = UpsertQuery(tableName, prodType.id, contentValues)
 
     upsertQuery.run()
 }
@@ -165,15 +166,17 @@ fun insertModelRow(prodType : ProdType, oneToManyRelationRows : List<OneToManyRe
 private fun insertModelChildRows(prodType : ProdType, recursive : Boolean)
 {
     // Save Child Models (One-to-One)
-    prodType.row().columns().forEach { column ->
-        when (column.value) {
-            is Prod<*> -> column.value.save(recursive)
+    for ((_, columnValue) in prodType.rowValue().columns()) {
+        when (columnValue) {
+            is ProdValue<*> -> saveProdType(columnValue.product, listOf(), true, false)
         }
     }
 
     // Save Collections (One-to-Many)
-    oneToManyRelations(prodType).forEach {
-        it.first.save(recursive, it.second)
+    oneToManyRelations(prodType).forEach { (collValue, relation) ->
+        collValue.list.forEach {
+            saveProdType(it, listOf(relation), true, false)
+        }
     }
 }
 
@@ -194,7 +197,7 @@ private fun insertPrimitiveRowValue(valueRelation : ValueRelation, row : Content
 }
 
 
-private fun insertProductRowValue(oneToOneRelation : OneToOneRelation, row : ContentValues)
+private fun insertProductRowValue(oneToOneRelation : OneToOneRelationRow, row : ContentValues)
 {
     val columnName = SQL.validIdentifier(oneToOneRelation.name)
     row.put(columnName, oneToOneRelation.childRowId.toString())
@@ -215,13 +218,13 @@ private fun insertSumTypeRowValue(columnName : String, path : String, row : Cont
 
 
 private fun modelValueRelations(prodType : ProdType) : List<ValueRelation> =
-    prodType.row().columns().mapNotNull {
-        when (it.value) {
-            is Prim<*> -> ValueRelation(it.columnName(), it.value.asSQLValue())
-            is MaybePrim<*> -> {
-                val maybeValue = it.value.value
+    prodType.rowValue().columns().mapNotNull { (columnName, columnValue) ->
+        when (columnValue) {
+            is PrimValue<*> -> ValueRelation(columnName, columnValue.prim.asSQLValue())
+            is MaybePrimValue<*> -> {
+                val maybeValue = columnValue.maybePrim
                 when (maybeValue) {
-                    is Just -> ValueRelation(it.columnName(), maybeValue.value.asSQLValue())
+                    is Just -> ValueRelation(columnName, maybeValue.value.asSQLValue())
 //                    else    -> ValueRelation(it.columnName(), SQLNull)
                     else    -> null
                 }
@@ -231,41 +234,44 @@ private fun modelValueRelations(prodType : ProdType) : List<ValueRelation> =
     }
 
 
-private fun modelOneToOneRelations(prodType : ProdType) : List<OneToOneRelation> =
-    prodType.row().columns().mapNotNull {
-        when (it.value)
+private fun modelOneToOneRelations(prodType : ProdType) : List<OneToOneRelationRow> =
+    prodType.rowValue().columns().mapNotNull { (columnName, columnValue) ->
+        when (columnValue)
         {
-            is Prod<*> -> OneToOneRelation(it.name, it.value.value.id)
+            is ProdValue<*> -> OneToOneRelationRow(prodType.rowValue().table().tableName,
+                                                   columnValue.product.id)
+            else            -> null
+        }
+    }
+
+
+private fun oneToManyRelations(prodType : ProdType)
+                : List<Pair<CollValue<*>, OneToManyRelationRow>> =
+    prodType.rowValue().columns().mapNotNull { (columnName, columnValue) ->
+        when (columnValue)
+        {
+            is CollValue<*> -> {
+                val rel = OneToManyRelationRow(prodType.rowValue().table().tableName,
+                                               columnName,
+                                               prodType.id)
+                Pair(columnValue, rel)
+            }
             else       -> null
         }
     }
-
-
-private fun oneToManyRelations(prodType : ProdType) : List<Pair<Coll<*>, OneToManyRelationRow>>
-{
-    fun funcRelations(column : Col<*>) : Pair<Coll<*>, OneToManyRelationRow>? = when (column.value)
-    {
-        is Coll<*> -> {
-            val rel = OneToManyRelationRow(prodType.row().name, column.name, prodType.id)
-            Pair(column.value, rel)
-        }
-        else       -> null
-    }
-
-    return prodType.row().columns().mapNotNull { funcRelations(it) }
-}
 
 
 // -----------------------------------------------------------------------------------------
 // SUM RELATIONS
 // -----------------------------------------------------------------------------------------
 
-private fun resolveFunctor(functor : Val<*>,
-                           path : List<String>) : Pair<String, Val<*>> = when (functor)
+private fun resolveColumnValue(columnValue : ColumnValue,
+                               path : List<String>) : Pair<String, ColumnValue> =
+    when (columnValue)
 {
-    is Sum<*> -> resolveFunctor(functor.value.functor(),
-                                path.plus(functor.value.case()))
-    else      -> Pair(path.joinToString(":"), functor)
+    is SumValue<*> -> resolveColumnValue(columnValue.sum.columnValue(),
+                                         path.plus(columnValue.sum.case()))
+    else           -> Pair(path.joinToString(":"), columnValue)
 }
 
 
@@ -273,19 +279,28 @@ private fun resolveFunctor(functor : Val<*>,
 //        _resolveFunctor(functor, listOf(case))
 
 
-private fun sumRelations(prodType: ProdType) : List<SumRelation> =
-    prodType.row().columns().mapNotNull {
-        when (it.value)
+private fun sumRelations(prodType : ProdType) : List<SumRelation> =
+    prodType.rowValue().columns().mapNotNull { (columnName, columnValue) ->
+        when (columnValue)
         {
-            is Sum<*> ->
+            is SumValue<*> ->
             {
-                val result = resolveFunctor(it.value.value.functor(), listOf(it.value.value.case()))
-                val (path, functor) = result
-                when (functor)
+                val result = resolveColumnValue(columnValue.sum.columnValue(),
+                                                listOf(columnValue.sum.case()))
+                val (path, resolvedColumnValue) = result
+                when (resolvedColumnValue)
                 {
-                    is Prim<*> -> SumRelation(ValueRelation(it.columnName(), functor.asSQLValue()), path)
-                    is Prod<*> -> SumRelation(OneToOneRelation(it.columnName(), functor.value.id), path)
-                    else       -> null
+                    is PrimValue<*> -> {
+                        val relationRow = ValueRelation(columnName,
+                                                        resolvedColumnValue.prim.asSQLValue())
+                        SumRelation(relationRow, path)
+                    }
+                    is ProdValue<*> -> {
+                        val relationRow = OneToOneRelationRow(columnName,
+                                                              resolvedColumnValue.product.id)
+                        SumRelation(relationRow, path)
+                    }
+                    else            -> null
                 }
             }
             else      -> null

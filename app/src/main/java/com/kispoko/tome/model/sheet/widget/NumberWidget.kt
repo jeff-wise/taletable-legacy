@@ -7,10 +7,12 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.tome.db.DB_WidgetNumberFormat
-import com.kispoko.tome.db.dbWidgetNumberFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -35,12 +37,9 @@ import java.util.*
  */
 data class NumberWidgetFormat(override val id : UUID,
                               val widgetFormat : WidgetFormat,
-                              val insideLabelFormat : ElementFormat,
-                              val insideLabelStyle : TextFormat,
-                              val outsideLabelFormat : ElementFormat,
-                              val outsideLabelStyle : TextFormat,
-                              val valueFormat : ElementFormat,
-                              val valueStyle : TextFormat,
+                              val insideLabelFormat : TextFormat,
+                              val outsideLabelFormat : TextFormat,
+                              val valueFormat : TextFormat,
                               val numberFormat : NumberFormat)
                                : ToDocument, ProdType, Serializable
 {
@@ -50,21 +49,15 @@ data class NumberWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                insideLabelFormat : ElementFormat,
-                insideLabelStyle : TextFormat,
-                outsideLabelFormat : ElementFormat,
-                outsideLabelStyle: TextFormat,
-                valueFormat : ElementFormat,
-                valueStyle : TextFormat,
+                insideLabelFormat : TextFormat,
+                outsideLabelFormat : TextFormat,
+                valueFormat : TextFormat,
                 numberFormat : NumberFormat)
         : this(UUID.randomUUID(),
                widgetFormat,
                insideLabelFormat,
-               insideLabelStyle,
                outsideLabelFormat,
-               outsideLabelStyle,
                valueFormat,
-               valueStyle,
                numberFormat)
 
 
@@ -72,12 +65,9 @@ data class NumberWidgetFormat(override val id : UUID,
     {
 
         private fun defaultWidgetFormat()         = WidgetFormat.default()
-        private fun defaultInsideLabelFormat()    = ElementFormat.default()
-        private fun defaultInsideLabelStyle()     = TextFormat.default()
-        private fun defaultOutsideLabelFormat()   = ElementFormat.default()
-        private fun defaultOutsideLabelStyle()    = TextFormat.default()
-        private fun defaultValueFormat()          = ElementFormat.default()
-        private fun defaultValueStyle()           = TextFormat.default()
+        private fun defaultInsideLabelFormat()    = TextFormat.default()
+        private fun defaultOutsideLabelFormat()   = TextFormat.default()
+        private fun defaultValueFormat()          = TextFormat.default()
         private fun defaultNumberFormat()         = NumberFormat.Normal
 
 
@@ -93,26 +83,14 @@ data class NumberWidgetFormat(override val id : UUID,
                       // Inside Label Format
                       split(doc.maybeAt("inside_label_format"),
                             effValue(defaultInsideLabelFormat()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Inside Label Style
-                      split(doc.maybeAt("inside_label_style"),
-                            effValue(defaultInsideLabelStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Outside Label Format
                       split(doc.maybeAt("outside_label_format"),
                             effValue(defaultOutsideLabelFormat()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Outside Label Style
-                      split(doc.maybeAt("outside_label_style"),
-                            effValue(defaultOutsideLabelStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Value Format
                       split(doc.maybeAt("value_format"),
                             effValue(defaultValueFormat()),
-                            { ElementFormat.fromDocument(it) }),
-                      // Value Style
-                      split(doc.maybeAt("value_style"),
-                            effValue(defaultValueStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Number Format
                       split(doc.maybeAt("number_format"),
@@ -126,11 +104,8 @@ data class NumberWidgetFormat(override val id : UUID,
 
         fun default() = NumberWidgetFormat(defaultWidgetFormat(),
                                            defaultInsideLabelFormat(),
-                                           defaultInsideLabelStyle(),
                                            defaultOutsideLabelFormat(),
-                                           defaultOutsideLabelStyle(),
                                            defaultValueFormat(),
-                                           defaultValueStyle(),
                                            defaultNumberFormat())
 
     }
@@ -143,11 +118,8 @@ data class NumberWidgetFormat(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "widget_format" to this.widgetFormat().toDocument(),
         "inside_label_format" to this.insideLabelFormat.toDocument(),
-        "inside_label_style" to this.insideLabelStyle.toDocument(),
         "outside_label_format" to this.outsideLabelFormat.toDocument(),
-        "outside_label_style" to this.outsideLabelStyle.toDocument(),
         "value_format" to this.valueFormat.toDocument(),
-        "value_style" to this.valueStyle.toDocument(),
         "number_format" to this.numberFormat.toDocument()))
 
 
@@ -158,22 +130,13 @@ data class NumberWidgetFormat(override val id : UUID,
     fun widgetFormat() : WidgetFormat = this.widgetFormat
 
 
-    fun insideLabelFormat() : ElementFormat = this.insideLabelFormat
+    fun insideLabelFormat() : TextFormat = this.insideLabelFormat
 
 
-    fun insideLabelStyle() : TextFormat = this.insideLabelStyle
+    fun outsideLabelFormat() : TextFormat = this.outsideLabelFormat
 
 
-    fun outsideLabelFormat() : ElementFormat = this.outsideLabelFormat
-
-
-    fun outsideLabelStyle() : TextFormat = this.outsideLabelStyle
-
-
-    fun valueFormat() : ElementFormat = this.valueFormat
-
-
-    fun valueStyle() : TextFormat = this.valueStyle
+    fun valueFormat() : TextFormat = this.valueFormat
 
 
     fun numberFormat() : NumberFormat = this.numberFormat
@@ -189,15 +152,13 @@ data class NumberWidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetNumberFormat =
-            dbWidgetNumberFormat(this.widgetFormat,
-                                 this.insideLabelFormat,
-                                 this.insideLabelStyle,
-                                 this.outsideLabelFormat,
-                                 this.outsideLabelStyle,
-                                 this.valueFormat,
-                                 this.valueStyle,
-                                 this.numberFormat)
+    override fun rowValue() : DB_WidgetNumberFormatValue =
+        RowValue5(widgetNumberFormatTable,
+                  ProdValue(this.widgetFormat),
+                  ProdValue(this.insideLabelFormat),
+                  ProdValue(this.outsideLabelFormat),
+                  ProdValue(this.valueFormat),
+                  PrimValue(this.numberFormat))
 
 }
 
@@ -411,7 +372,7 @@ object NumberWidgetView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.orientation          = format.outsideLabelFormat().position()
+        layout.orientation          = format.outsideLabelFormat().elementFormat().position()
                                             .linearLayoutOrientation()
 
         layout.gravity              = format.widgetFormat().elementFormat().alignment().gravityConstant() or
@@ -460,7 +421,7 @@ object NumberWidgetView
     {
         val layout = LinearLayoutBuilder()
 
-        layout.orientation          = format.insideLabelFormat().position()
+        layout.orientation          = format.insideLabelFormat().elementFormat().position()
                                             .linearLayoutOrientation()
 
         // > Width
@@ -501,10 +462,10 @@ object NumberWidgetView
 //        layout.corners              = format.widgetFormat().corners()
 
 
-        if (format.valueFormat().height().isWrap())
+        if (format.valueFormat().elementFormat().height().isWrap())
         {
-            layout.padding.topDp    = format.valueFormat().padding().topDp()
-            layout.padding.bottomDp = format.valueFormat().padding().bottomDp()
+            layout.padding.topDp    = format.valueFormat().elementFormat().padding().topDp()
+            layout.padding.bottomDp = format.valueFormat().elementFormat().padding().bottomDp()
         }
 
 
@@ -573,13 +534,13 @@ object NumberWidgetView
         else
             layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.paddingSpacing   = format.valueFormat().padding()
+        layout.paddingSpacing   = format.valueFormat().elementFormat().padding()
 
-        layout.gravity = format.valueFormat().alignment().gravityConstant() or
-                                    format.valueFormat().verticalAlignment().gravityConstant()
+        layout.gravity = format.valueFormat().elementFormat().alignment().gravityConstant() or
+                                    format.valueFormat().elementFormat().verticalAlignment().gravityConstant()
 
-        layout.layoutGravity = format.valueFormat().alignment().gravityConstant() or
-                format.valueFormat().verticalAlignment().gravityConstant()
+        layout.layoutGravity = format.valueFormat().elementFormat().alignment().gravityConstant() or
+                format.valueFormat().elementFormat().verticalAlignment().gravityConstant()
 
         return layout.linearLayout(context)
     }
@@ -599,11 +560,11 @@ object NumberWidgetView
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        value.gravity       = format.valueFormat().alignment().gravityConstant() or
-                                format.valueFormat().verticalAlignment().gravityConstant()
+        value.gravity       = format.valueFormat().elementFormat().alignment().gravityConstant() or
+                                format.valueFormat().elementFormat().verticalAlignment().gravityConstant()
 
-        value.layoutGravity       = format.valueFormat().alignment().gravityConstant() or
-                format.valueFormat().verticalAlignment().gravityConstant()
+        value.layoutGravity       = format.valueFormat().elementFormat().alignment().gravityConstant() or
+                format.valueFormat().elementFormat().verticalAlignment().gravityConstant()
 
 //        if (numberWidget.description() != null)
 //        {
@@ -645,7 +606,7 @@ object NumberWidgetView
 
         value.text = valueString
 
-        format.valueStyle().styleTextViewBuilder(value, sheetUIContext)
+        format.valueFormat().styleTextViewBuilder(value, sheetUIContext)
 
         return value.textView(sheetUIContext.context)
     }
@@ -746,14 +707,14 @@ object NumberWidgetView
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.layoutGravity     = format.outsideLabelFormat().alignment().gravityConstant() or
+        label.layoutGravity     = format.outsideLabelFormat().elementFormat().alignment().gravityConstant() or
                                     Gravity.CENTER_VERTICAL
 
         //label.text              = format.outsideLabelString()
 
-        format.outsideLabelStyle().styleTextViewBuilder(label, sheetUIContext)
+        format.outsideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
 
-        label.marginSpacing     = format.outsideLabelFormat().margins()
+        label.marginSpacing     = format.outsideLabelFormat().elementFormat().margins()
 
         return label.textView(sheetUIContext.context)
     }
@@ -769,12 +730,12 @@ object NumberWidgetView
 
     //label.text              = format.insideLabelString()
 
-        label.layoutGravity     = format.insideLabelFormat().alignment().gravityConstant() or
+        label.layoutGravity     = format.insideLabelFormat().elementFormat().alignment().gravityConstant() or
                                       Gravity.CENTER_VERTICAL;
 
-        format.insideLabelStyle().styleTextViewBuilder(label, sheetUIContext)
+        format.insideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
 
-        label.marginSpacing     = format.insideLabelFormat().margins()
+        label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
 
         return label.textView(sheetUIContext.context)
     }

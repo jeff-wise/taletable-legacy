@@ -2,24 +2,9 @@
 package com.kispoko.tome.lib.orm
 
 
-import com.kispoko.tome.R
-import com.kispoko.tome.R.string.name
-import com.kispoko.tome.R.string.value
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.model.SumType
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.engine.summation.SummationId
-import com.kispoko.tome.model.game.engine.summation.SummationName
-import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
-import com.kispoko.tome.model.game.engine.value.NumberValue
-import com.kispoko.tome.model.game.engine.value.TextValue
 import effect.Just
-import effect.Val
-import kotlinx.coroutines.experimental.CommonPool
-import lulo.schema.Prim
-import lulo.schema.Sum
 import java.util.*
 
 
@@ -107,7 +92,7 @@ object Schema
         rowValue.columns().forEach { (columnName, columnValue) ->
             when (columnValue)
             {
-                is ProdValue<*> -> Schema.defineTable(columnValue.prod, listOf())
+                is ProdValue<*> -> Schema.defineTable(columnValue.product, listOf())
                 is CollValue<*> -> columnValue.list.forEach { itemValue ->
                     val relation = OneToManyRelation(tableName, columnName)
                     Schema.defineTable(itemValue, listOf(relation))
@@ -127,7 +112,7 @@ object Schema
 
 
     fun <A : ProdType> tableDefinitionSQLString(prodType : A,
-                                                oneToManyRelations : List<OneToManyRelation>)
+                                                                         oneToManyRelations : List<OneToManyRelation>)
                                                  : TableDefinition
     {
         val columnNames : MutableSet<String> = mutableSetOf()
@@ -313,8 +298,11 @@ data class ValueRelation(val name : String,
 }
 
 
-data class OneToOneRelation(val name : String,
-                            val childRowId : UUID) :  RelationRow()
+/**
+ * One-to-One Relation / Foreign Key
+ */
+data class OneToOneRelationRow(val name : String,
+                               val childRowId : UUID) :  RelationRow()
 
 
 // Table Name and Field Name should be the normal names, not the SQL-validated versions

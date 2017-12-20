@@ -2,20 +2,6 @@
 package com.kispoko.tome.lib.functor
 
 
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.model.SumType
-import com.kispoko.tome.lib.orm.OneToManyRelationRow
-import com.kispoko.tome.lib.orm.saveProdType
-import com.kispoko.tome.lib.orm.sql.SQLNull
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLValue
-import effect.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.run
-import java.io.Serializable
-
-
-
 /**
  * Functor
  */

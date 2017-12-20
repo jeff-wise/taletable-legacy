@@ -2,14 +2,11 @@
 package com.kispoko.tome.model.sheet.widget.table.column
 
 
-import com.kispoko.tome.db.DB_WidgetTableColumnNumberFormat
-import com.kispoko.tome.db.DB_WidgetTableColumnTextFormat
-import com.kispoko.tome.db.dbWidgetTableColumnNumberFormat
-import com.kispoko.tome.db.dbWidgetTableColumnTextFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prod
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue1
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
 import lulo.document.*
@@ -88,8 +85,9 @@ data class TextColumnFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableColumnTextFormat =
-            dbWidgetTableColumnTextFormat(this.columnFormat)
+    override fun rowValue() : DB_WidgetTableColumnTextFormatValue =
+        RowValue1(widgetTableColumnTextFormatTable,
+                  ProdValue(this.columnFormat))
 
 }
 

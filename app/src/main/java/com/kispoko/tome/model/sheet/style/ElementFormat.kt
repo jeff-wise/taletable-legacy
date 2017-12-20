@@ -2,11 +2,12 @@
 package com.kispoko.tome.model.sheet.style
 
 
-import com.kispoko.tome.db.DB_ElementFormat
-import com.kispoko.tome.db.dbElementFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.ui.SectionCard
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue8
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
@@ -29,7 +30,7 @@ data class ElementFormat(override val id : UUID,
                          private val backgroundColorTheme : ColorTheme,
                          private val corners : Corners,
                          private val alignment : Alignment,
-                         private val verticalAlignment: VerticalAlignment)
+                         private val verticalAlignment : VerticalAlignment)
                            : ToDocument, ProdType, Serializable
 {
 
@@ -177,13 +178,14 @@ data class ElementFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_ElementFormat = dbElementFormat(this.position,
-                                                            this.height,
-                                                            this.padding,
-                                                            this.margins,
-                                                            this.backgroundColorTheme,
-                                                            this.corners,
-                                                            this.alignment,
-                                                            this.verticalAlignment)
+    override fun rowValue() : DB_ElementFormatValue =
+        RowValue8(elementFormatTable, PrimValue(this.position),
+                                      PrimValue(this.height),
+                                      PrimValue(this.padding),
+                                      PrimValue(this.margins),
+                                      PrimValue(this.backgroundColorTheme),
+                                      PrimValue(this.corners),
+                                      PrimValue(this.alignment),
+                                      PrimValue(this.verticalAlignment))
 
 }

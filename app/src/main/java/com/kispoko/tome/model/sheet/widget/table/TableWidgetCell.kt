@@ -14,14 +14,16 @@ import com.kispoko.tome.app.AppSheetError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Action
-import com.kispoko.tome.model.sheet.widget.ActionName
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.rts.sheet.CellVariableUndefined
@@ -178,8 +180,10 @@ data class TableWidgetBooleanCell(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableCellBoolean =
-            dbWidgetTableCellBoolean(this.format, this.variableValue)
+    override fun rowValue() : DB_WidgetTableCellBooleanValue =
+        RowValue2(widgetTableCellBooleanTable,
+                  ProdValue(this.format),
+                  SumValue(this.variableValue))
 
 
     // -----------------------------------------------------------------------------------------
@@ -394,11 +398,12 @@ data class TableWidgetNumberCell(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableCellNumber =
-            dbWidgetTableCellNumber(this.format,
-                                    this.variableValue,
-                                    this.editorType,
-                                    this.action)
+    override fun rowValue() : DB_WidgetTableCellNumberValue =
+        RowValue4(widgetTableCellNumberTable,
+                  ProdValue(this.format),
+                  SumValue(this.variableValue),
+                  MaybePrimValue(this.editorType),
+                  MaybeProdValue(this.action))
 
 
     // -----------------------------------------------------------------------------------------
@@ -583,8 +588,11 @@ data class TableWidgetTextCell(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableCellText =
-            dbWidgetTableCellText(this.format, this.variableValue, this.action)
+    override fun rowValue() : DB_WidgetTableCellTextValue =
+        RowValue3(widgetTableCellTextTable,
+                  ProdValue(this.format),
+                  SumValue(this.variableValue),
+                  MaybeProdValue(this.action))
 
 
     // -----------------------------------------------------------------------------------------
@@ -771,7 +779,7 @@ object TableWidgetCellView
         // > Gravity
         // TODO
         //if (cellFormat.alignment().isDefault()) {
-        layout.gravity          = columnFormat.elementFormat().alignment().gravityConstant() or
+        layout.gravity          = columnFormat.textFormat().elementFormat().alignment().gravityConstant() or
                                     Gravity.CENTER_VERTICAL
 //        } else {
 //            layout.gravity          = cellFormat.alignment().gravityConstant() or
@@ -782,7 +790,7 @@ object TableWidgetCellView
 
         //if (cellFormat.backgroundColorTheme.isDefault()) {
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                    columnFormat.elementFormat().backgroundColorTheme())
+                                    columnFormat.textFormat().elementFormat().backgroundColorTheme())
 //        } else {
 //            layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
 //                                        cellFormat.backgroundColorTheme())

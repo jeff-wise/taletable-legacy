@@ -9,10 +9,15 @@ import android.widget.TableRow
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_WidgetTableCellBooleanFormat
-import com.kispoko.tome.db.dbWidgetTableCellBooleanFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TextViewBuilder
@@ -181,13 +186,13 @@ data class BooleanCellFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableCellBooleanFormat =
-            dbWidgetTableCellBooleanFormat(this.elementFormat,
-                                           this.trueFormat,
-                                           this.falseFormat,
-                                           this.showTrueIcon,
-                                           this.showFalseIcon)
-
+    override fun rowValue() : DB_WidgetTableCellBooleanFormatValue =
+        RowValue5(widgetTableCellBooleanFormatTable,
+                  MaybeProdValue(this.elementFormat),
+                  MaybeProdValue(this.trueFormat),
+                  MaybeProdValue(this.falseFormat),
+                  MaybePrimValue(this.showTrueIcon),
+                  MaybePrimValue(this.showFalseIcon))
 
 }
 

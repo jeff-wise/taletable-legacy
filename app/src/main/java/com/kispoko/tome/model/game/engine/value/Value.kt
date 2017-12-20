@@ -4,12 +4,12 @@ package com.kispoko.tome.model.game.engine.value
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
-import com.kispoko.tome.db.DB_ValueNumber
-import com.kispoko.tome.db.DB_ValueText
-import com.kispoko.tome.db.dbValueNumber
-import com.kispoko.tome.db.dbValueText
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -230,11 +230,14 @@ data class ValueNumber(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_ValueNumber = dbValueNumber(this.valueId,
-                                                        this.description,
-                                                        this.rulebookReference,
-                                                        this.variables,
-                                                        this.value)
+    override fun rowValue() : DB_ValueNumberValue =
+        RowValue5(valueNumberTable,
+                  PrimValue(this.valueId),
+                  PrimValue(this.description),
+                  MaybeProdValue(this.rulebookReference),
+                  CollValue(this.variables),
+                  PrimValue(this.value))
+
 
     // -----------------------------------------------------------------------------------------
     // EQUALS
@@ -362,11 +365,13 @@ data class ValueText(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_ValueText = dbValueText(this.valueId,
-                                                    this.description,
-                                                    this.rulebookReference,
-                                                    this.variables,
-                                                    this.value)
+    override fun rowValue() : DB_ValueTextValue =
+        RowValue5(valueTextTable,
+                  PrimValue(this.valueId),
+                  PrimValue(this.description),
+                  MaybeProdValue(this.rulebookReference),
+                  CollValue(this.variables),
+                  PrimValue(this.value))
 
 
     // -----------------------------------------------------------------------------------------

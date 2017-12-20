@@ -4,10 +4,8 @@ package com.kispoko.tome.model.game.engine.variable
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prod
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.effApply
@@ -105,6 +103,6 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll) : DiceRollVaria
     override fun case() = "literal"
 
 
-    override fun functor() = Prod(this.diceRoll)
+    override fun columnValue() = ProdValue(this.diceRoll)
 
 }

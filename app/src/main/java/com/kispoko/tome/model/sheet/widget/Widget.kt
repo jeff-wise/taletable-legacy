@@ -17,9 +17,11 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.orm.Row
+import com.kispoko.tome.lib.orm.*
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -156,6 +158,7 @@ object WidgetView
 
         layout.corners          = widgetFormat.elementFormat().corners()
 
+        layout.gravity          = widgetFormat.elementFormat().alignment().gravityConstant()
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -832,7 +835,11 @@ data class LogWidget(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetLog = dbWidgetLog(this.widgetId, this.format, this.entries)
+    override fun rowValue() : DB_WidgetLogValue =
+        RowValue3(widgetLogTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  CollValue(this.entries))
 
 
     // -----------------------------------------------------------------------------------------
@@ -934,8 +941,12 @@ data class MechanicWidget(override val id : UUID,
 
     override val prodTypeObject = this
 
-    override fun row() : DB_WidgetMechanic =
-            dbWidgetMechanic(this.widgetId, this.format, this.categoryId)
+
+    override fun rowValue() : DB_WidgetMechanicValue =
+        RowValue3(widgetMechanicTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(this.categoryId))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1040,8 +1051,11 @@ data class NumberWidget(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetNumber =
-            dbWidgetNumber(this.widgetId, this.format, this.valueVariableId)
+    override fun rowValue() : DB_WidgetNumberValue =
+        RowValue3(widgetMechanicTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(this.valueVariableId))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1505,11 +1519,13 @@ data class PointsWidget(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : Row = dbWidgetPoints(this.widgetId,
-                                              this.format,
-                                              this.limitValueVariableId,
-                                              this.currentValueVariableId,
-                                              this.label)
+    override fun rowValue() : DB_WidgetPointsValue =
+        RowValue5(widgetPointsTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(this.limitValueVariableId),
+                  PrimValue(this.currentValueVariableId),
+                  MaybePrimValue(this.label))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1672,10 +1688,12 @@ data class QuoteWidget(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetQuote = dbWidgetQuote(this.widgetId,
-                                                        this.format,
-                                                        this.quoteVariableId,
-                                                        this.sourceVariableId)
+    override fun rowValue() : DB_WidgetQuoteValue =
+        RowValue4(widgetQuoteTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(this.quoteVariableId),
+                  MaybePrimValue(this.sourceVariableId))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1756,7 +1774,9 @@ data class StoryWidget(override val id : UUID,
 
     fun widgetId() : WidgetId = this.widgetId
 
+
     fun format() : StoryWidgetFormat = this.format
+
 
     fun story() : List<StoryPart> = this.story
 
@@ -1809,8 +1829,11 @@ data class StoryWidget(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetStory =
-            dbWidgetStory(this.widgetId, this.format, this.story)
+    override fun rowValue() : DB_WidgetStoryValue =
+        RowValue3(widgetStoryTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  CollValue(this.story))
 
 
     // -----------------------------------------------------------------------------------------
@@ -2332,11 +2355,13 @@ data class TableWidget(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTable = dbWidgetTable(this.widgetId,
-                                                        this.format,
-                                                        this.columns,
-                                                        this.rows,
-                                                        this.sort)
+    override fun rowValue() : DB_WidgetTableValue =
+        RowValue5(widgetTableTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  CollValue(this.columns),
+                  CollValue(this.rows),
+                  MaybePrimValue(this.sort))
 
 
     // -----------------------------------------------------------------------------------------
@@ -2700,8 +2725,11 @@ data class TextWidget(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetText =
-            dbWidgetText(this.widgetId, this.format, this.valueVariableId)
+    override fun rowValue() : DB_WidgetTextValue =
+        RowValue3(widgetTextTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(this.valueVariableId))
 
 
     // -----------------------------------------------------------------------------------------

@@ -49,9 +49,6 @@ import com.kispoko.tome.model.sheet.widget.table.column.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.user.UserName
 import com.kispoko.tome.rts.sheet.*
-import effect.Maybe
-import lulo.schema.Prim
-import lulo.schema.Sum
 
 
 
@@ -235,7 +232,7 @@ val invocationTable =
            "parameter5_type",
            "result_type")
 
-typealias DB_Invocation =
+typealias DB_InvocationValue =
     RowValue6<PrimValue<ProgramId>,
               SumValue<DataReference>,
               MaybeSumValue<DataReference>,
@@ -347,7 +344,7 @@ val mechanicTable =
            "requirements",
            "variables")
 
-typealias DB_Mechanic =
+typealias DB_MechanicValue =
     RowValue7<PrimValue<MechanicId>,
               PrimValue<MechanicLabel>,
               PrimValue<MechanicDescription>,
@@ -627,7 +624,7 @@ val statementTable =
            "parameter_4",
            "parameter_5")
 
-typealias DB_Statement =
+typealias DB_StatementValue =
     RowValue7<PrimValue<StatementBindingName>,
               PrimValue<FunctionId>,
               SumValue<StatementParameter>,
@@ -805,7 +802,7 @@ val uiColorsTable =
             "bottom_bar_inactive_color_id")
 
 
-typealias DB_UIColors =
+typealias DB_UIColorsValue =
     RowValue10<PrimValue<ColorId>,
                PrimValue<ColorId>,
                PrimValue<ColorId>,
@@ -827,7 +824,7 @@ val widgetLogTable =
            "format",
            "entries")
 
-typealias DB_WidgetLog =
+typealias DB_WidgetLogValue =
     RowValue3<PrimValue<WidgetId>,
               ProdValue<LogWidgetFormat>,
               CollValue<LogEntry>>
@@ -855,7 +852,7 @@ typealias DB_WidgetLogEntryValue =
 // WIDGET: LOG > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetLogFormat =
+val widgetLogFormatTable =
     Table3("widget_log_format",
            "format",
            "entry_format",
@@ -870,7 +867,7 @@ typealias DB_WidgetLogFormatValue =
 // WIDGET: LOG > ENTRY FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetLogEntryFormat =
+val widgetLogEntryFormatTable =
     Table5("widget_log_entry_format",
            "title_format",
            "author_format",
@@ -905,8 +902,7 @@ typealias DB_WidgetMechanicValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetMechanicFormatTable =
-    Table7("widget_mechanic_format",
-           "widget_id",
+    Table6("widget_mechanic_format",
            "widget_format",
            "view_type",
            "mechanic_format",
@@ -915,10 +911,9 @@ val widgetMechanicFormatTable =
            "mechanic_summary_format")
 
 typealias DB_WidgetMechanicFormatValue =
-    RowValue7<PrimValue<WidgetId>,
-              ProdValue<WidgetFormat>,
+    RowValue6<ProdValue<WidgetFormat>,
               PrimValue<MechanicWidgetViewType>,
-              ProdValue<TextFormat>,
+              ProdValue<ElementFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>>
@@ -933,7 +928,7 @@ val widgetNumberTable =
            "format",
            "value_variable_id")
 
-typealias DB_WidgetNumber =
+typealias DB_WidgetNumberValue =
     RowValue3<PrimValue<WidgetId>,
               ProdValue<NumberWidgetFormat>,
               PrimValue<VariableId>>
@@ -955,7 +950,7 @@ typealias DB_WidgetNumberFormatValue =
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
-              ProdValue<TextFormat>>
+              PrimValue<NumberFormat>>
 
 
 // WIDGET FORMAT
@@ -1228,8 +1223,7 @@ val widgetTableCellNumberFormatTable =
                 "text_format")
 
 typealias DB_WidgetTableCellNumberFormatValue =
-    RowValue1<MaybeProdValue<ElementFormat>>
-
+    RowValue1<MaybeProdValue<TextFormat>>
 
 
 // WIDGET: TABLE > CELL: TEXT
@@ -1255,7 +1249,7 @@ val widgetTableCellTextFormatTable =
                "text_format")
 
 typealias DB_WidgetTableCellTextFormatValue =
-    RowValue1<MaybeProdValue<ElementFormat>>
+    RowValue1<MaybeProdValue<TextFormat>>
 
 
 // WIDGET: TABLE > COLUMN: BOOLEAN
@@ -1372,14 +1366,12 @@ typealias DB_WidgetTableColumnTextFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetTableColumnFormatTable =
-    Table3("widget_table_column_format",
+    Table2("widget_table_column_format",
            "text_format",
-           "element_format",
            "width")
 
 typealias DB_WidgetTableColumnFormatValue =
-    RowValue3<ProdValue<TextFormat>,
-              ProdValue<ElementFormat>,
+    RowValue2<ProdValue<TextFormat>,
               PrimValue<ColumnWidth>>
 
 
@@ -1461,7 +1453,7 @@ typealias DB_WidgetTextFormat =
 // VALUE: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-val valueNumber =
+val valueNumberTable =
     Table5("value_number",
            "value_id",
            "description",
@@ -1480,7 +1472,7 @@ typealias DB_ValueNumberValue =
 // VALUE: TEXT
 // ---------------------------------------------------------------------------------------------
 
-val valueText =
+val valueTextTable =
     Table5("value_text",
            "value_id",
            "description",

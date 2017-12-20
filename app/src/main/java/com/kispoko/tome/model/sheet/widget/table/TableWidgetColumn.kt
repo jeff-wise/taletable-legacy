@@ -5,14 +5,15 @@ package com.kispoko.tome.model.sheet.widget.table
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.*
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
+import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.variable.BooleanVariableValue
 import com.kispoko.tome.model.game.engine.variable.NumberVariableValue
 import com.kispoko.tome.model.game.engine.variable.TextVariableValue
-import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextFormat
@@ -20,7 +21,6 @@ import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
-import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.util.Util
 import effect.*
@@ -202,15 +202,17 @@ data class TableWidgetBooleanColumn(
 
     override fun onLoad() {}
 
+
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableColumnBoolean =
-            dbWidgetTableColumnBoolean(this.columnName,
-                                       this.variablePrefix,
-                                       this.isColumnNamespaced,
-                                       this.defaultValue,
-                                       this.format)
+    override fun rowValue() : DB_WidgetTableColumnBooleanValue =
+        RowValue5(widgetTableColumnBooleanTable,
+                  PrimValue(this.columnName),
+                  PrimValue(this.variablePrefix),
+                  PrimValue(this.isColumnNamespaced),
+                  SumValue(this.defaultValue),
+                  ProdValue(this.format))
 
 }
 
@@ -361,14 +363,15 @@ data class TableWidgetNumberColumn(
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableColumnNumber =
-            dbWidgetTableColumnNumber(this.columnName,
-                                      this.variablePrefix,
-                                      this.isColumnNamespaced,
-                                      this.defaultValue,
-                                      this.format,
-                                      this.action,
-                                      this.editorType)
+    override fun rowValue() : DB_WidgetTableColumnNumberValue =
+        RowValue7(widgetTableColumnNumberTable,
+                  PrimValue(this.columnName),
+                  PrimValue(this.variablePrefix),
+                  PrimValue(this.isColumnNamespaced),
+                  SumValue(this.defaultValue),
+                  ProdValue(this.format),
+                  MaybeProdValue(this.action),
+                  PrimValue(this.editorType))
 
 }
 
@@ -517,14 +520,15 @@ data class TableWidgetTextColumn(
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableColumnText =
-            dbWidgetTableColumnText(this.columnName,
-                                    this.variablePrefix,
-                                    this.isColumnNamespaced,
-                                    this.defaultValue,
-                                    this.format,
-                                    this.action,
-                                    this.definesNamespace)
+    override fun rowValue() : DB_WidgetTableColumnTextValue =
+        RowValue7(widgetTableColumnTextTable,
+                  PrimValue(this.columnName),
+                  PrimValue(this.variablePrefix),
+                  PrimValue(this.isColumnNamespaced),
+                  SumValue(this.defaultValue),
+                  ProdValue(this.format),
+                  MaybeProdValue(this.action),
+                  PrimValue(this.definesNamespace))
 
 }
 
@@ -716,7 +720,6 @@ data class DefinesNamespace(val value : Boolean) : ToDocument, SQLSerializable, 
  */
 data class ColumnFormat(override val id : UUID,
                         val textFormat : TextFormat,
-                        val elementFormat : ElementFormat,
                         val width : ColumnWidth)
                          : ToDocument, ProdType, Serializable
 {
@@ -726,11 +729,9 @@ data class ColumnFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(textFormat : TextFormat,
-                elementFormat : ElementFormat,
                 width : ColumnWidth)
         : this(UUID.randomUUID(),
                textFormat,
-               elementFormat,
                width)
 
 
@@ -738,7 +739,6 @@ data class ColumnFormat(override val id : UUID,
     {
 
         private fun defaultTextFormat()    = TextFormat.default()
-        private fun defaultElementFormat() = ElementFormat.default()
         private fun defaultWidth()         = ColumnWidth(1.0f)
 
 
@@ -751,10 +751,6 @@ data class ColumnFormat(override val id : UUID,
                       split(doc.maybeAt("text_format"),
                             effValue(defaultTextFormat()),
                             { TextFormat.fromDocument(it) }),
-                      // Element Format
-                      split(doc.maybeAt("element_format"),
-                            effValue(defaultElementFormat()),
-                            { ElementFormat.fromDocument(it) }),
                       // Width
                       split(doc.maybeAt("width"),
                             effValue(defaultWidth()),
@@ -766,7 +762,6 @@ data class ColumnFormat(override val id : UUID,
 
 
         fun default() = ColumnFormat(defaultTextFormat(),
-                                     defaultElementFormat(),
                                      defaultWidth())
 
     }
@@ -778,7 +773,6 @@ data class ColumnFormat(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "text_format" to this.textFormat.toDocument(),
-        "element_format" to this.elementFormat.toDocument(),
         "width" to this.width().toDocument()
     ))
 
@@ -790,14 +784,10 @@ data class ColumnFormat(override val id : UUID,
     fun textFormat() : TextFormat = this.textFormat
 
 
-    fun elementFormat() : ElementFormat = this.elementFormat
-
-
     fun width() : ColumnWidth = this.width
 
 
     fun widthFloat() : Float = this.width.value
-
 
 
     // -----------------------------------------------------------------------------------------
@@ -810,8 +800,11 @@ data class ColumnFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableColumnFormat =
-            dbWidgetTableColumnFormat(this.textFormat, this.elementFormat, this.width)
+     override fun rowValue() : DB_WidgetTableColumnFormatValue =
+        RowValue2(widgetTableColumnFormatTable,
+                  ProdValue(this.textFormat),
+                  PrimValue(this.width))
+
 }
 
 

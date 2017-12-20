@@ -160,11 +160,11 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
 
-        val navButtonView = this.findViewById(R.id.toolbar_nav_button) as ImageView
-        navButtonView.setOnClickListener {
-            val intent = Intent(this, NavigationActivity::class.java)
-            this.startActivity(intent)
-        }
+//        val navButtonView = this.findViewById(R.id.toolbar_nav_button) as ImageView
+//        navButtonView.setOnClickListener {
+//            val intent = Intent(this, NavigationActivity::class.java)
+//            this.startActivity(intent)
+//        }
     }
 
 
@@ -367,8 +367,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val menuLeftButton = this.findViewById(R.id.menuLeft) as ImageView
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val navButton = this.findViewById(R.id.toolbar_nav_button) as ImageView
-        navButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+//        val navButton = this.findViewById(R.id.toolbar_nav_button) as ImageView
+//        navButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         val optionsButton = this.findViewById(R.id.toolbar_options_button) as ImageView
         optionsButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)

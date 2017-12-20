@@ -2,8 +2,8 @@
 package com.kispoko.tome.lib.orm.schema
 
 
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import effect.Maybe
 import java.io.Serializable
@@ -31,7 +31,7 @@ data class MaybePrimValue<A : SQLSerializable>(var maybePrim : Maybe<A>)
 // Column Value: Product
 // ---------------------------------------------------------------------------------------------
 
-data class ProdValue<A : ProdType>(var prod : A)
+data class ProdValue<A : ProdType>(var product : A)
                 : ColumnValue(), Serializable
 
 

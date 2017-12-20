@@ -2,10 +2,12 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import com.kispoko.tome.db.DB_Action
-import com.kispoko.tome.db.dbAction
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -102,8 +104,10 @@ data class Action(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Action =
-            dbAction(this.actionName, this.rollSummationId, this.procedureId)
+    override fun rowValue() : DB_ActionValue =
+        RowValue3(actionTable, PrimValue(this.actionName),
+                               MaybePrimValue(this.rollSummationId),
+                               MaybePrimValue(this.procedureId))
 
 }
 

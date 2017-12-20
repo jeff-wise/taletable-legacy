@@ -5,9 +5,11 @@ package com.kispoko.tome.model.game.engine.summation.term
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -189,7 +191,10 @@ data class SummationTermNumber(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_TermNumber = dbTermNumber(this.termName, this.numberReference)
+    override fun rowValue() : DB_SummationTermNumberValue =
+        RowValue2(summationTermNumberTable,
+                  MaybePrimValue(this.termName),
+                  SumValue(this.numberReference))
 
 }
 
@@ -312,7 +317,10 @@ data class SummationTermDiceRoll(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_TermDiceRoll = dbTermDiceRoll(this.termName, this.diceRollReference)
+    override fun rowValue() : DB_SummationTermDiceRollValue =
+        RowValue2(summationTermDiceRollTable,
+                  MaybePrimValue(this.termName),
+                  SumValue(this.diceRollReference))
 
 }
 
@@ -402,11 +410,12 @@ data class SummationTermConditional(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_TermConditional =
-            dbTermConditional(this.termName,
-                              this.conditionalValueReference,
-                              this.trueValueReference,
-                              this.falseValueReference)
+    override fun rowValue() : DB_SummationTermConditionalValue =
+        RowValue4(summationTermConditionalTable,
+                  MaybePrimValue(this.termName),
+                  SumValue(this.conditionalValueReference),
+                  SumValue(this.trueValueReference),
+                  SumValue(this.falseValueReference))
 
 
     // -----------------------------------------------------------------------------------------

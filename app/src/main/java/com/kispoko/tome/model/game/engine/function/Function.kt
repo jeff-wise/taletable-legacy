@@ -4,9 +4,10 @@ package com.kispoko.tome.model.game.engine.function
 
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -133,11 +134,13 @@ data class Function(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Function = dbFunction(this.functionId,
-                                                  this.label,
-                                                  this.description,
-                                                  this.typeSignature,
-                                                  this.tuples)
+    override fun rowValue() : DB_FunctionValue =
+        RowValue5(functionTable, PrimValue(this.functionId),
+                                 PrimValue(this.label),
+                                 PrimValue(this.description),
+                                 ProdValue(this.typeSignature),
+                                 CollValue(this.tuples))
+
 
     // -----------------------------------------------------------------------------------------
     // API
@@ -266,13 +269,14 @@ data class FunctionTypeSignature(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_FunctionTypeSignature =
-            dbFunctionTypeSignature(this.parameter1Type,
-                                    this.parameter2Type,
-                                    this.parameter3Type,
-                                    this.parameter4Type,
-                                    this.parameter5Type,
-                                    this.resultType)
+    override fun rowValue() : DB_FunctionTypeSignatureValue =
+        RowValue6(functionTypeSignatureTable,
+                  PrimValue(this.parameter1Type),
+                  MaybePrimValue(this.parameter2Type),
+                  MaybePrimValue(this.parameter3Type),
+                  MaybePrimValue(this.parameter4Type),
+                  MaybePrimValue(this.parameter5Type),
+                  PrimValue(this.resultType))
 
 }
 
@@ -500,12 +504,15 @@ data class Tuple(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Tuple = dbTuple(this.parameter1,
-                                            this.parameter2,
-                                            this.parameter3,
-                                            this.parameter4,
-                                            this.parameter5,
-                                            this.result)
+    override fun rowValue() : DB_TupleValue =
+        RowValue6(tupleTable,
+                  SumValue(this.parameter1),
+                  MaybeSumValue(this.parameter2),
+                  MaybeSumValue(this.parameter3),
+                  MaybeSumValue(this.parameter4),
+                  MaybeSumValue(this.parameter5),
+                  SumValue(this.result))
+
 
     // -----------------------------------------------------------------------------------------
     // API

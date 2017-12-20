@@ -3,18 +3,21 @@ package com.kispoko.tome.model.game.engine.program
 
 
 import android.util.Log
-import com.kispoko.tome.db.DB_Statement
-import com.kispoko.tome.db.dbStatement
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.reference.*
 import effect.*
 import lulo.document.*
+import lulo.schema.Prim
+import lulo.schema.Sum
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
@@ -151,13 +154,14 @@ data class Statement(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Statement = dbStatement(this.bindingName,
-                                                    this.functionId,
-                                                    this.parameter1,
-                                                    this.parameter2,
-                                                    this.parameter3,
-                                                    this.parameter4,
-                                                    this.parameter5)
+    override fun rowValue() : DB_StatementValue =
+        RowValue7(statementTable, PrimValue(this.bindingName),
+                                  PrimValue(this.functionId),
+                                  SumValue(this.parameter1),
+                                  MaybeSumValue(this.parameter2),
+                                  MaybeSumValue(this.parameter3),
+                                  MaybeSumValue(this.parameter4),
+                                  MaybeSumValue(this.parameter5))
 
 }
 
@@ -257,7 +261,7 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "binding_name"
@@ -305,7 +309,7 @@ data class StatementParameterProgramParameter(val index : ProgramParameterIndex)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this.index)
+    override fun columnValue() = PrimValue(this.index)
 
 
     override fun case() = "program_parameter"
@@ -344,7 +348,7 @@ data class StatementParameterReference(val reference : DataReference) : Statemen
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Sum(this.reference)
+    override fun columnValue() = SumValue(this.reference)
 
 
     override fun case() = "data_reference"

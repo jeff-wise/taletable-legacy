@@ -2,14 +2,11 @@
 package com.kispoko.tome.model.game.engine.program
 
 
-import com.kispoko.tome.db.DB_Program
-import com.kispoko.tome.db.DB_ProgramTypeSignature
-import com.kispoko.tome.db.dbProgram
-import com.kispoko.tome.db.dbProgramTypeSignature
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.EngineValueType
 import effect.*
@@ -135,12 +132,14 @@ data class Program(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Program = dbProgram(this.programId,
-                                                this.label,
-                                                this.description,
-                                                this.typeSignature,
-                                                this.statements,
-                                                this.resultBindingName)
+    override fun rowValue() : DB_ProgramValue =
+        RowValue6(programTable, PrimValue(this.programId),
+                                PrimValue(this.label),
+                                PrimValue(this.description),
+                                ProdValue(this.typeSignature),
+                                CollValue(this.statements),
+                                PrimValue(this.resultBindingName))
+
 }
 
 
@@ -261,13 +260,14 @@ data class ProgramTypeSignature(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_ProgramTypeSignature =
-            dbProgramTypeSignature(this.parameter1Type,
-                                   this.parameter2Type,
-                                   this.parameter3Type,
-                                   this.parameter4Type,
-                                   this.parameter5Type,
-                                   this.resultType)
+    override fun rowValue() : DB_ProgramTypeSignatureValue =
+        RowValue6(programTypeSignatureTable,
+                  PrimValue(this.parameter1Type),
+                  MaybePrimValue(this.parameter2Type),
+                  MaybePrimValue(this.parameter3Type),
+                  MaybePrimValue(this.parameter4Type),
+                  MaybePrimValue(this.parameter5Type),
+                  PrimValue(this.resultType))
 
 }
 

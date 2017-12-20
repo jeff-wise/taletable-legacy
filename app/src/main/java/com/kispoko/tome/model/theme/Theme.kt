@@ -3,12 +3,13 @@ package com.kispoko.tome.model.theme
 
 
 import android.graphics.Color
-import com.kispoko.tome.db.DB_Theme
-import com.kispoko.tome.db.DB_UIColors
-import com.kispoko.tome.db.dbTheme
-import com.kispoko.tome.db.dbUIColors
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue10
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -101,7 +102,11 @@ data class Theme(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Theme = dbTheme(this.themeId, this.palette, this.uiColors)
+    override fun rowValue() : DB_ThemeValue =
+        RowValue3(themeTable,
+                  PrimValue(this.themeId),
+                  PrimValue(ThemeColorSet(this.palette)),
+                  ProdValue(this.uiColors))
 
 
     // -----------------------------------------------------------------------------------------
@@ -238,16 +243,18 @@ data class UIColors(override val id: UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_UIColors = dbUIColors(this.toolbarBackgroundColorId,
-                                                  this.toolbarIconsColorId,
-                                                  this.toolbarTitleColorId,
-                                                  this.tabBarBackgroundColorId,
-                                                  this.tabTextNormalColorId,
-                                                  this.tabTextSelectedColorId,
-                                                  this.tabUnderlineColorId,
-                                                  this.bottomBarBackgroundColorId,
-                                                  this.bottomBarActiveColorId,
-                                                  this.bottomBarInactiveColorId)
+    override fun rowValue() : DB_UIColorsValue =
+        RowValue10(uiColorsTable,
+                   PrimValue(this.toolbarBackgroundColorId),
+                   PrimValue(this.toolbarIconsColorId),
+                   PrimValue(this.toolbarTitleColorId),
+                   PrimValue(this.toolbarBackgroundColorId),
+                   PrimValue(this.tabTextNormalColorId),
+                   PrimValue(this.tabTextSelectedColorId),
+                   PrimValue(this.tabUnderlineColorId),
+                   PrimValue(this.bottomBarBackgroundColorId),
+                   PrimValue(this.bottomBarActiveColorId),
+                   PrimValue(this.bottomBarInactiveColorId))
 
 }
 

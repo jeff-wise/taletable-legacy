@@ -2,10 +2,13 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import com.kispoko.tome.db.DB_WidgetFormat
-import com.kispoko.tome.db.dbWidgetFormat
+import com.kispoko.tome.db.DB_WidgetFormatValue
+import com.kispoko.tome.db.widgetFormatTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.asSQLValue
 import com.kispoko.tome.model.sheet.style.ElementFormat
@@ -23,7 +26,7 @@ import java.util.*
  */
 data class WidgetFormat(override val id : UUID,
                         val width : WidgetWidth,
-                        val elementFormat: ElementFormat)
+                        val elementFormat : ElementFormat)
                          : ToDocument, ProdType, Serializable
 {
 
@@ -96,7 +99,10 @@ data class WidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetFormat = dbWidgetFormat(this.width, this.elementFormat)
+    override fun rowValue() : DB_WidgetFormatValue =
+        RowValue2(widgetFormatTable,
+                  PrimValue(this.width),
+                  ProdValue(this.elementFormat))
 
 }
 

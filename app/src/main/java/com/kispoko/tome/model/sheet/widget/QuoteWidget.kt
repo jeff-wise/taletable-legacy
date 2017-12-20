@@ -7,13 +7,12 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.db.DB_WidgetQuoteFormat
-import com.kispoko.tome.db.dbWidgetQuoteFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.orm.Row
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -228,12 +227,13 @@ data class QuoteWidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetQuoteFormat =
-            dbWidgetQuoteFormat(this.widgetFormat,
-                                this.viewType,
-                                this.quoteFormat,
-                                this.sourceFormat,
-                                this.iconFormat)
+    override fun rowValue() : DB_WidgetQuoteFormatValue =
+        RowValue5(widgetQuoteFormatTable,
+                  ProdValue(this.widgetFormat),
+                  PrimValue(this.viewType),
+                  ProdValue(this.quoteFormat),
+                  ProdValue(this.sourceFormat),
+                  ProdValue(this.iconFormat))
 
 }
 

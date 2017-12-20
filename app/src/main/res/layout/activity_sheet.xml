@@ -61,35 +61,17 @@
                         android:textSize="18sp"
                         android:textColor="@color/dark_theme_primary_15"
                         android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/menuLeft"
+                        android:layout_centerHorizontal="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <LinearLayout
+                    <ImageView
+                        android:id="@+id/toolbar_options_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="15dp"
-                        >
-                        <ImageView
-                            android:id="@+id/toolbar_nav_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="#00000000"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginTop="1dp"
-                            android:src="@drawable/icon_toolbar_nav" />
-
-                        <ImageView
-                            android:id="@+id/toolbar_options_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="#00000000"
-                            android:src="@drawable/ic_toolbar_options" />
-
-
-                    </LinearLayout>
+                        android:background="#00000000"
+                        android:src="@drawable/ic_toolbar_options" />
 
                 </RelativeLayout>
 

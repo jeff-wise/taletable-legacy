@@ -10,13 +10,18 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import com.kispoko.tome.R
-import com.kispoko.tome.db.DB_WidgetTable
-import com.kispoko.tome.db.DB_WidgetTableFormat
-import com.kispoko.tome.db.dbWidgetTableFormat
+import com.kispoko.tome.db.DB_ValueSetBaseValue
+import com.kispoko.tome.db.DB_WidgetFormatValue
+import com.kispoko.tome.db.DB_WidgetTableFormatValue
+import com.kispoko.tome.db.widgetTableFormatTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -26,7 +31,6 @@ import com.kispoko.tome.lib.ui.TableLayoutBuilder
 import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Divider
-import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.rts.sheet.SheetUIContext
@@ -165,12 +169,13 @@ data class TableWidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableFormat =
-            dbWidgetTableFormat(this.widgetFormat,
-                                this.headerFormat,
-                                this.rowFormat,
-                                this.divider,
-                                this.cellHeight)
+    override fun rowValue() : DB_WidgetTableFormatValue =
+        RowValue5(widgetTableFormatTable,
+                  ProdValue(this.widgetFormat),
+                  ProdValue(this.headerFormat),
+                  ProdValue(this.rowFormat),
+                  MaybeProdValue(this.divider),
+                  PrimValue(this.cellHeight))
 
 }
 
@@ -421,11 +426,11 @@ object TableWidgetView
         tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
         tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
 
-        tableRow.paddingSpacing = format.headerFormat().elementFormat().padding()
-        tableRow.marginSpacing  = format.headerFormat().elementFormat().margins()
+        tableRow.paddingSpacing = format.headerFormat().textFormat().elementFormat().padding()
+        tableRow.marginSpacing  = format.headerFormat().textFormat().elementFormat().margins()
 
         tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
-                                        format.headerFormat().elementFormat().backgroundColorTheme())
+                                        format.headerFormat().textFormat().elementFormat().backgroundColorTheme())
 
         columns.forEach { column ->
 

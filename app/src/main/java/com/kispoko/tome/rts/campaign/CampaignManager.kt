@@ -4,7 +4,6 @@ package com.kispoko.tome.rts.campaign
 
 import com.kispoko.tome.app.AppCampaignError
 import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.lib.functor.Prod
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import effect.*
@@ -62,13 +61,10 @@ object CampaignManager
 // CAMPAIGN RECORD
 // ---------------------------------------------------------------------------------------------
 
-data class CampaignRecord(val campaign : Prod<Campaign>)
+data class CampaignRecord(private val campaign : Campaign)
 {
 
-    constructor(campaign : Campaign) : this(Prod(campaign))
-
-
-    fun campaign() : Campaign = this.campaign.value
+    fun campaign() : Campaign = this.campaign
 
     /**
      * This method saves the entire campaign in the database. It is intended to be used to saveSheet
@@ -78,7 +74,7 @@ data class CampaignRecord(val campaign : Prod<Campaign>)
      */
     suspend fun save()
     {
-        this.campaign.saveAsync(true, true)
+        //this.campaign.saveAsync(true, true)
     }
 
 }

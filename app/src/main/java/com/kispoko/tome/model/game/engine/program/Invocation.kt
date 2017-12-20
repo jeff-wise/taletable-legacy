@@ -2,10 +2,16 @@
 package com.kispoko.tome.model.game.engine.program
 
 
-import com.kispoko.tome.db.DB_Invocation
-import com.kispoko.tome.db.dbInvocation
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybeSumValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.SumValue
+import com.kispoko.tome.model.game.engine.mechanic.MechanicRequirements
 import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.*
@@ -133,12 +139,13 @@ data class Invocation(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Invocation = dbInvocation(this.programId,
-                                                      this.parameter1,
-                                                      this.parameter2,
-                                                      this.parameter3,
-                                                      this.parameter4,
-                                                      this.parameter5)
+    override fun rowValue() : DB_InvocationValue =
+        RowValue6(invocationTable, PrimValue(this.programId),
+                                   SumValue(this.parameter1),
+                                   MaybeSumValue(this.parameter2),
+                                   MaybeSumValue(this.parameter3),
+                                   MaybeSumValue(this.parameter4),
+                                   MaybeSumValue(this.parameter5))
 
 
     // -----------------------------------------------------------------------------------------

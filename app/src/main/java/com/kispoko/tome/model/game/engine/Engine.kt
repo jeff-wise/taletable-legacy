@@ -5,11 +5,14 @@ package com.kispoko.tome.model.game.engine
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.AppError
-import com.kispoko.tome.db.DB_Engine
-import com.kispoko.tome.db.dbEngine
+import com.kispoko.tome.db.DB_EngineValue
+import com.kispoko.tome.db.engineTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
@@ -27,7 +30,6 @@ import com.kispoko.tome.rts.game.engine.*
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.*
-import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
 import org.apache.commons.lang3.SerializationUtils
@@ -54,7 +56,7 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     private val valueSetById : MutableMap<ValueSetId,ValueSet> =
-                                            valueSets.associateBy { it.valueSetId.value }
+                                            valueSets.associateBy { it.valueSetId() }
                                                 as MutableMap<ValueSetId, ValueSet>
 
 
@@ -161,12 +163,14 @@ data class Engine(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Engine = dbEngine(this.valueSets,
-                                              this.mechanics,
-                                              this.mechanicCategories,
-                                              this.functions,
-                                              this.programs,
-                                              this.summations)
+    override fun rowValue() : DB_EngineValue =
+        RowValue6(engineTable, CollValue(this.valueSets),
+                               CollValue(this.mechanics),
+                               CollValue(this.mechanicCategories),
+                               CollValue(this.functions),
+                               CollValue(this.programs),
+                               CollValue(this.summations))
+
 
     // -----------------------------------------------------------------------------------------
     // ENGINE DATA
@@ -495,7 +499,7 @@ data class EngineValueNumber(val value : Double) : EngineValue(), SQLSerializabl
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "number"
@@ -550,7 +554,7 @@ data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "text"
@@ -606,7 +610,7 @@ data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializa
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "boolean"
@@ -652,7 +656,7 @@ data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), SQLSeriali
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "dice_roll"
@@ -720,7 +724,7 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "list_text"

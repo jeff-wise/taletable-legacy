@@ -5,10 +5,12 @@ package com.kispoko.tome.model.sheet.style
 import android.util.Log
 import android.util.TypedValue
 import android.widget.TextView
-import com.kispoko.tome.db.DB_TextFormat
-import com.kispoko.tome.db.dbTextFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
@@ -25,175 +27,6 @@ import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
 
-
-
-/**
- * Text Format
- */
-//data class TextFormat(override val id : UUID,
-//                      val style : Prod<TextFormat>,
-//                      val position : Prim<Position>,
-//                      val height : Prim<Height>,
-//                      val padding : Prod<Spacing>,
-//                      val margins : Prod<Spacing>,
-//                      val alignment: Prim<Alignment>,
-//                      val verticalAlignment : Prim<VerticalAlignment>)
-//                       : ToDocument, ProdType, Serializable
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.style.name             = "style"
-//        this.position.name          = "position"
-//        this.height.name            = "height"
-//        this.padding.name           = "padding"
-//        this.margins.name           = "margins"
-//        this.alignment.name         = "alignment"
-//        this.verticalAlignment.name = "vertical_alignment"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(style : TextFormat,
-//                position : Position,
-//                height : Height,
-//                padding : Spacing,
-//                margins : Spacing,
-//                alignment : Alignment,
-//                verticalAlignment : VerticalAlignment)
-//        : this(UUID.randomUUID(),
-//               Prod(style),
-//               Prim(position),
-//               Prim(height),
-//               Prod(padding),
-//               Prod(margins),
-//               Prim(alignment),
-//               Prim(verticalAlignment))
-//
-//
-//    companion object : Factory<TextFormat>
-//    {
-//
-//        private fun defaultStyle()             = TextFormat.default()
-//        private fun defaultPosition()          = Position.Top
-//        private fun defaultHeight()            = Height.Wrap
-//        private fun defaultPadding()           = Spacing.default()
-//        private fun defaultMargins()           = Spacing.default()
-//        private fun defaultAlignment()         = Alignment.Center
-//        private fun defaultVerticalAlignment() = VerticalAlignment.Middle
-//
-//
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<TextFormat> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                apply(::TextFormat,
-//                      // Style
-//                      split(doc.maybeAt("style"),
-//                            effValue(defaultStyle()),
-//                            { TextFormat.fromDocument(it) }),
-//                      // Position
-//                      split(doc.maybeAt("position"),
-//                            effValue<ValueError,Position>(defaultPosition()),
-//                            { Position.fromDocument(it) }),
-//                      // Height
-//                      split(doc.maybeAt("height"),
-//                            effValue<ValueError,Height>(defaultHeight()),
-//                            { Height.fromDocument(it) }),
-//                      // Padding
-//                      split(doc.maybeAt("padding"),
-//                            effValue(defaultPadding()),
-//                            { Spacing.fromDocument(it) }),
-//                      // Margins
-//                      split(doc.maybeAt("margins"),
-//                            effValue(defaultMargins()),
-//                            { Spacing.fromDocument(it) }),
-//                      // Alignment
-//                      split(doc.maybeAt("alignment"),
-//                            effValue<ValueError,Alignment>(defaultAlignment()),
-//                            { Alignment.fromDocument(it) }),
-//                      // Vertical Alignment
-//                      split(doc.maybeAt("vertical_alignment"),
-//                            effValue<ValueError,VerticalAlignment>(defaultVerticalAlignment()),
-//                            { VerticalAlignment.fromDocument(it) })
-//                      )
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//
-//
-//        fun default() = TextFormat(defaultStyle(),
-//                                   defaultPosition(),
-//                                   defaultHeight(),
-//                                   defaultPadding(),
-//                                   defaultMargins(),
-//                                   defaultAlignment(),
-//                                   defaultVerticalAlignment())
-//
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "style" to this.style().toDocument(),
-//        "position" to this.position().toDocument(),
-//        "height" to this.height().toDocument(),
-//        "padding" to this.padding().toDocument(),
-//        "margins" to this.margins().toDocument(),
-//        "alignment" to this.alignment().toDocument(),
-//        "vertical_alignment" to this.alignment().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun style() : TextFormat = this.style.value
-//
-//    fun position() : Position = this.position.value
-//
-//    fun height() : Height = this.height.value
-//
-//    fun padding() : Spacing = this.padding.value
-//
-//    fun margins() : Spacing = this.margins.value
-//
-//    fun alignment() : Alignment = this.alignment.value
-//
-//    fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name = "text_format"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<Val<*>> =
-//            listOf(this.style,
-//                   this.position,
-//                   this.height,
-//                   this.padding,
-//                   this.margins,
-//                   this.alignment,
-//                   this.verticalAlignment)
-//
-//}
 
 
 /**
@@ -236,7 +69,7 @@ data class TextFormat(override val id : UUID,
 
         private fun defaultColorTheme()          = ColorTheme.black
         private fun defaultTextSize()            = TextSize(16.0f)
-        private fun defaultFont()                = TextFont.FiraSans
+        private fun defaultFont()                = TextFont.Cabin
         private fun defaultFontStyle()           = TextFontStyle.Regular
         private fun defaultIsUnderlined()        = IsUnderlined(false)
         private fun defaultNumberFormat()        = NumberFormat.Normal
@@ -343,13 +176,14 @@ data class TextFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_TextFormat = dbTextFormat(this.colorTheme,
-                                                      this.size,
-                                                      this.font,
-                                                      this.fontStyle,
-                                                      this.isUnderlined,
-                                                      this.numberFormat,
-                                                      this.elementFormat)
+    override fun rowValue() : DB_TextFormatValue =
+        RowValue7(textFormatTable, PrimValue(this.colorTheme),
+                                   PrimValue(this.size),
+                                   PrimValue(this.font),
+                                   PrimValue(this.fontStyle),
+                                   PrimValue(this.isUnderlined),
+                                   PrimValue(this.numberFormat),
+                                   ProdValue(this.elementFormat))
 
 
     // -----------------------------------------------------------------------------------------
@@ -538,6 +372,21 @@ data class IsUnderlined(val value : Boolean) : ToDocument, SQLSerializable, Seri
 sealed class TextFont : ToDocument, SQLSerializable, Serializable
 {
 
+    object Cabin : TextFont()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "cabin "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("cabin")
+
+    }
+
+
     object FiraSans : TextFont()
     {
         // SQL SERIALIZABLE
@@ -578,7 +427,8 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "roboto"       -> effValue<ValueError,TextFont>(TextFont.FiraSans)
+                "cabin"        -> effValue<ValueError,TextFont>(TextFont.Cabin)
+                "fira_sans"    -> effValue<ValueError,TextFont>(TextFont.FiraSans)
                 "merriweather" -> effValue<ValueError,TextFont>(TextFont.Merriweather)
                 else           -> effError<ValueError,TextFont>(
                                       UnexpectedValue("TextFont", doc.text, doc.path))
@@ -587,7 +437,7 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
         }
 
 
-        fun default() = TextFont.FiraSans
+        fun default() = TextFont.Cabin
 
     }
 
@@ -612,6 +462,36 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
         // -------------------------------------------------------------------------------------
 
         override fun toDocument() = DocText("regular")
+
+    }
+
+
+    object Medium : TextFontStyle()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "medium "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("medium")
+
+    }
+
+
+    object SemiBold : TextFontStyle()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "semi_bold "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("semi-bold")
 
     }
 
@@ -687,6 +567,8 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
             is DocText -> when (doc.text)
             {
                 "regular"     -> effValue<ValueError,TextFontStyle>(TextFontStyle.Regular)
+                "medium"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Medium)
+                "semi_bold"   -> effValue<ValueError,TextFontStyle>(TextFontStyle.SemiBold)
                 "bold"        -> effValue<ValueError,TextFontStyle>(TextFontStyle.Bold)
                 "italic"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Italic)
                 "bold_italic" -> effValue<ValueError,TextFontStyle>(TextFontStyle.BoldItalic)

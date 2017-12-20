@@ -528,48 +528,13 @@ types:
     group: Group Row
     type: product
     fields:
-    - name: alignment
+    - name: element_format
       type:
         type: custom_type
-        custom_type: alignment
+        custom_type: element_format
       presence: optional
       description: >
-        The horizontal alignment of the widgets within the row.
-    - name: vertical_alignment
-      type:
-        type: custom_type
-        custom_type: vertical_alignment
-      presence: optional
-      description: >
-        The vertical alignment of the widgets within the row.
-    - name: background_color_theme
-      type:
-        type: custom_type
-        custom_type: color_theme
-      presence: optional
-      description: >
-        The background color theme of the row.
-    - name: margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The space between the row's border and the adjacent rows or surrounding group.
-    - name: padding
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The space between the row's border and its widgets.
-    - name: corners
-      type:
-        type: custom_type
-        custom_type: corners
-      presence: optional
-      description: >
-        The corner radius of the group row background.
+        The element format.
 - type: sum_type
   sum_type:
     name: widget
@@ -1657,20 +1622,13 @@ types:
       presence: required
       description: >
         The text.
-    - name: format
+    - name: text_format
       type:
         type: custom_type
-        custom_type: element_format
+        custom_type: text_format
       presence: optional
       description: >
-        The text style.
-    - name: text_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The text style.
+        The text format.
 - type: product_type
   product_type:
     name: story_part_variable
@@ -1679,20 +1637,13 @@ types:
       Story Part Variable
     group: 'Widget: Story'
     fields:
-    - name: format
+    - name: text_format
       type: 
         type: custom_type
-        custom_type: element_format
+        custom_type: text_format
       presence: optional
       description: >
-        The text style.
-    - name: text_style
-      type: 
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        The text style.
+        The text format.
     - name: variable_id
       type:
         type: custom_type
@@ -1707,13 +1658,6 @@ types:
       presence: optional
       description: >
         The numeric editor type (if is number value).
-    - name: number_format
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The number format (if applicable).
 - type: product_type
   product_type:
     name: story_part_icon
@@ -1749,31 +1693,17 @@ types:
       presence: required
       description: >
         The text.
-    - name: roll_summation_id
+    - name: action
       type: 
         type: custom_type
-        custom_type: summation_id
-      presence: optional
+        custom_type: action
+      presence: required
       description: >
-        The roll summation id.
-    - name: procedure_id
+        The action.
+    - name: text_format
       type:
         type: custom_type
-        custom_type: summation_id
-      presence: optional
-      description: >
-        The procedure id.
-    - name: format
-      type:
-        type: custom_type
-        custom_type: element_format
-      presence: optional
-      description: >
-        The format.
-    - name: text_style
-      type:
-        type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The text style.
@@ -1804,17 +1734,17 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
-    - name: vertical_alignment
-      type:
-        type: custom_type
-        custom_type: vertical_alignment
-      presence: optional
-      description: >
-        Standard widget formatting options.
     - name: line_spacing
       type:
         type: prim_type
         prim_type: number
+      presence: optional
+      description: >
+        Standard widget formatting options.
+    - name: text_size
+      type:
+        type: custom_type
+        custom_type: text_size
       presence: optional
       description: >
         Standard widget formatting options.

@@ -2,10 +2,17 @@
 package com.kispoko.tome.model.sheet.widget.table.column
 
 
-import com.kispoko.tome.db.DB_WidgetTableColumnBooleanFormat
-import com.kispoko.tome.db.dbWidgetTableColumnBooleanFormat
+import com.kispoko.tome.db.DB_SectionValue
+import com.kispoko.tome.db.DB_WidgetTableColumnBooleanFormatValue
+import com.kispoko.tome.db.sectionTable
+import com.kispoko.tome.db.widgetTableColumnBooleanFormatTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -179,14 +186,15 @@ data class BooleanColumnFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableColumnBooleanFormat =
-            dbWidgetTableColumnBooleanFormat(this.columnFormat,
-                                             this.trueFormat,
-                                             this.falseFormat,
-                                             this.trueText,
-                                             this.falseText,
-                                             this.showTrueIcon,
-                                             this.showFalseIcon)
+    override fun rowValue() : DB_WidgetTableColumnBooleanFormatValue =
+        RowValue7(widgetTableColumnBooleanFormatTable,
+                  ProdValue(this.columnFormat),
+                  ProdValue(this.trueFormat),
+                  ProdValue(this.falseFormat),
+                  PrimValue(this.trueText),
+                  PrimValue(this.falseText),
+                  PrimValue(this.showTrueIcon),
+                  PrimValue(this.showFalseIcon))
 
 }
 

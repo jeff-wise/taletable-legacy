@@ -2,10 +2,12 @@
 package com.kispoko.tome.model.sheet
 
 
-import com.kispoko.tome.db.DB_SheetSettings
-import com.kispoko.tome.db.dbSheetSettings
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue10
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -113,8 +115,11 @@ data class Settings(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_SheetSettings =
-            dbSheetSettings(this.themeId, this.sheetName, this.sheetSummary)
+    override fun rowValue() : DB_SheetSettingsValue =
+        RowValue3(sheetSettingsTable,
+                   PrimValue(this.themeId),
+                   PrimValue(this.sheetName),
+                   PrimValue(this.sheetSummary))
 
 }
 

@@ -11,13 +11,15 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_WidgetPointsBarFormat
-import com.kispoko.tome.db.DB_WidgetPointsFormat
-import com.kispoko.tome.db.dbWidgetPointsBarFormat
-import com.kispoko.tome.db.dbWidgetPointsFormat
+import com.kispoko.tome.db.DB_WidgetPointsBarFormatValue
+import com.kispoko.tome.db.DB_WidgetPointsFormatValue
+import com.kispoko.tome.db.widgetPointsBarFormatTable
+import com.kispoko.tome.db.widgetPointsFormatTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
@@ -156,12 +158,13 @@ data class PointsWidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetPointsFormat =
-            dbWidgetPointsFormat(this.widgetFormat,
-                                 this.limitTextFormat,
-                                 this.currentTextFormat,
-                                 this.labelTextFormat,
-                                 this.barFormat)
+    override fun rowValue() : DB_WidgetPointsFormatValue =
+        RowValue5(widgetPointsFormatTable,
+                  ProdValue(this.widgetFormat),
+                  ProdValue(this.limitTextFormat),
+                  ProdValue(this.currentTextFormat),
+                  ProdValue(this.labelTextFormat),
+                  ProdValue(this.barFormat))
 
 }
 
@@ -467,12 +470,13 @@ data class PointsBarFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetPointsBarFormat =
-            dbWidgetPointsBarFormat(this.barStyle,
-                                    this.barAboveStyle,
-                                    this.barHeight,
-                                    this.limitColorTheme,
-                                    this.currentColorTheme)
+    override fun rowValue() : DB_WidgetPointsBarFormatValue =
+        RowValue5(widgetPointsBarFormatTable,
+                  PrimValue(this.barStyle),
+                  PrimValue(this.barAboveStyle),
+                  PrimValue(this.barHeight),
+                  PrimValue(this.limitColorTheme),
+                  PrimValue(this.currentColorTheme))
 
 }
 
@@ -480,8 +484,6 @@ data class PointsBarFormat(override val id : UUID,
 
 object PointsWidgetView
 {
-
-
 
     fun view(pointsWidget : PointsWidget, sheetUIContext : SheetUIContext) : View
     {

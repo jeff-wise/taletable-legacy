@@ -5,7 +5,6 @@ package com.kispoko.tome.rts.game
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppGameError
-import com.kispoko.tome.lib.functor.Prod
 import com.kispoko.tome.model.game.*
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.official.*
@@ -87,13 +86,11 @@ object GameManager
 // GAME RECORD
 // ---------------------------------------------------------------------------------------------
 
-data class GameRecord(val game : Prod<Game>)
+data class GameRecord(val game : Game)
 {
 
-    constructor(game : Game) : this(Prod(game))
 
-
-    fun game() : Game = this.game.value
+    fun game() : Game = this.game
 
     /**
      * This method saves the entire campaign in the database. It is intended to be used to saveSheet
@@ -103,7 +100,7 @@ data class GameRecord(val game : Prod<Game>)
      */
     suspend fun save()
     {
-        this.game.saveAsync(true, true)
+        //this.game.saveAsync(true, true)
     }
 
 }

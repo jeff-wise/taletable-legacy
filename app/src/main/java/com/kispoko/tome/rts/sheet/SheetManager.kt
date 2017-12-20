@@ -9,13 +9,12 @@ import android.view.View
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
 import com.kispoko.tome.app.*
-import com.kispoko.tome.db.DB_Session
-import com.kispoko.tome.db.DB_SessionSheetRecord
-import com.kispoko.tome.db.dbSession
-import com.kispoko.tome.db.dbSessionSheetRecord
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prod
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
@@ -60,7 +59,7 @@ object SheetManager
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var session : Prod<Session> = Prod(Session())
+    private var session : Session = Session()
 
 
     // -----------------------------------------------------------------------------------------
@@ -69,10 +68,10 @@ object SheetManager
 
     init {
         // TODO do this lazily
-        session = Prod(Session())
+        session = Session()
         launch(UI) {
             Log.d("***SHEETMANAGER", "saving sheet session")
-            session.saveAsync(true, true)
+            //session.saveAsync(true, true)
         }
     }
 
@@ -81,18 +80,18 @@ object SheetManager
     // SHEET
     // -----------------------------------------------------------------------------------------
 
-    fun openSheets() : List<Sheet> = this.session.value.sheets()
+    fun openSheets() : List<Sheet> = this.session.sheets()
 
 
     fun sheetRecord(sheetId : SheetId) : AppEff<SessionSheetRecord> =
-            session.value.sheetRecordWithId(sheetId)
+            session.sheetRecordWithId(sheetId)
 
 
     fun currentSheetContext() : AppEff<SheetContext> =
-        session.value.activeSheet().apply { sheetContext(it) }
+        session.activeSheet().apply { sheetContext(it) }
 
 
-    fun sheet(sheetId : SheetId) : AppEff<Sheet> = session.value.sheetWithId(sheetId)
+    fun sheet(sheetId : SheetId) : AppEff<Sheet> = session.sheetWithId(sheetId)
 
 
     fun sheetContext(sheet : Sheet) : AppEff<SheetContext>
@@ -172,10 +171,10 @@ object SheetManager
     {
         // There are no active sheets in memory. Load the last session from the DB or present
         // the user with an option to open a new sheet.
-        if (this.session.value.isEmpty())
+        if (this.session.isEmpty())
         {
             // Testing Case
-            val casmeyOfficialSheet = OfficialSheet(SheetId("character_olan_level_1"),
+            val casmeyOfficialSheet = OfficialSheet(SheetId("character_casmey_level_1"),
                                                     CampaignId("isara"),
                                                     GameId("magic_of_heroes"))
 
@@ -191,7 +190,7 @@ object SheetManager
         else
         {
             Log.d("***SHEETMANAGER", "set sheet active")
-            val lastActiveSheet = this.session.value.sheets().first()
+            val lastActiveSheet = this.session.sheets().first()
 
 //            val listener = this.listenerBySheet[lastActiveSheet.sheetId()]
 //            if (listener != null)
@@ -245,7 +244,7 @@ object SheetManager
 
     fun addSheetToSession(sheet : Sheet, sheetUI : SheetUI, isSaved : Boolean = true)
     {
-        session.value.addSheet(sheet, isSaved, sheetUI)
+        session.addSheet(sheet, isSaved, sheetUI)
 
         // TODO this should be inside addSheet
 //        launch(UI) {
@@ -416,7 +415,7 @@ object SheetManager
 
 
     private fun sheetThemeId(sheetId : SheetId) : AppEff<ThemeId> =
-        this.session.value.sheetWithId(sheetId)
+        this.session.sheetWithId(sheetId)
             .apply { effValue<AppError,ThemeId>(it.settings().themeId()) }
 
 
@@ -574,10 +573,11 @@ data class SessionSheetRecord(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_SessionSheetRecord =
-            dbSessionSheetRecord(this.sheetId,
-                                 this.sessionIndex,
-                                 this.lastActive)
+    override fun rowValue() : DB_SessionSheetRecordValue =
+        RowValue3(sessionSheetRecordTable,
+                  PrimValue(this.sheetId),
+                  PrimValue(this.sessionIndex),
+                  PrimValue(this.lastActive))
 
 }
 
@@ -738,14 +738,14 @@ data class Session(override val id : UUID,
             this.sheetRecords.add(sheetRecord)
             this.sheetRecordById.put(sheet.sheetId(), sheetRecord)
 
-            if (!isSaved)
-                launch(UI) { sheetRecord.saveSheet() }
+//            if (!isSaved)
+//                launch(UI) { sheetRecord.saveSheet() }
 
             setSheetActive(sheet.sheetId(), sheetUI)
 
             sheetUI.onSheetActive(sheet)
 
-            launch(UI) { sheetRecords.save() }
+            // launch(UI) { sheetRecords.save() }
         } }
     }
 
@@ -758,9 +758,9 @@ data class Session(override val id : UUID,
 
             // Set Active
             this.activeSheetId = Just(sheetId)
-            this.activeSheetId.doMaybe {
-                launch(UI) { save() }
-            }
+//            this.activeSheetId.doMaybe {
+//                launch(UI) { save() }
+//            }
 
             // Render
             SheetManager.render(sheetId, sheetUI)
@@ -778,13 +778,14 @@ data class Session(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Session = dbSession(this.sessionName,
-                                                this.lastActiveTime,
-                                                this.activeSheetId,
-                                                this.sheetRecords)
+    override fun rowValue() : DB_SessionValue =
+        RowValue4(sessionTable,
+                  PrimValue(this.sessionName),
+                  PrimValue(this.lastActiveTime),
+                  MaybePrimValue(this.activeSheetId),
+                  CollValue(this.sheetRecords))
 
 }
-
 
 
 /**

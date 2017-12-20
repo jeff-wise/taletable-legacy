@@ -3,7 +3,6 @@ package com.kispoko.tome.lib.orm
 
 
 import android.content.ContentValues
-import com.kispoko.tome.lib.model.ProdType
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.util.Util
 import java.util.*

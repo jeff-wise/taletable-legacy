@@ -9,10 +9,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_WidgetTextFormat
-import com.kispoko.tome.db.dbWidgetTextFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
@@ -136,10 +137,12 @@ data class TextWidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTextFormat = dbWidgetTextFormat(this.widgetFormat,
-                                                                  this.insideLabelFormat,
-                                                                  this.outsideLabelFormat,
-                                                                  this.valueFormat)
+    override fun rowValue() : DB_WidgetTextFormat =
+        RowValue4(widgetTextFormatTable,
+                  ProdValue(this.widgetFormat),
+                  ProdValue(this.insideLabelFormat),
+                  ProdValue(this.outsideLabelFormat),
+                  ProdValue(this.valueFormat))
 
 }
 
@@ -239,7 +242,7 @@ object TextWidgetView
 //                                            .position().linearLayoutOrientation()
 
         layout.gravity              = textWidget.widgetFormat().elementFormat().alignment().gravityConstant()
-        Log.d("***TEXTWIDGET", "${textWidget.widgetFormat().elementFormat().alignment()}" )
+        //Log.d("***TEXTWIDGET", "${textWidget.widgetFormat().elementFormat().alignment()}" )
 
         layout.marginSpacing        = textWidget.widgetFormat().elementFormat().margins()
 

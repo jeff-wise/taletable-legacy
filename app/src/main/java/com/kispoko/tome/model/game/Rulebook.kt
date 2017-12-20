@@ -4,7 +4,13 @@ package com.kispoko.tome.model.game
 
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -16,7 +22,6 @@ import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
-import kotlin.text.Typography.section
 
 
 // ---------------------------------------------------------------------------------------------
@@ -187,7 +192,10 @@ data class Rulebook(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_Rulebook = dbRulebook(this.title, this.abstract, this.chapters)
+    override fun rowValue() : DB_RulebookValue =
+        RowValue3(rulebookTable, PrimValue(this.title),
+                                 PrimValue(this.abstract),
+                                 CollValue(this.chapters))
 
 }
 
@@ -363,8 +371,10 @@ data class RulebookChapter(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_RulebookChapter =
-            dbRulebookChapter(this.chapterId, this.title, this.sections)
+    override fun rowValue() : DB_RulebookChapterValue =
+        RowValue3(rulebookChapterTable, PrimValue(this.chapterId),
+                                        PrimValue(this.title),
+                                        CollValue(this.sections))
 
 }
 
@@ -549,8 +559,11 @@ data class RulebookSection(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_RulebookSection =
-            dbRulebookSection(this.sectionId, this.title, this.body, this.subsections)
+    override fun rowValue() : DB_RulebookSectionValue =
+        RowValue4(rulebookSectionTable, PrimValue(this.sectionId),
+                                        PrimValue(this.title),
+                                        PrimValue(this.body),
+                                        CollValue(this.subsections))
 
 }
 
@@ -748,8 +761,11 @@ data class RulebookSubsection(override val id : UUID,
 
     override val prodTypeObject = this
 
-    override fun row() : DB_RulebookSubsection =
-            dbRulebookSubection(this.subsectionId, this.title, this.body)
+
+    override fun rowValue() : DB_RulebookSubsectionValue =
+        RowValue3(rulebookSubsectionTable, PrimValue(this.subsectionId),
+                                           PrimValue(this.title),
+                                           PrimValue(this.body))
 
 }
 
@@ -949,8 +965,10 @@ data class RulebookReference(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_RulebookReference =
-            dbRulebookReference(this.chapterId, this.sectionId, this.subsectionId)
+    override fun rowValue() : DB_RulebookReferenceValue =
+        RowValue3(rulebookReferenceTable, PrimValue(this.chapterId),
+                                          MaybePrimValue(this.sectionId),
+                                          MaybePrimValue(this.subsectionId))
 
 
 }

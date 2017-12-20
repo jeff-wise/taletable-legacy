@@ -13,19 +13,16 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
-import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_WidgetTableCellTextFormat
-import com.kispoko.tome.db.dbWidgetTableCellTextFormat
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Prod
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue1
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
-import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
@@ -46,7 +43,6 @@ import java.util.*
  * Text Cell Format
  */
 data class TextCellFormat(override val id : UUID,
-                          val elementFormat : Maybe<ElementFormat>,
                           val textFormat : Maybe<TextFormat>)
                            : ToDocument, ProdType, Serializable
 {
@@ -55,11 +51,8 @@ data class TextCellFormat(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(elementFormat: Maybe<ElementFormat>,
-                textFormat: Maybe<TextFormat>)
-        : this(UUID.randomUUID(),
-              elementFormat,
-               textFormat)
+    constructor(textFormat: Maybe<TextFormat>)
+        : this(UUID.randomUUID(), textFormat)
 
     companion object : Factory<TextCellFormat>
     {
@@ -69,10 +62,6 @@ data class TextCellFormat(override val id : UUID,
             is DocDict ->
             {
                 apply(::TextCellFormat,
-                      // Element Format
-                      split(doc.maybeAt("element_format"),
-                            effValue<ValueError,Maybe<ElementFormat>>(Nothing()),
-                            { apply(::Just, ElementFormat.fromDocument(it)) }),
                       // Text Format
                       split(doc.maybeAt("text_format"),
                             effValue<ValueError,Maybe<TextFormat>>(Nothing()),
@@ -83,7 +72,7 @@ data class TextCellFormat(override val id : UUID,
         }
 
 
-        fun default() = TextCellFormat(UUID.randomUUID(), Nothing(), Nothing())
+        fun default() = TextCellFormat(UUID.randomUUID(), Nothing())
 
     }
 
@@ -93,8 +82,6 @@ data class TextCellFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf())
-        .maybeMerge(this.elementFormat.apply {
-            Just(Pair("element_format", it.toDocument() as SchemaDoc)) })
         .maybeMerge(this.textFormat.apply {
             Just(Pair("text_format", it.toDocument() as SchemaDoc)) })
 
@@ -102,9 +89,6 @@ data class TextCellFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
-
-    fun elementFormat() : Maybe<ElementFormat> = this.elementFormat
-
 
     fun textFormat() : Maybe<TextFormat> = this.textFormat
 
@@ -130,8 +114,10 @@ data class TextCellFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetTableCellTextFormat =
-            dbWidgetTableCellTextFormat(this.elementFormat, this.textFormat)
+    override fun rowValue() : DB_WidgetTableCellTextFormatValue =
+        RowValue1(widgetTableCellTextFormatTable,
+                  MaybeProdValue(this.textFormat))
+
 
 }
 

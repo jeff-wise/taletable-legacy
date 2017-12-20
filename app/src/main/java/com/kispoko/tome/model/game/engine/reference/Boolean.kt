@@ -3,9 +3,8 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Val
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.SumType
+import com.kispoko.tome.lib.orm.SumType
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.variable.*
@@ -13,6 +12,7 @@ import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
+import lulo.schema.Prim
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueParser
@@ -78,7 +78,7 @@ data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference(), SQ
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "literal"
@@ -126,7 +126,7 @@ data class BooleanReferenceVariable(val variableReference : VariableReference)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun functor() = Prim(this)
+    override fun columnValue() = PrimValue(this)
 
 
     override fun case() = "variable"

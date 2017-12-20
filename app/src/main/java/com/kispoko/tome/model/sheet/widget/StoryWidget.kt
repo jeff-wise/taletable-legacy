@@ -23,7 +23,7 @@ import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
@@ -38,11 +38,14 @@ import java.io.Serializable
 import java.util.*
 import com.kispoko.tome.activity.sheet.dialog.*
 import com.kispoko.tome.db.*
-import com.kispoko.tome.lib.functor.*
-import com.kispoko.tome.lib.functor.Val
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
-
+import com.kispoko.tome.model.theme.ColorTheme
 
 
 /**
@@ -50,7 +53,8 @@ import com.kispoko.tome.model.game.engine.variable.NumberVariable
  */
 data class StoryWidgetFormat(override val id : UUID,
                              val widgetFormat : WidgetFormat,
-                             val lineSpacing : LineSpacing)
+                             val lineSpacing : LineSpacing,
+                             val textSize : Maybe<TextSize>)
                               : ToDocument, ProdType, Serializable
 {
 
@@ -59,10 +63,12 @@ data class StoryWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                lineSpacing : LineSpacing)
+                lineSpacing : LineSpacing,
+                textSize : Maybe<TextSize>)
         : this(UUID.randomUUID(),
                widgetFormat,
-               lineSpacing)
+               lineSpacing,
+               textSize)
 
 
     companion object : Factory<StoryWidgetFormat>
@@ -70,6 +76,7 @@ data class StoryWidgetFormat(override val id : UUID,
 
         private fun defaultWidgetFormat()      = WidgetFormat.default()
         private fun defaultLineSpacing()       = LineSpacing.default()
+        private fun defaultTextSize()          = Nothing<TextSize>()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<StoryWidgetFormat> = when (doc)
@@ -84,7 +91,11 @@ data class StoryWidgetFormat(override val id : UUID,
                       // Line Spacing
                       split(doc.maybeAt("line_spacing"),
                             effValue(defaultLineSpacing()),
-                            { LineSpacing.fromDocument(it) })
+                            { LineSpacing.fromDocument(it) }),
+                      // Text Size
+                      split(doc.maybeAt("text_size"),
+                            effValue<ValueError,Maybe<TextSize>>(Nothing()),
+                            { effApply(::Just, TextSize.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -92,7 +103,8 @@ data class StoryWidgetFormat(override val id : UUID,
 
 
         fun default() = StoryWidgetFormat(defaultWidgetFormat(),
-                                          defaultLineSpacing())
+                                          defaultLineSpacing(),
+                                          defaultTextSize())
 
     }
 
@@ -120,6 +132,9 @@ data class StoryWidgetFormat(override val id : UUID,
     fun lineSpacingFloat() : Float = this.lineSpacing.value
 
 
+    fun textSize() : Maybe<TextSize> = this.textSize
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -130,8 +145,10 @@ data class StoryWidgetFormat(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetStoryFormat =
-            dbWidgetStoryFormat(this.widgetFormat, this.lineSpacing)
+    override fun rowValue() : DB_WidgetStoryFormatValue =
+        RowValue2(widgetStoryFormatTable,
+                  ProdValue(this.widgetFormat),
+                  PrimValue(this.lineSpacing))
 
 }
 
@@ -201,7 +218,7 @@ data class StoryPartSpan(override val id : UUID,
 
     companion object : Factory<StoryPartSpan>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<StoryPartSpan> = when (doc)
+        override fun fromDocument(doc : SchemaDoc): ValueParser<StoryPartSpan> = when (doc)
         {
             is DocDict ->
             {
@@ -235,7 +252,9 @@ data class StoryPartSpan(override val id : UUID,
 
     fun text() : StoryPartText = this.text
 
+
     fun textString() : String = this.text.value
+
 
     fun textFormat() : TextFormat = this.textFormat
 
@@ -257,8 +276,10 @@ data class StoryPartSpan(override val id : UUID,
     override val prodTypeObject : ProdType = this
 
 
-    override fun row() : DB_WidgetStoryPartSpan =
-            dbWidgetStoryPartSpan(this.textFormat, this.text)
+    override fun rowValue() : DB_WidgetStoryPartSpanValue =
+        RowValue2(widgetStoryPartSpanTable,
+                  ProdValue(this.textFormat),
+                  PrimValue(this.text))
 
 }
 
@@ -378,8 +399,11 @@ data class StoryPartVariable(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetStoryPartVariable =
-            dbWidgetStoryPartVariable(this.textFormat, this.variableId, this.numericEditorType)
+    override fun rowValue() : DB_WidgetStoryPartVariableValue =
+        RowValue3(widgetStoryPartVariableTable,
+                  ProdValue(this.textFormat),
+                  PrimValue(this.variableId),
+                  PrimValue(this.numericEditorType))
 
 }
 
@@ -456,8 +480,10 @@ data class StoryPartIcon(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetStoryPartIcon =
-            dbWidgetStoryPartIcon(this.icon, this.iconFormat)
+    override fun rowValue() : DB_WidgetStoryPartIconValue =
+        RowValue2(widgetStoryPartIconTable,
+                  PrimValue(this.icon),
+                  ProdValue(this.iconFormat))
 
 }
 
@@ -574,12 +600,13 @@ data class StoryPartAction(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun row() : DB_WidgetStoryPartAction =
-            dbWidgetStoryPartAction(this.text,
-                                    this.action,
-                                    this.textFormat,
-                                    this.iconFormat,
-                                    this.showProcedureDialog)
+    override fun rowValue() : DB_WidgetStoryPartActionValue =
+        RowValue5(widgetStoryPartActionTable,
+                  PrimValue(this.text),
+                  ProdValue(this.action),
+                  ProdValue(this.textFormat),
+                  ProdValue(this.iconFormat),
+                  PrimValue(this.showProcedureDialog))
 
 }
 
@@ -715,7 +742,6 @@ object StoryWidgetView
             layout.id                = layoutViewId
             val spanView = this.storySpannableView(storyWidget, sheetUIContext)
 
-
             layout.addView(spanView)
         }
 
@@ -752,14 +778,21 @@ object StoryWidgetView
         val story           = TextViewBuilder()
 
         story.width         = LinearLayout.LayoutParams.MATCH_PARENT
+//        story.widthDp       = 300
         story.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
         story.textSpan      = this.spannableStringBuilder(storyWidget.story(),
                                                           storyWidget.id,
                                                           sheetUIContext)
 
-        story.lineSpacingAdd    = 0f
-        story.lineSpacingMult   = storyWidget.format().lineSpacingFloat()
+        story.lineSpacingAdd    = 1f
+        story.lineSpacingMult   = 1.4f
+
+
+        val maybeTextSize = storyWidget.format.textSize()
+        when (maybeTextSize) {
+            is Just -> story.sizeSp = maybeTextSize.value.sp
+        }
 
         story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
         story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
@@ -813,11 +846,13 @@ object StoryWidgetView
             {
                 is StoryPartSpan ->
                 {
-                    val text = storyPart.textString()
-                    builder.append(text)
-                    val textLen = text.length
-                    phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
-                    index += textLen
+                    //val text = storyPart.textString()
+                    words(storyPart.textString()).forEach {
+                        builder.append(it)
+                        val textLen = it.length
+                        phrases.add(Phrase(storyPart, it, partIndex, index, index + textLen))
+                        index += textLen
+                    }
                 }
                 is StoryPartVariable ->
                 {
@@ -844,10 +879,22 @@ object StoryWidgetView
 
                     }
 
-                    builder.append(text)
+//                    var textLen = 0
+//                    if (storyPart.textFormat.elementFormat().backgroundColorTheme() != ColorTheme.transparent) {
+//                        builder.append(" $text ")
+//                        textLen = text.length + 2
+//                    }
+//                    else {
+//                        builder.append(text)
+//                        textLen = text.length
+//                    }
 
-                    val textLen = text.length
-                    phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
+                    val nbspSpacing = "\u202F\u202F";
+                    val paddedText = "$nbspSpacing$text$nbspSpacing"
+                    val textLen = paddedText.length
+                    builder.append(paddedText)
+
+                    phrases.add(Phrase(storyPart, paddedText, partIndex, index, index + textLen))
                     index += textLen
                 }
                 is StoryPartIcon ->
@@ -869,6 +916,8 @@ object StoryWidgetView
 
         phrases.forEach { (storyPart, _, partIndex, start, end) ->
 
+            //Log.d("***STORY WIDGET", "start -> end: " + start.toString() + " " + end.toString())
+
             when (storyPart)
             {
                 is StoryPartSpan ->
@@ -879,9 +928,6 @@ object StoryWidgetView
                 }
                 is StoryPartVariable ->
                 {
-                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
-                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
 
                     val clickSpan = object: ClickableSpan()
                     {
@@ -899,11 +945,15 @@ object StoryWidgetView
                         }
 
                         override fun updateDrawState(ds: TextPaint?) {
-                           // super.updateDrawState(ds)
+                            //super.updateDrawState(ds)
                         }
                     }
 
-                    builder.setSpan(clickSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                    //builder.setSpan(clickSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
+                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                    }
                 }
                 is StoryPartIcon ->
                 {
@@ -952,7 +1002,6 @@ object StoryWidgetView
 
                     val procedureId = storyPart.action().procedureId()
                     val summationId = storyPart.action().rollSummationId()
-                    Log.d("***STORYWIDGET", "here???")
 //                    if (procedureId != null) {
 //                        val clickSpan = object : ClickableSpan() {
 //                            override fun onClick(view: View?) {
@@ -1019,7 +1068,22 @@ object StoryWidgetView
         var color = SheetManager.color(sheetUIContext.sheetId, textStyle.colorTheme())
         val colorSpan = ForegroundColorSpan(color)
 
-        return listOf(sizeSpan, typefaceSpan, colorSpan)
+        var bgColor = SheetManager.color(sheetUIContext.sheetId,
+                                         textStyle.elementFormat().backgroundColorTheme())
+        //val bgColorSpan = BackgroundColorSpan(bgColor)
+
+
+//        val isBgColor = textStyle.elementFormat().backgroundColorTheme() != ColorTheme.transparent
+//        if (isBgColor) {
+            val bgSpan = RoundedBackgroundSpan(110, color, bgColor) // , color, sizePx)
+            //Log.d("***STORY WIDGET", "color: " + bgColor.toString())
+            return listOf(bgSpan)
+//        }
+//        else {
+//            return listOf(sizeSpan, typefaceSpan)
+//        }
+
+
     }
 
 
@@ -1088,12 +1152,13 @@ object StoryWidgetView
 
 
     fun words(valueString : String) : List<String> =
-        valueString.split(" ").mapIndexed { index, word ->
-            if (index != 0)
-                " " + word
-            else
-                word
-        }
+        valueString.split(" ").map { word -> "$word " }
+//    valueString.split(" ").mapIndexed { index, word ->
+//            if (index != 0)
+//                " " + word
+//            else
+//                word
+//        }
 
 
     fun storyViewLayout(format : StoryWidgetFormat, sheetUIContext : SheetUIContext) : FlexboxLayout
@@ -1144,7 +1209,7 @@ object StoryWidgetView
         val padding         = Spacing(formatPadding.leftDp().toDouble(),
                                       formatPadding.topDp().toDouble() + format.lineSpacingFloat(),
                                       formatPadding.rightDp().toDouble(),
-                                      formatPadding.bottomDp().toDouble())
+                                      formatPadding.bottomDp().toDouble() + format.lineSpacingFloat())
 
         text.paddingSpacing = padding
         text.marginSpacing  = storyPartSpan.textFormat().elementFormat().margins()
@@ -1177,7 +1242,7 @@ object StoryWidgetView
         val padding         = Spacing(formatPadding.leftDp().toDouble(),
                                     formatPadding.topDp().toDouble() + format.lineSpacingFloat(),
                                     formatPadding.rightDp().toDouble(),
-                                    formatPadding.bottomDp().toDouble())
+                                    formatPadding.bottomDp().toDouble() + format.lineSpacingFloat())
 
         text.paddingSpacing = padding
         text.marginSpacing  = storyPart.textFormat().elementFormat().margins()

@@ -2,14 +2,6 @@
 package com.kispoko.tome.lib.database.query;
 
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.kispoko.tome.Global;
-import com.kispoko.tome.lib.model.ProdType;
-import com.kispoko.tome.util.promise.AsyncFunction;
-
-
 /**
  * Query: Count
  *

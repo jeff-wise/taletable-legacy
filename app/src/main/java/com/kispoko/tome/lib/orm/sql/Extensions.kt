@@ -3,7 +3,7 @@ package com.kispoko.tome.lib.orm.sql
 
 
 import android.content.ContentValues
-import com.kispoko.tome.lib.model.ProdType
+import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.saveProdType
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
