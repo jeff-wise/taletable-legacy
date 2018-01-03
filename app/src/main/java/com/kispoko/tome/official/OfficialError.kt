@@ -26,10 +26,10 @@ class GameManifestParseError(val errorString : String) : OfficialError()
 }
 
 
-class AmanaceCharSheetManifestParseError(val errorString : String) : OfficialError()
+class HeroesCharSheetManifestParseError(val errorString : String) : OfficialError()
 {
     override fun debugMessage() : String = """
-            |Amanace Character Sheet Manifest Parse Error:
+            |The Magic of Heroes Character Sheet Manifest Parse Error:
             |    $errorString
             """
 
@@ -37,10 +37,10 @@ class AmanaceCharSheetManifestParseError(val errorString : String) : OfficialErr
 }
 
 
-class AmanaceCreatureSheetManifestParseError(val errorString : String) : OfficialError()
+class HeroesCreatureSheetManifestParseError(val errorString : String) : OfficialError()
 {
     override fun debugMessage() : String = """
-            |Amanace Creature Sheet Manifest Parse Error:
+            |The Magic of Heroes Creature Sheet Manifest Parse Error:
             |    $errorString
             """
 
@@ -48,10 +48,10 @@ class AmanaceCreatureSheetManifestParseError(val errorString : String) : Officia
 }
 
 
-class AmanaceNPCSheetManifestParseError(val errorString : String) : OfficialError()
+class HeroesNPCSheetManifestParseError(val errorString : String) : OfficialError()
 {
     override fun debugMessage() : String = """
-            |Amanace NPC Sheet Manifest Parse Error:
+            |The Magic of Heroes NPC Sheet Manifest Parse Error:
             |    $errorString
             """
 

@@ -75,10 +75,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.game.engine.mechanicindex.MechanicIndexActivity"
-            android:label="Mechanics"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.game.engine.mechanic.MechanicActivity"
             android:label="Mechanic"
             android:theme="@style/AppTheme.NoActionBar"
@@ -125,16 +121,6 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.GroupRowActivity"
-            android:label="Groups"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activity.sheet.widget.ActionWidgetActivity"
-            android:label="Groups"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activity.ImageWidgetActivity"
             android:label="Groups"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
@@ -218,6 +204,10 @@
         <activity
             android:name=".activity.official.sheets.OpenSheetOfficialSheetsActivity"
             android:label="Official Sheets"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.nav.SheetNavigationActivity"
+            android:label="Sheets"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

@@ -2,270 +2,414 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.kispoko.tome.R.string.variable
+import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
+import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.AppStateError
+import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.db.DB_WidgetListFormatValue
+import com.kispoko.tome.db.widgetListFormatTable
+import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.ui.CustomTypefaceSpan
+import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.game.engine.value.ValueId
+import com.kispoko.tome.model.game.engine.value.ValueReference
+import com.kispoko.tome.model.game.engine.value.ValueSet
+import com.kispoko.tome.model.game.engine.value.ValueSetId
+import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
+import effect.*
+import lulo.document.*
+import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
+import lulo.value.ValueParser
+import java.io.Serializable
+import java.util.*
+
+
 
 /**
  * List Widget Format
  */
-//data class ListWidgetFormat(override val id : UUID,
-//                            val widgetFormat : Prod<WidgetFormat>,
-//                            val listStyle : Val<TextFormat>,
-//                            val annotationStyle : Val<TextFormat>) : ToDocument, ProdType
-//{
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    companion object : Factory<ListWidgetFormat>
-//    {
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<ListWidgetFormat> = when (doc)
-//        {
-//            is DocDict -> effApply(::ListWidgetFormat,
-//                                   // ProdType Id
-//                                   effValue(UUID.randomUUID()),
-//                                   // Widget Format
-//                                   doc.at("widget_format") ap {
-//                                       effApply(::Prod, WidgetFormat.fromDocument(it))
-//                                   },
-//                                   // List Style
-//                                   doc.at("list_style") ap {
-//                                       effApply(::Prod, TextFormat.fromDocument(it))
-//                                   },
-//                                   // Annotation Style
-//                                   doc.at("annotation_style") ap {
-//                                       effApply(::Prod, TextFormat.fromDocument(it))
-//                                   })
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "widget_format" to this.widgetFormat().toDocument(),
-//        "list_style" to this.listStyle().toDocument(),
-//        "annotation_style" to this.annotationStyle().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-//
-//    fun listStyle() : TextFormat = this.listStyle.value
-//
-//    fun annotationStyle() : TextFormat = this.annotationStyle.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name = "list_widget_format"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<Val<*>> =
-//            listOf(this.widgetFormat,
-//                   this.listStyle,
-//                   this.annotationStyle)
-//
-//}
+data class ListWidgetFormat(override val id : UUID,
+                            val widgetFormat : WidgetFormat,
+                            val viewType : ListViewType,
+                            val itemFormat : TextFormat,
+                            val descriptionFormat : TextFormat,
+                            val annotationFormat : TextFormat)
+                             : ToDocument, ProdType, Serializable
+{
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetFormat : WidgetFormat,
+                viewType : ListViewType,
+                itemFormat : TextFormat,
+                descriptionFormat : TextFormat,
+                annotationFormat : TextFormat)
+        : this(UUID.randomUUID(),
+               widgetFormat,
+               viewType,
+               itemFormat,
+               descriptionFormat,
+               annotationFormat)
+
+
+    companion object : Factory<ListWidgetFormat>
+    {
+
+        private fun defaultWidgetFormat()       = WidgetFormat.default()
+        private fun defaultViewType()           = ListViewType.ParagraphCommas
+        private fun defaultItemFormat()         = TextFormat.default()
+        private fun defaultDescriptionFormat()  = TextFormat.default()
+        private fun defaultAnnoationFormat()    = TextFormat.default()
+
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ListWidgetFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ListWidgetFormat,
+                     // Widget Format
+                     split(doc.maybeAt("widget_format"),
+                           effValue(defaultWidgetFormat()),
+                           { WidgetFormat.fromDocument(it) }),
+                     // View Type
+                     split(doc.maybeAt("view_type"),
+                           effValue<ValueError,ListViewType>(defaultViewType()),
+                           { ListViewType.fromDocument(it) }),
+                     // Item Format
+                     split(doc.maybeAt("item_format"),
+                           effValue(defaultItemFormat()),
+                           { TextFormat.fromDocument(it) }),
+                     // Description Format
+                     split(doc.maybeAt("description_format"),
+                           effValue(defaultDescriptionFormat()),
+                           { TextFormat.fromDocument(it) }),
+                     // Annotation Format
+                     split(doc.maybeAt("annotation_format"),
+                           effValue(defaultAnnoationFormat()),
+                           { TextFormat.fromDocument(it) })
+                     )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = ListWidgetFormat(defaultWidgetFormat(),
+                                         defaultViewType(),
+                                         defaultItemFormat(),
+                                         defaultDescriptionFormat(),
+                                         defaultAnnoationFormat())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "item_format" to this.itemFormat().toDocument(),
+        "description_format" to this.descriptionFormat().toDocument(),
+        "annotation_format" to this.annotationFormat().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
+
+
+    fun itemFormat() : TextFormat = this.itemFormat
+
+
+    fun descriptionFormat() : TextFormat = this.descriptionFormat
+
+
+    fun annotationFormat() : TextFormat = this.annotationFormat
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_WidgetListFormatValue =
+        RowValue5(widgetListFormatTable,
+                  ProdValue(this.widgetFormat),
+                  PrimValue(this.viewType),
+                  ProdValue(this.itemFormat),
+                  ProdValue(this.descriptionFormat),
+                  ProdValue(this.annotationFormat))
+
+}
+
+
+/**
+ * List View Type
+ */
+sealed class ListViewType : ToDocument, SQLSerializable, Serializable
+{
+
+    object ParagraphCommas : ListViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "paragraph_commas" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("paragraph_commas")
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<ListViewType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "paragraph_commas" -> effValue<ValueError,ListViewType>(ListViewType.ParagraphCommas)
+                else               -> effError<ValueError,ListViewType>(
+                                            UnexpectedValue("ListViewType", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+}
 
 
 
-//
-//
-//    // INTERNAL
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // -----------------------------------------------------------------------------------------
-//
-//    private void initializeListWidget()
-//    {
-//        // [1] Set default format values
-//        // -------------------------------------------------------------------------------------
-//
-//        // ** Background
-//        if (this.data().format().backgroundIsDefault())
-//            this.data().format().setBackground(BackgroundColor.NONE);
-//    }
-//
-//
-//    // > Views
-//    // -----------------------------------------------------------------------------------------
-//
-//    private LinearLayout viewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = LinearLayout.VERTICAL;
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout listView(Context context)
-//    {
-//        LinearLayout layout = listViewLayout(context);
-//
-//        int itemIndex = 0;
-//        for (VariableUnion variableUnion : this.values())
-//        {
-//            String itemValue = null;
-//
-//            try {
-//                itemValue = variableUnion.variable().valueString();
-//            }
-//            catch (NullVariableException exception) {
-//                ApplicationFailure.nullVariable(exception);
-//            }
-//
-//            // > Label
-//            String itemLabel = null;
-//            if (variableUnion.type() == VariableType.TEXT)
-//            {
-//                TextVariable textVariable = variableUnion.textVariable();
-//                if (textVariable.kind() == TextVariable.Kind.VALUE) {
-//                    Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
-//                    Value value = dictionary.value(textVariable.valueReference());
-//                    if (value != null)
-//                        itemLabel = value.description();
-//                }
-//            }
-//
-//            if (itemValue != null)
-//            {
-//                itemIndex += 1;
-//                layout.addView(listItemView(itemValue, itemLabel, itemIndex, context));
-//            }
-//        }
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout listViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = LinearLayout.VERTICAL;
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout listItemView(String itemValue,
-//                                      String itemLabel,
-//                                      final int itemIndex,
-//                                      final Context context)
-//    {
-//        // [1] Declarations
-//        // -------------------------------------------------------------------------------------
-//
-//        LinearLayoutBuilder layout      = new LinearLayoutBuilder();
-//
-//        LinearLayoutBuilder valueLayout = new LinearLayoutBuilder();
-//
-//        TextViewBuilder     item        = new TextViewBuilder();
-//        TextViewBuilder     annotation  = new TextViewBuilder();
-//
-//        LinearLayoutBuilder divider     = new LinearLayoutBuilder();
-//
-//        // [2] Layout
-//        // -------------------------------------------------------------------------------------
-//
-//        layout.orientation          = LinearLayout.VERTICAL;
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.onClick              = new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                onListWidgetShortClick(itemIndex, context);
-//            }
-//        };
-//
-//        layout.child(valueLayout)
-//              .child(divider);
-//
-//        // [3] Value Layout
-//        // -------------------------------------------------------------------------------------
-//
-//        valueLayout.orientation     = LinearLayout.HORIZONTAL;
-//        valueLayout.width           = LinearLayout.LayoutParams.MATCH_PARENT;
-//        valueLayout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        valueLayout.child(item)
-//                   .child(annotation);
-//
-//        // [4 A] Item
-//        // -------------------------------------------------------------------------------------
-//
-//        item.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        item.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        item.text               = itemValue;
-//
-//        this.format().itemStyle().styleTextViewBuilder(item, context);
-//
-//        item.padding.left       = R.dimen.widget_list_item_value_padding_left;
-//        item.padding.top        = R.dimen.widget_list_item_padding_vert;
-//        item.padding.bottom     = R.dimen.widget_list_item_padding_vert;
-//
-//        // [4 B] Inline Label
-//        // -------------------------------------------------------------------------------------
-//
-//        annotation.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        annotation.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        this.format().annotationStyle().styleTextViewBuilder(annotation, context);
-//
-//        annotation.text             = itemLabel;
-//
-//        annotation.margin.left      = R.dimen.widget_list_inline_label_margin_left;
-//
-//        // [5] Divider
-//        // -------------------------------------------------------------------------------------
-//
-//        divider.orientation          = LinearLayout.HORIZONTAL;
-//        divider.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        divider.height               = R.dimen.one_dp;
-//
-//        divider.backgroundColor      = R.color.dark_blue_4;
-//
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    // > Clicks
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * On a short click, open the value editor.
-//     */
-//    private void onListWidgetShortClick(Integer itemClicked, Context context)
-//    {
-//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
-//
-//        ListWidgetDialogFragment dialog = ListWidgetDialogFragment.newInstance(this, itemClicked);
-//        dialog.show(sheetActivity.getSupportFragmentManager(), "");
-//    }
-//
+/**
+ * List Widget Description
+ */
+data class ListWidgetDescription(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ListWidgetDescription>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ListWidgetDescription> = when (doc)
+        {
+            is DocText -> effValue(ListWidgetDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+
+class ListWidgetViewBuilder(val listWidget : ListWidget,
+                            val sheetUIContext : SheetUIContext)
+{
+
+    fun view() : View
+    {
+        val layout = WidgetView.layout(listWidget.widgetFormat(), sheetUIContext)
+
+        layout.addView(this.inlineView())
+
+        layout.id = Util.generateViewId()
+        listWidget.layoutViewId = layout.id
+
+        return layout
+    }
+
+
+    fun inlineView() : TextView
+    {
+        val paragraph           = TextViewBuilder()
+        val format              = listWidget.format().descriptionFormat()
+
+        paragraph.width         = LinearLayout.LayoutParams.MATCH_PARENT
+        paragraph.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        val description = listWidget.description()
+        val sheetContext = SheetContext(sheetUIContext)
+        val valueSetId = listWidget.variable(sheetContext).apply {
+                            note<AppError,ValueSetId>(it.valueSetId().toNullable(),
+                                                      AppStateError(VariableDoesNotHaveValueSet(it.variableId())))
+                         }
+        when (description) {
+            is Just -> {
+                when (valueSetId) {
+                    is Val -> {
+                        val values = GameManager.engine(sheetUIContext.gameId) ap { engine ->
+                                     listWidget.value(sheetContext)            ap { valueIds ->
+                                            valueIds.mapM { valueId ->
+                                                val valueRef = ValueReference(valueSetId.value, ValueId(valueId))
+                                                engine.value(valueRef, sheetUIContext.gameId)
+                                            }
+                                     }}
+                        when (values) {
+                            is Val -> {
+                                val valueStrings = values.value.map { it.valueString() }
+                                paragraph.textSpan = this.spannableString(description.value.value, valueStrings)
+                            }
+                            is Err -> ApplicationLog.error(values.error)
+                        }
+                    }
+                }
+            }
+        }
+
+        paragraph.onClick       = View.OnClickListener {
+
+            val textListVariable =  listWidget.variable(SheetContext(sheetUIContext))
+            when (textListVariable) {
+                is Val -> {
+                    openVariableEditorDialog(textListVariable.value,
+                                             null,
+                                             UpdateTargetListWidget(listWidget.id),
+                                             sheetUIContext)
+                }
+            }
+
+        }
+
+        return paragraph.textView(sheetUIContext.context)
+    }
+
+
+    private fun spannableString(description : String, valueStrings : List<String>) : SpannableStringBuilder
+    {
+        val builder = SpannableStringBuilder()
+        var currentIndex = 0
+
+        val parts = description.split("$$$")
+        val part1 : String = parts[0]
+
+        // > Part 1
+        builder.append(part1)
+
+        this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+            builder.setSpan(it, 0, part1.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        }
+
+        currentIndex += part1.length
+
+        val items = valueStrings.take(valueStrings.size - 1)
+        val lastItem = valueStrings.elementAt(valueStrings.size - 1)
+
+        // > Items
+        items.forEach { item ->
+            builder.append(item)
+
+            this.formatSpans(listWidget.format().itemFormat()).forEach {
+                builder.setSpan(it, currentIndex, currentIndex + item.length, SPAN_INCLUSIVE_EXCLUSIVE)
+            }
+
+            currentIndex += item.length
+
+            if (items.size > 1) {
+                builder.append(",")
+
+                this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+                    builder.setSpan(it, currentIndex, currentIndex + 2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                }
+
+                currentIndex += 2
+            }
+        }
+
+        if (items.size > 0)
+        {
+            builder.append(" and ")
+
+            this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+                builder.setSpan(it, currentIndex, currentIndex + 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            }
+
+            currentIndex += 4
+        }
+
+        builder.append(lastItem)
+
+        this.formatSpans(listWidget.format().itemFormat()).forEach {
+            builder.setSpan(it, currentIndex, currentIndex + lastItem.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        }
+
+        return builder
+    }
+
+
+    private fun formatSpans(textFormat : TextFormat) : List<Any>
+    {
+        val sizePx = Util.spToPx(textFormat.sizeSp(), sheetUIContext.context)
+        val sizeSpan = AbsoluteSizeSpan(sizePx)
+
+        val typeface = Font.typeface(textFormat.font(), textFormat.fontStyle(), sheetUIContext.context)
+
+        val typefaceSpan = CustomTypefaceSpan(typeface)
+
+        var color = SheetManager.color(sheetUIContext.sheetId, textFormat.colorTheme())
+        val colorSpan = ForegroundColorSpan(color)
+
+        var bgColor = SheetManager.color(sheetUIContext.sheetId,
+                                         textFormat.elementFormat().backgroundColorTheme())
+        val bgColorSpan = BackgroundColorSpan(bgColor)
+
+        return listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)
+    }
+
+
+
+}
 

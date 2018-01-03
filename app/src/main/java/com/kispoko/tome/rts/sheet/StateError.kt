@@ -62,6 +62,18 @@ class VariableDoesNotExist(val sheetId : SheetId,
 }
 
 
+class VariableDoesNotHaveValueSet(val variableId : VariableId) : StateError()
+{
+    override fun debugMessage(): String =
+            """
+            State Error: Variable Does Not Have Value Set
+                Variable Id: $variableId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
 class VariableIsOfUnexpectedType(val sheetId : SheetId,
                                  val variableId : VariableId,
                                  val expectedType : VariableType,

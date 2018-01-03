@@ -5,7 +5,9 @@ package com.kispoko.tome.lib.ui;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -258,7 +260,7 @@ public class LinearLayoutBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null && this.backgroundColor != null) {
-//            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
+            //bgDrawable = (PaintDrawable) ContextCompat.getDrawable(context, this.backgroundResource);
 //            //int      color      = ContextCompat.getColor(context, this.backgroundColor);
 //            bgDrawable.setColorFilter(
 //                    new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));

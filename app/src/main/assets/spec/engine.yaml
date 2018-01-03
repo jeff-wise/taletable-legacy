@@ -1,0 +1,2306 @@
+
+---
+
+version: '0.7'
+metadata:
+  name: Engine
+  authors:
+  - name: 'Jeff Wise'
+description:
+  overview: |+
+    The engine, sometimes called the rules engine, contains all of the structures related 
+    to the data and mechanics of a game. 
+
+    All data in Tome is stored in [Variables](#variable). Those variables can contain 
+    literal values like "dog" or 6, but they may also contain more complex values. 
+    When values are part of a collection, they should be stored in a [Value Set](#value_set) as 
+    [Values](#value). Those values can then be stored in a variable. When a variable contains 
+    a value from the value set, it will allow a user to selected from the collection of 
+    possible values when they change the variable on a sheet.
+
+    Variables may also contain values that are composed from other variables. 
+    [Summations](#summation) handle the common case where a variable is a sum of other 
+    values. Those values could be literal numbers like 10, or they could be the values 
+    of other variables. When one needs a variable value to be the result of a more 
+    complex formula, one can use a [Program](/#program) to compute a value almost 
+    anyway that he or she would like. Variables created this way are always *reactive* 
+    when active on a sheet. That means that if a variable changes, and there are some 
+    other variables that used the updated variable, those dependent variables will 
+    also update, and so on.
+
+    The engine is usually part of a [Game](/docs/schemas/game), but 
+    both [Sheets](/docs/schemas/sheet) and 
+    [Campaigns](/docs/schemas/sheet) may have engines as well. There 
+    is a heirarchy of engines, such that a sheet will inherit values or rules from its 
+    campaign, and a campaign will inherit values or rules from its game. For example, 
+    suppose a game defines 10 basic races. A gamemaster may want to add 6 more special 
+    races to the campaign. Now any sheet in the campaign has access to those 16 races, 
+    10 from the game and 6 from the campaign. Now, suppose a player wants to customize a race 
+    in a way that is completely unique to her character. She can do that at the level of 
+    the character sheet, such that only that sheet has access to that race because 
+    the sheet has its own engine which inherits everything from the campaign and game, but 
+    can also define its own values and rules.
+
+    <figure>
+      <img width="500px" src="/static/svg/type-hierarchy.svg">
+      <figcaption>
+        The engine is integrated into the Tome hierarchy so that campaigns may add to 
+        or overwrite game rules, and individual sheets may add to or overwrite any 
+        inherited rule or value.
+      </figcaption>
+    </figure>
+root_type: engine
+types:
+- type: product_type
+  product_type:
+    name: engine  
+    label: Engine
+    description: >
+      The engine contains all of the data definitions and programmable elements in Tome.
+    group: Engine
+    fields:
+    - name: value_sets
+      type: 
+        type: custom_coll_type
+        custom_coll_type: value_set
+      presence: required
+      description: >
+        Value sets are collections of values which can be used to represent many common 
+        game entities such as races, weapons, languages, etc... There is no set limit on 
+        the number of value sets an engine may have.
+    - name: mechanics
+      type:
+        type: custom_coll_type
+        custom_coll_type: mechanic
+      presence: required
+      description: >
+        Mechanics define groupings of variables that may be active or inactive, depending on 
+        customizable conditions. There is no set limit on the number of mechanics an engine 
+        may have.
+    - name: mechanic_categories
+      type:
+        type: custom_coll_type
+        custom_coll_type: mechanic_category
+      presence: required
+      description: |+
+        Mechanic categories allow similar mechanics to be grouped together and handled 
+        in a similar way. For example, all the mechanics for a particular class may be in 
+        the same category. There is no set limit on the number of mechanic categories an 
+        engine may have.
+    - name: functions
+      type:
+        type: custom_coll_type
+        custom_coll_type: function
+      presence: required
+      description: >
+        Functions associate sets of values in the same way a mathematical function does. 
+        A common function may be the association of ability scores to ability score 
+        modifiers. For example, under the 5E SRD, 10 maps to 0, 16 maps to 3, etc... 
+        There is no set limit on the number of functions an engine may have.
+    - name: programs
+      type:
+        type: custom_coll_type
+        custom_coll_type: program
+      presence: required
+      description: >
+        Programs allow values on the sheet to be created from complex calculations. 
+        They are very powerful and similar to writing custom scripts within a sheet. 
+        There is no set limit on the number of programs an engine may have.
+    - name: summations
+      type:
+        type: custom_coll_type
+        custom_coll_type: summation
+      presence: required
+      description: >
+        Summations allow one to define numerical values as the sum of other numbers 
+        which may come from any source. They are commonly used to define values 
+        such as armor class or attack modifiers. There is no set limit on the number 
+        of summations an engine may have.
+    code_examples:
+    - language: YAML
+      title: 'An engine with some basic components.'
+      code: |+
+        value_sets:
+        - type: value_set_base
+          value_set_base:
+            value_set_id: classes
+            label: Classes
+            label_singular: Class
+            description: The player character classes.
+            value_type: text
+            values:
+            - type: value_text
+              value_text:
+                value_id: fighter
+                description: The fighter class.
+                value: Fighter
+            - type: value_text
+              value_text:
+                value_id: wizard
+                description: The wizard class.
+                value: Wizard
+        mechanics:
+        - id: elf_racial_modifiers
+          label: Elven Racial Ability Modifiers
+          description: >
+            The ability score bonuses Elves recieve at first level.
+          summary: '+2 Dex'
+          category_id: race_elf
+          requirements:
+          - name: is_race_elf
+          variables:
+          - type: variable_number
+            variable_number:
+              id: elf_dexterity_bonus
+              label: Elf Dexterity Bonus
+              description: >
+                The elven racial dexterity bonus received at first level.
+              tags:
+              - dexterity_modifier
+              value:
+                type: number_literal
+                number_literal: 2
+        mechanic_categories:
+        - id: race
+          label: Race
+          description: Mechanics for a specific race.
+        functions:
+        - function_id: hit_dice_by_class
+          label: Hit Dice By Class
+          description:
+            The die each class rolls for hit points at each level.
+          type_signature:
+            parameter1_type: text
+            result_type: dice_roll
+          tuples:
+          - parameter1:
+              type: engine_value_text
+              engine_value_text: fighter
+            result:
+              type: dice_roll
+              dice_roll:
+                quantities:
+                - sides: 10
+                  quantity: 1
+          - parameter1:
+              type: engine_value_text
+              engine_value_text: wizard
+            result:
+              type: dice_roll
+              dice_roll:
+                quantities:
+                - sides: 6
+                  quantity: 1
+        programs:
+        - program_id: ability_modifier
+          label: Ability Modifier
+          description: Calcuates the ability modifier of an ability score.
+          type_signature:
+            parameter1_type: number
+            result_type: number
+          statements:
+          - binding_name: result
+            function_id: ability_modifier
+            parameter1:
+              type: program_parameter_index
+              program_parameter_index: 1
+          result_binding_name: result
+        summations:
+        - summation_id: dexterity
+          summation_name: Dexterity
+          terms:
+          - type: summation_term_number
+            summation_term_number:
+              value:
+                type: variable_reference
+                variable_reference:
+                  type: variable_id
+                  variable_id: base_dexterity
+          - type: summation_term_number
+            summation_term_number:
+              term_name: Bonuses
+              value:
+                type: variable_reference
+                variable_reference:
+                  type: variable_tag
+                  variable_tag: dexterity_modifier
+- type: primitive_type
+  primitive_type:
+    name: function_id
+    label: Function Id
+    description: >
+      The function identifier.
+    group: Function
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: function
+    label: Function
+    description: |+
+      A function maps one or more sets of values to another set of values. Functions are more or less 
+      formally identical to mathematic functions. Practically speaking, functions allow us to 
+      show the relationships between different variables. The layman's perspective is to view them 
+      as tables where the left-most columns are the input, and the last column is the output.
+
+      For example, one common way to use a function would be to define the hit dice for each class 
+      in a game. We want to say that fighters use 1d0, clerics use 1d8, etc... Functions were 
+      created for this case. We want to associate each class to a hit dice value. If we imagine our 
+      function as a table, we have two columns. The first column is the name of the class, and 
+      the second column is the hit dice. The function says that given the value in the first column, 
+      the class name, we can determine the value of the second column, the hit dice. Like mathematical 
+      functions, it doesn't make sense for a class name to appear in two rows in the first column. 
+      A cleric may have a hit dice of 1d8, but it cannot also have a hit dice of 1d0. It doesn't 
+      make sense. 
+
+      More complex functions may have multiple inputs. They work the same way, only the tables will 
+      tend to be a lot bigger (exponentially bigger). For example, perhaps there is a game where 
+      attack bonuses are determined by both the character's level and class. We can use a 
+      function to express the attack bonus values. The table has three columns. The first two 
+      columns are the class and level. The last column is then determined base on the value in the 
+      first two columns. 
+
+      <figure>
+        <img width="500px" src="/static/svg/functions.svg">
+        <figcaption>
+          Two functions visualized as tables. The first function represents hit dice by class, and 
+          the second function represents attack bonus based on class and level.
+        </figcaption>
+      </figure>
+    group: Function
+    fields:
+    - name: function_id
+      type: 
+        type: custom_type
+        custom_type: function_id
+      presence: required
+      description: >
+        The function name. Must be unique and contain only letters, numbers and underscores. The 
+        function name is used to uniquely identify the function when programming or customizing 
+        a sheet. A typical user will not see this value.
+    - name: label
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The function's label is the name or identifier of the function, intended for human 
+        consumption. Make it pretty! It does not need to be unique and may contain any letters 
+        or characters.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A description of the function. The description should be concise and describe the purpose 
+        of the function. It will probably be helpful to include as well situations where the 
+        function will likely be used.
+    - name: type_signature
+      type:
+        type: custom_type
+        custom_type: function_type_signature
+      presence: required
+      description: >
+        The function's type signature.
+    - name: tuples
+      type:
+        type: custom_coll_type
+        custom_coll_type: function_tuple
+      presence: required
+      description: >
+        All of the mappings defined by the function.
+    code_examples:
+    - language: YAML
+      title: 'An engine with some basic components.'
+      code: |+
+        function_id: hit_dice_by_class
+        label: Hit Dice By Class
+        description:
+          The die each class rolls for hit points at each level.
+        type_signature:
+          parameter1_type: text
+          result_type: dice_roll
+        tuples:
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: cleric
+          result:
+            type: dice_roll
+            dice_roll:
+              quantities:
+              - sides: 8
+                quantity: 1
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: fighter
+          result:
+            type: dice_roll
+            dice_roll:
+              quantities:
+              - sides: 10
+                quantity: 1
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: rogue
+          result:
+            type: dice_roll
+            dice_roll:
+              quantities:
+              - sides: 6
+                quantity: 1
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: wizard
+          result:
+            type: dice_roll
+            dice_roll:
+              quantities:
+              - sides: 4
+                quantity: 1
+    - language: YAML
+      title: 'An engine with some basic components.'
+      code: |+
+        function_id: attack_bonus
+        label: Attack Bonus by Class and Level
+        description:
+          A character's attack bonus based on class and level.
+        type_signature:
+          parameter1_type: text
+          parameter2_type: number
+          result_type: number
+        tuples:
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: fighter
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 1
+          result:
+            type: number
+            number: 1
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: fighter
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 2
+          result:
+            type: number
+            number: 2
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: fighter
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 3
+          result:
+            type: number
+            number: 3
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: fighter
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 4
+          result:
+            type: number
+            number: 4
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: wizard
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 1
+          result:
+            type: number
+            number: 1
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: wizard
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 2
+          result:
+            type: number
+            number: 1
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: wizard
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 3
+          result:
+            type: number
+            number: 2
+        - parameter1:
+            type: engine_value_text
+            engine_value_text: wizard
+          parameter2:
+            type: engine_value_number
+            engine_value_number: 4
+          result:
+            type: number
+            number: 2
+- type: product_type
+  product_type:
+    name: function_type_signature
+    label: Function Type Signature
+    description: >
+      A function type signature.
+    group: Function
+    fields:
+    - name: parameter1_type
+      type: 
+        type: custom_type
+        custom_type: engine_value_type
+      presence: required
+      description: >
+        The first parameter type.
+    - name: parameter2_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The second parameter type.
+    - name: parameter3_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The third parameter type.
+    - name: parameter4_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The fourth parameter type.
+    - name: parameter5_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The fifth parameter type.
+    - name: result_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: required
+      description: >
+        The result type.
+- type: product_type
+  product_type:
+    name: function_tuple
+    label: Tuple
+    description: >
+      A function tuple is a mapping that belongs to a function. It defines which values are related.
+    group: Function
+    fields:
+    - name: parameter1
+      type: 
+        type: custom_type
+        custom_type: engine_value
+      presence: required
+      description: >
+        The first parameter value.
+    - name: parameter2
+      type:
+        type: custom_type
+        custom_type: engine_value
+      presence: optional
+      description: >
+        The second parameter value.
+    - name: parameter3
+      type:
+        type: custom_type
+        custom_type: engine_value
+      presence: optional
+      description: >
+        The third parameter value.
+    - name: parameter4
+      type:
+        type: custom_type
+        custom_type: engine_value
+      presence: optional
+      description: >
+        The fourth parameter value.
+    - name: parameter5
+      type:
+        type: custom_type
+        custom_type: engine_value
+      presence: optional
+      description: >
+        The fifth parameter value.
+    - name: result
+      type:
+        type: custom_type
+        custom_type: engine_value
+      presence: required
+      description: >
+        The result value
+- type: primitive_type
+  primitive_type:
+    name: engine_value_type
+    label: Engine Value type
+    description: >
+      The types of engine values
+    group: Engine
+    base_type:
+      type: prim_type
+      prim_type: string
+    constraints:
+    - engine_value_type_set
+- type: sum_type
+  sum_type:
+    name: engine_value
+    label: Engine Value
+    description: >
+      An engine value is a basic data type used by the engine components.
+    group: Engine
+    cases:
+    - type: engine_value_number 
+      description: >
+        A numerical value.
+    - type: engine_value_text
+      description: >
+        A textual value.
+    - type: engine_value_boolean
+      description: >
+        A boolean value.
+    - type: dice_roll
+      description: >
+        A dice roll value.
+- type: primitive_type
+  primitive_type:
+    name: engine_value_number
+    label: Engine Value Number
+    description: >
+      Numeric engine value.
+    group: Engine
+    base_type:
+      type: prim_type
+      prim_type: number
+- type: primitive_type
+  primitive_type:
+    name: engine_value_text
+    label: Engine Value Text
+    description: >
+      Textual engine value.
+    group: Engine
+    base_type: 
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: engine_value_boolean
+    label: Engine Value Boolean
+    description: >
+      Boolean engine value.
+    group: Engine
+    base_type:
+      type: prim_type
+      prim_type: boolean
+- type: product_type
+  product_type:
+    name: dice_roll
+    label: Dice Roll
+    description: >
+      A Dice Roll represents rolling multiple dice with potentially different numbers of sides.
+    group: Dice Roll
+    fields:
+    - name: quantities
+      type: 
+        type: custom_coll_type
+        custom_coll_type: dice_quantity
+      presence: required
+      description: >
+        The dice quantities.
+      constraints:
+      - nonempty_list
+    - name: modifiers
+      type:
+        type: custom_coll_type
+        custom_coll_type: roll_modifier
+      presence: optional
+      description: >
+        Any dice modifiers applied to the results of rolling the dice.
+    code_examples:
+    - language: YAML
+      title: '2d6 + 5'
+      code: |+
+        quantities:
+        - sides: 6
+          quantity: 2
+        modifiers:
+        - modifier: 5
+    - language: YAML
+      title: '2d8 + 1d6 + 17'
+      code: |+
+        quantities:
+        - sides: 8
+          quantity: 2
+        - sides: 6
+          quantity: 1
+        modifiers:
+        - modifier: 17
+- type: product_type
+  product_type:
+    name: dice_quantity
+    label: Dice Quantity
+    description: >
+      A Dice Quantity is a die and a number of times that the die should be rolled. 
+    group: Dice Roll
+    fields:
+    - name: sides
+      type: 
+        type: prim_type
+        prim_type: number
+      presence: required  
+      description: >
+        The die's number of sides.
+    - name: quantity
+      type:
+        type: prim_type
+        prim_type: number
+      presence: required  
+      description: >
+        The number of times to roll the die.
+    code_examples:
+    - language: YAML
+      title: '1d6'
+      code: |+
+        sides: 6
+        quantity: 1
+    - language: YAML
+      title: '7d12'
+      code: |+
+        sides: 12
+        quantity: 7
+    - language: Kotlin
+      title: 'A simple Group.'
+      code: |+
+        function
+- type: product_type
+  product_type:
+    name: roll_modifier
+    label: Roll Modifier
+    description: >
+      A Roll Modifier is a bonus that is applied to a Dice Roll. The bonus may be 
+      associated with a name or description.
+    group: Dice Roll
+    type: product
+    fields:
+    - name: modifier
+      type:
+        type: prim_type
+        prim_type: number
+      presence: required
+      description: >
+        The integer value to add to a dice roll as a modifier.
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        A label for the modifier.
+    code_examples:
+    - language: YAML
+      title: '1d6'
+      code: |+
+        modifier: 5
+        name: 'strength bonus'
+- type: primitive_type
+  primitive_type:
+    name: procedure_id
+    label: Procedure Id
+    description: >
+      The procedure identifier.
+    group: Procedure
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: procedure
+    label: Procedure
+    description: A set of programs to execute.
+    group: Procedure
+    type: product
+    fields:
+    - name: procedure_id
+      type: 
+        type: custom_type
+        custom_type: procedure_id
+      presence: required
+      description: The procedure id.
+    - name: procedure_name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The procedure id.
+    - name: updates
+      type:
+        type: custom_coll_type
+        custom_coll_type: procedure_update
+      presence: required
+      description: The programs to be executed.
+- type: product_type
+  product_type:
+    name: procedure_update
+    label: Procedure Update
+    description: A set of programs to execute.
+    group: Procedure
+    type: product
+    fields:
+    - name: variable_id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: The variable id.
+    - name: program_id
+      type: 
+        type: custom_type
+        custom_type: program_id
+      presence: required
+      description: The program id.
+- type: primitive_type
+  primitive_type:
+    name: program_id
+    label: Program Id
+    description: >
+      The program identifier.
+    group: Program
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: program
+    label: Program
+    description: >
+      Programs define complex values that may be composed of other values. They are also reactive, 
+      so if a program depends on a set of values, it updates when any one of those values changes. 
+    group: Program
+    fields:
+    - name: program_id
+      type: 
+        type: custom_type
+        custom_type: program_id
+      presence: required
+      description: >
+        A name of the program. Must be unique and contain only letters, numbers, and underscores. 
+        The name is used to uniquely identify the program when customizing some aspect of the 
+        sheet.
+    - name: label
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A program label is the program's name but formatted so it is easy to read. It does not need 
+        to be unique and contain contain any letters or characters.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A concise description of what the program does, why it exists, and in what situations it 
+        could be used.
+    - name: type_signature
+      type:
+        type: custom_type
+        custom_type: program_type_signature
+      presence: required
+      description: >
+        The types of input values that the program accepts.
+    - name: statements
+      type:
+        type: custom_coll_type
+        custom_coll_type: program_statement
+      presence: optional
+      description: >
+        The program's statements.
+    - name: result_binding_name
+      type: 
+        type: custom_type
+        custom_type: statement_binding_name
+      presence: required
+      description: >
+        The program statement that calculates the program result value.
+- type: product_type
+  product_type:
+    name: program_type_signature
+    label: Program Type Signature
+    description: >
+      A program type signature.
+    group: Program
+    fields:
+    - name: parameter1_type
+      type: 
+        type: custom_type
+        custom_type: engine_value_type
+      presence: required
+      description: >
+        The first parameter type.
+    - name: parameter2_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The second parameter type.
+    - name: parameter3_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The third parameter type.
+    - name: parameter4_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The fourth parameter type.
+    - name: parameter5_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: optional
+      description: >
+        The fifth parameter type.
+    - name: result_type
+      type:
+        type: custom_type
+        custom_type: engine_value_type
+      presence: required
+      description: >
+        The result type.
+- type: product_type
+  product_type:
+    name: program_statement
+    label: Statement
+    description: >
+      Programs are a collection of statements. Each statement defines one value. Those values can be 
+      used in subsequent statements to calculate more values. The result of a program is just the 
+      result of the final statement.
+    group: Program
+    fields:
+    - name: binding_name
+      type: 
+        type: custom_type
+        custom_type: statement_binding_name
+      presence: required
+      description: >
+        The name of the variable defined by the statement. 
+    - name: function_id
+      type:
+        type: custom_type
+        custom_type: function_id
+      presence: required
+      description: >
+        The function called by the statement.
+    - name: parameter1
+      type:
+        type: custom_type
+        custom_type: statement_parameter
+      presence: required
+      description: >
+        The first function parameter value.
+    - name: parameter2
+      type:
+        type: custom_type
+        custom_type: statement_parameter
+      presence: optional
+      description: >
+        The second function parameter value.
+    - name: parameter3
+      type:
+        type: custom_type
+        custom_type: statement_parameter
+      presence: optional
+      description: >
+        The third function parameter value.
+    - name: parameter4
+      type:
+        type: custom_type
+        custom_type: statement_parameter
+      presence: optional
+      description: >
+        The fourth function parameter value.
+    - name: parameter5
+      type:
+        type: custom_type
+        custom_type: statement_parameter
+      presence: optional
+      description: >
+        The fifth function parameter value.
+- type: product_type
+  product_type:
+    name: program_invocation
+    label: Program Invocation
+    description: >
+      A program invocation describes a program that should be run. 
+    group: Program
+    fields:
+    - name: program_id
+      type: 
+        type: custom_type
+        custom_type: program_id
+      presence: required
+      description: >
+        The unique name of the program to be invoked.
+    - name: parameter1
+      type:
+        type: custom_type
+        custom_type: data_reference
+      presence: required
+      description: >
+        First parameter.
+    - name: parameter2
+      type:
+        type: custom_type
+        custom_type: data_reference
+      presence: optional
+      description: >
+        Second parameter.
+    - name: parameter3
+      type:
+        type: custom_type
+        custom_type: data_reference
+      presence: optional
+      description: >
+        Third parameter.
+    - name: parameter4
+      type:
+        type: custom_type
+        custom_type: data_reference
+      presence: optional
+      description: >
+        Fourth parameter.
+    - name: parameter5
+      type:
+        type: custom_type
+        custom_type: data_reference
+      presence: optional
+      description: >
+        Fifth parameter.
+- type: primitive_type
+  primitive_type:
+    name: statement_binding_name
+    label: Statement Binding Name
+    description: >
+      A statement binding name.
+    group: Program
+    base_type: 
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: program_parameter_index
+    label: Program Parameter Index
+    description: >
+      A program parameter index.
+    group: Program
+    base_type:
+      type: prim_type
+      prim_type: number
+- type: sum_type
+  sum_type:
+    name: statement_parameter
+    label: Statement Parameter
+    description: >
+      A function parameter describes a piece of input to a function.
+    group: Program
+    cases:
+    - type: statement_binding_name
+      description: Statement binding.
+    - type: program_parameter_index
+      description: A program parameter.
+    - type: data_reference
+      description: Data reference.
+- type: sum_type
+  sum_type:
+    name: data_reference
+    label: Data Reference
+    description: >
+      A reference to data in the engine.
+    group: Reference
+    cases:
+    - type: data_reference_boolean
+      description: A boolean data reference.
+    - type: data_reference_dice_roll
+      description: A dice roll reference.
+    - type: data_reference_number
+      description: A number reference.
+    - type: data_reference_text
+      description: A text reference.
+- type: sum_type
+  sum_type:
+    name: data_reference_boolean
+    label: Boolean Data Reference
+    description: >
+      A reference to boolean data.
+    group: Reference
+    cases:
+    - type: boolean_literal
+      description: A literal boolean
+    - type: variable_reference
+      description: A boolean variable reference.
+- type: sum_type
+  sum_type:
+    name: data_reference_dice_roll
+    label: Dice Roll Data Reference
+    description: >
+      A reference to dice roll data.
+    group: Reference
+    cases:
+    - type: dice_roll
+      description: A literal dice roll
+    - type: variable_reference
+      description: A dice roll variable reference.
+- type: sum_type
+  sum_type:
+    name: data_reference_number
+    label: Number Data Reference
+    description: >
+      A reference to numeric data.
+    group: Reference
+    cases:
+    - type: number_literal
+      description: A literal number.
+    - type: variable_reference
+      description: A number variable reference.
+    - type: value_reference
+      description: A number value reference.
+- type: sum_type
+  sum_type:
+    name: data_reference_text
+    label: Text Data Reference
+    description: >
+      A reference to textual data.
+    group: Reference
+    cases:
+    - type: text_literal
+      description: A literal text.
+    - type: variable_reference
+      description: A text variable reference.
+    - type: value_reference
+      description: A text value reference.
+- type: primitive_type
+  primitive_type:
+    name: mechanic_id
+    label: Mechanic Identifier
+    description: >
+      The unique mechanic identifier.
+    group: Mechanic
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: mechanic
+    label: Mechanic
+    description: >
+      The concept of a mechanic is related to the idea of game mechanics. In Tome a mechanic is 
+      a collection of related variables. A mechanic is considered active or inactive. A mechanic's 
+      state is determined by a collection of true or false variables. When all of those variables 
+      are true, then the mechanic is active. If one of those varibles becomes false then the 
+      mechanic is changed to an inactive state. When a mechanic is active, then its variables are 
+      available in the programming environment (the engine.) And when the mechanic is inactive, 
+      those variables are inaccessible.
+    group: Mechanic
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: mechanic_id
+      presence: required
+      description: >
+        The name of the Mechanic. The name is used to uniquely identify the mechanic when 
+        programming or customizing the sheet. Therefore, the name must be unique and contain 
+        only letters, numbers, and underscores.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The mechanic label is the name of the Mechanic formatted nicely. It does not need to be 
+        unique or contain any specific characters, but should be pleasant to read!
+    - name: summary
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The mechanic summary is a very brief description of the mechanic. The summary is displayed 
+        alongside the mechanic label in lists.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The description should explain what the mechanic does and how, as well as detail situations 
+        when it should be used. The description should relate the mechanic to the game rules that it 
+        was created to emulate.
+    - name: category_id
+      type:
+        type: custom_type
+        custom_type: mechanic_category_id
+      presence: required
+      description: >
+        The category of the mechanic should group the mechanic with other related mechanics.
+    - name: requirements
+      type:
+        type: custom_coll_type
+        custom_coll_type: namespaced_variable_id
+      presence: optional
+      description: >
+        A list of boolean variables that must be true for the mechanic to be active.
+    - name: variables
+      type:
+        type: custom_coll_type
+        custom_coll_type: variable
+      presence: required
+      description: >
+        The variables that are active when the mechanic is active.
+- type: primitive_type
+  primitive_type:
+    name: mechanic_category_id
+    label: Mechanic Category Identifier
+    description: >
+      The unique mechanic identifier.
+    group: Mechanic
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: mechanic_category
+    label: Mechanic Category
+    description: >
+      Mechanics are grouped into categories to make them easier to organize and deal with. A mechanic 
+      may be created without a category, in which case it is sorted with other uncategorized 
+      mechanics.
+    group: Mechanic
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: mechanic_category_id
+      presence: required
+      description: >
+        The name of the mechanic category is used to uniquely identify the category when customizing 
+        the sheet. It must be unique and contain only letters, numbers, and underscores. What happens 
+        when not unique?
+    - name: label
+      description: >
+        The mechanic name in a form that is pleasant to read. It does not need to be unique and may 
+        contain any characters. What about the length?
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A description of the category and the common traits that its mechanics share.
+- type: sum_type
+  sum_type:
+    name: variable
+    label: Variable
+    description: >
+      A variable is the basic element of programming in the Tome engine. A variable represents a 
+      piece of data that may change over time. Variables may be declared in many places. While 
+      many variables may be defined in a Tome sheet, they may not all be active. Only active 
+      variables may be used by programs, widgets, or other Tome elements. There are a number of 
+      different situations where variables may be activated.
+    group: Variable
+    cases: 
+    - type: variable_boolean 
+      description: >
+        A variable with a true/false value.
+    - type: variable_dice_roll 
+      description: >
+        A variable with a dice roll value.
+    - type: variable_number 
+      description: >
+        A variable with a numerical value.
+    - type: variable_text 
+      description: >
+        A variable with a text value.
+    - type: variable_text_list
+      description: >
+        A variable with a text value.
+- type: sum_type
+  sum_type:
+    name: variable_reference
+    label: Variable Reference
+    description: A reference to a variable.
+    group: Variable
+    cases: 
+    - type: variable_id
+      description: A variable id.
+    - type: variable_tag 
+      description: A variable tag
+    - type: variable_context 
+      description: A variable in a context.
+- type: product_type
+  product_type:
+    name: variable_boolean
+    label: Boolean Variable
+    description: >
+      A boolean variable represents a piece of data that is either True of False. More generally, 
+      it can represent any data with two unique states.
+    group: 'Variable: Boolean'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: >
+        The name of the Boolean Variable. The name must be unique and may only contain letters, 
+        numbers, and underscores. It is used to uniquely identify the variable when customizing 
+        the sheet or programming.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The Boolean Variable's name in a format that is pleasant to read. The label does not need 
+        to be unique and may contain any characters.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A description of what the variable represents.
+    - name: value
+      type:
+        type: custom_type
+        custom_type: variable_boolean_value
+      presence: required
+      description: >
+        The value of the variable.
+    - name: is_namespaced
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      default_value: 'false'
+      description: >
+        If true this variable may be assigned a namespace depending on its context.
+    - name: tags
+      type: 
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: >
+        Tags that can be used to place the variable in a group.
+- type: sum_type
+  sum_type:
+    name: variable_boolean_value
+    label: Boolean Variable Value
+    description: >
+      The boolean variable value is the source of a Boolean Variable's value.
+    group: 'Variable: Boolean'
+    cases:
+    - type: boolean_literal
+      description: >
+        A literal true/false value.
+    - type: program_invocation
+      description: >
+        A true/false value created from a program.
+- type: primitive_type
+  primitive_type:
+    name: boolean_literal
+    label: Literal Boolean Value
+    description: >
+      Boolean literal value
+    group: 'Variable: Boolean'
+    base_type:
+      type: prim_type
+      prim_type: boolean
+- type: product_type
+  product_type:
+    name: variable_dice_roll
+    label: Dice Roll Variable
+    description: >
+      A Dice Variable represents a Dice Roll value.
+    group: 'Variable: Dice Roll'
+    fields:
+    - name: id
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The identifier of the Dice Variable. The identifier must be unique and may only contain letters, 
+        numbers, and underscores. It is used to uniquely identify the variable when customizing 
+        the sheet or programming.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The Dice Variable's name in a format that is pleasant to read. The label does not need 
+        to be unique and may contain any characters.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A description of what the variable represents.
+    - name: value
+      type: 
+        type: custom_type
+        custom_type: variable_dice_roll_value
+      presence: required
+      description: >
+        A the dice roll value.
+    - name: is_namespaced
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      default_value: 'false'
+      description: >
+        If true this variable may be assigned a namespace depending on its context.
+    - name: tags
+      type:
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: >
+        Tags that can be used to place the variable in a group.
+- type: sum_type
+  sum_type:
+    name: variable_dice_roll_value
+    label: Dice Roll Variable Value
+    description: >
+      A dice roll variable value.
+    group: 'Variable: Dice Roll'
+    cases:
+    - type: dice_roll
+      description: A dice roll.
+- type: product_type
+  product_type:
+    name: variable_number
+    label: Number Variable
+    description: >
+      A Number Variable holds numerical data. 
+    group: 'Variable: Number'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+    - name: label
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+    - name: value
+      type: 
+        type: custom_type
+        custom_type: variable_number_value
+      presence: required
+    - name: is_namespaced
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      default_value: 'false'
+      description: >
+        If true this variable may be assigned a namespace depending on its context.
+    - name: tags
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable_tag
+      presence: optional
+      description: >
+        Tags that can be used to place the variable in a group.
+    - name: history
+      type: 
+        type: custom_type
+        custom_type: variable_number_history
+      presence: optional
+      description: The value history.
+- type: product_type
+  product_type:
+    name: variable_number_history
+    label: Number Variable History
+    description: Number Variable History
+    group: 'Variable: Number'
+    fields:
+    - name: values
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable_number_history_entry
+      presence: required
+      description: The values.
+- type: product_type
+  product_type:
+    name: variable_number_history_entry
+    label: Number Variable History Entry
+    description: Number Variable History Entry
+    group: 'Variable: Number'
+    fields:
+    - name: variable_number_value
+      type: 
+        type: custom_type
+        custom_type: value
+      presence: required
+      description: The value
+    - name: description
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: A description of the value.
+- type: sum_type
+  sum_type:
+    name: variable_number_value
+    label: Number Variable Value
+    description: >
+      A number variable value is the source of a Number Variable's value.
+    group: 'Variable: Number'
+    cases:
+    - type: number_literal
+      description: A literal number.
+    - type: unknown_number_literal
+      description: Unknown number literal
+    - type: variable_id
+      description: >
+        The value of another number variable.
+    - type: program_invocation
+      description: >
+        The value of another number variable.
+    - type: value_reference
+      description: >
+        A value from the Dictionary.
+    - type: summation_id
+      description: >
+        The value of a summation.
+- type: symbol_type
+  symbol_type:
+    name: unknown_number_literal
+    label: Unknown Number Literal
+    description: >
+      Unknown number literal.
+    group: 'Variable: Number'
+    symbol: 'unknown_number_literal'
+- type: primitive_type
+  primitive_type:
+    name: number_literal
+    label: Number Literal
+    description: >
+      A literal number value.
+    group: 'Variable: Number'
+    base_type:
+      type: prim_type
+      prim_type: number
+- type: primitive_type
+  primitive_type:
+    name: variable_id
+    label: Variable Identifier
+    description: >
+      The unique identifier of a variable.
+    group: Variable
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: namespaced_variable_id
+    label: Namespaced Variable Id
+    description: A variable id within a namespace.
+    group: Variable
+    fields:
+    - name: name
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: The variable id.
+    - name: namespace
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The namespace.
+- type: product_type
+  product_type:
+    name: variable_text
+    label: Text Variable
+    description: >
+      A text variable contains textual data.
+    group: 'Variable: Text'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: >
+        The name of the Text Variable. The name must be unique and may only contain letters, 
+        numbers, and underscores. It is used to uniquely identify the variable when customizing 
+        the sheet or programming.
+    - name: label
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The Text Variable's name in a format that is pleasant to read. The label does not need 
+        to be unique and may contain any characters.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A description of what the variable represents.
+    - name: value
+      type: 
+        type: custom_type
+        custom_type: variable_text_value
+      presence: required
+      description: >
+        The text value.
+    - name: is_namespaced
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      default_value: 'false'
+      description: >
+        If true this variable may be assigned a namespace depending on its context.
+    - name: tags
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable_tag
+      presence: optional
+      description: >
+        Tags that can be used to place the variable in a group.
+- type: primitive_type
+  primitive_type:
+    name: variable_tag
+    label: Variable Tag
+    description: >
+      The unique identifier of a variable.
+    group: Variable
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: variable_context
+    label: Variable Context
+    description: >
+      A variable in a context.
+    group: Variable
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: sum_type
+  sum_type:
+    name: variable_text_value
+    label: Text Variable Value
+    description: >
+      The source of a Text Variable's data.
+    group: 'Variable: Text'
+    cases:
+    - type: text_literal
+      description: A literal text value.
+    - type: unknown_text_literal
+      description: An unknown literal text value.
+    - type: value_set_id
+      description: value set id
+    - type: value_reference
+      description: >
+        A text value from the Dictionary.
+    - type: program_invocation
+      description: >
+        A program that returns a text value.
+- type: product_type
+  product_type:
+    name: variable_text_list
+    label: Text ListVariable
+    description: >
+      A text list variable contains textual data.
+    group: 'Variable: Text List'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: >
+        The name of the Text Variable. The name must be unique and may only contain letters, 
+        numbers, and underscores. It is used to uniquely identify the variable when customizing 
+        the sheet or programming.
+    - name: label
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The Text Variable's name in a format that is pleasant to read. The label does not need 
+        to be unique and may contain any characters.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A description of what the variable represents.
+    - name: value
+      type: 
+        type: custom_type
+        custom_type: variable_text_list_value
+      presence: required
+      description: >
+        The text value.
+    - name: tags
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable_tag
+      presence: optional
+      description: >
+        Tags that can be used to place the variable in a group.
+    - name: value_set_id
+      type: 
+        type: custom_type
+        custom_type: value_set_id
+      presence: required
+      description: >
+        Tags that can be used to place the variable in a group.
+- type: sum_type
+  sum_type:
+    name: variable_text_list_value
+    label: Text List Variable Value
+    description: >
+      The source of a Text Variable's data.
+    group: 'Variable: Text List'
+    cases:
+    - type: text_list_literal
+      description: A literal text value.
+- type: primitive_type
+  primitive_type:
+    name: text_literal
+    label: Text Literal
+    description: >
+      A literal text value.
+    group: 'Variable: Text'
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: text_list_literal
+    label: Text List Literal
+    description: >
+      A literal text value.
+    group: 'Variable: Text List'
+    base_type:
+      type: prim_coll_type
+      prim_coll_type: string
+- type: symbol_type
+  symbol_type:
+    name: unknown_text_literal
+    label: Unknown Text Literal
+    description: >
+      A unknown literal text value.
+    group: 'Variable: Text'
+    symbol: 'unknown_text_literal'
+- type: primitive_type
+  primitive_type:
+    name: summation_id
+    label: Summation Id
+    description: >
+      A summation identifier.
+    group: Summation
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: summation_name
+    label: Summation Name
+    description: >
+      A summation identifier.
+    group: Summation
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: summation
+    label: Summation
+    description: >
+      A summation is a number that is the sum of other numbers. They are commonly 
+      used to represent values such as armor class or attack rolls. The numbers that are part 
+      of a summation may be literal values or come from variables. This allows one to 
+      define a value which is the sum of any set of values on the sheet. Like other 
+      engine components, summations are reactive. If one of the numbers that is part of the 
+      summation changes, then the summation's value is automatically updated.
+
+      There are a few ways to put a number in a summation. A summation may contain a literal 
+      number or dice roll value such as `6` or `1d20`. 
+      
+      It may also contain values from 
+      variables, either referenced by id or tag. Referencing variables by tag allows one 
+      to add numbers to a summation without knowing ahead of time exactly what they will 
+      be called. For example, if a summation contains variables with the `magic item` tag, 
+      then its value will contain the sum of all the variables with that tag. If a new variable 
+      is created with the `magic item` tag, such as when a player equips a new item, then 
+      the sumations's value will be updated to include the value of the new variable.
+
+      Summations may also contain conditional values. These values require a variable with 
+      a true or false value. If the variable's value is true, then it selects the value from 
+      one variable, and if it is false, it selects the value from another variable. Since 
+      summations are reactive, if the conditional variable changes, then the summation's 
+      value will be updated accordingly.
+
+      <figure>
+        <img width="500px" src="/static/svg/summation.svg">
+        <figcaption>
+          The engine is integrated into the Tome hierarchy so that campaigns may add to 
+          or overwrite game rules, and individual sheets may add to or overwrite any 
+          inherited rule or value.
+        </figcaption>
+      </figure>
+    group: Summation
+    fields:
+    - name: summation_id
+      type: 
+        type: custom_type
+        custom_type: summation_id
+      presence: required
+      description: The summation id.
+    - name: summation_name
+      type: 
+        type: custom_type
+        custom_type: summation_name
+      presence: required
+      description: The summation name.
+    - name: terms
+      type:
+        type: custom_coll_type
+        custom_coll_type: summation_term
+      presence: required
+      description: >
+        The terms of the summation.
+    code_examples:
+    - language: YAML
+      title: 'An engine with some basic components.'
+      code: |+
+        summation_id: attack_bonus
+        summation_name: Attack Bonus
+        terms:
+        - type: summation_term_number
+          summation_term_number:
+            value:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: strength_modifier
+        - type: summation_term_dice_roll
+          summation_term_dice_roll:
+            value:
+              type: dice_roll:
+              dice_roll:
+                quantities:
+                - sides: 20
+                  quantity: 1
+        - type: summation_term_conditional
+          summation_term_conditional:
+            condition:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: is_proficient_with_sword
+            when_true:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: proficiency_bonus
+            when_false:
+              type: number_literal
+              number_literal: 0
+        - type: summation_term_number
+          summation_term_number:
+            term_name: Miscellaneous Attack Bonuses
+            value:
+              type: variable_reference
+              variable_reference:
+                type: variable_tag
+                variable_tag: attack_bonus
+- type: sum_type
+  sum_type:
+    name: summation_term
+    label: Summation Term
+    description: >
+      A summation term is a value that is part of a summation.
+    group: Summation
+    cases:
+    - type: summation_term_number
+      description: >
+        A literal number.
+    - type: summation_term_dice_roll
+      description: >
+        A dice roll.
+    - type: summation_term_conditional
+      description: >
+        The value depends on if a boolean variable is true or false.
+- type: product_type
+  product_type:
+    name: summation_term_conditional
+    label: Conditional Term
+    description: >
+      A conditional summation term is a term that can take on two different values, depending on the 
+      truthfulness of a boolean variable. 
+    group: Summation
+    fields:
+    - name: conditional_term_value
+      type: 
+        type: custom_type
+        custom_type: variable_boolean
+      presence: required
+      description: >
+        A boolean variable that is used to determine which branch to follow.
+    - name: true_term_value
+      type:
+        type: custom_type
+        custom_type: variable_number
+      presence: required
+      description: >
+        The number variable to be the result when the conditional term is true.
+    - name: false_term_value
+      type:
+        type: custom_type
+        custom_type: variable_number
+      presence: required
+      description: >
+        The number variable to be the result when the conditional term is false.
+- type: primitive_type
+  primitive_type:
+    name: summation_term_name
+    label: Summation Term Name
+    description: >
+      The unique game identifier.
+    group: Summation
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: summation_term_number
+    label: Number Term
+    description: >
+      An integer term is a number that is part of a summation.
+    group: Summation
+    fields:
+    - name: term_name
+      type: 
+        type: custom_type
+        custom_type: summation_term_name
+      presence: optional
+      description: Term Name
+    - name: value
+      type:
+        type: custom_type
+        custom_type: data_reference_number
+      presence: required
+      description: >
+        The number variable that is the term value.
+- type: product_type
+  product_type:
+    name: summation_term_dice_roll
+    label: Dice Roll Term
+    description: >
+      An dice roll term represents a number that is part of a summation. Depending on how the 
+      summation is used, the dice roll may be rolled to calculate an exact value for the 
+      summation or the dice roll may be preserved, in which case the summation becomes a dice 
+      roll with any non-dice roll values being modifiers to the roll.
+    group: Summation
+    fields:
+    - name: term_name
+      type: 
+        type: custom_type
+        custom_type: summation_term_name
+      presence: optional
+      description: Term Name
+    - name: value
+      type:
+        type: custom_type
+        custom_type: data_reference_dice_roll
+      presence: required
+      description: >
+        The dice roll value that is the term value.
+- type: product_type
+  product_type:
+    name: summation_term_conditional
+    label: Conditional Term
+    description: Conditional Term
+    group: Summation
+    fields:
+    - name: term_name
+      type: 
+        type: custom_type
+        custom_type: summation_term_name
+      presence: optional
+      description: Term Name
+    - name: condition
+      type:
+        type: custom_type
+        custom_type: data_reference_boolean
+      presence: required
+      description: >
+        The dice roll value that is the term value.
+    - name: when_true
+      type: 
+        type: custom_type
+        custom_type: data_reference_number
+      presence: required
+      description: >
+        The dice roll value that is the term value.
+    - name: when_false
+      type:
+        type: custom_type
+        custom_type: data_reference_number
+      presence: required
+      description: >
+        The dice roll value that is the term value.
+- type: product_type
+  product_type:
+    name: value_reference
+    label: Value Reference
+    description: >
+      A value reference is a reference to a value or value set defined in the Dictionary.
+    group: Value
+    fields:
+    - name: value_set_id
+      type: 
+        type: custom_type
+        custom_type: value_set_id
+      presence: required
+      description: >
+        The name of the value set.
+    - name: value_id
+      type:
+        type: custom_type
+        custom_type: value_id
+      presence: optional
+      description: >
+        The name of the value.
+- type: primitive_type
+  primitive_type:
+    name: value_set_id
+    label: Value Set Id
+    description: >
+      The unique game identifier.
+    group: ValueSet
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: value_id
+    label: Value Id
+    description: >
+      The unique value identifier.
+    group: Value
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: value_set_value_type
+    label: Value Set Value Type
+    description: >
+      The types of values in a value set.
+    group: ValueSet
+    base_type:
+      type: prim_type
+      prim_type: string
+    constraints:
+    - value_set_value_type_set
+- type: sum_type
+  sum_type:
+    name: value_set
+    label: Value Set
+    description: >
+      A value set is a set of custom values. It may simply be a collection of values or it could 
+      be a collection of value sets.
+    group: Value
+    cases:
+    - type: value_set_base
+      description: >
+        A base value set, composed of just values.
+    - type: value_set_compound
+      description: >
+        A compound value set, composed of values from multiple value sets.
+- type: product_type
+  product_type:
+    name: value_set_base
+    label: Base Value Set
+    description: >
+      A base value set is a collection of custom defined values in Tome. 
+    group: Value Set
+    fields:
+    - name: value_set_id
+      type: 
+        type: custom_type
+        custom_type: value_set_id
+      presence: required
+      description: >
+        The name is used to uniquely identify the Base Value Set when customizing or programming. 
+        It must therefore be unique and may contain only letters, numbers, and underscores.
+    - name: label
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The name in a format that is pleasant to read. Does not need to be unique and may contain 
+        any characters. Should be plural.
+    - name: label_singular
+      type:
+        type: custom_type
+        custom_type: value_set_id
+      presence: optional
+      description: >
+        The name in a format that is pleasant to read, but in a singular form.
+    - name: description
+      type:
+        type: custom_type
+        custom_type: value_set_id
+      presence: optional
+      description: >
+        A concise description of the value set's purpose and of what it contains.
+    - name: value_type
+      type: 
+        type: custom_type
+        custom_type: value_set_value_type
+      presence: optional
+      description: >
+        The type of values in the value set.
+    - name: values
+      type: 
+        type: custom_coll_type
+        custom_coll_type: value
+      presence: required
+      description: >
+        The colletion of values in the set.
+- type: product_type
+  product_type:
+    name: value_set_compound
+    label: Compound Value Set
+    description: >
+      A compound value set is a collection of other value sets.
+    group: Value Set
+    fields:
+    - name: value_set_id
+      type: 
+        type: custom_type
+        custom_type: value_set_id
+      presence: required
+      description: >
+        The name is used to uniquely identify the Base Value Set when customizing or programming. 
+        It must therefore be unique and may contain only letters, numbers, and underscores.
+    - name: label
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The name in a format that is pleasant to read. Does not need to be unique and may contain 
+        any characters. Should be plural.
+    - name: label_singular
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The name in a format that is pleasant to read, but in a singular form.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        A concise description of the value set's purpose and of what it contains.
+    - name: value_type
+      type: 
+        type: custom_type
+        custom_type: value_set_value_type
+      presence: optional
+      description: >
+        The type of values in the value set.
+    - name: value_set_ids
+      type: 
+        type: custom_coll_type
+        custom_coll_type: value_set_id
+      presence: required
+      description: >
+        The names of the value sets in the compound value set.
+- type: sum_type
+  sum_type:
+    name: value
+    label: Value
+    description: >
+      A value is a fundamental part of the programming engine. It permits the creation of custom 
+      data.
+    group: Value
+    cases:
+    - type: value_text
+      description: >
+        A text value.
+    - type: value_number
+      description: >
+        A numerical value.
+- type: product_type
+  product_type:
+    name: value_text
+    label: Text Value
+    description: >
+      A textual value.
+    group: Value
+    fields:
+    - name: value_id
+      type: 
+        type: custom_type
+        custom_type: value_id
+      presence: required
+      description: >
+        A unique identifier of the value.
+    - name: description
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        A concise description of what the value represents.
+    - name: value
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The text value.
+    - name: rulebook_reference
+      type: 
+        type: custom_type
+        custom_type: rulebook_reference
+      presence: optional
+      description: >
+        A reference to a description of the value in the rulebook.
+    - name: variables
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable
+      presence: optional
+      description: >
+        Variables that will be active when this value is used.
+- type: product_type
+  product_type:
+    name: value_number
+    label: Number Value
+    description: >
+      A numerical value.
+    group: Value
+    fields:
+    - name: value_id
+      type: 
+        type: custom_type
+        custom_type: value_id
+      presence: required
+      description: >
+        A unique identifier of the value.
+    - name: description
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        A concise description of what the value represents.
+    - name: value
+      type: 
+        type: prim_type
+        prim_type: number
+      presence: required
+      description: >
+        The number value.
+    - name: rulebook_reference
+      type: 
+        type: custom_type
+        custom_type: rulebook_reference
+      presence: optional
+      description: >
+        A reference to a description of the value in the rulebook.
+    - name: variables
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable
+      presence: optional
+      description: >
+        Variables that will be active when this value is used.
+constraints:
+- type: constraint_string_one_of
+  constraint_string_one_of:
+    name: function_parameter_type
+    description: Function parameter
+    label: Function parameter
+    set:
+    - value: parameter
+    - value: variable
+    - value: literal_number
+    - value: literal_string
+- type: constraint_string_one_of
+  constraint_string_one_of:
+    name: value_set_value_type_set
+    description: Value Set Value Type
+    label: Value Set Value Type
+    set:
+    - value: number
+    - value: text
+    - value: any
+- type: constraint_string_one_of
+  constraint_string_one_of:
+    name: engine_value_type_set
+    description: Engine Value Type
+    label: Engine Value Type
+    set:
+    - value: number
+    - value: text
+    - value: boolean
+    - value: dice_roll
+    - value: list_text

@@ -2,15 +2,12 @@
 package com.kispoko.tome.model.sheet.widget.table.column
 
 
-import com.kispoko.tome.db.DB_SectionValue
 import com.kispoko.tome.db.DB_WidgetTableColumnBooleanFormatValue
-import com.kispoko.tome.db.sectionTable
 import com.kispoko.tome.db.widgetTableColumnBooleanFormatTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue7
-import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLInt
@@ -22,6 +19,7 @@ import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -33,8 +31,8 @@ import java.util.*
  */
 data class BooleanColumnFormat(override val id : UUID,
                                val columnFormat : ColumnFormat,
-                               val trueFormat : TextFormat,
-                               val falseFormat : TextFormat,
+                               val trueFormat : Maybe<TextFormat>,
+                               val falseFormat : Maybe<TextFormat>,
                                val trueText : ColumnTrueText,
                                val falseText : ColumnFalseText,
                                val showTrueIcon : ShowTrueIcon,
@@ -47,16 +45,16 @@ data class BooleanColumnFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(format : ColumnFormat,
-                trueStyle : TextFormat,
-                falseStyle : TextFormat,
+                trueFormat : Maybe<TextFormat>,
+                falseFormat : Maybe<TextFormat>,
                 trueText : ColumnTrueText,
                 falseText : ColumnFalseText,
                 showTrueIcon : ShowTrueIcon,
                 showFalseIcon : ShowFalseIcon)
         : this(UUID.randomUUID(),
                format,
-               trueStyle,
-               falseStyle,
+               trueFormat,
+               falseFormat,
                trueText,
                falseText,
                showTrueIcon,
@@ -67,8 +65,6 @@ data class BooleanColumnFormat(override val id : UUID,
     {
 
         private fun defaultColumnFormat()  = ColumnFormat.default()
-        private fun defaultTrueFormat()    = TextFormat.default()
-        private fun defaultFalseFormat()   = TextFormat.default()
         private fun defaultTrueText()      = ColumnTrueText("True")
         private fun defaultFalseText()     = ColumnFalseText("False")
         private fun defaultShowTrueIcon()  = ShowTrueIcon(false)
@@ -86,12 +82,12 @@ data class BooleanColumnFormat(override val id : UUID,
                             { ColumnFormat.fromDocument(it) }),
                       // True Format
                       split(doc.maybeAt("true_format"),
-                            effValue(defaultTrueFormat()),
-                            { TextFormat.fromDocument(it) }),
+                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            { apply(::Just, TextFormat.fromDocument(it)) }),
                       // False Format
                       split(doc.maybeAt("false_format"),
-                            effValue(defaultFalseFormat()),
-                            { TextFormat.fromDocument(it) }),
+                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            { apply(::Just, TextFormat.fromDocument(it)) }),
                       // True Text
                       split(doc.maybeAt("true_text"),
                             effValue(defaultTrueText()),
@@ -115,8 +111,8 @@ data class BooleanColumnFormat(override val id : UUID,
 
 
         fun default() = BooleanColumnFormat(defaultColumnFormat(),
-                                            defaultTrueFormat(),
-                                            defaultFalseFormat(),
+                                            Nothing(),
+                                            Nothing(),
                                             defaultTrueText(),
                                             defaultFalseText(),
                                             defaultShowTrueIcon(),
@@ -130,8 +126,6 @@ data class BooleanColumnFormat(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "column_format" to this.columnFormat().toDocument(),
-        "true_format" to this.trueFormat.toDocument(),
-        "false_format" to this.falseFormat.toDocument(),
         "true_text" to this.trueText().toDocument(),
         "false_text" to this.falseText().toDocument(),
         "show_true_icon" to this.showTrueIcon().toDocument(),
@@ -146,10 +140,10 @@ data class BooleanColumnFormat(override val id : UUID,
     fun columnFormat() : ColumnFormat = this.columnFormat
 
 
-    fun trueFormat() : TextFormat = this.trueFormat
+    fun trueFormat() : Maybe<TextFormat> = this.trueFormat
 
 
-    fun falseFormat() : TextFormat = this.falseFormat
+    fun falseFormat() : Maybe<TextFormat> = this.falseFormat
 
 
     fun trueText() : ColumnTrueText = this.trueText
@@ -176,6 +170,20 @@ data class BooleanColumnFormat(override val id : UUID,
     fun showFalseIconBoolean() : Boolean = this.showFalseIcon.value
 
 
+    fun resolveTrueFormat() : TextFormat =
+        when (this.trueFormat) {
+            is Just -> this.trueFormat.value
+            else    -> this.columnFormat.textFormat()
+        }
+
+
+    fun resolveFalseFormat() : TextFormat =
+            when (this.falseFormat) {
+                is Just -> this.falseFormat.value
+                else    -> this.columnFormat.textFormat()
+            }
+
+
     // -----------------------------------------------------------------------------------------
     // MODELS
     // -----------------------------------------------------------------------------------------
@@ -189,8 +197,8 @@ data class BooleanColumnFormat(override val id : UUID,
     override fun rowValue() : DB_WidgetTableColumnBooleanFormatValue =
         RowValue7(widgetTableColumnBooleanFormatTable,
                   ProdValue(this.columnFormat),
-                  ProdValue(this.trueFormat),
-                  ProdValue(this.falseFormat),
+                  MaybeProdValue(this.trueFormat),
+                  MaybeProdValue(this.falseFormat),
                   PrimValue(this.trueText),
                   PrimValue(this.falseText),
                   PrimValue(this.showTrueIcon),

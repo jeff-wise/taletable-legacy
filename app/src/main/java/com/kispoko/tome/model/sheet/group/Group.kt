@@ -16,11 +16,10 @@ import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
-import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.orm.sql.asSQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.*
@@ -31,6 +30,7 @@ import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -171,7 +171,7 @@ data class GroupIndex(val value : Int) : SQLSerializable, Serializable
  */
 data class GroupFormat(override val id : UUID,
                        val elementFormat : ElementFormat,
-                       val divider : Divider)
+                       val border : Maybe<Border>)
                         : ToDocument, ProdType, Serializable
 {
 
@@ -180,17 +180,16 @@ data class GroupFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(elementFormat : ElementFormat,
-                divider : Divider)
+                border : Maybe<Border>)
         : this(UUID.randomUUID(),
                elementFormat,
-               divider)
+               border)
 
 
     companion object : Factory<GroupFormat>
     {
 
         private fun defaultElementFormat() = ElementFormat.default()
-        private fun defaultDivider()       = Divider.default()
 
 
         override fun fromDocument(doc : SchemaDoc): ValueParser<GroupFormat> = when (doc)
@@ -202,18 +201,17 @@ data class GroupFormat(override val id : UUID,
                       split(doc.maybeAt("element_format"),
                             effValue(defaultElementFormat()),
                             { ElementFormat.fromDocument(it)} ),
-                      // Divider Thickness
-                      split(doc.maybeAt("divider"),
-                            effValue(defaultDivider()),
-                            { Divider.fromDocument(it) })
+                      // Border
+                      split(doc.maybeAt("border"),
+                            effValue<ValueError,Maybe<Border>>(Nothing()),
+                            { effApply(::Just, Border.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = GroupFormat(defaultElementFormat(),
-                                    defaultDivider())
+        fun default() = GroupFormat(defaultElementFormat(), Nothing())
 
     }
 
@@ -223,8 +221,7 @@ data class GroupFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "element_format" to this.elementFormat.toDocument(),
-        "divider" to this.divider.toDocument()
+        "element_format" to this.elementFormat.toDocument()
     ))
 
 
@@ -235,7 +232,7 @@ data class GroupFormat(override val id : UUID,
     fun elementFormat() : ElementFormat = this.elementFormat
 
 
-    fun divider() : Divider = this.divider
+    fun border() : Maybe<Border> = this.border
 
 
     // -----------------------------------------------------------------------------------------
@@ -250,45 +247,10 @@ data class GroupFormat(override val id : UUID,
 
     override fun rowValue() : DB_GroupFormatValue =
         RowValue2(groupFormatTable, ProdValue(this.elementFormat),
-                                    ProdValue(this.divider))
+                                    MaybeProdValue(this.border))
 
 }
 
-
-/**
- * Show Divider
- */
-data class ShowGroupDivider(val value : Boolean) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ShowGroupDivider>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowGroupDivider> = when (doc)
-        {
-            is DocBoolean -> effValue(ShowGroupDivider(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocBoolean(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLInt({ if (value) 1 else 0})
-
-}
 
 
 // ---------------------------------------------------------------------------------------------
@@ -300,12 +262,14 @@ fun groupView(group : Group, sheetUIContext: SheetUIContext) : View
 {
     val layout = viewLayout(group.format(), sheetUIContext)
 
-    // > Rows
-    layout.addView(rowsView(group, sheetUIContext))
+    // Top Border
+    val topBorder = group.format().border().apply { it.top() }
+    when (topBorder) {
+        is Just -> layout.addView(dividerView(topBorder.value, sheetUIContext))
+    }
 
-    // > Divider
-//    if (group.format().showDividerBool())
-//        layout.addView(dividerView(group.format(), sheetUIContext))
+    // Rows
+    layout.addView(rowsView(group, sheetUIContext))
 
     return layout
 }
@@ -370,8 +334,7 @@ private fun viewLayout(format : GroupFormat, sheetUIContext: SheetUIContext) : L
 
     bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
-        layout.background = bgDrawable
-
+    layout.background = bgDrawable
 
     return layout
 }
@@ -443,20 +406,17 @@ private fun rowsViewLayout(format : GroupFormat, context : Context) : LinearLayo
 }
 
 
-//private fun dividerView(format : GroupFormat, sheetUIContext: SheetUIContext) : LinearLayout
-//{
-//    val divider = LinearLayoutBuilder()
-//
-//    divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
-//    divider.heightDp            = format.dividerThickness()
-//
-//    divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
-//                                                     format.dividerColorTheme())
-//
-//    divider.margin.leftDp       = format.dividerMargins()
-//    divider.margin.rightDp      = format.dividerMargins()
-//
-//    return divider.linearLayout(sheetUIContext.context)
-//}
+private fun dividerView(format : BorderEdge, sheetUIContext : SheetUIContext) : LinearLayout
+{
+    val divider = LinearLayoutBuilder()
+
+    divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
+    divider.heightDp            = format.thickness().value
+
+    divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
+                                                     format.colorTheme())
+
+    return divider.linearLayout(sheetUIContext.context)
+}
 
 

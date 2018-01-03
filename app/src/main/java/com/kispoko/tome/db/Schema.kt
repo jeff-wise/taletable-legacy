@@ -16,6 +16,8 @@ import com.kispoko.tome.model.game.engine.function.*
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.mechanic.*
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
+import com.kispoko.tome.model.game.engine.procedure.ProcedureName
+import com.kispoko.tome.model.game.engine.procedure.ProcedureUpdates
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.model.game.engine.reference.BooleanReference
 import com.kispoko.tome.model.game.engine.reference.DataReference
@@ -49,7 +51,7 @@ import com.kispoko.tome.model.sheet.widget.table.column.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.user.UserName
 import com.kispoko.tome.rts.sheet.*
-
+import lulo.schema.Prim
 
 
 //*********************************************************************************************//
@@ -90,6 +92,21 @@ typealias DB_AuthorValue =
     RowValue3<PrimValue<AuthorName>,
               MaybePrimValue<AuthorOrganization>,
               MaybePrimValue<UserName>>
+
+// BORDER
+// ---------------------------------------------------------------------------------------------
+
+val borderTable = Table4("border",
+                         "top",
+                         "right",
+                         "bottom",
+                         "left")
+
+typealias DB_BorderValue =
+    RowValue4<MaybePrimValue<BorderEdge>,
+              MaybePrimValue<BorderEdge>,
+              MaybePrimValue<BorderEdge>,
+              MaybePrimValue<BorderEdge>>
 
 
 // CAMPAIGN
@@ -159,9 +176,10 @@ typealias DB_EngineValue =
 // ---------------------------------------------------------------------------------------------
 
 val elementFormatTable =
-    Table8("element_format",
+    Table9("element_format",
            "position",
            "height",
+           "width",
            "padding",
            "margins",
            "background_color_theme",
@@ -170,8 +188,9 @@ val elementFormatTable =
            "vertical_alignment")
 
 typealias DB_ElementFormatValue =
-    RowValue8<PrimValue<Position>,
+    RowValue9<PrimValue<Position>,
               PrimValue<Height>,
+              PrimValue<Width>,
               PrimValue<Spacing>,
               PrimValue<Spacing>,
               PrimValue<ColorTheme>,
@@ -283,11 +302,11 @@ typealias DB_GroupValue =
 val groupFormatTable =
     Table2("group_format",
            "element_format",
-           "divider")
+           "border")
 
 typealias DB_GroupFormatValue =
     RowValue2<ProdValue<ElementFormat>,
-              ProdValue<Divider>>
+              MaybeProdValue<Border>>
 
 
 // GROUP ROW
@@ -437,6 +456,21 @@ typealias DB_ProgramTypeSignatureValue =
               MaybePrimValue<EngineValueType>,
               MaybePrimValue<EngineValueType>,
               PrimValue<EngineValueType>>
+
+
+// PROCEDURE
+// ---------------------------------------------------------------------------------------------
+
+val procedureTable =
+    Table3("procedure",
+           "procedure_id",
+           "procedure_name",
+           "updates")
+
+typealias DB_ProcedureValue =
+    RowValue3<PrimValue<ProcedureId>,
+              PrimValue<ProcedureName>,
+              PrimValue<ProcedureUpdates>>
 
 
 // ROLL MODIFIER
@@ -696,22 +730,26 @@ typealias DB_SummationTermConditionalValue =
 // ---------------------------------------------------------------------------------------------
 
 val textFormatTable =
-    Table7("text_format",
+    Table9("text_format",
            "color_theme",
            "size",
            "font",
            "font_style",
            "is_underlined",
            "number_format",
+           "roll_format",
+           "icon_format",
            "element_format")
 
 typealias DB_TextFormatValue =
-    RowValue7<PrimValue<ColorTheme>,
+    RowValue9<PrimValue<ColorTheme>,
               PrimValue<TextSize>,
               PrimValue<TextFont>,
               PrimValue<TextFontStyle>,
               PrimValue<IsUnderlined>,
               PrimValue<NumberFormat>,
+              PrimValue<RollFormat>,
+              ProdValue<IconFormat>,
               ProdValue<ElementFormat>>
 
 
@@ -789,7 +827,7 @@ typealias DB_TupleValue =
 // ---------------------------------------------------------------------------------------------
 
 val uiColorsTable =
-    Table10("ui_colors",
+    Table9("ui_colors",
             "toolbar_background_color_id",
             "toolbar_icons_color_id",
             "toolbar_title_color_id",
@@ -798,13 +836,11 @@ val uiColorsTable =
             "tab_text_selected_color_id",
             "tab_underline_color_id",
             "bottom_bar_background_color_id",
-            "bottom_bar_active_color_id",
-            "bottom_bar_inactive_color_id")
+            "bottom_bar_nav_color_id")
 
 
 typealias DB_UIColorsValue =
-    RowValue10<PrimValue<ColorId>,
-               PrimValue<ColorId>,
+    RowValue9<PrimValue<ColorId>,
                PrimValue<ColorId>,
                PrimValue<ColorId>,
                PrimValue<ColorId>,
@@ -813,6 +849,76 @@ typealias DB_UIColorsValue =
                PrimValue<ColorId>,
                PrimValue<ColorId>,
                PrimValue<ColorId>>
+
+// WIDGET: ACTION
+// ---------------------------------------------------------------------------------------------
+
+val widgetActionTable =
+    Table4("widget_action",
+           "widget_id",
+           "format",
+           "procedure_id",
+           "description")
+
+typealias DB_WidgetActionValue =
+    RowValue4<PrimValue<WidgetId>,
+              ProdValue<ActionWidgetFormat>,
+              PrimValue<ProcedureId>,
+              MaybePrimValue<ActionWidgetDescription>>
+
+
+// WIDGET: ACTION > FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetActionFormatTable =
+    Table5("widget_roll_format",
+           "widget_format",
+           "view_type",
+           "description_format",
+           "button_format",
+           "button_icon")
+
+typealias DB_WidgetActionFormatValue =
+    RowValue5<ProdValue<WidgetFormat>,
+              PrimValue<ActionWidgetViewType>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              MaybePrimValue<Icon>>
+
+
+// WIDGET: LIST
+// ---------------------------------------------------------------------------------------------
+
+val widgetListTable =
+    Table3("widget_list",
+           "widget_id",
+           "widget_format",
+           "values_variable_id")
+
+typealias DB_WidgetListValue =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<ListWidgetFormat>,
+              PrimValue<VariableId>>
+
+
+// WIDGET: LIST > FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetListFormatTable =
+    Table5("widget_list_format",
+           "widget_format",
+           "view_type",
+           "item_format",
+           "description_format",
+           "annotation_format")
+
+typealias DB_WidgetListFormatValue =
+    RowValue5<ProdValue<WidgetFormat>,
+              PrimValue<ListViewType>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
+
 
 
 // WIDGET: LOG
@@ -923,15 +1029,17 @@ typealias DB_WidgetMechanicFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetNumberTable =
-    Table3("widget_number",
+    Table4("widget_number",
            "widget_id",
            "format",
-           "value_variable_id")
+           "value_variable_id",
+           "inside_label")
 
 typealias DB_WidgetNumberValue =
-    RowValue3<PrimValue<WidgetId>,
+    RowValue4<PrimValue<WidgetId>,
               ProdValue<NumberWidgetFormat>,
-              PrimValue<VariableId>>
+              PrimValue<VariableId>,
+              MaybePrimValue<NumberWidgetLabel>>
 
 
 // WIDGET: NUMBER > FORMAT
@@ -1059,6 +1167,44 @@ typealias DB_WidgetQuoteFormatValue =
               ProdValue<IconFormat>>
 
 
+// WIDGET: ROLL
+// ---------------------------------------------------------------------------------------------
+
+val widgetRollTable =
+    Table4("widget_roll",
+           "widget_id",
+           "format",
+           "roll_summation_id",
+           "description")
+
+typealias DB_WidgetRollValue =
+    RowValue4<PrimValue<WidgetId>,
+              ProdValue<RollWidgetFormat>,
+              PrimValue<SummationId>,
+              MaybePrimValue<RollWidgetDescription>>
+
+
+// WIDGET: ROLL > FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetRollFormatTable =
+    Table6("widget_roll_format",
+           "widget_format",
+           "view_type",
+           "description_format",
+           "button_format",
+           "roll_text_location",
+           "roll_text_format")
+
+typealias DB_WidgetRollFormatValue =
+    RowValue6<ProdValue<WidgetFormat>,
+              PrimValue<RollWidgetViewType>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              PrimValue<RollTextLocation>,
+              ProdValue<TextFormat>>
+
+
 // WIDGET: STORY
 // ---------------------------------------------------------------------------------------------
 
@@ -1078,13 +1224,17 @@ typealias DB_WidgetStoryValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetStoryFormatTable =
-    Table2("widget_story_format",
+    Table4("widget_story_format",
            "widget_format",
-           "line_spaceing")
+           "line_height",
+           "line_spaceing",
+           "text_format")
 
 typealias DB_WidgetStoryFormatValue =
-    RowValue2<ProdValue<WidgetFormat>,
-              PrimValue<LineSpacing>>
+    RowValue4<ProdValue<WidgetFormat>,
+              MaybePrimValue<LineHeight>,
+              MaybePrimValue<LineSpacing>,
+              ProdValue<TextFormat>>
 
 
 // WIDGET: STORY > PART: SPAN
@@ -1286,8 +1436,8 @@ val widgetTableColumnBooleanFormatTable =
 
 typealias DB_WidgetTableColumnBooleanFormatValue =
     RowValue7<ProdValue<ColumnFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
+              MaybeProdValue<TextFormat>,
+              MaybeProdValue<TextFormat>,
               PrimValue<ColumnTrueText>,
               PrimValue<ColumnFalseText>,
               PrimValue<ShowTrueIcon>,
@@ -1379,18 +1529,16 @@ typealias DB_WidgetTableColumnFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetTableFormatTable =
-    Table5("widget_table_format",
+    Table4("widget_table_format",
            "widget_format",
            "header_format",
            "row_format",
-           "divider",
            "cell_height")
 
 typealias DB_WidgetTableFormatValue =
-    RowValue5<ProdValue<WidgetFormat>,
+    RowValue4<ProdValue<WidgetFormat>,
               ProdValue<TableWidgetRowFormat>,
               ProdValue<TableWidgetRowFormat>,
-              MaybeProdValue<Divider>,
               PrimValue<Height>>
 
 
@@ -1604,4 +1752,24 @@ typealias DB_VariableTextValue =
               PrimValue<VariableDescription>,
               PrimValue<VariableTagSet>,
               SumValue<TextVariableValue>>
+
+// VARIABLE: TEXT LIST
+// ---------------------------------------------------------------------------------------------
+
+val variableTextListTable =
+    Table6("variable_list_text",
+           "variable_id",
+           "label",
+           "description",
+           "tags",
+           "variable_value",
+           "value_set_id")
+
+typealias DB_VariableTextListValue =
+    RowValue6<PrimValue<VariableId>,
+              PrimValue<VariableLabel>,
+              PrimValue<VariableDescription>,
+              PrimValue<VariableTagSet>,
+              SumValue<TextListVariableValue>,
+              MaybePrimValue<ValueSetId>>
 

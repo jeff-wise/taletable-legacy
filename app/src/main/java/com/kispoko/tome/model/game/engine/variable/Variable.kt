@@ -3,7 +3,6 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import android.util.Log
-import com.kispoko.tome.R.string.name
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
@@ -11,12 +10,16 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.value.ValueReference
+import com.kispoko.tome.model.game.engine.value.ValueSet
+import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -24,7 +27,6 @@ import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
-import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
 import org.apache.commons.lang3.SerializationUtils
@@ -60,6 +62,7 @@ sealed class Variable : ProdType, ToDocument, Serializable
                 "variable_dice_roll" -> DiceRollVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_number"    -> NumberVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_text"      -> TextVariable.fromDocument(doc) as ValueParser<Variable>
+                "variable_text_list" -> TextListVariable.fromDocument(doc) as ValueParser<Variable>
                 else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
@@ -128,6 +131,17 @@ sealed class Variable : ProdType, ToDocument, Serializable
     }
 
 
+    fun textListVariable(sheetId : SheetId) : AppEff<TextListVariable> = when (this)
+    {
+        is TextListVariable -> effValue(this)
+        else                -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(sheetId,
+                                                               this.variableId(),
+                                                               VariableType.TEXT_LIST,
+                                                               this.type())))
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
@@ -177,6 +191,7 @@ sealed class Variable : ProdType, ToDocument, Serializable
         is DiceRollVariable -> effValue(this.value().toString())
         is NumberVariable   -> this.valueString(sheetContext)
         is TextVariable     -> this.valueString(sheetContext)
+        is TextListVariable -> this.valueString(sheetContext)
     }
 
 }
@@ -849,12 +864,173 @@ data class TextVariable(override val id : UUID,
 }
 
 
+/**
+ * Text List Variable
+ */
+data class TextListVariable(override val id : UUID,
+                            private var variableId : VariableId,
+                            private var label : VariableLabel,
+                            private var description : VariableDescription,
+                            private val tags : MutableList<VariableTag>,
+                            var variableValue : TextListVariableValue,
+                            var valueSetId : Maybe<ValueSetId>)
+                            : Variable()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(variableId : VariableId,
+                label : VariableLabel,
+                description : VariableDescription,
+                tags : List<VariableTag>,
+                variableValue : TextListVariableValue,
+                valueSetId : Maybe<ValueSetId>)
+        : this(UUID.randomUUID(),
+               variableId,
+               label,
+               description,
+               tags.toMutableList(),
+               variableValue,
+               valueSetId)
+
+
+    companion object : Factory<TextListVariable>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TextListVariable> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::TextListVariable,
+                      // Variable Id
+                      doc.at("id") ap { VariableId.fromDocument(it) },
+                      // Label
+                      doc.at("label") ap { VariableLabel.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { VariableDescription.fromDocument(it) },
+                      // Tags
+                      split(doc.maybeList("tags"),
+                            effValue(listOf()),
+                            { it.map { VariableTag.fromDocument(it) } }),
+                      // Value
+                      doc.at("value") ap { TextListVariableValue.fromDocument(it) },
+                      // Value Set Id
+                      split(doc.maybeAt("value_set_id"),
+                            effValue<ValueError,Maybe<ValueSetId>>(Nothing()),
+                            { apply(::Just, ValueSetId.fromDocument(it)) } )
+                    )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.variableId.toDocument(),
+        "label" to this.label.toDocument(),
+        "description" to this.description.toDocument(),
+        "tags" to DocList(this.tags.map { it.toDocument() }),
+        "value" to this.variableValue.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // STATE
+    // -----------------------------------------------------------------------------------------
+
+    override fun variableId() : VariableId = this.variableId
+
+
+    override fun setVariableId(variableId : VariableId) {
+        this.variableId = variableId
+    }
+
+
+    override fun description() : VariableDescription = this.description
+
+
+    override fun label() : VariableLabel = this.label
+
+
+    override fun tags(): List<VariableTag> = this.tags
+
+
+    fun variableValue() : TextListVariableValue = this.variableValue
+
+
+    fun valueSetId() : Maybe<ValueSetId> = this.valueSetId
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() {}
+
+
+    override val prodTypeObject: ProdType = this
+
+
+    override fun rowValue() : DB_VariableTextListValue =
+        RowValue6(variableTextListTable,
+                  PrimValue(this.variableId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(VariableTagSet(this.tags)),
+                  SumValue(this.variableValue),
+                  MaybePrimValue(this.valueSetId))
+
+
+    // -----------------------------------------------------------------------------------------
+    // VARIABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
+
+
+    override fun type(): VariableType = VariableType.TEXT
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(sheetContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value(sheetContext : SheetContext) : AppEff<List<String>> =
+            this.variableValue().value(sheetContext)
+
+
+    fun updateLiteralValue(value : List<String>, sheetId : SheetId)
+    {
+        when (this.variableValue())
+        {
+            is TextListVariableLiteralValue ->
+            {
+                this.variableValue = TextListVariableLiteralValue(value)
+                SheetManager.onVariableUpdate(sheetId, this)
+            }
+        }
+    }
+
+}
+
+
+
 enum class VariableType
 {
     BOOLEAN,
     DICE_ROLL,
     NUMBER,
-    TEXT
+    TEXT,
+    TEXT_LIST
 }
 
 

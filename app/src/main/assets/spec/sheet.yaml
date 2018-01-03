@@ -456,6 +456,12 @@ types:
       presence: optional
       description: >
         The element_format.
+    - name: border
+      type: 
+        type: custom_type
+        custom_type: border
+      presence: optional
+      description: A border.
 - type: product_type
   product_type:
     name: group_row
@@ -555,6 +561,9 @@ types:
       </figure>
     group: Widget
     cases:
+    - type: widget_action
+      description: >
+        Action Widget
     - type: widget_boolean
       description: >
         Boolean Widget
@@ -585,6 +594,9 @@ types:
     - type: widget_quote
       description: >
         Quote Widget
+    - type: widget_roll
+      description: >
+        Roll Widget
     - type: widget_story
       description: >
         Story Widget
@@ -607,6 +619,77 @@ types:
     base_type:
       type: prim_type
       prim_type: string
+- type: product_type
+  product_type:
+    name: widget_action
+    label: Action Widget
+    description: Action Widget
+    group: 'Widget: Action'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: widget_id
+      presence: required
+      description: >
+        The widget identifier.
+    - name: format
+      type:
+        type: custom_type
+        custom_type: action_widget_format
+      presence: optional
+      description: >
+        The roll widget formatting options.
+    - name: procedure_id
+      type:
+        type: custom_type
+        custom_type: procedure_id
+      presence: required
+      description: The roll summation id.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: A description of the roll.
+- type: product_type
+  product_type:
+    name: action_widget_format
+    label: Action Widget Format
+    description: >
+      Action Widget formatting options.
+    group: 'Widget: Action'
+    fields:
+    - name: widget_format
+      type: 
+        type: custom_type
+        custom_type: widget_format
+      presence: optional
+      description: Standard widget formatting options.
+    - name: view_type
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The view type.
+    - name: button_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The button format.
+    - name: description_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The description format.
+    - name: button_icon
+      type: 
+        type: custom_type
+        custom_type: icon
+      presence: optional
+      description: The description format.
 - type: product_type
   product_type:
     name: widget_boolean
@@ -775,20 +858,19 @@ types:
       presence: optional
       description: >
         The list widget formatting options.
-    - name: value_set_name
+    - name: values_variable_id
+      type:
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: >
+        The values in the list.
+    - name: description
       type:
         type: prim_type
         prim_type: string
       presence: optional
-      description: >
-        The value set name.
-    - name: values
-      type:
-        type: custom_coll_type
-        custom_coll_type: variable
-      presence: optional
-      description: >
-        The values in the list.
+      description: The description.
 - type: product_type
   product_type:
     name: list_widget_format
@@ -804,20 +886,30 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
-    - name: item_style
+    - name: view_type
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The list widget view type.
+    - name: item_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
-      description: >
-        Item text style.
-    - name: annotation_style
+      description: The values format.
+    - name: description_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
-      description: >
-        Annotation text style.
+      description: The description format.
+    - name: annotation_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The annotation format.
 - type: product_type
   product_type:
     name: widget_log
@@ -1112,13 +1204,12 @@ types:
       presence: optional
       description: >
         The base value variable name.
-    - name: description
+    - name: inside_label
       type:
         type: prim_type
         prim_type: string
       presence: optional
-      description: >
-        The value description.
+      description: The inside label.
 - type: product_type
   product_type:
     name: number_widget_format
@@ -1454,18 +1545,20 @@ types:
         custom_type: text_format
       presence: optional
       description: Label Text Format
-    - name: limit_color_theme
+    - name: bar_format
       type:
         type: custom_type
-        custom_type: color_theme
+        custom_type: points_widget_bar_format
       presence: optional
-      description: Limit Color Theme
-    - name: current_color_theme
-      type:
-        type: custom_type
-        custom_type: color_theme
-      presence: optional
-      description: Current Color Theme
+      description: Bar Format
+- type: product_type
+  product_type:
+    name: points_widget_bar_format
+    label: Points Widget Bar Format
+    description: >
+      Points Widget formatting options.
+    group: 'Widget: Points'
+    fields:
     - name: bar_style
       type:
         type: custom_type
@@ -1484,6 +1577,18 @@ types:
         prim_type: number
       presence: optional
       description: Bar Height Dp
+    - name: limit_color_theme
+      type:
+        type: custom_type
+        custom_type: color_theme
+      presence: optional
+      description: Limit Color Theme
+    - name: current_color_theme
+      type:
+        type: custom_type
+        custom_type: color_theme
+      presence: optional
+      description: Current Color Theme
 - type: product_type
   product_type:
     name: widget_quote
@@ -1562,6 +1667,95 @@ types:
         custom_type: icon_format
       presence: optional
       description: The icon format.
+- type: product_type
+  product_type:
+    name: widget_roll
+    label: Roll Widget
+    description: Roll Widget
+    group: 'Widget: Roll'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: widget_id
+      presence: required
+      description: >
+        The widget identifier.
+    - name: format
+      type:
+        type: custom_type
+        custom_type: roll_widget_format
+      presence: optional
+      description: >
+        The roll widget formatting options.
+    - name: roll_summation_id
+      type:
+        type: custom_type
+        custom_type: summation_id
+      presence: required
+      description: The roll summation id.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: A description of the roll.
+- type: product_type
+  product_type:
+    name: roll_widget_format
+    label: Roll Widget Format
+    description: >
+      Roll Widget formatting options.
+    group: 'Widget: Roll'
+    fields:
+    - name: widget_format
+      type: 
+        type: custom_type
+        custom_type: widget_format
+      presence: optional
+      description: Standard widget formatting options.
+    - name: view_type
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The view type.
+    - name: button_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The button format.
+    - name: button_roll_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The button format.
+    - name: description_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The description format.
+    - name: description_roll_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The description format.
+    - name: roll_text_location
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The roll text location.
+    - name: roll_text_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The roll text format.
 - type: product_type
   product_type: 
     name: widget_story
@@ -1741,10 +1935,17 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
-    - name: text_size
+    - name: line_height
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: >
+        Standard widget formatting options.
+    - name: text_format
       type:
         type: custom_type
-        custom_type: text_size
+        custom_type: text_format
       presence: optional
       description: >
         Standard widget formatting options.
@@ -2151,20 +2352,13 @@ types:
     group: 'Widget: Table'
     type: product
     fields:
-    - name: text_style
+    - name: text_format
       type: 
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The column text style.
-    - name: alignment
-      type:
-        type: custom_type
-        custom_type: alignment
-      presence: optional
-      description: >
-        The column alignment.
     - name: width
       type:
         type: prim_type
@@ -2172,13 +2366,6 @@ types:
       presence: optional
       description: >
         The column width.
-    - name: background_color
-      type:
-        type: custom_type
-        custom_type: color_theme
-      presence: optional
-      description: >
-        The column background color.
 - type: product_type
   product_type:
     name: table_widget_row
@@ -2209,41 +2396,13 @@ types:
       Table widget row format.
     group: 'Widget: Table'
     fields:
-    - name: text_style
+    - name: text_format
       type: 
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The row text style.
-    - name: background_color_theme
-      type:
-        type: custom_type
-        custom_type: color_theme
-      presence: optional
-      description: >
-        The background color theme.
-    - name: margins
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The row margins.
-    - name: padding
-      type:
-        type: custom_type
-        custom_type: spacing
-      presence: optional
-      description: >
-        The row margins.
-    - name: cell_height
-      type:
-        type: custom_type
-        custom_type: widget_height
-      presence: optional
-      description: >
-        The cell height in the row.
 - type: sum_type
   sum_type:
     name: table_widget_cell
@@ -2697,6 +2856,13 @@ types:
       presence: optional
       description: >
         The text height.
+    - name: width
+      type:
+        type: custom_type
+        custom_type: width
+      presence: optional
+      description: >
+        The width.
     - name: padding
       type:
         type: custom_type
@@ -2723,6 +2889,12 @@ types:
         custom_type: corners
       presence: optional
       description: Corners
+    - name: border
+      type:
+        type: custom_type
+        custom_type: border
+      presence: optional
+      description: Border
     - name: horizontal_alignment
       type:
         type: custom_type
@@ -2782,11 +2954,23 @@ types:
         True if the text is underlined.
     - name: number_format
       type:
-        type: custom_type
-        custom_type: number_format
+        type: prim_type
+        prim_type: string
       presence: optional
       description: >
         True if the text is underlined.
+    - name: roll_format
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Roll text format.
+    - name: icon_format
+      type:
+        type: custom_type
+        custom_type: icon_format
+      presence: optional
+      description: Icon format.
     - name: element_format
       type:
         type: custom_type
@@ -2830,6 +3014,56 @@ types:
       presence: optional
       description:
         The bottom-left corner radius.
+- type: product_type
+  product_type:
+    name: border_edge
+    label: Border Edge
+    description: A border edge.
+    group: Style
+    fields:
+    - name: color_theme
+      type: 
+        type: custom_type
+        custom_type: color_theme
+      presence: optional
+      description: The color.
+    - name: thickness
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: The thickness.
+- type: product_type
+  product_type:
+    name: border
+    label: Border
+    description: A border.
+    group: Style
+    fields:
+    - name: top
+      type: 
+        type: custom_type
+        custom_type: border_edge
+      presence: optional
+      description: The top border.
+    - name: right
+      type: 
+        type: custom_type
+        custom_type: border_edge
+      presence: optional
+      description: The top border.
+    - name: bottom
+      type: 
+        type: custom_type
+        custom_type: border_edge
+      presence: optional
+      description: The top border.
+    - name: left
+      type: 
+        type: custom_type
+        custom_type: border_edge
+      presence: optional
+      description: The top border.
 - type: product_type
   product_type:
     name: icon_format
@@ -2979,6 +3213,16 @@ types:
     label: Height
     description: >
       The widget height options.
+    group: Style
+    base_type:
+      type: prim_type
+      prim_type: number
+- type: primitive_type
+  primitive_type:
+    name: width
+    label: Width
+    description: >
+      The widget width options.
     group: Style
     base_type:
       type: prim_type

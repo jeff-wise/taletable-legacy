@@ -32,16 +32,13 @@ sealed class DiceRollVariableValue : ToDocument, SumType, Serializable
 
     companion object : Factory<DiceRollVariableValue>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollVariableValue> = when (doc)
-        {
-            is DocDict -> when (doc.case())
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollVariableValue> =
+            when (doc.case())
             {
-                "literal" -> DiceRollVariableLiteralValue.fromDocument(doc)
-                else      -> effError<ValueError, DiceRollVariableValue>(
-                                    UnknownCase(doc.case(), doc.path))
+                "dice_roll" -> DiceRollVariableLiteralValue.fromDocument(doc)
+                else        -> effError(UnknownCase(doc.case(), doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+
     }
 
 
@@ -51,7 +48,9 @@ sealed class DiceRollVariableValue : ToDocument, SumType, Serializable
 
     open fun dependencies() : Set<VariableReference> = setOf()
 
+
     abstract fun value() : DiceRoll
+
 
     abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
 
@@ -79,7 +78,7 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll) : DiceRollVaria
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = this.diceRoll.toDocument().withCase("literal")
+    override fun toDocument() = this.diceRoll.toDocument().withCase("dice_roll")
 
 
     // -----------------------------------------------------------------------------------------
@@ -100,7 +99,7 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll) : DiceRollVaria
     override val sumModelObject = this
 
 
-    override fun case() = "literal"
+    override fun case() = "dice_roll"
 
 
     override fun columnValue() = ProdValue(this.diceRoll)

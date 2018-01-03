@@ -307,5 +307,4 @@ ui_colors:
   tab_text_selected: light_grey_12
   tab_underline: light_grey_6
   bottom_bar_background: dark_grey_12
-  bottom_bar_active: light_grey_15
-  bottom_bar_inactive: light_grey_28
+  bottom_bar_nav: light_grey_15

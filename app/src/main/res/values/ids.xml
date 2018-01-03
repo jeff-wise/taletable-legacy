@@ -125,6 +125,14 @@
     <item name="choose_value_item_icon" type="id"/>
     <item name="choose_value_item_reference" type="id"/>
 
+    <!-- DIALOG: LIST EDITOR -->
+    <item name="dialog_list_editor_checkbox_icon" type="id"/>
+    <item name="dialog_list_editor_item_layout" type="id"/>
+    <item name="dialog_list_editor_item_value" type="id"/>
+    <item name="dialog_list_editor_item_summary" type="id"/>
+    <item name="dialog_list_editor_header" type="id"/>
+
+
     <!-- SHEET NAVIGATION FRAGMENT -->
     <item name="sheet_nav_item_header" type="id"/>
     <item name="sheet_nav_item_summary" type="id"/>

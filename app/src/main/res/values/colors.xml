@@ -239,7 +239,7 @@
     <!-- DARK THEME -->
     <!-- ================================================================ -->
 
-    <color name="dark_theme_light_green_13">#A9B894</color>
+    <color name="dark_theme_light_green_13">#11AB5D</color>
 
     <color name="dark_theme_green_1">#9FAD8B</color>
 
@@ -263,5 +263,7 @@
     <color name="dark_theme_medium_grey_12">#3C3D42</color>
 
     <color name="dark_theme_gold_15">#9C9376</color>
+
+    <color name="light_theme_green">#15BD68</color>
 
 </resources>

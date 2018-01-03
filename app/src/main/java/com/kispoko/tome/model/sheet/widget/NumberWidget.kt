@@ -20,6 +20,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 import effect.*
@@ -394,23 +395,29 @@ object NumberWidgetView
     {
         val layout = this.valueMainViewLayout(format, sheetUIContext)
 
+        val insideLabel = numberWidget.insideLabel()
+
         // > Inside Top/Left Label View
-//        if (format.insideLabelString() != null && numberWidget.description() == null) {
-//            if (format.insideLabelFormat().position().isTop() ||
-//                format.insideLabelFormat().position().isLeft()) {
-//                layout.addView(this.insideLabelView(format, sheetUIContext))
-//            }
-//        }
+        when (insideLabel) {
+            is Just -> {
+                val position = format.insideLabelFormat().elementFormat().position()
+                if (position.isTop() || position.isLeft()) {
+                    layout.addView(this.insideLabelView(format, insideLabel.value.value, sheetUIContext))
+                }
+            }
+        }
 
         layout.addView(this.valueView(numberWidget, format, sheetUIContext))
 
         // > Inside Bottom/Right Label View
-//        if (format.insideLabelString() != null && numberWidget.description() == null) {
-//            if (format.insideLabelFormat().position().isBottom() ||
-//                format.insideLabelFormat().position().isRight()) {
-//                layout.addView(this.insideLabelView(format, sheetUIContext))
-//            }
-//        }
+        when (insideLabel) {
+            is Just -> {
+                val position = format.insideLabelFormat().elementFormat().position()
+                if (position.isBottom() || position.isRight()) {
+                    layout.addView(this.insideLabelView(format, insideLabel.value.value, sheetUIContext))
+                }
+            }
+        }
 
         return layout
     }
@@ -452,21 +459,23 @@ object NumberWidgetView
 //                 this.data().format().background() != BackgroundColor.NONE)
 //        {
 
-//        layout.backgroundColor      = SheetManager.color(
-//                                                sheetUIContext.sheetId,
-//                                                format.widgetFormat().backgroundColorTheme())
+        layout.backgroundColor      = SheetManager.color(
+                                                sheetUIContext.sheetId,
+                                                format.valueFormat().elementFormat().backgroundColorTheme())
 
 //        layout.backgroundResource   = format.valueFormat().height()
 //                                            .resourceId(format.widgetFormat().corners())
 
-//        layout.corners              = format.widgetFormat().corners()
+        layout.corners              = format.valueFormat().elementFormat().corners()
+
+        layout.paddingSpacing       = format.valueFormat().elementFormat().padding()
 
 
-        if (format.valueFormat().elementFormat().height().isWrap())
-        {
-            layout.padding.topDp    = format.valueFormat().elementFormat().padding().topDp()
-            layout.padding.bottomDp = format.valueFormat().elementFormat().padding().bottomDp()
-        }
+//        if (format.valueFormat().elementFormat().height().isWrap())
+//        {
+//            layout.padding.topDp    = format.valueFormat().elementFormat().padding().topDp()
+//            layout.padding.bottomDp = format.valueFormat().elementFormat().padding().bottomDp()
+//        }
 
 
 
@@ -601,8 +610,12 @@ object NumberWidgetView
 //            value.textSpan  = FormattedString.spannableStringBuilder(numberWidget.description(),
 //                                                                     spans)
 //        }
-        var valueString = ""
-        valueString = numberWidget.valueString(sheetContext)
+
+//        var valueString = ""
+//        valueString = numberWidget.valueString(sheetContext)
+
+        val valueDouble = numberWidget.value(sheetContext)
+        val valueString = format.valueFormat().numberFormat().formattedString(valueDouble)
 
         value.text = valueString
 
@@ -721,6 +734,7 @@ object NumberWidgetView
 
 
     private fun insideLabelView(format : NumberWidgetFormat,
+                                labelString : String,
                                 sheetUIContext: SheetUIContext) : TextView
     {
         val label   = TextViewBuilder()
@@ -728,7 +742,7 @@ object NumberWidgetView
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    //label.text              = format.insideLabelString()
+        label.text              = labelString
 
         label.layoutGravity     = format.insideLabelFormat().elementFormat().alignment().gravityConstant() or
                                       Gravity.CENTER_VERTICAL;

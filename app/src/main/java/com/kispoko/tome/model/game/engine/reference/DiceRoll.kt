@@ -34,11 +34,11 @@ sealed class DiceRollReference : ToDocument, SumType, Serializable
 
     companion object : Factory<DiceRollReference>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollReference> =
+        override fun fromDocument(doc : SchemaDoc): ValueParser<DiceRollReference> =
             when (doc.case())
             {
-                "dice_roll"          -> DiceRollReferenceLiteral.fromDocument(doc)
-                "variable_reference" -> DiceRollReferenceVariable.fromDocument(doc)
+                "dice_roll"          -> DiceRollReferenceLiteral.fromDocument(doc.nextCase())
+                "variable_reference" -> DiceRollReferenceVariable.fromDocument(doc.nextCase())
                 else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }

@@ -41,9 +41,9 @@ object OfficialManager
 
     private var gameManifest : GameManifest? = null
 
-    private var amanaceCharacterSheetManifest : AmanaceCharacterSheetManifest? = null
-    private var amanaceCreatureSheetManifest : AmanaceCreatureSheetManifest? = null
-    private var amanaceNPCSheetManifest : AmanaceNPCSheetManifest? = null
+    private var heroesCharacterSheetManifest : HeroesCharacterSheetManifest? = null
+    private var heroesCreatureSheetManifest : HeroesCreatureSheetManifest? = null
+    private var heroesNPCSheetManifest : HeroesNPCSheetManifest? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -189,17 +189,17 @@ object OfficialManager
 
 
     // -----------------------------------------------------------------------------------------
-    // AMANACE
+    // THE MAGIC OF HEROES
     // -----------------------------------------------------------------------------------------
 
-    // Amanace > Sheet Manifest
+    // The Magic of Heroes > Sheet Manifest
     // -----------------------------------------------------------------------------------------
 
-    fun amanaceCharacterSheetManifest(context : Context) : AmanaceCharacterSheetManifest?
+    fun heroesCharacterSheetManifest(context : Context) : HeroesCharacterSheetManifest?
     {
-        if (amanaceCharacterSheetManifest == null)
+        if (heroesCharacterSheetManifest == null)
         {
-            val summaries = loadAmanaceCharacterSheetManifest(context)
+            val summaries = loadHeroesCharacterSheetManifest(context)
             when (summaries) {
                 is Val -> return summaries.value
                 is Err -> {
@@ -215,32 +215,32 @@ object OfficialManager
     }
 
 
-    private fun loadAmanaceCharacterSheetManifest(context : Context)
-                    : AppEff<AmanaceCharacterSheetManifest>
+    private fun loadHeroesCharacterSheetManifest(context : Context)
+                    : AppEff<HeroesCharacterSheetManifest>
     {
-        val filePath = ApplicationAssets.officialAmanaceDirectoryPath +
+        val filePath = ApplicationAssets.officialHeroesDirectoryPath +
                             "/character_sheet_manifest.yaml"
 
         val sheetManifestParser = parseYaml(context.assets.open(filePath),
-                                            AmanaceCharacterSheetManifest.Companion::fromYaml)
+                                            HeroesCharacterSheetManifest.Companion::fromYaml)
         return when (sheetManifestParser)
         {
             is Val -> effValue(sheetManifestParser.value)
             is Err -> effError(AppOfficialError(
-                    AmanaceCharSheetManifestParseError(sheetManifestParser.toString())))
+                    HeroesCharSheetManifestParseError(sheetManifestParser.toString())))
         }
 
     }
 
 
-    // Amanace > Creature Manifest
+    // The Magic of Heroes > Creature Manifest
     // -----------------------------------------------------------------------------------------
 
-    fun amanaceCreatureSheetManifest(context : Context) : AmanaceCreatureSheetManifest?
+    fun heroesCreatureSheetManifest(context : Context) : HeroesCreatureSheetManifest?
     {
-        if (amanaceCreatureSheetManifest == null)
+        if (heroesCreatureSheetManifest == null)
         {
-            val summaries = loadAmanaceCreatureSheetManifest(context)
+            val summaries = loadHeroesCreatureSheetManifest(context)
             when (summaries) {
                 is Val -> return summaries.value
                 is Err -> {
@@ -256,32 +256,32 @@ object OfficialManager
     }
 
 
-    private fun loadAmanaceCreatureSheetManifest(context : Context)
-                                : AppEff<AmanaceCreatureSheetManifest>
+    private fun loadHeroesCreatureSheetManifest(context : Context)
+                                : AppEff<HeroesCreatureSheetManifest>
     {
-        val filePath = ApplicationAssets.officialAmanaceDirectoryPath +
+        val filePath = ApplicationAssets.officialHeroesDirectoryPath +
                                         "/creature_sheet_manifest.yaml"
 
         val sheetManifestParser = parseYaml(context.assets.open(filePath),
-                                            AmanaceCreatureSheetManifest.Companion::fromYaml)
+                                            HeroesCreatureSheetManifest.Companion::fromYaml)
         return when (sheetManifestParser)
         {
             is Val -> effValue(sheetManifestParser.value)
             is Err -> effError(AppOfficialError(
-                    AmanaceCreatureSheetManifestParseError(sheetManifestParser.toString())))
+                    HeroesCreatureSheetManifestParseError(sheetManifestParser.toString())))
         }
 
     }
 
 
-    // Amanace > NPC Manifest
+    // The Magic of Heroes > NPC Manifest
     // -----------------------------------------------------------------------------------------
 
-    fun amanaceNPCSheetManifest(context : Context) : AmanaceNPCSheetManifest?
+    fun heroesNPCSheetManifest(context : Context) : HeroesNPCSheetManifest?
     {
-        if (amanaceNPCSheetManifest == null)
+        if (heroesNPCSheetManifest == null)
         {
-            val summaries = loadAmanaceNPCSheetManifest(context)
+            val summaries = loadHeroesNPCSheetManifest(context)
             when (summaries) {
                 is Val -> return summaries.value
                 is Err -> {
@@ -297,18 +297,18 @@ object OfficialManager
     }
 
 
-    private fun loadAmanaceNPCSheetManifest(context : Context) : AppEff<AmanaceNPCSheetManifest>
+    private fun loadHeroesNPCSheetManifest(context : Context) : AppEff<HeroesNPCSheetManifest>
     {
-        val filePath = ApplicationAssets.officialAmanaceDirectoryPath +
+        val filePath = ApplicationAssets.officialHeroesDirectoryPath +
                                         "/npc_sheet_manifest.yaml"
 
         val sheetManifestParser = parseYaml(context.assets.open(filePath),
-                                            AmanaceNPCSheetManifest.Companion::fromYaml)
+                                            HeroesNPCSheetManifest.Companion::fromYaml)
         return when (sheetManifestParser)
         {
             is Val -> effValue(sheetManifestParser.value)
             is Err -> effError(AppOfficialError(
-                    AmanaceNPCSheetManifestParseError(sheetManifestParser.toString())))
+                    HeroesNPCSheetManifestParseError(sheetManifestParser.toString())))
         }
 
     }

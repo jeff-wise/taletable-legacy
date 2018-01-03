@@ -23,15 +23,14 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.sheets.amanace.AmanaceCharactersFragment
-import com.kispoko.tome.activity.official.sheets.amanace.AmanaceCreaturesFragment
-import com.kispoko.tome.activity.official.sheets.amanace.AmanaceNPCsFragment
+import com.kispoko.tome.activity.official.sheets.amanace.MagicOfHeroesCharactersFragment
+import com.kispoko.tome.activity.official.sheets.amanace.MagicOfHeroesCreaturesFragment
+import com.kispoko.tome.activity.official.sheets.amanace.MagicOfHeroesNPCsFragment
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.model.theme.UIColors
+import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -53,7 +52,7 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
 
     private var officialGameId : GameId? = null
 
-    private val appSettings : AppSettings = AppSettings(ThemeId.Dark)
+    private val appSettings : AppSettings = AppSettings(ThemeId.Light)
 
     private var fab : FloatingActionButton? = null
     private var bottomSheet : LinearLayout? = null
@@ -125,6 +124,12 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
     private fun initializeBottomSheet()
     {
         val bottomSheet = this.findViewById(R.id.bottom_sheet) as LinearLayout
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+//        val bgColor = ThemeManager.color(this.appSettings.themeId, bgColorTheme)
+//        bgColor?.let { bottomSheet.setBackgroundColor(it) }
 
         val behavior = BottomSheetBehavior.from(bottomSheet)
 
@@ -263,10 +268,10 @@ class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
     override fun getItem(position : Int) : Fragment =
         when (position)
         {
-            0    -> AmanaceCharactersFragment.newInstance(appThemeId)
-            1    -> AmanaceNPCsFragment.newInstance(appThemeId)
-            2    -> AmanaceCreaturesFragment.newInstance(appThemeId)
-            else -> AmanaceCharactersFragment.newInstance(appThemeId)
+            0    -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
+            1    -> MagicOfHeroesNPCsFragment.newInstance(appThemeId)
+            2    -> MagicOfHeroesCreaturesFragment.newInstance(appThemeId)
+            else -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
         }
 
 

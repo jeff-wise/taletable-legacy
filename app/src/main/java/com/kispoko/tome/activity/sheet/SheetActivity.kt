@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.*
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
@@ -24,7 +25,9 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.nav.NavigationActivity
+import com.kispoko.tome.R.string.value
+import com.kispoko.tome.activity.nav.SheetNavigationActivity
+import com.kispoko.tome.activity.official.sheets.OpenSheetOfficialSheetsActivity
 import com.kispoko.tome.activity.sheet.state.SheetStateActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
@@ -76,7 +79,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private var pagePagerAdapter : PagePagerAdapter?   = null
     private var viewPager : ViewPager? = null
-    private var bottomNavigation : AHBottomNavigation? = null
+//    private var bottomNavigation : AHBottomNavigation? = null
+
+    private var bottomNavigation : LinearLayout? = null
 
     private var fab : FloatingActionButton? = null
     private var bottomSheet : RelativeLayout? = null
@@ -170,7 +175,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun initializeBottomNavigation()
     {
-        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
+//        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
+//        this.bottomNavigation = bottomNavigation
+        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as LinearLayout
         this.bottomNavigation = bottomNavigation
     }
 
@@ -220,46 +227,69 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
     {
-        val sheetEff = SheetManager.sheet(sheetId)
+        val viewBuilder = BottomNavigationViewBuilder(uiColors, sheetId, this)
 
-        when (sheetEff)
-        {
-            is Val ->
-            {
-                val sheet = sheetEff.value
-                val sections = sheet.sections()
-
-                val section1 = sections[0]
-                val item1 = AHBottomNavigationItem(section1.nameString(),
-                                                   section1.icon().drawableResId())
-                bottomNavigation?.addItem(item1)
-
-                if (sections.size > 1)
-                {
-                    val section2 = sections[1]
-                    val item2 = AHBottomNavigationItem(section2.nameString(),
-                            section2.icon().drawableResId())
-                    bottomNavigation?.addItem(item2)
-                }
-
-                if (sections.size > 2)
-                {
-                    val section3 = sections[2]
-                    val item3 = AHBottomNavigationItem(section3.nameString(),
-                            section3.icon().drawableResId())
-                    bottomNavigation?.addItem(item3)
-                }
+        this.bottomNavigation?.addView(viewBuilder.view())
 
 
-                bottomNavigation?.defaultBackgroundColor =
-                                SheetManager.color(sheetId, uiColors.bottomBarBackgroundColorId())
-                bottomNavigation?.accentColor =
-                                SheetManager.color(sheetId, uiColors.bottomBarActiveColorId())
-                bottomNavigation?.inactiveColor =
-                                SheetManager.color(sheetId, uiColors.bottomBarInactiveColorId())
-            }
-            is Err -> ApplicationLog.error(sheetEff.error)
-        }
+//        val sheetsItem = AHBottomNavigationItem(getString(R.string.sheets),
+//                                                R.drawable.icon_documents)
+//
+//        val campaignsItem = AHBottomNavigationItem(getString(R.string.campaigns),
+//                                                   R.drawable.icon_book)
+//
+//        val gamesItem = AHBottomNavigationItem(getString(R.string.games),
+//                                               R.drawable.icon_adventure)
+//
+//        bottomNavigation?.addItem(sheetsItem)
+//        bottomNavigation?.addItem(campaignsItem)
+//        bottomNavigation?.addItem(gamesItem)
+//
+//        bottomNavigation?.defaultBackgroundColor =
+//                        SheetManager.color(sheetId, uiColors.bottomBarBackgroundColorId())
+//        bottomNavigation?.accentColor =
+//                        SheetManager.color(sheetId, uiColors.bottomBarActiveColorId())
+//        bottomNavigation?.inactiveColor =
+//                        SheetManager.color(sheetId, uiColors.bottomBarInactiveColorId())
+//
+//        bottomNavigation?.disableItemAtPosition(0)
+//        bottomNavigation?.disableItemAtPosition(1)
+//        bottomNavigation?.disableItemAtPosition(2)
+
+//        val sheetEff = SheetManager.sheet(sheetId)
+//
+//        when (sheetEff)
+//        {
+//            is Val ->
+//            {
+//                val sheet = sheetEff.value
+//                val sections = sheet.sections()
+//
+//                val section1 = sections[0]
+//                val item1 = AHBottomNavigationItem(section1.nameString(),
+//                                                   section1.icon().drawableResId())
+//                bottomNavigation?.addItem(item1)
+//
+//                if (sections.size > 1)
+//                {
+//                    val section2 = sections[1]
+//                    val item2 = AHBottomNavigationItem(section2.nameString(),
+//                            section2.icon().drawableResId())
+//                    bottomNavigation?.addItem(item2)
+//                }
+//
+//                if (sections.size > 2)
+//                {
+//                    val section3 = sections[2]
+//                    val item3 = AHBottomNavigationItem(section3.nameString(),
+//                            section3.icon().drawableResId())
+//                    bottomNavigation?.addItem(item3)
+//                }
+//
+//
+//            }
+//            is Err -> ApplicationLog.error(sheetEff.error)
+//        }
 
     }
 
@@ -334,7 +364,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     override fun pagePagerAdatper() : PagePagerAdapter = this.pagePagerAdapter!!
 
 
-    override fun bottomNavigation() : AHBottomNavigation = this.bottomNavigation!!
+//    override fun bottomNavigation() : AHBottomNavigation = this.bottomNavigation!!
 
 
     override fun rootSheetView() : View? = this.viewPager
@@ -894,6 +924,119 @@ class SheetOptionsViewBuilder(val sheetUIContext : SheetUIContext)
 //    }
 }
 
+
+
+class BottomNavigationViewBuilder(val uiColors : UIColors,
+                                  val sheetId : SheetId,
+                                  val context : Context)
+{
+
+
+    fun view() : LinearLayout
+    {
+        val layout = this.viewLayout()
+
+        // Sheets Button
+        val onSheetsClick = View.OnClickListener {
+            val sheetActivity = context as SheetActivity
+            val intent = Intent(sheetActivity, SheetNavigationActivity::class.java)
+            sheetActivity.startActivity(intent)
+        }
+        layout.addView(this.buttonView(R.string.sheets, R.drawable.icon_documents, 26, onSheetsClick))
+
+        // Campaigns Button
+        val onCampaignsClick = View.OnClickListener {  }
+        layout.addView(this.buttonView(R.string.campaigns, R.drawable.icon_adventure, 25, onCampaignsClick))
+
+        // Games Button
+        val onGamesClick = View.OnClickListener {  }
+        layout.addView(this.buttonView(R.string.games, R.drawable.icon_book, 25, onGamesClick))
+
+        return layout
+    }
+
+
+    private fun viewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        val bgColor = SheetManager.color(this.sheetId, this.uiColors.bottomBarBackgroundColorId())
+        layout.backgroundColor  = bgColor
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.padding.topDp    = 6f
+
+        return layout.linearLayout(this.context)
+    }
+
+
+    private fun buttonView(labelStringId : Int,
+                           iconId : Int,
+                           iconSize : Int,
+                           onClick : View.OnClickListener) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout      = LinearLayoutBuilder()
+        val label       = TextViewBuilder()
+        val icon        = ImageViewBuilder()
+
+        val navColor = SheetManager.color(this.sheetId, this.uiColors.bottomBarNavColorId())
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width        = 0
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.weight       = 1f
+
+        layout.gravity      = Gravity.CENTER
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        layout.onClick      = onClick
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId        = labelStringId
+
+        label.color         = navColor
+
+        label.font          = Font.typeface(TextFont.default(),
+                                            TextFontStyle.Light,
+                                            this.context)
+
+        label.sizeSp        = 13f
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp          = iconSize
+        icon.heightDp         = iconSize
+
+        icon.image            = iconId
+
+        icon.color            = navColor
+
+        return layout.linearLayout(this.context)
+    }
+
+
+}
 
 
 //

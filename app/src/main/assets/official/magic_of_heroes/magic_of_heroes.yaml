@@ -6,6 +6,404 @@ engine:
   value_sets:
   - type: value_set_base
     value_set_base:
+      value_set_id: languages
+      label: Languages
+      label_singular: Language
+      description: The spoken languages in the Magic of Heroes.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: common
+          description: Common
+          value: Common
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_common
+              label: Knows Common?
+              description: Can read, write, and speak Common?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: dwarvish
+          description: Dwarvish
+          value: Dwarvish
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_dwarvish
+              label: Knows Dwarvish?
+              description: Can read, write, and speak Dwarvish?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: elvish
+          description: Elvish
+          value: Elvish
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_elvish
+              label: Knows Elvish?
+              description: Can read, write, and speak Elvish?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: giant
+          description: Giant
+          value: Giant
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_giant
+              label: Knows Giant?
+              description: Can read, write, and speak Giant?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: gnomish
+          description: Gnomish
+          value: Gnomish
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_giant
+              label: Knows Gnomish?
+              description: Can read, write, and speak Gnomish?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: goblin
+          description: Goblin
+          value: Goblin
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_goblin
+              label: Knows Goblin?
+              description: Can read, write, and speak Goblin?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: halfling
+          description: Halfling
+          value: Halfling
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_halfling
+              label: Knows Halfling?
+              description: Can read, write, and speak Halfling?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: orc
+          description: Orc
+          value: Orc
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_orc
+              label: Knows Orc?
+              description: Can read, write, and speak Orc?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: abyssal
+          description: Abyssal
+          value: Abyssal
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_abyssal
+              label: Knows Abyssal?
+              description: Can read, write, and speak Abyssal?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: celestial
+          description: Celestial
+          value: Celestial
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_celestial
+              label: Knows Celesital?
+              description: Can read, write, and speak Celestial?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: draconic
+          description: Draconic
+          value: Draconic
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_draconic
+              label: Knows Draconic?
+              description: Can read, write, and speak Draconic?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: deep_speech
+          description: Deep Speech
+          value: Deep Speech
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_deep_speech
+              label: Knows Deep Speech?
+              description: Can read, write, and speak Deep Speech?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: infernal
+          description: Infernal
+          value: Infernal
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_infernal
+              label: Knows Infernal?
+              description: Can read, write, and speak Infernal?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: primordial
+          description: Primordial
+          value: Primordial
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_primordial
+              label: Knows Primordial?
+              description: Can read, write, and speak Primordial?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: sylvan
+          description: Sylvan
+          value: Sylvan
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_sylvan
+              label: Knows Sylvan?
+              description: Can read, write, and speak Sylvan?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+      - type: value_text
+        value_text:
+          value_id: undercommon
+          description: Undercommon
+          value: Undercommon
+          variables:
+          - type: variable_boolean
+            variable_boolean:
+              id: knows_language_undercommon
+              label: Knows Undercommon?
+              description: Can read, write, and speak Undercommon?
+              value:
+                type: boolean_literal
+                boolean_literal: true
+  - type: value_set_base
+    value_set_base:
+      value_set_id: conditions
+      label: Conditions
+      label_singular: Condition
+      description: The conditions.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: blinded
+          description: blinded
+          value: Blinded
+      - type: value_text
+        value_text:
+          value_id: charmed
+          description: Charmed
+          value: Charmed
+      - type: value_text
+        value_text:
+          value_id: defeaned
+          description: Defeaned
+          value: Defeaned
+      - type: value_text
+        value_text:
+          value_id: exhausted
+          description: Exhausted
+          value: Exhausted
+      - type: value_text
+        value_text:
+          value_id: frightened
+          description: Frightened
+          value: Frightened
+      - type: value_text
+        value_text:
+          value_id: grappled
+          description: Grappled
+          value: Grappled
+      - type: value_text
+        value_text:
+          value_id: incapacitated
+          description: Incapacitated
+          value: Incapacitated
+      - type: value_text
+        value_text:
+          value_id: invisible
+          description: Invisible
+          value: Invisible
+      - type: value_text
+        value_text:
+          value_id: paralyzed
+          description: Paralyzed
+          value: Paralyzed
+      - type: value_text
+        value_text:
+          value_id: petrified
+          description: Petrified
+          value: Petrified
+      - type: value_text
+        value_text:
+          value_id: poisoned
+          description: Poisoned
+          value: Poisoned
+      - type: value_text
+        value_text:
+          value_id: prone
+          description: Prone
+          value: Prone
+      - type: value_text
+        value_text:
+          value_id: restrained
+          description: Restrained
+          value: Restrained
+      - type: value_text
+        value_text:
+          value_id: stunned
+          description: Stunned
+          value: Stunned
+      - type: value_text
+        value_text:
+          value_id: unconscious
+          description: Unconscious
+          value: Unconscious
+      - type: value_text
+        value_text:
+          value_id: normal
+          description: Normal
+          value: Normal
+  - type: value_set_base
+    value_set_base:
+      value_set_id: damage_types
+      label: Damage Types
+      label_singular: Damage Type
+      description: The types of damage a creature can take.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: acid
+          description: Acid damage.
+          value: Acid
+      - type: value_text
+        value_text:
+          value_id: bludgeoning
+          description: Bludgeoning damage.
+          value: Bludgeoning
+      - type: value_text
+        value_text:
+          value_id: cold
+          description: Cold damage.
+          value: Cold
+      - type: value_text
+        value_text:
+          value_id: fire
+          description: Fire damage.
+          value: Fire
+      - type: value_text
+        value_text:
+          value_id: force
+          description: Force damage.
+          value: Force
+      - type: value_text
+        value_text:
+          value_id: lightning
+          description: Lightning damage.
+          value: Lightning
+      - type: value_text
+        value_text:
+          value_id: necrotic
+          description: Necrotic damage.
+          value: Necrotic
+      - type: value_text
+        value_text:
+          value_id: piercing
+          description: Piercing damage.
+          value: Piercing
+      - type: value_text
+        value_text:
+          value_id: poison
+          description: Poison damage.
+          value: Poison
+      - type: value_text
+        value_text:
+          value_id: psychic
+          description: Psychic damage.
+          value: Psychic
+      - type: value_text
+        value_text:
+          value_id: radiant
+          description: Radidant damage.
+          value: Radiant
+      - type: value_text
+        value_text:
+          value_id: slashing
+          description: Slashing damage.
+          value: Slashing
+      - type: value_text
+        value_text:
+          value_id: thunder
+          description: Thunder damage.
+          value: Thunder
+      - type: value_text
+        value_text:
+          value_id: nothing
+          description: Nothing
+          value: Nothing
+  - type: value_set_base
+    value_set_base:
       value_set_id: deities
       label: Deities
       label_singular: Deities
@@ -14,15 +412,15 @@ engine:
       values:
       - type: value_text
         value_text:
-          value_id: ferrasada
+          value_id: feyra
           description: 'The goddess of trickery and independence.'
-          value: Ferrasada
+          value: Feyra
           variables:
           - type: variable_boolean
             variable_boolean:
-              id: worships_ferrasada
-              label: Worships Ferrasada?
-              description: Worships Ferrasada?
+              id: worships_feyra
+              label: Worships Feyra?
+              description: Worships Feyra?
               value:
                 type: boolean_literal
                 boolean_literal: true
@@ -241,7 +639,9 @@ engine:
       - type: value_text
         value_text:
           value_id: barbarian
-          description: 'Barbarian'
+          description: >-
+            Warriors that favor strength over finesse, Barbarians are often tempered by tough lives
+            in tribal cultures or harsh environments.
           value: Barbarian
           variables:
           - type: variable_boolean
@@ -255,7 +655,9 @@ engine:
       - type: value_text
         value_text:
           value_id: bard
-          description: 'Bard'
+          description: >-
+            Bards are charismatic entertainers that can manipulate combat almost as well as they
+            can manipulate people.
           value: Bard
           variables:
           - type: variable_boolean
@@ -269,7 +671,9 @@ engine:
       - type: value_text
         value_text:
           value_id: cleric
-          description: 'Cleric'
+          description: >-
+            Clerics are warriors of faith, gaining divine power and spellcasting from their devotion
+            to a particular deity.
           value: Cleric
           variables:
           - type: variable_boolean
@@ -283,7 +687,9 @@ engine:
       - type: value_text
         value_text:
           value_id: druid
-          description: 'Druid'
+          description: >-
+            Tuned to the rhythms of the natural world, Druids draw their power from the sky, the
+            earth, the sea, and the creatures that inhabit it.
           value: Druid
           variables:
           - type: variable_boolean
@@ -297,7 +703,9 @@ engine:
       - type: value_text
         value_text:
           value_id: fighter
-          description: 'Fighter'
+          description: >-
+            Fighters are soliders, mercanaries, or anyone else that solves their problems with a
+            sharp blade or other weapon.
           value: Fighter
           variables:
           - type: variable_boolean
@@ -311,7 +719,9 @@ engine:
       - type: value_text
         value_text:
           value_id: monk
-          description: 'Monk'
+          description: >-
+            Inward-looking and meditative, Monks thrive on inner strength with the attitude that
+            the mind is sharper than any sword and the fist is as strong as steel.
           value: Monk
           variables:
           - type: variable_boolean
@@ -325,7 +735,9 @@ engine:
       - type: value_text
         value_text:
           value_id: paladin
-          description: 'Paladin'
+          description: >-
+            Paladins are champions of a faith or cause with the skills to fight for what they
+            believe in and the courage to pursue every confrontation.
           value: Paladin
           variables:
           - type: variable_boolean
@@ -339,7 +751,9 @@ engine:
       - type: value_text
         value_text:
           value_id: ranger
-          description: 'Ranger'
+          description: >-
+            Resourcefulness and cunning are traits that every Ranger learns in order to survive
+            outside the comforts of society.
           value: Ranger
           variables:
           - type: variable_boolean
@@ -353,7 +767,9 @@ engine:
       - type: value_text
         value_text:
           value_id: rogue
-          description: 'Rogue'
+          description: >-
+            Rogues are thiefs, assassins, pirates, or anyone else that lives an unlawful life,
+            acquiring skills that they don't teach in school or the army.
           value: Rogue
           variables:
           - type: variable_boolean
@@ -367,7 +783,9 @@ engine:
       - type: value_text
         value_text:
           value_id: sorcerer
-          description: 'Sorcerer'
+          description: >-
+            Magic flows through the body and soul of a Sorcerer, coming from a source that is most
+            often unknown.
           value: Sorcerer
           variables:
           - type: variable_boolean
@@ -381,7 +799,9 @@ engine:
       - type: value_text
         value_text:
           value_id: warlock
-          description: 'Warlock'
+          description: >-
+            Warlocks are bonded to a patron that gives them magical power. They comine this magic
+            with their other talents to pursue greater power and appease their patrons.
           value: Warlock
           variables:
           - type: variable_boolean
@@ -395,7 +815,9 @@ engine:
       - type: value_text
         value_text:
           value_id: wizard
-          description: 'Wizard'
+          description: >-
+            Scholars who want to understand the world, Wizards learn magic through years of
+            determined practice and through new or ancient knowledge.
           value: Wizard
           variables:
           - type: variable_boolean
@@ -3346,6 +3768,23 @@ engine:
                 type: boolean_literal
                 boolean_literal: true
   mechanics:
+  - id: weapon_rapier
+    label: 'Weapon: Rapier'
+    description: 'Rapier mechanics.'
+    summary: 'Rapier'
+    category_id: weapon
+    variables:
+    - type: variable_dice_roll
+      variable_dice_roll:
+        id: weapon_rapier_damage
+        label: Rapier Damage
+        description: Rapier Damage Dice
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 8
+              quantity: 1
   - id: dragonborn_ability_score_bonuses
     label: Dragonborn Ability Score Bonuses
     description: 'The ability score bonuses that Dragonborns acquire at first level.'
@@ -4312,8 +4751,26 @@ engine:
         value:
           type: variable_reference
           variable_reference:
-            type: variable_tag
-            variable_tag: initiative_bonus
+            type: variable_id
+            variable_id: initiative_bonus
+  - summation_id: initiative_roll
+    summation_name: Initiative Roll
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: initiative
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
   - summation_id: skill_acrobatics_bonus
     summation_name: Skill (Acrobatics) Bonus
     terms:

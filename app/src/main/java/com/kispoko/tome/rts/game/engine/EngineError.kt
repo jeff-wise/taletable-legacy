@@ -3,7 +3,6 @@ package com.kispoko.tome.rts.game.engine
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.summation.SummationId

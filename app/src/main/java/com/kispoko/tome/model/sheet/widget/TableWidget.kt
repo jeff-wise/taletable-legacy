@@ -16,6 +16,7 @@ import com.kispoko.tome.db.DB_WidgetTableFormatValue
 import com.kispoko.tome.db.widgetTableFormatTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.CollValue
@@ -54,7 +55,6 @@ data class TableWidgetFormat(override val id : UUID,
                              val widgetFormat : WidgetFormat,
                              val headerFormat : TableWidgetRowFormat,
                              val rowFormat : TableWidgetRowFormat,
-                             val divider : Maybe<Divider>,
                              val cellHeight : Height)
                               : ToDocument, ProdType, Serializable
 {
@@ -66,13 +66,11 @@ data class TableWidgetFormat(override val id : UUID,
     constructor(widgetFormat : WidgetFormat,
                 headerFormat : TableWidgetRowFormat,
                 rowFormat : TableWidgetRowFormat,
-                divider : Maybe<Divider>,
                 cellHeight : Height)
         : this(UUID.randomUUID(),
                widgetFormat,
                headerFormat,
                rowFormat,
-               divider,
                cellHeight)
 
 
@@ -82,7 +80,6 @@ data class TableWidgetFormat(override val id : UUID,
         private fun defaultWidgetFormat()      = WidgetFormat.default()
         private fun defaultHeaderFormat()      = TableWidgetRowFormat.default()
         private fun defaultRowFormat()         = TableWidgetRowFormat.default()
-        private fun defaultDivider()           = Nothing<Divider>()
         private fun defaultCellHeight()        = Height.Wrap
 
 
@@ -103,10 +100,6 @@ data class TableWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("row_format"),
                             effValue(defaultRowFormat()),
                             { TableWidgetRowFormat.fromDocument(it) }),
-                      // Divider
-                      split(doc.maybeAt("divider"),
-                            effValue<ValueError,Maybe<Divider>>(defaultDivider()),
-                            { apply(::Just, Divider.fromDocument(it)) }),
                       // Height
                       split(doc.maybeAt("height"),
                             effValue<ValueError,Height>(defaultCellHeight()),
@@ -120,7 +113,6 @@ data class TableWidgetFormat(override val id : UUID,
         fun default() = TableWidgetFormat(defaultWidgetFormat(),
                                           defaultHeaderFormat(),
                                           defaultRowFormat(),
-                                          defaultDivider(),
                                           defaultCellHeight())
 
     }
@@ -136,8 +128,6 @@ data class TableWidgetFormat(override val id : UUID,
         "row_format" to this.rowFormat().toDocument(),
         "height" to this.cellHeight().toDocument()
     ))
-    .maybeMerge(this.divider.apply {
-        Just(Pair("divider", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -151,9 +141,6 @@ data class TableWidgetFormat(override val id : UUID,
 
 
     fun rowFormat() : TableWidgetRowFormat = this.rowFormat
-
-
-    fun divider() : Maybe<Divider> = this.divider
 
 
     fun cellHeight() : Height = this.cellHeight
@@ -170,11 +157,10 @@ data class TableWidgetFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetTableFormatValue =
-        RowValue5(widgetTableFormatTable,
+        RowValue4(widgetTableFormatTable,
                   ProdValue(this.widgetFormat),
                   ProdValue(this.headerFormat),
                   ProdValue(this.rowFormat),
-                  MaybeProdValue(this.divider),
                   PrimValue(this.cellHeight))
 
 }
@@ -383,8 +369,8 @@ object TableWidgetView
         // Divider
         // -------------------------------------------------------------------------------------
 
-        val divider = format.divider()
-        when (divider)
+        val bottomBorder = format.rowFormat().textFormat().elementFormat().border().bottom()
+        when (bottomBorder)
         {
             is Just ->
             {
@@ -392,7 +378,7 @@ object TableWidgetView
                                                                 R.drawable.table_row_divider)
 
                 val dividerColor = SheetManager.color(sheetUIContext.sheetId,
-                                                      divider.value.colorTheme())
+                                                      bottomBorder.value.colorTheme())
 
                 dividerDrawable.colorFilter =
                         PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)

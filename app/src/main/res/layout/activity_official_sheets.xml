@@ -91,7 +91,7 @@
     <LinearLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:padding="0dp"
         android:layout_margin="0dp"
         android:orientation="vertical"
@@ -112,8 +112,9 @@
         android:src="@drawable/ic_fab_random"
         app:layout_anchor="@id/bottom_sheet"
         app:layout_anchorGravity="top|end"
-        app:backgroundTint="@color/dark_theme_light_green_13"
-        app:rippleColor="#FFF" />
+        app:backgroundTint="@color/light_theme_green"
+        app:rippleColor="#FFF"
+        android:focusable="true" />
 
 
 

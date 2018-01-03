@@ -183,18 +183,11 @@ types:
       presence: required
       description: >
         Bottom bar background color.
-    - name: bottom_bar_active
+    - name: bottom_bar_nav
       type:
         type: custom_type
         custom_type: color_id
       presence: required
       description: >
         Bottom bar selected elements color.
-    - name: bottom_bar_inactive
-      type:
-        type: custom_type
-        custom_type: color_id
-      presence: required
-      description: >
-        Bottom bar deselected elements color.
 constraints:

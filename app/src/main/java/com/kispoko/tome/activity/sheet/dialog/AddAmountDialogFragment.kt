@@ -18,7 +18,6 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.dice.DiceQuantity
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -27,7 +26,6 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.util.Util
 import java.io.Serializable
 
 
@@ -334,7 +332,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        name.font               = Font.typeface(TextFont.FiraSans,
+        name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
@@ -392,8 +390,8 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         value.color             = inActiveValueColor
 
-        value.font              = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Light,
+        value.font              = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
         value.sizeSp            = 32f

@@ -11,20 +11,20 @@ import effect.apply
 // CHARACTER SHEETS
 // ---------------------------------------------------------------------------------------------
 
-data class AmanaceCharacterSheetManifest(val summaries : List<AmanaceCharacterSheetSummary>)
+data class HeroesCharacterSheetManifest(val summaries : List<HeroesCharacterSheetSummary>)
 {
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceCharacterSheetManifest> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesCharacterSheetManifest> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::AmanaceCharacterSheetManifest,
+                    apply(::HeroesCharacterSheetManifest,
                           // Summaries
                           yamlValue.array("summaries") ap {
-                              it.mapApply { AmanaceCharacterSheetSummary.fromYaml(it) }}
+                              it.mapApply { HeroesCharacterSheetSummary.fromYaml(it) }}
                     )
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
@@ -35,23 +35,23 @@ data class AmanaceCharacterSheetManifest(val summaries : List<AmanaceCharacterSh
 
 
 /**
- * Amanace Character Sheet Summary
+ * Heroes Character Sheet Summary
  */
-data class AmanaceCharacterSheetSummary(val name : String,
-                                        val description : String,
-                                        val race : String,
-                                        val _class : String,
-                                        val variants : List<AmanaceCharacterSheetVariant>)
+data class HeroesCharacterSheetSummary(val name : String,
+                                       val description : String,
+                                       val race : String,
+                                       val _class : String,
+                                       val variants : List<HeroesCharacterSheetVariant>)
 {
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceCharacterSheetSummary> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesCharacterSheetSummary> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::AmanaceCharacterSheetSummary,
+                    apply(::HeroesCharacterSheetSummary,
                           // Name
                           yamlValue.text("name"),
                           // Description
@@ -62,7 +62,7 @@ data class AmanaceCharacterSheetSummary(val name : String,
                           yamlValue.text("class"),
                           // Variant
                           yamlValue.array("variants") ap {
-                              it.mapApply { AmanaceCharacterSheetVariant.fromYaml(it) }}
+                              it.mapApply { HeroesCharacterSheetVariant.fromYaml(it) }}
                     )
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
@@ -72,21 +72,21 @@ data class AmanaceCharacterSheetSummary(val name : String,
 }
 
 
-data class AmanaceCharacterSheetVariant(val id : String, val label : String)
+data class HeroesCharacterSheetVariant(val id : String, val label : String)
 {
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceCharacterSheetVariant> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesCharacterSheetVariant> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::AmanaceCharacterSheetVariant,
+                    apply(::HeroesCharacterSheetVariant,
                            // Id
                            yamlValue.text("id"),
                            // Label
-                           yamlValue.text("labelString")
+                           yamlValue.text("label")
                            )
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
@@ -101,22 +101,22 @@ data class AmanaceCharacterSheetVariant(val id : String, val label : String)
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Amanace Creature Sheet Manifest
+ * Heroes Creature Sheet Manifest
  */
-data class AmanaceCreatureSheetManifest(val summaries : List<AmanaceCreatureSheetSummary>)
+data class HeroesCreatureSheetManifest(val summaries : List<HeroesCreatureSheetSummary>)
 {
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceCreatureSheetManifest> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesCreatureSheetManifest> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::AmanaceCreatureSheetManifest,
+                    apply(::HeroesCreatureSheetManifest,
                           // Summaries
                           yamlValue.array("summaries") ap {
-                              it.mapApply { AmanaceCreatureSheetSummary.fromYaml(it) }}
+                              it.mapApply { HeroesCreatureSheetSummary.fromYaml(it) }}
                     )
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
@@ -127,9 +127,9 @@ data class AmanaceCreatureSheetManifest(val summaries : List<AmanaceCreatureShee
 
 
 /**
- * Amanace Creature Sheet Summary
+ * Heroes Creature Sheet Summary
  */
-data class AmanaceCreatureSheetSummary(val name : String,
+data class HeroesCreatureSheetSummary(val name : String,
                                        val type : String,
                                        val description : String,
                                        val challengeRating : Int)
@@ -137,12 +137,12 @@ data class AmanaceCreatureSheetSummary(val name : String,
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceCreatureSheetSummary> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesCreatureSheetSummary> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::AmanaceCreatureSheetSummary,
+                    apply(::HeroesCreatureSheetSummary,
                           // Name
                           yamlValue.text("name"),
                           // Type
@@ -167,22 +167,22 @@ data class AmanaceCreatureSheetSummary(val name : String,
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Amanace NPC Sheet Manifest
+ * Heroes NPC Sheet Manifest
  */
-data class AmanaceNPCSheetManifest(val summaries : List<AmanaceNPCSheetSummary>)
+data class HeroesNPCSheetManifest(val summaries : List<HeroesNPCSheetSummary>)
 {
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceNPCSheetManifest> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesNPCSheetManifest> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::AmanaceNPCSheetManifest,
+                    apply(::HeroesNPCSheetManifest,
                           // Summaries
                           yamlValue.array("summaries") ap {
-                              it.mapApply { AmanaceNPCSheetSummary.fromYaml(it) }}
+                              it.mapApply { HeroesNPCSheetSummary.fromYaml(it) }}
                     )
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
@@ -193,9 +193,9 @@ data class AmanaceNPCSheetManifest(val summaries : List<AmanaceNPCSheetSummary>)
 
 
 /**
- * Amanace NPC Sheet Summary
+ * Heroes NPC Sheet Summary
  */
-data class AmanaceNPCSheetSummary(val name : String,
+data class HeroesNPCSheetSummary(val name : String,
                                   val type : String,
                                   val description : String,
                                   val challengeRating : Int)
@@ -203,12 +203,12 @@ data class AmanaceNPCSheetSummary(val name : String,
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<AmanaceNPCSheetSummary> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesNPCSheetSummary> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::AmanaceNPCSheetSummary,
+                    apply(::HeroesNPCSheetSummary,
                           // Name
                           yamlValue.text("name"),
                           // Type

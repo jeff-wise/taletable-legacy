@@ -213,6 +213,20 @@ data class DiceRoll(override val id : UUID,
         return diceString + modifierString
     }
 
+
+    fun modifierString() : String
+    {
+        val modifierSum = this.modifierValues().sum()
+
+        var modifierString = ""
+        if (modifierSum > 0)
+            modifierString = "+" + modifierSum.toString()
+        else if (modifierSum < 0)
+            modifierString = "-" + Math.abs(modifierSum).toString()
+
+        return modifierString
+    }
+
 }
 
 

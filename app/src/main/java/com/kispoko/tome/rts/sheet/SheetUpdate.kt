@@ -50,6 +50,14 @@ data class WidgetUpdateEvent(val widget : Widget, val sheetId : SheetId)
 sealed class WidgetUpdate(open val widgetId : UUID) : SheetUpdate()
 
 
+// List Widget Update
+sealed class WidgetUpdateListWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+
+data class ListWidgetUpdateSetCurrentValue(
+        override val widgetId : UUID,
+        val newCurrentValue : List<String>) : WidgetUpdateListWidget(widgetId)
+
+
 // Points Widget Update
 sealed class WidgetUpdatePointsWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
 
@@ -113,6 +121,8 @@ data class TextWidgetUpdateSetText(override val widgetId : UUID,
 sealed class UpdateTarget : Serializable
 
 data class UpdateTargetPointsWidget(val pointsWidgetId : UUID) : UpdateTarget()
+
+data class UpdateTargetListWidget(val listWidgetId : UUID) : UpdateTarget()
 
 data class UpdateTargetNumberCell(val tableWidgetId : UUID, val cellId : UUID) : UpdateTarget()
 

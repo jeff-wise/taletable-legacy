@@ -9,6 +9,8 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.RowValue8
+import com.kispoko.tome.lib.orm.RowValue9
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
@@ -39,6 +41,8 @@ data class TextFormat(override val id : UUID,
                       private val fontStyle : TextFontStyle,
                       private val isUnderlined : IsUnderlined,
                       private val numberFormat : NumberFormat,
+                      private val rollFormat : RollFormat,
+                      private val iconFormat : IconFormat,
                       private val elementFormat : ElementFormat)
                       : ToDocument, ProdType, Serializable
 {
@@ -53,6 +57,8 @@ data class TextFormat(override val id : UUID,
                 fontStyle : TextFontStyle,
                 isUnderlined : IsUnderlined,
                 numberFormat : NumberFormat,
+                rollFormat : RollFormat,
+                iconFormat : IconFormat,
                 elementFormat : ElementFormat)
         : this(UUID.randomUUID(),
                colorTheme,
@@ -61,19 +67,23 @@ data class TextFormat(override val id : UUID,
                fontStyle,
                isUnderlined,
                numberFormat,
+               rollFormat,
+               iconFormat,
                elementFormat)
 
 
     companion object : Factory<TextFormat>
     {
 
-        private fun defaultColorTheme()          = ColorTheme.black
-        private fun defaultTextSize()            = TextSize(16.0f)
-        private fun defaultFont()                = TextFont.Cabin
-        private fun defaultFontStyle()           = TextFontStyle.Regular
-        private fun defaultIsUnderlined()        = IsUnderlined(false)
-        private fun defaultNumberFormat()        = NumberFormat.Normal
-        private fun defaultElementFormat()       = ElementFormat.default()
+        private fun defaultColorTheme()     = ColorTheme.black
+        private fun defaultTextSize()       = TextSize(16.0f)
+        private fun defaultFont()           = TextFont.Cabin
+        private fun defaultFontStyle()      = TextFontStyle.Regular
+        private fun defaultIsUnderlined()   = IsUnderlined(false)
+        private fun defaultNumberFormat()   = NumberFormat.Normal
+        private fun defaultRollFormat()     = RollFormat.Normal
+        private fun defaultIconFormat()     = IconFormat.default()
+        private fun defaultElementFormat()  = ElementFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextFormat> = when (doc)
@@ -96,15 +106,23 @@ data class TextFormat(override val id : UUID,
                       // Font Style
                       split(doc.maybeAt("font_style"),
                             effValue<ValueError,TextFontStyle>(defaultFontStyle()),
-                           { TextFontStyle.fromDocument(it) }),
+                            { TextFontStyle.fromDocument(it) }),
                       // Is Underlined?
                       split(doc.maybeAt("is_underlined"),
                             effValue(defaultIsUnderlined()),
                             { IsUnderlined.fromDocument(it) }),
                       // Number Format
                       split(doc.maybeAt("number_format"),
-                            effValue<ValueError,NumberFormat>(NumberFormat.Normal),
+                            effValue<ValueError,NumberFormat>(defaultNumberFormat()),
                             { NumberFormat.fromDocument(it) }),
+                      // Roll Format
+                      split(doc.maybeAt("roll_format"),
+                            effValue<ValueError,RollFormat>(defaultRollFormat()),
+                            { RollFormat.fromDocument(it) }),
+                      // Icon Format
+                      split(doc.maybeAt("icon_format"),
+                            effValue<ValueError,IconFormat>(defaultIconFormat()),
+                            { IconFormat.fromDocument(it) }),
                       // Element Format
                       split(doc.maybeAt("element_format"),
                             effValue(defaultElementFormat()),
@@ -121,6 +139,8 @@ data class TextFormat(override val id : UUID,
                                   defaultFontStyle(),
                                   defaultIsUnderlined(),
                                   defaultNumberFormat(),
+                                  defaultRollFormat(),
+                                  defaultIconFormat(),
                                   defaultElementFormat())
 
     }
@@ -137,6 +157,8 @@ data class TextFormat(override val id : UUID,
         "font_style" to this.fontStyle.toDocument(),
         "is_underlined" to this.isUnderlined.toDocument(),
         "number_format" to this.numberFormat.toDocument(),
+        "roll_format" to this.rollFormat.toDocument(),
+        "icon_format" to this.iconFormat.toDocument(),
         "element_format" to this.elementFormat.toDocument()
     ))
 
@@ -163,6 +185,12 @@ data class TextFormat(override val id : UUID,
     fun numberFormat() : NumberFormat = this.numberFormat
 
 
+    fun rollFormat() : RollFormat = this.rollFormat
+
+
+    fun iconFormat() : IconFormat = this.iconFormat
+
+
     fun elementFormat() : ElementFormat = this.elementFormat
 
 
@@ -177,12 +205,14 @@ data class TextFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_TextFormatValue =
-        RowValue7(textFormatTable, PrimValue(this.colorTheme),
+        RowValue9(textFormatTable, PrimValue(this.colorTheme),
                                    PrimValue(this.size),
                                    PrimValue(this.font),
                                    PrimValue(this.fontStyle),
                                    PrimValue(this.isUnderlined),
                                    PrimValue(this.numberFormat),
+                                   PrimValue(this.rollFormat),
+                                   ProdValue(this.iconFormat),
                                    ProdValue(this.elementFormat))
 
 
@@ -491,7 +521,7 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
         // TO DOCUMENT
         // -------------------------------------------------------------------------------------
 
-        override fun toDocument() = DocText("semi-bold")
+        override fun toDocument() = DocText("semi_bold")
 
     }
 

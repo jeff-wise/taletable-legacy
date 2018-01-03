@@ -4,15 +4,16 @@ package com.kispoko.tome.model.sheet.widget
 
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
 import android.support.graphics.drawable.VectorDrawableCompat
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
+import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -23,7 +24,6 @@ import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
@@ -38,9 +38,8 @@ import java.io.Serializable
 import java.util.*
 import com.kispoko.tome.activity.sheet.dialog.*
 import com.kispoko.tome.db.*
-import com.kispoko.tome.lib.orm.RowValue2
-import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.*
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
@@ -48,13 +47,15 @@ import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.theme.ColorTheme
 
 
+
 /**
  * Story Widget Format
  */
 data class StoryWidgetFormat(override val id : UUID,
                              val widgetFormat : WidgetFormat,
-                             val lineSpacing : LineSpacing,
-                             val textSize : Maybe<TextSize>)
+                             val lineHeight : Maybe<LineHeight>,
+                             val lineSpacing : Maybe<LineSpacing>,
+                             val textFormat : TextFormat)
                               : ToDocument, ProdType, Serializable
 {
 
@@ -63,20 +64,23 @@ data class StoryWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                lineSpacing : LineSpacing,
-                textSize : Maybe<TextSize>)
+                lineHeight : Maybe<LineHeight>,
+                lineSpacing : Maybe<LineSpacing>,
+                textFormat : TextFormat)
         : this(UUID.randomUUID(),
                widgetFormat,
+               lineHeight,
                lineSpacing,
-               textSize)
+               textFormat)
 
 
     companion object : Factory<StoryWidgetFormat>
     {
 
-        private fun defaultWidgetFormat()      = WidgetFormat.default()
-        private fun defaultLineSpacing()       = LineSpacing.default()
-        private fun defaultTextSize()          = Nothing<TextSize>()
+        private fun defaultWidgetFormat()   = WidgetFormat.default()
+        private fun defaultLineHeight()     = Nothing<LineHeight>()
+        private fun defaultLineSpacing()    = Nothing<LineSpacing>()
+        private fun defaultTextFormat()     = TextFormat.default()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<StoryWidgetFormat> = when (doc)
@@ -88,14 +92,18 @@ data class StoryWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("widget_format"),
                             effValue(defaultWidgetFormat()),
                             { WidgetFormat.fromDocument(it) }),
+                      // Line Height
+                      split(doc.maybeAt("line_height"),
+                            effValue<ValueError,Maybe<LineHeight>>(defaultLineHeight()),
+                            { apply(::Just, LineHeight.fromDocument(it)) }),
                       // Line Spacing
                       split(doc.maybeAt("line_spacing"),
-                            effValue(defaultLineSpacing()),
-                            { LineSpacing.fromDocument(it) }),
-                      // Text Size
-                      split(doc.maybeAt("text_size"),
-                            effValue<ValueError,Maybe<TextSize>>(Nothing()),
-                            { effApply(::Just, TextSize.fromDocument(it)) })
+                            effValue<ValueError,Maybe<LineSpacing>>(defaultLineSpacing()),
+                            { apply(::Just, LineSpacing.fromDocument(it)) }),
+                      // Text Format
+                      split(doc.maybeAt("text_format"),
+                            effValue(defaultTextFormat()),
+                            { TextFormat.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -103,8 +111,9 @@ data class StoryWidgetFormat(override val id : UUID,
 
 
         fun default() = StoryWidgetFormat(defaultWidgetFormat(),
+                                          defaultLineHeight(),
                                           defaultLineSpacing(),
-                                          defaultTextSize())
+                                          defaultTextFormat())
 
     }
 
@@ -114,8 +123,7 @@ data class StoryWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "widget_format" to this.widgetFormat().toDocument(),
-        "line_spacing" to this.lineSpacing().toDocument()
+        "widget_format" to this.widgetFormat().toDocument()
     ))
 
 
@@ -126,13 +134,13 @@ data class StoryWidgetFormat(override val id : UUID,
     fun widgetFormat() : WidgetFormat = this.widgetFormat
 
 
-    fun lineSpacing() : LineSpacing = this.lineSpacing
+    fun lineSpacing() : Maybe<LineSpacing> = this.lineSpacing
 
 
-    fun lineSpacingFloat() : Float = this.lineSpacing.value
+    fun lineHeight() : Maybe<LineHeight> = this.lineHeight
 
 
-    fun textSize() : Maybe<TextSize> = this.textSize
+    fun textFormat() : TextFormat = this.textFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -146,9 +154,11 @@ data class StoryWidgetFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetStoryFormatValue =
-        RowValue2(widgetStoryFormatTable,
+        RowValue4(widgetStoryFormatTable,
                   ProdValue(this.widgetFormat),
-                  PrimValue(this.lineSpacing))
+                  MaybePrimValue(this.lineHeight),
+                  MaybePrimValue(this.lineSpacing),
+                  ProdValue(this.textFormat))
 
 }
 
@@ -721,12 +731,49 @@ data class LineSpacing(val value : Float) : ToDocument, SQLSerializable, Seriali
 }
 
 
-object StoryWidgetView
+/**
+ * Line Height
+ */
+data class LineHeight(val value : Float) : ToDocument, SQLSerializable, Serializable
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
-    fun view(storyWidget : StoryWidget,
-             sheetUIContext : SheetUIContext) : View
+    companion object : Factory<LineHeight>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<LineHeight> = when (doc)
+        {
+            is DocNumber -> effValue(LineHeight(doc.number.toFloat()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+
+        fun default() = LineHeight(1.0f)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLReal({this.value.toDouble()})
+
+}
+
+
+
+class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext : SheetUIContext)
+{
+
+    fun view() : View
     {
         val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
 
@@ -740,7 +787,7 @@ object StoryWidgetView
             val layoutViewId = Util.generateViewId()
             storyWidget.layoutViewId = layoutViewId
             layout.id                = layoutViewId
-            val spanView = this.storySpannableView(storyWidget, sheetUIContext)
+            val spanView = storySpannableView(storyWidget, sheetUIContext)
 
             layout.addView(spanView)
         }
@@ -772,320 +819,6 @@ object StoryWidgetView
     }
 
 
-    fun storySpannableView(storyWidget : StoryWidget,
-                           sheetUIContext : SheetUIContext) : TextView
-    {
-        val story           = TextViewBuilder()
-
-        story.width         = LinearLayout.LayoutParams.MATCH_PARENT
-//        story.widthDp       = 300
-        story.height        = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        story.textSpan      = this.spannableStringBuilder(storyWidget.story(),
-                                                          storyWidget.id,
-                                                          sheetUIContext)
-
-        story.lineSpacingAdd    = 1f
-        story.lineSpacingMult   = 1.4f
-
-
-        val maybeTextSize = storyWidget.format.textSize()
-        when (maybeTextSize) {
-            is Just -> story.sizeSp = maybeTextSize.value.sp
-        }
-
-        story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
-        story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
-
-        when (storyWidget.format().widgetFormat().elementFormat().verticalAlignment()) {
-            is VerticalAlignment.Middle -> {
-                story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant() or
-                                        Gravity.CENTER_VERTICAL
-                story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant() or
-                                        Gravity.CENTER_VERTICAL
-            }
-        }
-
-        story.movementMethod    = LinkMovementMethod.getInstance()
-
-        val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
-                sheetUIContext.context as SheetActivity,
-                storyWidget,
-                SheetContext(sheetUIContext))
-        story.onTouch   = View.OnTouchListener { _, event ->
-            gestureDetector.onTouchEvent(event)
-            false
-        }
-
-        return story.textView(sheetUIContext.context)
-    }
-
-
-    data class Phrase(val storyPart : StoryPart,
-                      val text : String,
-                      val partIndex : Int,
-                      val start : Int,
-                      val end : Int)
-
-
-    fun spannableStringBuilder(storyParts : List<StoryPart>,
-                               storyWidgetId : UUID,
-                               sheetUIContext : SheetUIContext) : SpannableStringBuilder
-    {
-
-        val builder = SpannableStringBuilder()
-
-        val sheetContext = SheetContext(sheetUIContext)
-
-        val phrases : MutableList<Phrase> = mutableListOf()
-
-        var index = 0
-        storyParts.forEachIndexed { partIndex, storyPart ->
-
-            when (storyPart)
-            {
-                is StoryPartSpan ->
-                {
-                    //val text = storyPart.textString()
-                    words(storyPart.textString()).forEach {
-                        builder.append(it)
-                        val textLen = it.length
-                        phrases.add(Phrase(storyPart, it, partIndex, index, index + textLen))
-                        index += textLen
-                    }
-                }
-                is StoryPartVariable ->
-                {
-                    val valueVariableEff = storyPart.valueVariable(sheetContext)
-                    // TODO move this logic in variable
-                    val text = when (valueVariableEff)
-                    {
-                        is effect.Val ->
-                        {
-                            val valueVar = valueVariableEff.value
-                            when (valueVar)
-                            {
-                                is NumberVariable -> {
-                                    val number = valueVar.valueOrZero(sheetContext)
-                                    storyPart.textFormat().numberFormat().formattedString(number)
-                                }
-                                else -> storyPart.valueString(SheetContext(sheetUIContext))
-                            }
-                        }
-                        is Err -> {
-                            ApplicationLog.error(valueVariableEff.error)
-                            ""
-                        }
-
-                    }
-
-//                    var textLen = 0
-//                    if (storyPart.textFormat.elementFormat().backgroundColorTheme() != ColorTheme.transparent) {
-//                        builder.append(" $text ")
-//                        textLen = text.length + 2
-//                    }
-//                    else {
-//                        builder.append(text)
-//                        textLen = text.length
-//                    }
-
-                    val nbspSpacing = "\u202F\u202F";
-                    val paddedText = "$nbspSpacing$text$nbspSpacing"
-                    val textLen = paddedText.length
-                    builder.append(paddedText)
-
-                    phrases.add(Phrase(storyPart, paddedText, partIndex, index, index + textLen))
-                    index += textLen
-                }
-                is StoryPartIcon ->
-                {
-                    builder.append(" ")
-                    phrases.add(Phrase(storyPart, " ", partIndex, index, index + 1))
-                    index += 1
-                }
-                is StoryPartAction ->
-                {
-                    val text = storyPart.textString()
-                    builder.append("  " + text)
-                    val textLen = text.length + 2
-                    phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
-                    index += textLen
-                }
-            }
-        }
-
-        phrases.forEach { (storyPart, _, partIndex, start, end) ->
-
-            //Log.d("***STORY WIDGET", "start -> end: " + start.toString() + " " + end.toString())
-
-            when (storyPart)
-            {
-                is StoryPartSpan ->
-                {
-                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
-                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
-                }
-                is StoryPartVariable ->
-                {
-
-                    val clickSpan = object: ClickableSpan()
-                    {
-                        override fun onClick(view : View?)
-                        {
-                            val variable = storyPart.variable(SheetContext(sheetUIContext))
-                            if (variable != null) {
-                                openVariableEditorDialog(
-                                        variable,
-                                        storyPart.numericEditorType(),
-                                        UpdateTargetStoryWidgetPart(storyWidgetId, partIndex),
-                                        sheetUIContext)
-                            }
-
-                        }
-
-                        override fun updateDrawState(ds: TextPaint?) {
-                            //super.updateDrawState(ds)
-                        }
-                    }
-
-                    //builder.setSpan(clickSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-
-                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
-                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
-                }
-                is StoryPartIcon ->
-                {
-                    val vectorDrawable =
-                            VectorDrawableCompat.create(sheetUIContext.context.resources,
-                                                        storyPart.icon().drawableResId(), null)
-
-                    vectorDrawable?.setBounds(
-                            0,
-                            0,
-                            Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
-                            Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
-
-                    val color = SheetManager.color(sheetUIContext.sheetId,
-                                                   storyPart.iconFormat().colorTheme())
-                    vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
-                                                                        PorterDuff.Mode.SRC_IN)
-
-                    val imageSpan = CenteredImageSpan(vectorDrawable)
-                    builder.setSpan(imageSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                }
-                is StoryPartAction ->
-                {
-                    val vectorDrawable =
-                            VectorDrawableCompat.create(sheetUIContext.context.resources,
-                                                        R.drawable.icon_dice_roll_filled,
-                                                        null)
-
-                    vectorDrawable?.setBounds(
-                            0,
-                            0,
-                            Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
-                            Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
-
-                    val color = SheetManager.color(sheetUIContext.sheetId,
-                                                   storyPart.iconFormat().colorTheme())
-                    vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
-                                                                        PorterDuff.Mode.SRC_IN)
-
-                    val imageSpan = CenteredImageSpan(vectorDrawable)
-                    builder.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-
-                    this.formatSpans(storyPart.textFormat(), sheetUIContext).forEach {
-                        builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
-
-                    val procedureId = storyPart.action().procedureId()
-                    val summationId = storyPart.action().rollSummationId()
-//                    if (procedureId != null) {
-//                        val clickSpan = object : ClickableSpan() {
-//                            override fun onClick(view: View?) {
-//                            }
-//
-//                            override fun updateDrawState(ds: TextPaint?) {
-//                            }
-//                        }
-//
-//                        builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-//                    }
-//                    else if (summationId != null)
-//                    {
-
-                    when (summationId)
-                    {
-                        is Just ->
-                        {
-                            val diceRoll = SheetManager.summation(summationId.value, sheetContext)
-                                                        .apply { it.diceRoll(sheetContext) }
-
-                            when (diceRoll)
-                            {
-                                is effect.Val ->
-                                {
-                                    val sheetActivity = sheetUIContext.context as SheetActivity
-                                    val clickSpan = object : ClickableSpan() {
-                                        override fun onClick(view: View?) {
-                                            val dialog = DiceRollDialog.newInstance(
-                                                                        diceRoll.value,
-                                                                        Nothing(),
-                                                                        SheetContext(sheetUIContext))
-                                            dialog.show(sheetActivity.supportFragmentManager, "")
-                                        }
-
-                                        override fun updateDrawState(ds: TextPaint?) {
-                                        }
-                                    }
-
-                                    builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                                }
-                                is Err -> ApplicationLog.error(diceRoll.error)
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
-        return builder
-    }
-
-
-    fun formatSpans(textStyle : TextFormat, sheetUIContext : SheetUIContext) : List<Any>
-    {
-        val sizePx = Util.spToPx(textStyle.sizeSp(), sheetUIContext.context)
-        val sizeSpan = AbsoluteSizeSpan(sizePx)
-
-        val typeface = Font.typeface(textStyle.font(), textStyle.fontStyle(), sheetUIContext.context)
-
-        val typefaceSpan = CustomTypefaceSpan(typeface)
-
-        var color = SheetManager.color(sheetUIContext.sheetId, textStyle.colorTheme())
-        val colorSpan = ForegroundColorSpan(color)
-
-        var bgColor = SheetManager.color(sheetUIContext.sheetId,
-                                         textStyle.elementFormat().backgroundColorTheme())
-        //val bgColorSpan = BackgroundColorSpan(bgColor)
-
-
-//        val isBgColor = textStyle.elementFormat().backgroundColorTheme() != ColorTheme.transparent
-//        if (isBgColor) {
-            val bgSpan = RoundedBackgroundSpan(110, color, bgColor) // , color, sizePx)
-            //Log.d("***STORY WIDGET", "color: " + bgColor.toString())
-            return listOf(bgSpan)
-//        }
-//        else {
-//            return listOf(sizeSpan, typefaceSpan)
-//        }
-
-
-    }
-
 
     fun storyFlexView(storyWidget : StoryWidget,
                       sheetUIContext : SheetUIContext) : FlexboxLayout
@@ -1101,7 +834,7 @@ object StoryWidgetView
             {
                 is StoryPartSpan ->
                 {
-                    this.words(storyPart.textString()).forEach {
+                    words(storyPart.textString()).forEach {
                         layout.addView(this.wordView(it, storyWidget.format(),
                                                      storyPart, sheetUIContext))
                     }
@@ -1131,7 +864,7 @@ object StoryWidgetView
 
                     }
 
-                    this.words(text).forEach {
+                    words(text).forEach {
                         layout.addView(this.wordVariableView(it,
                                                              storyWidget.format(),
                                                              storyPart,
@@ -1149,16 +882,6 @@ object StoryWidgetView
 
         return layout
     }
-
-
-    fun words(valueString : String) : List<String> =
-        valueString.split(" ").map { word -> "$word " }
-//    valueString.split(" ").mapIndexed { index, word ->
-//            if (index != 0)
-//                " " + word
-//            else
-//                word
-//        }
 
 
     fun storyViewLayout(format : StoryWidgetFormat, sheetUIContext : SheetUIContext) : FlexboxLayout
@@ -1207,9 +930,9 @@ object StoryWidgetView
 
         val formatPadding   = storyPartSpan.textFormat().elementFormat().padding()
         val padding         = Spacing(formatPadding.leftDp().toDouble(),
-                                      formatPadding.topDp().toDouble() + format.lineSpacingFloat(),
+                                      formatPadding.topDp().toDouble(), // + format.lineSpacingFloat(),
                                       formatPadding.rightDp().toDouble(),
-                                      formatPadding.bottomDp().toDouble() + format.lineSpacingFloat())
+                                      formatPadding.bottomDp().toDouble())// + format.lineSpacingFloat())
 
         text.paddingSpacing = padding
         text.marginSpacing  = storyPartSpan.textFormat().elementFormat().margins()
@@ -1229,6 +952,8 @@ object StoryWidgetView
     {
         val text = TextViewBuilder()
 
+        val wordFormat = storyPart.textFormat()
+
         text.layoutType     = LayoutType.FLEXBOX
         text.width          = FlexboxLayout.LayoutParams.WRAP_CONTENT
         text.height         = FlexboxLayout.LayoutParams.WRAP_CONTENT
@@ -1239,13 +964,19 @@ object StoryWidgetView
         text.id            = storyPart.viewId
 
         val formatPadding   = storyPart.textFormat().elementFormat().padding()
-        val padding         = Spacing(formatPadding.leftDp().toDouble(),
-                                    formatPadding.topDp().toDouble() + format.lineSpacingFloat(),
-                                    formatPadding.rightDp().toDouble(),
-                                    formatPadding.bottomDp().toDouble() + format.lineSpacingFloat())
+//        val padding         = Spacing(formatPadding.leftDp().toDouble(),
+//                                    formatPadding.topDp().toDouble(), // + format.lineSpacingFloat(),
+//                                    formatPadding.rightDp().toDouble(),
+//                                    formatPadding.bottomDp().toDouble()) //  + format.lineSpacingFloat())
 
-        text.paddingSpacing = padding
-        text.marginSpacing  = storyPart.textFormat().elementFormat().margins()
+        text.paddingSpacing = wordFormat.elementFormat().padding()
+        text.marginSpacing  = wordFormat.elementFormat().margins()
+
+        text.backgroundColor = SheetManager.color(
+                                sheetUIContext.sheetId,
+                                wordFormat.elementFormat().backgroundColorTheme())
+
+        text.corners        = wordFormat.elementFormat().corners()
 
         storyPart.textFormat().styleTextViewBuilder(text, sheetUIContext)
 
@@ -1282,6 +1013,346 @@ object StoryWidgetView
 
         return icon.imageView(sheetUIContext.context)
     }
+
+}
+
+
+fun storySpannableView(storyWidget : StoryWidget,
+                       sheetUIContext : SheetUIContext) : TextView
+{
+    val story           = TextViewBuilder()
+
+    story.width         = LinearLayout.LayoutParams.MATCH_PARENT
+//        story.widthDp       = 300
+    story.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    story.textSpan      = spannableStringBuilder(storyWidget.story(),
+                                                 storyWidget.id,
+                                                 storyWidget.format().lineHeight(),
+                                                 storyWidget.format().lineSpacing(),
+                                                 sheetUIContext)
+
+    //story.lineSpacingAdd    = 1f
+    //story.lineSpacingMult   = 1.4f
+
+    story.paddingSpacing    = storyWidget.format().textFormat().elementFormat().padding()
+
+
+//    val maybeTextSize = storyWidget.format.textSize()
+//    when (maybeTextSize) {
+//        is Just -> story.sizeSp = maybeTextSize.value.sp
+//    }
+
+    story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
+    story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
+
+    when (storyWidget.format().widgetFormat().elementFormat().verticalAlignment()) {
+        is VerticalAlignment.Middle -> {
+            story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant() or
+                                    Gravity.CENTER_VERTICAL
+            story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant() or
+                                    Gravity.CENTER_VERTICAL
+        }
     }
+
+    story.movementMethod    = LinkMovementMethod.getInstance()
+
+    val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
+            sheetUIContext.context as SheetActivity,
+            storyWidget,
+            SheetContext(sheetUIContext))
+    story.onTouch   = View.OnTouchListener { _, event ->
+        gestureDetector.onTouchEvent(event)
+        false
+    }
+
+    return story.textView(sheetUIContext.context)
+}
+
+
+data class Phrase(val storyPart : StoryPart,
+                  val text : String,
+                  val partIndex : Int,
+                  val start : Int,
+                  val end : Int)
+
+
+
+
+private fun spannableStringBuilder(storyParts : List<StoryPart>,
+                                   storyWidgetId : UUID,
+                                   lineHeight : Maybe<LineHeight>,
+                                   lineSpacing : Maybe<LineSpacing>,
+                                   sheetUIContext : SheetUIContext) : SpannableStringBuilder
+{
+
+    val builder = SpannableStringBuilder()
+
+    val sheetContext = SheetContext(sheetUIContext)
+
+    val phrases : MutableList<Phrase> = mutableListOf()
+
+    var index = 0
+    storyParts.forEachIndexed { partIndex, storyPart ->
+
+        when (storyPart)
+        {
+            is StoryPartSpan ->
+            {
+                //val text = storyPart.textString()
+                words(storyPart.textString()).forEach {
+                    builder.append(it)
+                    val textLen = it.length
+                    phrases.add(Phrase(storyPart, it, partIndex, index, index + textLen))
+                    index += textLen
+                }
+            }
+            is StoryPartVariable ->
+            {
+                val valueVariableEff = storyPart.valueVariable(sheetContext)
+                // TODO move this logic in variable
+                var text = when (valueVariableEff)
+                {
+                    is effect.Val ->
+                    {
+                        val valueVar = valueVariableEff.value
+                        when (valueVar)
+                        {
+                            is NumberVariable -> {
+                                val number = valueVar.valueOrZero(sheetContext)
+                                storyPart.textFormat().numberFormat().formattedString(number)
+                            }
+                            else -> storyPart.valueString(SheetContext(sheetUIContext))
+                        }
+                    }
+                    is Err -> {
+                        ApplicationLog.error(valueVariableEff.error)
+                        ""
+                    }
+
+                }
+
+                val nbspSpacing = "\u202F\u202F";
+                if (storyPart.textFormat.elementFormat().backgroundColorTheme() != ColorTheme.transparent) {
+                    text = "$nbspSpacing$text$nbspSpacing"
+                }
+
+                val textLen = text.length
+                builder.append(text)
+
+                phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
+                index += textLen
+            }
+            is StoryPartIcon ->
+            {
+                builder.append(" ")
+                phrases.add(Phrase(storyPart, " ", partIndex, index, index + 1))
+                index += 1
+            }
+            is StoryPartAction ->
+            {
+                val text = storyPart.textString()
+                builder.append("        " + text + "  ")
+                val textLen = text.length + 10
+                phrases.add(Phrase(storyPart, text, partIndex, index, index + textLen))
+                index += textLen
+            }
+        }
+    }
+
+    phrases.forEach { (storyPart, _, partIndex, start, end) ->
+
+        //Log.d("***STORY WIDGET", "start -> end: " + start.toString() + " " + end.toString())
+
+        when (storyPart)
+        {
+            is StoryPartSpan ->
+            {
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext).forEach {
+                    builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+            }
+            is StoryPartVariable ->
+            {
+
+                val clickSpan = object: ClickableSpan()
+                {
+                    override fun onClick(view : View?)
+                    {
+                        val variable = storyPart.variable(SheetContext(sheetUIContext))
+                        if (variable != null) {
+                            openVariableEditorDialog(
+                                    variable,
+                                    storyPart.numericEditorType(),
+                                    UpdateTargetStoryWidgetPart(storyWidgetId, partIndex),
+                                    sheetUIContext)
+                        }
+
+                    }
+
+                    override fun updateDrawState(ds: TextPaint?) {
+                        //super.updateDrawState(ds)
+                    }
+                }
+
+                builder.setSpan(clickSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext).forEach {
+                    builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+            }
+            is StoryPartIcon ->
+            {
+                val vectorDrawable =
+                        VectorDrawableCompat.create(sheetUIContext.context.resources,
+                                                    storyPart.icon().drawableResId(), null)
+
+                vectorDrawable?.setBounds(
+                        0,
+                        0,
+                        Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
+                        Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
+
+                val color = SheetManager.color(sheetUIContext.sheetId,
+                                               storyPart.iconFormat().colorTheme())
+                vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
+                                                                    PorterDuff.Mode.SRC_IN)
+
+                val imageSpan = CenteredImageSpan(vectorDrawable)
+                builder.setSpan(imageSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+            is StoryPartAction ->
+            {
+                val vectorDrawable =
+                        VectorDrawableCompat.create(sheetUIContext.context.resources,
+                                                    R.drawable.icon_dice_roll_filled,
+                                                    null)
+
+//                vectorDrawable?.setBounds(
+//                        0,
+//                        0,
+//                        Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
+//                        Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
+
+                val color = SheetManager.color(sheetUIContext.sheetId,
+                                               storyPart.iconFormat().colorTheme())
+                vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
+                                                                    PorterDuff.Mode.SRC_IN)
+
+                val imageSpan = CenteredImageSpan(vectorDrawable)
+
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext, vectorDrawable, storyPart.iconFormat()).forEach {
+                    builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+
+                //builder.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+
+                val procedureId = storyPart.action().procedureId()
+                val summationId = storyPart.action().rollSummationId()
+//                    if (procedureId != null) {
+//                        val clickSpan = object : ClickableSpan() {
+//                            override fun onClick(view: View?) {
+//                            }
+//
+//                            override fun updateDrawState(ds: TextPaint?) {
+//                            }
+//                        }
+//
+//                        builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+//                    }
+//                    else if (summationId != null)
+//                    {
+
+                when (summationId)
+                {
+                    is Just ->
+                    {
+                        val diceRoll = SheetManager.summation(summationId.value, sheetContext)
+                                                    .apply { it.diceRoll(sheetContext) }
+
+                        when (diceRoll)
+                        {
+                            is effect.Val ->
+                            {
+                                val sheetActivity = sheetUIContext.context as SheetActivity
+                                val clickSpan = object : ClickableSpan() {
+                                    override fun onClick(view: View?) {
+                                        val dialog = DiceRollDialog.newInstance(
+                                                                    diceRoll.value,
+                                                                    Nothing(),
+                                                                    SheetContext(sheetUIContext))
+                                        dialog.show(sheetActivity.supportFragmentManager, "")
+                                    }
+
+                                    override fun updateDrawState(ds: TextPaint?) {
+                                    }
+                                }
+
+                                builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                            }
+                            is Err -> ApplicationLog.error(diceRoll.error)
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    return builder
+}
+
+
+private fun formatSpans(textStyle : TextFormat,
+                        lineHeight : Maybe<LineHeight>,
+                        lineSpacing : Maybe<LineSpacing>,
+                        sheetUIContext : SheetUIContext,
+                        drawable : Drawable? = null,
+                        iconFormat : IconFormat? = null) : List<Any>
+{
+    val sizePx = Util.spToPx(textStyle.sizeSp(), sheetUIContext.context)
+    val sizeSpan = AbsoluteSizeSpan(sizePx)
+
+    val typeface = Font.typeface(textStyle.font(), textStyle.fontStyle(), sheetUIContext.context)
+
+    val typefaceSpan = CustomTypefaceSpan(typeface)
+
+    var color = SheetManager.color(sheetUIContext.sheetId, textStyle.colorTheme())
+    val colorSpan = ForegroundColorSpan(color)
+
+    var bgColor = SheetManager.color(sheetUIContext.sheetId,
+                                     textStyle.elementFormat().backgroundColorTheme())
+    val bgColorSpan = BackgroundColorSpan(bgColor)
+
+//    val lineHeight = when (lineSpacing) {
+//        is Just -> Util.dpToPixel(lineSpacing.value.value)
+//        else    -> sizePx * 2
+//    }
+ //val bgSpan = RoundedBackgroundHeightSpan(lineHeight, lineSpacing, color, bgColor)
+     // , color, sizePx)
+
+
+    return when (lineHeight) {
+        is Just -> when (lineSpacing) {
+            is Just -> {
+                val lineSpacingPx = Util.dpToPixel(lineSpacing.value.value)
+                val bgSpan = RoundedBackgroundHeightSpan(lineHeight.value.value, lineSpacingPx, color, bgColor, drawable, iconFormat)
+                listOf(sizeSpan, typefaceSpan, bgSpan)
+            }
+            else -> listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)
+        }
+        else -> listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)
+    }
+
+//    return if (lineHeight.isJust() && lineSpacing.isJust()) {
+//    }
+//
+
+}
+
+
+
+fun words(valueString : String) : List<String> =
+    valueString.split(" ").map { word -> "$word " }
 
 

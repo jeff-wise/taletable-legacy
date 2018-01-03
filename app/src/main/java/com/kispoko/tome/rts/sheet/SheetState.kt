@@ -554,6 +554,30 @@ class SheetState(val sheetContext : SheetContext,
     }
 
 
+    // Variable > Text List
+    // -----------------------------------------------------------------------------------------
+
+    fun textListVariable(variableReference : VariableReference) : AppEff<TextListVariable> =
+            this.variable(variableReference)
+                .apply({it.textListVariable(sheetContext.sheetId)})
+
+
+    fun textListVariableWithId(variableId : VariableId) : AppEff<TextListVariable>
+    {
+        fun textVariableEff(variable : Variable) : AppEff<TextListVariable> = when (variable)
+        {
+            is TextListVariable -> effValue(variable)
+            else                -> effError(AppStateError(
+                                        VariableIsOfUnexpectedType(sheetContext.sheetId,
+                                                                   variableId,
+                                                                   VariableType.TEXT,
+                                                                   variable.type())))
+        }
+
+        return variableWithId(variableId)
+                  .apply(::textVariableEff)
+    }
+
 }
 
 

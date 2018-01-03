@@ -244,7 +244,7 @@ object TextWidgetView
         layout.gravity              = textWidget.widgetFormat().elementFormat().alignment().gravityConstant()
         //Log.d("***TEXTWIDGET", "${textWidget.widgetFormat().elementFormat().alignment()}" )
 
-        layout.marginSpacing        = textWidget.widgetFormat().elementFormat().margins()
+        // layout.marginSpacing        = textWidget.widgetFormat().elementFormat().margins()
 
 
         return layout.linearLayout(sheetUIContext.context)

@@ -76,8 +76,9 @@ data class Mechanic(override val id : UUID,
                       // Category Id
                       doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) },
                       // Requirements
-                      doc.list("requirements") ap { docList ->
-                          docList.map { VariableId.fromDocument(it) }},
+                      split(doc.maybeList("requirements"),
+                            effValue(listOf()),
+                            { docList -> docList.map { VariableId.fromDocument(it) }}),
                       // Variables
                       doc.list("variables") ap { docList ->
                           docList.map { Variable.fromDocument(it) }

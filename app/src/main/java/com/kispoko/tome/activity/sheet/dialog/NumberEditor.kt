@@ -25,7 +25,6 @@ import com.kispoko.tome.router.MessageUpdateSummationNumberTerm
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
-import java.util.*
 
 
 
@@ -230,7 +229,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.padding.bottomDp = 5f
@@ -291,10 +290,10 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
         name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        name.font               = Font.typeface(TextFont.FiraSans,
+        name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
@@ -349,11 +348,11 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val valueColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         value.color             = SheetManager.color(sheetUIContext.sheetId, valueColorTheme)
 
-        value.font              = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Light,
+        value.font              = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
         value.sizeSp            = 32f
@@ -403,7 +402,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val bsButtonColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         icon.color          = SheetManager.color(sheetUIContext.sheetId, bsButtonColorTheme)
 
         icon.addRule(RelativeLayout.ALIGN_END)
@@ -464,19 +463,19 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         number.text                 = label
 
-        number.sizeSp               = 16f
+        number.sizeSp               = 20f
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         number.color                = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         number.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        number.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+        //number.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
         number.onClick              = onClick
 
@@ -503,7 +502,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
@@ -571,7 +570,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
 

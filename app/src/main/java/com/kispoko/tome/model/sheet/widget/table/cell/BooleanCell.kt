@@ -165,14 +165,14 @@ data class BooleanCellFormat(override val id : UUID,
     fun resolveTrueFormat(columnFormat : BooleanColumnFormat) : TextFormat =
         when (this.trueFormat) {
             is Just -> this.trueFormat.value
-            is Nothing -> columnFormat.trueFormat()
+            is Nothing -> columnFormat.resolveTrueFormat()
         }
 
 
     fun resolveFalseFormat(columnFormat : BooleanColumnFormat) : TextFormat =
         when (this.falseFormat) {
             is Just -> this.falseFormat.value
-            is Nothing -> columnFormat.falseFormat()
+            is Nothing -> columnFormat.resolveFalseFormat()
         }
 
 

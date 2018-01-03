@@ -171,7 +171,7 @@ object SheetManager
     {
         // There are no active sheets in memory. Load the last session from the DB or present
         // the user with an option to open a new sheet.
-        if (this.session.isEmpty())
+        if (!this.session.isActive())
         {
             // Testing Case
             val casmeyOfficialSheet = OfficialSheet(SheetId("character_casmey_level_1"),
@@ -179,23 +179,12 @@ object SheetManager
                                                     GameId("magic_of_heroes"))
 
             OfficialManager.loadSheet(casmeyOfficialSheet, sheetUI)
-
-            //loadSessionSheets(lastSession, sheetUI)
-
-
-            // query for last session
-            // load sheets
         }
         // There is an active sheet in memory. Render it.
         else
         {
             Log.d("***SHEETMANAGER", "set sheet active")
-            val lastActiveSheet = this.session.sheets().first()
-
-//            val listener = this.listenerBySheet[lastActiveSheet.sheetId()]
-//            if (listener != null)
-//                listener.onSheetAdd(lastActiveSheet)
-            sheetUI.onSheetActive(lastActiveSheet)
+            session.reload(sheetUI)
         }
     }
 
@@ -228,18 +217,6 @@ object SheetManager
         //}
 
     }
-
-
-
-//    private suspend fun loadSessionSheets(session : Session, sheetUI : SheetUI)
-//    {
-//        // Is new or in DB?
-//        session.sheets.forEach {
-//            when (it) {
-//                is SessionSheetOfficial -> OfficialManager.loadSheet(it.officialSheet, sheetUI)
-//            }
-//        }
-//    }
 
 
     fun addSheetToSession(sheet : Sheet, sheetUI : SheetUI, isSaved : Boolean = true)
@@ -288,6 +265,7 @@ object SheetManager
                 }
 
                 // Configure bottom nav
+                /*
                 sheetUI.bottomNavigation().setOnTabSelectedListener { position, _ ->
                     val selectedSection = sheetRecord.sheet().sectionWithIndex(position)
                     if (selectedSection != null) {
@@ -296,7 +274,7 @@ object SheetManager
                     }
                     sheetUI.hideActionBar()
                     true
-                }
+                }*/
 
                 sheetUI.initializeSidebars(sheetRecord.sheetContext())
 
@@ -632,7 +610,7 @@ interface SheetUI
 
     fun pagePagerAdatper() : PagePagerAdapter
 
-    fun bottomNavigation() : AHBottomNavigation
+//    fun bottomNavigation() : AHBottomNavigation
 
     fun applyTheme(sheetId : SheetId, uiColors : UIColors)
 
@@ -722,7 +700,7 @@ data class Session(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
-    // WRITE
+    // OPERATIONS
     // -----------------------------------------------------------------------------------------
 
     fun addSheet(sheet : Sheet, isSaved : Boolean, sheetUI : SheetUI)
@@ -752,6 +730,7 @@ data class Session(override val id : UUID,
 
     private fun setSheetActive(sheetId : SheetId, sheetUI : SheetUI)
     {
+        Log.d("***SHEET MANAGER", "set sheet active: $sheetId")
         this.sheetRecordWithId(sheetId) apDo {
             // Initialize Sheet
             it.onActive(sheetUI.context())
@@ -764,6 +743,21 @@ data class Session(override val id : UUID,
 
             // Render
             SheetManager.render(sheetId, sheetUI)
+        }
+    }
+
+
+    fun isActive() : Boolean = when (this.activeSheetId) {
+        is Just -> true
+        else    -> false
+    }
+
+
+    fun reload(sheetUI : SheetUI)
+    {
+        this.activeSheet() apDo {
+            this.setSheetActive(it.sheetId(), sheetUI)
+            sheetUI.onSheetActive(it)
         }
     }
 

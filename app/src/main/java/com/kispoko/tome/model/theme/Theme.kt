@@ -8,6 +8,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue10
 import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue9
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
@@ -133,8 +134,7 @@ data class UIColors(override val id: UUID,
                     val tabTextSelectedColorId : ColorId,
                     val tabUnderlineColorId : ColorId,
                     val bottomBarBackgroundColorId : ColorId,
-                    val bottomBarActiveColorId : ColorId,
-                    val bottomBarInactiveColorId : ColorId) : ProdType
+                    val bottomBarNavColorId : ColorId) : ProdType
 {
 
     // -----------------------------------------------------------------------------------------
@@ -149,8 +149,7 @@ data class UIColors(override val id: UUID,
                 tabTextSelectedColorId : ColorId,
                 tabUnderlineColorId: ColorId,
                 bottomBarBackgroundColorId : ColorId,
-                bottomBarActiveColorId : ColorId,
-                bottomBarInactiveColorId : ColorId)
+                bottomBarNavColorId : ColorId)
         : this(UUID.randomUUID(),
                toolbarBackgroundColorId,
                toolbarIconsColorId,
@@ -160,8 +159,7 @@ data class UIColors(override val id: UUID,
                tabTextSelectedColorId,
                tabUnderlineColorId,
                bottomBarBackgroundColorId,
-               bottomBarActiveColorId,
-               bottomBarInactiveColorId)
+               bottomBarNavColorId)
 
 
     companion object : Factory<UIColors>
@@ -187,10 +185,8 @@ data class UIColors(override val id: UUID,
                       doc.at("tab_underline") ap { ColorId.fromDocument(it) },
                       // Bottom Bar
                       doc.at("bottom_bar_background") ap { ColorId.fromDocument(it) },
-                      // Bottom Bar Active
-                      doc.at("bottom_bar_active") ap { ColorId.fromDocument(it) },
-                      // Bottom Bar Inactive
-                      doc.at("bottom_bar_inactive") ap { ColorId.fromDocument(it) }
+                      // Bottom Bar Nav
+                      doc.at("bottom_bar_nav") ap { ColorId.fromDocument(it) }
                       )
             }
 
@@ -227,10 +223,10 @@ data class UIColors(override val id: UUID,
     fun bottomBarBackgroundColorId() : ColorId = this.bottomBarBackgroundColorId
 
 
-    fun bottomBarActiveColorId() : ColorId = this.bottomBarActiveColorId
+//    fun bottomBarActiveColorId() : ColorId = this.bottomBarActiveColorId
 
 
-    fun bottomBarInactiveColorId() : ColorId = this.bottomBarInactiveColorId
+    fun bottomBarNavColorId() : ColorId = this.bottomBarNavColorId
 
 
     // -----------------------------------------------------------------------------------------
@@ -244,7 +240,7 @@ data class UIColors(override val id: UUID,
 
 
     override fun rowValue() : DB_UIColorsValue =
-        RowValue10(uiColorsTable,
+        RowValue9(uiColorsTable,
                    PrimValue(this.toolbarBackgroundColorId),
                    PrimValue(this.toolbarIconsColorId),
                    PrimValue(this.toolbarTitleColorId),
@@ -253,8 +249,7 @@ data class UIColors(override val id: UUID,
                    PrimValue(this.tabTextSelectedColorId),
                    PrimValue(this.tabUnderlineColorId),
                    PrimValue(this.bottomBarBackgroundColorId),
-                   PrimValue(this.bottomBarActiveColorId),
-                   PrimValue(this.bottomBarInactiveColorId))
+                   PrimValue(this.bottomBarNavColorId))
 
 }
 

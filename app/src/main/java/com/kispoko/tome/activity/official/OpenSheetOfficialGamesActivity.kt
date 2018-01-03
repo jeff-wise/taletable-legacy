@@ -45,7 +45,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private val appSettings: AppSettings = AppSettings(ThemeId.Dark)
+    private val appSettings: AppSettings = AppSettings(ThemeId.Light)
 
 
     // -----------------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         scrollView.backgroundColor  = this.appSettings.color(colorTheme)
 
         return scrollView.scrollView(context)
@@ -212,7 +212,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = this.appSettings.color(colorTheme)
 
         layout.margin.topDp     = 8f
@@ -246,11 +246,11 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         header.color        = this.appSettings.color(colorTheme)
 
-        header.font         = Font.typeface(TextFont.FiraSans,
-                                            TextFontStyle.Regular,
+        header.font         = Font.typeface(TextFont.default(),
+                                            TextFontStyle.Medium,
                                             context)
 
         header.sizeSp       = 18f
@@ -270,14 +270,14 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         description.color        = this.appSettings.color(colorTheme)
 
-        description.font         = Font.typeface(TextFont.FiraSans,
+        description.font         = Font.typeface(TextFont.default(),
                                                  TextFontStyle.Regular,
                                                  context)
 
-        description.sizeSp       = 14f
+        description.sizeSp       = 15f
 
         description.margin.topDp = 4f
 
@@ -296,10 +296,10 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         genre.color         = this.appSettings.color(colorTheme)
 
-        genre.font          = Font.typeface(TextFont.FiraSans,
+        genre.font          = Font.typeface(TextFont.default(),
                                             TextFontStyle.Regular,
                                             context)
 
@@ -377,7 +377,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         icon.color              = this.appSettings.color(iconColorTheme)
 
         icon.margin.rightDp     = 5f
@@ -392,10 +392,10 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val infoColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         info.color        = this.appSettings.color(infoColorTheme)
 
-        info.font         = Font.typeface(TextFont.FiraSans,
+        info.font         = Font.typeface(TextFont.default(),
                                           TextFontStyle.Regular,
                                           context)
 

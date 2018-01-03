@@ -1,26 +1,14 @@
 summaries:
-- game_id: amanace
-  name: Amanace
-  description: 'A low-magic fantasy game with creative combat mechanics'
-  genre: 'Low Fantasy'
-  players: 1270
-  likes: 887
-- game_id: heroic
-  name: Heroic
-  description:
-    'A traditional 5th Edition SRE based game with plenty of magic, monsters, and treasure.'
-  genre: 'High Fantasy'
+- game_id: magic_of_heroes
+  name: The Magic of Heroes
+  description: 'A traditional fantasy RPG based on the 5th Edition Open Game License ruleset.'
+  genre: 'Fantasy'
   players: 5705
   likes: 4081
-- game_id: dumbgins_and_dargons
-  name: Dumbgins & Dargons
-  description: 'A game of adventure. Watch out for the Dargons and don''t be a Dumbgin!'
-  genre: 'Comical Fantasy'
-  players: 9
-  likes: 3
-- game_id: dimensions_lost
-  name: Dimensions Lost
-  description: 'Captain your ship to the end and the beginning of the universe and time.'
-  genre: 'Science Fiction'
-  players: 11933
-  likes: 10903
+- game_id: pathfinder
+  name: Pathfinder
+  description:
+    'A traditional fantasy RPG based on the 3rd Edition Open Game License ruleset.'
+  genre: 'Fantasy'
+  players: 1270
+  likes: 887

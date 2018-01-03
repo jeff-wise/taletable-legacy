@@ -6,6 +6,7 @@ import android.util.Log
 import com.kispoko.tome.R.string.value
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.rts.game.GameManager
@@ -14,6 +15,7 @@ import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.UpdateTarget
 import effect.Err
+import effect.Just
 import effect.Val
 
 
@@ -45,6 +47,9 @@ fun openVariableEditorDialog(variable : Variable,
                                                sheetUIContext)
             }
         }
+        is TextListVariable   -> openTextListVariableEditorDialog(variable,
+                                                                  updateTarget,
+                                                                  sheetUIContext)
     }
 
 }
@@ -218,3 +223,43 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
 
 
 
+
+fun openTextListVariableEditorDialog(textListVariable : TextListVariable,
+                                     updateTarget : UpdateTarget,
+                                     sheetUIContext : SheetUIContext)
+{
+    val variableValue = textListVariable.variableValue()
+
+    Log.d("***VAR EDITOR", "open list editor")
+
+    when (variableValue)
+    {
+        is TextListVariableLiteralValue ->
+        {
+            val sheetActivity = sheetUIContext.context as SheetActivity
+            val sheetContext = SheetContext(sheetUIContext)
+
+            val valueSetId = textListVariable.valueSetId
+            val values = textListVariable.value(sheetContext)
+
+            Log.d("***VAR EDITOR", "list literal")
+
+            when (valueSetId) {
+                is Just -> {
+                    Log.d("***VAR EDITOR", "has value set id")
+                    when (values) {
+                        is Val -> {
+                            Log.d("***VAR EDITOR", "open dialog")
+                            val dialog = ListEditorDialog.newInstance(valueSetId.value,
+                                                                      values.value.map { ValueId(it) },
+                                                                      updateTarget,
+                                                                      sheetContext)
+                            dialog.show(sheetActivity.supportFragmentManager, "")
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}

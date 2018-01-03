@@ -182,6 +182,21 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object HeartPlus : Icon()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "heart_plus" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("heart_plus")
+
+    }
+
     companion object
     {
         fun fromDocument(doc : SchemaDoc) : ValueParser<Icon> = when (doc)
@@ -198,6 +213,7 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
                 "adventure"         -> effValue<ValueError,Icon>(Icon.Adventure)
                 "mind"              -> effValue<ValueError,Icon>(Icon.Mind)
                 "running"           -> effValue<ValueError,Icon>(Icon.Running)
+                "heart_plus"        -> effValue<ValueError,Icon>(Icon.HeartPlus)
                 else                -> effError<ValueError,Icon>(
                                             UnexpectedValue("Icon", doc.text, doc.path))
             }
@@ -208,16 +224,17 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
 
     fun drawableResId() : Int = when (this)
     {
-        is Shield           -> R.drawable.icon_shield
-        is Sword            -> R.drawable.icon_sword
+        is Adventure        -> R.drawable.icon_adventure
+        is Coins            -> R.drawable.icon_coins
         is DiceRoll         -> R.drawable.icon_dice_roll
         is DiceRollFilled   -> R.drawable.icon_dice_roll_filled
-        is Coins            -> R.drawable.icon_coins
-        is Parchment        -> R.drawable.icon_parchment
-        is SwordOutline     -> R.drawable.icon_sword_outline
-        is Adventure        -> R.drawable.icon_adventure
+        is HeartPlus        -> R.drawable.icon_heart_plus
         is Mind             -> R.drawable.icon_mind
+        is Parchment        -> R.drawable.icon_parchment
         is Running          -> R.drawable.icon_running
+        is Shield           -> R.drawable.icon_shield
+        is Sword            -> R.drawable.icon_sword
+        is SwordOutline     -> R.drawable.icon_sword_outline
     }
 
 }

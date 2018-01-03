@@ -10,18 +10,18 @@ import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.*
-import com.kispoko.tome.lib.orm.sql.SQLReal
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.RulebookReference
 import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.variable.VariableTag
+import com.kispoko.tome.model.game.engine.variable.VariableTagSet
 import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
@@ -652,6 +652,40 @@ data class TextValue(val value : String) : ToDocument, SQLSerializable, Serializ
     override fun asSQLValue() : SQLValue = SQLText({this.value})
 
 }
+
+
+/**
+ * Value Id Set
+ */
+data class ValueIdSet(val valueIds : List<ValueId>) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ValueIdSet>
+    {
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ValueIdSet> = when (doc)
+        {
+            is DocList -> apply(::ValueIdSet, doc.map { ValueId.fromDocument(it) })
+            else       -> effError(UnexpectedType(DocType.LIST, docType(doc), doc.path))
+        }
+
+
+        fun empty() : ValueIdSet = ValueIdSet(listOf())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
+
 
 
 //

@@ -6,6 +6,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.util.Util
 import effect.effError
 import effect.effValue
 import effect.split
@@ -89,6 +90,24 @@ data class Corners(private val topLeftRadius : Double,
     fun bottomRightCornerRadiusDp() : Float = this.bottomRightRadius.toFloat()
 
     fun bottomLeftCornerRadiusDp() : Float = this.bottomLeftRadius.toFloat()
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun radiiArray() : FloatArray
+    {
+        val topLeft     = Util.dpToPixel(this.topLeftCornerRadiusDp()).toFloat()
+        val topRight    = Util.dpToPixel(this.topRightCornerRadiusDp()).toFloat()
+        val bottomRight = Util.dpToPixel(this.bottomRightCornerRadiusDp()).toFloat()
+        val bottomLeft  = Util.dpToPixel(this.bottomLeftCornerRadiusDp()).toFloat()
+
+        val radii = listOf(topLeft, topLeft, topRight, topRight,
+                         bottomRight, bottomRight, bottomLeft, bottomLeft)
+
+        return radii.toFloatArray()
+    }
 
 
     // -----------------------------------------------------------------------------------------
