@@ -223,6 +223,8 @@ data class DiceRoll(override val id : UUID,
             modifierString = "+" + modifierSum.toString()
         else if (modifierSum < 0)
             modifierString = "-" + Math.abs(modifierSum).toString()
+        else
+            modifierString = "+0"
 
         return modifierString
     }

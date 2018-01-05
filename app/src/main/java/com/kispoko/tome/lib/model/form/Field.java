@@ -4,7 +4,6 @@ package com.kispoko.tome.lib.model.form;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.form.TextFieldDialogFragment;
-import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
@@ -499,17 +497,11 @@ public class Field implements Serializable
     {
         LinearLayout layout = this.caseFieldViewLayout(context);
 
-        for (String caseString : this.caseMap.keySet()) {
-            Log.d("***FIELD", "case " + caseString);
-        }
-
         if (this.value() != null)
         {
             Field caseField = this.caseMap.get(this.value().toLowerCase());
-            Log.d("***FIELD", "value " + this.value().toLowerCase());
             if (caseField != null) {
                 layout.addView(caseField.view((AppCompatActivity) context));
-                Log.d("***FIELD", "adding case field view");
             }
         }
 

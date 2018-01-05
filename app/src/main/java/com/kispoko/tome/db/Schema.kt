@@ -15,9 +15,7 @@ import com.kispoko.tome.model.game.engine.dice.*
 import com.kispoko.tome.model.game.engine.function.*
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.mechanic.*
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.procedure.ProcedureName
-import com.kispoko.tome.model.game.engine.procedure.ProcedureUpdates
+import com.kispoko.tome.model.game.engine.procedure.*
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.model.game.engine.reference.BooleanReference
 import com.kispoko.tome.model.game.engine.reference.DataReference
@@ -155,21 +153,23 @@ typealias DB_DividerValue =
 // ENGINE
 // ---------------------------------------------------------------------------------------------
 
-val engineTable = Table6("engine",
+val engineTable = Table7("engine",
                          "value_sets",
                          "mechanics",
                          "mechanic_categories",
                          "functions",
                          "programs",
-                         "summations")
+                         "summations",
+                         "procedures")
 
 typealias DB_EngineValue =
-    RowValue6<CollValue<ValueSet>,
+    RowValue7<CollValue<ValueSet>,
               CollValue<Mechanic>,
               CollValue<MechanicCategory>,
               CollValue<Function>,
               CollValue<Program>,
-              CollValue<Summation>>
+              CollValue<Summation>,
+              CollValue<Procedure>>
 
 
 // ELEMENT FORMAT
@@ -388,6 +388,19 @@ typealias DB_MechanicCategoryValue =
               PrimValue<MechanicCategoryDescription>>
 
 
+// MESSAGE
+// ---------------------------------------------------------------------------------------------
+
+val messageTable =
+    Table2("message",
+           "template",
+           "variable_ids")
+
+typealias DB_MessageValue =
+    RowValue2<PrimValue<MessageTemplate>,
+              PrimValue<MessageVariables>>
+
+
 // PAGE
 // ---------------------------------------------------------------------------------------------
 
@@ -414,6 +427,25 @@ val pageFormatTable =
 
 typealias DB_PageFormatValue =
     RowValue1<ProdValue<ElementFormat>>
+
+
+// PROCEDURE
+// ---------------------------------------------------------------------------------------------
+
+val procedureTable =
+    Table5("procedure",
+           "procedure_id",
+           "procedure_name",
+           "updates",
+           "description",
+           "action_label")
+
+typealias DB_ProcedureValue =
+    RowValue5<PrimValue<ProcedureId>,
+              PrimValue<ProcedureName>,
+              PrimValue<ProcedureUpdates>,
+              MaybeProdValue<Message>,
+              MaybePrimValue<ProcedureActionLabel>>
 
 
 // PROGRAM
@@ -456,21 +488,6 @@ typealias DB_ProgramTypeSignatureValue =
               MaybePrimValue<EngineValueType>,
               MaybePrimValue<EngineValueType>,
               PrimValue<EngineValueType>>
-
-
-// PROCEDURE
-// ---------------------------------------------------------------------------------------------
-
-val procedureTable =
-    Table3("procedure",
-           "procedure_id",
-           "procedure_name",
-           "updates")
-
-typealias DB_ProcedureValue =
-    RowValue3<PrimValue<ProcedureId>,
-              PrimValue<ProcedureName>,
-              PrimValue<ProcedureUpdates>>
 
 
 // ROLL MODIFIER

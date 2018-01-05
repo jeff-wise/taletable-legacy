@@ -200,12 +200,12 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
     val activeValueColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
     val activeValueColor  = SheetManager.color(sheetUIContext.sheetId, activeValueColorTheme)
 
     val inActiveValueColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
     val inActiveValueColor  = SheetManager.color(sheetUIContext.sheetId, inActiveValueColorTheme)
 
 
@@ -273,7 +273,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.padding.bottomDp = 10f
@@ -329,7 +329,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_25"))))
         name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         name.font               = Font.typeface(TextFont.default(),
@@ -436,7 +436,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val bsButtonColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         icon.color          = SheetManager.color(sheetUIContext.sheetId, bsButtonColorTheme)
 
         icon.addRule(RelativeLayout.ALIGN_END)
@@ -464,7 +464,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val bsButtonColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_25"))))
         operator.color          = SheetManager.color(sheetUIContext.sheetId, bsButtonColorTheme)
 
         operator.addRule(RelativeLayout.ALIGN_END)
@@ -519,21 +519,21 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         number.gravity              = Gravity.CENTER
 
-        number.margin.leftDp        = 2f
-        number.margin.rightDp       = 2f
+        number.margin.leftDp        = 1f
+        number.margin.rightDp       = 1f
 
         number.text                 = label
 
-        number.sizeSp               = 16f
+        number.sizeSp               = 25f
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_17"))))
         number.color                = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
         number.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         number.corners              = Corners(2.0, 2.0, 2.0, 2.0)
@@ -563,7 +563,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_90"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
@@ -584,15 +584,16 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 22
-        icon.heightDp           = 22
+        icon.widthDp            = 26
+        icon.heightDp           = 26
 
-        icon.image              = R.drawable.icon_check
+        icon.image              = R.drawable.icon_check_bold
 
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color              = Color.WHITE
 
 
         return layout.linearLayout(sheetUIContext.context)
@@ -609,7 +610,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.margin.bottomDp  = 5f
+        layout.margin.bottomDp  = 2f
         layout.margin.leftDp    = 2f
         layout.margin.rightDp   = 2f
 

@@ -10,6 +10,7 @@ import com.kispoko.tome.db.engineTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.RowValue7
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
@@ -21,6 +22,8 @@ import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.procedure.Procedure
+import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.summation.Summation
@@ -47,7 +50,8 @@ data class Engine(override val id : UUID,
                   val mechanicCategories : List<MechanicCategory>,
                   val functions : List<Function>,
                   val programs : List<Program>,
-                  val summations : List<Summation>)
+                  val summations : List<Summation>,
+                  val procedures : List<Procedure>)
                    : ToDocument, ProdType, Serializable
 {
 
@@ -82,6 +86,10 @@ data class Engine(override val id : UUID,
     private val summationById : MutableMap<SummationId,Summation> =
                                             summations.associateBy { it.summationId() }
                                                     as MutableMap<SummationId,Summation>
+
+    private val procedureById : MutableMap<ProcedureId,Procedure> =
+                                            procedures.associateBy { it.procedureId() }
+                                                    as MutableMap<ProcedureId,Procedure>
 
 
     init
@@ -131,7 +139,10 @@ data class Engine(override val id : UUID,
                       },
                       // Summations
                       doc.list("summations") apply {
-                          it.map { Summation.fromDocument(it) } }
+                          it.map { Summation.fromDocument(it) } },
+                      // Procedures
+                      doc.list("procedures") apply {
+                          it.map { Procedure.fromDocument(it) } }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -149,7 +160,8 @@ data class Engine(override val id : UUID,
         "mechanic_categories" to DocList(this.mechanicCategories.map { it.toDocument() }),
         "functions" to DocList(this.functions.map { it.toDocument() }),
         "programs" to DocList(this.programs.map { it.toDocument() }),
-        "summations" to DocList(this.summations.map { it.toDocument() })
+        "summations" to DocList(this.summations.map { it.toDocument() }),
+        "procedures" to DocList(this.procedures.map { it.toDocument() })
     ))
 
 
@@ -164,12 +176,13 @@ data class Engine(override val id : UUID,
 
 
     override fun rowValue() : DB_EngineValue =
-        RowValue6(engineTable, CollValue(this.valueSets),
+        RowValue7(engineTable, CollValue(this.valueSets),
                                CollValue(this.mechanics),
                                CollValue(this.mechanicCategories),
                                CollValue(this.functions),
                                CollValue(this.programs),
-                               CollValue(this.summations))
+                               CollValue(this.summations),
+                               CollValue(this.procedures))
 
 
     // -----------------------------------------------------------------------------------------
@@ -308,6 +321,17 @@ data class Engine(override val id : UUID,
     fun summation(summationid : SummationId) : AppEff<Summation> =
             note(this.summationById[summationid],
                     AppEngineError(SummationDoesNotExist(summationid)))
+
+
+    // Engine Data > Procedures
+    // -----------------------------------------------------------------------------------------
+
+    fun procedures() : List<Procedure> = this.procedures
+
+
+    fun procedureWithId(procedureId : ProcedureId) : AppEff<Procedure> =
+            note(this.procedureById[procedureId],
+                    AppEngineError(ProcedureDoesNotExist(procedureId)))
 
 }
 

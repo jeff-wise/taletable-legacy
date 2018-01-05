@@ -17,10 +17,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.dice.*
-import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
-import com.kispoko.tome.model.game.engine.summation.term.SummationTermDiceRoll
-import com.kispoko.tome.model.game.engine.summation.term.SummationTermNumber
-import com.kispoko.tome.model.game.engine.summation.term.TermSummary
+import com.kispoko.tome.model.game.engine.summation.term.*
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.game.engine.SummationIsNotDiceRoll
@@ -175,7 +172,6 @@ data class Summation(override val id : UUID,
                 is SummationTermNumber ->
                 {
                     val maybeModValue = SheetData.number(sheetContext, term.numberReference(), context)
-                    Log.d("***SUMMATION", "number term reference: ${term.numberReference()}")
                     when (maybeModValue)
                     {
                         is effect.Val -> {
@@ -190,7 +186,18 @@ data class Summation(override val id : UUID,
                             }
                         }
                     }
-
+                }
+                is SummationTermConditional ->
+                {
+                    val maybeModValue = term.value(sheetContext, context)
+                    when (maybeModValue)
+                    {
+                        is Just -> {
+                            val maybeTermName = term.termName() ap { Just(RollModifierName(it.value)) }
+                            modifiers.add(RollModifier(RollModifierValue(maybeModValue.value),
+                                                     maybeTermName))
+                        }
+                    }
                 }
             }
         }

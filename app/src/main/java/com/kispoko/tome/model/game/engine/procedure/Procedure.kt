@@ -4,21 +4,20 @@ package com.kispoko.tome.model.game.engine.procedure
 
 import com.kispoko.tome.db.DB_ProcedureValue
 import com.kispoko.tome.db.procedureTable
-import com.kispoko.tome.db.programTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.RowValue6
-import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.ProgramId
+import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
-import com.kispoko.tome.model.game.engine.variable.VariableTagSet
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -36,8 +35,10 @@ import java.util.*
 data class Procedure(override val id : UUID,
                      val procedureId : ProcedureId,
                      val procedureName : ProcedureName,
-                     val procedureUpdates : ProcedureUpdates)
-                      : ProdType, Serializable
+                     val procedureUpdates : ProcedureUpdates,
+                     val description : Maybe<Message>,
+                     val actionLabel : Maybe<ProcedureActionLabel>)
+                      : ProdType, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -46,11 +47,15 @@ data class Procedure(override val id : UUID,
 
     constructor(procedureId : ProcedureId,
                 procedureName : ProcedureName,
-                procedureUpdates : ProcedureUpdates)
+                procedureUpdates : ProcedureUpdates,
+                description : Maybe<Message>,
+                actionLabel : Maybe<ProcedureActionLabel>)
         : this(UUID.randomUUID(),
                procedureId,
                procedureName,
-               procedureUpdates)
+               procedureUpdates,
+               description,
+               actionLabel)
 
 
     companion object : Factory<Procedure>
@@ -65,7 +70,15 @@ data class Procedure(override val id : UUID,
                       // Procedure Name
                       doc.at("procedure_name") ap { ProcedureName.fromDocument(it) },
                       // Procedure Updates
-                      doc.at("updates") ap { ProcedureUpdates.fromDocument(it) }
+                      doc.at("updates") ap { ProcedureUpdates.fromDocument(it) },
+                      // Description
+                      split(doc.maybeAt("description"),
+                            effValue<ValueError,Maybe<Message>>(Nothing()),
+                            { apply(::Just, Message.fromDocument(it))}),
+                      // Action Label
+                      split(doc.maybeAt("action_label"),
+                            effValue<ValueError,Maybe<ProcedureActionLabel>>(Nothing()),
+                            { apply(::Just, ProcedureActionLabel.fromDocument(it))})
                       )
             }
             else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -86,6 +99,22 @@ data class Procedure(override val id : UUID,
     fun procedureUpdates() : ProcedureUpdates = this.procedureUpdates
 
 
+    fun description() : Maybe<Message> = this.description
+
+
+    fun actionLabel() : Maybe<ProcedureActionLabel> = this.actionLabel
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "procedure_id" to this.procedureId().toDocument(),
+        "procedure_name" to this.procedureName().toDocument()
+    ))
+
+
     // -----------------------------------------------------------------------------------------
     // PROD MODEL
     // -----------------------------------------------------------------------------------------
@@ -97,10 +126,12 @@ data class Procedure(override val id : UUID,
 
 
     override fun rowValue() : DB_ProcedureValue =
-        RowValue3(procedureTable,
+        RowValue5(procedureTable,
                   PrimValue(this.procedureId),
                   PrimValue(this.procedureName),
-                  PrimValue(this.procedureUpdates))
+                  PrimValue(this.procedureUpdates),
+                  MaybeProdValue(this.description),
+                  MaybePrimValue(this.actionLabel))
 
 }
 
@@ -144,7 +175,7 @@ data class ProcedureId(val value : String) : ToDocument, SQLSerializable, Serial
 /**
  * Procedure Name
  */
-data class ProcedureName(val value : String) : SQLSerializable, Serializable
+data class ProcedureName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -162,12 +193,49 @@ data class ProcedureName(val value : String) : SQLSerializable, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() = SQLText({this.value})
 
 }
+
+
+/**
+ * Procedure Action Lable
+ */
+data class ProcedureActionLabel(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ProcedureActionLabel>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProcedureActionLabel> = when (doc)
+        {
+            is DocText -> effValue(ProcedureActionLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLText({this.value})
+
+}
+
 
 
 /**

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
+import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -433,10 +434,12 @@ data class SummationTermConditional(override val id : UUID,
     {
         val number = SheetData.boolean(sheetContext, conditionalValueReference())
                         .apply { condition ->
-                            if (condition)
+                            if (condition) {
                                 SheetData.number(sheetContext, trueValueReference())
-                            else
+                            }
+                            else {
                                 SheetData.number(sheetContext, falseValueReference())
+                            }
                         }
 
         when (number)

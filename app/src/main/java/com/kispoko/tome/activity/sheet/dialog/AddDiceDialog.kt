@@ -355,7 +355,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.padding.bottomDp = 5f
@@ -412,20 +412,20 @@ class DiceViewBuilder(val operation : DiceOperation,
         name.margin.leftDp      = 12f
 
         if (operation == DiceOperation.ADD)
-            name.text           = sheetUIContext.context.getString(R.string.add).toUpperCase()
+            name.text           = sheetUIContext.context.getString(R.string.add_dice).toLowerCase()
         else if (operation == DiceOperation.SUBTRACT)
             name.text           = sheetUIContext.context.getString(R.string.subtract).toUpperCase()
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        name.font               = Font.typeface(TextFont.FiraSans,
+        name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
-        name.sizeSp             = 11f
+        name.sizeSp             = 14f
 
         return name.textView(sheetUIContext.context)
     }
@@ -506,7 +506,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val bsButtonColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         icon.color          = SheetManager.color(sheetUIContext.sheetId, bsButtonColorTheme)
 
         icon.addRule(RelativeLayout.ALIGN_END)
@@ -549,11 +549,11 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         die.color               = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        die.font                = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Light,
+        die.font                = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
         die.sizeSp              = 30f
@@ -595,7 +595,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val bsButtonColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_17")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         icon.color          = SheetManager.color(sheetUIContext.sheetId, bsButtonColorTheme)
 
 
@@ -641,7 +641,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val undoColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         icon.color            = SheetManager.color(sheetUIContext.sheetId, undoColorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
@@ -694,21 +694,21 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         dice.gravity            = Gravity.CENTER
 
-        dice.margin.leftDp      = 2f
-        dice.margin.rightDp     = 2f
+        dice.margin.leftDp      = 1f
+        dice.margin.rightDp     = 1f
 
         dice.text               = label
 
-        dice.sizeSp             = 16f
+        dice.sizeSp             = 20f
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         dice.color              = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
         dice.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         dice.corners            = Corners(2.0, 2.0, 2.0, 2.0)
@@ -729,7 +729,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.margin.bottomDp  = 5f
+        layout.margin.bottomDp  = 2f
         layout.margin.leftDp    = 2f
         layout.margin.rightDp   = 2f
 
@@ -844,7 +844,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
@@ -865,7 +865,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
         // (3 B) Label
@@ -878,10 +878,10 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
 
-        label.font          = Font.typeface(TextFont.FiraSans,
+        label.font          = Font.typeface(TextFont.default(),
                                             TextFontStyle.Regular,
                                             sheetUIContext.context)
 
@@ -913,7 +913,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
@@ -945,7 +945,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
         icon.margin.bottomDp    = 6f
@@ -960,10 +960,10 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
 
-        label.font          = Font.typeface(TextFont.FiraSans,
+        label.font          = Font.typeface(TextFont.default(),
                                             TextFontStyle.Regular,
                                             sheetUIContext.context)
 
@@ -993,7 +993,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_80"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners            = Corners(2.0, 2.0, 2.0, 2.0)
@@ -1015,15 +1015,16 @@ class DiceViewBuilder(val operation : DiceOperation,
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 19
-        icon.heightDp           = 19
+        icon.widthDp            = 18
+        icon.heightDp           = 18
 
-        icon.image              = R.drawable.icon_check
+        icon.image              = R.drawable.icon_check_bold
 
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_14")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_14")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color              = Color.WHITE
 
         icon.margin.rightDp     = 4f
 
@@ -1033,18 +1034,19 @@ class DiceViewBuilder(val operation : DiceOperation,
         label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.textId        = R.string.done
+        label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
 
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_14")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+//        val labelColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_14")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+        label.color         = Color.WHITE
 
-        label.font          = Font.typeface(TextFont.FiraSans,
-                                            TextFontStyle.Regular,
+        label.font          = Font.typeface(TextFont.default(),
+                                            TextFontStyle.Bold,
                                             sheetUIContext.context)
 
-        label.sizeSp        = 17.5f
+        label.sizeSp        = 18f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -1109,11 +1111,11 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_blue_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_80"))))
         option.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        option.font             = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Light,
+        option.font             = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
         option.sizeSp           = 18f
@@ -1156,7 +1158,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_27")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
@@ -1196,7 +1198,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_27")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
         return layout.linearLayout(sheetUIContext.context)

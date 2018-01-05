@@ -2,12 +2,16 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.summation
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.dialog.ProcedureDialog
 import com.kispoko.tome.db.DB_WidgetActionFormatValue
 import com.kispoko.tome.db.widgetActionFormatTable
 import com.kispoko.tome.lib.Factory
@@ -27,6 +31,7 @@ import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Icon
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.Width
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
@@ -327,6 +332,13 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         }
 
         layout.orientation  = LinearLayout.HORIZONTAL
+
+        layout.onClick      = View.OnClickListener {
+            val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
+                                                     SheetContext(sheetUIContext))
+            val activity = sheetUIContext.context as AppCompatActivity
+            dialog.show(activity.supportFragmentManager, "")
+        }
 
         return layout.linearLayout(sheetUIContext.context)
     }

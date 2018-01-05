@@ -190,7 +190,7 @@ object ValueChooserView
                                           dialog)
         val optionsMenuView = optionsMenuView(sheetUIContext.context)
         val headerView      = headerView(valueSet.labelString(), chooserView,
-                optionsMenuView, sheetUIContext)
+                                        optionsMenuView, sheetUIContext)
 
         // (2) Initialize
         // -------------------------------------------------------------------
@@ -241,15 +241,21 @@ object ValueChooserView
     fun headerView(title : String,
                    chooserView : View,
                    menuView : View,
-                   sheetUIContext: SheetUIContext) : RelativeLayout
+                   sheetUIContext: SheetUIContext) : LinearLayout
     {
         val layout = headerViewLayout(sheetUIContext)
 
-        val titleView = headerTitleTextView(title, sheetUIContext)
-        val iconView  = headerIconView(sheetUIContext)
+        val mainLayout = this.headerMainViewLayout(sheetUIContext)
 
-        layout.addView(titleView)
-        layout.addView(iconView)
+        val titleView = headerTitleTextView(title, sheetUIContext)
+//        val iconView  = headerIconView(sheetUIContext)
+
+        mainLayout.addView(titleView)
+//        layout.addView(iconView)
+
+        layout.addView(mainLayout)
+
+        layout.addView(this.headerBottomBorderView(sheetUIContext))
 
         // > Toggle Menu Functionality
         // ----------------------------------------------------------------------------
@@ -260,28 +266,28 @@ object ValueChooserView
         val menuIcon = ContextCompat.getDrawable(sheetUIContext.context,
                                                  R.drawable.ic_dialog_chooser_menu)
 
-        iconView.setOnClickListener {
-            // Show MENU
-            if (chooserView.visibility == View.VISIBLE)
-            {
-                chooserView.visibility = View.GONE
-                menuView.visibility = View.VISIBLE
-
-                iconView.setImageDrawable(closeIcon)
-
-                titleView.setText(R.string.options)
-            }
-            // Show VALUES
-            else
-            {
-                chooserView.visibility = View.VISIBLE
-                menuView.visibility = View.GONE
-
-                iconView.setImageDrawable(menuIcon)
-
-            //    titleView.setText(title)
-            }
-        }
+//        iconView.setOnClickListener {
+//            // Show MENU
+//            if (chooserView.visibility == View.VISIBLE)
+//            {
+//                chooserView.visibility = View.GONE
+//                menuView.visibility = View.VISIBLE
+//
+//                iconView.setImageDrawable(closeIcon)
+//
+//                titleView.setText(R.string.options)
+//            }
+//            // Show VALUES
+//            else
+//            {
+//                chooserView.visibility = View.VISIBLE
+//                menuView.visibility = View.GONE
+//
+//                iconView.setImageDrawable(menuIcon)
+//
+//            //    titleView.setText(title)
+//            }
+//        }
 
 //        iconView.setOnClickListener(View.OnClickListener()
 //        {
@@ -296,9 +302,9 @@ object ValueChooserView
     }
 
 
-    private fun headerViewLayout(sheetUIContext: SheetUIContext) : RelativeLayout
+    private fun headerViewLayout(sheetUIContext: SheetUIContext) : LinearLayout
     {
-        val layout = RelativeLayoutBuilder()
+        val layout = LinearLayoutBuilder()
 
         layout.orientation          = LinearLayout.VERTICAL
 
@@ -307,17 +313,44 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("blue_primary"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun headerBottomBorderView(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+
+
+    private fun headerMainViewLayout(sheetUIContext: SheetUIContext) : RelativeLayout
+    {
+        val layout = RelativeLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.padding.leftDp       = 10f
         layout.padding.rightDp      = 10f
         layout.padding.topDp        = 14f
         layout.padding.bottomDp     = 14f
-
-        //layout.margin.bottomDp      = 1f
-
-        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
         return layout.relativeLayout(sheetUIContext.context)
     }
@@ -333,16 +366,16 @@ object ValueChooserView
 
         title.text          = titleString
 
-        title.font          = Font.typeface(TextFont.Cabin,
-                                            TextFontStyle.Regular,
+        title.font          = Font.typeface(TextFont.default(),
+                                            TextFontStyle.Medium,
                                             sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         title.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        title.sizeSp          = 17f
+        title.sizeSp          = 18f
 
         title.margin.leftDp   = 0.5f
 
@@ -350,26 +383,93 @@ object ValueChooserView
     }
 
 
-    private fun headerIconView(sheetUIContext: SheetUIContext) : ImageView
+    private fun headerIconView(sheetUIContext : SheetUIContext) : LinearLayout
     {
-        val icon = ImageViewBuilder()
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
 
-        icon.layoutType     = LayoutType.RELATIVE
-        icon.widthDp        = 21
-        icon.heightDp       = 21
+        val layout  = LinearLayoutBuilder()
+        val icon    = ImageViewBuilder()
 
-        icon.image          = R.drawable.ic_dialog_chooser_menu
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
 
-        val colorTheme = ColorTheme(setOf(
+        layout.layoutType   = LayoutType.RELATIVE
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.corners      = Corners(3.0, 3.0, 3.0, 3.0)
+
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
+        layout.padding.leftDp   = 17f
+        layout.padding.rightDp  = 17f
+
+        val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        icon.addRule(RelativeLayout.ALIGN_PARENT_END)
-        icon.addRule(RelativeLayout.CENTER_VERTICAL)
+        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
 
-        return icon.imageView(sheetUIContext.context)
+//        layout.onClick = View.OnClickListener {
+//            when (updateTarget) {
+//                is UpdateTargetListWidget -> {
+//                    val valueStrings = this.adapter?.selectedValues?.map { it.value }
+//                    val update = ListWidgetUpdateSetCurrentValue(
+//                                    updateTarget.listWidgetId,
+//                                    valueStrings ?: listOf())
+//                    SheetManager.updateSheet(sheetUIContext.sheetId,
+//                            update,
+//                            sheetUIContext.sheetUI())
+//                    dialog.dismiss()
+//                }
+//            }
+//        }
+
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp        = 22
+        icon.heightDp       = 22
+
+        icon.image          = R.drawable.icon_check
+
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        //icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        icon.color          = Color.WHITE
+
+
+        return layout.linearLayout(sheetUIContext.context)
     }
+
+//
+//    private fun headerIconView(sheetUIContext: SheetUIContext) : ImageView
+//    {
+//        val icon = ImageViewBuilder()
+//
+//        icon.layoutType     = LayoutType.RELATIVE
+//        icon.widthDp        = 21
+//        icon.heightDp       = 21
+//
+//        icon.image          = R.drawable.ic_dialog_chooser_menu
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+//        icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//
+//        icon.addRule(RelativeLayout.ALIGN_PARENT_END)
+//        icon.addRule(RelativeLayout.CENTER_VERTICAL)
+//
+//        return icon.imageView(sheetUIContext.context)
+//    }
 
 
     // List View
@@ -395,9 +495,9 @@ object ValueChooserView
 
         val dividerColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         val dividerColor = SheetManager.color(sheetUIContext.sheetId, dividerColorTheme)
-        recyclerView.divider = SimpleDividerItemDecoration(sheetUIContext.context, dividerColor)
+        // recyclerView.divider = SimpleDividerItemDecoration(sheetUIContext.context, dividerColor)
 
         when (valueSet)
         {
@@ -495,7 +595,7 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
@@ -519,7 +619,7 @@ object ValueChooserView
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.child(icon)
+        layout // .child(icon)
               .child(name)
 
         // (3 A) Icon
@@ -855,12 +955,16 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
         {
             is ValueText ->
             {
-                if (value.equals(selectedValue))
+                if (value.equals(selectedValue)) {
                     viewHolder.setValueTextSelected(value.value())
-                else
+                    viewHolder.setSummaryTextSelected(value.description().value)
+                }
+                else {
                     viewHolder.setValueText(value.value())
+                    viewHolder.setSummaryText(value.description().value)
+                }
 
-                viewHolder.setSummaryText(value.description().value)
+//                viewHolder.setSummaryText(value.description().value)
 
                 viewHolder.setOnClick(View.OnClickListener {
                     when (updateTarget) {
@@ -1065,6 +1169,16 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
             ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
     val greenColor = SheetManager.color(sheetUIContext.sheetId, hlColorTheme)
 
+    val hlSummaryColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_8")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("green_70"))))
+    val greenSummaryColor = SheetManager.color(sheetUIContext.sheetId, hlSummaryColorTheme)
+
+    val summaryColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+    val summaryColor      = SheetManager.color(sheetUIContext.sheetId, summaryColorTheme)
+
     // -----------------------------------------------------------------------------------------
     // INIT
     // -----------------------------------------------------------------------------------------
@@ -1074,7 +1188,7 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.layout      = itemView.findViewById(R.id.choose_value_item_layout) as LinearLayout
         this.valueView   = itemView.findViewById(R.id.choose_value_item_value) as TextView
         this.summaryView = itemView.findViewById(R.id.choose_value_item_summary) as TextView
-        this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
+//        this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
         this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
     }
 
@@ -1106,6 +1220,14 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     fun setSummaryText(summaryString : String)
     {
         this.summaryView?.text = summaryString
+        this.summaryView?.setTextColor(summaryColor)
+    }
+
+
+    fun setSummaryTextSelected(summaryString : String)
+    {
+        this.summaryView?.text = summaryString
+        this.summaryView?.setTextColor(greenSummaryColor)
     }
 
 

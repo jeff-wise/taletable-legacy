@@ -271,11 +271,11 @@ object Interpreter
     {
         val tuple = function.tupleWithParameters(parameters)
 
-        if (tuple != null)
-            return effValue(tuple.result())
+        return if (tuple != null)
+            effValue(tuple.result())
         else
-            return effError(AppEvalError(
-                    FunctionNotDefinedForParameters(function.functionId(), parameters)))
+            effError(AppEvalError(
+                     FunctionNotDefinedForParameters(function.functionId(), parameters)))
     }
 
 

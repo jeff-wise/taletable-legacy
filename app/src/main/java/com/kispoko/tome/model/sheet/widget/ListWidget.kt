@@ -359,7 +359,7 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
             currentIndex += item.length
 
             if (items.size > 1) {
-                builder.append(",")
+                builder.append(", ")
 
                 this.formatSpans(listWidget.format().descriptionFormat()).forEach {
                     builder.setSpan(it, currentIndex, currentIndex + 2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -369,15 +369,26 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
             }
         }
 
-        if (items.size > 0)
+        if (items.size == 1)
         {
             builder.append(" and ")
+
+            this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+                builder.setSpan(it, currentIndex, currentIndex + 5, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            }
+
+            currentIndex += 5
+        }
+        else if (items.size > 1)
+        {
+            builder.append("and ")
 
             this.formatSpans(listWidget.format().descriptionFormat()).forEach {
                 builder.setSpan(it, currentIndex, currentIndex + 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             }
 
             currentIndex += 4
+
         }
 
         builder.append(lastItem)

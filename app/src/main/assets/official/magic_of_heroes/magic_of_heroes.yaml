@@ -505,7 +505,8 @@ engine:
       - type: value_text
         value_text:
           value_id: dragonborn
-          description: 'Dragonborn have dragonic heritage.'
+          description: 'Dragonborn are tall and strong dragon-like humanoids with scaled skin,
+                        clawed hands, and dangerous breath.'
           value: Dragonborn
           variables:
           - type: variable_boolean
@@ -519,7 +520,8 @@ engine:
       - type: value_text
         value_text:
           value_id: dwarf
-          description: 'Dwarves'
+          description: 'Dwarves are shorter than humans, but strong and tough. They can live for
+           3 or 4 centuries.'
           value: Dwarf
           variables:
           - type: variable_boolean
@@ -533,7 +535,8 @@ engine:
       - type: value_text
         value_text:
           value_id: elf
-          description: 'Elf'
+          description: 'Elves are shorter and more slender than the average human, but may live
+                        for upt to ten human lifetimes.'
           value: Elf
           variables:
           - type: variable_boolean
@@ -547,7 +550,8 @@ engine:
       - type: value_text
         value_text:
           value_id: gnome
-          description: 'Gnome'
+          description: 'Gnomes are just over three feet tall on average and often weigh less than
+                        50 lbs. They are known to live for up to 500 years.'
           value: Gnome
           variables:
           - type: variable_boolean
@@ -561,7 +565,8 @@ engine:
       - type: value_text
         value_text:
           value_id: half_elf
-          description: 'Half-Elf'
+          description: 'The offspring of humans and elves, Half-elves are slender like elves but
+          taller like humans. They often live for two or three times as long as the average human.'
           value: 'Half-Elf'
           variables:
           - type: variable_boolean
@@ -575,7 +580,8 @@ engine:
       - type: value_text
         value_text:
           value_id: half_orc
-          description: 'Half-Orc'
+          description: 'Half-orcs are stronger and tougher than the average human. They mature and
+                        age relatively quickly, rarely living past 70 or 80 years.'
           value: 'Half-Orc'
           variables:
           - type: variable_boolean
@@ -589,7 +595,8 @@ engine:
       - type: value_text
         value_text:
           value_id: halfling
-          description: 'Halfling'
+          description: 'Small and agile, Halflings are usually around three feet tall. They tend to
+                        live for over a hundred years, but rarely two-hundred.'
           value: Halfling
           variables:
           - type: variable_boolean
@@ -603,7 +610,8 @@ engine:
       - type: value_text
         value_text:
           value_id: human
-          description: 'Human'
+          description: 'Humans are diverse compared to other races, but tend to be under 6 feet tall
+                        and 200 lbs. They rarely live past a century.'
           value: Human
           variables:
           - type: variable_boolean
@@ -617,7 +625,8 @@ engine:
       - type: value_text
         value_text:
           value_id: tiefling
-          description: 'Tiefling'
+          description: 'Tieflings are very similar to humans in size and aging, but their infernal
+                        ancestry bestows a few advantages.'
           value: Tiefling
           variables:
           - type: variable_boolean
@@ -3768,6 +3777,40 @@ engine:
                 type: boolean_literal
                 boolean_literal: true
   mechanics:
+  - id: weapon_dagger
+    label: 'Weapon: Dagger'
+    description: 'Dagger mechanics.'
+    summary: 'Dagger'
+    category_id: weapon
+    variables:
+    - type: variable_dice_roll
+      variable_dice_roll:
+        id: weapon_dagger_damage
+        label: Dagger Damage
+        description: Dagger Damage Dice
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 4
+              quantity: 1
+  - id: weapon_crossbow_light
+    label: 'Weapon: Crossbow, Light'
+    description: 'Light crossbow mechanics.'
+    summary: 'Light Crossbow'
+    category_id: weapon
+    variables:
+    - type: variable_dice_roll
+      variable_dice_roll:
+        id: weapon_crossbow_light_damage
+        label: Light Crossbow Damage
+        description: Light Crossbow Damage Dice
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 8
+              quantity: 1
   - id: weapon_rapier
     label: 'Weapon: Rapier'
     description: 'Rapier mechanics.'
@@ -3999,7 +4042,7 @@ engine:
         value:
           type: number_literal
           number_literal: 1
-  - id: human_ability_score_bonuses
+  - id: tiefling_ability_score_bonuses
     label: Tiefling Ability Score Bonuses
     description: 'The ability score bonuses that Tieflings acquire at first level.'
     summary: '+1 INT, +2 CHA'
@@ -4027,63 +4070,62 @@ engine:
         value:
           type: number_literal
           number_literal: 2
-  - id: soulsin_canny_combatant
-    label: Canny Combatant
-    description: 'Whenever someone from Soulsin would lose points from perception due to an action
-                  by someone they are engaged in combat with, he or she instead gains those points
-                  to their attack modifier.'
-    summary: 'Points lost from perception due to opponent are instead added added to attack.'
-    category_id: race
+  - id: fighter
+    label: Fighter Class Mechanics
+    description: 'Figher class mechanics.'
+    summary: 'Figher class mechanics.'
+    category_id: class_fighter
     requirements:
-    - name: 'is_race_soulsin'
+    - name: 'is_class_fighter'
     variables:
-  - id: swashbuckler
-    label: Swashbuckler
-    description: Swashbuckler
-    summary: Swashbuckler
-    category_id: class
-    requirements:
-    - name: 'is_class_swashbuckler'
-    variables:
-    - type: variable_number
-      variable_number:
-        id: swashbuckler_dexterity_bonus
-        label: Swashbuckler Dexterity Bonus
-        description: Swashbuckler Dexterity Bonus
-        tags:
-        - dexterity_modifier
+    - type: variable_boolean
+      variable_boolean:
+        id: strength_saving_throw_is_proficient
+        label: Strength Saving Throw Proficiency
+        description: Is proficient with strenth saving throws?
         value:
-          type: number_literal
-          number_literal: 2
-    - type: variable_number
-      variable_number:
-        id: swashbuckler_charisma_bonus
-        label: Swashbuckler Charisma Bonus
-        description: Swashbuckler Charisma Bonus
-        tags:
-        - charisma_modifier
+          type: boolean_literal
+          boolean_literal: true
+    - type: variable_boolean
+      variable_boolean:
+        id: dexterity_saving_throw_is_proficient
+        label: Dexterity Saving Throw Proficiency
+        description: Is proficient with dexterity saving throws?
         value:
-          type: number_literal
-          number_literal: 2
-  - id: cutlass
-    label: Cutlass
-    description: Cutlass
-    summary: Cutlass
-    category_id: weapon
-    requirements:
-    - namespace: cutlass
-      name: is_equipped
-    variables:
-    - type: variable_number
-      variable_number:
-        id: cutlass_defense_bonus
-        label: Cutlass Defense Bonus
-        description: Cutlass Defense Bonus
-        tags:
-        - defense_weapon_bonus
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: constituiton_saving_throw_is_proficient
+        label: Constitution Saving Throw Proficiency
+        description: Is proficient with constitution saving throws?
         value:
-          type: number_literal
-          number_literal: 1
+          type: boolean_literal
+          boolean_literal: true
+    - type: variable_boolean
+      variable_boolean:
+        id: intelligence_saving_throw_is_proficient
+        label: Intelligence Saving Throw Proficiency
+        description: Is proficient with intelligence saving throws?
+        value:
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: wisdom_saving_throw_is_proficient
+        label: Wisdom Saving Throw Proficiency
+        description: Is proficient with wisdom saving throws?
+        value:
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: charisma_saving_throw_is_proficient
+        label: Charisma Saving Throw Proficiency
+        description: Is proficient with charisma saving throws?
+        value:
+          type: boolean_literal
+          boolean_literal: false
   mechanic_categories:
   - id: race_human
     label: 'Race: Human'
@@ -4091,6 +4133,9 @@ engine:
   - id: class
     label: Class
     description: Mechanics for a specific class.
+  - id: class_fighter
+    label: Figher Class
+    description: Mechanics for a the Fighter class.
   - id: weapon
     label: Weapon
     description: Weapon mechanics.
@@ -4626,6 +4671,15 @@ engine:
         type: program_parameter_index
         program_parameter_index: 1
     result_binding_name: result
+  procedures:
+  - procedure_id: second_wind
+    procedure_name: Second Wind
+    updates:
+    description:
+      template: 'Summoning stamina and strength from deep within, I heal 1d10 + $$$ hit points.'
+      variable_ids:
+      - 'level'
+    action_label: 'Use Second Wind'
   summations:
   - summation_id: strength
     summation_name: Strength
@@ -4771,6 +4825,204 @@ engine:
             quantities:
             - sides: 20
               quantity: 1
+  - summation_id: strength_saving_throw_roll
+    summation_name: Strength Saving Throw Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_saving_throw_is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: dexterity_saving_throw_roll
+    summation_name: Dexterity Saving Throw Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_saving_throw_is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: constitution_saving_throw_roll
+    summation_name: Constitution Saving Throw Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: constitution_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: constitution_saving_throw_is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: intelligence_saving_throw_roll
+    summation_name: Intelligence Saving Throw Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_saving_throw_is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: wisdom_saving_throw_roll
+    summation_name: Wisdom Saving Throw Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_saving_throw_is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
+  - summation_id: charisma_saving_throw_roll
+    summation_name: Charisma Saving Throw Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_saving_throw_is_proficient
+        when_true:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: proficiency_bonus
+        when_false:
+          type: number_literal
+          number_literal: 0
   - summation_id: skill_acrobatics_bonus
     summation_name: Skill (Acrobatics) Bonus
     terms:

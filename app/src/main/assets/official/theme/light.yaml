@@ -1,5 +1,7 @@
 id: light
 palette:
+- color_id: white
+  color: '#FFFFFF'
 - color_id: light_grey_1
   color: '#FAFAFA'
 - color_id: light_grey_2
@@ -258,6 +260,8 @@ palette:
   color: '#E611AB5D'
 - color_id: green_80
   color: '#CD11AB5D'
+- color_id: green_70
+  color: '#B211AB5D'
 - color_id: red
   color: '#C32C39'
 - color_id: red_90

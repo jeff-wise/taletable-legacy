@@ -8,7 +8,7 @@ import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.*
 import org.apache.commons.collections4.trie.PatriciaTrie
-import java.util.jar.Attributes
+
 
 
 /**
@@ -67,13 +67,20 @@ class SheetState(val sheetContext : SheetContext,
         // Index Mechanics
         for (mechanic in mechanics)
         {
-            for (variableId in mechanic.requirements())
+            if (mechanic.requirements().isEmpty())
             {
-                if (!this.mechanicsByReqVariableId.containsKey(variableId))
-                    this.mechanicsByReqVariableId.put(variableId, mutableSetOf())
+                this.addMechanic(mechanic)
+            }
+            else
+            {
+                for (variableId in mechanic.requirements())
+                {
+                    if (!this.mechanicsByReqVariableId.containsKey(variableId))
+                        this.mechanicsByReqVariableId.put(variableId, mutableSetOf())
 
-                val mechanicState = MechanicState(mechanic)
-                this.mechanicsByReqVariableId[variableId]!!.add(mechanicState)
+                    val mechanicState = MechanicState(mechanic)
+                    this.mechanicsByReqVariableId[variableId]!!.add(mechanicState)
+                }
             }
         }
     }

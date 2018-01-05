@@ -116,6 +116,13 @@ types:
         which may come from any source. They are commonly used to define values 
         such as armor class or attack modifiers. There is no set limit on the number 
         of summations an engine may have.
+    - name: procedures
+      type:
+        type: custom_coll_type
+        custom_coll_type: procedure
+      presence: required
+      description: >
+        Procedures... TODO
     code_examples:
     - language: YAML
       title: 'An engine with some basic components.'
@@ -751,6 +758,18 @@ types:
         custom_coll_type: procedure_update
       presence: required
       description: The programs to be executed.
+    - name: description
+      type:
+        type: custom_type
+        custom_type: message
+      presence: optional
+      description: Procedure message.
+    - name: action_label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Procedure label.
 - type: product_type
   product_type:
     name: procedure_update
@@ -771,6 +790,26 @@ types:
         custom_type: program_id
       presence: required
       description: The program id.
+- type: product_type
+  product_type:
+    name: message
+    label: Message
+    description: A message.
+    group: Message
+    type: product
+    fields:
+    - name: template
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The template string.
+    - name: variable_ids
+      type: 
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: required
+      description: The variable ids.
 - type: primitive_type
   primitive_type:
     name: program_id

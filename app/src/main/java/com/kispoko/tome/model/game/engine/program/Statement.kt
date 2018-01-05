@@ -219,13 +219,7 @@ sealed class StatementParameter : ToDocument, SumType, Serializable
                                                 as ValueParser<StatementParameter>
                 "data_reference"          -> StatementParameterReference.fromDocument(doc.nextCase())
                                                 as ValueParser<StatementParameter>
-                else                      ->
-                {
-
-                    Log.d("***STATEMNET", doc.toString())
-                    effError<ValueError, StatementParameter>(
-                            UnknownCase(doc.case(), doc.path))
-                }
+                else                      -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 

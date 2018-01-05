@@ -280,8 +280,9 @@ class NumberEditorViewBuilder(val currentValue : Double,
         name.margin.leftDp      = 12f
 
         if (this.title != null) {
-            name.text = sheetUIContext.context.getString(R.string.edit).toUpperCase() +
-                            " " + this.title.toUpperCase()
+//            name.text = sheetUIContext.context.getString(R.string.edit).toUpperCase() +
+//                            " " + this.title.toUpperCase()
+            name.text = this.title
         }
         else {
             name.text               = sheetUIContext.context
@@ -458,8 +459,8 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         number.gravity              = Gravity.CENTER
 
-        number.margin.leftDp        = 2f
-        number.margin.rightDp       = 2f
+        number.margin.leftDp        = 1f
+        number.margin.rightDp       = 1f
 
         number.text                 = label
 
@@ -467,7 +468,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         number.color                = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
         val bgColorTheme = ColorTheme(setOf(
@@ -566,12 +567,13 @@ class NumberEditorViewBuilder(val currentValue : Double,
         icon.widthDp            = 22
         icon.heightDp           = 22
 
-        icon.image              = R.drawable.icon_check
+        icon.image              = R.drawable.icon_check_bold
 
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+        //icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color              = Color.WHITE
 
 
         return layout.linearLayout(sheetUIContext.context)

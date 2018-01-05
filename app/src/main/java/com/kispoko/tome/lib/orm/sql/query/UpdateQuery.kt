@@ -3,7 +3,6 @@ package com.kispoko.tome.lib.orm.sql.query
 
 
 import android.content.ContentValues
-import android.util.Log
 import com.kispoko.tome.lib.orm.*
 import com.kispoko.tome.lib.orm.sql.*
 import java.util.*
@@ -35,8 +34,6 @@ data class UpdateQuery(val tableName : String,
                                           contentValues,
                                           "_id = '$rowId'",
                                           null)
-
-        Log.d("***UPDATE QUERY", "rows updated: $rowsUpdated")
 
         val endTime = System.nanoTime()
 

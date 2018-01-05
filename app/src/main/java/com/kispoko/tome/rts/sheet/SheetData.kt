@@ -2,7 +2,6 @@
 package com.kispoko.tome.rts.sheet
 
 
-import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.model.game.engine.EngineValue
@@ -11,7 +10,6 @@ import com.kispoko.tome.model.game.engine.EngineValueDiceRoll
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.reference.*
-import com.kispoko.tome.model.game.engine.variable.VariableName
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.rts.game.GameManager
 import effect.*

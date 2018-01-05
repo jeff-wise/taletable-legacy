@@ -16,7 +16,6 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
 import com.kispoko.tome.R.id.button
-import com.kispoko.tome.R.string.value
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.dice.RollModifier
@@ -456,7 +455,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.padding.bottomDp = 10f
@@ -514,10 +513,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         name.padding.topDp       = 5f
         name.padding.leftDp      = 8f
 
-        val bgColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        name.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        name.backgroundColor    = Color.WHITE
 
         name.text               = valueName // .toLowerCase() // .toUpperCase()
 
@@ -564,10 +563,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        layout.backgroundColor  = Color.WHITE
 
         layout.margin.leftDp    = 4f
         layout.margin.rightDp   = 4f
@@ -779,7 +778,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.padding.leftDp   = 8f
@@ -863,7 +862,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val valueColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("red_70"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("red_80"))))
         value.color             = SheetManager.color(sheetUIContext.sheetId, valueColorTheme)
 
         val bgColorTheme = ColorTheme(setOf(
@@ -943,7 +942,8 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
     private fun textButtonView(labelId : Int,
                                onClick : View.OnClickListener,
-                               textColor : Int? = null) : TextView
+                               textColor : Int? = null,
+                               textSize : Float? = null) : TextView
     {
         val button                  = TextViewBuilder()
 
@@ -958,7 +958,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         button.textId               = labelId
 
-        button.sizeSp               = 20f
+        if (textSize == null)
+            button.sizeSp               = 20f
+        else
+            button.sizeSp               = textSize
 
         if (textColor == null) {
             val textColorTheme = ColorTheme(setOf(
@@ -969,16 +972,187 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             button.color = textColor
         }
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        button.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        button.font          = Font.typeface(TextFont.default(),
+                                            TextFontStyle.Regular,
+                                            sheetUIContext.context)
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        button.backgroundColor      = Color.WHITE
 
         button.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         button.onClick              = onClick
 
         return button.textView(sheetUIContext.context)
+    }
+
+
+    private fun numberButtonView(isPlus : Boolean,
+                                 onClick : View.OnClickListener) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val sign                = TextViewBuilder()
+        val label               = TextViewBuilder()
+
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = 0
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight               = 1f
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.gravity              = Gravity.CENTER
+
+        layout.margin.leftDp        = 1f
+        layout.margin.rightDp       = 1f
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        layout.backgroundColor      = Color.WHITE
+
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
+
+        layout.onClick              = onClick
+
+        layout.child(sign)
+              .child(label)
+
+        // (3 A) Sign
+        // -------------------------------------------------------------------------------------
+
+        sign.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        sign.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        sign.sizeSp            = 27f
+
+        if (isPlus)
+            sign.text          = "+"
+        else
+            sign.text          = "-"
+
+        val signColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        sign.color             = SheetManager.color(sheetUIContext.sheetId, signColorTheme)
+
+        sign.font              = Font.typeface(TextFont.FiraSans,
+                                               TextFontStyle.Regular,
+                                               sheetUIContext.context)
+
+        sign.margin.rightDp     = 2f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.sizeSp            = 17f
+
+        label.text              = "NUM"
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        label.color = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.font              = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Medium,
+                                                sheetUIContext.context)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun addDiceButtonView(labelString : String,
+                                  onClick : View.OnClickListener) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val label               = TextViewBuilder()
+
+        val iconLayout          = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = 0
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight               = 1f
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.gravity              = Gravity.CENTER
+
+        layout.margin.leftDp        = 1f
+        layout.margin.rightDp       = 1f
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        layout.backgroundColor      = Color.WHITE
+
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
+
+        layout.onClick              = onClick
+
+        layout.child(label)
+              .child(iconLayout)
+
+        // (3) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.sizeSp            = 27f
+
+        label.text              = labelString
+
+        val textColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        label.color = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
+
+        label.font              = Font.typeface(TextFont.FiraSans,
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        // (4 A) Icon Layout
+        // -------------------------------------------------------------------------------------
+
+        iconLayout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        iconLayout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        iconLayout.gravity      = Gravity.CENTER
+        iconLayout.layoutGravity      = Gravity.CENTER
+
+        iconLayout.child(icon)
+
+        icon.widthDp            = 25
+        icon.heightDp           = 25
+
+        icon.image              = R.drawable.icon_die
+
+        val iconColorTheme  = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -1013,7 +1187,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             dialog.show(activity.supportFragmentManager, "")
             this.dialog.dismiss()
         }
-        layout.addView(this.textButtonView(R.string.minus_num, minusNumOnClick))
+        layout.addView(this.numberButtonView(false, minusNumOnClick))
 
         // -ndX
         val minusDiceOnClick = View.OnClickListener {
@@ -1023,7 +1197,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             dialog.show(activity.supportFragmentManager, "")
             this.dialog.dismiss()
         }
-        layout.addView(this.textButtonView(R.string.minus_dice, minusDiceOnClick))
+        layout.addView(this.addDiceButtonView("-", minusDiceOnClick))
 
         // +ndX
         val plusDiceOnClick = View.OnClickListener {
@@ -1033,7 +1207,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             dialog.show(activity.supportFragmentManager, "")
             this.dialog.dismiss()
         }
-        layout.addView(this.textButtonView(R.string.plus_dice, plusDiceOnClick))
+        layout.addView(this.addDiceButtonView("+", plusDiceOnClick))
 
         // +X
         val plusNumOnClick = View.OnClickListener {
@@ -1043,7 +1217,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             dialog.show(activity.supportFragmentManager, "")
             this.dialog.dismiss()
         }
-        layout.addView(this.textButtonView(R.string.plus_num, plusNumOnClick))
+        layout.addView(this.numberButtonView(true, plusNumOnClick))
 
         return layout
     }
@@ -1146,10 +1320,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         layout.margin.rightDp   = 2f
 //        layout.margin.leftDp    = 2f
 
-        val bgColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        layout.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        layout.backgroundColor   = Color.WHITE
 
         layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
@@ -1215,10 +1389,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         layout.margin.rightDp       = 2f
 //        layout.margin.leftDp    = 2f
 
-        val bgColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_9")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        layout.backgroundColor      = Color.WHITE
 
         layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
@@ -1339,10 +1513,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         label.text          = sheetUIContext.context.getString(R.string.done).toUpperCase()
         //label.textId        = R.string.done
 
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+//        val labelColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        label.color         = Color.WHITE
 
         label.font          = Font.typeface(TextFont.default(),
                                             TextFontStyle.Medium,
@@ -1426,10 +1600,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         icon.image          = R.drawable.icon_dice_roll_filled
 
-        val iconColorTheme  = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//        val iconColorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        icon.color          = Color.WHITE
 
         icon.margin.rightDp = 5f
 
@@ -1447,10 +1621,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         label.text          = sheetUIContext.context.getString(R.string.roll).toUpperCase()
 //        label.textId        = R.string.roll
 
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
-        label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+//        val labelColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        label.color         = Color.WHITE
 
         label.font          = Font.typeface(TextFont.default(),
                                             TextFontStyle.Bold,

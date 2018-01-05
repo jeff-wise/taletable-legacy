@@ -4,6 +4,7 @@ package com.kispoko.tome.rts.game.engine
 
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.engine.function.FunctionId
+import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.ValueId
@@ -120,6 +121,18 @@ class SummationIsNotDiceRoll(val summationId : SummationId) : EngineError()
             """
             Engine Error: Summation Is Not Dice Roll
                 Summation Id: $summationId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class ProcedureDoesNotExist(val procedureId : ProcedureId) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Procedure Does Not Exist
+                Procedure Id: $procedureId
             """
 
     override fun logMessage(): String = userMessage()
