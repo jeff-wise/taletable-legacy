@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.procedure
 
 
+import android.util.Log
 import com.kispoko.tome.db.DB_ProcedureValue
 import com.kispoko.tome.db.procedureTable
 import com.kispoko.tome.lib.Factory
@@ -16,8 +17,12 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.ProgramId
+import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
 import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -132,6 +137,21 @@ data class Procedure(override val id : UUID,
                   PrimValue(this.procedureUpdates),
                   MaybeProdValue(this.description),
                   MaybePrimValue(this.actionLabel))
+
+
+    // -----------------------------------------------------------------------------------------
+    // RUN
+    // -----------------------------------------------------------------------------------------
+
+    fun run(sheetContext : SheetContext) =
+        this.procedureUpdates().updates.forEach { (variableId, programId) ->
+            GameManager.engine(sheetContext.gameId)                       apDo { engine ->
+            engine.program(programId)                                     apDo { program ->
+            program.value(ProgramParameterValues(listOf()), sheetContext) apDo { engineValue ->
+            SheetManager.sheetState(sheetContext.sheetId)                 apDo { state ->
+            state.updateVariable(variableId, engineValue, sheetContext)
+            } } } }
+        }
 
 }
 

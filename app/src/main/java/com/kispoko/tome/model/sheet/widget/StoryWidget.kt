@@ -14,6 +14,7 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -1234,14 +1235,15 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
 //                        Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
 //                        Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
 
-                val color = SheetManager.color(sheetUIContext.sheetId,
-                                               storyPart.iconFormat().colorTheme())
-                vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
-                                                                    PorterDuff.Mode.SRC_IN)
+//                val color = SheetManager.color(sheetUIContext.sheetId,
+//                                               storyPart.iconFormat().colorTheme())
+//                vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
+//                                                                    PorterDuff.Mode.SRC_IN)
 
                 val imageSpan = CenteredImageSpan(vectorDrawable)
 
-                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext, vectorDrawable, storyPart.iconFormat()).forEach {
+                // TODO android tip mutate
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext, vectorDrawable?.mutate(), storyPart.iconFormat()).forEach {
                     builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
 
@@ -1331,12 +1333,32 @@ private fun formatSpans(textStyle : TextFormat,
  //val bgSpan = RoundedBackgroundHeightSpan(lineHeight, lineSpacing, color, bgColor)
      // , color, sizePx)
 
+    val iconColor : Int? = iconFormat?.let {
+   //     Log.d("***STORY WIDGET", "icon color theme: ${it.colorTheme}")
+        SheetManager.color(sheetUIContext.sheetId, it.colorTheme())
+    }
+
+
+    if (iconColor != null) {
+//        Log.d("***STORY WIDGET", "setting icon color theme: ${Integer.toHexString(iconColor)}")
+        drawable?.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+    }
+
+//    if (iconColor != null) {
+//        Log.d("***ROUNDED BACK", "setting icon color: " + Integer.toString(iconColor, 16));
+//    }
 
     return when (lineHeight) {
         is Just -> when (lineSpacing) {
             is Just -> {
                 val lineSpacingPx = Util.dpToPixel(lineSpacing.value.value)
-                val bgSpan = RoundedBackgroundHeightSpan(lineHeight.value.value, lineSpacingPx, color, bgColor, drawable, iconFormat)
+                val bgSpan = RoundedBackgroundHeightSpan(lineHeight.value.value,
+                        lineSpacingPx,
+                        color,
+                        bgColor,
+                        drawable,
+                        iconFormat?.size(),
+                        iconColor)
                 listOf(sizeSpan, typefaceSpan, bgSpan)
             }
             else -> listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)

@@ -138,7 +138,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: weapon_crossbow_damage
+            variable_id: weapon_crossbow_light_damage
     - type: summation_term_number
       summation_term_number:
         term_name: Dexterity Modifier
@@ -287,8 +287,8 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: proficiency_bonus
-        parameter1:
-          type: data_reference_number
+        parameters:
+        - type: data_reference_number
           data_reference_number:
             type: variable_reference
             variable_reference:
@@ -319,8 +319,8 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: ability_modifier
-        parameter1:
-          type: data_reference_number
+        parameters:
+        - type: data_reference_number
           data_reference_number:
             type: variable_reference
             variable_reference:
@@ -351,8 +351,8 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: ability_modifier
-        parameter1:
-          type: data_reference_number
+        parameters:
+        - type: data_reference_number
           data_reference_number:
             type: variable_reference
             variable_reference:
@@ -383,8 +383,8 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: ability_modifier
-        parameter1:
-          type: data_reference_number
+        parameters:
+        - type: data_reference_number
           data_reference_number:
             type: variable_reference
             variable_reference:
@@ -415,8 +415,8 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: ability_modifier
-        parameter1:
-          type: data_reference_number
+        parameters:
+        - type: data_reference_number
           data_reference_number:
             type: variable_reference
             variable_reference:
@@ -447,8 +447,8 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: ability_modifier
-        parameter1:
-          type: data_reference_number
+        parameters:
+        - type: data_reference_number
           data_reference_number:
             type: variable_reference
             variable_reference:
@@ -479,8 +479,8 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: ability_modifier
-        parameter1:
-          type: data_reference_number
+        parameters:
+        - type: data_reference_number
           data_reference_number:
             type: variable_reference
             variable_reference:
@@ -1089,7 +1089,15 @@ sections:
           padding:
             left: 12
             right: 12
-            top: 20
+            top: 16
+            bottom: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -1112,7 +1120,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 5
+              top: 2
         widgets:
         - type: widget_text
           widget_text:
@@ -1137,11 +1145,20 @@ sections:
             theme_color_ids:
             - theme_id: light
               color_id: white
+          margins:
+            top: 12
           padding:
             left: 12
             right: 12
-            top: 8
+            top: 12
             bottom: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -1164,7 +1181,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 12
+              top: 6
         widgets:
         - type: widget_story
           widget_story:
@@ -1225,7 +1242,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
+                        color_id: light_blue
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1254,7 +1271,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
+                        color_id: light_blue
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1281,7 +1298,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
+                        color_id: light_blue
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1308,7 +1325,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
+                        color_id: light_blue
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1354,6 +1371,13 @@ sections:
             right: 12
           margins:
             top: 10
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_story
@@ -1423,7 +1447,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_10
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_10
                 size: 18
               current_text_format:
                 element_format:
@@ -1450,7 +1474,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_10
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_10
                 size: 18
               bar_format:
                 bar_height: 13
@@ -1477,19 +1501,12 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_4
+              color_id: light_grey_3
           padding:
             left: 12
             right: 12
             bottom: 12
             top: 12
-        border:
-          top:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_grey_5
-            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -1524,7 +1541,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_10
                 size: 18
               widget_format:
                 element_format:
@@ -1534,7 +1551,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   horizontal_alignment: left
                   padding:
                     left: 10
@@ -1554,7 +1571,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   margins:
                     right: 4
@@ -1577,7 +1594,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   horizontal_alignment: left
                   padding:
@@ -1591,7 +1608,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_23
+                    color_id: dark_grey_18
                 size: 18
             value_variable_id: modifier_label
         - type: widget_number
@@ -1606,7 +1623,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                 width: 2
               value_format:
@@ -1620,7 +1637,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 12
+              top: 8
         widgets:
         - type: widget_text
           widget_text:
@@ -1642,7 +1659,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   horizontal_alignment: left
                   padding:
                     left: 10
@@ -1660,7 +1677,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   margins:
                     right: 4
@@ -1683,7 +1700,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   horizontal_alignment: left
                   padding:
@@ -1712,7 +1729,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                 width: 2
               value_format:
@@ -1726,7 +1743,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 12
+              top: 8
         widgets:
         - type: widget_text
           widget_text:
@@ -1748,7 +1765,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   horizontal_alignment: left
                   padding:
                     left: 10
@@ -1766,7 +1783,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   margins:
                     right: 4
@@ -1789,7 +1806,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   horizontal_alignment: left
                   padding:
@@ -1818,7 +1835,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                 width: 2
               value_format:
@@ -1832,7 +1849,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 12
+              top: 8
         widgets:
         - type: widget_text
           widget_text:
@@ -1854,7 +1871,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   horizontal_alignment: left
                   padding:
                     left: 10
@@ -1872,7 +1889,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   margins:
                     right: 4
@@ -1895,7 +1912,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   horizontal_alignment: left
                   padding:
@@ -1924,7 +1941,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                 width: 2
               value_format:
@@ -1938,7 +1955,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 12
+              top: 8
         widgets:
         - type: widget_text
           widget_text:
@@ -1960,7 +1977,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   horizontal_alignment: left
                   padding:
                     left: 10
@@ -1978,7 +1995,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   margins:
                     right: 4
@@ -2001,7 +2018,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   horizontal_alignment: left
                   padding:
@@ -2030,7 +2047,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                 width: 2
               value_format:
@@ -2044,7 +2061,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 12
+              top: 8
         widgets:
         - type: widget_text
           widget_text:
@@ -2066,7 +2083,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   horizontal_alignment: left
                   padding:
                     left: 10
@@ -2084,7 +2101,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   margins:
                     right: 4
@@ -2107,7 +2124,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                   horizontal_alignment: left
                   padding:
@@ -2136,7 +2153,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   height: 40
                 width: 2
               value_format:
@@ -2154,7 +2171,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 0
           padding:
@@ -2185,6 +2202,13 @@ sections:
           element_format:
             margins:
               top: 12
+          border:
+            bottom:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              thickness: 1
         widgets:
         - type: widget_story
           widget_story:
@@ -2243,7 +2267,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 0
+              top: 12
         widgets:
         - type: widget_story
           widget_story:
@@ -2307,7 +2331,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
@@ -2448,7 +2472,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
@@ -2510,7 +2534,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 15
           padding:
@@ -2709,14 +2733,14 @@ sections:
           - theme_id: dark
             color_id: dark_grey_11
           - theme_id: light
-            color_id: light_grey_4
+            color_id: light_grey_3
     groups:
     - format:
         element_format:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           padding:
             left: 12
             right: 12
@@ -2864,7 +2888,7 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
       rows:
       - format:
           element_format:
@@ -2945,7 +2969,7 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           padding:
             top: 20
             bottom: 20
@@ -3004,7 +3028,7 @@ sections:
           - theme_id: dark
             color_id: dark_grey_11
           - theme_id: light
-            color_id: light_grey_4
+            color_id: light_grey_3
     groups:
     - format:
         element_format:
@@ -3114,12 +3138,19 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           padding:
             top: 12
             bottom: 12
             left: 12
             right: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -3175,6 +3206,7 @@ sections:
                       color_id: light_blue_5
                     - theme_id: light
                       color_id: light_blue
+                  font_style: medium
                   size: 20
             - type: story_part_span
               story_part_span:
@@ -3192,7 +3224,7 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
@@ -3200,6 +3232,13 @@ sections:
             bottom: 2
             left: 12
             right: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -3220,7 +3259,15 @@ sections:
                   margins:
                     bottom: 3
             value_variable_id: melee_attacks_label
-      - widgets:
+      - format:
+          border:
+            bottom:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              thickness: 1
+        widgets:
         - type: widget_story
           widget_story:
             id: action_attack_rapier
@@ -3297,7 +3344,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_70
+                        color_id: dark_grey_23
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -3309,7 +3356,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   size:
                     width: 20
                     height: 20
@@ -3379,7 +3426,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_70
+                        color_id: dark_grey_23
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -3391,7 +3438,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   size:
                     width: 20
                     height: 20
@@ -3400,7 +3447,7 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
@@ -3408,6 +3455,13 @@ sections:
             bottom: 2
             left: 12
             right: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -3428,7 +3482,15 @@ sections:
                   margins:
                     bottom: 3
             value_variable_id: ranged_attacks_label
-      - widgets:
+      - format:
+          border:
+            bottom:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              thickness: 1
+        widgets:
         - type: widget_story
           widget_story:
             id: action_attack_crossbow
@@ -3505,7 +3567,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_70
+                        color_id: dark_grey_23
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -3517,7 +3579,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   size:
                     width: 20
                     height: 20
@@ -3598,7 +3660,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_70
+                        color_id: dark_grey_23
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -3610,7 +3672,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_grey_1
+                      color_id: white
                   size:
                     width: 20
                     height: 20
@@ -3619,7 +3681,7 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
@@ -3627,6 +3689,13 @@ sections:
             bottom: 12
             left: 12
             right: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -3684,6 +3753,30 @@ sections:
                   size:
                     width: 25
                     height: 25
+              button_inactive_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: red_90
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 12
+                    left: 12
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 25
+                    height: 25
               description_format:
                 element_format:
                   background_color_theme:
@@ -3701,22 +3794,47 @@ sections:
                   - theme_id: light
                     color_id: white
                 size: 18
+              description_inactive_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: red_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 18
               button_icon: heart_plus
             procedure_id: second_wind
+            active_variable_id: can_use_second_wind
             description: 'Second Wind'
     - format:
         element_format:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
             top: 12
-            bottom: 12
+            bottom: 15
             left: 12
             right: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -3808,7 +3926,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               description_roll_format:
                 element_format:
                   background_color_theme:
@@ -3825,7 +3943,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               roll_text_format:
                 element_format:
                   padding:
@@ -3905,7 +4023,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               description_roll_format:
                 element_format:
                   background_color_theme:
@@ -3922,7 +4040,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               roll_text_format:
                 element_format:
                   padding:
@@ -4007,7 +4125,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               description_roll_format:
                 element_format:
                   background_color_theme:
@@ -4024,7 +4142,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               roll_text_format:
                 element_format:
                   padding:
@@ -4104,7 +4222,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               description_roll_format:
                 element_format:
                   background_color_theme:
@@ -4121,7 +4239,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               roll_text_format:
                 element_format:
                   padding:
@@ -4206,7 +4324,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               description_roll_format:
                 element_format:
                   background_color_theme:
@@ -4223,7 +4341,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               roll_text_format:
                 element_format:
                   padding:
@@ -4303,7 +4421,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               description_roll_format:
                 element_format:
                   background_color_theme:
@@ -4320,7 +4438,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: white
-                size: 18
+                size: 17
               roll_text_format:
                 element_format:
                   padding:
@@ -4339,14 +4457,21 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
             top: 12
-            bottom: 12
+            bottom: 15
             left: 12
             right: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -4367,12 +4492,609 @@ sections:
                   margins:
                     bottom: 3
             value_variable_id: ability_checks_label
+      - format:
+          element_format:
+            margins:
+              top: 12
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            id: strength_check_roll
+            format:
+              widget_format:
+                element_format:
+                  height: 42
+                  horizontal_alignment: left
+              roll_text_location: button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  size:
+                    width: 20
+                    height: 20
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 5
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 20
+                roll_format: modifier_only
+            roll_summation_id: strength_check_roll
+            description: 'STR'
+        - type: widget_roll
+          widget_roll:
+            id: intelligence_check_roll
+            format:
+              widget_format:
+                element_format:
+                  height: 42
+                  horizontal_alignment: left
+              roll_text_location: button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  size:
+                    width: 20
+                    height: 20
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 5
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 20
+                roll_format: modifier_only
+            roll_summation_id: intelligence_check_roll
+            description: 'INT'
+      - format:
+          element_format:
+            margins:
+              top: 12
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            id: dexterity_check_roll
+            format:
+              widget_format:
+                element_format:
+                  height: 42
+                  horizontal_alignment: left
+              roll_text_location: button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  size:
+                    width: 20
+                    height: 20
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 5
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 20
+                roll_format: modifier_only
+            roll_summation_id: dexterity_check_roll
+            description: 'DEX'
+        - type: widget_roll
+          widget_roll:
+            id: wisdom_check_roll
+            format:
+              widget_format:
+                element_format:
+                  height: 42
+                  horizontal_alignment: left
+              roll_text_location: button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  size:
+                    width: 20
+                    height: 20
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 5
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 20
+                roll_format: modifier_only
+            roll_summation_id: wisdom_check_roll
+            description: 'WIS'
+      - format:
+          element_format:
+            margins:
+              top: 12
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            id: constitution_check_roll
+            format:
+              widget_format:
+                element_format:
+                  height: 42
+                  horizontal_alignment: left
+              roll_text_location: button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  size:
+                    width: 20
+                    height: 20
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 5
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 20
+                roll_format: modifier_only
+            roll_summation_id: constitution_check_roll
+            description: 'CON'
+        - type: widget_roll
+          widget_roll:
+            id: charisma_check_roll
+            format:
+              widget_format:
+                element_format:
+                  height: 42
+                  horizontal_alignment: left
+              roll_text_location: button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  size:
+                    width: 20
+                    height: 20
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 17
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 5
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 20
+                roll_format: modifier_only
+            roll_summation_id: charisma_check_roll
+            description: 'CHA'
     - format:
         element_format:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: light_grey_1
+              color_id: white
           margins:
             top: 12
           padding:
@@ -4380,6 +5102,13 @@ sections:
             bottom: 12
             left: 12
             right: 12
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -4408,7 +5137,7 @@ sections:
           - theme_id: dark
             color_id: dark_grey_11
           - theme_id: light
-            color_id: light_grey_4
+            color_id: light_grey_3
     groups:
     - format:
         element_format:
@@ -4417,7 +5146,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_4
+              color_id: light_grey_3
           padding:
             top: 15
             bottom: 15
@@ -4461,7 +5190,7 @@ sections:
                       - theme_id: dark
                         color_id: dark_grey_6
                       - theme_id: light
-                        color_id: light_grey_3
+                        color_id: white
                     padding:
                       left: 10
                       top: 8
@@ -4481,7 +5210,7 @@ sections:
                       - theme_id: dark
                         color_id: dark_grey_6
                       - theme_id: light
-                        color_id: light_grey_2
+                        color_id: white
                     margins:
                       top: 2
                     padding:
@@ -4506,7 +5235,7 @@ sections:
                         - theme_id: dark
                           color_id: light_grey_5
                         - theme_id: light
-                          color_id: dark_grey_10
+                          color_id: light_blue
                       size: 17
                     width: 3
             - type: table_widget_boolean_column
@@ -4558,7 +5287,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_4
+              color_id: light_grey_3
           padding:
             top: 12
             bottom: 12
@@ -4574,7 +5303,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: light_grey_21
+                    color_id: dark_grey_21
                 size: 14
               widget_format:
                 element_format:
@@ -4602,7 +5331,7 @@ sections:
                       - theme_id: dark
                         color_id: dark_grey_6
                       - theme_id: light
-                        color_id: light_grey_3
+                        color_id: white
                     padding:
                       left: 10
                       top: 8
@@ -4612,7 +5341,7 @@ sections:
                     - theme_id: dark
                       color_id: light_grey_22
                     - theme_id: light
-                      color_id: light_grey_22
+                      color_id: dark_grey_22
                   size: 14
               row_format:
                 text_format:
@@ -4622,7 +5351,7 @@ sections:
                       - theme_id: dark
                         color_id: dark_grey_6
                       - theme_id: light
-                        color_id: light_grey_2
+                        color_id: white
                     margins:
                       top: 2
                     padding:
@@ -4648,7 +5377,7 @@ sections:
                         - theme_id: dark
                           color_id: light_grey_5
                         - theme_id: light
-                          color_id: dark_grey_10
+                          color_id: light_blue
                       size: 17
                     width: 3
             - type: table_widget_number_column
@@ -4742,7 +5471,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_4
+              color_id: light_grey_3
           padding:
             top: 12
             bottom: 12
@@ -4781,7 +5510,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_6
                     - theme_id: light
-                      color_id: light_grey_2
+                      color_id: white
                   corners:
                     top_right_radius: 2
                     top_left_radius: 2
@@ -4809,7 +5538,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_6
                     - theme_id: light
-                      color_id: light_grey_2
+                      color_id: white
                   corners:
                     top_right_radius: 2
                     top_left_radius: 2
@@ -4835,7 +5564,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_6
                     - theme_id: light
-                      color_id: light_grey_2
+                      color_id: white
                   corners:
                     top_right_radius: 2
                     top_left_radius: 2
@@ -4864,7 +5593,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_6
                     - theme_id: light
-                      color_id: light_grey_2
+                      color_id: white
                   corners:
                     bottom_right_radius: 2
                     bottom_left_radius: 2
@@ -4897,7 +5626,7 @@ sections:
                       color_id: light_grey_10
                     - theme_id: light
                       color_id: light_blue
-                  font_style: regular
+                  ront_style: medium
                   size: 20
                   element_format:
                     margins:
@@ -4913,7 +5642,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_6
                     - theme_id: light
-                      color_id: light_grey_2
+                      color_id: white
                   corners:
                     bottom_right_radius: 2
                     bottom_left_radius: 2
@@ -4944,7 +5673,7 @@ sections:
                       color_id: light_grey_10
                     - theme_id: light
                       color_id: light_blue
-                  font_style: regular
+                  font_style: medium
                   size: 20
                   element_format:
                     margins:
@@ -4960,7 +5689,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_6
                     - theme_id: light
-                      color_id: light_grey_2
+                      color_id: white
                   corners:
                     bottom_right_radius: 2
                     bottom_left_radius: 2
@@ -4993,7 +5722,7 @@ sections:
                       color_id: light_grey_10
                     - theme_id: light
                       color_id: light_blue
-                  font_style: regular
+                  font_style: medium
                   size: 20
                   element_format:
                     margins:
@@ -5005,7 +5734,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_2
+              color_id: white
           padding:
             bottom: 12
             top: 12
@@ -5046,10 +5775,10 @@ sections:
                       - theme_id: dark
                         color_id: dark_grey_6
                       - theme_id: light
-                        color_id: light_grey_2
+                        color_id: white
                     padding:
-                      left: 10
-                      right: 10
+                      left: 12
+                      right: 12
                       top: 12
                       bottom: 12
                   color_theme:
@@ -5067,19 +5796,19 @@ sections:
                       - theme_id: dark
                         color_id: dark_grey_6
                       - theme_id: light
-                        color_id: light_grey_2
+                        color_id: white
                     border:
                       bottom:
                         thickness: 1
                         color_theme:
                           theme_color_ids:
                           - theme_id: light
-                            color_id: light_grey_5
+                            color_id: light_grey_3
                     margins:
                       top: 2
                     padding:
-                      left: 10
-                      right: 10
+                      left: 12
+                      right: 12
                       top: 12
                       bottom: 12
             columns:
@@ -5100,9 +5829,9 @@ sections:
                         - theme_id: dark
                           color_id: light_grey_5
                         - theme_id: light
-                          color_id: dark_grey_10
-                      size: 16
-                    width: 3
+                          color_id: light_blue
+                      size: 17
+                    width: 3.5
             - type: table_widget_number_column
               table_widget_number_column:
                 name: Quantity
@@ -5120,7 +5849,7 @@ sections:
                         - theme_id: light
                           color_id: dark_grey_10
                       size: 16
-                    width: 2
+                    width: 1
                   editor_type: adder
             rows:
             - cells:
@@ -5221,7 +5950,7 @@ sections:
             - theme_id: dark
               color_id: dark_grey_9
             - theme_id: light
-              color_id: light_grey_2
+              color_id: white
           padding:
             bottom: 15
             top: 15

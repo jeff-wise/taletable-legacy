@@ -243,21 +243,13 @@ typealias DB_FunctionTypeSignatureValue =
 // ---------------------------------------------------------------------------------------------
 
 val invocationTable =
-    Table6("invocation",
-           "parameter1_type",
-           "parameter2_type",
-           "parameter3_type",
-           "parameter4_type",
-           "parameter5_type",
-           "result_type")
+    Table2("invocation",
+           "program_id",
+           "parameters")
 
 typealias DB_InvocationValue =
-    RowValue6<PrimValue<ProgramId>,
-              SumValue<DataReference>,
-              MaybeSumValue<DataReference>,
-              MaybeSumValue<DataReference>,
-              MaybeSumValue<DataReference>,
-              MaybeSumValue<DataReference>>
+    RowValue2<PrimValue<ProgramId>,
+              PrimValue<ProgramParameters>>
 
 
 // GAME
@@ -330,11 +322,11 @@ typealias DB_GroupRowValue =
 val groupRowFormatTable =
     Table2("group_row_format",
            "element_format",
-           "divider")
+           "border")
 
 typealias DB_GroupRowFormatValue =
     RowValue2<ProdValue<ElementFormat>,
-              ProdValue<Divider>>
+              MaybeProdValue<Border>>
 
 
 // ICON FORMAT
@@ -464,7 +456,7 @@ typealias DB_ProgramValue =
     RowValue6<PrimValue<ProgramId>,
               PrimValue<ProgramLabel>,
               PrimValue<ProgramDescription>,
-              ProdValue<ProgramTypeSignature>,
+              PrimValue<ProgramTypeSignature>,
               CollValue<Statement>,
               PrimValue<StatementBindingName>>
 
@@ -678,7 +670,7 @@ val statementTable =
 typealias DB_StatementValue =
     RowValue7<PrimValue<StatementBindingName>,
               PrimValue<FunctionId>,
-              SumValue<StatementParameter>,
+              MaybeSumValue<StatementParameter>,
               MaybeSumValue<StatementParameter>,
               MaybeSumValue<StatementParameter>,
               MaybeSumValue<StatementParameter>,

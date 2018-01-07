@@ -55,6 +55,8 @@ data class Sheet(override val id : UUID,
     // Widgets
     // -----------------------------------------------------------------------------------------
 
+    private val actionWidgetById : MutableMap<UUID,ActionWidget> = mutableMapOf()
+
     private val listWidgetById : MutableMap<UUID,ListWidget> = mutableMapOf()
 
     private val pointsWidgetById : MutableMap<UUID,PointsWidget> = mutableMapOf()
@@ -72,6 +74,7 @@ data class Sheet(override val id : UUID,
     init {
         this.forEachWidget {
             when (it) {
+                is ActionWidget -> actionWidgetById.put(it.id, it)
                 is ListWidget   -> listWidgetById.put(it.id, it)
                 is PointsWidget -> pointsWidgetById.put(it.id, it)
                 is StoryWidget  -> storyWidgetById.put(it.id, it)
@@ -240,6 +243,11 @@ data class Sheet(override val id : UUID,
                context : Context) =
         when (widgetUpdate)
         {
+            is WidgetUpdateActionWidget ->
+            {
+                val actionWidget = this.actionWidgetById[widgetUpdate.widgetId]
+                actionWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+            }
             is WidgetUpdateListWidget ->
             {
                 val listWidget = this.listWidgetById[widgetUpdate.widgetId]

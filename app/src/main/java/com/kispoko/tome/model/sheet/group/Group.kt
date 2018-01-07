@@ -271,6 +271,11 @@ fun groupView(group : Group, sheetUIContext: SheetUIContext) : View
     // Rows
     layout.addView(rowsView(group, sheetUIContext))
 
+    val bottomBorder = group.format().border().apply { it.bottom() }
+    when (bottomBorder) {
+        is Just -> layout.addView(dividerView(bottomBorder.value, sheetUIContext))
+    }
+
     return layout
 }
 

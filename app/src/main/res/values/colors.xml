@@ -265,5 +265,6 @@
     <color name="dark_theme_gold_15">#9C9376</color>
 
     <color name="light_theme_green">#15BD68</color>
+    <color name="light_theme_light_blue">#1887C0</color>
 
 </resources>

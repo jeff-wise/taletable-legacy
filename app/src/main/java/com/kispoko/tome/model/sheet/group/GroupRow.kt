@@ -9,6 +9,7 @@ import android.graphics.drawable.PaintDrawable
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import com.kispoko.tome.R.string.group
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -16,6 +17,7 @@ import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLInt
@@ -32,6 +34,7 @@ import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -143,16 +146,23 @@ data class GroupRow(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(sheetUIContext: SheetUIContext) : View
+    fun view(sheetUIContext : SheetUIContext) : View
     {
         val layout = this.viewLayout(sheetUIContext)
+
+        // Top Border
+        val topBorder = this.format().border().apply { it.top() }
+        when (topBorder) {
+            is Just -> layout.addView(this.dividerView(topBorder.value, sheetUIContext))
+        }
 
         // > Widgets
         layout.addView(widgetsView(sheetUIContext))
 
-        // > Divider
-//        if (this.format().showDividerBool())
-//            layout.addView(dividerView(sheetUIContext))
+        val bottomBorder = this.format().border().apply { it.bottom() }
+        when (bottomBorder) {
+            is Just -> layout.addView(dividerView(bottomBorder.value, sheetUIContext))
+        }
 
         return layout
     }
@@ -229,19 +239,21 @@ data class GroupRow(override val id : UUID,
         return layout.linearLayout(context)
     }
 
-//
-//    private fun dividerView(sheetUIContext: SheetUIContext) : LinearLayout
-//    {
-//        val divider = LinearLayoutBuilder()
-//
-//        divider.width           = LinearLayout.LayoutParams.MATCH_PARENT
-//        divider.heightDp        = 1
-//
-//        divider.backgroundColor = SheetManager.color(sheetUIContext.sheetId,
-//                                                     this.format().elementFormat().dividerColorTheme())
-//
-//        return divider.linearLayout(sheetUIContext.context)
-//    }
+
+    private fun dividerView(format : BorderEdge, sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val divider = LinearLayoutBuilder()
+
+        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
+        divider.heightDp            = format.thickness().value
+
+        divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
+                                                         format.colorTheme())
+
+        return divider.linearLayout(sheetUIContext.context)
+    }
+
+
 
 }
 
@@ -292,7 +304,7 @@ class GroupRowTouchView(context : Context) : LinearLayout(context)
  */
 data class GroupRowFormat(override val id : UUID,
                           private val elementFormat : ElementFormat,
-                          private val divider : Divider)
+                          val border : Maybe<Border>)
                            : ToDocument, ProdType, Serializable
 {
 
@@ -301,10 +313,10 @@ data class GroupRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(elementFormat : ElementFormat,
-                divider : Divider)
+                border : Maybe<Border>)
         : this(UUID.randomUUID(),
                elementFormat,
-               divider)
+               border)
 
 
     companion object : Factory<GroupRowFormat>
@@ -323,10 +335,10 @@ data class GroupRowFormat(override val id : UUID,
                       split(doc.maybeAt("element_format"),
                             effValue(defaultElementFormat()),
                             { ElementFormat.fromDocument(it) }),
-                      // Divider
-                      split(doc.maybeAt("divider"),
-                            effValue(defaultDivider()),
-                            { Divider.fromDocument(it) })
+                      // Border
+                      split(doc.maybeAt("border"),
+                            effValue<ValueError,Maybe<Border>>(Nothing()),
+                            { effApply(::Just, Border.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -334,7 +346,7 @@ data class GroupRowFormat(override val id : UUID,
 
 
         fun default() = GroupRowFormat(defaultElementFormat(),
-                                       defaultDivider())
+                                       Nothing())
 
     }
 
@@ -344,8 +356,7 @@ data class GroupRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "element_format" to this.elementFormat.toDocument(),
-        "divider" to this.divider.toDocument()
+        "element_format" to this.elementFormat.toDocument()
     ))
 
 
@@ -355,7 +366,8 @@ data class GroupRowFormat(override val id : UUID,
 
     fun elementFormat() : ElementFormat = this.elementFormat
 
-    fun divider() : Divider = this.divider
+
+    fun border() : Maybe<Border> = this.border
 
 
     // -----------------------------------------------------------------------------------------
@@ -369,8 +381,9 @@ data class GroupRowFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_GroupRowFormatValue =
-        RowValue2(groupRowFormatTable, ProdValue(this.elementFormat),
-                                       ProdValue(this.divider))
+        RowValue2(groupRowFormatTable,
+                  ProdValue(this.elementFormat),
+                  MaybeProdValue(this.border))
 
 }
 

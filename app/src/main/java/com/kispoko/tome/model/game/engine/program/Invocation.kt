@@ -2,18 +2,23 @@
 package com.kispoko.tome.model.game.engine.program
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.AppEvalError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
-import com.kispoko.tome.lib.orm.RowValue7
-import com.kispoko.tome.lib.orm.schema.CollValue
-import com.kispoko.tome.lib.orm.schema.MaybeSumValue
+import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.SumValue
-import com.kispoko.tome.model.game.engine.mechanic.MechanicRequirements
+import com.kispoko.tome.model.game.engine.EngineValue
+import com.kispoko.tome.model.game.engine.EngineValueNumber
+import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.game.engine.interpreter.UnexpectedProgramResultType
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -28,11 +33,7 @@ import java.util.*
  */
 data class Invocation(override val id : UUID,
                       val programId : ProgramId,
-                      val parameter1 : DataReference,
-                      val parameter2 : Maybe<DataReference>,
-                      val parameter3 : Maybe<DataReference>,
-                      val parameter4 : Maybe<DataReference>,
-                      val parameter5 : Maybe<DataReference>)
+                      val parameters : List<DataReference>)
                        : ToDocument, ProdType, Serializable
 {
 
@@ -41,18 +42,10 @@ data class Invocation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(programId : ProgramId,
-                parameter1 : DataReference,
-                parameter2 : Maybe<DataReference>,
-                parameter3 : Maybe<DataReference>,
-                parameter4 : Maybe<DataReference>,
-                parameter5 : Maybe<DataReference>)
+                parameters : List<DataReference>)
         : this(UUID.randomUUID(),
                programId,
-               parameter1,
-               parameter2,
-               parameter3,
-               parameter4,
-               parameter5)
+               parameters)
 
 
     companion object : Factory<Invocation>
@@ -65,23 +58,9 @@ data class Invocation(override val id : UUID,
                       // Program Name
                       doc.at("program_id") ap { ProgramId.fromDocument(it) },
                       // Parameter 1
-                      doc.at("parameter1") ap { DataReference.fromDocument(it) },
-                      // Parameter 2
-                      split(doc.maybeAt("parameter2"),
-                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                            { apply(::Just, DataReference.fromDocument(it)) }),
-                      // Parameter 3
-                      split(doc.maybeAt("parameter3"),
-                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                            { apply(::Just, DataReference.fromDocument(it)) }),
-                      // Parameter 4
-                      split(doc.maybeAt("parameter4"),
-                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                            { apply(::Just, DataReference.fromDocument(it)) }),
-                      // Parameter 5
-                      split(doc.maybeAt("parameter5"),
-                            effValue<ValueError,Maybe<DataReference>>(Nothing()),
-                            { apply(::Just, DataReference.fromDocument(it)) })
+                      split(doc.maybeList("parameters"),
+                            effValue(listOf()),
+                            { it.map { DataReference.fromDocument(it) } })
                       )
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -94,17 +73,8 @@ data class Invocation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "program_id" to this.programId().toDocument(),
-        "parameter1" to this.parameter1().toDocument()
+        "program_id" to this.programId().toDocument()
     ))
-    .maybeMerge(this.parameter2().apply {
-        Just(Pair("parameter2", it.toDocument())) })
-    .maybeMerge(this.parameter3().apply {
-        Just(Pair("parameter3", it.toDocument())) })
-    .maybeMerge(this.parameter4().apply {
-        Just(Pair("parameter4", it.toDocument())) })
-    .maybeMerge(this.parameter5().apply {
-        Just(Pair("parameter5", it.toDocument())) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -114,19 +84,7 @@ data class Invocation(override val id : UUID,
     fun programId() : ProgramId = this.programId
 
 
-    fun parameter1() : DataReference = this.parameter1
-
-
-    fun parameter2() : Maybe<DataReference> = this.parameter2
-
-
-    fun parameter3() : Maybe<DataReference> = this.parameter3
-
-
-    fun parameter4() : Maybe<DataReference> = this.parameter4
-
-
-    fun parameter5() : Maybe<DataReference> = this.parameter5
+    fun parameters() : List<DataReference> = this.parameters
 
 
     // -----------------------------------------------------------------------------------------
@@ -140,12 +98,9 @@ data class Invocation(override val id : UUID,
 
 
     override fun rowValue() : DB_InvocationValue =
-        RowValue6(invocationTable, PrimValue(this.programId),
-                                   SumValue(this.parameter1),
-                                   MaybeSumValue(this.parameter2),
-                                   MaybeSumValue(this.parameter3),
-                                   MaybeSumValue(this.parameter4),
-                                   MaybeSumValue(this.parameter5))
+        RowValue2(invocationTable,
+                  PrimValue(this.programId),
+                  PrimValue(ProgramParameters(this.parameters)))
 
 
     // -----------------------------------------------------------------------------------------
@@ -157,34 +112,57 @@ data class Invocation(override val id : UUID,
      */
     fun dependencies() : Set<VariableReference>
     {
-        // TODO use maybe monad?
-
         val deps = mutableSetOf<VariableReference>()
 
-        deps.addAll(this.parameter1().dependencies())
-
-        val param2 = this.parameter2()
-        when (param2) {
-            is Just -> deps.addAll(param2.value.dependencies())
-        }
-
-        val param3 = this.parameter3()
-        when (param3) {
-            is Just -> deps.addAll(param3.value.dependencies())
-        }
-
-        val param4 = this.parameter4()
-        when (param4) {
-            is Just -> deps.addAll(param4.value.dependencies())
-        }
-
-        val param5 = this.parameter5()
-        when (param5) {
-            is Just -> deps.addAll(param5.value.dependencies())
+        this.parameters().forEach {
+            deps.addAll(it.dependencies())
         }
 
         return deps
     }
 
+
+    private fun programParameters(sheetContext : SheetContext) : AppEff<ProgramParameterValues> =
+        if (this.parameters.isEmpty())
+        {
+            effValue(ProgramParameterValues(listOf()))
+        }
+        else
+        {
+            this.parameters().mapM {
+                SheetData.referenceEngineValue(it, sheetContext)
+            }
+            .apply { effValue<AppError,ProgramParameterValues>(ProgramParameterValues(it.filterJust()))
+            }
+        }
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value(sheetContext : SheetContext) : AppEff<EngineValue> =
+            GameManager.engine(sheetContext.gameId) ap { engine  ->
+            engine.program(this.programId)          ap { program ->
+            this.programParameters(sheetContext)    ap { params ->
+            program.value(params, sheetContext)
+            } }  }
+
+
+    fun numberValue(sheetContext : SheetContext) : AppEff<Double> =
+        this.value(sheetContext) ap { engineValue ->
+            when (engineValue)
+            {
+                is EngineValueNumber -> effValue(engineValue.value)
+                else                 ->
+                    effError<AppError,Double>(
+                            AppEvalError(UnexpectedProgramResultType(this.programId(),
+                                                                      engineValue.type(),
+                                                                      EngineValueType.Number)))
+            }
+        }
+
 }
+
 

@@ -5,6 +5,7 @@ package com.kispoko.tome.rts.game.engine.interpreter
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.function.FunctionId
+import com.kispoko.tome.model.game.engine.function.FunctionParameters
 import com.kispoko.tome.model.game.engine.program.ProgramId
 
 
@@ -24,6 +25,18 @@ class ProgramDoesNotExist(val programId : ProgramId) : EvalError()
             """
             Eval Error: Program Does Not Exist
                 Program Id: $programId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class PlatformFunctionDoesNotExist(val functionId : FunctionId) : EvalError()
+{
+    override fun debugMessage(): String =
+            """
+            Eval Error: Platform Function Does Not Exist
+                Function Id: $functionId
             """
 
     override fun logMessage(): String = userMessage()
@@ -58,7 +71,7 @@ class ProgramParameterDoesNotExist(val parameterIndex : Int,
 
 
 class FunctionNotDefinedForParameters(val functionId : FunctionId,
-                                      val parameters : Parameters) : EvalError()
+                                      val parameters : FunctionParameters) : EvalError()
 {
     override fun debugMessage(): String =
             """

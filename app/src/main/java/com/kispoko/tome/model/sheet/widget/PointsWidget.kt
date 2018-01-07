@@ -632,14 +632,17 @@ object PointsWidgetView
         val limit           = LinearLayoutBuilder()
 
         val limitValue      = pointsWidget.limitValue(SheetContext(sheetUIContext))
-        val currentValue    = pointsWidget.currentValue(SheetContext(sheetUIContext))
+        var currentValue    = pointsWidget.currentValue(SheetContext(sheetUIContext))
+
 
         var currentWeight   = 1f
         var limitWeight     = 1f
 
-        if (limitValue != null && currentValue != null &&
-            currentValue <= limitValue && limitValue > 0)
+        if (limitValue != null && currentValue != null && limitValue > 0)
         {
+            if (currentValue > limitValue)
+                currentValue = limitValue
+
             val ratio = (currentValue / limitValue) * 100
             currentWeight = ratio.toFloat()
             limitWeight   = (100.0 - ratio).toFloat()

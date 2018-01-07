@@ -3,13 +3,19 @@ package com.kispoko.tome.lib.ui;
 
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.text.style.LineHeightSpan;
 import android.text.style.ReplacementSpan;
+import android.util.Log;
 
 import com.kispoko.tome.model.sheet.style.IconFormat;
+import com.kispoko.tome.model.sheet.style.IconSize;
 import com.kispoko.tome.util.Util;
 
 
@@ -28,7 +34,8 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
 
 
     private Drawable drawable;
-    private IconFormat iconFormat;
+    private IconSize iconSize;
+    private Integer iconColor;
 
 
     public RoundedBackgroundHeightSpan(float lineHeight, int lineSpacing, int textColor, int backgroundColor)
@@ -42,11 +49,18 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
         this.lineSpacing = lineSpacing;
 
         this.drawable = null;
-        this.iconFormat = null;
+        this.iconSize = null;
+        this.iconColor = null;
     }
 
 
-    public RoundedBackgroundHeightSpan(float lineHeight, int lineSpacing, int textColor, int backgroundColor, Drawable drawable, IconFormat iconFormat)
+    public RoundedBackgroundHeightSpan(float lineHeight,
+                                       int lineSpacing,
+                                       int textColor,
+                                       int backgroundColor,
+                                       Drawable drawable,
+                                       IconSize iconSize,
+                                       Integer iconColor)
     {
         super();
 
@@ -57,7 +71,8 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
         this.lineSpacing = lineSpacing;
 
         this.drawable = drawable;
-        this.iconFormat = iconFormat;
+        this.iconSize = iconSize;
+        this.iconColor = iconColor;
     }
 
 
@@ -81,16 +96,29 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
         canvas.drawText(text, start, end, x, y, paint);
 
 
-        if (drawable != null & iconFormat != null)
+        if (drawable != null & iconSize != null)
         {
             int textLen = Math.round(paint.measureText("  ", 0, 2));
 
-            int widthPx = Util.dpToPixel(iconFormat.size().getWidth());
-            int heightPx = Util.dpToPixel(iconFormat.size().getHeight());
+            int widthPx = Util.dpToPixel(iconSize.getWidth());
+            int heightPx = Util.dpToPixel(iconSize.getHeight());
 
             int xOrigin = Math.round(x) + textLen;
             int yOrigin = Math.round(y - (heightPx * 0.75f));
 
+            if (this.iconColor != null) {
+                paint.setColor(this.iconColor);
+                //Log.d("***ROUNDED BACK", "setting icon color: " + Integer.toString(this.iconColor, 16));
+            }
+//            else {
+//                Log.d("***ROUNDED BACK", "setting text color");
+//                paint.setColor(this.textColor);
+//            }
+
+//            if (iconColor != null) {
+//                drawable.setColorFilter(new PorterDuffColorFilter(Color.MAGENTA, PorterDuff.Mode.SRC_IN));
+//                Log.d("***ROUNDED BACK", "setting icon color: " + Integer.toString(iconColor, 16));
+//            }
 
             drawable.setBounds(
                     xOrigin,

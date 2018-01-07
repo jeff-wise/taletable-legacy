@@ -12,7 +12,6 @@ import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
-import lulo.schema.Prim
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueParser
@@ -31,7 +30,7 @@ sealed class BooleanReference : ToDocument, SumType, Serializable
         override fun fromDocument(doc: SchemaDoc): ValueParser<BooleanReference> =
             when (doc.case())
             {
-                "literal"            -> BooleanReferenceLiteral.fromDocument(doc.nextCase())
+                "boolean_literal"    -> BooleanReferenceLiteral.fromDocument(doc.nextCase())
                 "variable_reference" -> BooleanReferenceVariable.fromDocument(doc.nextCase())
                 else                 -> effError(UnknownCase(doc.case(), doc.path))
             }

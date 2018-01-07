@@ -4096,7 +4096,7 @@ engine:
           boolean_literal: false
     - type: variable_boolean
       variable_boolean:
-        id: constituiton_saving_throw_is_proficient
+        id: constitution_saving_throw_is_proficient
         label: Constitution Saving Throw Proficiency
         description: Is proficient with constitution saving throws?
         value:
@@ -4126,6 +4126,14 @@ engine:
         value:
           type: boolean_literal
           boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: can_use_second_wind
+        label: Can Use Second Wind?
+        description: Can Use Second Wind?
+        value:
+          type: boolean_literal
+          boolean_literal: true
   mechanic_categories:
   - id: race_human
     label: 'Race: Human'
@@ -4649,7 +4657,8 @@ engine:
     label: Ability Modifier
     description: Calcuates the ability modifier of an ability score.
     type_signature:
-      parameter1_type: number
+      parameter_types:
+      - number
       result_type: number
     statements:
     - binding_name: result
@@ -4662,7 +4671,8 @@ engine:
     label: Proficency Bonus
     description: Calcuates the proficiency bonus base on the current level.
     type_signature:
-      parameter1_type: number
+      parameter_types:
+      - number
       result_type: number
     statements:
     - binding_name: result
@@ -4671,10 +4681,76 @@ engine:
         type: program_parameter_index
         program_parameter_index: 1
     result_binding_name: result
+  - program_id: add_second_wind_hit_points
+    label: Add Second Wind Hit Points
+    description: Add second wind hit points
+    type_signature:
+      parameter_types:
+      - number
+      result_type: number
+    statements:
+    - binding_name: roll_result
+      function_id: dice_roll
+      parameter1:
+        type: data_reference
+        data_reference:
+          type: data_reference_dice_roll
+          data_reference_dice_roll:
+            type: dice_roll
+            dice_roll:
+              quantities:
+              - sides: 10
+                quantity: 1
+    - binding_name: roll_sum
+      function_id: sum
+      parameter1:
+        type: statement_binding_name
+        statement_binding_name: roll_result
+      parameter2:
+        type: data_reference
+        data_reference:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: level
+      parameter3:
+        type: data_reference
+        data_reference:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: current_hit_points
+    result_binding_name: roll_sum
+  - program_id: inactivate_second_wind
+    label: Inactivate Second Wind
+    description: Inactivate Second Wind
+    type_signature:
+      result_type: boolean
+    statements:
+    - binding_name: result
+      function_id: falsify
+      parameter1:
+        type: data_reference
+        data_reference:
+          type: data_reference_boolean
+          data_reference_boolean:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: can_use_second_wind
+    result_binding_name: result
   procedures:
   - procedure_id: second_wind
     procedure_name: Second Wind
     updates:
+    - variable_id: current_hit_points
+      program_id: add_second_wind_hit_points
+    - variable_id: can_use_second_wind
+      program_id: inactivate_second_wind
     description:
       template: 'Summoning stamina and strength from deep within, I heal 1d10 + $$$ hit points.'
       variable_ids:
@@ -5023,6 +5099,114 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
+  - summation_id: strength_check_roll
+    summation_name: Strength Check Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
+  - summation_id: dexterity_check_roll
+    summation_name: Dexterity Check Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+  - summation_id: constitution_check_roll
+    summation_name: Constitution Check Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: constitution_modifier
+  - summation_id: intelligence_check_roll
+    summation_name: Intelligence Check Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+  - summation_id: wisdom_check_roll
+    summation_name: Wisdom Check Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+  - summation_id: charisma_check_roll
+    summation_name: Charisma Check Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
   - summation_id: skill_acrobatics_bonus
     summation_name: Skill (Acrobatics) Bonus
     terms:

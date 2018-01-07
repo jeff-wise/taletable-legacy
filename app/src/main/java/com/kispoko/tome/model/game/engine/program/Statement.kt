@@ -2,22 +2,27 @@
 package com.kispoko.tome.model.game.engine.program
 
 
-import android.util.Log
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.AppEvalError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.RowValue7
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.model.game.engine.function.FunctionId
+import com.kispoko.tome.model.game.engine.EngineValue
+import com.kispoko.tome.model.game.engine.function.*
 import com.kispoko.tome.model.game.engine.reference.*
+import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.game.engine.interpreter.BindingDoesNotExist
+import com.kispoko.tome.rts.game.engine.interpreter.ProgramParameterDoesNotExist
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
 import lulo.document.*
-import lulo.schema.Prim
-import lulo.schema.Sum
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
@@ -33,7 +38,7 @@ import java.util.*
 data class Statement(override val id : UUID,
                      val bindingName : StatementBindingName,
                      val functionId : FunctionId,
-                     val parameter1 : StatementParameter,
+                     val parameter1 : Maybe<StatementParameter>,
                      val parameter2 : Maybe<StatementParameter>,
                      val parameter3 : Maybe<StatementParameter>,
                      val parameter4 : Maybe<StatementParameter>,
@@ -47,7 +52,7 @@ data class Statement(override val id : UUID,
 
     constructor(bindingName : StatementBindingName,
                 functionId : FunctionId,
-                parameter1 : StatementParameter,
+                parameter1 : Maybe<StatementParameter>,
                 parameter2 : Maybe<StatementParameter>,
                 parameter3 : Maybe<StatementParameter>,
                 parameter4 : Maybe<StatementParameter>,
@@ -74,7 +79,9 @@ data class Statement(override val id : UUID,
                       // Function Id
                       doc.at("function_id") ap { FunctionId.fromDocument(it) },
                       // Parameter 1
-                      doc.at("parameter1") ap { StatementParameter.fromDocument(it) },
+                      split(doc.maybeAt("parameter1"),
+                            effValue<ValueError,Maybe<StatementParameter>>(Nothing()),
+                            { effApply(::Just, StatementParameter.fromDocument(it)) }),
                       // Parameter 2
                       split(doc.maybeAt("parameter2"),
                             effValue<ValueError,Maybe<StatementParameter>>(Nothing()),
@@ -104,9 +111,10 @@ data class Statement(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "binding_name" to this.bindingName().toDocument(),
-        "function_id" to this.functionId().toDocument(),
-        "parameter_1" to this.parameter1().toDocument()
+        "function_id" to this.functionId().toDocument()
         ))
+        .maybeMerge(this.parameter1().apply {
+            Just(Pair("parameter1", it.toDocument())) })
         .maybeMerge(this.parameter2().apply {
             Just(Pair("parameter2", it.toDocument())) })
         .maybeMerge(this.parameter3().apply {
@@ -129,7 +137,7 @@ data class Statement(override val id : UUID,
     fun functionId() : FunctionId = this.functionId
 
 
-    fun parameter1() : StatementParameter = this.parameter1
+    fun parameter1() : Maybe<StatementParameter> = this.parameter1
 
 
     fun parameter2() : Maybe<StatementParameter> = this.parameter2
@@ -157,13 +165,181 @@ data class Statement(override val id : UUID,
     override fun rowValue() : DB_StatementValue =
         RowValue7(statementTable, PrimValue(this.bindingName),
                                   PrimValue(this.functionId),
-                                  SumValue(this.parameter1),
+                                  MaybeSumValue(this.parameter1),
                                   MaybeSumValue(this.parameter2),
                                   MaybeSumValue(this.parameter3),
                                   MaybeSumValue(this.parameter4),
                                   MaybeSumValue(this.parameter5))
 
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value(programParameterValues : ProgramParameterValues,
+              bindings : Map<String, EngineValue>,
+              programId : ProgramId,
+              sheetContext : SheetContext) : AppEff<EngineValue>
+    {
+
+
+        return if (isPlatformFunction(this.functionId))
+        {
+            val params = this.platformFunctionParameters(programParameterValues,
+                                                         bindings,
+                                                         programId,
+                                                         sheetContext)
+            params.apply {
+                runPlatformFunction(this.functionId, it)
+            }
+        }
+        else
+        {
+            val paramsEff = this.functionParameters(programParameterValues,
+                                                    bindings,
+                                                    programId,
+                                                    sheetContext)
+
+            GameManager.engine(sheetContext.gameId) ap { engine ->
+            engine.function(this.functionId())      ap { function ->
+            paramsEff                               ap { params ->
+                function.value(params)
+            } } }
+        }
+    }
+
+
+    fun functionParameters(programParameterValues : ProgramParameterValues,
+                           bindings : Map<String,EngineValue>,
+                           programId : ProgramId,
+                           sheetContext : SheetContext) : AppEff<FunctionParameters>
+    {
+        val statementParameter1 = this.parameter1()
+        val parameter1 = when (statementParameter1) {
+            is Just -> this.statementParameterValue(statementParameter1.value,
+                                                    programParameterValues,
+                                                    bindings,
+                                                    programId,
+                                                    sheetContext)
+            else    -> effValue(Nothing())
+        }
+
+        val statementParameter2 = this.parameter2()
+        val parameter2 = when (statementParameter2) {
+            is Just -> this.statementParameterValue(statementParameter2.value,
+                                                    programParameterValues,
+                                                    bindings,
+                                                    programId,
+                                                    sheetContext)
+            else    -> effValue(Nothing())
+        }
+
+        val statementParameter3 = this.parameter3()
+        val parameter3 = when (statementParameter3) {
+            is Just -> this.statementParameterValue(statementParameter3.value,
+                                                       programParameterValues,
+                                                       bindings,
+                                                       programId,
+                                                       sheetContext)
+            else    -> effValue(Nothing())
+        }
+
+        val statementParameter4 = this.parameter4()
+        val parameter4 = when (statementParameter4) {
+            is Just -> this.statementParameterValue(statementParameter4.value,
+                                                       programParameterValues,
+                                                       bindings,
+                                                       programId,
+                                                       sheetContext)
+            else    -> effValue(Nothing())
+        }
+
+        val statementParameter5 = this.parameter5()
+        val parameter5 = when (statementParameter5) {
+            is Just -> this.statementParameterValue(statementParameter5.value,
+                                                       programParameterValues,
+                                                       bindings,
+                                                       programId,
+                                                       sheetContext)
+            else    -> effValue(Nothing())
+        }
+
+        return parameter1 ap { maybeParameter1 ->
+            when (maybeParameter1)
+            {
+                is Just -> apply(::FunctionParameters,
+                                 effValue(maybeParameter1.value),
+                                 parameter2,
+                                 parameter3,
+                                 parameter4,
+                                 parameter5)
+                else -> effError<AppError,FunctionParameters>(
+                                AppEvalError(ProgramParameterDoesNotExist(1, programId)))
+            }
+        }
+    }
+
+
+    private fun platformFunctionParameters(programParameterValues : ProgramParameterValues,
+                                           bindings : Map<String,EngineValue>,
+                                           programId : ProgramId,
+                                           sheetContext : SheetContext)
+                                            : AppEff<PlatformFunctionParameters>
+    {
+        val justParams = listOf(this.parameter1,
+                                this.parameter2,
+                                this.parameter3,
+                                this.parameter4,
+                                this.parameter5)
+                                .filterJust()
+
+        return justParams.mapM {
+            this.statementParameterValue(it,
+                                         programParameterValues,
+                                         bindings,
+                                         programId,
+                                         sheetContext)
+        }
+        .apply { effValue<AppError,PlatformFunctionParameters>(PlatformFunctionParameters(it.filterJust())) }
+    }
+
+
+    private fun statementParameterValue(statementParameter : StatementParameter,
+                                        programParameterValues : ProgramParameterValues,
+                                        bindings : Map<String,EngineValue>,
+                                        programId : ProgramId,
+                                        sheetContext : SheetContext) : AppEff<Maybe<EngineValue>> =
+        when (statementParameter)
+        {
+            is StatementParameterBindingName ->
+            {
+                val bindingName = statementParameter.bindingName.value
+                if (bindings.containsKey(bindingName))
+                    effValue<AppError,Maybe<EngineValue>>(Just(bindings.get(bindingName)!!))
+                else
+                    effError<AppError,Maybe<EngineValue>>(AppEvalError(BindingDoesNotExist(bindingName, programId)))
+            }
+            is StatementParameterProgramParameter ->
+            {
+                val parameterIndex = statementParameter.index.value
+                val parameter = programParameterValues.atIndex(parameterIndex)
+                when (parameter) {
+                    is Just -> effValue<AppError,Maybe<EngineValue>>(Just(parameter.value))
+                    else    -> effError<AppError,Maybe<EngineValue>>(AppEvalError(
+                                        ProgramParameterDoesNotExist(parameterIndex, programId)))
+                }
+            }
+            is StatementParameterReference ->
+            {
+                SheetData.referenceEngineValue(statementParameter.reference, sheetContext)
+            }
+        }
+
+
 }
+
+
+data class StatementBinding(val name : String, val value : EngineValue)
 
 
 /**
@@ -213,7 +389,7 @@ sealed class StatementParameter : ToDocument, SumType, Serializable
         override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameter> =
             when (doc.case())
             {
-                "statement_binding"       -> StatementParameterBindingName.fromDocument(doc.nextCase())
+                "statement_binding_name"  -> StatementParameterBindingName.fromDocument(doc.nextCase())
                                                 as ValueParser<StatementParameter>
                 "program_parameter_index" -> StatementParameterProgramParameter.fromDocument(doc.nextCase())
                                                 as ValueParser<StatementParameter>
@@ -248,7 +424,7 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = this.bindingName.toDocument().withCase("statement_binding")
+    override fun toDocument() = this.bindingName.toDocument().withCase("statement_binding_name")
 
 
     // -----------------------------------------------------------------------------------------

@@ -541,6 +541,12 @@ types:
       presence: optional
       description: >
         The element format.
+    - name: border
+      type:
+        type: custom_type
+        custom_type: border
+      presence: optional
+      description: The border.
 - type: sum_type
   sum_type:
     name: widget
@@ -646,6 +652,12 @@ types:
         custom_type: procedure_id
       presence: required
       description: The roll summation id.
+    - name: active_variable_id
+      type:
+        type: custom_type
+        custom_type: variable_id
+      presence: optional
+      description: The roll summation id.
     - name: description
       type:
         type: prim_type
@@ -678,7 +690,19 @@ types:
         custom_type: text_format
       presence: optional
       description: The button format.
+    - name: button_inactive_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The description format.
     - name: description_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The description format.
+    - name: description_inactive_format
       type: 
         type: custom_type
         custom_type: text_format

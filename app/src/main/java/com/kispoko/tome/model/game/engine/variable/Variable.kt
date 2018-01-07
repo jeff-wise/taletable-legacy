@@ -332,9 +332,9 @@ data class BooleanVariable(override val id : UUID,
         when (this.variableValue())
         {
             is BooleanVariableLiteralValue -> {
-                Log.d("***VARIABLE", "update boolean literal called")
                 this.variableValue = BooleanVariableLiteralValue(value)
                 SheetManager.sheetState(sheetId) apDo { it.onVariableUpdate(this) }
+                this.onUpdate()
             }
         }
     }
@@ -676,6 +676,7 @@ data class NumberVariable(override val id : UUID,
                 this.variableValue = NumberVariableLiteralValue(value)
                 this.history().append(this.variableValue())
                 SheetManager.onVariableUpdate(sheetId, this)
+                this.onUpdate()
             }
         }
     }

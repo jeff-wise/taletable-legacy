@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
+import android.util.Log
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.SumValue
@@ -50,7 +51,6 @@ sealed class DataReference : ToDocument, SumType, Serializable
 
 }
 
-
 /**
  * Boolean Value Reference
  */
@@ -63,14 +63,8 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
 
     companion object : Factory<DataReferenceBoolean>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DataReferenceBoolean> = when (doc)
-        {
-            is DocDict -> BooleanReference.fromDocument(doc) ap {
-                              effValue<ValueError, DataReferenceBoolean>(
-                                      DataReferenceBoolean(it))
-                          }
-            else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<DataReferenceBoolean> =
+                effApply(::DataReferenceBoolean, BooleanReference.fromDocument(doc))
     }
 
 
@@ -83,7 +77,14 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
 
 
     // -----------------------------------------------------------------------------------------
-    // SUM TYPE
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(): Set<VariableReference> = this.reference.dependencies()
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun columnValue() = SumValue(this.reference)
@@ -94,14 +95,8 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
 
     override val sumModelObject = this.reference
 
-
-    // -----------------------------------------------------------------------------------------
-    // DEPENDENCIES
-    // -----------------------------------------------------------------------------------------
-
-    override fun dependencies(): Set<VariableReference> = this.reference.dependencies()
-
 }
+
 
 
 /**

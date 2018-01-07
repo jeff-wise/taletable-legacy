@@ -25,9 +25,7 @@ import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.*
 import effect.Err
 import effect.Just
 import effect.Val
@@ -45,6 +43,7 @@ class ProcedureDialog : DialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var procedureId   : ProcedureId? = null
+    private var updateTarget  : UpdateTarget? = null
     private var sheetContext  : SheetContext? = null
 
 
@@ -55,12 +54,14 @@ class ProcedureDialog : DialogFragment()
     companion object
     {
         fun newInstance(procedureId : ProcedureId,
+                        updateTarget : UpdateTarget,
                         sheetContext : SheetContext) : ProcedureDialog
         {
             val dialog = ProcedureDialog()
 
             val args = Bundle()
             args.putSerializable("procedure_id", procedureId)
+            args.putSerializable("update_target", updateTarget)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
 
@@ -79,6 +80,7 @@ class ProcedureDialog : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.procedureId  = arguments.getSerializable("procedure_id") as ProcedureId
+        this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
 
         // (2) Initialize UI
@@ -121,6 +123,7 @@ class ProcedureDialog : DialogFragment()
             return when (procedure) {
                 is Val -> {
                     val viewBuilder = ProcedureViewBuilder(procedure.value,
+                                                           updateTarget,
                                                            sheetUIContext,
                                                            this)
                     viewBuilder.view()
@@ -158,6 +161,7 @@ class ProcedureDialog : DialogFragment()
 
 
 class ProcedureViewBuilder(val procedure : Procedure,
+                           val updateTarget : UpdateTarget?,
                            val sheetUIContext : SheetUIContext,
                            val dialog : ProcedureDialog)
 {
@@ -290,6 +294,25 @@ class ProcedureViewBuilder(val procedure : Procedure,
         layout.padding.rightDp  = 12f
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+
+        layout.onClick          = View.OnClickListener {
+            procedure.run(SheetContext(sheetUIContext))
+
+            if (updateTarget != null)
+            {
+                when (updateTarget)
+                {
+                    is UpdateTargetActionWidget ->
+                    {
+                        SheetManager.updateSheet(sheetUIContext.sheetId,
+                                                 ActionWidgetUpdate(updateTarget.actionWidgetId),
+                                                 sheetUIContext.sheetUI())
+                    }
+                }
+            }
+
+            dialog.dismiss()
+        }
 
         layout.child(label)
               .child(icon)

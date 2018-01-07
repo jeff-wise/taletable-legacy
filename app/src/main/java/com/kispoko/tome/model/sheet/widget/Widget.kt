@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TextView
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
@@ -307,8 +308,17 @@ data class ActionWidget(override val id : UUID,
                        val widgetId : WidgetId,
                        val format : ActionWidgetFormat,
                        val procedureId : ProcedureId,
+                       val activeVariableId : Maybe<VariableId>,
                        val description : Maybe<ActionWidgetDescription>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var viewBuilder : ActionWidgetViewBuilder? = null
+    var layoutViewId : Int? = null
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -317,11 +327,13 @@ data class ActionWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 format : ActionWidgetFormat,
                 procedureId : ProcedureId,
+                activeVariableId : Maybe<VariableId>,
                 description : Maybe<ActionWidgetDescription>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
                procedureId,
+               activeVariableId,
                description)
 
 
@@ -340,6 +352,10 @@ data class ActionWidget(override val id : UUID,
                             { ActionWidgetFormat.fromDocument(it) }),
                       // Procedure Id
                       doc.at("procedure_id") ap { ProcedureId.fromDocument(it) },
+                      // Active Variable Id
+                      split(doc.maybeAt("active_variable_id"),
+                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                            { apply(::Just, VariableId.fromDocument(it)) }),
                       // Description
                       split(doc.maybeAt("description"),
                             effValue<ValueError,Maybe<ActionWidgetDescription>>(Nothing()),
@@ -373,6 +389,9 @@ data class ActionWidget(override val id : UUID,
 
 
     fun procedureId() : ProcedureId = this.procedureId
+
+
+    fun activeVariableId() : Maybe<VariableId> = this.activeVariableId
 
 
     fun description() : Maybe<ActionWidgetDescription> = this.description
@@ -414,7 +433,120 @@ data class ActionWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
+    {
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+        val sheetContext = SheetContext(sheetUIContext)
+
+        val activeVariableId = this.activeVariableId()
+        when (activeVariableId)
+        {
+            is Just ->
+            {
+                val variable = SheetManager.sheetState(sheetContext.sheetId)
+                                 .apply { it.booleanVariableWithId(activeVariableId.value) }
+                when (variable) {
+                    is Val -> {
+                        variable.value.setOnUpdateListener {
+                            rootView?.let {
+                                this.updateView(it, sheetUIContext)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun viewBuilder(sheetUIContext : SheetUIContext) =
+        this.viewBuilder ?: ActionWidgetViewBuilder(this, sheetUIContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // ACTIVE
+    // -----------------------------------------------------------------------------------------
+
+    fun isActive(sheetContext : SheetContext) : Boolean
+    {
+        val variableId = this.activeVariableId()
+        return when (variableId)
+        {
+            is Just ->
+            {
+                val variableValue = SheetManager.sheetState(sheetContext.sheetId)
+                                .apply { it.booleanVariableWithId(variableId.value) }
+                                .apply { it.value() }
+                when (variableValue)
+                {
+                    is Val ->
+                    {
+                        variableValue.value
+                    }
+                    is Err -> {
+                        ApplicationLog.error(variableValue.error)
+                        true
+                    }
+                }
+
+            }
+            is Nothing -> {
+                Log.d("***WIDGET", "active variable is NOTHING")
+                true
+            }
+        }
+    }
+
+
+    fun setActive(sheetContext : SheetContext)
+    {
+        val variableId = this.activeVariableId()
+        when (variableId)
+        {
+            is Just ->
+            {
+                val variable = SheetManager.sheetState(sheetContext.sheetId)
+                                 .apply { it.booleanVariableWithId(variableId.value) }
+                when (variable)
+                {
+                    is Val -> variable.value.updateValue(true, sheetContext.sheetId)
+                    is Err -> ApplicationLog.error(variable.error)
+                }
+            }
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    fun update(actionWidgetUpdate : WidgetUpdateActionWidget,
+               sheetUIContext : SheetUIContext,
+               rootView : View) =
+        when (actionWidgetUpdate)
+        {
+            is ActionWidgetUpdate ->
+            {
+                Log.d("***WIDGET", "updating action widget")
+                this.updateView(rootView, sheetUIContext)
+            }
+        }
+
+
+    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    {
+        val layoutViewId = this.layoutViewId
+        if (layoutViewId != null) {
+            val layout = rootView.findViewById(layoutViewId) as LinearLayout?
+            layout?.removeAllViews()
+            layout?.addView(viewBuilder(sheetUIContext).inlineLeftButtonView())
+        }
     }
 
 
@@ -1489,6 +1621,7 @@ data class PointsWidget(override val id : UUID,
                         val label : Maybe<PointsWidgetLabel>) : Widget()
 {
 
+
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
@@ -1730,9 +1863,19 @@ data class PointsWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {
-//        SheetManager.addVariable(sheetContext.sheetId, this.limitValueVariableId())
-//        SheetManager.addVariable(sheetContext.sheetId, this.currentValueVariableId())
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    {
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+        val sheetContext = SheetContext(sheetUIContext)
+
+        this.currentValueVariable(sheetContext) apDo { currentValueVar ->
+            currentValueVar.setOnUpdateListener {
+                rootView?.let {
+                    this.updateView(it, sheetUIContext)
+                }
+            }
+        }
     }
 
 }

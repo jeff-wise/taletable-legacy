@@ -11,12 +11,14 @@ import android.support.v4.app.DialogFragment
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.google.android.flexbox.AlignContent
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.label
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.dice.RollPartSummary
@@ -163,6 +165,13 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 {
 
     // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var rolls : Int = 0
+
+
+    // -----------------------------------------------------------------------------------------
     // VIEW
     // -----------------------------------------------------------------------------------------
 
@@ -296,7 +305,8 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         val mainLayout = this.footerMainViewLayout()
 
-        mainLayout.addView(this.rollView())
+        //mainLayout.addView(this.rollExplainButtonView(rollsListView))
+        mainLayout.addView(this.rollSettingsButtonView(rollsListView))
 
         //layout.addView(this.actionsButtonView(sheetUIContext))
         mainLayout.addView(this.rollButtonView(rollsListView))
@@ -318,14 +328,14 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         layout.corners          = Corners(0.0, 0.0, 2.0, 2.0)
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        layout.backgroundColor      = Color.WHITE
 
         layout.padding.bottomDp     = 6f
-        layout.padding.rightDp      = 10f
-        layout.padding.leftDp       = 10f
+        layout.padding.rightDp      = 6f
+        layout.padding.leftDp       = 6f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -407,7 +417,125 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
         return description.textView(sheetUIContext.context)
     }
 
+    private fun rollExplainButtonView(rollsListView : LinearLayout) : LinearLayout
+    {
 
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val icon                    = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = 0
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight               = 2f
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.gravity              = Gravity.CENTER
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_25"))))
+        layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+
+        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
+
+        layout.padding.topDp        = 8f
+        layout.padding.bottomDp     = 8f
+        layout.padding.leftDp       = 10f
+        layout.padding.rightDp      = 10f
+
+        layout.margin.leftDp        = 4f
+        layout.margin.rightDp       = 4f
+//
+//        layout.margin.leftDp        = 1f
+
+        layout.onClick              = View.OnClickListener {
+            rollsListView.addView(this.rollView(diceRoll.rollSummary(), sheetUIContext))
+        }
+
+        layout.child(icon)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp                = 25
+        icon.heightDp               = 25
+
+        icon.image                  = R.drawable.icon_question_filled
+
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+        icon.color                  = Color.WHITE
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun rollSettingsButtonView(rollsListView : LinearLayout) : LinearLayout
+    {
+
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val icon                    = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = 0
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.weight               = 2f
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.gravity              = Gravity.CENTER
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        //layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        layout.backgroundColor       = Color.WHITE
+
+        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
+
+        layout.padding.topDp        = 8f
+        layout.padding.bottomDp     = 8f
+        layout.padding.leftDp       = 10f
+        layout.padding.rightDp      = 10f
+
+        layout.margin.leftDp        = 4f
+        layout.margin.rightDp       = 4f
+//
+//        layout.margin.leftDp        = 1f
+
+        layout.onClick              = View.OnClickListener {
+            rollsListView.addView(this.rollView(diceRoll.rollSummary(), sheetUIContext))
+        }
+
+        layout.child(icon)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp                = 29
+        icon.heightDp               = 29
+
+        icon.image                  = R.drawable.icon_gears_filled
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
 
 
     private fun rollButtonView(rollsListView : LinearLayout) : LinearLayout
@@ -425,7 +553,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         layout.width                = 0
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.weight               = 1f
+        layout.weight               = 6f
 
         layout.orientation          = LinearLayout.HORIZONTAL
 
@@ -433,7 +561,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
@@ -442,10 +570,14 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
         layout.padding.bottomDp     = 8f
         layout.padding.leftDp       = 10f
         layout.padding.rightDp      = 10f
+
+        layout.margin.leftDp        = 4f
+        layout.margin.rightDp       = 4f
 //
 //        layout.margin.leftDp        = 1f
 
         layout.onClick              = View.OnClickListener {
+            this.rolls += 1
             rollsListView.addView(this.rollView(diceRoll.rollSummary(), sheetUIContext))
         }
 
@@ -474,7 +606,8 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.text                  = sheetUIContext.context.getString(R.string.roll) //.toUpperCase()
+        //label.text                  = sheetUIContext.context.getString(R.string.roll) //.toUpperCase()
+        label.text                  = this.diceRoll.toString()
 
         label.gravity               = Gravity.CENTER_HORIZONTAL
 
@@ -538,7 +671,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
@@ -557,9 +690,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         layout.addView(this.rollResultView(rollSummary, sheetUIContext))
 
-        layout.addView(this.rollDetailsView(rollSummary.parts, sheetUIContext))
-
-        //layout.addView(this.rollDividerView(sheetUIContext))
+        layout.addView(this.rollInfoView(rollSummary.parts, sheetUIContext))
 
         return layout
     }
@@ -569,17 +700,18 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
     {
         val layout = LinearLayoutBuilder()
 
-        layout.orientation          = LinearLayout.VERTICAL
+        layout.orientation          = LinearLayout.HORIZONTAL
+
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.padding.topDp         = 8f
         layout.padding.bottomDp      = 8f
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        layout.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+        layout.backgroundColor     = Color.WHITE
 
         layout.margin.leftDp        = 3f
         layout.margin.rightDp       = 3f
@@ -590,43 +722,26 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
 
     private fun rollResultView(rollSummary : RollSummary,
-                               sheetUIContext : SheetUIContext) : LinearLayout
+                               sheetUIContext : SheetUIContext) : RelativeLayout
     {
         val layout = this.rollResultViewLayout(sheetUIContext)
 
         layout.addView(this.rollValueView(rollSummary.value, sheetUIContext))
 
-        layout.addView(this.rollDescriptionView(sheetUIContext))
+        layout.addView(this.rollIndexView(sheetUIContext))
 
         return layout
     }
 
 
-    private fun rollDividerView(sheetUIContext : SheetUIContext) : LinearLayout
+    private fun rollResultViewLayout(sheetUIContext : SheetUIContext) : RelativeLayout
     {
-        val divider = LinearLayoutBuilder()
+        val layout                  = RelativeLayoutBuilder()
 
-        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
-        divider.heightDp            = 2
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
-        divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        divider.margin.topDp        = 14f
-
-        return divider.linearLayout(sheetUIContext.context)
-    }
-
-
-    private fun rollResultViewLayout(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        val layout = LinearLayoutBuilder()
-
-        layout.orientation          = LinearLayout.HORIZONTAL
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.orientation          = LinearLayout.VERTICAL
 
         //layout.gravity              = Gravity.CENTER_VERTICAL
 
@@ -639,13 +754,13 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 //        layout.padding.topDp        = 12f
 //        layout.padding.bottomDp     = 12f
 
-        layout.margin.leftDp        = 6f
+        layout.margin.leftDp        = 2f
         layout.margin.rightDp       = 6f
 
         layout.padding.leftDp       = 5f
         layout.padding.rightDp       = 5f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.relativeLayout(sheetUIContext.context)
     }
 
 
@@ -655,28 +770,86 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         val valueString = rollValue.toString()
 
-        value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
-        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.layoutType            = LayoutType.RELATIVE
+        value.width                 = RelativeLayout.LayoutParams.WRAP_CONTENT
+        value.height                = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        value.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+        value.addRule(RelativeLayout.CENTER_HORIZONTAL)
+
+        value.gravity               = Gravity.CENTER
 
         value.text                  = valueString
 
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        //value.color                 = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        value.color                 = Color.WHITE
+
+        value.backgroundResource    = R.drawable.bg_roll_result
+
+        value.font                  = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.Medium,
+                                                    sheetUIContext.context)
+
+        value.sizeSp                = 24f
+
+        return value.textView(sheetUIContext.context)
+    }
+
+
+    private fun rollIndexView(sheetUIContext : SheetUIContext) : TextView
+    {
+        val value = TextViewBuilder()
+
+        value.layoutType            = LayoutType.RELATIVE
+        value.width                 = RelativeLayout.LayoutParams.WRAP_CONTENT
+        value.height                = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        value.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        value.addRule(RelativeLayout.CENTER_HORIZONTAL)
+
+        value.text                  = this.rolls.toString()
+
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_23"))))
         value.color                 = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         value.font                  = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.Bold,
+                                                    TextFontStyle.Regular,
                                                     sheetUIContext.context)
 
-        if (valueString.length <= 23)
-            value.sizeSp                = 25f
-        else
-            value.sizeSp                = 22f
-
-        value.margin.rightDp        = 6f
+        value.sizeSp                = 18f
 
         return value.textView(sheetUIContext.context)
+    }
+
+
+    private fun rollInfoView(partSummaries : List<RollPartSummary>,
+                             sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout = rollInfoViewLayout(sheetUIContext)
+
+        layout.addView(this.rollDescriptionView(sheetUIContext))
+
+        layout.addView(this.rollDetailsView(partSummaries, sheetUIContext))
+
+        return layout
+    }
+
+
+    private fun rollInfoViewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout                      = LinearLayoutBuilder()
+
+        layout.width                    = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation              = LinearLayout.VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -694,7 +867,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_17"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         description.color              = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
         description.font               = Font.typeface(TextFont.default(),
@@ -720,12 +893,11 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         layout.margin.topDp             = 8f
 
-        layout.padding.leftDp           = 6f
+//        layout.padding.leftDp           = 3f
         layout.padding.rightDp          = 6f
 
         partSummaries.forEach {
             layout.child(this.rollPartSummaryView(it, sheetUIContext))
-            Log.d("***DICE ROLL DIALOG", "summary: $it")
         }
 
         return layout.flexboxLayout(sheetUIContext.context)
@@ -816,7 +988,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         val diceColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         dice.color                  = SheetManager.color(sheetUIContext.sheetId, diceColorTheme)
 
         dice.sizeSp                 = 12f
@@ -835,7 +1007,7 @@ class DiceRollerViewBuilder(val diceRoll : DiceRoll,
 
         val descColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_23"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         description.color           = SheetManager.color(sheetUIContext.sheetId, descColorTheme)
 
         description.font            = Font.typeface(TextFont.default(),

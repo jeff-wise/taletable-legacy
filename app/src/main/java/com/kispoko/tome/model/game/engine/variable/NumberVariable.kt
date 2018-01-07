@@ -19,11 +19,9 @@ import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.game.engine.interpreter.Interpreter
 import com.kispoko.tome.rts.sheet.*
 import effect.*
 import lulo.document.*
-import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
 import java.io.Serializable
@@ -310,7 +308,7 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
     // -----------------------------------------------------------------------------------------
 
     override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
-        effApply(::Just, Interpreter.evaluateNumber(this.invocation, sheetContext))
+        effApply(::Just, this.invocation.numberValue(sheetContext))
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =

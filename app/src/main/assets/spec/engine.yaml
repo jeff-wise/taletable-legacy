@@ -883,41 +883,12 @@ types:
       A program type signature.
     group: Program
     fields:
-    - name: parameter1_type
+    - name: parameter_types
       type: 
-        type: custom_type
-        custom_type: engine_value_type
-      presence: required
-      description: >
-        The first parameter type.
-    - name: parameter2_type
-      type:
-        type: custom_type
-        custom_type: engine_value_type
+        type: custom_coll_type
+        custom_coll_type: engine_value_type
       presence: optional
-      description: >
-        The second parameter type.
-    - name: parameter3_type
-      type:
-        type: custom_type
-        custom_type: engine_value_type
-      presence: optional
-      description: >
-        The third parameter type.
-    - name: parameter4_type
-      type:
-        type: custom_type
-        custom_type: engine_value_type
-      presence: optional
-      description: >
-        The fourth parameter type.
-    - name: parameter5_type
-      type:
-        type: custom_type
-        custom_type: engine_value_type
-      presence: optional
-      description: >
-        The fifth parameter type.
+      description: The parameter types.
     - name: result_type
       type:
         type: custom_type
@@ -999,41 +970,12 @@ types:
       presence: required
       description: >
         The unique name of the program to be invoked.
-    - name: parameter1
+    - name: parameters
       type:
-        type: custom_type
-        custom_type: data_reference
-      presence: required
-      description: >
-        First parameter.
-    - name: parameter2
-      type:
-        type: custom_type
-        custom_type: data_reference
+        type: custom_coll_type
+        custom_coll_type: data_reference
       presence: optional
-      description: >
-        Second parameter.
-    - name: parameter3
-      type:
-        type: custom_type
-        custom_type: data_reference
-      presence: optional
-      description: >
-        Third parameter.
-    - name: parameter4
-      type:
-        type: custom_type
-        custom_type: data_reference
-      presence: optional
-      description: >
-        Fourth parameter.
-    - name: parameter5
-      type:
-        type: custom_type
-        custom_type: data_reference
-      presence: optional
-      description: >
-        Fifth parameter.
+      description: Parameters
 - type: primitive_type
   primitive_type:
     name: statement_binding_name

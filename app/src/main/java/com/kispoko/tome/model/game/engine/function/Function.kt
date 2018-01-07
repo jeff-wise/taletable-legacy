@@ -2,6 +2,8 @@
 package com.kispoko.tome.model.game.engine.function
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEvalError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -12,7 +14,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.*
-import com.kispoko.tome.rts.game.engine.interpreter.Parameters
+import com.kispoko.tome.rts.game.engine.interpreter.FunctionNotDefinedForParameters
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -39,7 +41,7 @@ data class Function(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    val tupleByParameters : MutableMap<Parameters,Tuple> =
+    val tupleByParameters : MutableMap<FunctionParameters,Tuple> =
                                         this.tuples().associateBy { it.parameters() }
                                                      .toMutableMap()
 
@@ -146,8 +148,25 @@ data class Function(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun tupleWithParameters(parameters : Parameters) : Tuple? =
+    fun tupleWithParameters(parameters : FunctionParameters) : Tuple? =
             this.tupleByParameters[parameters]
+
+
+    fun isPlatformFunction() : Boolean =
+        platformFunctionNames.contains(this.functionId)
+
+
+    fun value(parameters : FunctionParameters) : AppEff<EngineValue>
+    {
+        val tuple = this.tupleWithParameters(parameters)
+
+        return if (tuple != null)
+            effValue(tuple.result())
+        else
+            effError(AppEvalError(
+                     FunctionNotDefinedForParameters(this.functionId(), parameters)))
+    }
+
 
 }
 
@@ -215,7 +234,6 @@ data class FunctionTypeSignature(override val id : UUID,
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
-
     }
 
 
@@ -518,213 +536,31 @@ data class Tuple(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun parameters() : Parameters =
-            Parameters(this.parameter1(), this.parameter2(), this.parameter3(),
+    fun parameters() : FunctionParameters =
+            FunctionParameters(this.parameter1(), this.parameter2(), this.parameter3(),
                        this.parameter4(), this.parameter5())
 
 }
 
-//
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeFunctors()
-//    {
-//        // Name
-//        this.name.setName("name");
-//        this.name.setLabelId(R.string.function_field_name_label);
-//        this.name.setDescriptionId(R.string.function_field_name_description);
-//
-//        // Label
-//        this.label.setName("label");
-//        this.label.setLabelId(R.string.function_field_label_label);
-//        this.label.setDescriptionId(R.string.function_field_label_description);
-//
-//        // Description
-//        this.description.setName("description");
-//        this.description.setLabelId(R.string.function_field_description_label);
-//        this.description.setDescriptionId(R.string.function_field_description_description);
-//
-//        // Parameter Types
-//        this.parameterTypes.setName("parameter_types");
-//        this.parameterTypes.setLabelId(R.string.function_field_parameter_types_label);
-//        this.parameterTypes.setDescriptionId(R.string.function_field_parameter_types_description);
-//
-//        // Result Type
-//        this.resultType.setName("result_type");
-//        this.resultType.setLabelId(R.string.function_field_result_type_label);
-//        this.resultType.setDescriptionId(R.string.function_field_result_type_description);
-//
-//        // Tuples
-//        this.tuples.setName("tuples");
-//        this.tuples.setLabelId(R.string.function_field_tuples_label);
-//        this.tuples.setDescriptionId(R.string.function_field_tuples_description);
-//    }
-//
-//
-//    // > Validate
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void validate()
-//            throws InvalidFunctionException
-//    {
-//        // [1] Make sure each tuple has the same number of parameters as specified by the function
-//
-//        int numberOfParameters = this.parameterTypes.getValue().length;
-//        List<Tuple> tuples = this.tuples.getValue();
-//
-//        for (int i = 0; i < tuples.size(); i++)
-//        {
-//            int tupleSize = tuples.get(i).parameters().size();
-//            if (tupleSize != numberOfParameters)
-//                throw new InvalidFunctionException(
-//                        new InvalidTupleLengthError(i, numberOfParameters, tupleSize),
-//                        InvalidFunctionException.ErrorType.INVALID_TUPLE_LENGTH);
-//        }
-//    }
-//
-//
-//    // > Index tuples
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Index the function's tuples for quick lookup when execute is called.
-//     */
-//    private void indexTuples()
-//    {
-//        this.functionMap = new HashMap<>();
-//        for (Tuple tuple : this.tuples.getValue()) {
-//            this.functionMap.put(new Parameters(tuple.parameters()), tuple.result());
-//        }
-//    }
-//
-//
-//    // > Log Function
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Print the function to the debug log.
-//     */
-//    public void logFunction()
-//    {
-//        for (Map.Entry<Parameters,EngineValueUnion> e : this.functionMap.entrySet())
-//        {
-//            Parameters params = e.getKey();
-//            EngineValueUnion res = e.getValue();
-//
-//            StringBuilder row = new StringBuilder();
-//            for (EngineValueUnion param : params.getValues()) {
-//                row.append(param.type().toString());
-//                row.append("  ");
-//                row.append(param.toString());
-//                row.append("    ");
-//            }
-//
-//            row.append("result: ");
-//            row.append(res.toString());
-//
-//            Log.d("***FUNCTION", row.toString());
-//        }
-//    }
-//
-//
-//    // PARAMETERS CLASS
-//    // ------------------------------------------------------------------------------------------
-//
-//    private static class Parameters implements Serializable
-//    {
-//
-//        // PROPERTIES
-//        // ------------------------------------------------------------------------------------------
-//
-//        private List<EngineValueUnion> values;
-//
-//
-//        // CONSTRUCTORS
-//        // ------------------------------------------------------------------------------------------
-//
-//        public Parameters(List<EngineValueUnion> parameterValues)
-//        {
-//            values = parameterValues;
-//        }
-//
-//
-//        // API
-//        // ------------------------------------------------------------------------------------------
-//
-//        // > Values
-//        // ------------------------------------------------------------------------------------------
-//
-//        public List<EngineValueUnion> getValues()
-//        {
-//            return this.values;
-//        }
-//
-//
-//        // > Size
-//        // ------------------------------------------------------------------------------------------
-//
-//        public int size()
-//        {
-//            return this.values.size();
-//        }
-//
-//
-//        // > HashCode / Equals
-//        // ------------------------------------------------------------------------------------------
-//
-//        @Override
-//        public boolean equals(Object o)
-//        {
-//
-//            if (o == this) return true;
-//
-//            if (!(o instanceof Function.Parameters)) {
-//                return false;
-//            }
-//
-//            Parameters otherParameters = (Parameters) o;
-//
-//            if (otherParameters.size() != this.size())
-//                return false;
-//
-//            for (int i = 0; i < this.size(); i++)
-//            {
-//                if (!this.values.get(i).equals(otherParameters.values.get(i)))
-//                    return false;
-//            }
-//
-//            return true;
-//        }
-//
-//
-//        @Override
-//        public int hashCode()
-//        {
-//            HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(17, 37);
-//
-//            for (EngineValueUnion value : this.values)
-//            {
-//                switch (value.type())
-//                {
-//                    case STRING:
-//                        hashCodeBuilder.append(value.stringValue());
-//                        break;
-//                    case INTEGER:
-//                        hashCodeBuilder.append(value.integerValue());
-//                        break;
-//                    case BOOLEAN:
-//                        hashCodeBuilder.append(value.booleanValue());
-//                        break;
-//                }
-//            }
-//
-//            return hashCodeBuilder.toHashCode();
-//        }
-//
-//    }
+
+data class FunctionParameters(val parameter1 : EngineValue,
+                              val parameter2 : Maybe<EngineValue>,
+                              val parameter3 : Maybe<EngineValue>,
+                              val parameter4 : Maybe<EngineValue>,
+                              val parameter5 : Maybe<EngineValue>) : Serializable
+{
+
+    fun atIndex(index : Int) : Maybe<EngineValue> =
+        when (index)
+        {
+            1    -> Just(parameter1)
+            2    -> parameter2
+            3    -> parameter3
+            4    -> parameter4
+            5    -> parameter5
+            else -> Nothing()
+        }
+
+}
 
 

@@ -9,8 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.summation
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.ProcedureDialog
 import com.kispoko.tome.db.DB_WidgetActionFormatValue
 import com.kispoko.tome.db.widgetActionFormatTable
@@ -34,6 +32,8 @@ import com.kispoko.tome.model.sheet.style.Width
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.UpdateTargetActionWidget
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -52,7 +52,9 @@ data class ActionWidgetFormat(override val id : UUID,
                               val widgetFormat : WidgetFormat,
                               val viewType : ActionWidgetViewType,
                               val descriptionFormat : TextFormat,
+                              val descriptionInactiveFormat : Maybe<TextFormat>,
                               val buttonFormat : TextFormat,
+                              val buttonInactiveFormat : Maybe<TextFormat>,
                               val buttonIcon : Maybe<Icon>)
                                : ToDocument, ProdType, Serializable
 {
@@ -64,24 +66,28 @@ data class ActionWidgetFormat(override val id : UUID,
     constructor(widgetFormat : WidgetFormat,
                 viewType : ActionWidgetViewType,
                 descriptionFormat : TextFormat,
+                descriptionInactiveFormat : Maybe<TextFormat>,
                 buttonFormat : TextFormat,
+                buttonInactiveFormat : Maybe<TextFormat>,
                 buttonIcon : Maybe<Icon>)
         : this(UUID.randomUUID(),
                widgetFormat,
                viewType,
                descriptionFormat,
+               descriptionInactiveFormat,
                buttonFormat,
+               buttonInactiveFormat,
                buttonIcon)
 
 
     companion object : Factory<ActionWidgetFormat>
     {
 
-        private fun defaultWidgetFormat()       = WidgetFormat.default()
-        private fun defaultViewType()           = ActionWidgetViewType.InlineLeftButton
-        private fun defaultDescriptionFormat()  = TextFormat.default()
-        private fun defaultButtonFormat()       = TextFormat.default()
-        private fun defaultButtonIcon()         = Nothing<Icon>()
+        private fun defaultWidgetFormat()               = WidgetFormat.default()
+        private fun defaultViewType()                   = ActionWidgetViewType.InlineLeftButton
+        private fun defaultDescriptionFormat()          = TextFormat.default()
+        private fun defaultButtonFormat()               = TextFormat.default()
+        private fun defaultButtonIcon()                 = Nothing<Icon>()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<ActionWidgetFormat> = when (doc)
@@ -101,10 +107,18 @@ data class ActionWidgetFormat(override val id : UUID,
                      split(doc.maybeAt("description_format"),
                            effValue(defaultDescriptionFormat()),
                            { TextFormat.fromDocument(it) }),
+                     // Description Inactive Format
+                     split(doc.maybeAt("description_inactive_format"),
+                           effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                           { apply(::Just, TextFormat.fromDocument(it)) }),
                      // Button Format
                      split(doc.maybeAt("button_format"),
                            effValue(defaultButtonFormat()),
                            { TextFormat.fromDocument(it) }),
+                     // Button Inactive Format
+                     split(doc.maybeAt("button_inactive_format"),
+                           effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                           { apply(::Just, TextFormat.fromDocument(it)) }),
                      // Button Icon
                      split(doc.maybeAt("button_icon"),
                            effValue<ValueError,Maybe<Icon>>(defaultButtonIcon()),
@@ -118,7 +132,9 @@ data class ActionWidgetFormat(override val id : UUID,
         fun default() = ActionWidgetFormat(defaultWidgetFormat(),
                                            defaultViewType(),
                                            defaultDescriptionFormat(),
+                                           Nothing<TextFormat>(),
                                            defaultButtonFormat(),
+                                           Nothing<TextFormat>(),
                                            defaultButtonIcon())
 
     }
@@ -149,7 +165,13 @@ data class ActionWidgetFormat(override val id : UUID,
     fun descriptionFormat() : TextFormat = this.descriptionFormat
 
 
+    fun descriptionInactiveFormat() : Maybe<TextFormat> = this.descriptionInactiveFormat
+
+
     fun buttonFormat() : TextFormat = this.buttonFormat
+
+
+    fun buttonInactiveFormat() : Maybe<TextFormat> = this.buttonInactiveFormat
 
 
     fun buttonIcon() : Maybe<Icon> = this.buttonIcon
@@ -266,6 +288,10 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
     var buttonIconView : ImageView? = null
     var descriptionTextView : TextView? = null
 
+    val sheetContext : SheetContext = SheetContext(sheetUIContext)
+
+    var isActive : Boolean = true
+
 
     // VIEWS
     // -----------------------------------------------------------------------------------------
@@ -274,16 +300,21 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
     {
         val layout = WidgetView.layout(actionWidget.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.inlineLeftButtonView())
+        val viewId = Util.generateViewId()
+        actionWidget.layoutViewId = viewId
+        layout.id = viewId
 
+        layout.addView(this.inlineLeftButtonView())
 
         return layout
     }
 
 
-    private fun inlineLeftButtonView() : LinearLayout
+    fun inlineLeftButtonView() : LinearLayout
     {
         val layout = this.inlineLeftButtonViewLayout()
+
+        this.isActive = actionWidget.isActive(sheetContext)
 
         // Button
         val buttonLayout = this.inlineLeftButtonButtonViewLayout()
@@ -334,10 +365,18 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         layout.orientation  = LinearLayout.HORIZONTAL
 
         layout.onClick      = View.OnClickListener {
-            val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
-                                                     SheetContext(sheetUIContext))
-            val activity = sheetUIContext.context as AppCompatActivity
-            dialog.show(activity.supportFragmentManager, "")
+            if (this.isActive)
+            {
+                val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
+                        UpdateTargetActionWidget(actionWidget.id),
+                        SheetContext(sheetUIContext))
+                val activity = sheetUIContext.context as AppCompatActivity
+                dialog.show(activity.supportFragmentManager, "")
+            }
+            else
+            {
+                actionWidget.setActive(sheetContext)
+            }
         }
 
         return layout.linearLayout(sheetUIContext.context)
@@ -352,7 +391,13 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
 
         val layout      = LinearLayoutBuilder()
 
-        val format      = actionWidget.format().buttonFormat()
+        var format = actionWidget.format().buttonFormat()
+        if (!this.isActive) {
+            val inactiveFormat = actionWidget.format().buttonInactiveFormat()
+            when (inactiveFormat) {
+                is Just -> format = inactiveFormat.value
+            }
+        }
 
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
@@ -390,15 +435,20 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
 
         Log.d("***ACTION WIDGET", "icon size: ${format.iconFormat().size()}")
 
-        val iconType = actionWidget.format().buttonIcon()
-        when (iconType) {
-            is Just    -> icon.image = iconType.value.drawableResId()
-            is Nothing -> icon.image = R.drawable.icon_dice_roll_filled
+        if (this.isActive)
+        {
+            val iconType = actionWidget.format().buttonIcon()
+            when (iconType) {
+                is Just    -> icon.image = iconType.value.drawableResId()
+                is Nothing -> icon.image = R.drawable.icon_dice_roll_filled
+            }
+        }
+        else
+        {
+            icon.image = R.drawable.icon_refresh
         }
 
         icon.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
-
-    //    icon.iconSize       = format.iconFormat().size()
 
         return icon.imageView(sheetUIContext.context)
     }
@@ -434,7 +484,13 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
     {
         val description         = TextViewBuilder()
 
-        val format              = actionWidget.format().descriptionFormat()
+        var format = actionWidget.format().descriptionFormat()
+        if (!this.isActive) {
+            val inactiveFormat = actionWidget.format().descriptionInactiveFormat()
+            when (inactiveFormat) {
+                is Just -> format = inactiveFormat.value
+            }
+        }
 
         description.width       = LinearLayout.LayoutParams.WRAP_CONTENT
         description.height      = LinearLayout.LayoutParams.MATCH_PARENT

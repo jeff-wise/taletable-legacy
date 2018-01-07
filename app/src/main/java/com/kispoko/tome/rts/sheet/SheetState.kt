@@ -4,6 +4,10 @@ package com.kispoko.tome.rts.sheet
 
 import android.util.Log
 import com.kispoko.tome.app.*
+import com.kispoko.tome.db.DB_VariableNumberValue
+import com.kispoko.tome.model.game.engine.EngineValue
+import com.kispoko.tome.model.game.engine.EngineValueBoolean
+import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.*
@@ -335,6 +339,28 @@ class SheetState(val sheetContext : SheetContext,
         {
             val listeners = onChangeListenersById[variableId]
             listeners?.forEach { it.onRemove() }
+        }
+    }
+
+
+    fun updateVariable(variableId : VariableId,
+                       engineValue : EngineValue,
+                       sheetContext : SheetContext)
+    {
+        when (engineValue)
+        {
+            is EngineValueBoolean ->
+            {
+                this.booleanVariableWithId(variableId) apDo { booleanVariable ->
+                    booleanVariable.updateValue(engineValue.value, sheetContext.sheetId)
+                }
+            }
+            is EngineValueNumber ->
+            {
+                this.numberVariableWithId(variableId) apDo { numberVariable ->
+                    numberVariable.updateValue(engineValue.value, sheetContext.sheetId)
+                }
+            }
         }
     }
 
