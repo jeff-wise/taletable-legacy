@@ -22,7 +22,6 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.OpenSheetActivity
 import com.kispoko.tome.activity.official.OpenSheetOfficialGamesActivity
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog

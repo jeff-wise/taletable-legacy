@@ -21,9 +21,11 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.value
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.RulebookReference
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
@@ -311,10 +313,11 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = Color.WHITE
 
         layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
@@ -593,10 +596,11 @@ object ValueChooserView
 
         layout.margin.topDp         = 3f
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = Color.WHITE
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -966,6 +970,11 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
 
 //                viewHolder.setSummaryText(value.description().value)
 
+                val rulebookReference = value.rulebookReference()
+                when (rulebookReference) {
+                    is Just -> viewHolder.setRulebookReference(rulebookReference.value)
+                }
+
                 viewHolder.setOnClick(View.OnClickListener {
                     when (updateTarget) {
                         is UpdateTargetStoryWidgetPart -> {
@@ -998,18 +1007,6 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
             }
         }
 
-        val rulebookRef = value.rulebookReference()
-        when (rulebookRef) {
-            is Just ->
-            {
-                viewHolder.setReferenceView(View.OnClickListener {
-                    val sheetActivity = sheetUIContext.context as SheetActivity
-                    val dialog = RulebookExcerptDialog.newInstance(rulebookRef.value,
-                                                                   SheetContext(sheetUIContext))
-                    dialog.show(sheetActivity.supportFragmentManager, "")
-                })
-            }
-        }
     }
 
 
@@ -1230,17 +1227,29 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.summaryView?.setTextColor(greenSummaryColor)
     }
 
-
-    fun setReferenceView(onClickListener : View.OnClickListener)
-    {
-        this.refView?.visibility = View.VISIBLE
-        this.refView?.setOnClickListener(onClickListener)
-    }
+//
+//    fun setReferenceView(onClickListener : View.OnClickListener)
+//    {
+//        this.refView?.visibility = View.VISIBLE
+//        this.refView?.setOnClickListener(onClickListener)
+//    }
 
 
     fun setOnClick(onClickListener : View.OnClickListener)
     {
         this.layout?.setOnClickListener(onClickListener)
+    }
+
+
+    fun setRulebookReference(rulebookReference : RulebookReference)
+    {
+        this.layout?.setOnLongClickListener {
+            val sheetActivity = sheetUIContext.context as SheetActivity
+            val dialog = RulebookExcerptDialog.newInstance(rulebookReference,
+                                                           SheetContext(sheetUIContext))
+            dialog.show(sheetActivity.supportFragmentManager, "")
+            true
+        }
     }
 
 }

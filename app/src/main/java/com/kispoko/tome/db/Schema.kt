@@ -262,7 +262,7 @@ val gameTable =
            "summary",
            "authors",
            "engine",
-           "rulebook")
+           "rulebooks")
 
 typealias DB_GameValue =
     RowValue6<PrimValue<GameId>,
@@ -270,7 +270,7 @@ typealias DB_GameValue =
               PrimValue<GameSummary>,
               CollValue<Author>,
               ProdValue<Engine>,
-              ProdValue<Rulebook>>
+              CollValue<Rulebook>>
 
 
 // GROUP
@@ -499,14 +499,18 @@ typealias DB_RollModifierValue =
 // ---------------------------------------------------------------------------------------------
 
 val rulebookTable =
-    Table3("rulebook",
+    Table5("rulebook",
            "title",
+           "authors",
            "abstract",
+           "introduction",
            "chapters")
 
 typealias DB_RulebookValue =
-    RowValue3<PrimValue<RulebookTitle>,
+    RowValue5<PrimValue<RulebookTitle>,
+              CollValue<Author>,
               PrimValue<RulebookAbstract>,
+              PrimValue<RulebookIntroduction>,
               CollValue<RulebookChapter>>
 
 
@@ -561,13 +565,15 @@ typealias DB_RulebookSubsectionValue =
 // ---------------------------------------------------------------------------------------------
 
 val rulebookReferenceTable =
-    Table3("rulebook_reference",
+    Table4("rulebook_reference",
+           "rulebook_id",
            "chapter_id",
            "section_id",
            "subsection_id")
 
 typealias DB_RulebookReferenceValue =
-    RowValue3<PrimValue<RulebookChapterId>,
+    RowValue4<PrimValue<RulebookId>,
+              PrimValue<RulebookChapterId>,
               MaybePrimValue<RulebookSectionId>,
               MaybePrimValue<RulebookSubsectionId>>
 

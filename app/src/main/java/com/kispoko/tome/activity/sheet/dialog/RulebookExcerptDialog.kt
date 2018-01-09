@@ -13,9 +13,9 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.RulebookExcerpt
 import com.kispoko.tome.model.game.RulebookReference
 import com.kispoko.tome.model.game.RulebookReferencePath
-import com.kispoko.tome.model.game.RulebookSubsection
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -115,16 +115,17 @@ class RulebookExcerptDialog : DialogFragment()
         if (sheetContext != null && rulebookReference != null)
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
+            val rulebookId = rulebookReference.rulebookId()
 
             var view : View? = null
 
-            GameManager.rulebook(sheetUIContext.gameId) apDo { rulebook ->
+            GameManager.rulebook(sheetUIContext.gameId, rulebookId) apDo { rulebook ->
 
-                val subsection = rulebook.subsection(rulebookReference)
-                val refPath    = rulebook.referencePath(rulebookReference)
+                val excerpt = rulebook.excerpt(rulebookReference)
+                val refPath = rulebook.referencePath(rulebookReference)
 
-                if (subsection != null && refPath != null) {
-                    val viewBuilder = ExcerptViewBuilder(subsection, refPath, sheetUIContext)
+                if (excerpt != null && refPath != null) {
+                    val viewBuilder = ExcerptViewBuilder(excerpt, refPath, sheetUIContext)
                     view = viewBuilder.view()
                 }
             }
@@ -156,7 +157,7 @@ class RulebookExcerptDialog : DialogFragment()
 
 
 
-class ExcerptViewBuilder(val subsection : RulebookSubsection,
+class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
                          val referencePath : RulebookReferencePath,
                          val sheetUIContext : SheetUIContext)
 {
@@ -170,14 +171,13 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
         val layout = this.viewLayout()
 
         // Header
-        layout.addView(this.headerView(subsection.titleString()))
+        layout.addView(this.headerView(excerpt.title))
 
         // Body
-        layout.addView(this.bodyView(subsection.bodyString()))
+        layout.addView(this.bodyView(excerpt.body))
 
         // Footer
         layout.addView(this.footerView())
-
 
         return layout
     }
@@ -194,7 +194,7 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
@@ -206,41 +206,100 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
     // Header
     // -----------------------------------------------------------------------------------------
 
-    private fun headerView(headerString : String) : TextView
+    private fun headerView(headerString : String) : LinearLayout
     {
-        val header              = TextViewBuilder()
+        val layout          = this.headerViewLayout()
 
-        header.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.addView(this.headerMainView(headerString))
 
-        header.text             = headerString
+        layout.addView(this.dividerView())
 
-        header.font             = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Bold,
-                                                sheetUIContext.context)
+        return layout
+    }
 
-        val bgcolorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+
+    private fun headerViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        layout.corners      = Corners(3.0, 3.0, 0.0, 0.0)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun headerMainView(headerString : String) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+        val title               = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.padding.leftDp   = 10f
+        layout.padding.rightDp  = 10f
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp = 12f
+
+        layout.child(icon)
+              .child(title)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 19
+        icon.heightDp           = 19
+
+        icon.image              = R.drawable.icon_open_book
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        header.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgcolorTheme)
+        title.color             = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        title.margin.rightDp    = 5f
+
+        // (3 B) Title
+        // -------------------------------------------------------------------------------------
+
+        title.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        title.text             = headerString
+
+        title.font             = Font.typeface(TextFont.default(),
+                                               TextFontStyle.Medium,
+                                               sheetUIContext.context)
+
+//        val bgcolorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+//        header.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgcolorTheme)
+        title.backgroundColor  = Color.WHITE
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        header.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        title.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        header.corners          = Corners(3.0, 3.0, 0.0, 0.0)
 
-        header.sizeSp           = 16f
+        title.sizeSp           = 18f
 
-        header.padding.leftDp   = 9f
-        header.padding.rightDp  = 8f
-        header.padding.topDp    = 10f
-        header.padding.bottomDp = 10f
-
-        header.margin.bottomDp  = 2f
-
-        return header.textView(sheetUIContext.context)
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -264,6 +323,8 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
         scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT
         scrollView.heightDp     = 300
 
+        scrollView.fadingEnabled    = false
+
         return scrollView.scrollView(sheetUIContext.context)
     }
 
@@ -277,21 +338,22 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
 
         body.text               = bodyString
 
-        body.font               = Font.typeface(TextFont.FiraSans,
+        body.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
-        val bgcolorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        body.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgcolorTheme)
+//        val bgcolorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light"))))
+//        body.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgcolorTheme)
+        body.backgroundColor    = Color.WHITE
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         body.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        body.sizeSp             = 14f
+        body.sizeSp             = 15f
 
         body.padding.leftDp     = 8f
         body.padding.rightDp    = 8f
@@ -305,6 +367,33 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
     // -----------------------------------------------------------------------------------------
 
     private fun footerView() : LinearLayout
+    {
+        val layout          = this.footerViewLayout()
+
+        layout.addView(this.dividerView())
+
+        layout.addView(this.footerMainView())
+
+        return layout
+    }
+
+
+    private fun footerViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        layout.corners      = Corners(3.0, 3.0, 0.0, 0.0)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun footerMainView() : LinearLayout
     {
 
         // (1) Declarations
@@ -324,10 +413,11 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
 
         layout.gravity              = Gravity.CENTER
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        layout.backgroundColor       = Color.WHITE
 
         layout.corners              = Corners(0.0, 0.0, 3.0, 3.0)
 
@@ -369,7 +459,7 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
         label.color                 = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
 
-        label.font                  = Font.typeface(TextFont.FiraSans,
+        label.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     sheetUIContext.context)
 
@@ -378,6 +468,21 @@ class ExcerptViewBuilder(val subsection : RulebookSubsection,
         return layout.linearLayout(sheetUIContext.context)
     }
 
+
+    private fun dividerView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
 
 
 

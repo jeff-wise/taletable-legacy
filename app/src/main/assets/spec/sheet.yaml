@@ -1671,17 +1671,17 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
-    - name: quote_style
+    - name: quote_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         Quote text style.
-    - name: source_style
+    - name: source_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         Source text style.

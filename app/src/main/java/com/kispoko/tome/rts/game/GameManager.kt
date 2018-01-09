@@ -69,14 +69,17 @@ object GameManager
     // Rulebook
     // -----------------------------------------------------------------------------------------
 
-    fun rulebook(gameId : GameId) : AppEff<Rulebook> =
-            this.gameWithId(gameId) ap { effValue<AppError,Rulebook>(it.rulebook()) }
+    fun rulebook(gameId : GameId, rulebookId : RulebookId) : AppEff<Rulebook> =
+            this.gameWithId(gameId) ap {
+                note<AppError,Rulebook>(it.rulebookWithId(rulebookId),
+                     AppGameError(GameDoesNotHaveRulebook(gameId, rulebookId)))
+            }
 
 
-    fun rulebookSubsection(gameId : GameId,
-                           rulebookReference : RulebookReference) : AppEff<RulebookSubsection?> =
-        GameManager.rulebook(gameId)
-                .apply { effValue<AppError,RulebookSubsection?>(it.subsection(rulebookReference)) }
+//    fun rulebookSubsection(gameId : GameId,
+//                           rulebookReference : RulebookReference) : AppEff<RulebookSubsection?> =
+//        GameManager.rulebook(gameId)
+//                .apply { effValue<AppError,RulebookSubsection?>(it.subsection(rulebookReference)) }
 
 
 }

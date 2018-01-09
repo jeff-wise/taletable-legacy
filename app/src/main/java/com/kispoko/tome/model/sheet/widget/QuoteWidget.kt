@@ -163,11 +163,11 @@ data class QuoteWidgetFormat(override val id : UUID,
                             effValue<ValueError,QuoteViewType>(QuoteViewType.Source),
                             { QuoteViewType.fromDocument(it) }),
                       // Quote Style
-                      split(doc.maybeAt("quote_style"),
+                      split(doc.maybeAt("quote_format"),
                             effValue(defaultQuoteStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Source Style
-                      split(doc.maybeAt("source_style"),
+                      split(doc.maybeAt("source_format"),
                             effValue(defaultSoureStyle()),
                             { TextFormat.fromDocument(it) }),
                       // Icon Format
@@ -273,8 +273,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         // > Source View
         val maybeSource = quoteWidget.source(sheetContext)
-        when (maybeSource)
-        {
+        when (maybeSource) {
             is Just -> this.addSourceView(maybeSource.value, layout)
         }
 

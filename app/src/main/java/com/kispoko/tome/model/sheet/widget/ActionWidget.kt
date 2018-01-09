@@ -4,6 +4,7 @@ package com.kispoko.tome.model.sheet.widget
 
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -363,6 +364,8 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         }
 
         layout.orientation  = LinearLayout.HORIZONTAL
+
+        //layout.layoutGravity = Gravity.CENTER
 
         layout.onClick      = View.OnClickListener {
             if (this.isActive)

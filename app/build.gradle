@@ -50,10 +50,13 @@ dependencies {
     compile 'com.google.android:flexbox:0.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.15"
+    compile 'com.github.tiagohm.MarkdownView:library:0.17.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/culebra-0.7.jar')
 }
+
 repositories {
     mavenCentral()
     google()
+    maven { url 'https://jitpack.io' }
 }

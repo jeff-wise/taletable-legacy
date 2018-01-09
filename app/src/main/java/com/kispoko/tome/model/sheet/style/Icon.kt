@@ -92,6 +92,21 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object Campfire : Icon()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "campfire" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("campfire")
+
+    }
+
     object Coins : Icon()
     {
 
@@ -119,6 +134,21 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
         // -------------------------------------------------------------------------------------
 
         override fun toDocument() = DocText("parchment")
+
+    }
+
+    object SleepingBag : Icon()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "sleeping_bag" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("sleeping_bag")
 
     }
 
@@ -203,17 +233,19 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "sword"             -> effValue<ValueError,Icon>(Icon.Sword)
-                "shield"            -> effValue<ValueError,Icon>(Icon.Shield)
+                "adventure"         -> effValue<ValueError,Icon>(Icon.Adventure)
+                "campfire"          -> effValue<ValueError,Icon>(Icon.Campfire)
+                "coins"             -> effValue<ValueError,Icon>(Icon.Coins)
                 "dice_roll"         -> effValue<ValueError,Icon>(Icon.DiceRoll)
                 "dice_roll_filled"  -> effValue<ValueError,Icon>(Icon.DiceRollFilled)
-                "coins"             -> effValue<ValueError,Icon>(Icon.Coins)
-                "parchment"         -> effValue<ValueError,Icon>(Icon.Parchment)
-                "sword_outline"     -> effValue<ValueError,Icon>(Icon.SwordOutline)
-                "adventure"         -> effValue<ValueError,Icon>(Icon.Adventure)
-                "mind"              -> effValue<ValueError,Icon>(Icon.Mind)
-                "running"           -> effValue<ValueError,Icon>(Icon.Running)
                 "heart_plus"        -> effValue<ValueError,Icon>(Icon.HeartPlus)
+                "mind"              -> effValue<ValueError,Icon>(Icon.Mind)
+                "parchment"         -> effValue<ValueError,Icon>(Icon.Parchment)
+                "running"           -> effValue<ValueError,Icon>(Icon.Running)
+                "shield"            -> effValue<ValueError,Icon>(Icon.Shield)
+                "sleeping_bag"      -> effValue<ValueError,Icon>(Icon.SleepingBag)
+                "sword"             -> effValue<ValueError,Icon>(Icon.Sword)
+                "sword_outline"     -> effValue<ValueError,Icon>(Icon.SwordOutline)
                 else                -> effError<ValueError,Icon>(
                                             UnexpectedValue("Icon", doc.text, doc.path))
             }
@@ -225,6 +257,7 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
     fun drawableResId() : Int = when (this)
     {
         is Adventure        -> R.drawable.icon_adventure
+        is Campfire         -> R.drawable.icon_campfire
         is Coins            -> R.drawable.icon_coins
         is DiceRoll         -> R.drawable.icon_dice_roll
         is DiceRollFilled   -> R.drawable.icon_dice_roll_filled
@@ -233,6 +266,7 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
         is Parchment        -> R.drawable.icon_parchment
         is Running          -> R.drawable.icon_running
         is Shield           -> R.drawable.icon_shield
+        is SleepingBag      -> R.drawable.icon_sleeping_bag
         is Sword            -> R.drawable.icon_sword
         is SwordOutline     -> R.drawable.icon_sword_outline
     }

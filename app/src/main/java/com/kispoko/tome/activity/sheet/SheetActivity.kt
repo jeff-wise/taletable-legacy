@@ -26,6 +26,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
 import com.kispoko.tome.R.string.value
+import com.kispoko.tome.activity.nav.GameNavigationActivity
 import com.kispoko.tome.activity.nav.SheetNavigationActivity
 import com.kispoko.tome.activity.official.sheets.OpenSheetOfficialSheetsActivity
 import com.kispoko.tome.activity.sheet.state.SheetStateActivity
@@ -949,7 +950,11 @@ class BottomNavigationViewBuilder(val uiColors : UIColors,
         layout.addView(this.buttonView(R.string.campaigns, R.drawable.icon_adventure, 25, onCampaignsClick))
 
         // Games Button
-        val onGamesClick = View.OnClickListener {  }
+        val onGamesClick = View.OnClickListener {
+            val sheetActivity = context as SheetActivity
+            val intent = Intent(sheetActivity, GameNavigationActivity::class.java)
+            sheetActivity.startActivity(intent)
+        }
         layout.addView(this.buttonView(R.string.games, R.drawable.icon_book, 25, onGamesClick))
 
         return layout

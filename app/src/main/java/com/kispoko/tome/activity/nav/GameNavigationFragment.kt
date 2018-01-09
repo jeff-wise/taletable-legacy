@@ -146,195 +146,195 @@ class GameNavigationFragment : Fragment()
 }
 
 
-// -----------------------------------------------------------------------------------------
-// GAME RECYCLER VIEW ADPATER
-// -----------------------------------------------------------------------------------------
-
-class GameRecyclerViewAdapter(val games : List<Game>,
-                              val activity : AppCompatActivity,
-                              val themeId : ThemeId)
-                                : RecyclerView.Adapter<OpenGameSummaryViewHolder>()
-{
-
-    // -------------------------------------------------------------------------------------
-    // RECYCLER VIEW ADAPTER API
-    // -------------------------------------------------------------------------------------
-
-    override fun onCreateViewHolder(parent : ViewGroup,
-                                    viewType : Int) : OpenGameSummaryViewHolder
-    {
-        return OpenGameSummaryViewHolder(OpenGameSummaryView.view(themeId, parent.context))
-    }
-
-
-    override fun onBindViewHolder(viewHolder : OpenGameSummaryViewHolder, position : Int)
-    {
-        val game = this.games[position]
-
-        viewHolder.setOnClick(View.OnClickListener {
-            val intent = Intent(activity, GameActivity::class.java)
-            intent.putExtra("game", game)
-            activity.startActivity(intent)
-        })
-
-        viewHolder.setNameText(game.gameName().value)
-        viewHolder.setSummaryText(game.gameName().value)
-    }
-
-
-    override fun getItemCount() = this.games.size
-
-}
-
-
-// ---------------------------------------------------------------------------------------------
-// VIEW HOLDER
-// ---------------------------------------------------------------------------------------------
-
-/**
- * The View Holder caches a view for each item.
- */
-class OpenGameSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
-{
-
-    // -----------------------------------------------------------------------------------------
-    // PROPERTIES
-    // -----------------------------------------------------------------------------------------
-
-    var layoutView  : LinearLayout? = null
-    var nameView    : TextView?  = null
-    var summaryView : TextView?  = null
-
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.layoutView  = itemView.findViewById(R.id.game_nav_item_layout) as LinearLayout
-        this.nameView    = itemView.findViewById(R.id.game_nav_item_header) as TextView
-        this.summaryView = itemView.findViewById(R.id.game_nav_item_summary) as TextView
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // VIEW HOLDER
-    // -----------------------------------------------------------------------------------------
-
-    fun setNameText(nameString : String)
-    {
-        this.nameView?.text = nameString
-    }
-
-
-    fun setSummaryText(summaryString : String)
-    {
-        this.summaryView?.text = summaryString
-    }
-
-
-    fun setOnClick(onClick : View.OnClickListener)
-    {
-        this.layoutView?.setOnClickListener(onClick)
-    }
-
-}
-
-
-object OpenGameSummaryView
-{
-
-    fun view(themeId : ThemeId, context : Context) : View
-    {
-        val layout = this.viewLayout(themeId, context)
-
-        // Header
-        layout.addView(this.headerView(themeId, context))
-
-        // Summary
-        layout.addView(this.summaryView(themeId, context))
-
-        return layout
-    }
-
-
-    private fun viewLayout(themeId : ThemeId, context : Context) : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.id               = R.id.game_nav_item_layout
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
-
-        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
-
-        layout.margin.topDp     = 6f
-
-        layout.padding.topDp    = 6f
-        layout.padding.leftDp   = 6f
-        layout.padding.rightDp  = 6f
-        layout.padding.bottomDp = 6f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun headerView(themeId : ThemeId, context : Context) : TextView
-    {
-        val header              = TextViewBuilder()
-
-        header.id               = R.id.game_nav_item_header
-
-        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        header.font             = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                context)
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        header.color            = ThemeManager.color(themeId, colorTheme)
-
-
-        header.sizeSp           = 17f
-
-        return header.textView(context)
-    }
-
-
-    private fun summaryView(themeId : ThemeId, context : Context) : TextView
-    {
-        val summary             = TextViewBuilder()
-
-        summary.id              = R.id.game_nav_item_summary
-
-        summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
-        summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        summary.font            = Font.typeface(TextFont.FiraSans,
-                                                TextFontStyle.Regular,
-                                                context)
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        summary.color           = ThemeManager.color(themeId, colorTheme)
-
-        summary.sizeSp          = 14f
-
-        return summary.textView(context)
-    }
-
-
-}
+//// -----------------------------------------------------------------------------------------
+//// GAME RECYCLER VIEW ADPATER
+//// -----------------------------------------------------------------------------------------
+//
+//class GameRecyclerViewAdapter(val games : List<Game>,
+//                              val activity : AppCompatActivity,
+//                              val themeId : ThemeId)
+//                                : RecyclerView.Adapter<OpenGameSummaryViewHolder>()
+//{
+//
+//    // -------------------------------------------------------------------------------------
+//    // RECYCLER VIEW ADAPTER API
+//    // -------------------------------------------------------------------------------------
+//
+//    override fun onCreateViewHolder(parent : ViewGroup,
+//                                    viewType : Int) : OpenGameSummaryViewHolder
+//    {
+//        return OpenGameSummaryViewHolder(OpenGameSummaryView.view(themeId, parent.context))
+//    }
+//
+//
+//    override fun onBindViewHolder(viewHolder : OpenGameSummaryViewHolder, position : Int)
+//    {
+//        val game = this.games[position]
+//
+//        viewHolder.setOnClick(View.OnClickListener {
+//            val intent = Intent(activity, GameActivity::class.java)
+//            intent.putExtra("game", game)
+//            activity.startActivity(intent)
+//        })
+//
+//        viewHolder.setNameText(game.gameName().value)
+//        viewHolder.setSummaryText(game.gameName().value)
+//    }
+//
+//
+//    override fun getItemCount() = this.games.size
+//
+//}
+//
+//
+//// ---------------------------------------------------------------------------------------------
+//// VIEW HOLDER
+//// ---------------------------------------------------------------------------------------------
+//
+///**
+// * The View Holder caches a view for each item.
+// */
+//class OpenGameSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // PROPERTIES
+//    // -----------------------------------------------------------------------------------------
+//
+//    var layoutView  : LinearLayout? = null
+//    var nameView    : TextView?  = null
+//    var summaryView : TextView?  = null
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // INIT
+//    // -----------------------------------------------------------------------------------------
+//
+//    init
+//    {
+//        this.layoutView  = itemView.findViewById(R.id.game_nav_item_layout) as LinearLayout
+//        this.nameView    = itemView.findViewById(R.id.game_nav_item_header) as TextView
+//        this.summaryView = itemView.findViewById(R.id.game_nav_item_summary) as TextView
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // VIEW HOLDER
+//    // -----------------------------------------------------------------------------------------
+//
+//    fun setNameText(nameString : String)
+//    {
+//        this.nameView?.text = nameString
+//    }
+//
+//
+//    fun setSummaryText(summaryString : String)
+//    {
+//        this.summaryView?.text = summaryString
+//    }
+//
+//
+//    fun setOnClick(onClick : View.OnClickListener)
+//    {
+//        this.layoutView?.setOnClickListener(onClick)
+//    }
+//
+//}
+//
+//
+//object OpenGameSummaryView
+//{
+//
+//    fun view(themeId : ThemeId, context : Context) : View
+//    {
+//        val layout = this.viewLayout(themeId, context)
+//
+//        // Header
+//        layout.addView(this.headerView(themeId, context))
+//
+//        // Summary
+//        layout.addView(this.summaryView(themeId, context))
+//
+//        return layout
+//    }
+//
+//
+//    private fun viewLayout(themeId : ThemeId, context : Context) : LinearLayout
+//    {
+//        val layout              = LinearLayoutBuilder()
+//
+//        layout.id               = R.id.game_nav_item_layout
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation      = LinearLayout.VERTICAL
+//
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+//        layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
+//
+//        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
+//
+//        layout.margin.topDp     = 6f
+//
+//        layout.padding.topDp    = 6f
+//        layout.padding.leftDp   = 6f
+//        layout.padding.rightDp  = 6f
+//        layout.padding.bottomDp = 6f
+//
+//        return layout.linearLayout(context)
+//    }
+//
+//
+//    private fun headerView(themeId : ThemeId, context : Context) : TextView
+//    {
+//        val header              = TextViewBuilder()
+//
+//        header.id               = R.id.game_nav_item_header
+//
+//        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+//        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        header.font             = Font.typeface(TextFont.FiraSans,
+//                                                TextFontStyle.Regular,
+//                                                context)
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+//        header.color            = ThemeManager.color(themeId, colorTheme)
+//
+//
+//        header.sizeSp           = 17f
+//
+//        return header.textView(context)
+//    }
+//
+//
+//    private fun summaryView(themeId : ThemeId, context : Context) : TextView
+//    {
+//        val summary             = TextViewBuilder()
+//
+//        summary.id              = R.id.game_nav_item_summary
+//
+//        summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+//        summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        summary.font            = Font.typeface(TextFont.FiraSans,
+//                                                TextFontStyle.Regular,
+//                                                context)
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+//        summary.color           = ThemeManager.color(themeId, colorTheme)
+//
+//        summary.sizeSp          = 14f
+//
+//        return summary.textView(context)
+//    }
+//
+//
+//}

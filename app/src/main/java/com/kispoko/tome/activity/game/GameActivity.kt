@@ -22,8 +22,10 @@ import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.model.game.Game
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
+import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -41,9 +43,10 @@ class GameActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+    private var gameId : GameId? = null
     private var game : Game? = null
 
-    private val appSettings : AppSettings = AppSettings(ThemeId.Dark)
+    private val appSettings : AppSettings = AppSettings(ThemeId.Light)
 
 
     // -----------------------------------------------------------------------------------------
@@ -62,8 +65,23 @@ class GameActivity : AppCompatActivity()
         // (2) Read Parameters
         // -------------------------------------------------------------------------------------
 
-        if (this.intent.hasExtra("game"))
-            this.game = this.intent.getSerializableExtra("game") as Game
+        if (this.intent.hasExtra("game_id"))
+            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+
+        // >> Load Game
+        val gameId = this.gameId
+        if (gameId != null) {
+            val game = GameManager.gameWithId(gameId)
+            when (game) {
+                is Val -> this.game = game.value
+                is Err -> ApplicationLog.error(game.error)
+            }
+        }
+
+        if (savedInstanceState != null) {
+            this.gameId = savedInstanceState.getSerializable("game_id") as GameId
+        }
+
 
         // (3) Initialize Views
         // -------------------------------------------------------------------------------------
@@ -82,6 +100,18 @@ class GameActivity : AppCompatActivity()
 
         // > Tab Views
         this.initializeViews()
+    }
+
+
+    override fun onSaveInstanceState(outState : Bundle)
+    {
+
+        val gameId = this.gameId
+        if (gameId != null)
+            outState.putSerializable("game_id", gameId)
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState)
     }
 
 
@@ -191,9 +221,9 @@ class GamePagerAdapter(fragmentManager : FragmentManager,
     override fun getItem(position : Int) : Fragment =
         when (position)
         {
-            0    -> InfoFragment.newInstance(this.game, this.appThemeId)
-            1    -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
-            else -> EngineFragment.newInstance(this.game.engine(), this.appThemeId)
+            0    -> BooksFragment.newInstance(this.game.gameId, this.appThemeId)
+            1    -> EngineFragment.newInstance(this.game.gameId, this.appThemeId)
+            else -> EngineFragment.newInstance(this.game.gameId, this.appThemeId)
         }
 
 
@@ -203,8 +233,8 @@ class GamePagerAdapter(fragmentManager : FragmentManager,
     override fun getPageTitle(position : Int) : CharSequence =
         when (position)
         {
-            0    -> "Description"
-            1    -> "Engine"
+            0    -> "Books"
+            1    -> "Rules Engine"
             else -> "Other"
         }
 

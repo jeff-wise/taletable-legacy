@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,17 +17,22 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.engine
 import com.kispoko.tome.activity.game.engine.function.FunctionListActivity
 import com.kispoko.tome.activity.game.engine.valueset.ValueSetsActivity
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.theme.ThemeManager
-
+import effect.Err
+import effect.Val
 
 
 /**
@@ -39,7 +45,7 @@ class EngineFragment : Fragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var engine  : Engine? = null
+    private var gameId  : GameId? = null
     private var themeId : ThemeId? = null
 
     // -----------------------------------------------------------------------------------------
@@ -48,12 +54,12 @@ class EngineFragment : Fragment()
 
     companion object
     {
-        fun newInstance(engine : Engine, themeId : ThemeId) : EngineFragment
+        fun newInstance(gameId : GameId, themeId : ThemeId) : EngineFragment
         {
             val fragment = EngineFragment()
 
             val args = Bundle()
-            args.putSerializable("engine", engine)
+            args.putSerializable("game_id", gameId)
             args.putSerializable("theme_id", themeId)
             fragment.arguments = args
 
@@ -72,7 +78,7 @@ class EngineFragment : Fragment()
 
         if (arguments != null)
         {
-            this.engine  = arguments.getSerializable("engine") as Engine
+            this.gameId  = arguments.getSerializable("game_id") as GameId
             this.themeId = arguments.getSerializable("theme_id") as ThemeId
         }
     }
@@ -83,13 +89,26 @@ class EngineFragment : Fragment()
                               savedInstanceState : Bundle?) : View?
     {
 
-        val engine  = this.engine
+        val gameId  = this.gameId
         val themeId = this.themeId
 
-        if (engine != null && themeId != null)
-            return this.view(engine, themeId, context)
+        return if (gameId != null && themeId != null)
+        {
+            val game = GameManager.gameWithId(gameId)
+            when (game) {
+                is Val -> {
+                    this.view(game.value.engine(), themeId, context)
+                }
+                is Err -> {
+                    ApplicationLog.error(game.error)
+                    null
+                }
+            }
+        }
         else
-            return null
+        {
+            null
+        }
     }
 
 

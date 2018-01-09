@@ -114,6 +114,14 @@ palette:
   color: '#99C32C39'
 - color_id: red_70
   color: '#B2C32C39'
+- color_id: orange
+  color: '#C07618'
+- color_id: orange_90
+  color: '#C3C07618'
+- color_id: orange_80
+  color: '#B2C07618'
+- color_id: orange_70
+  color: '#99C07618'
 - color_id: blue_primary
   color: '#1887C0'
 - color_id: blue_primary_90
@@ -136,6 +144,10 @@ palette:
   color: '#991887C0'
 - color_id: purple
   color: '#6734B5'
+- color_id: purple_90
+  color: '#E66734B5'
+- color_id: purple_80
+  color: '#CD6734B5'
 - color_id: purple_70
   color: '#B26734B5'
 ui_colors:

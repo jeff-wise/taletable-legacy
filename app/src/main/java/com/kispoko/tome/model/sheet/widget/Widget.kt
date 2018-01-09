@@ -68,8 +68,8 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
                 {
                     "widget_action"  -> ActionWidget.fromDocument(doc)
                                             as ValueParser<Widget>
-//                    "widget_boolean"  -> BooleanWidget.fromDocument(doc)
-//                                            as ValueParser<Widget>
+                    "widget_boolean"  -> BooleanWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
 //                    "widget_expander" -> ExpanderWidget.fromDocument(doc)
 //                                            as ValueParser<Widget>
 //                    "widget_image"    -> ImageWidget.fromDocument(doc)
@@ -1997,7 +1997,7 @@ data class QuoteWidget(override val id : UUID,
                     is Err -> ApplicationLog.error(sourceString.error)
                 }
             }
-            is Nothing -> return Just("")
+            is Nothing -> return Nothing()
         }
 
         return Nothing()

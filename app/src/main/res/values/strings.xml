@@ -22,6 +22,9 @@
     <string name="engine">Engine</string>
     <string name="ok">OK</string>
 
+    <string name="summary">Summary</string>
+    <string name="rulebook">Rulebook</string>
+
     <string name="open_games">Games</string>
     <string name="open_campaigns">Campaigns</string>
     <string name="open_sheets">Sheets</string>
@@ -1174,14 +1177,14 @@
     <!-- GAME INFO FRAGMENT -->
     <!-- ==================================================================================== -->
 
-    <string name="game_info_description_header">Game Description</string>
+    <string name="game_info_description_header">Summary</string>
     <string name="game_info_description_description">
-        Basic information about the game such as the name, genre, summary, etc&#8230;
+        A basic overview of the game.
     </string>
 
     <string name="game_info_rulebook_header">Rulebook</string>
     <string name="game_info_rulebook_description">
-        The rules of the game in a formatted as a standard book meant to be read and referenced
+        The game rules and  of the game in a formatted as a standard book meant to be read and referenced
         by both players and gamemasters.
     </string>
 

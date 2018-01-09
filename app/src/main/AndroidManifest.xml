@@ -210,6 +210,14 @@
             android:name=".activity.nav.SheetNavigationActivity"
             android:label="Sheets"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.nav.GameNavigationActivity"
+            android:label="Games"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.game.rulebook.RulebookActivity"
+            android:label="Rulebook"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

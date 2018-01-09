@@ -7,10 +7,10 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -24,6 +24,7 @@ import java.io.Serializable
 import java.util.*
 
 
+
 // ---------------------------------------------------------------------------------------------
 // RULEBOOK
 // --------------------------------------------------------------------------------------------
@@ -32,8 +33,11 @@ import java.util.*
  * Rulebook
  */
 data class Rulebook(override val id : UUID,
+                    val rulebookId : RulebookId,
                     val title : RulebookTitle,
+                    val authors : List<Author>,
                     val abstract : RulebookAbstract,
+                    val introduction : RulebookIntroduction,
                     val chapters : MutableList<RulebookChapter>)
                      : ToDocument, ProdType, Serializable
 {
@@ -51,12 +55,18 @@ data class Rulebook(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(title : RulebookTitle,
+    constructor(rulebookId : RulebookId,
+                title : RulebookTitle,
+                authors : List<Author>,
                 abstract : RulebookAbstract,
+                introduction : RulebookIntroduction,
                 chapters : List<RulebookChapter>)
         : this(UUID.randomUUID(),
+               rulebookId,
                title,
+               authors,
                abstract,
+               introduction,
                chapters.toMutableList())
 
 
@@ -67,10 +77,16 @@ data class Rulebook(override val id : UUID,
             is DocDict ->
             {
                 apply(::Rulebook,
+                      // Rulebook Id
+                      doc.at("rulebook_id") apply { RulebookId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { RulebookTitle.fromDocument(it) },
+                      // Title
+                      doc.list("authors") apply { it.map { Author.fromDocument(it) } },
                       // Abstract
                       doc.at("abstract") apply { RulebookAbstract.fromDocument(it) },
+                      // Introduction
+                      doc.at("introduction") apply { RulebookIntroduction.fromDocument(it) },
                       // Chapters
                       doc.list("chapters") apply {
                           it.mapMut { RulebookChapter.fromDocument(it) }
@@ -86,8 +102,10 @@ data class Rulebook(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "rulebook_id" to this.rulebookId().toDocument(),
         "title" to this.title().toDocument(),
         "abstract" to this.abstract().toDocument(),
+        "introduction" to this.introduction().toDocument(),
         "chapters" to DocList(this.chapters().map { it.toDocument() })
     ))
 
@@ -96,9 +114,20 @@ data class Rulebook(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun rulebookId() : RulebookId = this.rulebookId
+
+
     fun title() : RulebookTitle = this.title
 
+
+    fun authors() : List<Author> = this.authors
+
+
     fun abstract() : RulebookAbstract = this.abstract
+
+
+    fun introduction() : RulebookIntroduction = this.introduction
+
 
     fun chapters() : List<RulebookChapter> = this.chapters
 
@@ -131,6 +160,41 @@ data class Rulebook(override val id : UUID,
                                 if (subsection != null)
                                     return subsection
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null
+    }
+
+
+    fun excerpt(rulebookReference : RulebookReference) : RulebookExcerpt?
+    {
+        val chapter = this.chapterById[rulebookReference.chapterId()]
+
+        // TODO use as maybe refactoring example
+        if (chapter != null)
+        {
+            val sectionId = rulebookReference.sectionId()
+            when (sectionId)
+            {
+                is Just ->
+                {
+                    val section = chapter.sectionWithId(sectionId.value)
+                    if (section != null)
+                    {
+                        val subsectionId = rulebookReference.subsectionId()
+                        when (subsectionId)
+                        {
+                            is Just ->
+                            {
+                                val subsection = section.subsectionWithId(subsectionId.value)
+                                if (subsection != null)
+                                    return RulebookExcerpt(subsection.titleString(), subsection.body().value)
+                            }
+                            is Nothing -> return RulebookExcerpt(section.title().value, section.body().value)
                         }
                     }
                 }
@@ -193,9 +257,48 @@ data class Rulebook(override val id : UUID,
 
 
     override fun rowValue() : DB_RulebookValue =
-        RowValue3(rulebookTable, PrimValue(this.title),
-                                 PrimValue(this.abstract),
-                                 CollValue(this.chapters))
+        RowValue5(rulebookTable,
+                  PrimValue(this.title),
+                  CollValue(this.authors),
+                  PrimValue(this.abstract),
+                  PrimValue(this.introduction),
+                  CollValue(this.chapters))
+
+}
+
+
+/**
+ * Rulebook Id
+ */
+data class RulebookId(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<RulebookId>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RulebookId> = when (doc)
+        {
+            is DocText -> effValue(RulebookId(doc.text))
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
 
 }
 
@@ -251,6 +354,42 @@ data class RulebookAbstract(val value : String) : ToDocument, SQLSerializable, S
         override fun fromDocument(doc: SchemaDoc): ValueParser<RulebookAbstract> = when (doc)
         {
             is DocText -> effValue(RulebookAbstract(doc.text))
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
+ * Rulebook Introduction
+ */
+data class RulebookIntroduction(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<RulebookIntroduction>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RulebookIntroduction> = when (doc)
+        {
+            is DocText -> effValue(RulebookIntroduction(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
@@ -504,9 +643,10 @@ data class RulebookSection(override val id : UUID,
                       // Body
                       doc.at("body") apply { RulebookSectionBody.fromDocument(it) },
                       // Subsections
-                      doc.list("subsections") apply {
-                          it.map { RulebookSubsection.fromDocument(it) }
-                      })
+                      split(doc.maybeList("subsections"),
+                            effValue(listOf()),
+                            { it.map { RulebookSubsection.fromDocument(it) } })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -886,6 +1026,7 @@ data class RulebookSubsectionBody(val value : String) : ToDocument, SQLSerializa
  * Rulebook Reference
  */
 data class RulebookReference(override val id : UUID,
+                             val rulebookId : RulebookId,
                              val chapterId : RulebookChapterId,
                              val sectionId : Maybe<RulebookSectionId>,
                              val subsectionId : Maybe<RulebookSubsectionId>)
@@ -896,10 +1037,12 @@ data class RulebookReference(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(chapterId : RulebookChapterId,
+    constructor(rulebookId : RulebookId,
+                chapterId : RulebookChapterId,
                 sectionId : Maybe<RulebookSectionId>,
                 subsectionId : Maybe<RulebookSubsectionId>)
         : this(UUID.randomUUID(),
+               rulebookId,
                chapterId,
                sectionId,
                subsectionId)
@@ -912,6 +1055,8 @@ data class RulebookReference(override val id : UUID,
             is DocDict ->
             {
                 apply(::RulebookReference,
+                      // Rulebook Id
+                      doc.at("rulebook_id") apply { RulebookId.fromDocument(it) },
                       // Chapter Id
                       doc.at("chapter_id") apply { RulebookChapterId.fromDocument(it) },
                       // Section Id
@@ -934,6 +1079,7 @@ data class RulebookReference(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "rulebook_id" to this.rulebookId().toDocument(),
         "chapter_id" to this.chapterId().toDocument()
     ))
     .maybeMerge(this.sectionId.apply {
@@ -945,6 +1091,9 @@ data class RulebookReference(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+    fun rulebookId() : RulebookId = this.rulebookId
+
 
     fun chapterId() : RulebookChapterId = this.chapterId
 
@@ -966,9 +1115,11 @@ data class RulebookReference(override val id : UUID,
 
 
     override fun rowValue() : DB_RulebookReferenceValue =
-        RowValue3(rulebookReferenceTable, PrimValue(this.chapterId),
-                                          MaybePrimValue(this.sectionId),
-                                          MaybePrimValue(this.subsectionId))
+        RowValue4(rulebookReferenceTable,
+                  PrimValue(this.rulebookId),
+                  PrimValue(this.chapterId),
+                  MaybePrimValue(this.sectionId),
+                  MaybePrimValue(this.subsectionId))
 
 
 }
@@ -981,3 +1132,6 @@ data class RulebookReferencePath(val chapterTitle : RulebookChapterTitle,
                                  val sectionTitle : Maybe<RulebookSectionTitle>,
                                  val subsectionTitle : Maybe<RulebookSubsectionTitle>)
                                   : Serializable
+
+data class RulebookExcerpt(val title : String, val body : String) : Serializable
+

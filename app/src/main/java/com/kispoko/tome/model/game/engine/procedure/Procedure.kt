@@ -2,12 +2,10 @@
 package com.kispoko.tome.model.game.engine.procedure
 
 
-import android.util.Log
 import com.kispoko.tome.db.DB_ProcedureValue
 import com.kispoko.tome.db.procedureTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue

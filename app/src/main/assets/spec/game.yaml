@@ -52,11 +52,10 @@ types:
       presence: required
       description: >
         The game's authors.
-
-    - name: rulebook
+    - name: rulebooks
       type:
-        type: custom_type
-        custom_type: rulebook
+        type: custom_coll_type
+        custom_coll_type: rulebook
       presence: optional
       description: >
         The name of the game.
@@ -154,17 +153,36 @@ types:
       The game rules.
     group: 'Rulebook'
     fields:
+    - name: rulebook_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The title of the game rulebook.
     - name: title
       type:
         type: prim_type
         prim_type: string
       presence: required
       description: The title of the game rulebook.
+    - name: authors
+      type: 
+        type: custom_coll_type
+        custom_coll_type: author
+      presence: required
+      description: >
+        The game's authors.
     - name: abstract
       type:
         type: prim_type
         prim_type: string
-      presence: optional
+      presence: required
+      description: A brief description of the game rules.
+    - name: introduction
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
       description: A brief description of the game rules.
     - name: chapters
       type: 
@@ -227,7 +245,7 @@ types:
       type:
         type: custom_coll_type
         custom_coll_type: rulebook_subsection
-      presence: required
+      presence: optional
       description: The sub sections.
 - type: product_type
   product_type:
@@ -263,6 +281,12 @@ types:
     group: 'Rulebook'
     type: product
     fields:
+    - name: rulebook_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
     - name: chapter_id
       type:
         type: prim_type

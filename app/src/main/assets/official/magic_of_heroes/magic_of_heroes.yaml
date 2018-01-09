@@ -613,6 +613,10 @@ engine:
           description: 'Humans are diverse compared to other races, but tend to be under 6 feet tall
                         and 200 lbs. They rarely live past a century.'
           value: Human
+          rulebook_reference:
+            rulebook_id: core_rules
+            chapter_id: races
+            section_id: humans
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -4744,6 +4748,22 @@ engine:
               variable_id: can_use_second_wind
     result_binding_name: result
   procedures:
+  - procedure_id: short_rest
+    procedure_name: Short Rest
+    updates:
+    description:
+      template: 'I spend at least one hour doing non-strenuous activity.'
+      variable_ids:
+      - 'level'
+    action_label: 'Take Short Rest'
+  - procedure_id: long_rest
+    procedure_name: Long Rest
+    updates:
+    description:
+      template: 'I spend at least 8 hours sleeping or doing light activity for no more than 2 hours.'
+      variable_ids:
+      - 'level'
+    action_label: 'Take Long Rest'
   - procedure_id: second_wind
     procedure_name: Second Wind
     updates:
@@ -5876,10 +5896,76 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: wisdom_modifier
-rulebook:
-  title: 'The Magic of Heroes'
-  abstract: 'The Magic of Heroes Rules'
+rulebooks:
+- rulebook_id: core_rules
+  title: 'Core Rules'
+  authors:
+  - name: Jeff Wise
+  abstract: |-
+    The Core rules for the Magic of Heroes. Includes information for both players and
+    dungeon masters such as rules for races, classes, spells, monsters, and adventuring.
+  introduction: |+
+    The Magic of Heroes is a tabletop role-playing game designed for epic fantasy settings where
+    worlds are defined by the laws of magic systems, and kingdoms and societies are governed by the
+    consequences and the cause and effects of those beings, humanoid or mounstrous, which wield
+    and control access to magical power.
+
+    The power of magic permeates the nature of every being.
+    Montrous creatures roam distant lands and demonic creatures filled with hatred for the life that
+    blooms in the sun lurk in the depths of the world's shadows.
+
+    Civiliations grow under the uplifting
+    power of magic used for good and peace while other kingdoms drown in a tide of monsters
+    augmented by the magic of otherworldly evil or putrid necromancy.
+
+    The balance of good and evil and life and death perserveres, a pendulum that swings slowy back
+    and forth as the ages of civilizations and the eons of time come and go.
+
+    From time to time, the balance falters. A group of heroes forms, almost by accident, bumping into
+    each other at an intersection of paths that started in wildly different places.
+
+    The story begins,
+    and the heroes learn about the magic of the world, the magic inside themselves, and perhaps,
+    a little about the magical and wondrous nature of life. But eventually, the peril emerges, and
+    it becomes apparent that only the magic of heroes can save the world.
   chapters:
+  - id: creating_pcs
+    title: 'Creating Player Characters'
+    sections:
+    - id: backgrounds
+      title: 'Backgrounds'
+      body: 'Backgrounds'
+  - id: races
+    title: 'Races'
+    sections:
+    - id: humans
+      title: 'Humans'
+      body: >
+        It’s hard to make generalizations about humans, but your human character has these traits.
+
+        Ability Score Increase. Your ability scores each increase by 1.
+
+        Age. Humans reach adulthood in their late teens and live less than a century.
+
+        Alignment. Humans tend toward no particular alignment. The best and the worst are found among them.
+
+        Size. Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.
+
+        Speed. Your base walking speed is 30 feet.
+
+        Languages. You can speak, read, and write Common and one extra language of your choice. Humans typically learn the languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish military phrases, and so on.
+  - id: classes
+    title: 'Classes'
+    sections:
+    - id: classes
+      title: 'Classes'
+      body: 'Classe'
+  - id: creating_pcs
+    title: 'Creating Player Characters'
+    sections:
+    - id: backgrounds
+      title: 'Backgrounds'
+      body: 'Backgrounds'
   - id: equipment
     title: 'Equipment'
     sections:
@@ -6147,5 +6233,29 @@ rulebook:
           A torch burns for 1 hour, providing bright light in a 20-foot radius and dim light for an
           additional 20 feet. If you make a melee attack with a burning torch and hit, it deals 1
           fire damage.
+  - id: abilities
+    title: 'Abilities'
+    sections:
+    - id: skills
+      title: 'Skills'
+      body: 'Skills'
+  - id: encounters
+    title: 'Encounters'
+    sections:
+    - id: combat
+      title: 'Combat'
+      body: 'Combat'
+  - id: adventuring
+    title: 'Adventuring'
+    sections:
+    - id: resting
+      title: 'Resting'
+      body: 'Resting'
+  - id: spells
+    title: 'Spells'
+    sections:
+    - id: wizard_spells
+      title: 'Wizard Spells'
+      body: 'Wizard Spells'
 
 

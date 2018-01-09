@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game
 
 
-import com.kispoko.tome.db.DB_AuthorValue
 import com.kispoko.tome.db.DB_GameValue
 import com.kispoko.tome.db.gameTable
 import com.kispoko.tome.lib.Factory
@@ -18,6 +17,7 @@ import com.kispoko.tome.model.game.engine.Engine
 import effect.effApply
 import effect.effError
 import effect.effValue
+import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -35,9 +35,18 @@ data class Game(override val id : UUID,
                 val gameSummary : GameSummary,
                 val authors : MutableList<Author>,
                 val engine : Engine,
-                val rulebook : Rulebook)
+                val rulebooks : List<Rulebook>)
                  : ToDocument, ProdType, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private val rulebookById : MutableMap<RulebookId,Rulebook> =
+                        rulebooks.associateBy { it.rulebookId() }
+                                as MutableMap<RulebookId,Rulebook>
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -48,14 +57,14 @@ data class Game(override val id : UUID,
                 gameSummary : GameSummary,
                 authors : List<Author>,
                 engine : Engine,
-                rulebook : Rulebook)
+                rulebooks : List<Rulebook>)
         : this(UUID.randomUUID(),
                gameId,
                gameName,
                gameSummary,
                authors.toMutableList(),
                engine,
-               rulebook)
+               rulebooks)
 
 
     companion object : Factory<Game>
@@ -78,7 +87,9 @@ data class Game(override val id : UUID,
                              // Engine
                              doc.at("engine") apply { Engine.fromDocument(it) },
                              // Rulebook
-                             doc.at("rulebook") apply { Rulebook.fromDocument(it) }
+                             split(doc.maybeList("rulebooks"),
+                                   effValue(listOf()),
+                                   { it.map { Rulebook.fromDocument(it) } } )
                              )
                 }
             }
@@ -96,8 +107,7 @@ data class Game(override val id : UUID,
         "game_name" to this.gameName.toDocument(),
         "game_summary" to this.gameSummary.toDocument(),
         "authors" to DocList(this.authors.map { it.toDocument() }),
-        "engine" to this.engine().toDocument(),
-        "rulebook" to this.rulebook().toDocument()
+        "engine" to this.engine().toDocument()
     ))
 
 
@@ -120,7 +130,7 @@ data class Game(override val id : UUID,
     fun engine() : Engine = this.engine
 
 
-    fun rulebook() : Rulebook = this.rulebook
+    fun rulebooks() : List<Rulebook> = this.rulebooks
 
 
     // -----------------------------------------------------------------------------------------
@@ -139,7 +149,14 @@ data class Game(override val id : UUID,
                              PrimValue(this.gameSummary),
                              CollValue(this.authors),
                              ProdValue(this.engine),
-                             ProdValue(this.rulebook))
+                             CollValue(this.rulebooks))
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun rulebookWithId(rulebookId : RulebookId) : Rulebook? = this.rulebookById[rulebookId]
 
 }
 

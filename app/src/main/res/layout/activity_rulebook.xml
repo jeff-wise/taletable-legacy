@@ -43,7 +43,7 @@
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_gravity="center"
-                        android:textSize="17sp"
+                        android:textSize="18sp"
                         android:textColor="@color/dark_theme_primary_15"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
@@ -51,7 +51,7 @@
                         android:layout_height="wrap_content" />
 
                     <ImageButton
-                        android:id="@+id/toolbar_options_button"
+                        android:id="@+id/toolbar_search_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="#00000000"
@@ -64,25 +64,14 @@
                 </RelativeLayout>
 
             </android.support.v7.widget.Toolbar>
-
-            <com.kispoko.tome.lib.ui.CustomTabLayout
-                android:id="@+id/tab_layout"
+            
+            <ScrollView
+                android:id="@+id/book_content_scroll_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/dark_theme_primary_88"
-                app:tabGravity="fill"
-                app:tabMode="fixed"
-                app:tabTextColor="@color/dark_blue_hl_8"
-                app:tabSelectedTextColor="@color/dark_blue_hlx_5"
-                app:tabIndicatorColor="@color/dark_blue_hl_1" />
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/view_pager"
                 android:background="@color/light_theme_light_grey_3"
-                android:layout_width="match_parent"
-                android:focusableInTouchMode="true"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_height="match_parent">
+
+            </ScrollView>
 
         </LinearLayout>
 
