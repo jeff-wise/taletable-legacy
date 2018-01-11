@@ -737,27 +737,13 @@ types:
       presence: optional
       description: >
         The boolean widget formatting options.
-    - name: value
+    - name: value_variable_id
       type:
         type: custom_type
-        custom_type: variable_boolean
+        custom_type: variable_id
       presence: required
       description: >
         The widget value.
-    - name: true_label
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The label when the value is true.
-    - name: false_label
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The label when the value is false.
 - type: product_type
   product_type:
     name: boolean_widget_format
@@ -773,13 +759,39 @@ types:
       presence: optional
       description: >
         The standard widget formatting options.
-    - name: text_style
+    - name: text_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The text style.
+    - name: true_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: >
+        The text style.
+    - name: false_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: >
+        The text style.
+    - name: true_text
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The true label.
+    - name: false_text
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The false label.
 - type: product_type
   product_type:
     name: widget_expander

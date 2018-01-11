@@ -958,6 +958,14 @@ variables:
     value:
       type: number_literal
       number_literal: 7
+- type: variable_number
+  variable_number:
+    id: current_hit_dice
+    label: Current Hit Dice
+    description: Current hit dice.
+    value:
+      type: number_literal
+      number_literal: 1
 - type: variable_text
   variable_text:
     id: defense_label
@@ -966,6 +974,14 @@ variables:
     value:
       type: text_literal
       text_literal: 'my defense'
+- type: variable_text
+  variable_text:
+    id: health_label
+    label: Health Label
+    description: Health Label
+    value:
+      type: text_literal
+      text_literal: 'my health'
 - type: variable_text
   variable_text:
     id: resistances_label
@@ -998,6 +1014,30 @@ variables:
     value:
       type: text_literal
       text_literal: 'my skills'
+- type: variable_text
+  variable_text:
+    id: skill_acrobatics_label
+    label: 'Skill: Acrobatics Label'
+    description: Acrobatics Skill Label
+    value:
+      type: text_literal
+      text_literal: 'Acrobatics'
+- type: variable_number
+  variable_number:
+    id: skill_acrobatics_bonus
+    label: Acrobatics Bonus
+    description: Acrobatics Bonus
+    value:
+      type: summation_id
+      summation_id: skill_acrobatics_bonus
+- type: variable_boolean
+  variable_boolean:
+    id: skill_acrobatics_is_proficient
+    label: 'Skill: Acrobatics Is Proficient?'
+    description: Acrobatics Is Proficient?
+    value:
+      type: boolean_literal
+      boolean_literal: true
 - type: variable_text
   variable_text:
     id: bears
@@ -2766,11 +2806,20 @@ sections:
             theme_color_ids:
             - theme_id: light
               color_id: white
+          margins:
+            top: 12
           padding:
             left: 12
             right: 12
-            top: 20
+            top: 12
             bottom: 20
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_4
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -2788,10 +2837,20 @@ sections:
               widget_format:
                 element_format:
                   horizontal_alignment: left
-                  margins:
-                    bottom: 3
             value_variable_id: defense_label
-      - widgets:
+      - format:
+          element_format:
+            padding:
+              bottom: 15
+              top: 5
+          border:
+            bottom:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_3
+              thickness: 1
+        widgets:
         - type: widget_story
           widget_story:
             id: armor_class
@@ -2806,36 +2865,14 @@ sections:
             story:
             - type: story_part_span
               story_part_span:
-                text: 'My'
+                text: 'My armor class is'
                 text_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_12
                     - theme_id: light
-                      color_id: dark_grey_12
-                  size: 19
-            - type: story_part_span
-              story_part_span:
-                text: 'armor class'
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_12
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  size: 19
-            - type: story_part_span
-              story_part_span:
-                text: 'is'
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_12
-                    - theme_id: light
-                      color_id: dark_grey_12
+                      color_id: dark_grey_10
                   size: 19
             - type: story_part_variable
               story_part_variable:
@@ -2863,27 +2900,11 @@ sections:
                     - theme_id: light
                       color_id: white
                   size: 22
-      - widgets:
-        - type: widget_text
-          widget_text:
-            id: resistances_label
-            format:
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_23
-                  - theme_id: light
-                    color_id: dark_grey_23
-                size: 14
-              widget_format:
-                element_format:
-                  horizontal_alignment: left
-                  margins:
-                    top: 10
-                    bottom: 3
-            value_variable_id: resistances_label
-      - widgets:
+      - format:
+          element_format:
+            padding:
+              top: 15
+        widgets:
         - type: widget_list
           widget_list:
             id: resistances
@@ -2894,7 +2915,7 @@ sections:
                   - theme_id: dark
                     color_id: dark_grey_23
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_10
                 size: 19
               item_format:
                 color_theme:
@@ -2914,18 +2935,42 @@ sections:
             theme_color_ids:
             - theme_id: light
               color_id: white
-      rows:
-      - format:
-          element_format:
-            background_color_theme:
+          margins:
+            top: 12
+          padding:
+            top: 12
+            left: 12
+            right: 12
+        border:
+          bottom:
+            color_theme:
               theme_color_ids:
               - theme_id: light
                 color_id: light_grey_4
+            thickness: 1
+      rows:
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: health_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_23
+                  - theme_id: light
+                    color_id: dark_grey_23
+                size: 14
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: health_label
+      - format:
+          element_format:
             padding:
-              top: 25
-              bottom: 25
-              left: 12
-              right: 12
+              top: 12
+              bottom: 12
         widgets:
         - type: widget_points
           widget_points:
@@ -2956,7 +3001,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue
                 font_style: semi_bold
-                size: 18
+                size: 19
               label_text_format:
                 element_format:
                   margins:
@@ -2969,7 +3014,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_10
                   - theme_id: light
-                    color_id: light_blue_90
+                    color_id: dark_grey_12
                 size: 18
               bar_format:
                 bar_height: 13
@@ -2989,12 +3034,82 @@ sections:
                     color_id: light_blue_90
             limit_value_variable_id: max_hit_points
             current_value_variable_id: current_hit_points
+      - format:
+          element_format:
+            padding:
+              top: 12
+              bottom: 17
+        widgets:
+        - type: widget_points
+          widget_points:
+            id: current_hit_dice
+            label: hit dice
+            format:
+              limit_text_format:
+                element_format:
+                  padding:
+                    bottom: 1.5
+                  vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_10
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+              current_text_format:
+                element_format:
+                  padding:
+                    bottom: 1.5
+                  vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_10
+                  - theme_id: light
+                    color_id: light_blue
+                font_style: semi_bold
+                size: 19
+              label_text_format:
+                element_format:
+                  margins:
+                    left: 5
+                  padding:
+                    bottom: 1.5
+                  vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_10
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+              bar_format:
+                bar_height: 13
+                bar_style: simple
+                above_bar_style: limit_label_max_right
+                limit_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: medium_grey_7
+                  - theme_id: light
+                    color_id: light_grey_6
+                current_color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_10
+                  - theme_id: light
+                    color_id: light_blue_90
+            limit_value_variable_id: level
+            current_value_variable_id: current_hit_dice
     - format:
         element_format:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
               color_id: white
+          margins:
+            top: 12
           padding:
             top: 20
             bottom: 20
@@ -5568,7 +5683,6 @@ sections:
             - theme_id: light
               color_id: light_grey_3
           padding:
-            top: 12
             bottom: 12
       rows:
       - widgets:
@@ -5752,7 +5866,6 @@ sections:
             - theme_id: light
               color_id: light_grey_3
           padding:
-            top: 12
             bottom: 12
           margins:
             left: 10
@@ -6293,10 +6406,16 @@ sections:
           - theme_id: light
             color_id: light_grey_3
         margins:
-          left: 10
-          right: 10
+          left: 8
+          right: 8
     groups:
-    - rows:
+    - format:
+        element_format:
+          margins:
+            left: 10
+            right: 10
+            top: 12
+      rows:
       - widgets:
         - type: widget_text
           widget_text:
@@ -6317,429 +6436,110 @@ sections:
                     bottom: 5
             value_variable_id: skills_label
       - widgets:
-        - type: widget_table
-          widget_table:
-            id: skills
-            table_name: 'Skills'
+        - type: widget_text
+          widget_text:
+            id: skill_acrobatics_label
             format:
               widget_format:
                 element_format:
-                  margins:
-                    bottom: 20
-                    left: 8
-                    right: 8
-              header_format:
-                text_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: dark_grey_6
-                      - theme_id: light
-                        color_id: white
-                    padding:
-                      left: 8
-                      top: 10
-                      bottom: 10
-                  color_theme:
+                  background_color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_22
+                      color_id: dark_grey_4
                     - theme_id: light
-                      color_id: dark_grey_18
-                  size: 14
-              row_format:
-                text_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: dark_grey_6
-                      - theme_id: light
-                        color_id: white
-                    margins:
-                      top: 2
-                    padding:
-                      top: 10
-                      bottom: 10
-            columns:
-            - type: table_widget_number_column
-              table_widget_number_column:
-                name: Bonus
-                variable_prefix: skill_bonus
-                default_value:
-                  type: number_literal
-                  number_literal: 0
-                format:
-                  column_format:
-                    text_format:
-                      element_format:
-                        horizontal_alignment: left
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: dark
-                          color_id: light_grey_5
-                        - theme_id: light
-                          color_id: dark_grey_12
-                      number_format: modifier
-                      size: 18
-                    width: 0.8
-            - type: table_widget_text_column
-              table_widget_text_column:
-                name: Name
-                variable_prefix: skill_name
-                default_value:
-                  type: text_literal
-                  text_literal: Skill
-                defines_namespace: true
-                format:
-                  column_format:
-                    text_format:
-                      element_format:
-                        horizontal_alignment: left
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: dark
-                          color_id: light_grey_7
-                        - theme_id: light
-                          color_id: dark_grey_12
-                      size: 17.5
-                    width: 1.75
-            - type: table_widget_boolean_column
-              table_widget_boolean_column:
-                name: Proficient?
-                variable_prefix: is_proficient
-                default_value:
-                  type: boolean_literal
-                  boolean_literal: false
-                format:
-                  column_format:
-                    text_format:
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: dark
-                          color_id: light_grey_7
-                        - theme_id: light
-                          color_id: dark_grey_16
-                      size: 17.5
-                    width: 1
-                  true_text: 'Yes'
-                  false_text: 'No'
-                  true_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: light_green_10
-                      - theme_id: light
-                        color_id: green
-                    size: 17.5
-            rows:
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_acrobatics_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Acrobatics
-                  action_name: Acrobatics Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: true
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_animal_handling_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Animal Handling
-                  action_name: Animal Handling Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_arcana_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Arcana
-                  action_name: Arcana Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_athletics_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Athletics
-                  action_name: Athletics Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_deception_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Deception
-                  action_name: Deception Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_history_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: History
-                  action_name: History Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_insight_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Insight
-                  action_name: Insight Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_intimidation_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Intimidation
-                  action_name: Intimidation Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_investigation_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Investigation
-                  action_name: Investigation Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_medicine_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Medicine
-                  action_name: Medicine Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_nature_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Nature
-                  action_name: Nature Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_perception_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Perception
-                  action_name: Perception Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_performance_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Performance
-                  action_name: Performance Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: true
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_persuasion_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Persuasion
-                  action_name: Persuasion Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: true
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_religion_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Religion
-                  action_name: Religion Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_sleight_of_hand_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Sleight of Hand
-                  action_name: Slieght of Hand Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_stealth_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Stealth
-                  action_name: Stealth Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: true
-            - cells:
-              - type: table_widget_number_cell
-                table_widget_number_cell:
-                  variable_value:
-                    type: summation_id
-                    summation_id: skill_survival_bonus
-              - type: table_widget_text_cell
-                table_widget_text_cell:
-                  variable_value:
-                    type: text_literal
-                    text_literal: Survival
-                  action_name: Survival Check
-              - type: table_widget_boolean_cell
-                table_widget_boolean_cell:
-                  variable_value:
-                    type: boolean_literal
-                    boolean_literal: false
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    left: 2
+                    right: 2
+                  padding:
+                    left: 8
+                  horizontal_alignment: left
+                  height: 40
+                width: 2
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_21
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+            value_variable_id: skill_acrobatics_label
+        - type: widget_number
+          widget_number:
+            id: skill_acrobatics_bonus
+            value_variable_id: skill_acrobatics_bonus
+            format:
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_4
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  height: 40
+                  margins:
+                    left: 2
+                    right: 2
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: regular
+                number_format: modifier
+                size: 18
+        - type: widget_boolean
+          widget_boolean:
+            id: skill_acrobatics_is_proficient
+            value_variable_id: skill_acrobatics_is_proficient
+            format:
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_4
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  height: 40
+                  margins:
+                    left: 2
+                    right: 2
+              true_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_21
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+              false_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_21
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+              true_text: 'Yes'
+              false_text: 'No'
     - format:
         element_format:
           padding:

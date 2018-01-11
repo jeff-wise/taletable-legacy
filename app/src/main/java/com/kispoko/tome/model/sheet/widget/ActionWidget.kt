@@ -95,7 +95,7 @@ data class ActionWidgetFormat(override val id : UUID,
         {
             is DocDict ->
             {
-                effect.apply(::ActionWidgetFormat,
+                apply(::ActionWidgetFormat,
                      // Widget Format
                      split(doc.maybeAt("widget_format"),
                            effValue(defaultWidgetFormat()),

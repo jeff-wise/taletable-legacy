@@ -536,13 +536,16 @@ object StyleSheet
     val lightTheme = InternalStyleSheet()
 
     init {
-        val pMarginPx = Util.dpToPixel(8f)
-        val pTextSizePx = Util.dpToPixel(4f)
+        val pMarginPx    = Util.dpToPixel(8f)
+        val pTextSizePx  = Util.dpToPixel(4f)
+        val h3TextSizePx = Util.dpToPixel(4.4f)
 //        val pLineHeight = Util.dpToPixel(5f)
 
         lightTheme.addFontFace("Cabin-Regular", null, null, null, "url('file:///android_asset/fonts/Cabin-Regular.ttf')")
+        lightTheme.addFontFace("Cabin-Medium", null, null, null, "url('file:///android_asset/fonts/Cabin-Medium.ttf')")
         lightTheme.addRule("body", "color: #333333", "font-family: Cabin-Regular", "padding: 0", "margin: 0")
         lightTheme.addRule("p", "margin: 1em 0", "font-size: ${pTextSizePx}px", "line-height: 1.5em", "padding: 0")
+        lightTheme.addRule("h3", "color: #2D2D2D", "font-weight: 400", "font-size: ${h3TextSizePx}px", "font-family: Cabin-Medium")
 
     }
 

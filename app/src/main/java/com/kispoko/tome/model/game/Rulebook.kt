@@ -226,18 +226,22 @@ data class Rulebook(override val id : UUID,
                             {
                                 val subsection = section.subsectionWithId(subsectionId.value)
                                 if (subsection != null)
-                                    return RulebookReferencePath(chapter.title(),
-                                            Just(section.title()),
-                                            Just(subsection.title()))
+                                    return RulebookReferencePath(this.title(),
+                                                                 chapter.title(),
+                                                                 Just(section.title()),
+                                                                Just(subsection.title()))
                             }
                             else ->{
-                                return RulebookReferencePath(chapter.title(), Just(section.title()), Nothing())
+                                return RulebookReferencePath(this.title(),
+                                                             chapter.title(),
+                                                             Just(section.title()),
+                                                             Nothing())
                             }
                         }
                     }
                 }
                 else -> {
-                    return RulebookReferencePath(chapter.title(), Nothing(), Nothing())
+                    return RulebookReferencePath(this.title(), chapter.title(), Nothing(), Nothing())
                 }
             }
         }
@@ -1128,10 +1132,39 @@ data class RulebookReference(override val id : UUID,
 /**
  * Rulebook Reference Path
  */
-data class RulebookReferencePath(val chapterTitle : RulebookChapterTitle,
+data class RulebookReferencePath(val bookTitle : RulebookTitle,
+                                 val chapterTitle : RulebookChapterTitle,
                                  val sectionTitle : Maybe<RulebookSectionTitle>,
                                  val subsectionTitle : Maybe<RulebookSubsectionTitle>)
                                   : Serializable
+{
+
+    override fun toString() : String
+    {
+        var s = ""
+
+        s += bookTitle.value
+        s += " \u203A "
+        s += chapterTitle.value
+
+        when (this.sectionTitle) {
+            is Just -> {
+                s += " \u203A "
+                s += this.sectionTitle.value.value
+            }
+        }
+
+        when (this.subsectionTitle) {
+            is Just -> {
+                s += " \u203A "
+                s += this.subsectionTitle.value.value
+            }
+        }
+
+        return s
+    }
+
+}
 
 data class RulebookExcerpt(val title : String, val body : String) : Serializable
 

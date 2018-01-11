@@ -901,6 +901,42 @@ typealias DB_WidgetActionFormatValue =
               MaybePrimValue<Icon>>
 
 
+// WIDGET: BOOLEAN
+// ---------------------------------------------------------------------------------------------
+
+val widgetBooleanTable =
+    Table3("widget_boolean",
+           "widget_id",
+           "format",
+           "value_variable_id")
+
+typealias DB_WidgetBooleanValue =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<BooleanWidgetFormat>,
+              PrimValue<VariableId>>
+
+
+// WIDGET: BOOLEAN > FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetBooleanFormatTable =
+    Table6("widget_boolean_format",
+           "widget_format",
+           "view_type",
+           "true_format",
+           "false_format",
+           "true_text",
+           "false_text")
+
+typealias DB_WidgetBooleanFormatValue =
+    RowValue6<ProdValue<WidgetFormat>,
+              PrimValue<BooleanWidgetViewType>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              PrimValue<TrueText>,
+              PrimValue<FalseText>>
+
+
 // WIDGET: LIST
 // ---------------------------------------------------------------------------------------------
 

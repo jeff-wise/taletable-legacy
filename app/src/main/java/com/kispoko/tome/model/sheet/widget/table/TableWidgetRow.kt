@@ -10,6 +10,8 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
+import com.kispoko.tome.activity.sheet.dialog.AdderDialogFragment
+import com.kispoko.tome.activity.sheet.dialog.TableDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -146,18 +148,20 @@ data class TableWidgetRow(override val id : UUID,
                    rowIndex : Int,
                    sheetUIContext : SheetUIContext)
     {
-        Log.d("***TABLEWIDGETROW", "opening editor")
         val sheetActivity = sheetUIContext.context as SheetActivity
         val updateTarget = UpdateTargetInsertTableRow(tableWidget)
         tableWidget.selectedRow = rowIndex
-        this.addHighlight(sheetUIContext)
-        sheetActivity.showTableEditor(this, updateTarget, SheetContext(sheetUIContext))
+//        this.addHighlight(sheetUIContext)
+//        sheetActivity.showTableEditor(this, updateTarget, SheetContext(sheetUIContext))
+
+        val dialog = TableDialog.newInstance(updateTarget, SheetContext(sheetUIContext))
+        dialog.show(sheetActivity.supportFragmentManager, "")
     }
 
 
     fun onEditorClose(sheetUIContext : SheetUIContext)
     {
-        Log.d("***TABLEWIDGETROW", "on editor close")
+        //Log.d("***TABLEWIDGETROW", "on editor close")
         this.removeHighlight(sheetUIContext)
     }
 
@@ -386,7 +390,7 @@ class TableRowWidgetView(val tableWidgetRow : TableWidgetRow,
     {
         if (ev != null)
         {
-            Log.d("***TABLEWIDGETROW", ev.action.toString())
+            //Log.d("***TABLEWIDGETROW", ev.action.toString())
             when (ev.action)
             {
                 MotionEvent.ACTION_DOWN ->
@@ -395,12 +399,12 @@ class TableRowWidgetView(val tableWidgetRow : TableWidgetRow,
                     SheetActivityGlobal.setLongPressRunnable(Runnable {
                         tableWidgetRow.openEditor(tableWidget, rowIndex, sheetUIContext)
                     })
-                    Log.d("***TABLEROW", "action down")
+                    //Log.d("***TABLEROW", "action down")
                 }
                 MotionEvent.ACTION_UP ->
                 {
                     SheetActivityGlobal.cancelLongPressRunnable()
-                    Log.d("***TABLEROW", "action up")
+                    //Log.d("***TABLEROW", "action up")
 //                    val upTime = System.currentTimeMillis()
 //                    if ((upTime - clickTime) > CLICK_DURATION) {
 //                        tableWidgetRow.openEditor(tableWidget, rowIndex, sheetUIContext)

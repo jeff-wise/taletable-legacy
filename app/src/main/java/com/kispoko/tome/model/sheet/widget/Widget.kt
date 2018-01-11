@@ -32,6 +32,7 @@ import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
@@ -153,7 +154,13 @@ object WidgetView
 
         layout.orientation      = LinearLayout.VERTICAL
         layout.width            = 0
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        val height = widgetFormat.elementFormat().height()
+        when (height)
+        {
+            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+        }
 
         layout.weight           = widgetFormat.width().toFloat()
 
@@ -165,7 +172,8 @@ object WidgetView
 
         layout.corners          = widgetFormat.elementFormat().corners()
 
-        layout.gravity          = widgetFormat.elementFormat().alignment().gravityConstant()
+        layout.gravity          = widgetFormat.elementFormat().alignment().gravityConstant() or
+                                    widgetFormat.elementFormat().verticalAlignment().gravityConstant()
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -233,7 +241,7 @@ object WidgetView
         {
             if (ev != null)
             {
-                Log.d("***WIDGET", ev.action.toString())
+                //Log.d("***WIDGET", ev.action.toString())
                 when (ev.action)
                 {
                     MotionEvent.ACTION_UP ->
@@ -556,100 +564,126 @@ data class ActionWidget(override val id : UUID,
 /**
  * Boolean Widget
  */
-//data class BooleanWidget(override val id : UUID,
-//                         private val widgetId : WidgetId,
-//                         private val format : BooleanWidgetFormat,
-//                         private val valueVariableId : VariableId) : Widget()
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : BooleanWidgetFormat,
-//                valueVariable : BooleanVariable)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               valueVariable)
-//
-//
-//    companion object : Factory<Widget>
-//    {
-//        override fun fromDocument(doc : SchemaDoc) : ValueParser<Widget> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                apply(::BooleanWidget,
-//                      // Widget Name
-//                      doc.at("id") ap { WidgetId.fromDocument(it) },
-//                      // Format
-//                      doc.at("format") ap { BooleanWidgetFormat.fromDocument(it) },
-//                      // Value
-//                      doc.at("value") ap { BooleanVariable.fromDocument(it) }
-//                      )
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "id" to this.widgetId().toDocument(),
-//        "format" to this.format().toDocument(),
-//        "value" to this.valueVariable().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun widgetId() : WidgetId = this.widgetId
-//
-//    fun format() : BooleanWidgetFormat = this.format
-//
-//    fun valueVariable() : BooleanVariable = this.valueVariable
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // WIDGET
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
-//
-//    override fun view(sheetUIContext: SheetUIContext): View {
-//        TODO("not implemented")
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun row() : Row = dbWidgetBoolean(this.widgetId, this.format, this.valueVariableId)
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // SHEET COMPONENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//}
+data class BooleanWidget(override val id : UUID,
+                         private val widgetId : WidgetId,
+                         private val format : BooleanWidgetFormat,
+                         private val valueVariableId : VariableId) : Widget()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : BooleanWidgetFormat,
+                valueVariableId : VariableId)
+        : this(UUID.randomUUID(),
+               widgetId,
+               format,
+               valueVariableId)
+
+
+    companion object : Factory<Widget>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Widget> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::BooleanWidget,
+                      // Widget Id
+                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(BooleanWidgetFormat.default()),
+                            { BooleanWidgetFormat.fromDocument(it) }),
+                      // Value Variable Id
+                      doc.at("value_variable_id") ap { VariableId.fromDocument(it) }
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.widgetId().toDocument(),
+        "format" to this.format().toDocument(),
+        "value_variable_id" to this.valueVariableId().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId
+
+
+    fun format() : BooleanWidgetFormat = this.format
+
+
+    fun valueVariableId() : VariableId = this.valueVariableId
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun view(sheetUIContext : SheetUIContext) : View
+    {
+        val viewBuilder = BooleanWidgetViewBuilder(this, sheetUIContext)
+        return viewBuilder.view()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_WidgetBooleanValue =
+        RowValue3(widgetBooleanTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(this.valueVariableId))
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    {
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+
+    fun variable(sheetContext : SheetContext) : AppEff<BooleanVariable> =
+        SheetManager.sheetState(sheetContext.sheetId)
+                    .apply { it.booleanVariableWithId(this.valueVariableId()) }
+
+
+    fun variableValue(sheetContext : SheetContext) : AppEff<Boolean> =
+            this.variable(sheetContext)
+                .apply { it.value() }
+
+}
 
 
 /**

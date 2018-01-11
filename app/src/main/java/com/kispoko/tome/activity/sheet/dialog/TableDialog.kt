@@ -1,0 +1,426 @@
+
+package com.kispoko.tome.activity.sheet.dialog
+
+
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.view.*
+import android.widget.LinearLayout
+import br.tiagohm.markdownview.MarkdownView
+import com.kispoko.tome.R
+import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.TextFont
+import com.kispoko.tome.model.sheet.style.TextFontStyle
+import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.model.theme.ThemeColorId
+import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
+
+
+
+/**
+ * Table Dialog
+ */
+class TableDialog : DialogFragment()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var updateTarget : UpdateTarget? = null
+    private var sheetContext : SheetContext? = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun newInstance(updateTarget : UpdateTarget,
+                        sheetContext : SheetContext) : TableDialog
+        {
+            val dialog = TableDialog()
+
+            val args = Bundle()
+            args.putSerializable("update_target", updateTarget)
+            args.putSerializable("sheet_context", sheetContext)
+            dialog.arguments = args
+
+            return dialog
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // DIALOG FRAGMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+    {
+        // (1) Read State
+        // -------------------------------------------------------------------------------------
+
+        this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
+        this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
+
+
+        // (2) Initialize UI
+        // -------------------------------------------------------------------------------------
+
+        val dialog = Dialog(context)
+
+        val dialogLayout = this.dialogLayout()
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog.setContentView(dialogLayout)
+
+        val widthDp  = 300f
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        dialog.window.setLayout(Util.dpToPixel(widthDp), height)
+
+        return dialog
+    }
+
+
+    override fun onCreateView(inflater : LayoutInflater?,
+                              container : ViewGroup?,
+                              savedInstanceState : Bundle?) : View?
+    {
+
+
+        val updateTarget = this.updateTarget
+        val sheetContext = this.sheetContext
+        if (updateTarget != null && sheetContext != null)
+        {
+            val sheetUIContext = SheetUIContext(sheetContext, context)
+            val viewBuilder = TableDialogViewBuilder(updateTarget, sheetUIContext, this)
+            return viewBuilder.view()
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // DIALOG LAYOUT
+    // -----------------------------------------------------------------------------------------
+
+    fun dialogLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        return layout.linearLayout(context)
+    }
+
+}
+
+
+
+class TableDialogViewBuilder(val updateTarget : UpdateTarget,
+                             val sheetUIContext : SheetUIContext,
+                             val dialog : DialogFragment)
+{
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    fun view() : View
+    {
+        val layout          = this.viewLayout()
+
+        layout.addView(this.headerView())
+
+        layout.addView(this.actionsView())
+
+        return layout
+    }
+
+
+    private fun viewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun headerView() : LinearLayout
+    {
+        val layout      = this.headerViewLayout()
+
+        layout.addView(this.headerMainView())
+
+        layout.addView(this.dividerView())
+
+        return layout
+    }
+
+
+    private fun headerViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun headerMainView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val title               = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.padding.leftDp   = 12f
+        layout.padding.rightDp  = 12f
+        layout.padding.topDp    = 10f
+        layout.padding.bottomDp = 10f
+
+        layout.child(title)
+
+        // (3) Layout
+        // -------------------------------------------------------------------------------------
+
+        title.width             = LinearLayout.LayoutParams.MATCH_PARENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        title.textId            = R.string.table_actions
+
+        title.font              = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Medium,
+                                                sheetUIContext.context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        title.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        title.sizeSp            = 18f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun dividerView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+
+    private fun actionsView() : LinearLayout
+    {
+        val layout          = this.actionsViewLayout()
+
+        // Insert Row Above
+        val insertRowAboveOnClick = View.OnClickListener {
+            when (updateTarget)
+            {
+                is UpdateTargetInsertTableRow ->
+                {
+                    val selectedRow = updateTarget.tableWidget.selectedRow
+                    if (selectedRow != null)
+                    {
+                        val tableUpdate = TableWidgetUpdateInsertRowBefore(
+                                                            updateTarget.tableWidget.id,
+                                                            selectedRow)
+                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
+                                                 tableUpdate,
+                                                 this.sheetUIContext.sheetUI())
+                        dialog.dismiss()
+                    }
+                }
+            }
+        }
+        layout.addView(this.actionButtonView(R.string.insert_row_above,
+                                             R.drawable.icon_insert_row_above,
+                                             28,
+                                             insertRowAboveOnClick))
+
+        // Insert Row Below
+        val insertRowBelowOnClick = View.OnClickListener {
+            when (updateTarget)
+            {
+                is UpdateTargetInsertTableRow ->
+                {
+                    val selectedRow = updateTarget.tableWidget.selectedRow
+                    if (selectedRow != null)
+                    {
+                        val tableUpdate = TableWidgetUpdateInsertRowAfter(
+                                                            updateTarget.tableWidget.id,
+                                                            selectedRow)
+                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
+                                                 tableUpdate,
+                                                 this.sheetUIContext.sheetUI())
+                        dialog.dismiss()
+                    }
+                }
+            }
+        }
+        layout.addView(this.actionButtonView(R.string.insert_row_below,
+                                             R.drawable.icon_insert_row_below,
+                                             28,
+                                             insertRowBelowOnClick))
+
+        // Delete
+        val moreOnClick = View.OnClickListener { }
+        layout.addView(this.actionButtonView(R.string.delete_row,
+                                             R.drawable.icon_delete_row,
+                                             28,
+                                             moreOnClick))
+
+        // Sort
+        val sortOnClick = View.OnClickListener { }
+        layout.addView(this.actionButtonView(R.string.sort_table,
+                                             R.drawable.icon_sorting_options,
+                                             28,
+                                             sortOnClick))
+
+        return layout
+    }
+
+
+    private fun actionsViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.padding.bottomDp = 4f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun actionButtonView(labelId : Int,
+                                 iconId : Int,
+                                 iconSize : Int,
+                                 onClick : View.OnClickListener) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+
+        val icon                = ImageViewBuilder()
+        val label               = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.onClick          = onClick
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.padding.leftDp   = 12f
+        layout.padding.rightDp  = 10f
+        layout.padding.bottomDp = 10f
+        layout.padding.topDp    = 10f
+
+        layout.margin.leftDp    = 8f
+        layout.margin.rightDp   = 8f
+        layout.margin.topDp     = 8f
+
+        layout.child(icon)
+              .child(label)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = iconSize
+        icon.heightDp           = iconSize
+
+        icon.image              = iconId
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        icon.color             = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+
+        icon.margin.rightDp     = 12f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId            = labelId
+
+        label.font              = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        label.color             = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+
+        label.sizeSp            = 20f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+}

@@ -235,13 +235,13 @@ object TextWidgetView
     {
         val layout = LinearLayoutBuilder()
 
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
 //        layout.orientation          = textWidget.format().outsideLabelFormat()
 //                                            .position().linearLayoutOrientation()
 
-        layout.gravity              = textWidget.widgetFormat().elementFormat().alignment().gravityConstant()
+//        layout.gravity              = textWidget.widgetFormat().elementFormat().alignment().gravityConstant()
         //Log.d("***TEXTWIDGET", "${textWidget.widgetFormat().elementFormat().alignment()}" )
 
         // layout.marginSpacing        = textWidget.widgetFormat().elementFormat().margins()
@@ -291,13 +291,14 @@ object TextWidgetView
 //                                            .position().linearLayoutOrientation()
 
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val height = format.widgetFormat().elementFormat().height()
-        when (height)
-        {
-            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
-            is Height.Fixed -> layout.heightDp = height.value.toInt()
-        }
+//        val height = format.widgetFormat().elementFormat().height()
+//        when (height)
+//        {
+//            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+//            is Height.Fixed -> layout.heightDp = height.value.toInt()
+//        }
         //layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
 //        layout.backgroundColor      = SheetManager.color(

@@ -370,14 +370,14 @@ object NumberWidgetView
     {
         val layout = LinearLayoutBuilder()
 
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation          = format.outsideLabelFormat().elementFormat().position()
                                             .linearLayoutOrientation()
 
-        layout.gravity              = format.widgetFormat().elementFormat().alignment().gravityConstant() or
-                                        Gravity.CENTER_VERTICAL
+//        layout.gravity              = format.widgetFormat().elementFormat().alignment().gravityConstant() or
+//                                        Gravity.CENTER_VERTICAL
 
 //        layout.padding.leftDp       = format.widgetFormat().padding().leftDp()
 //        layout.padding.rightDp      = format.widgetFormat().padding().rightDp()
@@ -440,13 +440,14 @@ object NumberWidgetView
 
         //layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val height = format.widgetFormat().elementFormat().height()
-        when (height)
-        {
-            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
-            is Height.Fixed -> layout.heightDp = height.value.toInt()
-        }
+//        val height = format.widgetFormat().elementFormat().height()
+//        when (height)
+//        {
+//            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+//            is Height.Fixed -> layout.heightDp = height.value.toInt()
+//        }
 
 
 

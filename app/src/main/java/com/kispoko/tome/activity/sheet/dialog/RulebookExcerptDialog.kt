@@ -10,7 +10,7 @@ import android.support.v4.app.DialogFragment
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
+import br.tiagohm.markdownview.MarkdownView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.RulebookExcerpt
@@ -139,6 +139,27 @@ class RulebookExcerptDialog : DialogFragment()
     }
 
 
+    override fun onResume()
+    {
+        super.onResume()
+
+        val sheetContext = this.sheetContext
+        val rulebookReference = this.rulebookReference
+        if (sheetContext != null && rulebookReference != null)
+        {
+            val sheetUIContext  = SheetUIContext(sheetContext, context)
+            val rulebookId = rulebookReference.rulebookId()
+
+            GameManager.rulebook(sheetUIContext.gameId, rulebookId) apDo { rulebook ->
+                val mdView = view?.findViewById(R.id.markdown_view) as MarkdownView
+                rulebook.excerpt(rulebookReference)?.let {
+                    mdView.loadMarkdown(it.body)
+                }
+            }
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
@@ -192,12 +213,15 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+//        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor  = Color.WHITE
 
         layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
+
+//        layout.corners              = Corners(0.0, 0.0, 3.0, 3.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -210,7 +234,9 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
     {
         val layout          = this.headerViewLayout()
 
-        layout.addView(this.headerMainView(headerString))
+        layout.addView(this.headerLabelView())
+
+        layout.addView(this.pathView())
 
         layout.addView(this.dividerView())
 
@@ -227,20 +253,26 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
 
         layout.orientation  = LinearLayout.VERTICAL
 
+        layout.backgroundColor  = Color.WHITE
+
         layout.corners      = Corners(3.0, 3.0, 0.0, 0.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    private fun headerMainView(headerString : String) : LinearLayout
+    private fun headerLabelView() : LinearLayout
     {
+
         // (1) Declarations
         // -------------------------------------------------------------------------------------
 
-        val layout              = LinearLayoutBuilder()
-        val icon                = ImageViewBuilder()
-        val title               = TextViewBuilder()
+        val layout          = LinearLayoutBuilder()
+
+        val iconLayout      = LinearLayoutBuilder()
+        val icon            = ImageViewBuilder()
+
+        val label           = TextViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
@@ -248,56 +280,106 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 10f
-        layout.padding.topDp    = 12f
-        layout.padding.bottomDp = 12f
+        layout.padding.leftDp   = 7f
+        layout.padding.rightDp  = 7f
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 2f
 
-        layout.child(icon)
-              .child(title)
+        layout.child(iconLayout)
+                .child(label)
 
-        // (3 A) Icon
+
+        // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 19
-        icon.heightDp           = 19
+        iconLayout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        iconLayout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        icon.image              = R.drawable.icon_open_book
+        iconLayout.gravity          = Gravity.CENTER
+
+        iconLayout.child(icon)
+
+
+        icon.widthDp            = 20
+        icon.heightDp           = 20
+
+        icon.image              = R.drawable.icon_book_filled
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        title.color             = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color             = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
-        title.margin.rightDp    = 5f
+        icon.margin.rightDp    = 6f
 
         // (3 B) Title
         // -------------------------------------------------------------------------------------
 
-        title.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        title.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.text             = headerString
+        label.textId           = R.string.rules_excerpt
 
-        title.font             = Font.typeface(TextFont.default(),
+        label.font             = Font.typeface(TextFont.default(),
                                                TextFontStyle.Medium,
                                                sheetUIContext.context)
-
-//        val bgcolorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-//        header.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgcolorTheme)
-        title.backgroundColor  = Color.WHITE
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        title.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        label.color            = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
 
-        title.sizeSp           = 18f
+        label.sizeSp           = 19f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun pathView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val path                = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 7f
+        layout.padding.bottomDp = 4f
+
+        layout.child(path)
+
+        // (3) Path
+        // -------------------------------------------------------------------------------------
+
+        path.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        path.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        path.text               = referencePath.toString()
+
+        path.font               = Font.typeface(TextFont.default(),
+                                               TextFontStyle.Regular,
+                                               sheetUIContext.context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+        path.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+
+        path.sizeSp             = 16f
+
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -310,7 +392,11 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
     {
         val scrollView = this.bodyScrollView()
 
-        scrollView.addView(this.bodyTextView(bodyString))
+        val bodyLayout = this.bodyLayout()
+
+        bodyLayout.addView(this.bodyTextView(bodyString))
+
+        scrollView.addView(bodyLayout)
 
         return scrollView
     }
@@ -325,39 +411,39 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
 
         scrollView.fadingEnabled    = false
 
+
+
         return scrollView.scrollView(sheetUIContext.context)
     }
 
 
-    private fun bodyTextView(bodyString : String) : TextView
+    private fun bodyLayout() : LinearLayout
     {
-        val body                = TextViewBuilder()
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.padding.leftDp     = 8f
+        layout.padding.rightDp    = 8f
+        layout.padding.topDp      = 4f
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun bodyTextView(bodyString : String) : MarkdownView
+    {
+        val body                = MarkdownViewBuilder()
+
+        body.id                 = R.id.markdown_view
 
         body.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         body.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        body.text               = bodyString
-
-        body.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
-                                                sheetUIContext.context)
-
-//        val bgcolorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light"))))
-//        body.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgcolorTheme)
-        body.backgroundColor    = Color.WHITE
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        body.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        body.sizeSp             = 15f
-
-        body.padding.leftDp     = 8f
-        body.padding.rightDp    = 8f
-        body.padding.topDp      = 4f
+//        body.markdownText       = bodyString
+        body.stylesheet         = com.kispoko.tome.activity.game.rulebook.StyleSheet.lightTheme
+//
 
         return body.textView(sheetUIContext.context)
     }
@@ -368,11 +454,11 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
 
     private fun footerView() : LinearLayout
     {
-        val layout          = this.footerViewLayout()
+        val layout          = this.footerMainView()
 
-        layout.addView(this.dividerView())
+        // layout.addView(this.dividerView())
 
-        layout.addView(this.footerMainView())
+        //layout.addView(this.footerMainView())
 
         return layout
     }
@@ -387,7 +473,7 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
 
         layout.orientation  = LinearLayout.VERTICAL
 
-        layout.corners      = Corners(3.0, 3.0, 0.0, 0.0)
+        layout.corners          = Corners(0.0, 0.0, 3.0, 3.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -400,52 +486,38 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
         // -------------------------------------------------------------------------------------
 
         val layout                  = LinearLayoutBuilder()
-        val icon                    = ImageViewBuilder()
+
         val label                   = TextViewBuilder()
+
+        val iconLayout              = LinearLayoutBuilder()
+        val icon                    = ImageViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp             = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.heightDp             = 48
 
         layout.orientation          = LinearLayout.HORIZONTAL
 
         layout.gravity              = Gravity.CENTER
 
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-//        layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-        layout.backgroundColor       = Color.WHITE
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        //layout.backgroundColor       = Color.WHITE
 
-        layout.corners              = Corners(0.0, 0.0, 3.0, 3.0)
+        layout.corners          = Corners(0.0, 0.0, 3.0, 3.0)
 
-        layout.padding.leftDp       = 8f
+        //layout.padding.leftDp       = 8f
         layout.padding.topDp        = 8f
         layout.padding.bottomDp     = 8f
 
-        layout.margin.topDp         = 2f
+        layout.child(label)
+              .child(iconLayout)
 
-        layout.child(icon)
-              .child(label)
-
-        // (3 A) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp                = 19
-        icon.heightDp               = 19
-
-        icon.image                  = R.drawable.icon_book
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("gold_15")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
-
-        icon.margin.rightDp         = 7f
-
-        // (3 B) Label
+        // (3) Label
         // -------------------------------------------------------------------------------------
 
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -453,17 +525,46 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
 
         label.textId                = R.string.read_in_rulebook
 
-        val textColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("gold_11")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        label.color                 = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
+//        val textColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("gold_11")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        label.color                 = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
+        label.color                 = Color.WHITE
 
 
         label.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     sheetUIContext.context)
 
-        label.sizeSp                = 16f
+        label.sizeSp                = 18f
+
+        label.layoutGravity          = Gravity.CENTER
+        label.gravity          = Gravity.CENTER
+
+        // (4) Icon
+        // -------------------------------------------------------------------------------------
+
+        iconLayout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        iconLayout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        iconLayout.gravity          = Gravity.CENTER
+        iconLayout.layoutGravity          = Gravity.CENTER
+
+        iconLayout.child(icon)
+
+        icon.widthDp                = 23
+        icon.heightDp               = 23
+
+        icon.image                  = R.drawable.icon_arrow_right
+
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("gold_15")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+        //icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color                  = Color.WHITE
+
+        icon.margin.leftDp         = 7f
+
 
         return layout.linearLayout(sheetUIContext.context)
     }

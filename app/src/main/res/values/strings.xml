@@ -29,6 +29,8 @@
     <string name="open_campaigns">Campaigns</string>
     <string name="open_sheets">Sheets</string>
 
+    <string name="rules_excerpt">Rules Excerpt</string>
+
     <string name="choose_game">What game do you play?</string>
     <string name="open_official_sheet">Open Official Sheet</string>
 
@@ -38,9 +40,10 @@
     <string name="cr">CR</string>
 
     <string name="table_editor">Table Editor</string>
+    <string name="table_actions">Table Actions…</string>
 
-    <string name="insert_row_below">Insert Below</string>
-    <string name="insert_row_above">Insert Above</string>
+    <string name="insert_row_below">Insert Row Below</string>
+    <string name="insert_row_above">Insert Row Above</string>
     <string name="sort_table">Sort Table</string>
 
     <string name="open_sheet">Open Sheet</string>

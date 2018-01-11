@@ -258,4 +258,6 @@
 
     <item name="top_element" type="id"/>
 
+    <item name="markdown_view" type="id"/>
+
 </resources>
