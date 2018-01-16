@@ -546,7 +546,7 @@ object StyleSheet
         lightTheme.addRule("body", "color: #333333", "font-family: Cabin-Regular", "padding: 0", "margin: 0")
         lightTheme.addRule("p", "margin: 1em 0", "font-size: ${pTextSizePx}px", "line-height: 1.5em", "padding: 0")
         lightTheme.addRule("h3", "color: #2D2D2D", "font-weight: 400", "font-size: ${h3TextSizePx}px", "font-family: Cabin-Medium")
-
+        lightTheme.addRule("b", "color: #333333")
     }
 
 }

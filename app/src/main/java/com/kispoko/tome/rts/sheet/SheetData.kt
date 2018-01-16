@@ -13,6 +13,9 @@ import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.rts.game.GameManager
 import effect.*
+import maybe.Just
+import maybe.Nothing
+import maybe.Maybe
 
 
 
@@ -68,10 +71,13 @@ object SheetData
                  reference : DiceRollReference) : AppEff<DiceRoll> =
         when (reference)
         {
-            is DiceRollReferenceLiteral -> effValue(reference.value)
+            is DiceRollReferenceLiteral  -> effValue(reference.value)
             is DiceRollReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
                     .apply( { it.diceRollVariable(reference.variableReference)})
                     .apply( { effValue<AppError, DiceRoll>(it.value()) })
+            is DiceRollReferenceSummation ->
+                    SheetManager.summation(reference.summationId, sheetContext)
+                            .apply { it.diceRoll(sheetContext) }
 
         }
 
@@ -88,7 +94,7 @@ object SheetData
             is NumberReferenceValue    ->
                     GameManager.engine(sheetContext.gameId)
                         .apply({ it.numberValue(numberReference.valueReference, sheetContext) })
-                        .apply({ effValue<AppError,Maybe<Double>>(Just(it.value())) })
+                        .apply({ effValue<AppError, Maybe<Double>>(Just(it.value())) })
             is NumberReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
                     .apply( { it.numberVariable(numberReference.variableReference, context)})
                     .apply( { it.value(sheetContext) })

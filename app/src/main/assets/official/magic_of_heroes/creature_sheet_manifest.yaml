@@ -1,5 +1,8 @@
 summaries:
-- name: Bear
-  type: Animal
-  description: A bear.
-  cr: 2
+- name: Brown Bear
+  id: brown_bear
+  summary: 'Large Beast'
+  description: 'Larger on average than black bears, brown bears are known for being agressive and
+                territorial.'
+
+  cr: 1

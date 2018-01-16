@@ -344,7 +344,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.bottomDp = 4f
+        layout.padding.bottomDp = 8f
 
         return layout.linearLayout(sheetUIContext.context)
     }

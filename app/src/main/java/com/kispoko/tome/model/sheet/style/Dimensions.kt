@@ -3,10 +3,14 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.game.engine.variable.BooleanVariableLiteralValue
+import com.kispoko.tome.model.game.engine.variable.BooleanVariableProgramValue
+import com.kispoko.tome.model.game.engine.variable.BooleanVariableValue
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
@@ -85,7 +89,8 @@ sealed class Width : ToDocument, SQLSerializable, Serializable
 
     override fun toString() : String = when(this)
     {
-        is Wrap  -> "wrap"
+        is Wrap     -> "wrap"
+        is Justify  -> "justify"
         is Fixed -> this.value.toString()
     }
 
@@ -101,11 +106,36 @@ sealed class Width : ToDocument, SQLSerializable, Serializable
     }
 
 
+
+    /**
+     * Justify Width
+     */
+    object Justify : Width()
+    {
+        override fun asSQLValue() : SQLValue = SQLReal({0.0})
+
+        override fun toDocument() = DocNumber(0.0)
+    }
+
+
     /**
      * Fixed
      */
     data class Fixed(val value : Float) : Width(), SQLSerializable, Serializable
     {
+
+        // -----------------------------------------------------------------------------------------
+        // CONSTRUCTORS
+        // -----------------------------------------------------------------------------------------
+
+        companion object
+        {
+            fun fromDocument(doc : SchemaDoc) : ValueParser<Width> = when(doc)
+            {
+                is DocNumber -> effValue(Width.Fixed(doc.number.toFloat()))
+                else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+            }
+        }
 
         // -----------------------------------------------------------------------------------------
         // SQL SERIALIZABLE
@@ -120,18 +150,14 @@ sealed class Width : ToDocument, SQLSerializable, Serializable
 
     companion object
     {
-        fun fromDocument(doc : SchemaDoc) : ValueParser<Width> = when (doc)
-        {
-            is DocNumber ->
+        fun fromDocument(doc : SchemaDoc) : ValueParser<Width> =
+            when (doc.case())
             {
-                val num = doc.number.toFloat()
-                if (num == 0.0f)
-                    effValue<ValueError,Width>(Width.Wrap)
-                else
-                    effValue<ValueError,Width>(Width.Fixed(num))
+                "number_literal" -> Width.Fixed.fromDocument(doc)
+                "width_wrap"     -> effValue(Width.Wrap)
+                "width_justify"  -> effValue(Width.Justify)
+                else             -> effError(UnknownCase(doc.case(), doc.path))
             }
-            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
-        }
     }
 
 

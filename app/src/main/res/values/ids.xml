@@ -148,19 +148,19 @@
     <item name="game_nav_item_header" type="id"/>
     <item name="game_nav_item_summary" type="id"/>
 
-    <!-- AMANACE CHARACTER SHEETS FRAGMENT -->
-    <item name="amanace_chars_item_layout" type="id"/>
-    <item name="amanace_chars_item_name" type="id"/>
-    <item name="amanace_chars_item_desc" type="id"/>
-    <item name="amanace_chars_item_race" type="id"/>
-    <item name="amanace_chars_item_class" type="id"/>
+    <!-- MAGIC OF HEROES CHARACTER SHEETS FRAGMENT -->
+    <item name="heroes_chars_item_layout" type="id"/>
+    <item name="heroes_chars_item_name" type="id"/>
+    <item name="heroes_chars_item_desc" type="id"/>
+    <item name="heroes_chars_item_summary" type="id"/>
+    <item name="heroes_chars_item_variants" type="id"/>
 
-    <!-- AMANACE CREATURE SHEETS FRAGMENT -->
-    <item name="amanace_creatures_item_layout" type="id"/>
-    <item name="amanace_creatures_item_name" type="id"/>
-    <item name="amanace_creatures_item_desc" type="id"/>
-    <item name="amanace_creatures_item_type" type="id"/>
-    <item name="amanace_creatures_item_cr" type="id"/>
+    <!-- MAGIC OF HEROES CREATURE SHEETS FRAGMENT -->
+    <item name="heroes_creatures_item_layout" type="id"/>
+    <item name="heroes_creatures_item_challenge" type="id"/>
+    <item name="heroes_creatures_item_name" type="id"/>
+    <item name="heroes_creatures_item_description" type="id"/>
+    <item name="heroes_creatures_item_summary" type="id"/>
 
     <!-- AMANACE NPC SHEETS FRAGMENT -->
     <item name="amanace_npc_item_layout" type="id"/>
@@ -251,9 +251,11 @@
     <!-- FIELD -->
     <item name="field_value" type="id"/>
 
+    <item name="points_above_bar_layout" type="id"/>
     <item name="points_bar_label" type="id"/>
     <item name="points_bar_current" type="id"/>
     <item name="points_bar_limit" type="id"/>
+    <item name="points_bar_slash" type="id"/>
 
 
     <item name="top_element" type="id"/>

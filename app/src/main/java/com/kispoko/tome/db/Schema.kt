@@ -49,7 +49,7 @@ import com.kispoko.tome.model.sheet.widget.table.column.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.user.UserName
 import com.kispoko.tome.rts.sheet.*
-import lulo.schema.Prim
+
 
 
 //*********************************************************************************************//
@@ -61,12 +61,12 @@ import lulo.schema.Prim
 
 val actionTable = Table3("action",
                          "action_name",
-                         "roll_summation_id",
+                         "roll_group",
                          "procedure_id")
 
 typealias DB_ActionValue =
     RowValue3<PrimValue<ActionName>,
-              MaybePrimValue<SummationId>,
+              MaybeProdValue<DiceRollGroup>,
               MaybePrimValue<ProcedureId>>
 
 
@@ -135,6 +135,18 @@ typealias DB_DiceRollValue =
     RowValue3<PrimValue<DiceQuantitySet>,
               CollValue<RollModifier>,
               MaybePrimValue<DiceRollName>>
+
+
+// DICE ROLL GROUP
+// ---------------------------------------------------------------------------------------------
+
+val diceRollGroupTable = Table2("dice_roll_group",
+                                "roll_references",
+                                "roll_name")
+
+typealias DB_DiceRollGroupValue =
+    RowValue2<PrimValue<DiceRollReferences>,
+              MaybePrimValue<DiceRollGroupName>>
 
 
 // DIVIDER
@@ -306,9 +318,9 @@ typealias DB_GroupFormatValue =
 
 val groupRowTable =
     Table3("group_row",
-            "format",
-            "index",
-            "widgets")
+           "format",
+           "index",
+           "widgets")
 
 typealias DB_GroupRowValue =
     RowValue3<ProdValue<GroupRowFormat>,
@@ -320,12 +332,14 @@ typealias DB_GroupRowValue =
 // ---------------------------------------------------------------------------------------------
 
 val groupRowFormatTable =
-    Table2("group_row_format",
+    Table3("group_row_format",
            "element_format",
+           "has_columns",
            "border")
 
 typealias DB_GroupRowFormatValue =
-    RowValue2<ProdValue<ElementFormat>,
+    RowValue3<ProdValue<ElementFormat>,
+              PrimValue<GroupRowHasColumns>,
               MaybeProdValue<Border>>
 
 
@@ -1080,17 +1094,19 @@ typealias DB_WidgetMechanicFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetNumberTable =
-    Table4("widget_number",
+    Table5("widget_number",
            "widget_id",
            "format",
            "value_variable_id",
-           "inside_label")
+           "inside_label",
+           "rulebook_reference")
 
 typealias DB_WidgetNumberValue =
-    RowValue4<PrimValue<WidgetId>,
+    RowValue5<PrimValue<WidgetId>,
               ProdValue<NumberWidgetFormat>,
               PrimValue<VariableId>,
-              MaybePrimValue<NumberWidgetLabel>>
+              MaybePrimValue<NumberWidgetLabel>,
+              MaybeProdValue<RulebookReference>>
 
 
 // WIDGET: NUMBER > FORMAT
@@ -1116,12 +1132,14 @@ typealias DB_WidgetNumberFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetFormatTable =
-    Table2("widget_format",
+    Table3("widget_format",
            "width",
+           "column",
            "element_format")
 
 typealias DB_WidgetFormatValue =
-    RowValue2<PrimValue<WidgetWidth>,
+    RowValue3<PrimValue<WidgetWidth>,
+              PrimValue<RowColumn>,
               ProdValue<ElementFormat>>
 
 
@@ -1225,13 +1243,13 @@ val widgetRollTable =
     Table4("widget_roll",
            "widget_id",
            "format",
-           "roll_summation_id",
+           "roll_group",
            "description")
 
 typealias DB_WidgetRollValue =
     RowValue4<PrimValue<WidgetId>,
               ProdValue<RollWidgetFormat>,
-              PrimValue<SummationId>,
+              ProdValue<DiceRollGroup>,
               MaybePrimValue<RollWidgetDescription>>
 
 
@@ -1621,15 +1639,17 @@ typealias DB_WidgetTableRowFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetTextTable =
-    Table3("widget_text",
+    Table4("widget_text",
            "widget_id",
            "format",
-           "value_variable_id")
+           "value_variable_id",
+           "rulebook_reference")
 
 typealias DB_WidgetTextValue =
-    RowValue3<PrimValue<WidgetId>,
+    RowValue4<PrimValue<WidgetId>,
               ProdValue<TextWidgetFormat>,
-              PrimValue<VariableId>>
+              PrimValue<VariableId>,
+              MaybeProdValue<RulebookReference>>
 
 
 // WIDGET: TEXT > FORMAT

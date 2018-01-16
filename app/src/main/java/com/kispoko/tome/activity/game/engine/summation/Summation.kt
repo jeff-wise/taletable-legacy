@@ -36,7 +36,7 @@ import com.kispoko.tome.rts.sheet.UpdateTargetSummationNumberTerm
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
-import effect.Just
+import maybe.Just
 import effect.Val
 
 

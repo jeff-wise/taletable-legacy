@@ -15,13 +15,10 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue1
-import com.kispoko.tome.lib.orm.RowValue5
-import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.NumberFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
@@ -38,6 +35,9 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -69,7 +69,7 @@ data class NumberCellFormat(override val id : UUID,
                 apply(::NumberCellFormat,
                       // Text Format
                       split(doc.maybeAt("text_format"),
-                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            effValue<ValueError, Maybe<TextFormat>>(Nothing()),
                             { apply(::Just, TextFormat.fromDocument(it)) })
                       )
             }

@@ -1,22 +1,21 @@
 
-package com.kispoko.tome.activity.official.sheets.amanace
+package com.kispoko.tome.activity.official.sheets.heroes
 
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.lib.ui.Font
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.lib.ui.RecyclerViewBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -117,7 +116,7 @@ class MagicOfHeroesCreaturesFragment : Fragment()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
 
         return layout.linearLayout(context)
@@ -175,7 +174,7 @@ class CreatureSummaryRecyclerViewAdapter(val items : List<HeroesCreatureSheetSum
 
         viewHolder.setNameText(summary.name)
         viewHolder.setDescriptionText(summary.description)
-        viewHolder.setTypeText(summary.type)
+        viewHolder.setSummaryText(summary.summary)
         viewHolder.setCrText(summary.challengeRating.toString())
 
 //        val activity = context as OpenSheetOfficialSheetsActivity
@@ -209,11 +208,11 @@ class CreatureSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var layoutView : LinearLayout? = null
-    var nameView   : TextView?  = null
-    var descView   : TextView?  = null
-    var typeView   : TextView?  = null
-    var crView     : TextView?  = null
+    var layoutView  : LinearLayout? = null
+    var nameView    : TextView?  = null
+    var descView    : TextView?  = null
+    var summaryView : TextView?  = null
+    var crView      : TextView?  = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -222,11 +221,11 @@ class CreatureSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
 
     init
     {
-        this.layoutView = itemView.findViewById(R.id.amanace_creatures_item_layout) as LinearLayout
-        this.nameView   = itemView.findViewById(R.id.amanace_creatures_item_name) as TextView
-        this.descView   = itemView.findViewById(R.id.amanace_creatures_item_desc) as TextView
-        this.typeView   = itemView.findViewById(R.id.amanace_creatures_item_type) as TextView
-        this.crView     = itemView.findViewById(R.id.amanace_creatures_item_cr) as TextView
+        this.layoutView  = itemView.findViewById(R.id.heroes_creatures_item_layout) as LinearLayout
+        this.nameView    = itemView.findViewById(R.id.heroes_creatures_item_name) as TextView
+        this.descView    = itemView.findViewById(R.id.heroes_creatures_item_description) as TextView
+        this.summaryView = itemView.findViewById(R.id.heroes_creatures_item_summary) as TextView
+        this.crView      = itemView.findViewById(R.id.heroes_creatures_item_challenge) as TextView
     }
 
 
@@ -252,9 +251,9 @@ class CreatureSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
     }
 
 
-    fun setTypeText(typeString : String)
+    fun setSummaryText(typeString : String)
     {
-        this.typeView?.text = typeString
+        this.summaryView?.text = typeString
     }
 
 
@@ -275,15 +274,14 @@ object CreatureSummaryView
         val layout = this.viewLayout(themeId, context)
 
         // Name
-        layout.addView(this.nameView(themeId, context))
+        layout.addView(this.headerView(themeId, context))
 
-        //layout.addView(this.dividerView(themeId, context))
+        // Summary
+        layout.addView(this.summaryView(themeId, context))
 
         // Description
         layout.addView(this.descriptionView(themeId, context))
 
-        // Info
-        layout.addView(this.infoRowView(themeId, context))
 
         return layout
     }
@@ -296,23 +294,18 @@ object CreatureSummaryView
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.id               = R.id.amanace_creatures_item_layout
+        layout.id               = R.id.heroes_creatures_item_layout
 
         layout.orientation      = LinearLayout.VERTICAL
 
         layout.margin.topDp     = 10f
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+        layout.backgroundColor  = Color.WHITE
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
-
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
 
         return layout.linearLayout(context)
     }
@@ -337,14 +330,84 @@ object CreatureSummaryView
     }
 
 
+    private fun headerView(themeId : ThemeId, context : Context) : LinearLayout
+    {
+        val layout          = this.headerViewLayout(themeId, context)
+
+        layout.addView(this.challengeView(themeId, context))
+
+        layout.addView(this.nameView(themeId, context))
+
+        return layout
+    }
+
+
+    private fun headerViewLayout(themeId : ThemeId, context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.padding.topDp    = 8f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+
+        layout.margin.bottomDp  = 2f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun challengeView(themeId : ThemeId, context : Context) : TextView
+    {
+        val cr                  = TextViewBuilder()
+
+        cr.id                   = R.id.heroes_creatures_item_challenge
+
+        cr.widthDp              = LinearLayout.LayoutParams.WRAP_CONTENT
+        cr.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        cr.gravity              = Gravity.CENTER
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+//        cr.backgroundColor      = ThemeManager.color(themeId, bgColorTheme)
+
+        cr.backgroundResource    = R.drawable.bg_challenge_rating
+
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("red"))))
+        cr.color                = Color.WHITE
+
+
+        cr.font                  = Font.typeface(TextFont.default(),
+                                                 TextFontStyle.SemiBold,
+                                                 context)
+
+        cr.sizeSp                = 16f
+
+        return cr.textView(context)
+    }
+
+
     private fun nameView(themeId : ThemeId, context : Context) : TextView
     {
         val name                = TextViewBuilder()
 
-        name.id                 = R.id.amanace_creatures_item_name
+        name.id                 = R.id.heroes_creatures_item_name
 
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        name.padding.leftDp   = 8f
+        name.padding.rightDp  = 8f
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Medium,
@@ -352,11 +415,11 @@ object CreatureSummaryView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         name.color              = ThemeManager.color(themeId, colorTheme)
 
 
-        name.sizeSp             = 17f
+        name.sizeSp             = 21f
 
         return name.textView(context)
     }
@@ -364,129 +427,61 @@ object CreatureSummaryView
 
     private fun descriptionView(themeId : ThemeId, context : Context) : TextView
     {
-        val name                = TextViewBuilder()
+        val desc                = TextViewBuilder()
 
-        name.id                 = R.id.amanace_creatures_item_desc
+        desc.id                 = R.id.heroes_creatures_item_description
 
-        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+        desc.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        desc.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.font               = Font.typeface(TextFont.default(),
+        desc.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
-        name.color              = ThemeManager.color(themeId, colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+        desc.color              = ThemeManager.color(themeId, colorTheme)
 
 
-        name.sizeSp             = 13f
+        desc.sizeSp             = 15f
 
-        return name.textView(context)
+        desc.padding.leftDp   = 8f
+        desc.padding.rightDp  = 8f
+
+        desc.margin.bottomDp  = 8f
+
+        return desc.textView(context)
     }
 
 
-    private fun infoRowView(themeId : ThemeId, context : Context) : LinearLayout
+    private fun summaryView(themeId : ThemeId,
+                            context : Context) : TextView
     {
-        val layout  = this.infoRowViewLayout(context)
+        val summary             = TextViewBuilder()
 
-        // Type
-        layout.addView(this.infoView(R.string.type,
-                                     R.id.amanace_creatures_item_type,
-                                     themeId,
-                                     context))
+        summary.id              = R.id.heroes_creatures_item_summary
 
-        // Challenge Rating
-        layout.addView(this.infoView(R.string.cr,
-                                     R.id.amanace_creatures_item_cr,
-                                     themeId,
-                                     context))
+        summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        return layout
-    }
-
-
-    private fun infoRowViewLayout(context : Context) : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun infoView(labelStringId : Int,
-                         valueId : Int,
-                         themeId : ThemeId,
-                         context : Context) : LinearLayout
-    {
-        // (1) declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val label               = TextViewBuilder()
-        val value               = TextViewBuilder()
-
-        // (2) layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = 0
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight           = 1f
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.margin.topDp     = 5f
-
-        layout.child(label)
-              .child(value)
-
-        // (3 a) label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.text              = context.getString(labelStringId).toUpperCase()
-
-        label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
+        summary.font            = Font.typeface(TextFont.default(),
+                                                TextFontStyle.SemiBold,
                                                 context)
 
         val labelColorTheme     = ColorTheme(setOf(
                                     ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
-        label.color             = ThemeManager.color(themeId, labelColorTheme)
+                                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+        summary.color           = ThemeManager.color(themeId, labelColorTheme)
 
-        label.sizeSp            = 11f
+        summary.sizeSp          = 15f
 
-        label.margin.rightDp    = 5f
+        summary.padding.leftDp  = 8f
+        summary.padding.rightDp = 8f
 
-        // (3 b) value
-        // -------------------------------------------------------------------------------------
+        summary.margin.bottomDp = 2f
 
-        value.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        value.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        value.id                = valueId
-
-        value.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
-                                                context)
-
-        val valueColorTheme     = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        value.color             = ThemeManager.color(themeId, valueColorTheme)
-
-        value.sizeSp            = 14f
-
-        return layout.linearLayout(context)
+        return summary.textView(context)
     }
 
 }

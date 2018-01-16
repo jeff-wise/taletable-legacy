@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.program
 
 
-import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEvalError
 import com.kispoko.tome.db.*
@@ -20,6 +19,9 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Nothing
+import maybe.Maybe
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*

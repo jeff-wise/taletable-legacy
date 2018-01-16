@@ -9,6 +9,8 @@ import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.game.engine.summation.Summation
+import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -39,6 +41,7 @@ sealed class DiceRollReference : ToDocument, SumType, Serializable
             {
                 "dice_roll"          -> DiceRollReferenceLiteral.fromDocument(doc.nextCase())
                 "variable_reference" -> DiceRollReferenceVariable.fromDocument(doc.nextCase())
+                "summation_id"       -> DiceRollReferenceSummation.fromDocument(doc.nextCase())
                 else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
@@ -192,6 +195,95 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() = this.variableReference.asSQLValue()
+
+}
+
+
+/**
+ * Summation Id Dice Roll Reference
+ */
+data class DiceRollReferenceSummation(val summationId : SummationId)
+            : DiceRollReference(), SQLSerializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DiceRollReference>
+    {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<DiceRollReference> =
+                effApply(::DiceRollReferenceSummation, SummationId.fromDocument(doc))
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.summationId.toDocument()
+                                    .withCase("summation_id")
+
+
+    // -----------------------------------------------------------------------------------------
+    // COMPONENTS
+    // -----------------------------------------------------------------------------------------
+
+    override fun components(sheetContext : SheetContext) : List<TermComponent>
+    {
+        // TODO ensure just die roll variables
+//        val variables = SheetManager.sheetState(sheetContext.sheetId)
+//                                    .apply { it.variables(this.variableReference) }
+//
+//        when (variables)
+//        {
+//            is effect.Val ->
+//            {
+//                return variables.value.mapNotNull {
+//                    val valueString = it.valueString(sheetContext)
+//                    when (valueString)
+//                    {
+//                        is effect.Val -> TermComponent(it.label().value, valueString.value)
+//                        is Err -> {
+//                            ApplicationLog.error(valueString.error)
+//                            null
+//                        }
+//                    }
+//                }
+//            }
+//            is Err -> ApplicationLog.error(variables.error)
+//        }
+
+        return listOf()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun columnValue() = PrimValue(this)
+
+
+    override fun case() = "variable"
+
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies() : Set<VariableReference> = setOf()
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.summationId.asSQLValue()
 
 }
 

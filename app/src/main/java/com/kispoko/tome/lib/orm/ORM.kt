@@ -10,7 +10,8 @@ import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.orm.sql.query.UpdateQuery
 import com.kispoko.tome.lib.orm.sql.query.UpsertQuery
-import effect.Just
+import maybe.Just
+
 
 
 fun savePrim(sqlValue : SQLValue, columnName : String, prodType : ProdType)

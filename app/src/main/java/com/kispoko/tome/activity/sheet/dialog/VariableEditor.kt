@@ -3,7 +3,6 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.util.Log
-import com.kispoko.tome.R.string.value
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.value.ValueId
@@ -15,8 +14,8 @@ import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.UpdateTarget
 import effect.Err
-import effect.Just
 import effect.Val
+import maybe.Just
 
 
 

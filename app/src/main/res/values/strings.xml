@@ -316,6 +316,7 @@
     <string name="text_variable">Text Variable</string>
 
     <string name="choose_variant_for">Choose variant of&#8230;</string>
+    <string name="choose_variant">Choose variant &#8230;</string>
 
     <string name="test_roll">Test Roll</string>
     <string name="roll_options">Roll Options</string>

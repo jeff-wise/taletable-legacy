@@ -3,10 +3,14 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -28,6 +32,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
 import java.io.Serializable
 import java.util.*
 
@@ -319,7 +324,23 @@ object NumberWidgetView
     {
         val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.mainView(numberWidget, format, sheetUIContext))
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
+        contentLayout.addView(this.mainView(numberWidget, format, sheetUIContext))
+
+        val rulebookReference = numberWidget.rulebookReference()
+        when (rulebookReference) {
+            is Just -> {
+                layout.setOnLongClickListener {
+                    Log.d("***NUMBER WIDGET", "setting rules ref listener")
+                    val sheetActivity = sheetUIContext.context as SheetActivity
+                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
+                                                                   SheetContext(sheetUIContext))
+                    dialog.show(sheetActivity.supportFragmentManager, "")
+                    true
+                }
+            }
+        }
 
         return layout
     }
@@ -564,8 +585,8 @@ object NumberWidgetView
 
         val sheetContext = SheetContext(sheetUIContext)
 
-        numberWidget.viewId = Util.generateViewId()
-        value.id            = numberWidget.viewId
+        numberWidget.textViewId = Util.generateViewId()
+        value.id                = numberWidget.textViewId
 
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT

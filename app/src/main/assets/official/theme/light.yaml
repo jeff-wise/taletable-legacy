@@ -92,20 +92,26 @@ palette:
   color: '#9F9F9F'
 - color_id: cyan_4
   color: '#1887C0'
-- color_id: green_1
-  color: '#18C079'
 - color_id: green
-  color: '#11AB5D'
+  color: '#1BC058'
 - color_id: green_90
-  color: '#E611AB5D'
+  color: '#E61BC058'
 - color_id: green_80
-  color: '#CD11AB5D'
+  color: '#CD1BC058'
 - color_id: green_70
+  color: '#B21BC058'
+- color_id: green_x
+  color: '#11AB5D'
+- color_id: green_90_x
+  color: '#E611AB5D'
+- color_id: green_80_x
+  color: '#CD11AB5D'
+- color_id: green_70_x
   color: '#B211AB5D'
 - color_id: red
   color: '#C32C39'
 - color_id: red_90
-  color: '#C32C39'
+  color: '#C3C32C39'
 - color_id: red_80
   color: '#B2C32C39'
 - color_id: red_70

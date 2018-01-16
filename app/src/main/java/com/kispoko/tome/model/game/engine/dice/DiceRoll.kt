@@ -2,22 +2,29 @@
 package com.kispoko.tome.model.game.engine.dice
 
 
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.game.engine.reference.DiceRollReference
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetData
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Nothing
+import maybe.Maybe
+import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
@@ -77,7 +84,7 @@ data class DiceRoll(override val id : UUID,
                            { it.map { RollModifier.fromDocument(it) } }),
                       // Name
                       split(doc.maybeAt("name"),
-                           effValue<ValueError,Maybe<DiceRollName>>(Nothing()),
+                           effValue<ValueError, Maybe<DiceRollName>>(Nothing()),
                            { apply(::Just, DiceRollName.fromDocument(it)) })
                       )
             }
@@ -152,8 +159,9 @@ data class DiceRoll(override val id : UUID,
         val total = quantitySummaries.map { it.value }.sum() +
                     modifierSummaries.map { it.value }.sum()
 
+        val rollName = this.rollName.toNullable()?.value ?: ""
 
-        return RollSummary(total, quantitySummaries.plus(modifierSummaries))
+        return RollSummary(rollName, total, quantitySummaries.plus(modifierSummaries))
     }
 
 
@@ -612,7 +620,161 @@ data class RollModifierName(val value : String) : ToDocument, SQLSerializable, S
 }
 
 
-data class RollSummary(val value : Int, val parts : List<RollPartSummary>)
+
+/**
+ * Dice Roll Group
+ */
+data class DiceRollGroup(override val id : UUID,
+                         val rollReferences : List<DiceRollReference>,
+                         val groupName : Maybe<DiceRollGroupName>)
+                          : ToDocument, ProdType, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(rollReferences : List<DiceRollReference>,
+                groupName : Maybe<DiceRollGroupName>)
+        : this(UUID.randomUUID(),
+               rollReferences,
+               groupName)
+
+
+    companion object : Factory<DiceRollGroup>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<DiceRollGroup> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::DiceRollGroup,
+                      // Rolls
+                      doc.list("roll_references") ap {
+                          it.map { DiceRollReference.fromDocument(it) }
+                      },
+                      // Name
+                      split(doc.maybeAt("name"),
+                           effValue<ValueError, Maybe<DiceRollGroupName>>(Nothing()),
+                           { apply(::Just, DiceRollGroupName.fromDocument(it)) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "roll_references" to DocList(this.rollReferences.map { it.toDocument() })
+    ))
+    .maybeMerge(this.groupName.apply {
+        Just(Pair("group_name", it.toDocument() as SchemaDoc)) })
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun rollReferences() : List<DiceRollReference> = this.rollReferences
+
+
+    fun groupName() : Maybe<DiceRollGroupName> = this.groupName
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_DiceRollGroupValue =
+        RowValue2(diceRollGroupTable,
+                  PrimValue(DiceRollReferences(this.rollReferences)),
+                  MaybePrimValue(this.groupName))
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+
+    fun diceRolls(sheetContext : SheetContext) : List<DiceRoll>
+    {
+        val rollsEff = this.rollReferences.mapM { SheetData.diceRoll(sheetContext, it) }
+
+        return when (rollsEff)
+        {
+            is Val -> rollsEff.value
+            is Err -> {
+                ApplicationLog.error(rollsEff.error)
+                listOf()
+            }
+        }
+    }
+
+}
+
+
+/**
+ * Dice Roll Group Name
+ */
+data class DiceRollGroupName(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DiceRollGroupName>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<DiceRollGroupName> = when (doc)
+        {
+            is DocText -> effValue(DiceRollGroupName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Dice Roll References
+ */
+data class DiceRollReferences(val variables : List<DiceRollReference>) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
+
+
+
+data class RollSummary(val name : String, val value : Int, val parts : List<RollPartSummary>)
 
 
 data class RollPartSummary(val value : Int, val dice : String, val tag : String)
@@ -633,89 +795,5 @@ sealed class DiceRollModifierFunction : Serializable
         override fun toString() = "Drop the Lowest Roll"
     }
 }
-
-
-
-//    // > Description
-//    // ------------------------------------------------------------------------------------------
-//
-//    public String description()
-//    {
-//        String description = "";
-//
-//        description += "Roll a 1d";
-//        description += Integer.toString(this.diceSides());
-//        description += " ";
-//        description += Integer.toString(this.quantity());
-//        description += " times";
-//
-//        return description;
-//    }
-//
-//    // > To String
-//    // ------------------------------------------------------------------------------------------
-//
-//    @Override
-//    public String toString()
-//    {
-//        StringBuilder quantity = new StringBuilder();
-//
-//        quantity.append(Integer.toString(this.quantity()));
-//        quantity.append("d");
-//        quantity.append(Integer.toString(this.diceSides()));
-//
-//        return quantity.toString();
-//    }
-//
-//
-//    // > Roll
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Roll the dice and return the total value.
-//     * @return The sum of the random dice values.
-//     */
-//    public Integer roll()
-//    {
-//        return this.rollAsSummary().rollValue();
-//    }
-//
-//
-//    /**
-//     * Roll the dice and return a summary of the values of each die in the roll.
-//     * @return The randomly generated roll summary.
-//     */
-//    public RollPartSummary rollAsSummary()
-//    {
-//        List<DieRollResult> results = new ArrayList<>();
-//
-//        for (int i = 0; i < this.quantity(); i++) {
-//            results.add(DieRollResult.generate(this.diceSides()));
-//        }
-//
-//        return new RollPartSummary(results);
-//    }
-//
-//
-//    // INTERNAL
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // -----------------------------------------------------------------------------------------
-//
-//    private void initializeFunctors()
-//    {
-//        // Dice Sides
-//        this.diceSides.setName("dice_sides");
-//        this.diceSides.setLabelId(R.string.dice_quantity_field_dice_sides_label);
-//        this.diceSides.setDescriptionId(R.string.dice_quantity_field_dice_sides_description);
-//
-//        // Quantity
-//        this.quantity.setName("quantity");
-//        this.quantity.setLabelId(R.string.dice_quantity_field_quantity_label);
-//        this.quantity.setDescriptionId(R.string.dice_quantity_field_quantity_description);
-//    }
-//
-//}
 
 

@@ -1,13 +1,13 @@
 summaries:
 - name: Casmey Dalseya
+  id: casmey
   description: >
     An acrobat as a kid and a pirate as a young adult, Casmey is looking for a new adventure. That
     shouldn't be hard though -- she's always been quite talented at finding trouble. Since her days
     on the trapeze, she has always felt most relaxed perched in precarious situations where any
-    mistakes is rewarded with a long fall. Though even when she falls, she tends to land on her
-    feet, ready to climb back up.
-  race: Human
-  class: Fighter
+    mistake is rewarded with a long fall. When she does fall -- and she has many times -- she tends
+    to land on her feet, ready to climb back up.
+  summary: 'Human Fighter'
   variants:
   - id: level_1
     label: 'Level 1'
@@ -27,3 +27,25 @@ summaries:
     label: 'Level 8'
   - id: level_9
     label: 'Level 9'
+  - id: level_10
+    label: 'Level 10'
+  - id: level_11
+    label: 'Level 11'
+  - id: level_12
+    label: 'Level 12'
+  - id: level_13
+    label: 'Level 13'
+  - id: level_14
+    label: 'Level 14'
+  - id: level_15
+    label: 'Level 15'
+  - id: level_16
+    label: 'Level 16'
+  - id: level_17
+    label: 'Level 17'
+  - id: level_18
+    label: 'Level 18'
+  - id: level_19
+    label: 'Level 19'
+  - id: level_20
+    label: 'Level 20'

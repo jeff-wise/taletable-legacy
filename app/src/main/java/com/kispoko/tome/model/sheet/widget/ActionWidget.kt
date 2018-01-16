@@ -36,6 +36,7 @@ import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.UpdateTargetActionWidget
 import com.kispoko.tome.util.Util
 import effect.*
+import maybe.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
@@ -305,7 +306,9 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         actionWidget.layoutViewId = viewId
         layout.id = viewId
 
-        layout.addView(this.inlineLeftButtonView())
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
+        contentLayout.addView(this.inlineLeftButtonView())
 
         return layout
     }

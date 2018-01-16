@@ -7,6 +7,9 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
@@ -24,6 +27,7 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Just
 import java.io.Serializable
 import java.util.*
 
@@ -160,7 +164,24 @@ object TextWidgetView
     {
         val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.mainView(textWidget, format, sheetUIContext))
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
+        contentLayout.addView(this.mainView(textWidget, format, sheetUIContext))
+
+        val rulebookReference = textWidget.rulebookReference()
+        when (rulebookReference) {
+            is Just -> {
+                Log.d("***TEXT WIDGET", "found rulebook ref")
+                layout.setOnLongClickListener {
+                    Log.d("***TEXT WIDGET", "on long click")
+                    val sheetActivity = sheetUIContext.context as SheetActivity
+                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
+                                                                   SheetContext(sheetUIContext))
+                    dialog.show(sheetActivity.supportFragmentManager, "")
+                    true
+                }
+            }
+        }
 
         return layout
     }

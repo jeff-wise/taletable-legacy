@@ -21,6 +21,7 @@ import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
 import effect.Val
+import maybe.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase

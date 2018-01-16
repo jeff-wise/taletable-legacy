@@ -23,9 +23,9 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.sheets.amanace.MagicOfHeroesCharactersFragment
-import com.kispoko.tome.activity.official.sheets.amanace.MagicOfHeroesCreaturesFragment
-import com.kispoko.tome.activity.official.sheets.amanace.MagicOfHeroesNPCsFragment
+import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesCharactersFragment
+import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesCreaturesFragment
+import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesNPCsFragment
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.CustomTabLayout
@@ -82,7 +82,7 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         // > Toolbar
-        this.configureToolbar(getString(R.string.amanace_sheets))
+        this.configureToolbar(getString(R.string.sheets))
 
         // > Theme
         val theme = ThemeManager.theme(this.appSettings.themeId())
@@ -269,8 +269,8 @@ class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
         when (position)
         {
             0    -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
-            1    -> MagicOfHeroesNPCsFragment.newInstance(appThemeId)
-            2    -> MagicOfHeroesCreaturesFragment.newInstance(appThemeId)
+            1    -> MagicOfHeroesCreaturesFragment.newInstance(appThemeId)
+            2    -> MagicOfHeroesNPCsFragment.newInstance(appThemeId)
             else -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
         }
 
@@ -282,8 +282,8 @@ class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
         when (position)
         {
             0    -> "Characters"
-            1    -> "NPCs"
-            2    -> "Creatures"
+            1    -> "Creatures"
+            2    -> "NPCs"
             else -> "Other"
         }
 

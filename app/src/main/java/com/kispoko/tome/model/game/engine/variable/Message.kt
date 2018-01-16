@@ -107,6 +107,9 @@ data class Message(override val id : UUID,
 
     fun toString(sheetContext : SheetContext) : String
     {
+        if (this.variables().variables.isEmpty())
+            return this.template().value
+
         val variableStrings = this.variables().variables.mapM { varId ->
             SheetManager.sheetState(sheetContext.sheetId)
                     .apply { it.variableWithId(varId) }

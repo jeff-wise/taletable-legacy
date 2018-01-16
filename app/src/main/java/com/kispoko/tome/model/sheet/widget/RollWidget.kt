@@ -7,11 +7,12 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.DB_WidgetRollFormatValue
@@ -30,7 +31,6 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.sheet.style.Height
-import com.kispoko.tome.model.sheet.style.RollFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.Width
 import com.kispoko.tome.rts.game.GameManager
@@ -38,6 +38,7 @@ import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.*
+import maybe.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
@@ -237,6 +238,21 @@ sealed class RollWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object InlineLeftButtonUseDialog : RollWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "inline_left_button_use_dialog" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("inline_left_button_use_dialog")
+
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -247,8 +263,10 @@ sealed class RollWidgetViewType : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "inline_left_button" -> effValue<ValueError,RollWidgetViewType>(
-                                            RollWidgetViewType.InlineLeftButton)
+                "inline_left_button"            -> effValue<ValueError,RollWidgetViewType>(
+                                                       RollWidgetViewType.InlineLeftButton)
+                "inline_left_button_use_dialog" -> effValue<ValueError,RollWidgetViewType>(
+                                                       RollWidgetViewType.InlineLeftButtonUseDialog)
                 else                 -> effError<ValueError,RollWidgetViewType>(
                                             UnexpectedValue("RollWidgetViewType", doc.text, doc.path))
             }
@@ -360,6 +378,8 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
     var isRoll : Boolean = false
 
+    val diceRolls = rollWidget.rollGroup().diceRolls(SheetContext(sheetUIContext))
+
     var buttonLayout : LinearLayout? = null
     var buttonIconView : ImageView? = null
     var buttonResultTextView : TextView? = null
@@ -402,20 +422,20 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
                 }
 
             // TODO do example
-            val diceRoll = GameManager.engine(sheetUIContext.gameId)
-                             .apply { it.summation(rollWidget.rollSummationId()) }
-                             .apply { it.diceRoll(SheetContext(sheetUIContext)) }
+//            val diceRoll = GameManager.engine(sheetUIContext.gameId)
+//                             .apply { it.summation(rollWidget.rollSummationId()) }
+//                             .apply { it.diceRoll(SheetContext(sheetUIContext)) }
 
-            when (diceRoll) {
-                is Val -> {
-                    buttonIconView?.visibility = View.GONE
-                    buttonRollTextView?.visibility = View.GONE
-                    buttonResultTextView?.visibility = View.VISIBLE
-                    buttonResultTextView?.text = diceRoll.value.roll().toString()
-                }
-                is Err -> ApplicationLog.error(diceRoll.error)
+
+            if (this.diceRolls.isNotEmpty())
+            {
+                val diceRoll = this.diceRolls[0]
+
+                buttonIconView?.visibility = View.GONE
+                buttonRollTextView?.visibility = View.GONE
+                buttonResultTextView?.visibility = View.VISIBLE
+                buttonResultTextView?.text = diceRoll.roll().toString()
             }
-
 
             val bgColor = SheetManager.color(sheetUIContext.sheetId,
                     format.elementFormat().backgroundColorTheme())
@@ -461,10 +481,10 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
     }
 
 
-    private fun diceRoll() : AppEff<DiceRoll> =
-        GameManager.engine(sheetUIContext.gameId)
-            .apply { it.summation(rollWidget.rollSummationId()) }
-            .apply { it.diceRoll(SheetContext(sheetUIContext)) }
+//    private fun diceRoll() : AppEff<DiceRoll> =
+//        GameManager.engine(sheetUIContext.gameId)
+//            .apply { it.summation(rollWidget.rollSummationId()) }
+//            .apply { it.diceRoll(SheetContext(sheetUIContext)) }
 
 
     // VIEWS
@@ -474,11 +494,31 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
     {
         val layout = WidgetView.layout(rollWidget.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.inlineLeftButtonView())
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 
-        layout.setOnClickListener {
-            this.updateButtonView()
-            this.updateDescriptionView()
+        when (rollWidget.format().viewType())
+        {
+            is RollWidgetViewType.InlineLeftButton ->
+            {
+                contentLayout.addView(this.inlineLeftButtonView())
+
+                layout.setOnClickListener {
+                    this.updateButtonView()
+                    this.updateDescriptionView()
+                }
+            }
+            is RollWidgetViewType.InlineLeftButtonUseDialog ->
+            {
+                layout.setOnClickListener {
+                    val activity = sheetUIContext.context as SheetActivity
+                    val dialog = DiceRollDialog.newInstance(rollWidget.rollGroup(),
+                                                            SheetContext(sheetUIContext),
+                                                            1)
+                    dialog.show(activity.supportFragmentManager, "")
+                }
+
+                contentLayout.addView(this.inlineLeftButtonView())
+            }
         }
 
         return layout
@@ -656,10 +696,10 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         val roll        = TextViewBuilder()
         val format      = rollWidget.format().rollTextFormat()
 
-        val diceRoll = this.diceRoll()
-        when (diceRoll) {
-            is Val -> roll.text = format.rollFormat().rollString(diceRoll.value)
-            is Err -> ApplicationLog.error(diceRoll.error)
+        if (this.diceRolls.isNotEmpty())
+        {
+            val diceRoll = this.diceRolls[0]
+            roll.text = format.rollFormat().rollString(diceRoll)
         }
 
         roll.width          = LinearLayout.LayoutParams.WRAP_CONTENT

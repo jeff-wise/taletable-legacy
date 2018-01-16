@@ -45,7 +45,9 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.theme.ColorTheme
-
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 
 
 /**
@@ -1249,50 +1251,26 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                 //builder.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
 
                 val procedureId = storyPart.action().procedureId()
-                val summationId = storyPart.action().rollSummationId()
-//                    if (procedureId != null) {
-//                        val clickSpan = object : ClickableSpan() {
-//                            override fun onClick(view: View?) {
-//                            }
-//
-//                            override fun updateDrawState(ds: TextPaint?) {
-//                            }
-//                        }
-//
-//                        builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-//                    }
-//                    else if (summationId != null)
-//                    {
+                val rollGroup = storyPart.action().rollGroup()
 
-                when (summationId)
+                when (rollGroup)
                 {
                     is Just ->
                     {
-                        val diceRoll = SheetManager.summation(summationId.value, sheetContext)
-                                                    .apply { it.diceRoll(sheetContext) }
-
-                        when (diceRoll)
-                        {
-                            is effect.Val ->
-                            {
-                                val sheetActivity = sheetUIContext.context as SheetActivity
-                                val clickSpan = object : ClickableSpan() {
-                                    override fun onClick(view: View?) {
-                                        val dialog = DiceRollDialog.newInstance(
-                                                                    diceRoll.value,
-                                                                    Nothing(),
-                                                                    SheetContext(sheetUIContext))
-                                        dialog.show(sheetActivity.supportFragmentManager, "")
-                                    }
-
-                                    override fun updateDrawState(ds: TextPaint?) {
-                                    }
-                                }
-
-                                builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                        val sheetActivity = sheetUIContext.context as SheetActivity
+                        val clickSpan = object : ClickableSpan() {
+                            override fun onClick(view: View?) {
+                                val dialog = DiceRollDialog.newInstance(
+                                                            rollGroup.value,
+                                                            SheetContext(sheetUIContext))
+                                dialog.show(sheetActivity.supportFragmentManager, "")
                             }
-                            is Err -> ApplicationLog.error(diceRoll.error)
+
+                            override fun updateDrawState(ds: TextPaint?) {
+                            }
                         }
+
+                        builder.setSpan(clickSpan, start + 1, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                     }
                 }
 

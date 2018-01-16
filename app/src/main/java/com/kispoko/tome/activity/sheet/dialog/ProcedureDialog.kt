@@ -27,9 +27,8 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.*
 import effect.Err
-import effect.Just
 import effect.Val
-
+import maybe.Just
 
 
 /**
@@ -117,8 +116,7 @@ class ProcedureDialog : DialogFragment()
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
-            val procedure = GameManager.engine(sheetUIContext.gameId)
-                              .apply { it.procedureWithId(procedureId) }
+            val procedure = SheetManager.procedure(procedureId, sheetContext)
 
             return when (procedure) {
                 is Val -> {

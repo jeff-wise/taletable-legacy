@@ -4,13 +4,15 @@ package com.kispoko.tome.rts.sheet
 
 import android.util.Log
 import com.kispoko.tome.app.*
-import com.kispoko.tome.db.DB_VariableNumberValue
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.*
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import org.apache.commons.collections4.trie.PatriciaTrie
 
 
@@ -298,6 +300,14 @@ class SheetState(val sheetContext : SheetContext,
     {
     //    ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
         this.updateListeners(variable)
+
+        when (variable) {
+            is BooleanVariable -> {
+                mechanicsByReqVariableId[variable.variableId()]?.forEach {
+                    it.update(variable, this)
+                }
+            }
+        }
     }
 
 
@@ -354,6 +364,18 @@ class SheetState(val sheetContext : SheetContext,
                 this.booleanVariableWithId(variableId) apDo { booleanVariable ->
                     booleanVariable.updateValue(engineValue.value, sheetContext.sheetId)
                 }
+
+                val variableEff = this.variableWithId(variableId)
+                when (variableEff) {
+                    is Val -> {
+                        val variable = variableEff.value
+                        when (variable) {
+                            is BooleanVariable ->
+                                mechanicsByReqVariableId[variableId]?.forEach { it.update(variable, this) }
+                        }
+                    }
+                    is Err -> ApplicationLog.error(variableEff.error)
+                }
             }
             is EngineValueNumber ->
             {
@@ -371,8 +393,6 @@ class SheetState(val sheetContext : SheetContext,
     fun updateListeners(variable : Variable)
     {
         ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
-//        Log.d("***SHEETSTATE", "UPDATE LISTENERS -------------------------------------")
-//        Log.d("***SHEETSTATE", this.listenersById[VariableId("acrobatics", "is_proficient")].toString())
 
         // (1) Update listeners of variable id
         // -------------------------------------------------------------------------------------
@@ -380,10 +400,8 @@ class SheetState(val sheetContext : SheetContext,
         val variableId = variable.variableId()
         if (listenersById.containsKey(variableId))
         {
-            Log.d("***SHEETSTATE", "update listeners for: ${variable.variableId()}")
             for (listener in listenersById[variableId]!!)
             {
-                Log.d("***SHEETSTATE", "found listener: ${listener.variableId()}")
                 listener.onUpdate()
                 this.updateListeners(listener)
             }
@@ -636,9 +654,11 @@ data class MechanicState(val state : MutableMap<VariableId,Boolean>,
                mechanicStateMachine : MechanicStateMachine)
     {
         val variableId = variable.variableId()
+
         if (state.containsKey(variableId))
         {
             val value = variable.value()
+
             when (value)
             {
                 is Val ->

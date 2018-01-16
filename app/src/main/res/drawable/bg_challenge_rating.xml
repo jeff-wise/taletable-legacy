@@ -6,11 +6,11 @@
 
 
     <solid
-        android:color="@color/light_theme_light_blue">
+        android:color="@color/light_theme_red_90">
     </solid>
 
     <size
-        android:height="42dp"
-        android:width="42dp" />
+        android:height="32dp"
+        android:width="32dp" />
 
 </shape>

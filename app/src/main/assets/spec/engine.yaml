@@ -620,6 +620,12 @@ types:
       A Dice Roll represents rolling multiple dice with potentially different numbers of sides.
     group: Dice Roll
     fields:
+    - name: name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The dice roll name.
     - name: quantities
       type: 
         type: custom_coll_type
@@ -655,6 +661,28 @@ types:
           quantity: 1
         modifiers:
         - modifier: 17
+- type: product_type
+  product_type:
+    name: dice_roll_group
+    label: Dice Roll Group
+    description: Dice roll gropu.
+    group: Dice Roll
+    fields:
+    - name: roll_references
+      type: 
+        type: custom_coll_type
+        custom_coll_type: data_reference_dice_roll
+      presence: required
+      description: >
+        The dice rolls.
+      constraints:
+      - nonempty_list
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Group name.
 - type: product_type
   product_type:
     name: dice_quantity
@@ -702,7 +730,7 @@ types:
     group: Dice Roll
     type: product
     fields:
-    - name: modifier
+    - name: value
       type:
         type: prim_type
         prim_type: number
@@ -778,10 +806,10 @@ types:
     group: Procedure
     type: product
     fields:
-    - name: variable_id
+    - name: variable_ids
       type: 
-        type: custom_type
-        custom_type: variable_id
+        type: custom_coll_type
+        custom_coll_type: variable_id
       presence: required
       description: The variable id.
     - name: program_id
@@ -808,7 +836,7 @@ types:
       type: 
         type: prim_coll_type
         prim_coll_type: string
-      presence: required
+      presence: optional
       description: The variable ids.
 - type: primitive_type
   primitive_type:
@@ -1050,6 +1078,8 @@ types:
       description: A literal dice roll
     - type: variable_reference
       description: A dice roll variable reference.
+    - type: summation_id
+      description: A dice roll summation id.
 - type: sum_type
   sum_type:
     name: data_reference_number

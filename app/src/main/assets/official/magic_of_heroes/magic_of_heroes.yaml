@@ -3222,16 +3222,6 @@ engine:
           variables:
           - type: variable_number
             variable_number:
-              id: armor_leather_armor_bonus
-              label: Leather Armor Bonus
-              description: The bonus to armor class from wearing Leather Armor.
-              tags:
-              - armor
-              value:
-                type: number_literal
-                number_literal: 11
-          - type: variable_number
-            variable_number:
               id: armor_leather_weight
               label: Leather Armor Weight
               description: The weight of Leather Armor.
@@ -4138,6 +4128,44 @@ engine:
         value:
           type: boolean_literal
           boolean_literal: true
+  - id: armor_leather
+    label: 'Armor: Leather Mechanics'
+    description: 'Leather armor mechanics.'
+    summary: 'Armor: Leather mechanics.'
+    category_id: armor
+    requirements:
+    - namespace: leather_armor
+      name: is_armor_equipped
+    variables:
+    - type: variable_number
+      variable_number:
+        id: armor_leather_armor_bonus
+        label: Leather Armor Bonus
+        description: The bonus to armor class from wearing Leather Armor.
+        tags:
+        - armor
+        value:
+          type: number_literal
+          number_literal: 11
+  - id: armor_shield
+    label: 'Armor: Shield Mechanics'
+    description: 'Armor: Shield mechanics.'
+    summary: 'Shield mechanics.'
+    category_id: armor
+    requirements:
+    - namespace: shield
+      name: is_armor_equipped
+    variables:
+    - type: variable_number
+      variable_number:
+        id: shield_armor_bonus
+        label: Shield Armor Bonus
+        description: The bonus to armor class from using a shield.
+        tags:
+        - armor
+        value:
+          type: number_literal
+          number_literal: 2
   mechanic_categories:
   - id: race_human
     label: 'Race: Human'
@@ -4151,6 +4179,9 @@ engine:
   - id: weapon
     label: Weapon
     description: Weapon mechanics.
+  - id: armor
+    label: Armor
+    description: Armor mechanics.
   functions:
   - function_id: proficiency_bonus
     label: Proficiency Bonus
@@ -4767,9 +4798,11 @@ engine:
   - procedure_id: second_wind
     procedure_name: Second Wind
     updates:
-    - variable_id: current_hit_points
+    - variable_ids:
+      - current_hit_points
       program_id: add_second_wind_hit_points
-    - variable_id: can_use_second_wind
+    - variable_ids:
+      - can_use_second_wind
       program_id: inactivate_second_wind
     description:
       template: 'Summoning stamina and strength from deep within, I heal 1d10 + $$$ hit points.'
@@ -6269,5 +6302,29 @@ rulebooks:
     - id: wizard_spells
       title: 'Wizard Spells'
       body: 'Wizard Spells'
+  - id: running_a_game
+    title: 'Running a Game'
+    sections:
+    - id: creatures
+      title: 'Creatures'
+      body: 'Creatures'
+      subsections:
+      - id: challenge
+        title: Challenge
+        body: |+
+          A monster’s **challenge rating** tells you how great a threat the monster is. An appropriately equipped and well-rested party of four adventurers should be able to defeat a monster that has a challenge rating equal to its level without suffering any deaths. For example, a party of four 3rd-level characters should find a monster with a challenge rating of 3 to be a worthy challenge, but not a deadly one.
+
+          Monsters that are significantly weaker than 1st-level characters have a challenge rating lower than 1. Monsters with a challenge rating of 0 are insignificant except in large numbers; those with no effective attacks are worth no experience points, while those that have attacks are worth 10 XP each.
+
+          Some monsters present a greater challenge than even a typical 20th-level party can handle. These monsters have a challenge rating of 21 or higher and are specifically designed to test player skill.
+
+          ### Experience Points
+
+          The number of experience points (XP) a monster is worth is based on its challenge rating. Typically, XP is awarded for defeating the monster, although the GM may also award XP for neutralizing the threat posed by the monster in some other manner.
+
+          Unless something tells you otherwise, a monster summoned by a spell or other magical ability is worth the XP noted in its stat block.
+
+
+
 
 

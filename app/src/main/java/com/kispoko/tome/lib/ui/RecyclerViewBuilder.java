@@ -27,6 +27,8 @@ public class RecyclerViewBuilder
     public Padding                      padding;
     public Margins                      margin;
 
+    public Boolean                      clipToPadding;
+
     public RecyclerView.ItemDecoration  divider;
 
     public Integer                      backgroundColor;
@@ -48,6 +50,8 @@ public class RecyclerViewBuilder
 
         this.padding            = new Padding();
         this.margin             = new Margins();
+
+        this.clipToPadding      = true;
 
         this.divider            = null;
 
@@ -104,6 +108,11 @@ public class RecyclerViewBuilder
                                 this.padding.right(context),
                                 this.padding.bottom(context));
 
+        // > Clip To Padding
+        // --------------------------------------------------------------------------------------
+
+        if (this.clipToPadding != null)
+            recyclerView.setClipToPadding(this.clipToPadding);
 
 
         // [2] Layout

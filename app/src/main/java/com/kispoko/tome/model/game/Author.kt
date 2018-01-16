@@ -17,6 +17,9 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Nothing
+import maybe.Maybe
 import java.io.Serializable
 import java.util.*
 
@@ -56,7 +59,7 @@ data class Author(override val id : UUID,
                       doc.at("name") apply { AuthorName.fromDocument(it) },
                       // Organization
                       split(doc.maybeAt("organization"),
-                             effValue<ValueError,Maybe<AuthorOrganization>>(Nothing()),
+                             effValue<ValueError, Maybe<AuthorOrganization>>(Nothing()),
                              { effApply(::Just, AuthorOrganization.fromDocument(it)) }),
                       // User Name
                      split(doc.maybeAt("user_name"),

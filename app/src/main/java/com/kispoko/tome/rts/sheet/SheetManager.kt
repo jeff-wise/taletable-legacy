@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.View
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
 import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
@@ -19,6 +18,10 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.procedure.Procedure
+import com.kispoko.tome.model.game.engine.procedure.ProcedureId
+import com.kispoko.tome.model.game.engine.program.Program
+import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.Variable
@@ -42,6 +45,9 @@ import kotlinx.coroutines.experimental.launch
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -174,7 +180,10 @@ object SheetManager
         if (!this.session.isActive())
         {
             // Testing Case
-            val casmeyOfficialSheet = OfficialSheet(SheetId("character_casmey_level_1"),
+//            val casmeyOfficialSheet = OfficialSheet(SheetId("character_casmey_level_1"),
+//                                                    CampaignId("isara"),
+//                                                    GameId("magic_of_heroes"))
+            val casmeyOfficialSheet = OfficialSheet(SheetId("creature_brown_bear"),
                                                     CampaignId("isara"),
                                                     GameId("magic_of_heroes"))
 
@@ -219,7 +228,7 @@ object SheetManager
     }
 
 
-    fun addSheetToSession(sheet : Sheet, sheetUI : SheetUI, isSaved : Boolean = true)
+    fun addSheetToCurrentSession(sheet : Sheet, sheetUI : SheetUI, isSaved : Boolean = true)
     {
         session.addSheet(sheet, isSaved, sheetUI)
 
@@ -439,6 +448,39 @@ object SheetManager
         }
     }
 
+
+    fun procedure(procedureId: ProcedureId, sheetContext : SheetContext) : AppEff<Procedure>
+    {
+        // Reverse apply for when keep going if is error / until success
+        val sheetProcedure = SheetManager.sheetRecord(sheetContext.sheetId) ap {
+            it.sheet().engine().procedureWithId(procedureId)
+        }
+
+        return when (sheetProcedure)
+        {
+            is Val -> sheetProcedure
+            is Err -> GameManager.engine(sheetContext.gameId) ap {
+                          it.procedureWithId(procedureId)
+                      }
+        }
+    }
+
+
+    fun program(programId: ProgramId, sheetContext : SheetContext) : AppEff<Program>
+    {
+        // Reverse apply for when keep going if is error / until success
+        val sheetProgram = SheetManager.sheetRecord(sheetContext.sheetId) ap {
+            it.sheet().engine().program(programId)
+        }
+
+        return when (sheetProgram)
+        {
+            is Val -> sheetProgram
+            is Err -> GameManager.engine(sheetContext.gameId) ap {
+                          it.program(programId)
+                      }
+        }
+    }
 
 }
 

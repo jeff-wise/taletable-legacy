@@ -29,7 +29,7 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.*
 import effect.Err
-import effect.Just
+import maybe.Just
 import effect.Val
 import java.io.Serializable
 
@@ -106,8 +106,6 @@ class ListEditorDialog : DialogFragment()
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            dialog.window.attributes.windowAnimations = R.style.DialogAnimation
 
             dialog.setContentView(dialogLayout)
 
@@ -907,7 +905,7 @@ class ListEditorBaseValueSetRecyclerViewAdapter(
 
         val rulebookRef = value.rulebookReference()
         when (rulebookRef) {
-            is Just ->
+            is Just<*> ->
             {
 //                viewHolder.setReferenceView(View.OnClickListener {
 //                    val sheetActivity = sheetUIContext.context as SheetActivity

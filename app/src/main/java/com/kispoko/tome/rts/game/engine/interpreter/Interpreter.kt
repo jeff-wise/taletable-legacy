@@ -14,7 +14,6 @@ import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
-import effect.Nothing
 import java.io.Serializable
 
 //

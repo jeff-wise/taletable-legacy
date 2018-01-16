@@ -32,6 +32,9 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -203,7 +206,7 @@ data class GroupFormat(override val id : UUID,
                             { ElementFormat.fromDocument(it)} ),
                       // Border
                       split(doc.maybeAt("border"),
-                            effValue<ValueError,Maybe<Border>>(Nothing()),
+                            effValue<ValueError, Maybe<Border>>(Nothing()),
                             { effApply(::Just, Border.fromDocument(it)) })
                       )
             }

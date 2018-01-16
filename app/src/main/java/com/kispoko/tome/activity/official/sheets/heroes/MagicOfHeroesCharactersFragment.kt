@@ -1,18 +1,25 @@
 
-package com.kispoko.tome.activity.official.sheets.amanace
+package com.kispoko.tome.activity.official.sheets.heroes
 
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.official.sheets.OpenSheetOfficialSheetsActivity
+import com.kispoko.tome.activity.official.sheets.SheetVariant
+import com.kispoko.tome.activity.official.sheets.VariantsViewBuilder
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder
@@ -22,16 +29,16 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.official.HeroesNPCSheetSummary
+import com.kispoko.tome.official.HeroesCharacterSheetSummary
 import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.theme.ThemeManager
 
 
 
 /**
- * The Magic of Heroes NPCs Fragment
+ * Amanace Character Sheet List Fragment
  */
-class MagicOfHeroesNPCsFragment : Fragment()
+class MagicOfHeroesCharactersFragment : Fragment()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -40,16 +47,15 @@ class MagicOfHeroesNPCsFragment : Fragment()
 
     private var themeId : ThemeId? = null
 
-
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     companion object
     {
-        fun newInstance(themeId : ThemeId) : MagicOfHeroesNPCsFragment
+        fun newInstance(themeId : ThemeId) : MagicOfHeroesCharactersFragment
         {
-            val fragment = MagicOfHeroesNPCsFragment()
+            val fragment = MagicOfHeroesCharactersFragment()
 
             val args = Bundle()
             args.putSerializable("theme_id", themeId)
@@ -97,11 +103,11 @@ class MagicOfHeroesNPCsFragment : Fragment()
         val layout = this.viewLayout(themeId, context)
 
         // Recycler View
-        val npcManifest = OfficialManager.heroesNPCSheetManifest(context)
-        if (npcManifest != null)
+        val characterSheetManifest = OfficialManager.heroesCharacterSheetManifest(context)
+        if (characterSheetManifest != null)
         {
-            val summaries = npcManifest.summaries
-            layout.addView(this.npcSummaryRecyclerView(summaries, themeId, context))
+            val summaries = characterSheetManifest.summaries
+            layout.addView(this.characterSummaryRecyclerView(summaries, themeId, context))
         }
 
         return layout
@@ -117,16 +123,16 @@ class MagicOfHeroesNPCsFragment : Fragment()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
 
         return layout.linearLayout(context)
     }
 
 
-    private fun npcSummaryRecyclerView(summaries : List<HeroesNPCSheetSummary>,
-                                       themeId : ThemeId,
-                                       context : Context) : RecyclerView
+    private fun characterSummaryRecyclerView(summaries : List<HeroesCharacterSheetSummary>,
+                                             themeId : ThemeId,
+                                             context : Context) : RecyclerView
     {
         val recyclerView                = RecyclerViewBuilder()
 
@@ -135,58 +141,55 @@ class MagicOfHeroesNPCsFragment : Fragment()
 
         recyclerView.layoutManager      = LinearLayoutManager(context)
 
-        recyclerView.adapter            = NPCSummaryRecyclerViewAdapter(summaries,
+        recyclerView.adapter            = CharactersRecyclerViewAdapter(summaries,
                                                                         themeId,
                                                                         context)
 
         recyclerView.padding.leftDp     = 6f
         recyclerView.padding.rightDp    = 6f
+        recyclerView.padding.bottomDp   = 60f
+
+        recyclerView.clipToPadding      = false
 
         return recyclerView.recyclerView(context)
     }
 
-
 }
-
 
 
 // -----------------------------------------------------------------------------------------
 // SHEET RECYCLER VIEW ADPATER
 // -----------------------------------------------------------------------------------------
 
-class NPCSummaryRecyclerViewAdapter(val items : List<HeroesNPCSheetSummary>,
+class CharactersRecyclerViewAdapter(val items : List<HeroesCharacterSheetSummary>,
                                     val themeId : ThemeId,
                                     val context : Context)
-        : RecyclerView.Adapter<NPCSummaryViewHolder>()
+        : RecyclerView.Adapter<SummaryItemViewHolder>()
 {
 
     // -------------------------------------------------------------------------------------
     // RECYCLER VIEW ADAPTER API
     // -------------------------------------------------------------------------------------
 
-    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : NPCSummaryViewHolder
+    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : SummaryItemViewHolder
     {
-        return NPCSummaryViewHolder(NPCSummaryView.view(themeId, parent.context))
+        return SummaryItemViewHolder(SummaryItemView.view(themeId, parent.context), themeId, parent.context)
     }
 
 
-    override fun onBindViewHolder(viewHolder : NPCSummaryViewHolder, position : Int)
+    override fun onBindViewHolder(viewHolder : SummaryItemViewHolder, position : Int)
     {
         val summary = this.items[position]
 
         viewHolder.setNameText(summary.name)
         viewHolder.setDescriptionText(summary.description)
-        viewHolder.setTypeText(summary.type)
-        viewHolder.setCrText(summary.challengeRating.toString())
+        viewHolder.setSummaryText(summary.summary)
 
-//        val activity = context as OpenSheetOfficialSheetsActivity
-//        viewHolder.setOnClick(View.OnClickListener {
-//            val viewBuilder = VariantsViewBuilder(summary.name,
-//                                                  sheetVariants,
-//                                                  themeId,
-//                                                  activity)
-//            activity.openBottomSheet(viewBuilder.view())
-//        })
+        val sheetVariants = summary.variants.map { SheetVariant(it.label, it.id) }
+
+        val activity = context as OpenSheetOfficialSheetsActivity
+        viewHolder.setOnClick(summary.id, summary.name, sheetVariants)
+
     }
 
 
@@ -203,19 +206,28 @@ class NPCSummaryRecyclerViewAdapter(val items : List<HeroesNPCSheetSummary>,
 /**
  * The View Holder caches a view for each item.
  */
-class NPCSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
+class SummaryItemViewHolder(itemView : View,
+                            val themeId : ThemeId,
+                            val context : Context)
+                             : RecyclerView.ViewHolder(itemView)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var layoutView : LinearLayout? = null
-    var nameView   : TextView?  = null
-    var descView   : TextView?  = null
-    var typeView   : TextView?  = null
-    var crView     : TextView?  = null
+    var layoutView  : LinearLayout? = null
+    var nameView    : TextView?  = null
+    var descView    : TextView?  = null
+    var summaryView : TextView?  = null
+    var variantsLayout : LinearLayout?  = null
 
+
+    var variantsOpen : Boolean = false
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
 
     // -----------------------------------------------------------------------------------------
     // INIT
@@ -223,11 +235,11 @@ class NPCSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 
     init
     {
-        this.layoutView = itemView.findViewById(R.id.amanace_npc_item_layout) as LinearLayout
-        this.nameView   = itemView.findViewById(R.id.amanace_npc_item_name) as TextView
-        this.descView   = itemView.findViewById(R.id.amanace_npc_item_desc) as TextView
-        this.typeView   = itemView.findViewById(R.id.amanace_npc_item_type) as TextView
-        this.crView     = itemView.findViewById(R.id.amanace_npc_item_cr) as TextView
+        this.layoutView = itemView.findViewById(R.id.heroes_chars_item_layout) as LinearLayout
+        this.nameView  = itemView.findViewById(R.id.heroes_chars_item_name) as TextView
+        this.descView  = itemView.findViewById(R.id.heroes_chars_item_desc) as TextView
+        this.summaryView = itemView.findViewById(R.id.heroes_chars_item_summary) as TextView
+        this.variantsLayout = itemView.findViewById(R.id.heroes_chars_item_variants) as LinearLayout
     }
 
 
@@ -235,9 +247,26 @@ class NPCSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
     // VIEW HOLDER
     // -----------------------------------------------------------------------------------------
 
-    fun setOnClick(onClick : View.OnClickListener)
+    fun setOnClick(sheetId : String, sheetName : String, variants : List<SheetVariant>)
     {
-        this.layoutView?.setOnClickListener(onClick)
+        this.layoutView?.setOnClickListener {
+            if (this.variantsOpen)
+            {
+                this.variantsOpen = false
+                this.variantsLayout?.removeAllViews()
+            }
+            else
+            {
+                this.variantsOpen = true
+                val viewBuilder = VariantsViewBuilder(variants,
+                                                      "character",
+                                                      sheetName,
+                                                      sheetId,
+                                                      themeId,
+                                                      context)
+                this.variantsLayout?.addView(viewBuilder.view())
+            }
+        }
     }
 
 
@@ -253,21 +282,27 @@ class NPCSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
     }
 
 
-    fun setTypeText(typeString : String)
+    fun setSummaryText(summaryString : String)
     {
-        this.typeView?.text = typeString
-    }
+        val spannable = SpannableStringBuilder()
 
+        spannable.append("I am a ")
+        spannable.append(summaryString)
 
-    fun setCrText(crString : String)
-    {
-        this.crView?.text = crString
+        var color = ThemeManager.color(themeId, colorTheme)
+        if (color != null)
+        {
+            val colorSpan = ForegroundColorSpan(color)
+            spannable.setSpan(colorSpan, 7, spannable.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        }
+
+        this.summaryView?.text = spannable
     }
 
 }
 
 
-object NPCSummaryView
+object SummaryItemView
 {
 
 
@@ -278,13 +313,19 @@ object NPCSummaryView
         // Name
         layout.addView(this.nameView(themeId, context))
 
-        //layout.addView(this.dividerView(themeId, context))
+//        layout.addView(this.dividerView(themeId, context))
+
+        // Summary
+        layout.addView(this.summaryView(themeId, context))
+
+//        layout.addView(this.dividerView(themeId, context))
 
         // Description
         layout.addView(this.descriptionView(themeId, context))
 
-        // Info
-        layout.addView(this.infoRowView(themeId, context))
+        // Variants
+        layout.addView(this.variantsLayout(themeId, context))
+
 
         return layout
     }
@@ -297,23 +338,20 @@ object NPCSummaryView
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.id               = R.id.amanace_npc_item_layout
+        layout.id               = R.id.heroes_chars_item_layout
 
         layout.orientation      = LinearLayout.VERTICAL
 
         layout.margin.topDp     = 10f
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+        layout.backgroundColor  = Color.WHITE
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
 
         return layout.linearLayout(context)
     }
@@ -328,11 +366,11 @@ object NPCSummaryView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
 
-        layout.margin.topDp     = 5f
-        layout.margin.bottomDp  = 5f
+        layout.margin.topDp     = 6f
+        layout.margin.bottomDp  = 6f
 
         return layout.linearLayout(context)
     }
@@ -342,10 +380,15 @@ object NPCSummaryView
     {
         val name                = TextViewBuilder()
 
-        name.id                 = R.id.amanace_npc_item_name
+        name.id                 = R.id.heroes_chars_item_name
 
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        name.padding.leftDp  = 8f
+        name.padding.rightDp = 8f
+
+        name.margin.bottomDp    = 4f
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Medium,
@@ -353,11 +396,11 @@ object NPCSummaryView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         name.color              = ThemeManager.color(themeId, colorTheme)
 
 
-        name.sizeSp             = 17f
+        name.sizeSp             = 21f
 
         return name.textView(context)
     }
@@ -367,10 +410,13 @@ object NPCSummaryView
     {
         val name                = TextViewBuilder()
 
-        name.id                 = R.id.amanace_npc_item_desc
+        name.id                 = R.id.heroes_chars_item_desc
 
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        name.padding.leftDp  = 8f
+        name.padding.rightDp = 8f
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
@@ -378,114 +424,56 @@ object NPCSummaryView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         name.color              = ThemeManager.color(themeId, colorTheme)
 
 
-        name.sizeSp             = 13f
+        name.sizeSp             = 15f
+
+        name.padding.bottomDp = 8f
 
         return name.textView(context)
     }
 
 
-    private fun infoRowView(themeId : ThemeId, context : Context) : LinearLayout
+    private fun summaryView(themeId : ThemeId,
+                            context : Context) : TextView
     {
-        val layout  = this.infoRowViewLayout(context)
+        val summary             = TextViewBuilder()
 
-        // Type
-        layout.addView(this.infoView(R.string.type,
-                                     R.id.amanace_npc_item_type,
-                                     themeId,
-                                     context))
+        summary.id              = R.id.heroes_chars_item_summary
 
-        // Challenge Rating
-        layout.addView(this.infoView(R.string.cr,
-                                     R.id.amanace_npc_item_cr,
-                                     themeId,
-                                     context))
+        summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        return layout
+        summary.padding.leftDp  = 8f
+        summary.padding.rightDp = 8f
+
+        summary.margin.bottomDp    = 4f
+
+        summary.font            = Font.typeface(TextFont.default(),
+                                                TextFontStyle.SemiBold,
+                                                context)
+
+//        val labelColorTheme     = ColorTheme(setOf(
+//                                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+//                                    ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+//        summary.color           = ThemeManager.color(themeId, labelColorTheme)
+
+        summary.sizeSp          = 15f
+
+        return summary.textView(context)
     }
 
 
-    private fun infoRowViewLayout(context : Context) : LinearLayout
+    private fun variantsLayout(themeId : ThemeId, context : Context) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun infoView(labelStringId : Int,
-                         valueId : Int,
-                         themeId : ThemeId,
-                         context : Context) : LinearLayout
-    {
-        // (1) declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val label               = TextViewBuilder()
-        val value               = TextViewBuilder()
-
-        // (2) layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = 0
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight           = 1f
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.margin.topDp     = 5f
-
-        layout.child(label)
-              .child(value)
-
-        // (3 a) label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.text              = context.getString(labelStringId).toUpperCase()
-
-        label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
-                                                context)
-
-        val labelColorTheme     = ColorTheme(setOf(
-                                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
-        label.color             = ThemeManager.color(themeId, labelColorTheme)
-
-        label.sizeSp            = 11f
-
-        label.margin.rightDp    = 5f
-
-        // (3 b) value
-        // -------------------------------------------------------------------------------------
-
-        value.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        value.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        value.id                = valueId
-
-        value.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
-                                                context)
-
-        val valueColorTheme     = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        value.color             = ThemeManager.color(themeId, valueColorTheme)
-
-        value.sizeSp            = 14f
+        layout.id               = R.id.heroes_chars_item_variants
 
         return layout.linearLayout(context)
     }

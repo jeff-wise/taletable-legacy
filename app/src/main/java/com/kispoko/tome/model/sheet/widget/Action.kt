@@ -7,10 +7,12 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import effect.*
@@ -18,6 +20,9 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Nothing
+import maybe.Maybe
 import java.io.Serializable
 import java.util.*
 
@@ -28,7 +33,7 @@ import java.util.*
  */
 data class Action(override val id : UUID,
                   val actionName : ActionName,
-                  val rollSummationId : Maybe<SummationId>,
+                  val rollGroup : Maybe<DiceRollGroup>,
                   val procedureId : Maybe<ProcedureId>)
                    : ProdType, ToDocument, Serializable
 {
@@ -38,11 +43,11 @@ data class Action(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(name : ActionName,
-                rollSummationId : Maybe<SummationId>,
+                rollGroup : Maybe<DiceRollGroup>,
                 procedureId : Maybe<ProcedureId>)
         : this(UUID.randomUUID(),
                name,
-               rollSummationId,
+               rollGroup,
                procedureId)
 
 
@@ -55,10 +60,10 @@ data class Action(override val id : UUID,
                 apply(::Action,
                       // Action Name
                       doc.at("name") ap { ActionName.fromDocument(it) },
-                      // Roll Summation Id
-                      split(doc.maybeAt("roll_summation_id"),
-                            effValue<ValueError,Maybe<SummationId>>(Nothing()),
-                            { effApply(::Just, SummationId.fromDocument(it)) }),
+                      // Roll group
+                      split(doc.maybeAt("roll_group"),
+                            effValue<ValueError, Maybe<DiceRollGroup>>(Nothing()),
+                            { effApply(::Just, DiceRollGroup.fromDocument(it)) }),
                       // Procedure Id
                       split(doc.maybeAt("procedure_id"),
                             effValue<ValueError,Maybe<ProcedureId>>(Nothing()),
@@ -76,7 +81,9 @@ data class Action(override val id : UUID,
 
     fun name() : ActionName = this.actionName
 
-    fun rollSummationId() : Maybe<SummationId> = this.rollSummationId
+
+    fun rollGroup() : Maybe<DiceRollGroup> = this.rollGroup
+
 
     fun procedureId() : Maybe<ProcedureId> = this.procedureId
 
@@ -88,8 +95,8 @@ data class Action(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "name" to this.name().toDocument()
     ))
-    .maybeMerge(this.rollSummationId().apply {
-        Just(Pair("roll_summation_id", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.rollGroup().apply {
+        Just(Pair("roll_group", it.toDocument() as SchemaDoc)) })
     .maybeMerge(this.procedureId().apply {
         Just(Pair("procedure_id", it.toDocument() as SchemaDoc)) })
 
@@ -106,7 +113,7 @@ data class Action(override val id : UUID,
 
     override fun rowValue() : DB_ActionValue =
         RowValue3(actionTable, PrimValue(this.actionName),
-                               MaybePrimValue(this.rollSummationId),
+                               MaybeProdValue(this.rollGroup),
                                MaybePrimValue(this.procedureId))
 
 }

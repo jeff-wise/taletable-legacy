@@ -5616,6 +5616,7 @@ sections:
               table_widget_text_column:
                 name: Name
                 variable_prefix: armor
+                defines_namespace: true
                 default_value:
                   type: value_set_id
                   value_set_id: armor_and_shields

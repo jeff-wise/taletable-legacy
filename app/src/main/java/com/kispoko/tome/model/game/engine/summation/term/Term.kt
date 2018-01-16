@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
-import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -20,6 +19,9 @@ import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
+import effect.Err
+import effect.Val
+import maybe.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -444,7 +446,7 @@ data class SummationTermConditional(override val id : UUID,
 
         when (number)
         {
-            is effect.Val -> return number.value
+            is Val -> return number.value
             is Err -> ApplicationLog.error(number.error)
         }
 

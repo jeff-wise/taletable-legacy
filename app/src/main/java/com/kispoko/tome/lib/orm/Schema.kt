@@ -4,7 +4,7 @@ package com.kispoko.tome.lib.orm
 
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
-import effect.Just
+import maybe.Just
 import java.util.*
 
 

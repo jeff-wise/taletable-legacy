@@ -33,9 +33,8 @@ import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.sheet.*
-import com.kispoko.tome.util.SimpleDividerItemDecoration
 import effect.Err
-import effect.Just
+import maybe.Just
 import effect.Val
 
 
@@ -248,57 +247,12 @@ object ValueChooserView
         val layout = headerViewLayout(sheetUIContext)
 
         val mainLayout = this.headerMainViewLayout(sheetUIContext)
-
         val titleView = headerTitleTextView(title, sheetUIContext)
-//        val iconView  = headerIconView(sheetUIContext)
-
         mainLayout.addView(titleView)
-//        layout.addView(iconView)
 
         layout.addView(mainLayout)
 
         layout.addView(this.headerBottomBorderView(sheetUIContext))
-
-        // > Toggle Menu Functionality
-        // ----------------------------------------------------------------------------
-
-        val closeIcon = ContextCompat.getDrawable(sheetUIContext.context,
-                                                  R.drawable.ic_dialog_chooser_close_menu)
-
-        val menuIcon = ContextCompat.getDrawable(sheetUIContext.context,
-                                                 R.drawable.ic_dialog_chooser_menu)
-
-//        iconView.setOnClickListener {
-//            // Show MENU
-//            if (chooserView.visibility == View.VISIBLE)
-//            {
-//                chooserView.visibility = View.GONE
-//                menuView.visibility = View.VISIBLE
-//
-//                iconView.setImageDrawable(closeIcon)
-//
-//                titleView.setText(R.string.options)
-//            }
-//            // Show VALUES
-//            else
-//            {
-//                chooserView.visibility = View.VISIBLE
-//                menuView.visibility = View.GONE
-//
-//                iconView.setImageDrawable(menuIcon)
-//
-//            //    titleView.setText(title)
-//            }
-//        }
-
-//        iconView.setOnClickListener(View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//
-//            }
-//        })
 
         return layout
     }
@@ -339,8 +293,6 @@ object ValueChooserView
 
         return layout.linearLayout(sheetUIContext.context)
     }
-
-
 
 
     private fun headerMainViewLayout(sheetUIContext: SheetUIContext) : RelativeLayout

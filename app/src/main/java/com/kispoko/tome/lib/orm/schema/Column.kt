@@ -5,7 +5,7 @@ package com.kispoko.tome.lib.orm.schema
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import effect.Maybe
+import maybe.Maybe
 import java.io.Serializable
 
 

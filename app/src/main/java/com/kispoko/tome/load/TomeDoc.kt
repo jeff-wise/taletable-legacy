@@ -55,11 +55,12 @@ object TomeDoc
         fun templateDocument(templateString : String,
                              sheetSchema : Schema,
                              campaignSchema : Schema,
+                             gameSchema : Schema,
                              engineSchema : Schema,
                              themeSchema : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = sheetSchema.parseDocument(templateString,
-                                                   listOf(campaignSchema, engineSchema, themeSchema))
+                                                   listOf(campaignSchema, gameSchema, engineSchema, themeSchema))
             when (docParse)
             {
                 is Val -> return effValue(docParse.value)
@@ -79,13 +80,15 @@ object TomeDoc
         }
 
         // DO...
-        return templateFileString
-               .applyWith(::templateDocument,
-                          sheetSchemaLoader(context),
-                          campaignSchemaLoader(context),
-                          engineSchemaLoader(context),
-                          themeSchemaLoader(context))
-               .apply(::sheetFromDocument)
+        val schemaDoc = templateFileString   ap { fileString ->
+                        sheetSchemaLoader(context) ap { sheetSchema ->
+                        campaignSchemaLoader(context) ap { campaignSchema ->
+                        gameSchemaLoader(context) ap { gameSchema ->
+                        engineSchemaLoader(context) ap { engineSchema ->
+                        themeSchemaLoader(context) ap { themeSchema ->
+                           templateDocument(fileString, sheetSchema, campaignSchema, gameSchema, engineSchema, themeSchema)
+                        } } } } }  }
+        return schemaDoc.apply { sheetFromDocument(it) }
     }
 
 

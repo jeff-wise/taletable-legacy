@@ -68,7 +68,7 @@ object OfficialManager
             {
                 val sheet = sheetLoader.value
                 // Needs to run in UI thread (renders the sheet)
-                launch(UI) { SheetManager.addSheetToSession(sheet, sheetUI, false) }
+                launch(UI) { SheetManager.addSheetToCurrentSession(sheet, sheetUI, false) }
                 ApplicationLog.event(OfficialSheetLoaded(sheet.sheetId().value))
             }
             is Err -> ApplicationLog.error(sheetLoader.error)

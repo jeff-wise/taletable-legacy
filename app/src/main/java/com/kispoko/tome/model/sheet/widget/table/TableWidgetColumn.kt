@@ -27,6 +27,9 @@ import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 

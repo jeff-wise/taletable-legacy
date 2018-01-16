@@ -541,6 +541,12 @@ types:
       presence: optional
       description: >
         The element format.
+    - name: has_columns
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      description: Has columns?
     - name: border
       type:
         type: custom_type
@@ -1219,33 +1225,18 @@ types:
         custom_type: variable_id
       presence: required
       description: The number variable value id.
-    - name: value_prefix
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The value prefix.
-    - name: value_postfix
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The value postfix.
-    - name: base_value_variable
-      type:
-        type: custom_type
-        custom_type: variable_name
-      presence: optional
-      description: >
-        The base value variable name.
     - name: inside_label
       type:
         type: prim_type
         prim_type: string
       presence: optional
       description: The inside label.
+    - name: rulebook_reference
+      type:
+        type: custom_type
+        custom_type: rulebook_reference
+      presence: optional
+      description: A rulebook reference.
 - type: product_type
   product_type:
     name: number_widget_format
@@ -1724,10 +1715,10 @@ types:
       presence: optional
       description: >
         The roll widget formatting options.
-    - name: roll_summation_id
+    - name: roll_group
       type:
         type: custom_type
-        custom_type: summation_id
+        custom_type: dice_roll_group
       presence: required
       description: The roll summation id.
     - name: description
@@ -2791,13 +2782,12 @@ types:
       presence: required
       description: >
         The text value variable id.
-    - name: description
+    - name: rulebook_reference
       type: 
-        type: prim_type
-        prim_type: string
+        type: custom_type
+        custom_type: rulebook_reference
       presence: optional
-      description: >
-        The description.
+      description: A rulebook reference.
 - type: product_type
   product_type:
     name: text_widget_format
@@ -2835,10 +2825,10 @@ types:
       presence: required
       description: >
         The action name.
-    - name: roll_summation_id
+    - name: roll_group
       type: 
         type: custom_type
-        custom_type: summation_id
+        custom_type: dice_roll_group
       presence: optional
       description: >
         The id of the summation that represents the roll.
@@ -2864,6 +2854,13 @@ types:
       presence: optional
       description: >
         The widget width.
+    - name: column
+      type: 
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: >
+        The widget column.
     - name: element_format
       type:
         type: custom_type
@@ -3253,16 +3250,33 @@ types:
     base_type:
       type: prim_type
       prim_type: number
-- type: primitive_type
-  primitive_type:
+- type: sum_type
+  sum_type:
     name: width
     label: Width
-    description: >
-      The widget width options.
-    group: Style
-    base_type:
-      type: prim_type
-      prim_type: number
+    description: Width
+    group: 'Style'
+    cases:
+    - type: number_literal
+      description: A literal number.
+    - type: width_wrap
+      description: Width wrap
+    - type: width_justify
+      description: Width justify
+- type: symbol_type
+  symbol_type:
+    name: width_wrap
+    label: Width Wrap
+    description: Wrap
+    group: 'Style: Width'
+    symbol: 'wrap'
+- type: symbol_type
+  symbol_type:
+    name: width_justify
+    label: Width Justify
+    description: Justify
+    group: 'Style: Width'
+    symbol: 'justify'
 - type: primitive_type
   primitive_type:
     name: position

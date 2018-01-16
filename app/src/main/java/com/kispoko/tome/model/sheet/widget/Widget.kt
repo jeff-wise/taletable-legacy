@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TextView
+import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.app.AppEff
@@ -19,29 +20,33 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.*
-import com.kispoko.tome.lib.orm.schema.CollValue
-import com.kispoko.tome.lib.orm.schema.MaybePrimValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
+import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.model.game.RulebookReference
+import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.style.Width
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
-import effect.Nothing
 import effect.Val
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
+import maybe.maybeValue
 import java.io.Serializable
 import java.util.*
 
@@ -143,7 +148,35 @@ object WidgetView
     {
         val layout = this.widgetLayout(widgetFormat, sheetUIContext)
 
+        val contentLayout = this.contentLayout(widgetFormat, sheetUIContext)
+
+        layout.addView(contentLayout)
+
+        val rightBorder = widgetFormat.elementFormat().border().right()
+        when (rightBorder) {
+            is Just -> layout.addView(this.verticalBorderView(rightBorder.value, sheetUIContext))
+        }
+
         return layout
+    }
+
+
+    private fun contentLayout(widgetFormat : WidgetFormat,
+                              sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.id           = R.id.widget_content_layout
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.gravity      = widgetFormat.elementFormat().alignment().gravityConstant() or
+                                    widgetFormat.elementFormat().verticalAlignment().gravityConstant()
+
+        layout.paddingSpacing   = widgetFormat.elementFormat().padding()
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -153,7 +186,25 @@ object WidgetView
         val layout = LinearLayoutBuilder()
 
         layout.orientation      = LinearLayout.VERTICAL
-        layout.width            = 0
+
+        when (widgetFormat.elementFormat().border().right()) {
+            is Just -> layout.orientation = LinearLayout.HORIZONTAL
+        }
+
+
+        val width = widgetFormat.elementFormat().width()
+        when (width) {
+            is Width.Justify -> {
+                layout.width            = 0
+                layout.weight           = widgetFormat.width().toFloat()
+            }
+            is Width.Wrap -> {
+                layout.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            }
+            is Width.Fixed -> {
+                layout.widthDp  = width.value.toInt()
+            }
+        }
 
         val height = widgetFormat.elementFormat().height()
         when (height)
@@ -162,18 +213,14 @@ object WidgetView
             is Height.Fixed -> layout.heightDp = height.value.toInt()
         }
 
-        layout.weight           = widgetFormat.width().toFloat()
 
         layout.marginSpacing    = widgetFormat.elementFormat().margins()
-        layout.paddingSpacing   = widgetFormat.elementFormat().padding()
 
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
                                                      widgetFormat.elementFormat().backgroundColorTheme())
 
         layout.corners          = widgetFormat.elementFormat().corners()
 
-        layout.gravity          = widgetFormat.elementFormat().alignment().gravityConstant() or
-                                    widgetFormat.elementFormat().verticalAlignment().gravityConstant()
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -229,6 +276,20 @@ object WidgetView
     }
 
 
+    private fun verticalBorderView(format : BorderEdge, sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val divider = LinearLayoutBuilder()
+
+        divider.widthDp             = format.thickness().value
+        divider.height              = LinearLayout.LayoutParams.MATCH_PARENT
+
+        divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
+                                                         format.colorTheme())
+
+        return divider.linearLayout(sheetUIContext.context)
+    }
+
+
     class WidgetTouchView(context : Context) : LinearLayout(context)
     {
 
@@ -241,7 +302,6 @@ object WidgetView
         {
             if (ev != null)
             {
-                //Log.d("***WIDGET", ev.action.toString())
                 when (ev.action)
                 {
                     MotionEvent.ACTION_UP ->
@@ -413,7 +473,6 @@ data class ActionWidget(override val id : UUID,
 
 
     override fun view(sheetUIContext : SheetUIContext) : View {
-        Log.d("***WIDGET", "action widget view")
         val viewBuilder = ActionWidgetViewBuilder(this, sheetUIContext)
         return viewBuilder.view()
     }
@@ -504,7 +563,6 @@ data class ActionWidget(override val id : UUID,
 
             }
             is Nothing -> {
-                Log.d("***WIDGET", "active variable is NOTHING")
                 true
             }
         }
@@ -541,7 +599,6 @@ data class ActionWidget(override val id : UUID,
         {
             is ActionWidgetUpdate ->
             {
-                Log.d("***WIDGET", "updating action widget")
                 this.updateView(rootView, sheetUIContext)
             }
         }
@@ -1318,7 +1375,8 @@ data class NumberWidget(override val id : UUID,
                         val widgetId : WidgetId,
                         val format : NumberWidgetFormat,
                         val valueVariableId : VariableId,
-                        val insideLabel : Maybe<NumberWidgetLabel>)
+                        val insideLabel : Maybe<NumberWidgetLabel>,
+                        val rulebookReference : Maybe<RulebookReference>)
                          : Widget()
 {
 
@@ -1326,7 +1384,7 @@ data class NumberWidget(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var viewId : Int? = null
+    var textViewId : Int? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -1336,12 +1394,14 @@ data class NumberWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 format : NumberWidgetFormat,
                 valueVariableId : VariableId,
-                insideLabel : Maybe<NumberWidgetLabel>)
+                insideLabel : Maybe<NumberWidgetLabel>,
+                rulebookReference: Maybe<RulebookReference>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
                valueVariableId,
-               insideLabel)
+               insideLabel,
+               rulebookReference)
 
 
     companion object : Factory<NumberWidget>
@@ -1359,10 +1419,14 @@ data class NumberWidget(override val id : UUID,
                             { NumberWidgetFormat.fromDocument(it) }),
                       // Value Variable Id
                       doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
-                      // Format
+                      // Inside Label
                       split(doc.maybeAt("inside_label"),
                             effValue<ValueError,Maybe<NumberWidgetLabel>>(Nothing()),
-                            { apply(::Just, NumberWidgetLabel.fromDocument(it)) })
+                            { apply(::Just, NumberWidgetLabel.fromDocument(it)) }),
+                      // Rulebook Referenece
+                      split(doc.maybeAt("rulebook_reference"),
+                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
+                            { apply(::Just, RulebookReference.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1396,6 +1460,9 @@ data class NumberWidget(override val id : UUID,
     fun insideLabel() : Maybe<NumberWidgetLabel> = this.insideLabel
 
 
+    fun rulebookReference() : Maybe<RulebookReference> = this.rulebookReference
+
+
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
@@ -1418,22 +1485,36 @@ data class NumberWidget(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetNumberValue =
-        RowValue4(widgetNumberTable,
+        RowValue5(widgetNumberTable,
                   PrimValue(this.widgetId),
                   ProdValue(this.format),
                   PrimValue(this.valueVariableId),
-                  MaybePrimValue(this.insideLabel))
+                  MaybePrimValue(this.insideLabel),
+                  MaybeProdValue(this.rulebookReference))
 
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {  }
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    {
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+        val sheetContext = SheetContext(sheetUIContext)
+
+        this.valueVariable(sheetContext) apDo { currentValueVar ->
+            currentValueVar.setOnUpdateListener {
+                rootView?.let {
+                    this.updateView(it, sheetUIContext)
+                }
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
-    // API
+    // VARIABLE
     // -----------------------------------------------------------------------------------------
 
     fun valueVariable(sheetContext : SheetContext) : AppEff<NumberVariable> =
@@ -1487,6 +1568,21 @@ data class NumberWidget(override val id : UUID,
         }
 
         return 0.0
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    {
+        val viewId = this.textViewId
+        if (viewId != null)
+        {
+            val textView = rootView.findViewById(viewId) as TextView?
+            textView?.text = this.valueString(SheetContext(sheetUIContext))
+        }
     }
 
 }
@@ -2086,7 +2182,7 @@ data class QuoteWidget(override val id : UUID,
 data class RollWidget(override val id : UUID,
                       val widgetId : WidgetId,
                       val format : RollWidgetFormat,
-                      val rollSummationId : SummationId,
+                      val rollGroup : DiceRollGroup,
                       val description : Maybe<RollWidgetDescription>) : Widget()
 {
 
@@ -2096,12 +2192,12 @@ data class RollWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : RollWidgetFormat,
-                rollSummationId : SummationId,
+                rollGroup : DiceRollGroup,
                 description : Maybe<RollWidgetDescription>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
-               rollSummationId,
+               rollGroup,
                description)
 
 
@@ -2118,8 +2214,8 @@ data class RollWidget(override val id : UUID,
                     split(doc.maybeAt("format"),
                           effValue(RollWidgetFormat.default()),
                           { RollWidgetFormat.fromDocument(it) }),
-                    // Roll Summation Id
-                    doc.at("roll_summation_id") ap { SummationId.fromDocument(it) },
+                    // Roll Group
+                    doc.at("roll_group") ap { DiceRollGroup.fromDocument(it) },
                     // Description
                     split(doc.maybeAt("description"),
                           effValue<ValueError,Maybe<RollWidgetDescription>>(Nothing()),
@@ -2138,7 +2234,7 @@ data class RollWidget(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
         "format" to this.format().toDocument(),
-        "roll_summation_id" to this.rollSummationId().toDocument()
+        "roll_group" to this.rollGroup().toDocument()
     ))
 
 
@@ -2152,7 +2248,7 @@ data class RollWidget(override val id : UUID,
     fun format() : RollWidgetFormat = this.format
 
 
-    fun rollSummationId() : SummationId = this.rollSummationId
+    fun rollGroup() : DiceRollGroup = this.rollGroup
 
 
     fun description() : Maybe<RollWidgetDescription> = this.description
@@ -2185,7 +2281,7 @@ data class RollWidget(override val id : UUID,
         RowValue4(widgetRollTable,
                   PrimValue(this.widgetId),
                   ProdValue(this.format),
-                  PrimValue(this.rollSummationId),
+                  ProdValue(this.rollGroup),
                   MaybePrimValue(this.description))
 
 
@@ -2410,7 +2506,7 @@ data class StoryWidget(override val id : UUID,
                         variable.updateValue(partUpdate.newValueId, sheetUIContext.sheetId)
                         val updatedValue = variable.value(sheetContext)
                         when (updatedValue) {
-                            is Val -> newValue = maybe("", updatedValue.value)
+                            is Val -> newValue = maybeValue("", updatedValue.value)
                         }
                     }
                 }
@@ -2779,24 +2875,20 @@ data class TableWidget(override val id : UUID,
                                          sheetContext : SheetContext,
                                          rootView : View)
     {
-        Log.d("***WIDGET", "updating text cell value")
         val cell = this.textCellById[cellUpdate.cellId]
-
-        if (cell == null)
-            Log.d("***WIDGET", "text cell is null")
 
         // Update Variable
         val variable = cell?.valueVariable(sheetContext)
         var newValue : String? = null
         when (variable)
         {
-            is Val -> {
-                Log.d("***WIDGET", "cell text variable found")
+            is Val ->
+            {
                 val textVariable = variable.value
                 textVariable.updateValue(cellUpdate.newValueId, sheetContext.sheetId)
                 val updatedValue = textVariable.value(sheetContext)
                 when (updatedValue) {
-                    is Val -> newValue = maybe("", updatedValue.value)
+                    is Val -> newValue = maybeValue("", updatedValue.value)
                 }
             }
             is Err -> ApplicationLog.error(variable.error)
@@ -2806,7 +2898,6 @@ data class TableWidget(override val id : UUID,
         cell?.viewId?.let {
             val textView = rootView.findViewById(it) as TextView?
             textView?.text = newValue
-            Log.d("***WIDGET", "cell text updated: $newValue")
         }
     }
 
@@ -2814,8 +2905,6 @@ data class TableWidget(override val id : UUID,
     private fun addRow(rowIndex : Int, rootView : View, sheetUIContext : SheetUIContext)
     {
         val tableLayoutId = this.tableLayoutId
-
-        Log.d("***WIDGET", "row index: $rowIndex")
 
         if (tableLayoutId != null)
         {
@@ -2829,13 +2918,11 @@ data class TableWidget(override val id : UUID,
 
                 this.addRowToState(rowIndex, sheetUIContext)
                 // need to update all variables
-                Log.d("***WIDGET", "add table row view")
                 val rowView = newTableRow.view(this, rowIndex, sheetUIContext)
                 tableLayout.addView(rowView, rowIndex + 1)
 
                 val selectedRowIndex = this.selectedRow
                 if (selectedRowIndex != null) {
-                    Log.d("***WIDGET", "selected row index: $selectedRowIndex")
                     if (rowIndex <= selectedRowIndex)
                         this.selectedRow = selectedRowIndex + 1
                 }
@@ -3010,7 +3097,8 @@ data class TableWidget(override val id : UUID,
                                 when (valueString) {
                                     is Just ->
                                     {
-                                        namespace = VariableNamespace(valueString.value.toLowerCase())
+                                        val nsString = valueString.value.toLowerCase().replace(" ", "_")
+                                        namespace = VariableNamespace(nsString)
                                     }
                                 }
                             }
@@ -3044,10 +3132,8 @@ data class TableWidget(override val id : UUID,
 
     private fun updateTableVariables(fromIndex : Int, sheetContext : SheetContext)
     {
-        Log.d("***WIDGET", "update table vars: $fromIndex")
         for (rowIndex in (this.rows().size - 1) downTo fromIndex)
         {
-            Log.d("***WIDGET", "update table row: $rowIndex")
             val row = this.rows()[rowIndex]
             row.cells().forEachIndexed { cellIndex, cell ->
                 val column = this.columns()[cellIndex]
@@ -3093,7 +3179,8 @@ data class TableWidget(override val id : UUID,
 data class TextWidget(override val id : UUID,
                       val widgetId : WidgetId,
                       val format : TextWidgetFormat,
-                      val valueVariableId : VariableId) : Widget()
+                      val valueVariableId : VariableId,
+                      val rulebookReference : Maybe<RulebookReference>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -3109,11 +3196,13 @@ data class TextWidget(override val id : UUID,
 
     constructor(widgetId: WidgetId,
                 format : TextWidgetFormat,
-                valueVariableId : VariableId)
+                valueVariableId : VariableId,
+                rulebookReference : Maybe<RulebookReference>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
-               valueVariableId)
+               valueVariableId,
+               rulebookReference)
 
 
     companion object : Factory<TextWidget>
@@ -3130,7 +3219,11 @@ data class TextWidget(override val id : UUID,
                             effValue(TextWidgetFormat.default()),
                             { TextWidgetFormat.fromDocument(it) }),
                       // Value
-                      doc.at("value_variable_id") ap { VariableId.fromDocument(it) }
+                      doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
+                      // Rulebook Reference
+                      split(doc.maybeAt("rulebook_reference"),
+                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
+                            { apply(::Just, RulebookReference.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -3155,9 +3248,14 @@ data class TextWidget(override val id : UUID,
 
     fun widgetId() : WidgetId = this.widgetId
 
+
     fun format() : TextWidgetFormat = this.format
 
+
     fun valueVariableId() : VariableId = this.valueVariableId
+
+
+    fun rulebookReference() : Maybe<RulebookReference> = this.rulebookReference
 
 
     // -----------------------------------------------------------------------------------------
@@ -3224,10 +3322,11 @@ data class TextWidget(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetTextValue =
-        RowValue3(widgetTextTable,
+        RowValue4(widgetTextTable,
                   PrimValue(this.widgetId),
                   ProdValue(this.format),
-                  PrimValue(this.valueVariableId))
+                  PrimValue(this.valueVariableId),
+                  MaybeProdValue(this.rulebookReference))
 
 
     // -----------------------------------------------------------------------------------------

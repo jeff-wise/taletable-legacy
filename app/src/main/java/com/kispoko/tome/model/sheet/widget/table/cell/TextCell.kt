@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.summation
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
@@ -34,6 +35,9 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -171,34 +175,18 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 
                     val upTime = System.currentTimeMillis()
                     if ((upTime - clickTime) < CLICK_DURATION) {
-                        Log.d("***TEXTCELL", "on click")
                         val cellAction = cell.resolveAction(column)
-                        Log.d("***TEXTCELL", "cell action: $cellAction")
-                        val cellActionRollSummationId =  cellAction ap { it.rollSummationId() }
-                        Log.d("***TEXTCELL", "cell action summation id: $cellActionRollSummationId")
-                        when (cellActionRollSummationId) {
+                        val cellActionRollGroup =  cellAction ap { it.rollGroup() }
+                        when (cellActionRollGroup) {
                             is Just -> {
-                                Log.d("***TEXTCELL", "is summation id")
                                 val cellNS = cell.namespace
                                 val rowContext = if (cellNS != null) Just(cellNS)
                                                     else Nothing<VariableNamespace>()
-                                val summation =
-                                        SheetManager.summation(cellActionRollSummationId.value,
-                                                               SheetContext(sheetUIContext))
-                                                .apply { it.diceRoll(sheetContext, rowContext) }
-
-                                when (summation) {
-                                    is effect.Val -> {
-                                        val dialog = DiceRollDialog.newInstance(summation.value,
-                                                                    cell.action() ap { Just(it.name().value) },
-                                                                SheetContext(sheetUIContext))
-                                        dialog.show(sheetActivity.supportFragmentManager, "")
-                                    }
-                                    is Err -> ApplicationLog.error(summation.error)
-                                }
+                                val dialog = DiceRollDialog.newInstance(cellActionRollGroup.value,
+                                                                        SheetContext(sheetUIContext))
+                                dialog.show(sheetActivity.supportFragmentManager, "")
                             }
                             else -> {
-                                Log.d("***TEXTCELL", "open editor")
                                 this.openEditorDialog()
                             }
                         }
@@ -219,7 +207,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 
 
         when (this.cell.resolveAction(column)) {
-            is Just -> layout.addView(this.rollIconView())
+            is Just<*> -> layout.addView(this.rollIconView())
         }
 
         layout.addView(this.valueTextView())

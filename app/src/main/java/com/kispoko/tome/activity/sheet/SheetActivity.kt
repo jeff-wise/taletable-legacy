@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.*
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
@@ -21,17 +20,14 @@ import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.value
 import com.kispoko.tome.activity.nav.GameNavigationActivity
 import com.kispoko.tome.activity.nav.SheetNavigationActivity
-import com.kispoko.tome.activity.official.sheets.OpenSheetOfficialSheetsActivity
 import com.kispoko.tome.activity.sheet.state.SheetStateActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
@@ -45,9 +41,8 @@ import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import com.kispoko.tome.util.initializeState
 import effect.Err
-import effect.Just
+import maybe.Just
 import effect.Val
-
 
 
 object SheetActivityGlobal
@@ -92,7 +87,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
     private var activeTableRow : TableWidgetRow? = null
 
 
-
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
     // -----------------------------------------------------------------------------------------
@@ -106,7 +100,14 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         setContentView(R.layout.activity_sheet)
 
-        // (2) Configure UI
+        // (2) Read Parameters
+        // -------------------------------------------------------------------------------------
+
+        var sheetId : SheetId? = null
+        if (this.intent.hasExtra("sheet_id"))
+            sheetId = this.intent.getSerializableExtra("sheet_id") as SheetId
+
+        // (3) Configure UI
         // -------------------------------------------------------------------------------------
 
         this.configureToolbar("")
@@ -115,14 +116,18 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         this.initializeBottomNavigation()
 
-        // (3) Initialize State
+        // (4) Initialize State
         // -------------------------------------------------------------------------------------
 
 //        val sheetListener = SheetListener({ onSheetReady(it) })
 //        SheetManager.addSheetListener(SheetId("casmey_beginner"), sheetListener)
 
-        this.initializeState()
-
+        if (sheetId != null) {
+            //SheetManager.addSheetToCurrentSession(sheet : Sheet, sheetUI : SheetUI, isSaved : Boolean = true)
+        }
+        else {
+            this.initializeState()
+        }
     }
 
 

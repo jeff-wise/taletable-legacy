@@ -31,12 +31,14 @@ import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
-import effect.Nothing
 import effect.Val
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -81,7 +83,7 @@ data class BooleanCellFormat(override val id : UUID,
                 apply(::BooleanCellFormat,
                       // Element Format
                       split(doc.maybeAt("element_format"),
-                            effValue<ValueError,Maybe<ElementFormat>>(Nothing()),
+                            effValue<ValueError, Maybe<ElementFormat>>(Nothing()),
                             { apply(::Just, ElementFormat.fromDocument(it)) }),
                       // True Format
                       split(doc.maybeAt("true_format"),

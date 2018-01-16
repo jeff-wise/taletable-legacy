@@ -22,6 +22,7 @@ import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
+import maybe.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -38,7 +39,7 @@ import java.util.*
 data class Procedure(override val id : UUID,
                      val procedureId : ProcedureId,
                      val procedureName : ProcedureName,
-                     val procedureUpdates : ProcedureUpdates,
+                     val procedureUpdates : List<ProcedureUpdate>,
                      val description : Maybe<Message>,
                      val actionLabel : Maybe<ProcedureActionLabel>)
                       : ProdType, ToDocument, Serializable
@@ -50,7 +51,7 @@ data class Procedure(override val id : UUID,
 
     constructor(procedureId : ProcedureId,
                 procedureName : ProcedureName,
-                procedureUpdates : ProcedureUpdates,
+                procedureUpdates : List<ProcedureUpdate>,
                 description : Maybe<Message>,
                 actionLabel : Maybe<ProcedureActionLabel>)
         : this(UUID.randomUUID(),
@@ -73,7 +74,7 @@ data class Procedure(override val id : UUID,
                       // Procedure Name
                       doc.at("procedure_name") ap { ProcedureName.fromDocument(it) },
                       // Procedure Updates
-                      doc.at("updates") ap { ProcedureUpdates.fromDocument(it) },
+                      doc.list("updates") ap { it.map { ProcedureUpdate.fromDocument(it) } },
                       // Description
                       split(doc.maybeAt("description"),
                             effValue<ValueError,Maybe<Message>>(Nothing()),
@@ -99,7 +100,7 @@ data class Procedure(override val id : UUID,
     fun procedureName() : ProcedureName = this.procedureName
 
 
-    fun procedureUpdates() : ProcedureUpdates = this.procedureUpdates
+    fun procedureUpdates() : List<ProcedureUpdate> = this.procedureUpdates
 
 
     fun description() : Maybe<Message> = this.description
@@ -132,7 +133,7 @@ data class Procedure(override val id : UUID,
         RowValue5(procedureTable,
                   PrimValue(this.procedureId),
                   PrimValue(this.procedureName),
-                  PrimValue(this.procedureUpdates),
+                  PrimValue(ProcedureUpdates(this.procedureUpdates)),
                   MaybeProdValue(this.description),
                   MaybePrimValue(this.actionLabel))
 
@@ -142,14 +143,15 @@ data class Procedure(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun run(sheetContext : SheetContext) =
-        this.procedureUpdates().updates.forEach { (variableId, programId) ->
-            GameManager.engine(sheetContext.gameId)                       apDo { engine ->
-            engine.program(programId)                                     apDo { program ->
+        this.procedureUpdates().forEach { (variableIds, programId) ->
+            SheetManager.program(programId, sheetContext)                 apDo { program ->
             program.value(ProgramParameterValues(listOf()), sheetContext) apDo { engineValue ->
             SheetManager.sheetState(sheetContext.sheetId)                 apDo { state ->
-            state.updateVariable(variableId, engineValue, sheetContext)
-            } } } }
-        }
+                variableIds.forEach {
+                    state.updateVariable(it, engineValue, sheetContext)
+                }
+            } } }
+      }
 
 }
 
@@ -259,37 +261,78 @@ data class ProcedureActionLabel(val value : String) : SQLSerializable, Serializa
 /**
  * Procedure Update
  */
-data class ProcedureUpdates(val updates : List<Pair<VariableId,ProgramId>>)
+data class ProcedureUpdates(val updates : List<ProcedureUpdate>)
             : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<ProcedureUpdates>
+//    {
+//
+//        // TODO do culebra example
+//        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProcedureUpdates> = when (doc)
+//        {
+//            is DocList -> {
+//                apply(::ProcedureUpdates,
+//                doc.map { itemDoc ->
+//                   when (itemDoc) {
+//                       is DocDict -> {
+//                           apply(::Pair,
+//                                 // Variable Id
+//                                 itemDoc.at("variable_id") ap { VariableId.fromDocument(it) },
+//                                 // Program Id
+//                                 itemDoc.at("program_id") ap { ProgramId.fromDocument(it) }
+//                                 )
+//                       }
+//                       else       -> effError<ValueError,Pair<VariableId,ProgramId>>(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//                   }
+//                })
+//            }
+//            else       -> effError(UnexpectedType(DocType.LIST, docType(doc), doc.path))
+//        }
+//
+//    }
 
-    companion object : Factory<ProcedureUpdates>
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
+
+
+/**
+ * Procedure Update
+ */
+data class ProcedureUpdate(val variableIds : List<VariableId>,
+                           val programId : ProgramId)
+                            : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ProcedureUpdate>
     {
 
         // TODO do culebra example
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProcedureUpdates> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProcedureUpdate> = when (doc)
         {
-            is DocList -> {
-                apply(::ProcedureUpdates,
-                doc.map { itemDoc ->
-                   when (itemDoc) {
-                       is DocDict -> {
-                           apply(::Pair,
-                                 // Variable Id
-                                 itemDoc.at("variable_id") ap { VariableId.fromDocument(it) },
-                                 // Program Id
-                                 itemDoc.at("program_id") ap { ProgramId.fromDocument(it) }
-                                 )
-                       }
-                       else       -> effError<ValueError,Pair<VariableId,ProgramId>>(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-                   }
-                })
-            }
-            else       -> effError(UnexpectedType(DocType.LIST, docType(doc), doc.path))
+            is DocDict -> {
+                apply(::ProcedureUpdate,
+                     // Variable Id
+                     doc.list("variable_ids") ap { it.map { VariableId.fromDocument(it) } },
+                     // Program Id
+                     doc.at("program_id") ap { ProgramId.fromDocument(it) }
+                     )
+           }
+           else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
     }
@@ -302,3 +345,4 @@ data class ProcedureUpdates(val updates : List<Pair<VariableId,ProgramId>>)
     override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
 
 }
+

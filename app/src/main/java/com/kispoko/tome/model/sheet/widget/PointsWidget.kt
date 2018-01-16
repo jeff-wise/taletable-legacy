@@ -3,8 +3,11 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -36,6 +39,7 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
 import java.io.Serializable
 import java.util.*
 
@@ -321,16 +325,26 @@ sealed class PointsAboveBarStyle : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object CenterLabelRight : PointsAboveBarStyle()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "center_label_right" })
+
+        override fun toDocument() = DocText("center_label_right")
+    }
+
+
     companion object
     {
         fun fromDocument(doc : SchemaDoc) : ValueParser<PointsAboveBarStyle> = when (doc)
         {
             is DocText -> when (doc.text)
             {
-                "limit_label_max_right" -> effValue<ValueError,PointsAboveBarStyle>(
-                                             PointsAboveBarStyle.LimitLabelMaxRight)
+                "limit_label_max_right"  -> effValue<ValueError,PointsAboveBarStyle>(
+                                                PointsAboveBarStyle.LimitLabelMaxRight)
                 "label_left_slash_right" -> effValue<ValueError,PointsAboveBarStyle>(
                                                 PointsAboveBarStyle.LabelLeftSlashRight)
+                "center_label_right"     -> effValue<ValueError,PointsAboveBarStyle>(
+                                                PointsAboveBarStyle.CenterLabelRight)
                 else                  -> effError<ValueError,PointsAboveBarStyle>(
                                              UnexpectedValue("PointsAboveBarStyle", doc.text, doc.path))
             }
@@ -401,7 +415,7 @@ data class PointsBarFormat(override val id : UUID,
                             effValue<ValueError,PointsBarStyle>(defaultBarStyle()),
                             { PointsBarStyle.fromDocument(it) }),
                       // Above Bar Style
-                      split(doc.maybeAt("bar_above_style"),
+                      split(doc.maybeAt("above_bar_style"),
                             effValue<ValueError,PointsAboveBarStyle>(defaultBarAboveStyle()),
                             { PointsAboveBarStyle.fromDocument(it) }),
                       // Bar Height
@@ -489,17 +503,23 @@ object PointsWidgetView
     {
         val layout = WidgetView.layout(pointsWidget.widgetFormat(), sheetUIContext)
 
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
         val layoutViewId = Util.generateViewId()
         pointsWidget.layoutViewId = layoutViewId
-        layout.id = layoutViewId
+        contentLayout.id = layoutViewId
+
+        contentLayout.orientation = LinearLayout.VERTICAL
+
+        //contentLayout.gravity       = Gravity.CENTER_VERTICAL
 
         // Above Bar
-        layout.addView(this.aboveBarView(pointsWidget, sheetUIContext))
+        contentLayout.addView(this.aboveBarView(pointsWidget, sheetUIContext))
 
         // Bar
-        layout.addView(this.barView(pointsWidget, sheetUIContext))
+        contentLayout.addView(this.barView(pointsWidget, sheetUIContext))
 
-        layout.setOnClickListener {
+        contentLayout.setOnClickListener {
             val currentValueVariable =
                     pointsWidget.currentValueVariable(SheetContext(sheetUIContext))
 
@@ -526,7 +546,7 @@ object PointsWidgetView
 
     fun aboveBarView(pointsWidget : PointsWidget, sheetUIContext : SheetUIContext) : View
     {
-        val layout = this.aboveBarLayout(sheetUIContext)
+        var layout : ViewGroup = this.aboveBarLayout(sheetUIContext)
 
         val currentPointsString = pointsWidget.currentValueString(SheetContext(sheetUIContext))
         val limitPointsString = pointsWidget.limitValueString(SheetContext(sheetUIContext))
@@ -535,6 +555,7 @@ object PointsWidgetView
         {
             is PointsAboveBarStyle.LimitLabelMaxRight ->
             {
+                Log.d("***POINTS WIDGET", "limit label max right")
                 if (currentPointsString != null) {
                     layout.addView(this.currentPointsView(currentPointsString,
                                                           pointsWidget.format().currentTextFormat(),
@@ -565,6 +586,40 @@ object PointsWidgetView
                     layout.addView(limitPointsView)
                 }
             }
+            is PointsAboveBarStyle.CenterLabelRight ->
+            {
+                layout = this.aboveBarLinearLayout(pointsWidget.widgetFormat(), sheetUIContext)
+
+                if (currentPointsString != null) {
+                    val currView = this.currentPointsLinearView(currentPointsString,
+                                                          pointsWidget.format().currentTextFormat(),
+                                                          sheetUIContext)
+                    layout.addView(currView)
+                }
+
+                val slashView = this.slashTextView(pointsWidget.format().limitTextFormat(), sheetUIContext)
+                layout.addView(slashView)
+
+                if (limitPointsString != null) {
+                    val limitPointsView = this.limitPointsLinearView(
+                                                        limitPointsString,
+                                                        pointsWidget.format().limitTextFormat(),
+                                                        sheetUIContext)
+                    layout.addView(limitPointsView)
+                }
+
+                val label = pointsWidget.label()
+                when (label) {
+                    is Just -> {
+                        val labelView = this.labelLinearView(label.value.value,
+                                                  pointsWidget.format().labelTextFormat(),
+                                                  sheetUIContext)
+                        Log.d("***POINTS WIDGET", "adding label linear view")
+                        layout.addView(labelView)
+                    }
+                }
+
+            }
         }
 
         return layout
@@ -575,13 +630,35 @@ object PointsWidgetView
     {
         val layout              = RelativeLayoutBuilder()
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.id               = R.id.points_above_bar_layout
 
-        layout.padding.bottomDp = 4f
+        layout.layoutType       = LayoutType.LINEAR
+        layout.weight           = 1f
+        layout.height           = 0
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+
 
         return layout.relativeLayout(sheetUIContext.context)
     }
+
+
+    private fun aboveBarLinearLayout(widgetFormat : WidgetFormat,
+                                     sheetUIContext : SheetUIContext) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.layoutType       = LayoutType.LINEAR
+        layout.weight           = 1f
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = 0
+
+        layout.gravity          = widgetFormat.elementFormat().alignment().gravityConstant() or
+                                    widgetFormat.elementFormat.verticalAlignment().gravityConstant()
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -609,15 +686,15 @@ object PointsWidgetView
     }
 
 
-    private fun standardViewLayout(barHeight : Int, context : Context) : RelativeLayout
+    private fun standardViewLayout(barHeight : Int, context : Context) : LinearLayout
     {
-        val layout = RelativeLayoutBuilder()
+        val layout = LinearLayoutBuilder()
 
         layout.layoutType           = LayoutType.LINEAR
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp             = barHeight
 
-        return layout.relativeLayout(context)
+        return layout.linearLayout(context)
     }
 
 
@@ -651,9 +728,9 @@ object PointsWidgetView
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.layoutType           = LayoutType.RELATIVE
-        layout.width                = RelativeLayout.LayoutParams.MATCH_PARENT
-        layout.height               = RelativeLayout.LayoutParams.MATCH_PARENT
+//        layout.layoutType           = LayoutType.RELATIVE
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
         layout.orientation          = LinearLayout.HORIZONTAL
 
@@ -716,14 +793,17 @@ object PointsWidgetView
         current.paddingSpacing      = textFormat.elementFormat().padding()
         current.marginSpacing       = textFormat.elementFormat().margins()
 
+//        current.gravity             = Gravity.BOTTOM
+
 //        current.addRule(RelativeLayout.ALIGN_PARENT_START)
-        Log.d("***POINTSWIDGET", "current vert align: ${textFormat.elementFormat().verticalAlignment()}")
-        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
+//        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
 
 //        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+//        current.addRule(RelativeLayout.ALIGN_BASELINE)
 
         return current.textView(sheetUIContext.context)
     }
+
 
 
     private fun limitPointsView(limitString : String,
@@ -731,6 +811,8 @@ object PointsWidgetView
                                 sheetUIContext : SheetUIContext) : TextView
     {
         val limit                   = TextViewBuilder()
+
+        limit.id                    = R.id.points_bar_limit
 
         limit.layoutType            = LayoutType.RELATIVE
 
@@ -753,12 +835,12 @@ object PointsWidgetView
 
 //        limit.addRule(RelativeLayout.ALIGN_PARENT_END)
 
-        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.elementFormat().verticalAlignment()}")
-        limit.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
+//        limit.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
 //        limit.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
         return limit.textView(sheetUIContext.context)
     }
+
 
 
     private fun labelView(labelString : String,
@@ -789,13 +871,173 @@ object PointsWidgetView
         label.marginSpacing         = textFormat.elementFormat().margins()
 //
 //        label.addRule(RelativeLayout.ALIGN_PARENT_END)
-        Log.d("***POINTSWIDGET", "label vert align: ${textFormat.elementFormat().verticalAlignment()}")
-        label.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
+//        label.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
 
 //        label.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
         return label.textView(sheetUIContext.context)
     }
 
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHARED LINEAR VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    private fun currentPointsLinearView(currentString : String,
+                                        textFormat : TextFormat,
+                                        sheetUIContext : SheetUIContext) : TextView
+    {
+        val current                 = TextViewBuilder()
+
+        current.layoutType          = LayoutType.LINEAR
+        current.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+        current.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        current.id                  = R.id.points_bar_current
+
+        current.text                = currentString
+
+        current.color               = SheetManager.color(sheetUIContext.sheetId,
+                                                         textFormat.colorTheme())
+
+        current.sizeSp              = textFormat.sizeSp()
+
+        current.font                = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
+                                                    sheetUIContext.context)
+
+        current.paddingSpacing      = textFormat.elementFormat().padding()
+        current.marginSpacing       = textFormat.elementFormat().margins()
+
+//        current.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
+//                                        textFormat.elementFormat().verticalAlignment().gravityConstant()
+
+//        current.addRule(RelativeLayout.ALIGN_PARENT_START)
+//        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
+
+//        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+//        current.addRule(RelativeLayout.ALIGN_BASELINE)
+
+        return current.textView(sheetUIContext.context)
+    }
+
+
+
+    private fun limitPointsLinearView(limitString : String,
+                                      textFormat : TextFormat,
+                                      sheetUIContext : SheetUIContext) : TextView
+    {
+        val limit                   = TextViewBuilder()
+
+        limit.id                    = R.id.points_bar_limit
+
+        limit.layoutType            = LayoutType.LINEAR
+
+        limit.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        limit.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        limit.text                  = limitString
+
+        limit.color                 = SheetManager.color(sheetUIContext.sheetId,
+                                                         textFormat.colorTheme())
+
+        limit.sizeSp                = textFormat.sizeSp()
+
+        limit.font                  = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
+                                                    sheetUIContext.context)
+
+        limit.paddingSpacing        = textFormat.elementFormat().padding()
+        limit.marginSpacing         = textFormat.elementFormat().margins()
+
+//        limit.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
+//                                    textFormat.elementFormat().verticalAlignment().gravityConstant()
+
+
+        return limit.textView(sheetUIContext.context)
+    }
+
+
+
+    private fun labelLinearView(labelString : String,
+                                textFormat : TextFormat,
+                                sheetUIContext : SheetUIContext) : TextView
+    {
+        val label                   = TextViewBuilder()
+
+        label.layoutType            = LayoutType.LINEAR
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.id                    = R.id.points_bar_label
+
+        label.text                  = labelString
+
+        label.color                 = SheetManager.color(sheetUIContext.sheetId,
+                                                         textFormat.colorTheme())
+
+        label.sizeSp                = textFormat.sizeSp()
+
+        label.font                  = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
+                                                    sheetUIContext.context)
+
+
+        label.paddingSpacing        = textFormat.elementFormat().padding()
+        label.marginSpacing         = textFormat.elementFormat().margins()
+//
+
+//        label.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
+//                                        textFormat.elementFormat().verticalAlignment().gravityConstant()
+
+//        label.layoutGravity         = Gravity.BOTTOM
+//
+//        label.gravity       = textFormat.elementFormat().alignment().gravityConstant() or
+//                                textFormat.elementFormat().verticalAlignment().gravityConstant()
+
+        return label.textView(sheetUIContext.context)
+    }
+
+
+
+    private fun slashTextView(textFormat : TextFormat,
+                              sheetUIContext : SheetUIContext) : TextView
+    {
+        val current                 = TextViewBuilder()
+
+        current.layoutType          = LayoutType.LINEAR
+
+        current.id                  = R.id.points_bar_slash
+
+        current.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+        current.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        current.text                = "/"
+
+        current.color               = SheetManager.color(sheetUIContext.sheetId,
+                                                         textFormat.colorTheme())
+
+        current.sizeSp              = textFormat.sizeSp()
+
+        current.font                = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
+                                                    sheetUIContext.context)
+
+        current.paddingSpacing      = textFormat.elementFormat().padding()
+        current.marginSpacing       = textFormat.elementFormat().margins()
+
+//        current.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
+//                textFormat.elementFormat().verticalAlignment().gravityConstant()
+
+
+//        current.addRule(RelativeLayout.ALIGN_PARENT_START)
+//        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
+
+//        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+
+        return current.textView(sheetUIContext.context)
+    }
 
 }

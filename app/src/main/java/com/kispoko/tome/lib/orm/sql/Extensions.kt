@@ -14,6 +14,8 @@ import kotlinx.coroutines.experimental.run
 // SQL SERIALIZABLE
 // ---------------------------------------------------------------------------------------------
 
+fun Boolean.asSQLValue() = if (this)  SQLInt({1}) else SQLInt({0})
+
 fun Int.asSQLValue() = SQLInt({this.toLong()})
 
 fun Long.asSQLValue() = SQLInt({this})

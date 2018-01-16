@@ -4,6 +4,7 @@ package com.kispoko.tome.activity.official
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -145,7 +146,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         scrollView.backgroundColor  = this.appSettings.color(colorTheme)
 
         return scrollView.scrollView(context)
@@ -210,10 +211,10 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        layout.backgroundColor  = this.appSettings.color(colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+        layout.backgroundColor  = Color.WHITE
 
         layout.margin.topDp     = 8f
 
@@ -246,7 +247,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         header.color        = this.appSettings.color(colorTheme)
 
         header.font         = Font.typeface(TextFont.default(),
@@ -270,7 +271,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         description.color        = this.appSettings.color(colorTheme)
 
         description.font         = Font.typeface(TextFont.default(),
@@ -356,13 +357,14 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = 0
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight           = 1f
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
         layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.margin.rightDp   = 10f
 
         layout.child(icon)
               .child(info)

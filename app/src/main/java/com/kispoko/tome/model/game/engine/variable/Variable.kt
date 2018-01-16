@@ -26,6 +26,7 @@ import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
 import com.kispoko.tome.util.Util
 import effect.*
+import maybe.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -1191,10 +1192,11 @@ data class VariableId(val namespace : Maybe<VariableNamespace>,
     {
         var s = ""
 
-        when (namespaceString())
+        val ns = namespaceString()
+        when (ns)
         {
             is Just -> {
-                s += namespaceString()
+                s += ns.value
                 s += "::"
             }
         }
@@ -1211,6 +1213,22 @@ data class VariableId(val namespace : Maybe<VariableNamespace>,
 
     override fun asSQLValue() : SQLValue = SQLText({ this.toString() })
 
+
+
+    // -----------------------------------------------------------------------------------------
+    // EQUALITY
+    // -----------------------------------------------------------------------------------------
+//
+//    override fun hashCode(): Int {
+////        val namespaceCode = when (this.namespace) {
+////            is Just    -> this.namespace.value
+////            else  -> ""
+////        }
+////        val nameCode = this.name.value
+////        return Objects.hash(namespaceCode, nameCode)
+//
+//        return 12
+//    }
 }
 
 

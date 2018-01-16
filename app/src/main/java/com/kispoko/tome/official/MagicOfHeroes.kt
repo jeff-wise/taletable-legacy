@@ -38,9 +38,9 @@ data class HeroesCharacterSheetManifest(val summaries : List<HeroesCharacterShee
  * Heroes Character Sheet Summary
  */
 data class HeroesCharacterSheetSummary(val name : String,
+                                       val id : String,
+                                       val summary : String,
                                        val description : String,
-                                       val race : String,
-                                       val _class : String,
                                        val variants : List<HeroesCharacterSheetVariant>)
 {
 
@@ -54,12 +54,12 @@ data class HeroesCharacterSheetSummary(val name : String,
                     apply(::HeroesCharacterSheetSummary,
                           // Name
                           yamlValue.text("name"),
+                          // Id
+                          yamlValue.text("id"),
+                          // Summary
+                          yamlValue.text("summary"),
                           // Description
                           yamlValue.text("description"),
-                          // Race
-                          yamlValue.text("race"),
-                          // Class
-                          yamlValue.text("class"),
                           // Variant
                           yamlValue.array("variants") ap {
                               it.mapApply { HeroesCharacterSheetVariant.fromYaml(it) }}
@@ -130,9 +130,10 @@ data class HeroesCreatureSheetManifest(val summaries : List<HeroesCreatureSheetS
  * Heroes Creature Sheet Summary
  */
 data class HeroesCreatureSheetSummary(val name : String,
-                                       val type : String,
-                                       val description : String,
-                                       val challengeRating : Int)
+                                      val id : String,
+                                      val summary : String,
+                                      val description : String,
+                                      val challengeRating : Int)
 {
 
     companion object
@@ -145,8 +146,10 @@ data class HeroesCreatureSheetSummary(val name : String,
                     apply(::HeroesCreatureSheetSummary,
                           // Name
                           yamlValue.text("name"),
-                          // Type
-                          yamlValue.text("type"),
+                          // Id
+                          yamlValue.text("id"),
+                          // Summary
+                          yamlValue.text("summary"),
                           // Description
                           yamlValue.text("description"),
                           // Challenge Rating

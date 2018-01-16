@@ -38,6 +38,10 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.maybeValue
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -424,7 +428,7 @@ data class TableWidgetNumberCell(override val id : UUID,
     fun value(sheetContext : SheetContext) : AppEff<Double> =
             this.valueVariable(sheetContext)
                 .apply { it.value(sheetContext) }
-                .apply { effValue<AppError,Double>(maybe(0.0, it)) }
+                .apply { effValue<AppError,Double>(maybeValue(0.0, it)) }
 
 
     fun updateValue(newValue : Double, sheetContext : SheetContext) =

@@ -38,7 +38,6 @@ dependencies {
     compile 'com.android.support:multidex:1.0.2'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile files('libs/effect-0.7.jar')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
@@ -46,12 +45,13 @@ dependencies {
     compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'org.apache.commons:commons-collections4:4.1'
-    compile "io.reactivex.rxjava2:rxjava:2.1.2"
+    compile 'io.reactivex.rxjava2:rxjava:2.1.2'
     compile 'com.google.android:flexbox:0.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.15"
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.15'
     compile 'com.github.tiagohm.MarkdownView:library:0.17.0'
     testCompile 'junit:junit:4.12'
+    compile files('libs/do-0.7.0.jar')
     compile files('libs/culebra-0.7.jar')
 }
 

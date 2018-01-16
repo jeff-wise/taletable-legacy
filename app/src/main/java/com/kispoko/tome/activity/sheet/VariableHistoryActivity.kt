@@ -34,7 +34,7 @@ import com.kispoko.tome.util.SimpleDividerItemDecoration
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
-import effect.Just
+import maybe.Just
 import effect.Val
 
 

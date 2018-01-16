@@ -29,6 +29,9 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -77,7 +80,7 @@ data class LogEntry(override val id : UUID,
                       doc.at("author") ap { EntryAuthor.fromDocument(it) },
                       // Summary
                       split(doc.maybeAt("summary"),
-                            effValue<ValueError,Maybe<EntrySummary>>(Nothing()),
+                            effValue<ValueError, Maybe<EntrySummary>>(Nothing()),
                             { apply(::Just, EntrySummary.fromDocument(it)) }),
                       // text
                       doc.at("text") ap { EntryText.fromDocument(it) }

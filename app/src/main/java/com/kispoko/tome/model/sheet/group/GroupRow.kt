@@ -6,16 +6,17 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
+import android.util.Log
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
-import com.kispoko.tome.R.string.group
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue3
+import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
@@ -36,6 +37,9 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -104,7 +108,9 @@ data class GroupRow(override val id : UUID,
 
     fun format() : GroupRowFormat = this.format
 
+
     fun indexInt() : Int = this.index.value
+
 
     fun widgets() : List<Widget> = this.widgets
 
@@ -120,9 +126,10 @@ data class GroupRow(override val id : UUID,
 
 
     override fun rowValue() : DB_GroupRowValue =
-        RowValue3(groupRowTable, ProdValue(this.format),
-                                 PrimValue(this.index),
-                                 CollValue(this.widgets))
+        RowValue3(groupRowTable,
+                  ProdValue(this.format),
+                  PrimValue(this.index),
+                  CollValue(this.widgets))
 
 
     // -----------------------------------------------------------------------------------------
@@ -220,9 +227,53 @@ data class GroupRow(override val id : UUID,
     {
         val layout = this.widgetsViewLayout(sheetUIContext.context)
 
-        this.widgets().forEach { layout.addView(it.view(sheetUIContext)) }
+        if (this.format().hasColumns().value)
+        {
+            val colIndiceSet = this.widgets().map { it.widgetFormat().column() }
+            val largestColIndex = colIndiceSet.max()
+
+            if (largestColIndex == 1) {
+                this.widgets().forEach { layout.addView(it.view(sheetUIContext)) }
+            }
+            else {
+                val colToLayout : MutableMap<Int,LinearLayout> = mutableMapOf()
+                colIndiceSet.forEach {
+                    colToLayout.put(it, this.widgetsColumnLayout(sheetUIContext.context))
+                }
+
+                this.widgets().forEach {
+                    val layout = colToLayout[it.widgetFormat().column()]
+                    layout?.addView(it.view(sheetUIContext))
+                }
+
+                colToLayout.keys.sorted().forEach {
+                    layout.addView(colToLayout[it])
+                }
+            }
+        }
+        else
+        {
+            Log.d("***GROUP ROW", "does not have colums")
+            this.widgets().forEach { layout.addView(it.view(sheetUIContext)) }
+        }
 
         return layout
+    }
+
+
+    private fun widgetsColumnLayout(context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.weight           = 1f
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.gravity          = Gravity.START
+
+        return layout.linearLayout(context)
     }
 
 
@@ -304,6 +355,7 @@ class GroupRowTouchView(context : Context) : LinearLayout(context)
  */
 data class GroupRowFormat(override val id : UUID,
                           private val elementFormat : ElementFormat,
+                          val hasColumns : GroupRowHasColumns,
                           val border : Maybe<Border>)
                            : ToDocument, ProdType, Serializable
 {
@@ -313,17 +365,20 @@ data class GroupRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(elementFormat : ElementFormat,
+                hasColumns : GroupRowHasColumns,
                 border : Maybe<Border>)
         : this(UUID.randomUUID(),
                elementFormat,
+               hasColumns,
                border)
 
 
     companion object : Factory<GroupRowFormat>
     {
 
-        private fun defaultElementFormat() = ElementFormat.default()
-        private fun defaultDivider()       = Divider.default()
+        private fun defaultElementFormat()  = ElementFormat.default()
+        private fun defaultHasColumns()     = GroupRowHasColumns(false)
+        private fun defaultDivider()        = Divider.default()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupRowFormat> = when (doc)
@@ -335,6 +390,10 @@ data class GroupRowFormat(override val id : UUID,
                       split(doc.maybeAt("element_format"),
                             effValue(defaultElementFormat()),
                             { ElementFormat.fromDocument(it) }),
+                      // Has Columns
+                      split(doc.maybeAt("has_columns"),
+                            effValue(GroupRowHasColumns.default()),
+                            { GroupRowHasColumns.fromDocument(it) }),
                       // Border
                       split(doc.maybeAt("border"),
                             effValue<ValueError,Maybe<Border>>(Nothing()),
@@ -346,6 +405,7 @@ data class GroupRowFormat(override val id : UUID,
 
 
         fun default() = GroupRowFormat(defaultElementFormat(),
+                                       defaultHasColumns(),
                                        Nothing())
 
     }
@@ -367,6 +427,9 @@ data class GroupRowFormat(override val id : UUID,
     fun elementFormat() : ElementFormat = this.elementFormat
 
 
+    fun hasColumns() : GroupRowHasColumns = this.hasColumns
+
+
     fun border() : Maybe<Border> = this.border
 
 
@@ -381,8 +444,9 @@ data class GroupRowFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_GroupRowFormatValue =
-        RowValue2(groupRowFormatTable,
+        RowValue3(groupRowFormatTable,
                   ProdValue(this.elementFormat),
+                  PrimValue(this.hasColumns),
                   MaybeProdValue(this.border))
 
 }
@@ -443,6 +507,82 @@ data class ShowGroupRowDivider(val value : Boolean) : ToDocument, SQLSerializabl
 
 }
 
+
+/**
+ * Row Column
+ */
+data class RowColumn(val value : Int) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<RowColumn>
+    {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<RowColumn> = when (doc)
+        {
+            is DocNumber -> effValue(RowColumn(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+
+        fun default() = RowColumn(1)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.value.asSQLValue()
+
+}
+
+
+
+/**
+ * Group Row Has Columns
+ */
+data class GroupRowHasColumns(val value : Boolean) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<GroupRowHasColumns>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupRowHasColumns> = when (doc)
+        {
+            is DocBoolean -> effValue(GroupRowHasColumns(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+        }
+
+        fun default() = GroupRowHasColumns(false)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.value.asSQLValue()
+
+}
 
 
 

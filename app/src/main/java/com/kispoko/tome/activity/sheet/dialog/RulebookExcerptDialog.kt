@@ -411,8 +411,6 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
 
         scrollView.fadingEnabled    = false
 
-
-
         return scrollView.scrollView(sheetUIContext.context)
     }
 
@@ -427,6 +425,11 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
         layout.padding.leftDp     = 8f
         layout.padding.rightDp    = 8f
         layout.padding.topDp      = 4f
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+        layout.backgroundColor       = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
     }
