@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet
 
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import com.kispoko.tome.db.DB_SheetValue
 import com.kispoko.tome.db.sheetTable
@@ -57,6 +58,8 @@ data class Sheet(override val id : UUID,
 
     private val actionWidgetById : MutableMap<UUID,ActionWidget> = mutableMapOf()
 
+    private val booleanWidgetById : MutableMap<UUID,BooleanWidget> = mutableMapOf()
+
     private val listWidgetById : MutableMap<UUID,ListWidget> = mutableMapOf()
 
     private val pointsWidgetById : MutableMap<UUID,PointsWidget> = mutableMapOf()
@@ -74,12 +77,13 @@ data class Sheet(override val id : UUID,
     init {
         this.forEachWidget {
             when (it) {
-                is ActionWidget -> actionWidgetById.put(it.id, it)
-                is ListWidget   -> listWidgetById.put(it.id, it)
-                is PointsWidget -> pointsWidgetById.put(it.id, it)
-                is StoryWidget  -> storyWidgetById.put(it.id, it)
-                is TableWidget  -> tableWidgetById.put(it.id, it)
-                is TextWidget   -> textWidgetById.put(it.id, it)
+                is ActionWidget  -> actionWidgetById.put(it.id, it)
+                is BooleanWidget -> booleanWidgetById.put(it.id, it)
+                is ListWidget    -> listWidgetById.put(it.id, it)
+                is PointsWidget  -> pointsWidgetById.put(it.id, it)
+                is StoryWidget   -> storyWidgetById.put(it.id, it)
+                is TableWidget   -> tableWidgetById.put(it.id, it)
+                is TextWidget    -> textWidgetById.put(it.id, it)
             }
         }
     }
@@ -211,7 +215,19 @@ data class Sheet(override val id : UUID,
             section.pages().forEach { page ->
                 page.groups().forEach { group ->
                     group.rows().forEach { row ->
-                        row.widgets().forEach { f(it) }
+                        row.widgets().forEach {
+                            when (it) {
+                                is ExpanderWidget -> {
+                                    f(it)
+                                    it.groups().forEach {
+                                        it.rows().forEach {
+                                            it.widgets().forEach { f(it) }
+                                        }
+                                    }
+                                }
+                                else -> f(it)
+                            }
+                        }
                     }
                 }
             }
@@ -247,6 +263,11 @@ data class Sheet(override val id : UUID,
             {
                 val actionWidget = this.actionWidgetById[widgetUpdate.widgetId]
                 actionWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+            }
+            is WidgetUpdateBooleanWidget ->
+            {
+                val booleanWidget = this.booleanWidgetById[widgetUpdate.widgetId]
+                booleanWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
             }
             is WidgetUpdateListWidget ->
             {

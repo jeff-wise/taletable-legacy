@@ -6,15 +6,15 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.id.textView
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.DB_WidgetRollFormatValue
 import com.kispoko.tome.db.widgetRollFormatTable
 import com.kispoko.tome.lib.Factory
@@ -29,14 +29,13 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.Width
-import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*
 import lulo.document.*
@@ -238,6 +237,21 @@ sealed class RollWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object InlineRightButton : RollWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "inline_right_button" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("inline_right_button")
+
+    }
+
+
     object InlineLeftButtonUseDialog : RollWidgetViewType()
     {
         // SQL SERIALIZABLE
@@ -265,6 +279,8 @@ sealed class RollWidgetViewType : ToDocument, SQLSerializable, Serializable
             {
                 "inline_left_button"            -> effValue<ValueError,RollWidgetViewType>(
                                                        RollWidgetViewType.InlineLeftButton)
+                "inline_right_button"           -> effValue<ValueError,RollWidgetViewType>(
+                                                    RollWidgetViewType.InlineRightButton)
                 "inline_left_button_use_dialog" -> effValue<ValueError,RollWidgetViewType>(
                                                        RollWidgetViewType.InlineLeftButtonUseDialog)
                 else                 -> effError<ValueError,RollWidgetViewType>(
@@ -409,6 +425,12 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
             bgDrawable.setCornerRadii(format.elementFormat().corners().radiiArray())
+
+            buttonRollTextView?.setTextColor(SheetManager.color(sheetUIContext.sheetId,
+                                                                 format.colorTheme()))
+
+            buttonRollTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
+
         }
         // ROLL VIEW
         else
@@ -442,6 +464,12 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
             bgDrawable.setCornerRadii(format.elementFormat().corners().radiiArray())
+
+            buttonResultTextView?.setTextColor(SheetManager.color(sheetUIContext.sheetId,
+                                                format.colorTheme()))
+
+            buttonResultTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
+
         }
 
         buttonLayout?.background = bgDrawable
@@ -466,15 +494,14 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         val bgColor = SheetManager.color(sheetUIContext.sheetId,
                     format.elementFormat().backgroundColorTheme())
-            bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
+        bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
-            bgDrawable.setCornerRadii(format.elementFormat().corners().radiiArray())
+        bgDrawable.setCornerRadii(format.elementFormat().corners().radiiArray())
 
-//        descriptionTextView?.setTextColor(SheetManager.color(sheetUIContext.sheetId,
-//                                                             format.colorTheme()))
-//        descriptionTextView?.setBackgroundColor(SheetManager.color(
-//                                                sheetUIContext.sheetId,
-//                                                format.elementFormat().backgroundColorTheme()))
+        descriptionTextView?.setTextColor(SheetManager.color(sheetUIContext.sheetId,
+                                                             format.colorTheme()))
+
+        descriptionTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
 
         descriptionTextView?.background = bgDrawable
 
@@ -494,13 +521,36 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
     {
         val layout = WidgetView.layout(rollWidget.widgetFormat(), sheetUIContext)
 
+        val viewId = Util.generateViewId()
+        layout.id = viewId
+        rollWidget.layoutId = viewId
+
+        updateContentView(layout)
+
+        return layout
+    }
+
+
+    fun updateContentView(layout : LinearLayout)
+    {
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
+        contentLayout.removeAllViews()
 
         when (rollWidget.format().viewType())
         {
             is RollWidgetViewType.InlineLeftButton ->
             {
                 contentLayout.addView(this.inlineLeftButtonView())
+
+                layout.setOnClickListener {
+                    this.updateButtonView()
+                    this.updateDescriptionView()
+                }
+            }
+            is RollWidgetViewType.InlineRightButton ->
+            {
+                contentLayout.addView(this.inlineRightButtonView())
 
                 layout.setOnClickListener {
                     this.updateButtonView()
@@ -520,8 +570,6 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
                 contentLayout.addView(this.inlineLeftButtonView())
             }
         }
-
-        return layout
     }
 
 
@@ -563,6 +611,9 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         return layout
     }
+
+
+
 
 
     private fun inlineLeftButtonViewLayout() : LinearLayout
@@ -767,5 +818,46 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         return description.textView(sheetUIContext.context)
     }
+
+
+    private fun inlineRightButtonView() : LinearLayout
+    {
+        val layout = this.inlineLeftButtonViewLayout()
+
+        val descriptionView = this.inlineLeftButtonDescriptionView()
+        this.descriptionTextView = descriptionView
+        layout.addView(descriptionView)
+
+        // Button
+        val buttonLayout = this.inlineLeftButtonButtonViewLayout()
+        this.buttonLayout = buttonLayout
+
+        // Button > Icon
+        val buttonIconView = this.inlineLeftButtonButtonIconView()
+        buttonLayout.addView(buttonIconView)
+        this.buttonIconView = buttonIconView
+
+        // Button > Result Text
+        val buttonResultTextView = this.inlineLeftButtonButtonResultTextView()
+        buttonLayout.addView(buttonResultTextView)
+        this.buttonResultTextView = buttonResultTextView
+
+        // Button > Roll Text
+        when (rollWidget.format().rollTextLocation()) {
+            is RollTextLocation.Button -> {
+                val buttonRollTextView = this.inlineLeftButtonButtonRollTextView()
+                buttonLayout.addView(buttonRollTextView)
+                this.buttonRollTextView = buttonRollTextView
+            }
+            else -> {
+                Log.d("***ROLL WIDGET", "no location")
+            }
+        }
+
+        layout.addView(buttonLayout)
+
+        return layout
+    }
+
 
 }

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
+import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
@@ -9,7 +10,6 @@ import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
-import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.variable.*
@@ -51,7 +51,7 @@ sealed class DiceRollReference : ToDocument, SumType, Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies(): Set<VariableReference> = setOf()
+    open fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> = setOf(variableReference)
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf(variableReference)
 
 
     // -----------------------------------------------------------------------------------------
@@ -276,7 +276,19 @@ data class DiceRollReferenceSummation(val summationId : SummationId)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = setOf()
+    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    {
+        val summation = SheetManager.summation(this.summationId, sheetContext)
+        return when (summation) {
+            is Val -> {
+                summation.value.dependencies(sheetContext)
+            }
+            is Err -> {
+                ApplicationLog.error(summation.error)
+                setOf()
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------

@@ -171,9 +171,7 @@ object TextWidgetView
         val rulebookReference = textWidget.rulebookReference()
         when (rulebookReference) {
             is Just -> {
-                Log.d("***TEXT WIDGET", "found rulebook ref")
                 layout.setOnLongClickListener {
-                    Log.d("***TEXT WIDGET", "on long click")
                     val sheetActivity = sheetUIContext.context as SheetActivity
                     val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
                                                                    SheetContext(sheetUIContext))

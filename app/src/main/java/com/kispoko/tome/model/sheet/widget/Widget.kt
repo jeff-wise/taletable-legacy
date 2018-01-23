@@ -29,9 +29,9 @@ import com.kispoko.tome.model.game.RulebookReference
 import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Width
@@ -75,9 +75,9 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
                     "widget_action"  -> ActionWidget.fromDocument(doc)
                                             as ValueParser<Widget>
                     "widget_boolean"  -> BooleanWidget.fromDocument(doc)
-                                            as ValueParser<Widget>
-//                    "widget_expander" -> ExpanderWidget.fromDocument(doc)
-//                                            as ValueParser<Widget>
+                                            // as ValueParser<Widget>
+                    "widget_expander" -> ExpanderWidget.fromDocument(doc)
+                                           //  as ValueParser<Widget>
 //                    "widget_image"    -> ImageWidget.fromDocument(doc)
 //                                            as ValueParser<Widget>
                     "widget_list"     -> ListWidget.fromDocument(doc)
@@ -628,6 +628,13 @@ data class BooleanWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var viewId : Int? = null
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -740,129 +747,171 @@ data class BooleanWidget(override val id : UUID,
             this.variable(sheetContext)
                 .apply { it.value() }
 
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    fun update(booleanWidgetUpdate : WidgetUpdateBooleanWidget,
+               sheetUIContext : SheetUIContext,
+               rootView : View) =
+        when (booleanWidgetUpdate)
+        {
+            is BooleanWidgetUpdateToggle ->
+            {
+                Log.d("***WIDGET", "boolean update toggle")
+                this.toggleValue(SheetContext(sheetUIContext))
+                this.updateView(rootView, sheetUIContext)
+            }
+        }
+
+
+    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    {
+        val viewId = this.viewId
+        if (viewId != null) {
+            val simpleView = rootView.findViewById(viewId) as LinearLayout?
+            simpleView?.removeAllViews()
+            simpleView?.addView(BooleanWidgetViewBuilder(this, sheetUIContext).simpleTextView())
+        }
+    }
+
+
+    fun toggleValue(sheetContext : SheetContext)
+    {
+        val booleanVariable = this.variable(sheetContext)
+        when (booleanVariable) {
+            is Val -> booleanVariable.value.toggleValue(sheetContext.sheetId)
+            is Err -> ApplicationLog.error(booleanVariable.error)
+        }
+    }
+
+
 }
 
 
 /**
  * Expander Widget
  */
-//data class ExpanderWidget(override val id : UUID,
-//                          val widgetId : Prim<WidgetId>,
-//                          val format : Prod<ExpanderWidgetFormat>,
-//                          val label : Prim<ExpanderLabel>,
-//                          val groups: Coll<Group>) : Widget()
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.widgetId.name      = "widget_id"
-//        this.format.name        = "format"
-//        this.label.name         = "labelString"
-//        this.groups.name        = "groups"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : ExpanderWidgetFormat,
-//                label : ExpanderLabel,
-//                groups : MutableList<Group>)
-//        : this(UUID.randomUUID(),
-//               Prim(widgetId),
-//               Prod(format),
-//               Prim(label),
-//               Coll(groups))
-//
-//
-//    companion object : Factory<Widget>
-//    {
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                effApply(::ExpanderWidget,
-//                         // Widget Name
-//                         doc.at("id") ap { WidgetId.fromDocument(it) },
-//                         // Format
-//                         doc.at("format") ap { ExpanderWidgetFormat.fromDocument(it) },
-//                         // Label
-//                         doc.at("label") ap { ExpanderLabel.fromDocument(it) },
-//                         // Groups
-//                         doc.list("groups") ap { docList ->
-//                             docList.mapIndexed { d,index -> Group.fromDocument(d,index) }
-//                         })
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "id" to this.widgetId().toDocument(),
-//        "format" to this.format().toDocument(),
-//        "label" to this.label().toDocument(),
-//        "groups" to DocList(this.groups.value.map { it.toDocument() })
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun widgetId() : WidgetId = this.widgetId.value
-//
-//    fun format() : ExpanderWidgetFormat = this.format.value
-//
-//    fun label() : ExpanderLabel = this.label.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // WIDGET
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
-//
-//    override fun view(sheetUIContext: SheetUIContext): View {
-//        TODO("not implemented")
-//    }
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name : String = "widget_expander"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<com.kispoko.tome.lib.functor.Val<*>> =
-//            listOf(this.widgetId,
-//                   this.format,
-//                   this.label,
-//                   this.groups)
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // SHEET COMPONENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//}
+data class ExpanderWidget(override val id : UUID,
+                          val widgetId : WidgetId,
+                          val format : ExpanderWidgetFormat,
+                          val header : ExpanderWidgetLabel,
+                          val groups : List<Group>) : Widget()
+{
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : ExpanderWidgetFormat,
+                header : ExpanderWidgetLabel,
+                groups : MutableList<Group>)
+        : this(UUID.randomUUID(),
+               widgetId,
+               format,
+               header,
+               groups)
+
+
+    companion object : Factory<Widget>
+    {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<Widget> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ExpanderWidget,
+                      // Widget Name
+                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Format
+                     split(doc.maybeAt("format"),
+                           effValue(ExpanderWidgetFormat.default()),
+                           { ExpanderWidgetFormat.fromDocument(it) }),
+                      // Label
+                      doc.at("label") ap { ExpanderWidgetLabel.fromDocument(it) },
+                      // Groups
+                      doc.list("groups") ap { docList ->
+                          docList.mapIndexed { d,index -> Group.fromDocument(d,index) }
+                      })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.widgetId().toDocument(),
+        "format" to this.format().toDocument(),
+        "label" to this.label().toDocument(),
+        "groups" to DocList(this.groups.map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId
+
+
+    fun format() : ExpanderWidgetFormat = this.format
+
+
+    fun label() : ExpanderWidgetLabel = this.header
+
+
+    fun groups() : List<Group> = this.groups
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun view(sheetUIContext: SheetUIContext): View {
+        val viewBuilder = ExpanderWidgetViewBuilder(this, sheetUIContext)
+        return viewBuilder.view()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_WidgetExpanderValue =
+        RowValue4(widgetExpanderTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(this.header),
+                  CollValue(this.groups))
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    {
+        this.groups().forEach {
+            it.onSheetComponentActive(sheetUIContext)
+        }
+    }
+
+}
 
 
 /**
@@ -1839,8 +1888,11 @@ data class PointsWidget(override val id : UUID,
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
-    override fun view(sheetUIContext : SheetUIContext) : View =
-            PointsWidgetView.view(this, sheetUIContext)
+    override fun view(sheetUIContext : SheetUIContext) : View
+    {
+        val viewBuilder = PointsWidgetViewBuilder(this, sheetUIContext)
+        return viewBuilder.view()
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1863,10 +1915,10 @@ data class PointsWidget(override val id : UUID,
             is Val ->
             {
                 val dbl = mDouble.value
-                when (dbl)
+                return when (dbl)
                 {
-                    is Just    -> return dbl.value
-                    is Nothing -> return null
+                    is Just    -> dbl.value
+                    is Nothing -> null
                 }
             }
             is Err -> ApplicationLog.error(mDouble.error)
@@ -1964,8 +2016,8 @@ data class PointsWidget(override val id : UUID,
         if (layoutViewId != null) {
             val layout = rootView.findViewById(layoutViewId) as LinearLayout?
             layout?.removeAllViews()
-            layout?.addView(PointsWidgetView.aboveBarView(this, sheetUIContext))
-            layout?.addView(PointsWidgetView.barView(this, sheetUIContext))
+            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
+            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
         }
     }
 
@@ -2187,6 +2239,13 @@ data class RollWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var layoutId : Int? = null
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -2289,7 +2348,49 @@ data class RollWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    {
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+        val sheetContext = SheetContext(sheetUIContext)
+
+
+        val deps : MutableSet<VariableReference> = mutableSetOf()
+        this.rollGroup().rollReferences().forEach {
+            deps.addAll(it.dependencies(sheetContext))
+        }
+
+        deps.forEach { varRef ->
+            Log.d("****WIDGET", "roll widget dep: ${varRef}")
+            SheetManager.sheetState(sheetUIContext.sheetId) apDo { state ->
+            state.variable(varRef)                          apDo { variable ->
+               variable.setOnUpdateListener {
+                   Log.d("****WIDGET", "roll widget add var listener: ${variable.label().value}")
+                   rootView?.let {
+                       this.updateView(it, sheetUIContext)
+                   }
+               }
+            } }
+        }
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    {
+        Log.d("****WIDGET", "update roll widget view")
+        val layoutId = this.layoutId
+        if (layoutId != null)
+        {
+            val layout = rootView.findViewById(layoutId) as LinearLayout?
+            if (layout != null) {
+                RollWidgetViewBuilder(this, sheetUIContext).updateContentView(layout)
+            }
+        }
     }
 
 
@@ -2503,7 +2604,7 @@ data class StoryWidget(override val id : UUID,
                 var newValue : String? = null
                 when (variable) {
                     is TextVariable -> {
-                        variable.updateValue(partUpdate.newValueId, sheetUIContext.sheetId)
+                        variable.updateValue(partUpdate.newValueId.value, sheetUIContext.sheetId)
                         val updatedValue = variable.value(sheetContext)
                         when (updatedValue) {
                             is Val -> newValue = maybeValue("", updatedValue.value)
@@ -2885,7 +2986,7 @@ data class TableWidget(override val id : UUID,
             is Val ->
             {
                 val textVariable = variable.value
-                textVariable.updateValue(cellUpdate.newValueId, sheetContext.sheetId)
+                textVariable.updateValue(cellUpdate.newValueId.value, sheetContext.sheetId)
                 val updatedValue = textVariable.value(sheetContext)
                 when (updatedValue) {
                     is Val -> newValue = maybeValue("", updatedValue.value)
@@ -3265,7 +3366,7 @@ data class TextWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext: SheetUIContext) : View =
+    override fun view(sheetUIContext : SheetUIContext) : View =
         TextWidgetView.view(this, this.format(), sheetUIContext)
 
 
@@ -3276,8 +3377,8 @@ data class TextWidget(override val id : UUID,
         {
             is TextWidgetUpdateSetText ->
             {
-                this.updateTextView(textWidgetUpdate.newText, rootView)
                 this.updateTextValue(textWidgetUpdate.newText, sheetContext)
+                this.updateTextView(this.valueString(sheetContext), rootView)
             }
         }
 
@@ -3296,7 +3397,7 @@ data class TextWidget(override val id : UUID,
     {
         val textVariable = this.valueVariable(sheetContext)
         when (textVariable) {
-            is Val -> textVariable.value.updateLiteralValue(newText, sheetContext.sheetId)
+            is Val -> textVariable.value.updateValue(newText, sheetContext.sheetId)
             is Err -> ApplicationLog.error(textVariable.error)
         }
     }

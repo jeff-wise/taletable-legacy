@@ -5,17 +5,20 @@ package com.kispoko.tome.model.game.engine.reference
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.rts.sheet.SheetContext
+import effect.apply
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 
@@ -24,7 +27,7 @@ import java.io.Serializable
 /**
  * Text Reference
  */
-sealed class TextReference : SumType, Serializable
+sealed class TextReference : ToDocument, SumType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -36,11 +39,11 @@ sealed class TextReference : SumType, Serializable
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextReference> =
             when (doc.case())
             {
-                "literal"  -> TextReferenceLiteral.fromDocument(doc)
-                "value"    -> TextReferenceValue.fromDocument(doc)
-                "variable" -> TextReferenceVariable.fromDocument(doc)
-                else       -> effError<ValueError,TextReference>(
-                                        UnknownCase(doc.case(), doc.path))
+                "text_literal"       -> TextReferenceLiteral.fromDocument(doc.nextCase())
+                "value_reference"    -> TextReferenceValue.fromDocument(doc.nextCase())
+                "variable_reference" -> TextReferenceVariable.fromDocument(doc.nextCase())
+                "program_invocation" -> TextReferenceProgram.fromDocument(doc.nextCase())
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -49,7 +52,7 @@ sealed class TextReference : SumType, Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies(): Set<VariableReference> = setOf()
+    open fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf()
 }
 
 
@@ -71,6 +74,13 @@ data class TextReferenceLiteral(val value : String) : TextReference(), SQLSerial
             else       -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value).withCase("text_literal")
 
 
     // -----------------------------------------------------------------------------------------
@@ -112,6 +122,14 @@ data class TextReferenceValue(val valueReference : ValueReference)
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextReference> =
                 effApply(::TextReferenceValue, ValueReference.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.valueReference.toDocument()
+                                    .withCase("value_reference")
 
 
     // -----------------------------------------------------------------------------------------
@@ -158,7 +176,15 @@ data class TextReferenceVariable(val variableReference : VariableReference)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> = setOf(variableReference)
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf(variableReference)
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.variableReference.toDocument()
+                                    .withCase("variable_reference")
 
 
     // -----------------------------------------------------------------------------------------
@@ -183,3 +209,49 @@ data class TextReferenceVariable(val variableReference : VariableReference)
 }
 
 
+/**
+ * Program Text Reference
+ */
+data class TextReferenceProgram(val invocation : Invocation) : TextReference()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TextReference>
+    {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<TextReference> =
+                apply(::TextReferenceProgram, Invocation.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> =
+            this.invocation.dependencies(sheetContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.invocation.toDocument().withCase("invocation")
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM TYPE
+    // -----------------------------------------------------------------------------------------
+
+    override fun columnValue() = ProdValue(this.invocation)
+
+
+    override fun case() = "invocation"
+
+
+    override val sumModelObject = this
+
+
+}

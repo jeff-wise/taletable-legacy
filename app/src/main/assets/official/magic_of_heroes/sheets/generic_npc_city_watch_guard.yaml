@@ -1,9 +1,9 @@
-id: creature_brown_bear
+id: generic_npc_town_guard
 campaign_id: isara
 settings:
   theme_id: light
-  sheet_name: 'Brown Bear'
-  sheet_summary: 'Brown Bear'
+  sheet_name: 'Town Guard'
+  sheet_summary: 'Town Guard'
 engine:
   value_sets:
   mechanics:
@@ -51,7 +51,7 @@ variables:
     description: Name
     value:
       type: text_literal
-      text_literal: 'Brown Bear'
+      text_literal: 'Town Guard'
 - type: variable_text
   variable_text:
     id: description
@@ -59,10 +59,10 @@ variables:
     description: Description
     value:
       type: text_literal
-      text_literal: 'Brown bears are found in northern temperate forests. They are ferocious when
-                    provoked, putting their incredible strength into their powerful jaws and razor
-                    claws. Even when weighing as much as 500 lbs, they can easily chase down the swiftest
-                    adventurers.'
+      text_literal: 'The city watch are a disciplined unit, ex-soldiers mostly, and with a good bit of experience.
+                      He/she settled on a city job for the stability and the relative safety. Everyday is a gruel,
+                      truding through the filth, breaking up fights, chasing theiving urchins, and managing the
+                      insolence of the spoiled city folk.'
 - type: variable_text
   variable_text:
     id: creature_type
@@ -618,7 +618,7 @@ sections:
         background_color_theme:
           theme_color_ids:
           - theme_id: light
-            color_id: light_grey_55
+            color_id: light_grey_5
     groups:
     - format:
         element_format:
@@ -1903,7 +1903,7 @@ sections:
         background_color_theme:
           theme_color_ids:
           - theme_id: light
-            color_id: light_grey_55
+            color_id: light_grey_5
     groups:
     - format:
         element_format:
@@ -1934,7 +1934,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: light_blue_80
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4
@@ -1975,7 +1975,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_70
+                      color_id: light_blue_60
                   corners:
                     top_right_radius: 4
                     bottom_right_radius: 4
@@ -2253,7 +2253,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: light_blue_80
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4
@@ -2358,7 +2358,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: light_blue_80
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4
@@ -2464,7 +2464,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: light_blue_80
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4

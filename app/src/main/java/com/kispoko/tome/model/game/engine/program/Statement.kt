@@ -16,6 +16,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.function.*
 import com.kispoko.tome.model.game.engine.reference.*
+import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.interpreter.BindingDoesNotExist
 import com.kispoko.tome.rts.game.engine.interpreter.ProgramParameterDoesNotExist
@@ -172,6 +173,43 @@ data class Statement(override val id : UUID,
                                   MaybeSumValue(this.parameter3),
                                   MaybeSumValue(this.parameter4),
                                   MaybeSumValue(this.parameter5))
+
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    {
+        val deps : MutableSet<VariableReference> = mutableSetOf()
+
+        val parameter1 = this.parameter1()
+        when (parameter1) {
+            is Just -> deps.addAll(parameter1.value.dependencies(sheetContext))
+        }
+
+        val parameter2 = this.parameter2()
+        when (parameter2) {
+            is Just -> deps.addAll(parameter2.value.dependencies(sheetContext))
+        }
+
+        val parameter3 = this.parameter3()
+        when (parameter3) {
+            is Just -> deps.addAll(parameter3.value.dependencies(sheetContext))
+        }
+
+        val parameter4 = this.parameter4()
+        when (parameter4) {
+            is Just -> deps.addAll(parameter4.value.dependencies(sheetContext))
+        }
+
+        val parameter5 = this.parameter5()
+        when (parameter5) {
+            is Just -> deps.addAll(parameter5.value.dependencies(sheetContext))
+        }
+
+        return deps
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -401,6 +439,9 @@ sealed class StatementParameter : ToDocument, SumType, Serializable
             }
     }
 
+
+    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
+
 }
 
 
@@ -420,6 +461,7 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
         override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameterBindingName> =
                 effApply(::StatementParameterBindingName, StatementBindingName.fromDocument(doc))
     }
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -447,6 +489,11 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() = this.bindingName.asSQLValue()
+
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
 
 }
 
@@ -528,6 +575,14 @@ data class StatementParameterReference(val reference : DataReference) : Statemen
 
     override val sumModelObject = this.reference
 
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> {
+        return this.reference.dependencies(sheetContext)
+    }
 }
 
 

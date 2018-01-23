@@ -51,7 +51,7 @@ sealed class TextVariableValue : ToDocument, SumType, Serializable
     // Dependencies
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies() : Set<VariableReference> = setOf()
+    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -230,7 +230,7 @@ data class TextVariableValueValue(val valueReference : ValueReference)
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
         GameManager.engine(sheetContext.gameId)
-                   .apply { it.value(this.valueReference, sheetContext.gameId) }
+                   .apply { it.value(this.valueReference, sheetContext) }
                    .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
 
 
@@ -337,7 +337,7 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
+    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = this.invocation.dependencies(sheetContext)
 
 
     override fun value(sheetContext : SheetContext) = TODO("Not Implemented")

@@ -7,6 +7,8 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.rts.sheet.SheetContext
+import effect.apply
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -38,6 +40,8 @@ sealed class DataReference : ToDocument, SumType, Serializable
                                                 as ValueParser<DataReference>
                 "data_reference_number"    -> DataReferenceNumber.fromDocument(doc.nextCase())
                                                 as ValueParser<DataReference>
+                "data_reference_text"      -> DataReferenceText.fromDocument(doc.nextCase())
+                                                as ValueParser<DataReference>
                 else                       -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
@@ -47,7 +51,7 @@ sealed class DataReference : ToDocument, SumType, Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    abstract fun dependencies(): Set<VariableReference>
+    abstract fun dependencies(sheetContext : SheetContext): Set<VariableReference>
 
 }
 
@@ -80,7 +84,7 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> = this.reference.dependencies()
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = this.reference.dependencies()
 
 
     // -----------------------------------------------------------------------------------------
@@ -147,7 +151,8 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> = this.reference.dependencies()
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference>
+            = this.reference.dependencies(sheetContext)
 
 }
 
@@ -181,7 +186,7 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> = this.reference.dependencies()
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = this.reference.dependencies()
 
 
     // -----------------------------------------------------------------------------------------
@@ -192,6 +197,54 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
 
 
     override fun case() = "number"
+
+
+    override val sumModelObject = this.reference
+
+}
+
+
+/**
+ * Text Value Reference
+ */
+data class DataReferenceText(val reference : TextReference) : DataReference()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DataReferenceText>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<DataReferenceText> =
+                apply(::DataReferenceText, TextReference.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.reference.toDocument()
+                                    .withCase("data_reference_text")
+
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> =
+            this.reference.dependencies(sheetContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun columnValue() = SumValue(this.reference)
+
+
+    override fun case() = "text"
 
 
     override val sumModelObject = this.reference

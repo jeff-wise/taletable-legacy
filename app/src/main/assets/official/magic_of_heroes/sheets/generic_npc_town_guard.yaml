@@ -1,9 +1,9 @@
-id: creature_brown_bear
+id: generic_npc_town_guard
 campaign_id: isara
 settings:
   theme_id: light
-  sheet_name: 'Brown Bear'
-  sheet_summary: 'Brown Bear'
+  sheet_name: 'Town Guard'
+  sheet_summary: 'Town Guard'
 engine:
   value_sets:
   mechanics:
@@ -26,10 +26,11 @@ engine:
             type: dice_roll
             dice_roll:
               quantities:
-              - sides: 10
-                quantity: 4
+              - sides: 8
+                quantity: 2
               modifiers:
-              - value: 12
+              - value: 2
+                name: bonus
     result_binding_name: roll_result
   procedures:
   - procedure_id: roll_hit_points
@@ -40,7 +41,7 @@ engine:
       - current_hit_points
       program_id: roll_max_hit_points
     description:
-      template: 'Roll 4d10 + 12 hit points.'
+      template: 'Roll 2d8 + 2 hit points.'
     action_label: 'Roll Hit Points'
   summations:
 variables:
@@ -51,7 +52,7 @@ variables:
     description: Name
     value:
       type: text_literal
-      text_literal: 'Brown Bear'
+      text_literal: 'Town Guard'
 - type: variable_text
   variable_text:
     id: description
@@ -59,10 +60,9 @@ variables:
     description: Description
     value:
       type: text_literal
-      text_literal: 'Brown bears are found in northern temperate forests. They are ferocious when
-                    provoked, putting their incredible strength into their powerful jaws and razor
-                    claws. Even when weighing as much as 500 lbs, they can easily chase down the swiftest
-                    adventurers.'
+      text_literal: 'The town guard patrols the streets, casually. He or she doesn''t mind stopping in at the tavern to chat
+                      with the cobbler and share a few ales while on duty. It''s not like anything ever happens. The
+                      spear he or she loosely carries is just a badge and nothing more.'
 - type: variable_text
   variable_text:
     id: creature_type
@@ -70,7 +70,7 @@ variables:
     description: Creature type
     value:
       type: text_literal
-      text_literal: 'Large beast, unaligned'
+      text_literal: 'Medium humanoid, any alignment'
 - type: variable_number
   variable_number:
     id: base_strength
@@ -78,7 +78,7 @@ variables:
     description: Base Strength
     value:
       type: number_literal
-      number_literal: 19
+      number_literal: 13
 - type: variable_number
   variable_number:
     id: strength
@@ -110,7 +110,7 @@ variables:
     description: Base Dexterity
     value:
       type: number_literal
-      number_literal: 10
+      number_literal: 12
 - type: variable_number
   variable_number:
     id: dexterity
@@ -142,7 +142,7 @@ variables:
     description: Base Constitution
     value:
       type: number_literal
-      number_literal: 16
+      number_literal: 12
 - type: variable_number
   variable_number:
     id: constitution
@@ -174,7 +174,7 @@ variables:
     description: Base Intelligence
     value:
       type: number_literal
-      number_literal: 2
+      number_literal: 10
 - type: variable_number
   variable_number:
     id: intelligence
@@ -206,7 +206,7 @@ variables:
     description: Base Wisdom
     value:
       type: number_literal
-      number_literal: 13
+      number_literal: 11
 - type: variable_number
   variable_number:
     id: wisdom
@@ -238,7 +238,7 @@ variables:
     description: Base Charisma
     value:
       type: number_literal
-      number_literal: 7
+      number_literal: 10
 - type: variable_number
   variable_number:
     id: charisma
@@ -286,15 +286,7 @@ variables:
     description: Speed Label
     value:
       type: text_literal
-      text_literal: 'Walk Speed'
-- type: variable_text
-  variable_text:
-    id: climb_speed_label
-    label: Climb Speed Label
-    description: Climb Speed Label
-    value:
-      type: text_literal
-      text_literal: 'Climb Speed'
+      text_literal: 'Speed'
 - type: variable_text
   variable_text:
     id: languages_label
@@ -302,7 +294,17 @@ variables:
     description: Languages Label
     value:
       type: text_literal
-      text_literal: 'languages'
+      text_literal: 'Languages'
+- type: variable_text_list
+  variable_text_list:
+    id: known_languages
+    label: Known Languages
+    description: Known Languages
+    value_set_id: languages
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - common
 - type: variable_number
   variable_number:
     id: initiative
@@ -318,7 +320,7 @@ variables:
     description: Armor Class
     value:
       type: number_literal
-      number_literal: 11
+      number_literal: 16
 - type: variable_number
   variable_number:
     id: passive_perception
@@ -326,20 +328,12 @@ variables:
     description: Passive Perception
     value:
       type: number_literal
-      number_literal: 13
+      number_literal: 12
 - type: variable_text
   variable_text:
     id: speed
     label: Speed
     description: Speed
-    value:
-      type: text_literal
-      text_literal: '40 ft'
-- type: variable_text
-  variable_text:
-    id: climb_speed
-    label: Climb Speed
-    description: Climb Speed
     value:
       type: text_literal
       text_literal: '30 ft'
@@ -351,22 +345,6 @@ variables:
     value:
       type: text_literal
       text_literal: 'my name is'
-- type: variable_text
-  variable_text:
-    id: about_me_label
-    label: About Me Label
-    description: About Me Label
-    value:
-      type: text_literal
-      text_literal: 'about me'
-- type: variable_text
-  variable_text:
-    id: ability_scores_label
-    label: Ability Scores Label
-    description: Ability Scores Label
-    value:
-      type: text_literal
-      text_literal: 'my ability scores'
 - type: variable_text
   variable_text:
     id: modifier_label
@@ -495,7 +473,7 @@ variables:
     description: Attacks Label
     value:
       type: text_literal
-      text_literal: 'Attacks'
+      text_literal: 'Spear Attack'
 - type: variable_text
   variable_text:
     id: damage_label
@@ -503,7 +481,7 @@ variables:
     description: Damage Label
     value:
       type: text_literal
-      text_literal: 'Damage'
+      text_literal: 'Spear Damage'
 - type: variable_text
   variable_text:
     id: movement_label
@@ -535,7 +513,7 @@ variables:
     description: Maximum hit points.
     value:
       type: number_literal
-      number_literal: 34
+      number_literal: 11
 - type: variable_number
   variable_number:
     id: current_hit_points
@@ -543,7 +521,7 @@ variables:
     description: Current hit points.
     value:
       type: number_literal
-      number_literal: 34
+      number_literal: 11
 - type: variable_number
   variable_number:
     id: current_hit_dice
@@ -568,14 +546,14 @@ variables:
     value:
       type: text_literal
       text_literal: 'CR'
-- type: variable_number
-  variable_number:
+- type: variable_text
+  variable_text:
     id: cr
     label: CR
     description: Challenge rating
     value:
-      type: number_literal
-      number_literal: 1
+      type: text_literal
+      text_literal: '1/8'
 - type: variable_number
   variable_number:
     id: cr_xp
@@ -583,7 +561,7 @@ variables:
     description: CR XP
     value:
       type: number_literal
-      number_literal: 200
+      number_literal: 25
 - type: variable_text
   variable_text:
     id: xp_label
@@ -737,7 +715,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - widgets:
@@ -776,8 +754,8 @@ sections:
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
-        - type: widget_number
-          widget_number:
+        - type: widget_text
+          widget_text:
             id: cr
             value_variable_id: cr
             format:
@@ -868,7 +846,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - format:
@@ -1450,7 +1428,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - format:
@@ -1460,7 +1438,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: abilities_label
+            id: languages_label
             format:
               value_format:
                 color_theme:
@@ -1474,64 +1452,12 @@ sections:
               widget_format:
                 element_format:
                   horizontal_alignment: left
-            value_variable_id: abilities_label
-      - format:
-          border:
-            bottom:
-              color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_grey_2
-              thickness: 1
-        widgets:
-        - type: widget_text
-          widget_text:
-            id: keen_smell_label
-            format:
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_20
-                  - theme_id: light
-                    color_id: light_blue
-                size: 17
-                font_style: semi_bold
-              widget_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_left_radius: 3
-                    top_right_radius: 3
-                  horizontal_alignment: left
-                  padding:
-                    top: 5
-                    left: 8
-                    right: 8
-                    bottom: 5
-                  width:
-                    type: width_justify
-                    width_justify: justify
-            value_variable_id: keen_smell_label
+            value_variable_id: languages_label
       - widgets:
-        - type: widget_text
-          widget_text:
-            id: keen_smell_description
+        - type: widget_list
+          widget_list:
+            id: languages
             format:
-              value_format:
-                element_format:
-                  horizontal_alignment: left
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_20
-                  - theme_id: light
-                    color_id: dark_grey_15
-                size: 17
-                font_style: regular
               widget_format:
                 element_format:
                   background_color_theme:
@@ -1539,18 +1465,38 @@ sections:
                     - theme_id: light
                       color_id: white
                   corners:
-                    bottom_left_radius: 3
-                    bottom_right_radius: 3
-                  horizontal_alignment: left
+                    top_right_radius: 2
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
                   padding:
+                    top: 8
                     bottom: 8
                     left: 8
                     right: 8
-                    top: 8
                   width:
                     type: width_justify
                     width_justify: justify
-            value_variable_id: keen_smell_description
+              description_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_23
+                  - theme_id: light
+                    color_id: dark_grey_14
+                size: 19
+              item_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_23
+                  - theme_id: light
+                    color_id: light_blue
+                font_style: medium
+                size: 19
+            value_set_id: languages
+            values_variable_id: known_languages
+            description: 'I speak '
     - format:
         element_format:
           padding:
@@ -1563,7 +1509,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - format:
@@ -1608,10 +1554,10 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_grey_3
+                      color_id: white
                   corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
+                    top_left_radius: 2
+                    bottom_left_radius: 2
                   height: 45
                   horizontal_alignment: left
                   padding:
@@ -1628,10 +1574,10 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_grey_3
+                      color_id: white
                   corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
+                    top_right_radius: 2
+                    bottom_right_radius: 2
                   height: 45
                   padding:
                     left: 10
@@ -1677,7 +1623,7 @@ sections:
                 icon_format:
                   width: 23
                   height: 23
-                size: 18
+                size: 21
               button_roll_format:
                 element_format:
                   background_color_theme:
@@ -1698,7 +1644,7 @@ sections:
                   size:
                     width: 20
                     height: 20
-                size: 21
+                size: 14
               description_format:
                 element_format:
                   background_color_theme:
@@ -1752,7 +1698,7 @@ sections:
                   - sides: 20
                     quantity: 1
                   modifiers:
-                  - value: 3
+                  - value: 2
                     name: bonus
             description: 'Perception'
     - format:
@@ -1833,6 +1779,9 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
                   height: 45
                   padding:
                     left: 12
@@ -1917,7 +1866,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - widgets:
@@ -1975,7 +1924,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_70
+                      color_id: light_blue_60
                   corners:
                     top_right_radius: 4
                     bottom_right_radius: 4
@@ -2032,7 +1981,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - format:
@@ -2188,7 +2137,7 @@ sections:
                   - theme_id: dark
                     color_id: medium_grey_7
                   - theme_id: light
-                    color_id: light_grey_6
+                    color_id: light_grey_9
                 current_color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -2209,7 +2158,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - format:
@@ -2241,19 +2190,39 @@ sections:
         widgets:
         - type: widget_roll
           widget_roll:
-            id: multiattack
+            id: spear_attack
             format:
               widget_format:
                 element_format:
                   height: 45
-              view_type: inline_left_button_use_dialog
-              roll_text_location: none
+              view_type: inline_left_button
+              roll_text_location: button
               button_format:
                 element_format:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
                       color_id: light_blue_90
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 13
+                    left: 13
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4
@@ -2286,6 +2255,24 @@ sections:
                     color_id: dark_grey_14
                 font_style: medium
                 size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 15
+                    left: 15
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 18
               roll_text_format:
                 element_format:
                   padding:
@@ -2302,23 +2289,14 @@ sections:
               roll_references:
               - type: dice_roll
                 dice_roll:
-                  name: Bite Attack Roll
+                  name: Spear Attack Roll
                   quantities:
                   - sides: 20
                     quantity: 1
                   modifiers:
-                  - value: 5
+                  - value: 3
                     name: bonus
-              - type: dice_roll
-                dice_roll:
-                  name: Claws Attack Roll
-                  quantities:
-                  - sides: 20
-                    quantity: 1
-                  modifiers:
-                  - value: 5
-                    name: bonus
-            description: 'Multiattack: Bite + Claws'
+            description: 'Melee/Ranged Attack'
       - format:
           element_format:
             padding:
@@ -2346,10 +2324,121 @@ sections:
         widgets:
         - type: widget_roll
           widget_roll:
-            id: bite_damage_roll
+            id: one_handed_damage_roll
             format:
               widget_format:
                 column: 1
+                element_format:
+                  height: 45
+              roll_text_location: button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_90
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  width: 23
+                  height: 23
+                size: 18
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple
+                  corners:
+                    top_left_radius: 4
+                    bottom_left_radius: 4
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  size:
+                    width: 20
+                    height: 20
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+                font_style: medium
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_70
+                  corners:
+                    top_right_radius: 4
+                    bottom_right_radius: 4
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 5
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: medium
+                size: 18
+            roll_group:
+              roll_references:
+              - type: dice_roll
+                dice_roll:
+                  quantities:
+                  - sides: 6
+                    quantity: 1
+                  modifiers:
+                  - value: 1
+                    name : bonus
+            description: 'One-Handed / Ranged'
+      - format:
+          element_format:
+            margins:
+              top: 15
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            id: two_handed_damage_roll
+            format:
+              widget_format:
+                column: 2
                 element_format:
                   height: 45
               roll_text_location: button
@@ -2447,115 +2536,9 @@ sections:
                   - sides: 8
                     quantity: 1
                   modifiers:
-                  - value: 4
-                    name : bonus
-            description: 'Bite'
-        - type: widget_roll
-          widget_roll:
-            id: claws_damage_roll
-            format:
-              widget_format:
-                column: 2
-                element_format:
-                  height: 45
-              roll_text_location: button
-              button_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_90
-                  corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
-                  padding:
-                    right: 10
-                    left: 10
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                icon_format:
-                  width: 23
-                  height: 23
-                size: 18
-              button_roll_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: purple
-                  corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
-                  padding:
-                    right: 10
-                    left: 10
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                icon_format:
-                  size:
-                    width: 20
-                    height: 20
-                size: 21
-              description_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
-                  padding:
-                    right: 10
-                    left: 10
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_14
-                font_style: medium
-                size: 18
-              description_roll_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: purple_70
-                  corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
-                  padding:
-                    right: 10
-                    left: 10
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                size: 18
-              roll_text_format:
-                element_format:
-                  padding:
-                    left: 5
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                font_style: medium
-                size: 18
-            roll_group:
-              roll_references:
-              - type: dice_roll
-                dice_roll:
-                  quantities:
-                  - sides: 6
-                    quantity: 2
-                  modifiers:
-                  - value: 4
+                  - value: 1
                     name: bonus
-            description: 'Claws'
+            description: 'Two-handed'
     - format:
         element_format:
           padding:
@@ -2568,7 +2551,7 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_grey_6
+                color_id: light_grey_12
             thickness: 1
       rows:
       - format:
@@ -2600,11 +2583,10 @@ sections:
               - theme_id: light
                 color_id: white
             corners:
-              top_left_radius: 4
-              top_right_radius: 4
-              bottom_right_radius: 4
-              bottom_left_radius: 4
-          has_columns: true
+              top_left_radius: 2
+              top_right_radius: 2
+              bottom_right_radius: 2
+              bottom_left_radius: 2
         widgets:
         - type: widget_text
           widget_text:
@@ -2620,7 +2602,6 @@ sections:
                 font_style: medium
                 size: 17
               widget_format:
-                column: 1
                 element_format:
                   height: 45
                   horizontal_alignment: right
@@ -2634,49 +2615,6 @@ sections:
             value_variable_id: speed
             format:
               widget_format:
-                column: 1
-                element_format:
-                  height: 45
-                  horizontal_alignment: left
-                  padding:
-                    left: 3
-                    right: 8
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: medium
-                size: 18
-        - type: widget_text
-          widget_text:
-            id: climb_speed_label
-            format:
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_20
-                  - theme_id: light
-                    color_id: dark_grey_12
-                font_style: medium
-                size: 17
-              widget_format:
-                column: 2
-                element_format:
-                  height: 45
-                  horizontal_alignment: right
-                  padding:
-                    left: 8
-                    right: 3
-            value_variable_id: climb_speed_label
-        - type: widget_text
-          widget_text:
-            id: climb_speed
-            value_variable_id: climb_speed
-            format:
-              widget_format:
-                column: 2
                 element_format:
                   height: 45
                   horizontal_alignment: left

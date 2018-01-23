@@ -6,6 +6,7 @@ import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.ProgramId
+import com.kispoko.tome.model.game.engine.reference.TextReference
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.value.ValueSetId
@@ -133,6 +134,18 @@ class ProcedureDoesNotExist(val procedureId : ProcedureId) : EngineError()
             """
             Engine Error: Procedure Does Not Exist
                 Procedure Id: $procedureId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class TextReferenceIsNull(val reference : TextReference) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Text Reference is Null
+                Text Reference: $reference
             """
 
     override fun logMessage(): String = userMessage()

@@ -820,6 +820,13 @@ types:
       presence: optional
       description: >
         The expander widget formatting options.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        The expander widget formatting options.
     - name: groups
       type:
         type: custom_coll_type
@@ -842,27 +849,42 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
-    - name: name_closed_style
+    - name: header_open_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
-      description: >
-        Text style for name when closed.
-    - name: name_open_style
+      description: Text format
+    - name: header_closed_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
-      description: >
-        Text style for name when open.
-    - name: header_padding
+      description: Text format
+    - name: header_label_open_format
       type:
         type: custom_type
-        custom_type: spacing
+        custom_type: text_format
       presence: optional
-      description: >
-        Header padding.
+      description: Text format
+    - name: header_label_closed_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Text format
+    - name: header_icon_open_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Text format
+    - name: header_icon_closed_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Text format
 - type: product_type
   product_type:
     name: widget_image
@@ -1572,6 +1594,18 @@ types:
         custom_type: text_format
       presence: optional
       description: Label Text Format
+    - name: info_style
+      type:
+        type: custom_type
+        custom_type: points_above_bar_style
+      presence: optional
+      description: Label Text Format
+    - name: info_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Label Text Format
     - name: bar_format
       type:
         type: custom_type
@@ -1604,16 +1638,22 @@ types:
         prim_type: number
       presence: optional
       description: Bar Height Dp
-    - name: limit_color_theme
+    - name: limit_format
       type:
         type: custom_type
-        custom_type: color_theme
+        custom_type: text_format
       presence: optional
       description: Limit Color Theme
-    - name: current_color_theme
+    - name: current_format
       type:
         type: custom_type
-        custom_type: color_theme
+        custom_type: text_format
+      presence: optional
+      description: Current Color Theme
+    - name: counter_active_icon
+      type:
+        type: custom_type
+        custom_type: icon
       presence: optional
       description: Current Color Theme
 - type: product_type

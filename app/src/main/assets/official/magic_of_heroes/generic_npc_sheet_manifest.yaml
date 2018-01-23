@@ -1,0 +1,14 @@
+summaries:
+- name: Town Guard
+  id: town_guard
+  summary: 'Medium Humanoid'
+  description: >
+    A guard for a small town that isn't large enough to have an organized security force.
+  cr: '1/8'
+- name: City Watch Guard
+  id: city_watch_guard
+  summary: 'Medium Humanoid'
+  description: >
+    A guard for city that is large enough to have its own defensive force with experienced
+    commanders and organized patrols.
+  cr: '1/4'

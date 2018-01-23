@@ -52,9 +52,11 @@ sealed class BooleanVariableValue : ToDocument, SumType, Serializable
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies() : Set<VariableReference> = setOf()
+    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
+
 
     abstract fun value() : AppEff<Boolean>
+
 
     abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
 
@@ -151,7 +153,7 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
+    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = this.invocation.dependencies(sheetContext)
 
 
     override fun value(): AppEff<Boolean> {

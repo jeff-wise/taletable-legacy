@@ -162,12 +162,19 @@
     <item name="heroes_creatures_item_description" type="id"/>
     <item name="heroes_creatures_item_summary" type="id"/>
 
-    <!-- AMANACE NPC SHEETS FRAGMENT -->
-    <item name="amanace_npc_item_layout" type="id"/>
-    <item name="amanace_npc_item_name" type="id"/>
-    <item name="amanace_npc_item_desc" type="id"/>
-    <item name="amanace_npc_item_type" type="id"/>
-    <item name="amanace_npc_item_cr" type="id"/>
+    <!-- AMANACE GENERIC NPC SHEETS FRAGMENT -->
+    <item name="heroes_generic_npc_item_layout" type="id"/>
+    <item name="heroes_generic_npc_item_name" type="id"/>
+    <item name="heroes_generic_npc_item_summary" type="id"/>
+    <item name="heroes_generic_npc_item_description" type="id"/>
+    <item name="heroes_generic_npc_item_challenge" type="id"/>
+
+    <!-- AMANACE NAMED NPC SHEETS FRAGMENT -->
+    <item name="heroes_named_npc_item_layout" type="id"/>
+    <item name="heroes_named_npc_item_challenge" type="id"/>
+    <item name="heroes_named_npc_item_name" type="id"/>
+    <item name="heroes_named_npc_item_description" type="id"/>
+    <item name="heroes_named_npc_item_summary" type="id"/>
 
     <!-- VALUE SETS ACTIVITY -->
     <item name="value_set_list_item_layout" type="id"/>

@@ -227,7 +227,7 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
@@ -945,6 +945,14 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                             val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
                                                                            updateTarget.cellId,
                                                                            value.valueId())
+                            SheetManager.updateSheet(sheetUIContext.sheetId,
+                                                     update,
+                                                     sheetUIContext.sheetUI())
+                            dialog.dismiss()
+                        }
+                        is UpdateTargetTextWidget -> {
+                            val update = TextWidgetUpdateSetText(updateTarget.textWidgetId,
+                                                                 value.valueId().value)
                             SheetManager.updateSheet(sheetUIContext.sheetId,
                                                      update,
                                                      sheetUIContext.sheetUI())

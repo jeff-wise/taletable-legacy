@@ -6,6 +6,325 @@ engine:
   value_sets:
   - type: value_set_base
     value_set_base:
+      value_set_id: states
+      label: States
+      label_singular: States
+      description: States
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: alive
+          description: Alive
+          value: Alive
+      - type: value_text
+        value_text:
+          value_id: unconscious_dying
+          description: Unconscious (dying)
+          value: Unconscious (dying)
+      - type: value_text
+        value_text:
+          value_id: unconscious_stable
+          description: Unconscious (stable)
+          value: Unconscious (stable)
+      - type: value_text
+        value_text:
+          value_id: dead
+          description: Dead
+          value: Dead
+  - type: value_set_base
+    value_set_base:
+      value_set_id: backgrounds
+      label: Backgrounds
+      label_singular: Background
+      description: Character backgrounds.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: swashbuckler
+          description: Swashbuckler
+          value: Swashbuckler
+      - type: value_text
+        value_text:
+          value_id: soldier
+          description: Soldier
+          value: Soldier
+  - type: value_set_base
+    value_set_base:
+      value_set_id: swashbuckler_personality_traits
+      label: Swashbuckler Personality Traits
+      label_singular: Swashbuckler Personality Trait
+      description: Swashbuckler personality traits.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: trait_1
+          description: Trait 1
+          value: Trait 1
+      - type: value_text
+        value_text:
+          value_id: trait_2
+          description: Trait 2
+          value: Trait 2
+      - type: value_text
+        value_text:
+          value_id: trait_3
+          description: Trait 3
+          value: Trait 3
+      - type: value_text
+        value_text:
+          value_id: trait_4
+          description: Trait 4
+          value: Trait 4
+      - type: value_text
+        value_text:
+          value_id: trait_5
+          description: Trait 5
+          value: Trait 5
+  - type: value_set_base
+    value_set_base:
+      value_set_id: swashbuckler_ideals
+      label: Swashbuckler Ideals
+      label_singular: Swashbuckler Ideals
+      description: Swashbuckler ideals
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: ideal_1
+          description: Ideal 1
+          value: Ideal 1
+      - type: value_text
+        value_text:
+          value_id: ideal_2
+          description: Ideal 2
+          value: Ideal 2
+      - type: value_text
+        value_text:
+          value_id: ideal_3
+          description: Ideal 3
+          value: Ideal 3
+      - type: value_text
+        value_text:
+          value_id: ideal_4
+          description: Ideal 4
+          value: Ideal 4
+      - type: value_text
+        value_text:
+          value_id: ideal_5
+          description: Ideal 5
+          value: Ideal 5
+      - type: value_text
+        value_text:
+          value_id: ideal_6
+          description: Ideal 6
+          value: Ideal 6
+  - type: value_set_base
+    value_set_base:
+      value_set_id: swashbuckler_bonds
+      label: Swashbuckler Bonds
+      label_singular: Swashbuckler Bonds
+      description: Swashbuckler bonds
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: bond_1
+          description: Bond 1
+          value: Bond 1
+      - type: value_text
+        value_text:
+          value_id: bond_2
+          description: Bond 2
+          value: Bond 2
+      - type: value_text
+        value_text:
+          value_id: bond_3
+          description: Bond 3
+          value: Bond 3
+      - type: value_text
+        value_text:
+          value_id: bond_4
+          description: Bond 4
+          value: Bond 4
+      - type: value_text
+        value_text:
+          value_id: bond_5
+          description: Bond 5
+          value: Bond 5
+  - type: value_set_base
+    value_set_base:
+      value_set_id: swashbuckler_flaws
+      label: Swashbuckler Flaws
+      label_singular: Swashbuckler Flaws
+      description: Swashbuckler flaws
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: flaw_1
+          description: Flaw 1
+          value: Flaw 1
+      - type: value_text
+        value_text:
+          value_id: flaw_2
+          description: Flaw 2
+          value: Flaw 2
+      - type: value_text
+        value_text:
+          value_id: flaw_3
+          description: Flaw 3
+          value: Flaw 3
+      - type: value_text
+        value_text:
+          value_id: flaw_4
+          description: Flaw 4
+          value: Flaw 4
+      - type: value_text
+        value_text:
+          value_id: flaw_5
+          description: Flaw 5
+          value: Flaw 5
+  - type: value_set_base
+    value_set_base:
+      value_set_id: soldier_personality_traits
+      label: Soldier Personality Traits
+      label_singular: Soldier Personality Trait
+      description: Soldier personality traits.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: trait_1
+          description: Trait 1
+          value: Trait 1
+      - type: value_text
+        value_text:
+          value_id: trait_2
+          description: Trait 2
+          value: Trait 2
+      - type: value_text
+        value_text:
+          value_id: trait_3
+          description: Trait 3
+          value: Trait 3
+      - type: value_text
+        value_text:
+          value_id: trait_4
+          description: Trait 4
+          value: Trait 4
+      - type: value_text
+        value_text:
+          value_id: trait_5
+          description: Trait 5
+          value: Trait 5
+  - type: value_set_base
+    value_set_base:
+      value_set_id: soldier_ideals
+      label: Soldier Ideals
+      label_singular: Soldier Ideals
+      description: Soldier ideals
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: ideal_1
+          description: Ideal 1
+          value: Ideal 1
+      - type: value_text
+        value_text:
+          value_id: ideal_2
+          description: Ideal 2
+          value: Ideal 2
+      - type: value_text
+        value_text:
+          value_id: ideal_3
+          description: Ideal 3
+          value: Ideal 3
+      - type: value_text
+        value_text:
+          value_id: ideal_4
+          description: Ideal 4
+          value: Ideal 4
+      - type: value_text
+        value_text:
+          value_id: ideal_5
+          description: Ideal 5
+          value: Ideal 5
+      - type: value_text
+        value_text:
+          value_id: ideal_6
+          description: Ideal 6
+          value: Ideal 6
+  - type: value_set_base
+    value_set_base:
+      value_set_id: soldier_bonds
+      label: Soldier Bonds
+      label_singular: Soldier Bonds
+      description: Soldier bonds
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: bond_1
+          description: Bond 1
+          value: Bond 1
+      - type: value_text
+        value_text:
+          value_id: bond_2
+          description: Bond 2
+          value: Bond 2
+      - type: value_text
+        value_text:
+          value_id: bond_3
+          description: Bond 3
+          value: Bond 3
+      - type: value_text
+        value_text:
+          value_id: bond_4
+          description: Bond 4
+          value: Bond 4
+      - type: value_text
+        value_text:
+          value_id: bond_5
+          description: Bond 5
+          value: Bond 5
+  - type: value_set_base
+    value_set_base:
+      value_set_id: soldier_flaws
+      label: Soldier Flaws
+      label_singular: Soldier Flaws
+      description: Soldier flaws
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: flaw_1
+          description: Flaw 1
+          value: Flaw 1
+      - type: value_text
+        value_text:
+          value_id: flaw_2
+          description: Flaw 2
+          value: Flaw 2
+      - type: value_text
+        value_text:
+          value_id: flaw_3
+          description: Flaw 3
+          value: Flaw 3
+      - type: value_text
+        value_text:
+          value_id: flaw_4
+          description: Flaw 4
+          value: Flaw 4
+      - type: value_text
+        value_text:
+          value_id: flaw_5
+          description: Flaw 5
+          value: Flaw 5
+    value_set_base:
       value_set_id: languages
       label: Languages
       label_singular: Language
@@ -4311,6 +4630,82 @@ engine:
       result:
         type: engine_value_number
         engine_value_number: 6
+  - function_id: background_personality_trait_value_set_id
+    label: Background Personality Trait Value Set Id
+    description: Swashbuckler background personality trait value set ids.
+    type_signature:
+      parameter1_type: text
+      result_type: text
+    tuples:
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Swashbuckler'
+      result:
+        type: engine_value_text
+        engine_value_text: 'swashbuckler_personality_traits'
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Soldier'
+      result:
+        type: engine_value_text
+        engine_value_text: 'soldier_personality_traits'
+  - function_id: background_ideal_value_set_id
+    label: Background Ideal Value Set Id
+    description: Swashbuckler background ideal value set ids.
+    type_signature:
+      parameter1_type: text
+      result_type: text
+    tuples:
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Swashbuckler'
+      result:
+        type: engine_value_text
+        engine_value_text: 'swashbuckler_ideals'
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Soldier'
+      result:
+        type: engine_value_text
+        engine_value_text: 'soldier_ideals'
+  - function_id: background_bond_value_set_id
+    label: Background Bond Value Set Id
+    description: Swashbuckler background bond value set ids.
+    type_signature:
+      parameter1_type: text
+      result_type: text
+    tuples:
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Swashbuckler'
+      result:
+        type: engine_value_text
+        engine_value_text: 'swashbuckler_bonds'
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Soldier'
+      result:
+        type: engine_value_text
+        engine_value_text: 'soldier_bonds'
+  - function_id: background_flaw_value_set_id
+    label: Background Flaw Value Set Id
+    description: Background flaw value set ids.
+    type_signature:
+      parameter1_type: text
+      result_type: text
+    tuples:
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Swashbuckler'
+      result:
+        type: engine_value_text
+        engine_value_text: 'swashbuckler_flaws'
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: 'Soldier'
+      result:
+        type: engine_value_text
+        engine_value_text: 'soldier_flaws'
   - function_id: ability_modifier
     label: Ability Modifier
     description:
@@ -4701,6 +5096,78 @@ engine:
       parameter1:
         type: program_parameter_index
         program_parameter_index: 1
+    result_binding_name: result
+  - program_id: background_personality_trait_value_set_id
+    label: Background Personality Trait Value Set Id
+    description: The peronality trait value set for a background.
+    type_signature:
+      result_type: text
+    statements:
+    - binding_name: result
+      function_id: background_personality_trait_value_set_id
+      parameter1:
+        type: data_reference
+        data_reference:
+          type: data_reference_text
+          data_reference_text:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: background
+    result_binding_name: result
+  - program_id: background_ideal_value_set_id
+    label: Background Ideal Value Set Id
+    description: The ideal value set for a background.
+    type_signature:
+      result_type: text
+    statements:
+    - binding_name: result
+      function_id: background_ideal_value_set_id
+      parameter1:
+        type: data_reference
+        data_reference:
+          type: data_reference_text
+          data_reference_text:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: background
+    result_binding_name: result
+  - program_id: background_bond_value_set_id
+    label: Background Bond Value Set Id
+    description: The bond value set for a background.
+    type_signature:
+      result_type: text
+    statements:
+    - binding_name: result
+      function_id: background_bond_value_set_id
+      parameter1:
+        type: data_reference
+        data_reference:
+          type: data_reference_text
+          data_reference_text:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: background
+    result_binding_name: result
+  - program_id: background_flaw_value_set_id
+    label: Background Flaw Value Set Id
+    description: The flaw value set for a background.
+    type_signature:
+      result_type: text
+    statements:
+    - binding_name: result
+      function_id: background_flaw_value_set_id
+      parameter1:
+        type: data_reference
+        data_reference:
+          type: data_reference_text
+          data_reference_text:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: background
     result_binding_name: result
   - program_id: proficiency_bonus
     label: Proficency Bonus
@@ -5260,9 +5727,17 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: charisma_modifier
-  - summation_id: skill_acrobatics_bonus
-    summation_name: Skill (Acrobatics) Bonus
+  - summation_id: skill_acrobatics_roll
+    summation_name: Skill (Acrobatics) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -5276,7 +5751,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: acrobatics::is_proficient
+            variable_id: skill_acrobatics_is_proficient
         when_true:
           type: variable_reference
           variable_reference:

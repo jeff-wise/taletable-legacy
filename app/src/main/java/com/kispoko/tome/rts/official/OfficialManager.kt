@@ -30,7 +30,7 @@ import java.io.InputStream
 
 
 /**
- * Official Manage
+ * Official Manager
  */
 object OfficialManager
 {
@@ -41,9 +41,11 @@ object OfficialManager
 
     private var gameManifest : GameManifest? = null
 
-    private var heroesCharacterSheetManifest : HeroesCharacterSheetManifest? = null
-    private var heroesCreatureSheetManifest : HeroesCreatureSheetManifest? = null
-    private var heroesNPCSheetManifest : HeroesNPCSheetManifest? = null
+    private var heroesCharacterSheetManifest  : HeroesCharacterSheetManifest? = null
+    private var heroesCreatureSheetManifest   : HeroesCreatureSheetManifest? = null
+    private var heroesGenericNPCSheetManifest : HeroesGenericNPCSheetManifest? = null
+    private var heroesNamedNPCSheetManifest   : HeroesNamedNPCSheetManifest? = null
+    private var heroesGMToolsSheetManifest    : HeroesGMToolsSheetManifest? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -277,11 +279,11 @@ object OfficialManager
     // The Magic of Heroes > NPC Manifest
     // -----------------------------------------------------------------------------------------
 
-    fun heroesNPCSheetManifest(context : Context) : HeroesNPCSheetManifest?
+    fun heroesGenericNPCSheetManifest(context : Context) : HeroesGenericNPCSheetManifest?
     {
-        if (heroesNPCSheetManifest == null)
+        if (heroesGenericNPCSheetManifest == null)
         {
-            val summaries = loadHeroesNPCSheetManifest(context)
+            val summaries = loadHeroesGenericNPCSheetManifest(context)
             when (summaries) {
                 is Val -> return summaries.value
                 is Err -> {
@@ -297,13 +299,13 @@ object OfficialManager
     }
 
 
-    private fun loadHeroesNPCSheetManifest(context : Context) : AppEff<HeroesNPCSheetManifest>
+    private fun loadHeroesGenericNPCSheetManifest(context : Context) : AppEff<HeroesGenericNPCSheetManifest>
     {
         val filePath = ApplicationAssets.officialHeroesDirectoryPath +
-                                        "/npc_sheet_manifest.yaml"
+                                        "/generic_npc_sheet_manifest.yaml"
 
         val sheetManifestParser = parseYaml(context.assets.open(filePath),
-                                            HeroesNPCSheetManifest.Companion::fromYaml)
+                                            HeroesGenericNPCSheetManifest.Companion::fromYaml)
         return when (sheetManifestParser)
         {
             is Val -> effValue(sheetManifestParser.value)

@@ -296,7 +296,7 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) = invocation.dependencies()
+    override fun dependencies(sheetContext : SheetContext) = invocation.dependencies(sheetContext)
 
 
     // -----------------------------------------------------------------------------------------
@@ -378,7 +378,7 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
         GameManager.engine(sheetContext.gameId)
-                .apply { it.value(this.valueReference, sheetContext.gameId) }
+                .apply { it.value(this.valueReference, sheetContext) }
                 .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
 
 
@@ -436,7 +436,7 @@ data class NumberVariableSummationValue(val summationId : SummationId)
 //                         .apply { effValue<AppError,Set<VariableReference>>(it.dependencies()) }
 
         val deps = SheetManager.summation(summationId, sheetContext)
-                         .apply { effValue<AppError,Set<VariableReference>>(it.dependencies()) }
+                         .apply { effValue<AppError,Set<VariableReference>>(it.dependencies(sheetContext)) }
 
         when (deps) {
             is effect.Val -> return deps.value

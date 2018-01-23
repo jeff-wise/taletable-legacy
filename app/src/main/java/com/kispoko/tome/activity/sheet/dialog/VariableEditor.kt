@@ -149,6 +149,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                                  sheetUIContext : SheetUIContext)
 {
     val variableValue = textVariable.variableValue()
+    val sheetContext = SheetContext(sheetUIContext)
 
     when (variableValue)
     {
@@ -170,9 +171,9 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val valueSetId     = valueReference.valueSetId
 
             val valueSet = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.valueSet(valueSetId) }
+                                      .apply { it.valueSet(valueSetId, sheetContext) }
             val value    = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.value(valueReference, sheetUIContext.gameId) }
+                                      .apply { it.value(valueReference, sheetContext) }
 
             when (valueSet)
             {

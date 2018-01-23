@@ -5,6 +5,7 @@ package com.kispoko.tome.model.game.engine.program
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppEvalError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -12,6 +13,7 @@ import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueNumber
+import com.kispoko.tome.model.game.engine.EngineValueText
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
@@ -19,6 +21,7 @@ import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.interpreter.UnexpectedProgramResultType
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -111,12 +114,19 @@ data class Invocation(override val id : UUID,
     /**
      * The set of variables that the program depends on.
      */
-    fun dependencies() : Set<VariableReference>
+    fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
     {
         val deps = mutableSetOf<VariableReference>()
 
         this.parameters().forEach {
-            deps.addAll(it.dependencies())
+            deps.addAll(it.dependencies(sheetContext))
+        }
+
+        val programDeps = SheetManager.program(this.programId, sheetContext).apply {
+                effValue<AppError,Set<VariableReference>>(it.dependencies(sheetContext)) }
+        when (programDeps) {
+            is Val -> deps.addAll(programDeps.value)
+            is Err -> ApplicationLog.error(programDeps.error)
         }
 
         return deps
@@ -158,6 +168,20 @@ data class Invocation(override val id : UUID,
                 is EngineValueNumber -> effValue(engineValue.value)
                 else                 ->
                     effError<AppError,Double>(
+                            AppEvalError(UnexpectedProgramResultType(this.programId(),
+                                                                      engineValue.type(),
+                                                                      EngineValueType.Number)))
+            }
+        }
+
+
+    fun textValue(sheetContext : SheetContext) : AppEff<String> =
+        this.value(sheetContext) ap { engineValue ->
+            when (engineValue)
+            {
+                is EngineValueText -> effValue(engineValue.value)
+                else                 ->
+                    effError<AppError,String>(
                             AppEvalError(UnexpectedProgramResultType(this.programId(),
                                                                       engineValue.type(),
                                                                       EngineValueType.Number)))

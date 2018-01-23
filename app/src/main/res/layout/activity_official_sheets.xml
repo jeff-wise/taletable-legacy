@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:background="@color/dark_theme_primary_88"
             app:tabGravity="fill"
-            app:tabMode="fixed"
+            app:tabMode="scrollable"
             app:tabTextColor="@color/dark_blue_hl_8"
             app:tabSelectedTextColor="@color/dark_blue_hlx_5"
             app:tabIndicatorColor="@color/dark_blue_hl_1" />

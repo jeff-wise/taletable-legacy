@@ -16,6 +16,7 @@ import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSet
@@ -315,7 +316,9 @@ data class BooleanVariable(override val id : UUID,
 
     override fun type(): VariableType = VariableType.BOOLEAN
 
-    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
+
+    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies(sheetContext)
+
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             this.variableValue().companionVariables(sheetContext)
@@ -328,8 +331,22 @@ data class BooleanVariable(override val id : UUID,
     fun value() : AppEff<Boolean> = this.variableValue().value()
 
 
+    fun toggleValue(sheetId : SheetId)
+    {
+        Log.d("***VARIABLE", "toggle boolean value")
+        this.value() apDo {
+            if (it)
+                this.updateValue(false, sheetId)
+            else
+                this.updateValue(true, sheetId)
+        }
+
+    }
+
+
     fun updateValue(value : Boolean, sheetId : SheetId)
     {
+        Log.d("***VARIABLE", "update boolean value: $value")
         when (this.variableValue())
         {
             is BooleanVariableLiteralValue -> {
@@ -800,7 +817,7 @@ data class TextVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
+    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies(sheetContext)
 
 
     override fun type(): VariableType = VariableType.TEXT
@@ -830,33 +847,34 @@ data class TextVariable(override val id : UUID,
     }
 
 
-    fun updateLiteralValue(value : String, sheetId : SheetId)
+//    fun updateLiteralValue(value : String, sheetId : SheetId)
+//    {
+//        when (this.variableValue())
+//        {
+//        }
+//    }
+
+
+    fun updateValue(value : String, sheetId : SheetId)
     {
-        when (this.variableValue())
+        val currentVariableValue = this.variableValue()
+        when (currentVariableValue)
         {
             is TextVariableLiteralValue ->
             {
                 this.variableValue = TextVariableLiteralValue(value)
                 SheetManager.onVariableUpdate(sheetId, this)
             }
-        }
-    }
-
-
-    fun updateValue(valueId : ValueId, sheetId : SheetId)
-    {
-        val currentVariableValue = this.variableValue()
-        when (currentVariableValue)
-        {
             is TextVariableValueValue -> {
                 val valueSetId = currentVariableValue.valueReference.valueSetId
-                val newValueReference = ValueReference(valueSetId, valueId)
+                val newValueReference = ValueReference(valueSetId, TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
                 SheetManager.onVariableUpdate(sheetId, this)
             }
             is TextVariableValueUnknownValue -> {
                 val valueSetId = currentVariableValue.valueSetId
-                val newValueReference = ValueReference(valueSetId, valueId)
+                val newValueReference = ValueReference(TextReferenceLiteral(valueSetId.value),
+                                                       TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
                 SheetManager.onVariableUpdate(sheetId, this)
             }

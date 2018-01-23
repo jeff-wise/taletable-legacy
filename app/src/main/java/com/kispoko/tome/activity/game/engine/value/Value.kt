@@ -102,13 +102,13 @@ class ValueActivity : AppCompatActivity()
         val valueReference = this.valueReference
         if (gameId != null && valueReference != null)
         {
-            val value = GameManager.engine(gameId)
-                                      .apply { it.value(valueReference, gameId) }
-
-            when (value) {
-                is Val -> this.value = value.value
-                is Err -> ApplicationLog.error(value.error)
-            }
+//            val value = GameManager.engine(gameId)
+//                                      .apply { it.value(valueReference, gameId) }
+//
+//            when (value) {
+//                is Val -> this.value = value.value
+//                is Err -> ApplicationLog.error(value.error)
+//            }
         }
         else if (this.valueSetId != null)
         {

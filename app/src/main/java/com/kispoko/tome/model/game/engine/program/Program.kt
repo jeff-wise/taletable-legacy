@@ -13,6 +13,8 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
+import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.game.engine.interpreter.ResultBindingDoesNotExist
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
@@ -147,6 +149,22 @@ data class Program(override val id : UUID,
                                 PrimValue(this.typeSignature),
                                 CollValue(this.statements),
                                 PrimValue(this.resultBindingName))
+
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    {
+        val deps = mutableSetOf<VariableReference>()
+
+        this.statements().forEach {
+            deps.addAll(it.dependencies(sheetContext))
+        }
+
+        return deps
+    }
 
 
     // -----------------------------------------------------------------------------------------

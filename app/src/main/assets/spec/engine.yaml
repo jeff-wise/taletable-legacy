@@ -1108,6 +1108,8 @@ types:
       description: A text variable reference.
     - type: value_reference
       description: A text value reference.
+    - type: program_invocation
+      description: A text value reference.
 - type: primitive_type
   primitive_type:
     name: mechanic_id
@@ -2021,14 +2023,14 @@ types:
     - name: value_set_id
       type: 
         type: custom_type
-        custom_type: value_set_id
+        custom_type: data_reference_text
       presence: required
       description: >
         The name of the value set.
     - name: value_id
       type:
         type: custom_type
-        custom_type: value_id
+        custom_type: data_reference_text
       presence: optional
       description: >
         The name of the value.

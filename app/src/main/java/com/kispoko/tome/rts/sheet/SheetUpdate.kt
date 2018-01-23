@@ -54,6 +54,10 @@ sealed class WidgetUpdateActionWidget(override val widgetId : UUID) : WidgetUpda
 data class ActionWidgetUpdate(override val widgetId : UUID) : WidgetUpdateActionWidget(widgetId)
 
 
+sealed class WidgetUpdateBooleanWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+
+data class BooleanWidgetUpdateToggle(override val widgetId : UUID) : WidgetUpdateBooleanWidget(widgetId)
+
 
 // List Widget Update
 sealed class WidgetUpdateListWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
@@ -126,6 +130,8 @@ data class TextWidgetUpdateSetText(override val widgetId : UUID,
 sealed class UpdateTarget : Serializable
 
 data class UpdateTargetActionWidget(val actionWidgetId : UUID) : UpdateTarget()
+
+data class UpdateTargetBooleanWidget(val booleanWidgetId : UUID) : UpdateTarget()
 
 data class UpdateTargetListWidget(val listWidgetId : UUID) : UpdateTarget()
 

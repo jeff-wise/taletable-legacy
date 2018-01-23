@@ -253,7 +253,6 @@ data class GroupRow(override val id : UUID,
         }
         else
         {
-            Log.d("***GROUP ROW", "does not have colums")
             this.widgets().forEach { layout.addView(it.view(sheetUIContext)) }
         }
 

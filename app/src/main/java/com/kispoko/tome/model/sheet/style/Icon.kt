@@ -32,6 +32,36 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
     // CASES
     // -----------------------------------------------------------------------------------------
 
+    object Skull : Icon()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "skull" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("skull")
+
+    }
+
+    object SkullAndCrossbones : Icon()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "skull_and_crossbones" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("skull_and_crossbones")
+
+    }
+
     object Sword : Icon()
     {
 
@@ -59,6 +89,21 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
         // -------------------------------------------------------------------------------------
 
         override fun toDocument() = DocText("shield")
+
+    }
+
+    object Heart : Icon()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "heart" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("heart")
 
     }
 
@@ -238,16 +283,19 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
                 "coins"             -> effValue<ValueError,Icon>(Icon.Coins)
                 "dice_roll"         -> effValue<ValueError,Icon>(Icon.DiceRoll)
                 "dice_roll_filled"  -> effValue<ValueError,Icon>(Icon.DiceRollFilled)
+                "heart"             -> effValue<ValueError,Icon>(Icon.Heart)
                 "heart_plus"        -> effValue<ValueError,Icon>(Icon.HeartPlus)
                 "mind"              -> effValue<ValueError,Icon>(Icon.Mind)
                 "parchment"         -> effValue<ValueError,Icon>(Icon.Parchment)
                 "running"           -> effValue<ValueError,Icon>(Icon.Running)
                 "shield"            -> effValue<ValueError,Icon>(Icon.Shield)
                 "sleeping_bag"      -> effValue<ValueError,Icon>(Icon.SleepingBag)
-                "sword"             -> effValue<ValueError,Icon>(Icon.Sword)
-                "sword_outline"     -> effValue<ValueError,Icon>(Icon.SwordOutline)
-                else                -> effError<ValueError,Icon>(
-                                            UnexpectedValue("Icon", doc.text, doc.path))
+                "skull"             -> effValue<ValueError,Icon>(Icon.Skull)
+                "skull_and_crossbones"  -> effValue<ValueError,Icon>(Icon.SkullAndCrossbones)
+                "sword"                 -> effValue<ValueError,Icon>(Icon.Sword)
+                "sword_outline"         -> effValue<ValueError,Icon>(Icon.SwordOutline)
+                else                    -> effError<ValueError,Icon>(
+                                               UnexpectedValue("Icon", doc.text, doc.path))
             }
             else            -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
@@ -261,14 +309,17 @@ sealed class Icon : ToDocument, SQLSerializable, Serializable
         is Coins            -> R.drawable.icon_coins
         is DiceRoll         -> R.drawable.icon_dice_roll
         is DiceRollFilled   -> R.drawable.icon_dice_roll_filled
+        is Heart            -> R.drawable.icon_heart
         is HeartPlus        -> R.drawable.icon_heart_plus
         is Mind             -> R.drawable.icon_mind
         is Parchment        -> R.drawable.icon_parchment
         is Running          -> R.drawable.icon_running
         is Shield           -> R.drawable.icon_shield
         is SleepingBag      -> R.drawable.icon_sleeping_bag
-        is Sword            -> R.drawable.icon_sword
-        is SwordOutline     -> R.drawable.icon_sword_outline
+        is Skull                -> R.drawable.icon_skull
+        is SkullAndCrossbones   -> R.drawable.icon_skull_and_crossbones
+        is Sword                -> R.drawable.icon_sword
+        is SwordOutline         -> R.drawable.icon_sword_outline
     }
 
 }
@@ -378,7 +429,7 @@ data class IconSize(val width : Int,
         {
             is DocDict ->
             {
-                effApply(::IconSize, doc.int("width"), doc.int("width"))
+                effApply(::IconSize, doc.int("width"), doc.int("height"))
             }
             else       -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }

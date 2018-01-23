@@ -16,6 +16,7 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
@@ -65,7 +66,7 @@ sealed class SummationTerm(open val termName : Maybe<TermName>)
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    abstract fun dependencies(): Set<VariableReference>
+    abstract fun dependencies(sheetContext : SheetContext): Set<VariableReference>
 
 
     abstract fun value(sheetContext : SheetContext,
@@ -133,7 +134,7 @@ data class SummationTermNumber(override val id : UUID,
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> = this.numberReference().dependencies()
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = this.numberReference().dependencies()
 
 
     override fun value(sheetContext : SheetContext,
@@ -258,8 +259,8 @@ data class SummationTermDiceRoll(override val id : UUID,
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> =
-            this.diceRollReference().dependencies()
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> =
+            this.diceRollReference().dependencies(sheetContext)
 
 
     override fun value(sheetContext : SheetContext, context : Maybe<VariableNamespace>) : Maybe<Double>
@@ -425,7 +426,7 @@ data class SummationTermConditional(override val id : UUID,
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(): Set<VariableReference> =
+    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> =
         conditionalValueReference.dependencies()
             .plus(trueValueReference.dependencies())
             .plus(falseValueReference.dependencies())

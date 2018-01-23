@@ -166,11 +166,11 @@ class ValueActionViewBuilder(val valueReference : ValueReference,
 
         // Delete Value Button
         val deleteOnClick = View.OnClickListener {
-            GameManager.engine(gameId)
-                    .apply { it.baseValueSet(valueReference.valueSetId) }
-                    .apDo { it.removeValue(valueReference.valueId) }
-            valueSetActivity.onUpdate()
-            dialog.dismiss()
+//            GameManager.engine(gameId)
+//                    .apply { it.baseValueSet(valueReference.valueSetId) }
+//                    .apDo { it.removeValue(valueReference.valueId) }
+//            valueSetActivity.onUpdate()
+//            dialog.dismiss()
         }
         layout.addView(this.buttonView(R.drawable.icon_delete_bin,
                                        R.string.delete_value,

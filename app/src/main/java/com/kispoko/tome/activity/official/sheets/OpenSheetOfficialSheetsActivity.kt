@@ -25,7 +25,7 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesCharactersFragment
 import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesCreaturesFragment
-import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesNPCsFragment
+import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesGenericNPCsFragment
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.CustomTabLayout
@@ -258,7 +258,7 @@ class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
     // PROPERTEIS
     // -----------------------------------------------------------------------------------------
 
-    private val pageCount = 3
+    private val pageCount = 5
 
 
     // -----------------------------------------------------------------------------------------
@@ -270,7 +270,9 @@ class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
         {
             0    -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
             1    -> MagicOfHeroesCreaturesFragment.newInstance(appThemeId)
-            2    -> MagicOfHeroesNPCsFragment.newInstance(appThemeId)
+            2    -> MagicOfHeroesGenericNPCsFragment.newInstance(appThemeId)
+            3    -> MagicOfHeroesGenericNPCsFragment.newInstance(appThemeId)
+            4    -> MagicOfHeroesGenericNPCsFragment.newInstance(appThemeId)
             else -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
         }
 
@@ -283,7 +285,9 @@ class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
         {
             0    -> "Characters"
             1    -> "Creatures"
-            2    -> "NPCs"
+            2    -> "Generic NPCs"
+            3    -> "Named NPCs"
+            4    -> "GM Tools"
             else -> "Other"
         }
 

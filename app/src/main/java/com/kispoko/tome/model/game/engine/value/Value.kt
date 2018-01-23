@@ -7,14 +7,14 @@ import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.RulebookReference
+import com.kispoko.tome.model.game.engine.reference.TextReference
+import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
+import com.kispoko.tome.model.game.engine.reference.TextReferenceValue
 import com.kispoko.tome.model.game.engine.variable.Variable
-import com.kispoko.tome.model.game.engine.variable.VariableTag
-import com.kispoko.tome.model.game.engine.variable.VariableTagSet
 import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
 import com.kispoko.tome.util.Util
 import effect.*
@@ -115,7 +115,10 @@ sealed class Value(open val valueId : ValueId,
     }
 
 
-    fun valueReference() = ValueReference(this.valueSetId(), this.valueId())
+    fun valueReference() =
+        ValueReference(TextReferenceLiteral(this.valueSetId.value),
+                       TextReferenceLiteral(this.valueId.value))
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -469,7 +472,7 @@ sealed class ValueType : ToDocument, SQLSerializable, Serializable
 /**
  * Value Reference
  */
-data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
+data class ValueReference(val valueSetId : TextReference, val valueId : TextReference)
             : ToDocument, SQLSerializable, Serializable
 {
 
@@ -479,13 +482,13 @@ data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
 
     companion object : Factory<ValueReference>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ValueReference> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ValueReference> = when (doc)
         {
-            is DocDict -> effApply(::ValueReference,
-                                   // Value Set Name
-                                   doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
-                                   // Value Name
-                                   doc.at("value_id") ap { ValueId.fromDocument(it) })
+            is DocDict -> apply(::ValueReference,
+                                // Value Set Name
+                                doc.at("value_set_id") ap { TextReference.fromDocument(it) },
+                                // Value Name
+                                doc.at("value_id") ap { TextReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

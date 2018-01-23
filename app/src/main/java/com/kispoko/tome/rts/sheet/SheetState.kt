@@ -7,6 +7,7 @@ import com.kispoko.tome.app.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
 import com.kispoko.tome.model.game.engine.EngineValueNumber
+import com.kispoko.tome.model.game.engine.EngineValueText
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.*
@@ -381,6 +382,12 @@ class SheetState(val sheetContext : SheetContext,
             {
                 this.numberVariableWithId(variableId) apDo { numberVariable ->
                     numberVariable.updateValue(engineValue.value, sheetContext.sheetId)
+                }
+            }
+            is EngineValueText ->
+            {
+                this.textVariableWithId(variableId) apDo { textVar ->
+                    textVar.updateValue(engineValue.value, sheetContext.sheetId)
                 }
             }
         }

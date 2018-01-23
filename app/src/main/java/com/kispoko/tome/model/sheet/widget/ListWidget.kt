@@ -11,7 +11,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.tome.R.string.variable
+import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
@@ -29,9 +29,9 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.CustomTypefaceSpan
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.value.ValueReference
-import com.kispoko.tome.model.game.engine.value.ValueSet
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.rts.game.GameManager
@@ -265,10 +265,13 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
     {
         val layout = WidgetView.layout(listWidget.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.inlineView())
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 
-        layout.id = Util.generateViewId()
-        listWidget.layoutViewId = layout.id
+        contentLayout.addView(this.inlineView())
+
+        val layoutId = Util.generateViewId()
+        contentLayout.id = layoutId
+        listWidget.layoutViewId = layoutId
 
         return layout
     }
@@ -295,8 +298,9 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
                         val values = GameManager.engine(sheetUIContext.gameId) ap { engine ->
                                      listWidget.value(sheetContext)            ap { valueIds ->
                                             valueIds.mapM { valueId ->
-                                                val valueRef = ValueReference(valueSetId.value, ValueId(valueId))
-                                                engine.value(valueRef, sheetUIContext.gameId)
+                                                val valueRef = ValueReference(TextReferenceLiteral(valueSetId.value.value),
+                                                                              TextReferenceLiteral(valueId))
+                                                engine.value(valueRef, sheetContext)
                                             }
                                      }}
                         when (values) {

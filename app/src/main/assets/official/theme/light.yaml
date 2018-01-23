@@ -2,6 +2,8 @@ id: light
 palette:
 - color_id: white
   color: '#FFFFFF'
+- color_id: grey_500
+  color: '#7F000000'
 - color_id: light_grey_1
   color: '#FAFAFA'
 - color_id: light_grey_2
@@ -12,24 +14,26 @@ palette:
   color: '#EFEFEF'
 - color_id: light_grey_5
   color: '#EAEAEA'
+- color_id: light_grey_55
+  color: '#E8E8E8'
 - color_id: light_grey_6
-  color: '#CBCBCB'
+  color: '#E6E6E6'
 - color_id: light_grey_7
-  color: '#C8C8C8'
+  color: '#E2E2E2'
 - color_id: light_grey_8
-  color: '#C4C4C4'
+  color: '#DDDDDD'
 - color_id: light_grey_9
-  color: '#C0C0C0'
+  color: '#D9D9D9'
 - color_id: light_grey_10
-  color: '#BCBCBC'
+  color: '#D5D5D5'
 - color_id: light_grey_11
-  color: '#B9B9B9'
+  color: '#D1D1D1'
 - color_id: light_grey_12
-  color: '#B5B5B5'
+  color: '#CCCCCC'
 - color_id: light_grey_13
-  color: '#B1B1B1'
+  color: '#C8C8C8'
 - color_id: light_grey_14
-  color: '#ACACAC'
+  color: '#C4C4C4'
 - color_id: light_grey_15
   color: '#A9A9A9'
 - color_id: light_grey_16
@@ -157,12 +161,12 @@ palette:
 - color_id: purple_70
   color: '#B26734B5'
 ui_colors:
-  toolbar_background: dark_grey_9
+  toolbar_background: dark_grey_8
   toolbar_icons: light_grey_4
   title: light_grey_1
-  tab_bar_background: dark_grey_9
+  tab_bar_background: dark_grey_8
   tab_text_normal: light_grey_3
   tab_text_selected: light_grey_2
   tab_underline: light_grey_3
-  bottom_bar_background: dark_grey_9
+  bottom_bar_background: dark_grey_8
   bottom_bar_nav: light_grey_10

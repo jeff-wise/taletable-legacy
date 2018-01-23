@@ -180,12 +180,12 @@ object SheetManager
         if (!this.session.isActive())
         {
             // Testing Case
-//            val casmeyOfficialSheet = OfficialSheet(SheetId("character_casmey_level_1"),
-//                                                    CampaignId("isara"),
-//                                                    GameId("magic_of_heroes"))
-            val casmeyOfficialSheet = OfficialSheet(SheetId("creature_brown_bear"),
+            val casmeyOfficialSheet = OfficialSheet(SheetId("character_casmey_level_1"),
                                                     CampaignId("isara"),
                                                     GameId("magic_of_heroes"))
+//            val casmeyOfficialSheet = OfficialSheet(SheetId("generic_npc_town_guard"),
+//                                                    CampaignId("isara"),
+//                                                    GameId("magic_of_heroes"))
 
             OfficialManager.loadSheet(casmeyOfficialSheet, sheetUI)
         }

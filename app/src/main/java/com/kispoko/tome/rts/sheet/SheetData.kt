@@ -4,10 +4,7 @@ package com.kispoko.tome.rts.sheet
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
-import com.kispoko.tome.model.game.engine.EngineValue
-import com.kispoko.tome.model.game.engine.EngineValueBoolean
-import com.kispoko.tome.model.game.engine.EngineValueDiceRoll
-import com.kispoko.tome.model.game.engine.EngineValueNumber
+import com.kispoko.tome.model.game.engine.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
@@ -16,7 +13,7 @@ import effect.*
 import maybe.Just
 import maybe.Nothing
 import maybe.Maybe
-
+import maybe.apply
 
 
 /**
@@ -43,6 +40,12 @@ object SheetData
             is DataReferenceNumber -> this.number(sheetContext, reference.reference) ap {
                 when (it) {
                     is Just -> effValue<AppError,Maybe<EngineValue>>(Just(EngineValueNumber(it.value)))
+                    else    -> effValue(Nothing())
+                }
+            }
+            is DataReferenceText -> this.text(sheetContext, reference.reference) ap {
+                when (it) {
+                    is Just -> effValue<AppError,Maybe<EngineValue>>(Just(EngineValueText(it.value)))
                     else    -> effValue(Nothing())
                 }
             }
@@ -136,5 +139,6 @@ object SheetData
             is TextReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
                     .apply( { it.textVariable(reference.variableReference)})
                     .apply( { it.value(sheetContext) })
+            is TextReferenceProgram  -> apply(::Just, reference.invocation.textValue(sheetContext))
         }
 }

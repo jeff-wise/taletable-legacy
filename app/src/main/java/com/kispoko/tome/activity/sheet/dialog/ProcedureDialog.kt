@@ -92,9 +92,13 @@ class ProcedureDialog : DialogFragment()
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        val lp : WindowManager.LayoutParams = dialog.window.attributes
+        lp.dimAmount = 0.7f
+
         //dialog.window.attributes.windowAnimations = R.style.DialogAnimation
 
         dialog.setContentView(dialogLayout)
+
 
         val width  = context.resources.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT

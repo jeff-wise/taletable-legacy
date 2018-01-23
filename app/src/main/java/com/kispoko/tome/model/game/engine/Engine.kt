@@ -26,11 +26,13 @@ import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.program.ProgramId
+import com.kispoko.tome.model.game.engine.reference.TextReference
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.rts.game.engine.*
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -200,6 +202,17 @@ data class Engine(override val id : UUID,
                  AppEngineError(ValueSetDoesNotExist(valueSetId)))
 
 
+    fun valueSet(valueSetIdReference : TextReference, sheetContext : SheetContext) : AppEff<ValueSet>
+    {
+        val error : AppError = AppEngineError(TextReferenceIsNull(valueSetIdReference))
+
+        return SheetData.text(sheetContext, valueSetIdReference) ap { mValueSetId ->
+               note(mValueSetId.toNullable(), error)             ap { valueSetId ->
+               this.valueSet(ValueSetId(valueSetId))
+               } }
+    }
+
+
     fun baseValueSet(valueSetId : ValueSetId) : AppEff<ValueSetBase> =
         this.valueSet(valueSetId) ap {
             when (it) {
@@ -254,20 +267,62 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
 
-    fun value(valueReference : ValueReference, gameId : GameId) : AppEff<Value> =
-            this.valueSet(valueReference.valueSetId)
-                    .apply { it.value(valueReference.valueId, gameId) }
+    fun value(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<Value>
+    {
+        val valueSetIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueSetId))
+        val valueIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueId))
+
+        return SheetData.text(sheetContext, valueReference.valueSetId) ap { mValueSetId ->
+               note(mValueSetId.toNullable(), valueSetIdError)         ap { valueSetId ->
+               SheetData.text(sheetContext, valueReference.valueId)    ap { mValueId ->
+               note(mValueId.toNullable(), valueIdError)               ap { valueId ->
+               this.valueSet(ValueSetId(valueSetId))                   ap { valueSet ->
+               valueSet.value(ValueId(valueId), sheetContext.gameId)
+               } } } } }
+
+    }
 
 
-    fun textValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueText> =
-        this.valueSet(valueReference.valueSetId)
-                .apply { it.textValue(valueReference.valueId, sheetContext) }
+    fun numberValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueNumber>
+    {
+        val valueSetIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueSetId))
+        val valueIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueId))
+
+        return SheetData.text(sheetContext, valueReference.valueSetId) ap { mValueSetId ->
+               note(mValueSetId.toNullable(), valueSetIdError)         ap { valueSetId ->
+               SheetData.text(sheetContext, valueReference.valueId)    ap { mValueId ->
+               note(mValueId.toNullable(), valueIdError)               ap { valueId ->
+               this.valueSet(ValueSetId(valueSetId))                   ap { valueSet ->
+               valueSet.numberValue(ValueId(valueId), sheetContext)
+               } } } } }
+    }
 
 
-    fun numberValue(valueReference : ValueReference,
-                    sheetContext : SheetContext) : AppEff<ValueNumber> =
-        this.valueSet(valueReference.valueSetId)
-                .apply { it.numberValue(valueReference.valueId, sheetContext) }
+    fun textValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueText>
+    {
+        val valueSetIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueSetId))
+        val valueIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueId))
+
+        return SheetData.text(sheetContext, valueReference.valueSetId) ap { mValueSetId ->
+               note(mValueSetId.toNullable(), valueSetIdError)         ap { valueSetId ->
+               SheetData.text(sheetContext, valueReference.valueId)    ap { mValueId ->
+               note(mValueId.toNullable(), valueIdError)               ap { valueId ->
+               this.valueSet(ValueSetId(valueSetId))                   ap { valueSet ->
+               valueSet.textValue(ValueId(valueId), sheetContext)
+               } } } } }
+    }
+
+
+//
+//    fun textValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueText> =
+//        this.valueSet(valueReference.valueSetId)
+//                .apply { it.textValue(valueReference.valueId, sheetContext) }
+
+
+//    fun numberValue(valueReference : ValueReference,
+//                    sheetContext : SheetContext) : AppEff<ValueNumber> =
+//        this.valueSet(valueReference.valueSetId)
+//                .apply { it.numberValue(valueReference.valueId, sheetContext) }
 
 
     // Engine Data > Functions

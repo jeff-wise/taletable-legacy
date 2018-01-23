@@ -18,7 +18,6 @@ import com.kispoko.tome.model.game.engine.mechanic.*
 import com.kispoko.tome.model.game.engine.procedure.*
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.model.game.engine.reference.BooleanReference
-import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.reference.DiceRollReference
 import com.kispoko.tome.model.game.engine.reference.NumberReference
 import com.kispoko.tome.model.game.engine.summation.Summation
@@ -950,6 +949,47 @@ typealias DB_WidgetBooleanFormatValue =
               PrimValue<TrueText>,
               PrimValue<FalseText>>
 
+// WIDGET: EXPANDER
+// ---------------------------------------------------------------------------------------------
+
+val widgetExpanderTable =
+    Table4("widget_expander",
+           "widget_id",
+           "format",
+           "header",
+           "groups")
+
+
+typealias DB_WidgetExpanderValue =
+    RowValue4<PrimValue<WidgetId>,
+              ProdValue<ExpanderWidgetFormat>,
+              PrimValue<ExpanderWidgetLabel>,
+              CollValue<Group>>
+
+
+// WIDGET: EXPANDER > FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetExpanderFormatTable =
+    Table7("widget_expander_format",
+           "widget_format",
+           "header_open_format",
+           "header_closed_format",
+           "header_label_open_format",
+           "header_label_closed_format",
+           "header_icon_open_format",
+           "header_icon_closed_format")
+
+
+typealias DB_WidgetExpanderFormatValue =
+    RowValue7<ProdValue<WidgetFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
+
 
 // WIDGET: LIST
 // ---------------------------------------------------------------------------------------------
@@ -957,7 +997,7 @@ typealias DB_WidgetBooleanFormatValue =
 val widgetListTable =
     Table3("widget_list",
            "widget_id",
-           "widget_format",
+           "format",
            "values_variable_id")
 
 typealias DB_WidgetListValue =
@@ -1166,17 +1206,21 @@ typealias DB_WidgetPointsValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetPointsFormatTable =
-    Table5("widget_points_format",
+    Table7("widget_points_format",
            "widget_format",
            "limit_text_format",
            "current_text_format",
            "label_text_format",
+           "info_style",
+           "info_format",
            "bar_format")
 
 typealias DB_WidgetPointsFormatValue =
-    RowValue5<ProdValue<WidgetFormat>,
+    RowValue7<ProdValue<WidgetFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              PrimValue<PointsInfoStyle>,
               ProdValue<TextFormat>,
               ProdValue<PointsBarFormat>>
 
@@ -1187,17 +1231,17 @@ typealias DB_WidgetPointsFormatValue =
 val widgetPointsBarFormatTable =
     Table5("widget_points_bar_format",
            "style",
-           "above_style",
            "height",
-           "limit_color_theme",
-           "current_color_theme")
+           "limit_format",
+           "current_format",
+           "counter_active_icon")
 
 typealias DB_WidgetPointsBarFormatValue =
     RowValue5<PrimValue<PointsBarStyle>,
-              PrimValue<PointsAboveBarStyle>,
               PrimValue<PointsBarHeight>,
-              PrimValue<ColorTheme>,
-              PrimValue<ColorTheme>>
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              MaybePrimValue<Icon>>
 
 
 // WIDGET: QUOTE

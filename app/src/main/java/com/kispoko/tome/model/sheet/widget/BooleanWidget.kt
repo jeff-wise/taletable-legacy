@@ -5,6 +5,8 @@ package com.kispoko.tome.model.sheet.widget
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R
+import com.kispoko.tome.R.id.textView
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.DB_WidgetBooleanFormatValue
 import com.kispoko.tome.db.widgetBooleanFormatTable
@@ -21,9 +23,8 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextFormat
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -301,13 +302,45 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
     {
         val layout = WidgetView.layout(booleanWidget.widgetFormat(), sheetUIContext)
 
-        layout.addView(simpleTextView())
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
+        val simpleView = this.simpleView()
+        val viewId = Util.generateViewId()
+        simpleView.id = viewId
+        booleanWidget.viewId = viewId
+        contentLayout.addView(simpleView)
+
+        layout.setOnClickListener {
+            val sheetUI = sheetUIContext.context as SheetUI
+            SheetManager.updateSheet(sheetUIContext.sheetId, BooleanWidgetUpdateToggle(booleanWidget.id) , sheetUI)
+        }
 
         return layout
     }
 
 
-    private fun simpleTextView() : TextView
+    fun simpleView() : LinearLayout
+    {
+        val layout      = this.simpleViewLayout()
+
+        layout.addView(this.simpleTextView())
+
+        return layout
+    }
+
+
+    fun simpleViewLayout() : LinearLayout
+    {
+        val layout      = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    fun simpleTextView() : TextView
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------

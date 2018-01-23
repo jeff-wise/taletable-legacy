@@ -4,19 +4,18 @@ package com.kispoko.tome.util
 
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
-import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUI
 import com.kispoko.tome.rts.theme.ThemeManager
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+
 
 
 /**
@@ -49,7 +48,15 @@ fun AppCompatActivity.configureToolbar(title : String)
     val titleView = this.findViewById(R.id.toolbar_title) as TextView
 
     titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
-    titleView.text      = title
+
+    val trimmedTitle = if (title.length >= 25) {
+        title.substring(0, 25).plus("\u2026")
+    }
+    else {
+        title
+    }
+
+    titleView.text      = trimmedTitle
 
     //titleView.setTextColor(SheetManager)
 

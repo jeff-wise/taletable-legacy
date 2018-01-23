@@ -779,19 +779,21 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
     {
         val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
 
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
         val wc = storyWidget.story().map { it.wordCount() }.sum()
-        if (wc <= 5 && storyWidget.actionParts().isEmpty())
+        if (wc <= 4 && storyWidget.actionParts().isEmpty())
         {
-            layout.addView(this.storyFlexView(storyWidget, sheetUIContext))
+            contentLayout.addView(this.storyFlexView(storyWidget, sheetUIContext))
         }
         else
         {
             val layoutViewId = Util.generateViewId()
             storyWidget.layoutViewId = layoutViewId
-            layout.id                = layoutViewId
+            contentLayout.id                = layoutViewId
             val spanView = storySpannableView(storyWidget, sheetUIContext)
 
-            layout.addView(spanView)
+            contentLayout.addView(spanView)
         }
 
         // Layout on click
@@ -1040,10 +1042,7 @@ fun storySpannableView(storyWidget : StoryWidget,
     story.paddingSpacing    = storyWidget.format().textFormat().elementFormat().padding()
 
 
-//    val maybeTextSize = storyWidget.format.textSize()
-//    when (maybeTextSize) {
-//        is Just -> story.sizeSp = maybeTextSize.value.sp
-//    }
+    story.sizeSp = storyWidget.format().textFormat().sizeSp()
 
     story.gravity       = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
     story.layoutGravity = storyWidget.widgetFormat().elementFormat().alignment().gravityConstant()
@@ -1303,27 +1302,14 @@ private fun formatSpans(textStyle : TextFormat,
                                      textStyle.elementFormat().backgroundColorTheme())
     val bgColorSpan = BackgroundColorSpan(bgColor)
 
-//    val lineHeight = when (lineSpacing) {
-//        is Just -> Util.dpToPixel(lineSpacing.value.value)
-//        else    -> sizePx * 2
-//    }
- //val bgSpan = RoundedBackgroundHeightSpan(lineHeight, lineSpacing, color, bgColor)
-     // , color, sizePx)
-
     val iconColor : Int? = iconFormat?.let {
-   //     Log.d("***STORY WIDGET", "icon color theme: ${it.colorTheme}")
         SheetManager.color(sheetUIContext.sheetId, it.colorTheme())
     }
 
 
     if (iconColor != null) {
-//        Log.d("***STORY WIDGET", "setting icon color theme: ${Integer.toHexString(iconColor)}")
         drawable?.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
     }
-
-//    if (iconColor != null) {
-//        Log.d("***ROUNDED BACK", "setting icon color: " + Integer.toString(iconColor, 16));
-//    }
 
     return when (lineHeight) {
         is Just -> when (lineSpacing) {
@@ -1336,7 +1322,7 @@ private fun formatSpans(textStyle : TextFormat,
                         drawable,
                         iconFormat?.size(),
                         iconColor)
-                listOf(sizeSpan, typefaceSpan, bgSpan)
+                listOf(bgSpan, typefaceSpan, sizeSpan)
             }
             else -> listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)
         }

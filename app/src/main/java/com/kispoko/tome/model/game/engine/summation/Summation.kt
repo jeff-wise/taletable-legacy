@@ -128,9 +128,9 @@ data class Summation(override val id : UUID,
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    fun dependencies() : Set<VariableReference> =
+    fun dependencies(sheetContext : SheetContext) : Set<VariableReference> =
         this.terms.fold(setOf(), {
-            accSet, term -> accSet.plus(term.dependencies())
+            accSet, term -> accSet.plus(term.dependencies(sheetContext))
         })
 
 

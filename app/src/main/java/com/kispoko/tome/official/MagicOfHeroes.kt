@@ -166,26 +166,26 @@ data class HeroesCreatureSheetSummary(val name : String,
 
 
 // ---------------------------------------------------------------------------------------------
-// NPC SHEETS
+// GENERIC NPC SHEETS
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Heroes NPC Sheet Manifest
+ * Heroes Generic NPC Sheet Manifest
  */
-data class HeroesNPCSheetManifest(val summaries : List<HeroesNPCSheetSummary>)
+data class HeroesGenericNPCSheetManifest(val summaries : List<HeroesGenericNPCSheetSummary>)
 {
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesNPCSheetManifest> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesGenericNPCSheetManifest> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::HeroesNPCSheetManifest,
+                    apply(::HeroesGenericNPCSheetManifest,
                           // Summaries
                           yamlValue.array("summaries") ap {
-                              it.mapApply { HeroesNPCSheetSummary.fromYaml(it) }}
+                              it.mapApply { HeroesGenericNPCSheetSummary.fromYaml(it) }}
                     )
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
@@ -196,22 +196,160 @@ data class HeroesNPCSheetManifest(val summaries : List<HeroesNPCSheetSummary>)
 
 
 /**
- * Heroes NPC Sheet Summary
+ * Heroes Generic NPC Sheet Summary
  */
-data class HeroesNPCSheetSummary(val name : String,
-                                  val type : String,
-                                  val description : String,
-                                  val challengeRating : Int)
+data class HeroesGenericNPCSheetSummary(val name : String,
+                                        val id : String,
+                                        val summary : String,
+                                        val description : String,
+                                        val challengeRating : String)
 {
 
     companion object
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesNPCSheetSummary> =
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesGenericNPCSheetSummary> =
             when (yamlValue)
             {
                 is YamlDict ->
                 {
-                    apply(::HeroesNPCSheetSummary,
+                    apply(::HeroesGenericNPCSheetSummary,
+                          // Name
+                          yamlValue.text("name"),
+                          // Id
+                          yamlValue.text("id"),
+                          // Type
+                          yamlValue.text("summary"),
+                          // Description
+                          yamlValue.text("description"),
+                          // Challenge Rating
+                          yamlValue.text("cr")
+                          )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT,
+                                                  yamlType(yamlValue),
+                                                  yamlValue.path))
+            }
+    }
+
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// GENERIC NPC SHEETS
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Heroes Generic NPC Sheet Manifest
+ */
+data class HeroesNamedNPCSheetManifest(val summaries : List<HeroesNamedNPCSheetSummary>)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesNamedNPCSheetManifest> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::HeroesNamedNPCSheetManifest,
+                          // Summaries
+                          yamlValue.array("summaries") ap {
+                              it.mapApply { HeroesNamedNPCSheetSummary.fromYaml(it) }}
+                    )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+            }
+    }
+
+}
+
+
+/**
+ * Heroes Named NPC Sheet Summary
+ */
+data class HeroesNamedNPCSheetSummary(val name : String,
+                                      val id: String,
+                                      val summary : String,
+                                      val description : String,
+                                      val challengeRating : String)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesNamedNPCSheetSummary> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::HeroesNamedNPCSheetSummary,
+                          // Name
+                          yamlValue.text("name"),
+                          // Id
+                          yamlValue.text("id"),
+                          // Summary
+                          yamlValue.text("summary"),
+                          // Description
+                          yamlValue.text("description"),
+                          // Challenge Rating
+                          yamlValue.text("cr")
+                          )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT,
+                                                  yamlType(yamlValue),
+                                                  yamlValue.path))
+            }
+    }
+
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// GM TOOLS SHEETS
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Heroes GM TOOLS Sheet Manifest
+ */
+data class HeroesGMToolsSheetManifest(val summaries : List<HeroesGMToolsSheetSummary>)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesGMToolsSheetManifest> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::HeroesGMToolsSheetManifest,
+                          // Summaries
+                          yamlValue.array("summaries") ap {
+                              it.mapApply { HeroesGMToolsSheetSummary.fromYaml(it) }}
+                    )
+                }
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+            }
+    }
+
+}
+
+
+/**
+ * Heroes GM Tools Sheet Summary
+ */
+data class HeroesGMToolsSheetSummary(val name : String,
+                                     val type : String,
+                                     val description : String,
+                                     val challengeRating : Int)
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<HeroesGMToolsSheetSummary> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::HeroesGMToolsSheetSummary,
                           // Name
                           yamlValue.text("name"),
                           // Type

@@ -116,7 +116,7 @@ class MagicOfHeroesCreaturesFragment : Fragment()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
 
         return layout.linearLayout(context)
@@ -351,13 +351,11 @@ object CreatureSummaryView
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.gravity          = Gravity.CENTER_VERTICAL
+        layout.gravity          = Gravity.BOTTOM
 
         layout.padding.topDp    = 8f
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
-
-        layout.margin.bottomDp  = 2f
 
         return layout.linearLayout(context)
     }
@@ -369,32 +367,35 @@ object CreatureSummaryView
 
         cr.id                   = R.id.heroes_creatures_item_challenge
 
-        cr.widthDp              = LinearLayout.LayoutParams.WRAP_CONTENT
+        cr.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         cr.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        cr.padding.topDp        = 6f
+        cr.padding.bottomDp     = 6f
+        cr.padding.leftDp       = 8f
+        cr.padding.rightDp      = 8f
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("red_90"))))
+        cr.backgroundColor      = ThemeManager.color(themeId, bgColorTheme)
 
         cr.gravity              = Gravity.CENTER
 
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-//        cr.backgroundColor      = ThemeManager.color(themeId, bgColorTheme)
-
-        cr.backgroundResource    = R.drawable.bg_challenge_rating
-
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("red"))))
         cr.color                = Color.WHITE
 
+        cr.font                 = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Medium,
+                                                context)
 
-        cr.font                  = Font.typeface(TextFont.default(),
-                                                 TextFontStyle.SemiBold,
-                                                 context)
+        cr.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
-        cr.sizeSp                = 16f
+        cr.sizeSp               = 16f
 
         return cr.textView(context)
     }
+
+
 
 
     private fun nameView(themeId : ThemeId, context : Context) : TextView
@@ -469,19 +470,29 @@ object CreatureSummaryView
                                                 TextFontStyle.SemiBold,
                                                 context)
 
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+        summary.backgroundColor      = ThemeManager.color(themeId, bgColorTheme)
+
         val labelColorTheme     = ColorTheme(setOf(
                                     ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+                                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         summary.color           = ThemeManager.color(themeId, labelColorTheme)
 
-        summary.sizeSp          = 15f
+        summary.sizeSp              = 16f
 
-        summary.padding.leftDp  = 8f
-        summary.padding.rightDp = 8f
+        summary.padding.leftDp      = 8f
+        summary.padding.rightDp     = 8f
+        summary.padding.topDp       = 6f
+        summary.padding.bottomDp    = 6f
 
-        summary.margin.bottomDp = 2f
+        summary.margin.leftDp   = 6f
+
+        summary.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
         return summary.textView(context)
     }
+
 
 }
