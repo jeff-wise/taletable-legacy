@@ -190,7 +190,10 @@ object ValueChooserView
                                           sheetUIContext,
                                           dialog)
         val optionsMenuView = optionsMenuView(sheetUIContext.context)
-        val headerView      = headerView(valueSet.labelString(), chooserView,
+
+        val title = "${sheetUIContext.context.getString(R.string.choose)} ${valueSet.labelSingular().value}"
+
+        val headerView      = headerView(title, chooserView,
                                         optionsMenuView, sheetUIContext)
 
         // (2) Initialize
@@ -227,7 +230,7 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
@@ -288,7 +291,7 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         return layout.linearLayout(sheetUIContext.context)
@@ -302,8 +305,8 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.leftDp       = 10f
-        layout.padding.rightDp      = 10f
+        layout.padding.leftDp       = 8f
+        layout.padding.rightDp      = 8f
         layout.padding.topDp        = 14f
         layout.padding.bottomDp     = 14f
 
@@ -322,15 +325,15 @@ object ValueChooserView
         title.text          = titleString
 
         title.font          = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Medium,
+                                            TextFontStyle.Bold,
                                             sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         title.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        title.sizeSp          = 18f
+        title.sizeSp          = 17f
 
         title.margin.leftDp   = 0.5f
 
@@ -445,7 +448,7 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         recyclerView.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         val dividerColorTheme = ColorTheme(setOf(
@@ -537,16 +540,16 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.leftDp       = 6f
-        layout.padding.rightDp      = 7f
+        layout.padding.leftDp       = 8f
+        layout.padding.rightDp      = 8f
 
         layout.padding.topDp        = 10f
         layout.padding.bottomDp     = 10f
 
-        layout.margin.leftDp        = 4f
-        layout.margin.rightDp       = 4f
+        layout.margin.leftDp        = 2f
+        layout.margin.rightDp       = 2f
 
-        layout.margin.topDp         = 3f
+        layout.margin.topDp         = 1f
 
 //        val colorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
@@ -575,7 +578,7 @@ object ValueChooserView
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout // .child(icon)
+        layout.child(icon)
               .child(name)
 
         // (3 A) Icon
@@ -583,10 +586,10 @@ object ValueChooserView
 
         icon.id                     = R.id.choose_value_item_icon
 
-        icon.widthDp                = 16
-        icon.heightDp               = 16
+        icon.widthDp                = 18
+        icon.heightDp               = 18
 
-        icon.image                  = R.drawable.icon_check
+        icon.image                  = R.drawable.icon_check_bold
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -594,6 +597,7 @@ object ValueChooserView
         icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
         icon.margin.rightDp         = 4f
+        icon.margin.topDp         = 1f
 
         icon.visibility             = View.GONE
 
@@ -1145,7 +1149,7 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.layout      = itemView.findViewById(R.id.choose_value_item_layout) as LinearLayout
         this.valueView   = itemView.findViewById(R.id.choose_value_item_value) as TextView
         this.summaryView = itemView.findViewById(R.id.choose_value_item_summary) as TextView
-//        this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
+        this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
         this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
     }
 
@@ -1177,14 +1181,14 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     fun setSummaryText(summaryString : String)
     {
         this.summaryView?.text = summaryString
-        this.summaryView?.setTextColor(summaryColor)
+//        this.summaryView?.setTextColor(summaryColor)
     }
 
 
     fun setSummaryTextSelected(summaryString : String)
     {
         this.summaryView?.text = summaryString
-        this.summaryView?.setTextColor(greenSummaryColor)
+//        this.summaryView?.setTextColor(greenSummaryColor)
     }
 
 //

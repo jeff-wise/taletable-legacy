@@ -1001,7 +1001,7 @@ class DiceViewBuilder(val operation : DiceOperation,
         layout.onClick          = View.OnClickListener {
             val sheetActivity = sheetUIContext.context as SheetActivity
             val adderDialog = AdderDialogFragment.newInstance(this.currentAdderState(),
-                                                            SheetContext(sheetUIContext))
+                                                              SheetContext(sheetUIContext))
             adderDialog.show(sheetActivity.supportFragmentManager, "")
             dialog.dismiss()
         }

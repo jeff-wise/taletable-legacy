@@ -538,11 +538,21 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     {
         val layout = WidgetView.layout(pointsWidget.widgetFormat(), sheetUIContext)
 
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
-
         val layoutViewId = Util.generateViewId()
         pointsWidget.layoutViewId = layoutViewId
-        contentLayout.id = layoutViewId
+        layout.id = layoutViewId
+
+        updateView(layout)
+
+        return layout
+    }
+
+
+    fun updateView(layout : LinearLayout)
+    {
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
+        contentLayout.removeAllViews()
 
         contentLayout.orientation = LinearLayout.VERTICAL
 
@@ -580,8 +590,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                 is Err -> ApplicationLog.error(currentValueVariable.error)
             }
         }
-
-        return layout
     }
 
 
@@ -600,7 +608,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         {
             is PointsInfoStyle.LimitLabelMaxRight ->
             {
-                Log.d("***POINTS WIDGET", "limit label max right")
                 if (currentPointsString != null) {
                     layout.addView(this.currentPointsView(currentPointsString,
                                                           pointsWidget.format().currentTextFormat(),
@@ -702,7 +709,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                         val labelView = this.labelLinearView(label.value.value,
                                                   pointsWidget.format().labelTextFormat(),
                                                   sheetUIContext)
-                        Log.d("***POINTS WIDGET", "adding label linear view")
                         layout.addView(labelView)
                     }
                 }

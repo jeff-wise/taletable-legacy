@@ -50,6 +50,56 @@ engine:
           value_id: soldier
           description: Soldier
           value: Soldier
+      - type: value_text
+        value_text:
+          value_id: chief
+          description: Chief
+          value: Chief
+      - type: value_text
+        value_text:
+          value_id: bureaucrat
+          description: Bureacrat
+          value: Bureaucrat
+      - type: value_text
+        value_text:
+          value_id: merchant
+          description: Merchant
+          value: Merchant
+      - type: value_text
+        value_text:
+          value_id: noble
+          description: Noble
+          value: Noble
+      - type: value_text
+        value_text:
+          value_id: mercenary
+          description: Mercenary
+          value: Mercenary
+      - type: value_text
+        value_text:
+          value_id: tinker
+          description: Tinker
+          value: Tinker
+      - type: value_text
+        value_text:
+          value_id: ecclesiastic
+          description: Ecclesiastic
+          value: Ecclesiastic
+      - type: value_text
+        value_text:
+          value_id: blacksmith
+          description: Blacksmith
+          value: Blacksmith
+      - type: value_text
+        value_text:
+          value_id: fisherman
+          description: Fisherman
+          value: Fisherman
+      - type: value_text
+        value_text:
+          value_id: farmer
+          description: Farmer
+          value: Farmer
   - type: value_set_base
     value_set_base:
       value_set_id: swashbuckler_personality_traits
@@ -725,7 +775,7 @@ engine:
     value_set_base:
       value_set_id: deities
       label: Deities
-      label_singular: Deities
+      label_singular: Deity
       description: The standard deites of The Magic of Heroes.
       value_type: text
       values:
@@ -4288,9 +4338,9 @@ engine:
           type: number_literal
           number_literal: 2
   - id: human_ability_score_bonuses
-    label: Human Ability Score Bonuses
+    label: Ability Score Bonuses
     description: 'The ability score bonuses that humans acquire at first level.'
-    summary: '+1 to each ability score'
+    summary: 'Your ability scores each increase by 1.'
     category_id: race_human
     requirements:
     - name: 'is_race_human'
@@ -4355,6 +4405,22 @@ engine:
         value:
           type: number_literal
           number_literal: 1
+  - id: human_languages
+    label: Languages
+    description: 'You can speak, read, and write Common and one extra language of your choice.'
+    summary: 'You can speak, read, and write Common and one extra language of your choice.'
+    category_id: race_human
+    requirements:
+    - name: 'is_race_human'
+    variables:
+  - id: human_speed
+    label: Speed
+    description: 'Your base walking speed is 30 feet.'
+    summary: 'Your base walking speed is 30 feet.'
+    category_id: race_human
+    requirements:
+    - name: 'is_race_human'
+    variables:
   - id: tiefling_ability_score_bonuses
     label: Tiefling Ability Score Bonuses
     description: 'The ability score bonuses that Tieflings acquire at first level.'
@@ -4383,10 +4449,10 @@ engine:
         value:
           type: number_literal
           number_literal: 2
-  - id: fighter
-    label: Fighter Class Mechanics
-    description: 'Figher class mechanics.'
-    summary: 'Figher class mechanics.'
+  - id: fighter_saving_throws
+    label: Saving Throws
+    description: 'Fighter class saving throw proficiencies.'
+    summary: 'Proficient with strength and constitution saving throws.'
     category_id: class_fighter
     requirements:
     - name: 'is_class_fighter'
@@ -4447,6 +4513,150 @@ engine:
         value:
           type: boolean_literal
           boolean_literal: true
+  - id: fighter_armor
+    label: Armor
+    description: 'Fighter armor proficiencies.'
+    summary: 'Proficient with all armor and shields.'
+    category_id: class_fighter
+    requirements:
+    - name: 'is_class_fighter'
+    variables:
+  - id: fighter_weapons
+    label: Weapons
+    description: 'Fighter weapon proficiencies.'
+    summary: 'Proficient with simple weapons and martial weapons.'
+    category_id: class_fighter
+    requirements:
+    - name: 'is_class_fighter'
+    variables:
+  - id: fighter_skills
+    label: Skills
+    description: 'Fighter skill proficiencies.'
+    summary: 'Proficient in 2 skills from this list: Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, Survival.'
+    category_id: class_fighter
+    requirements:
+    - name: 'is_class_fighter'
+    variables:
+  - id: fighter_fighting_style
+    label: Fighting Style
+    description: 'Fighter armor proficiencies.'
+    summary: "Choose your fighting style\u2026"
+    category_id: class_fighter
+    requirements:
+    - name: 'is_class_fighter'
+    mechanic_type: option
+    variables:
+    - type: variable_boolean
+      variable_boolean:
+        id: fighter_has_fighting_style_archery
+        label: Archery
+        description: 'You gain a +2 bonus to attack rolls you make with ranged weapons.'
+        value:
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: fighter_has_fighting_style_defense
+        label: Defense
+        description: 'While you are wearing armor, you gain a +1 bonus to AC.'
+        value:
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: fighter_has_fighting_style_dueling
+        label: Dueling
+        description: 'When you are wielding a melee weapon in one hand and no other weapons, you
+                      gain a +2 bonus to damage rolls with that weapon.'
+        value:
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: fighter_has_fighting_style_great_weapon
+        label: Great Weapon Fighting
+        description: 'When you roll a 1 or 2 on a damage die for an attack you make with a melee weapon
+                      that you are wielding with two hands, you can reroll the die and must use the new
+                      roll, even if the new roll is a 1 or a 2. The weapon must have the two-handed or
+                      versatile property for you to gain this benefit.'
+        value:
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: fighter_has_fighting_style_protection
+        label: Protection
+        description: 'When a creature you can see attacks a target other than you that is within 5
+                      feet of you, you can use your reaction to impose disadvantage on the attack
+                      roll. You must be wielding a shield.'
+        value:
+          type: boolean_literal
+          boolean_literal: false
+    - type: variable_boolean
+      variable_boolean:
+        id: fighter_has_fighting_style_two_weapon
+        label: Two-Weapon Fighting
+        description: 'When you engage in two-weapon fighting, you can add your ability modifier to
+                      the damage of the second attack.'
+        value:
+          type: boolean_literal
+          boolean_literal: false
+  - id: fighter_fighting_style_dueling
+    label: 'Fighting Style: Dueling'
+    description: 'You gain a +2 bonus to attack rolls you make with ranged weapons.'
+    summary: 'You gain a +2 bonus to attack rolls you make with ranged weapons.'
+    category_id: class_fighter
+    mechanic_type: option_selected
+    requirements:
+    - name: 'fighter_has_fighting_style_dueling'
+    annotation: '1st level'
+    variables:
+    - type: variable_number
+      variable_number:
+        id: fighter_fighting_style_dueling_attack_roll_bonus
+        label: Attack Roll Bonus
+        description: The bonus to attacks for the dueling fighting style.
+        tags:
+        - attack_roll_bonus
+        value:
+          type: number_literal
+          number_literal: 2
+  - id: fighter_second_wind
+    label: 'Second Wind'
+    description: 'You gain a +2 bonus to attack rolls you make with ranged weapons.'
+    summary: 'You have a limited well of stamina that you can draw on to protect yourself from harm.
+              On your turn, you can use a bonus action to regain hit points equal to 1d10 + your
+              fighter level. Once you use this feature, you must finish a short or long rest before
+              you can use it again.'
+    category_id: class_fighter
+    mechanic_type: auto
+    requirements:
+    annotation: '1st level'
+    variables:
+  - id: background_swashbuckler_skills
+    label: Skills
+    description: 'Swashbuckler background skill proficiencies.'
+    summary: 'Proficient in Acrobatics and Perception.'
+    category_id: background_swashbuckler
+    requirements:
+    - name: 'is_class_fighter'
+    variables:
+  - id: background_swashbuckler_languages
+    label: Languages
+    description: 'Swashbuckler background known languages.'
+    summary: 'You know one language of your choice.'
+    category_id: background_swashbuckler
+    requirements:
+    - name: 'is_class_fighter'
+    variables:
+  - id: background_swashbuckler_tools
+    label: Tools
+    description: 'Swashbuckler background known languages.'
+    summary: 'You are proficient in land vehicles or water vehicles.'
+    category_id: background_swashbuckler
+    requirements:
+    - name: 'is_class_fighter'
+    variables:
   - id: armor_leather
     label: 'Armor: Leather Mechanics'
     description: 'Leather armor mechanics.'
@@ -4487,14 +4697,17 @@ engine:
           number_literal: 2
   mechanic_categories:
   - id: race_human
-    label: 'Race: Human'
+    label: 'Human'
     description: Mechanics for humans.
   - id: class
     label: Class
     description: Mechanics for a specific class.
   - id: class_fighter
-    label: Figher Class
+    label: Fighter
     description: Mechanics for a the Fighter class.
+  - id: background_swashbuckler
+    label: Swashbuckler
+    description: Swashbuckler background mechanics.
   - id: weapon
     label: Weapon
     description: Weapon mechanics.

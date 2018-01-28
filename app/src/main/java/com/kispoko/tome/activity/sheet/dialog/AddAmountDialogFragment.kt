@@ -8,16 +8,13 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.*
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.label
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.lib.ui.Font
-import com.kispoko.tome.lib.ui.ImageViewBuilder
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -41,6 +38,7 @@ class AddAmountDialogFragment : DialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var operation       : AddOperation? = null
+    private var title           : String? = null
     private var adderState      : AdderState? = null
     private var sheetContext    : SheetContext? = null
 
@@ -52,6 +50,7 @@ class AddAmountDialogFragment : DialogFragment()
     companion object
     {
         fun newInstance(operation : AddOperation,
+                        title : String,
                         adderState : AdderState,
                         sheetContext : SheetContext) : AddAmountDialogFragment
         {
@@ -59,6 +58,7 @@ class AddAmountDialogFragment : DialogFragment()
 
             val args = Bundle()
             args.putSerializable("operation", operation)
+            args.putString("title", title)
             args.putSerializable("adder_state", adderState)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
@@ -78,6 +78,7 @@ class AddAmountDialogFragment : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.operation    = arguments.getSerializable("operation") as AddOperation
+        this.title        = arguments.getString("title")
         this.adderState   = arguments.getSerializable("adder_state") as AdderState
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
 
@@ -121,15 +122,17 @@ class AddAmountDialogFragment : DialogFragment()
     {
         val sheetContext = this.sheetContext
         val adderState = this.adderState
+        val title = this.title
         if (sheetContext != null && adderState != null)
         {
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
             val operation = this.operation
 
-            if (operation != null)
+            if (operation != null && title != null)
             {
                 val viewBuilder = AddAmountEditorViewBuilder(operation,
+                                                             title,
                                                              adderState,
                                                              sheetUIContext,
                                                              this)
@@ -181,6 +184,7 @@ enum class AddOperation : Serializable
 // ---------------------------------------------------------------------------------------------
 
 class AddAmountEditorViewBuilder(val operation : AddOperation,
+                                 val title : String,
                                  val adderState : AdderState,
                                  val sheetUIContext : SheetUIContext,
                                  val dialog : DialogFragment)
@@ -273,10 +277,10 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
-        layout.padding.bottomDp = 10f
+        layout.padding.bottomDp = 4f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -316,33 +320,41 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
     {
         val name                = TextViewBuilder()
 
-        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.width              = LinearLayout.LayoutParams.MATCH_PARENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.margin.topDp       = 10f
-        name.margin.leftDp      = 12f
+        name.margin.topDp       = 4f
+        name.margin.leftDp      = 3f
+        name.margin.rightDp     = 3f
+
+        name.padding.leftDp     = 8f
+        name.padding.topDp      = 6f
 
         if (operation == AddOperation.ADD)
-            name.text           = sheetUIContext.context.getString(R.string.add).toUpperCase()
+            name.text           = "${sheetUIContext.context.getString(R.string.add)} $title"
         else if (operation == AddOperation.SUBTRACT)
-            name.text           = sheetUIContext.context.getString(R.string.subtract).toUpperCase()
+            name.text           = "${sheetUIContext.context.getString(R.string.subtract)} $title" // .toUpperCase()
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_25"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        name.backgroundColor    = Color.WHITE
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
-        name.sizeSp             = 11f
+        name.sizeSp             = 15f
+
+        name.corners            = Corners(1.0, 1.0, 0.0, 0.0)
 
         return name.textView(sheetUIContext.context)
     }
 
 
-    private fun valueRowView() : LinearLayout
+    private fun valueRowView() : RelativeLayout
     {
         val layout = this.valueRowViewLayout()
 
@@ -351,6 +363,12 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         // Value
         val valueView = this.valueView()
+
+        val valueLayoutParams = valueView.layoutParams as RelativeLayout.LayoutParams
+        valueLayoutParams.addRule(RelativeLayout.END_OF, R.id.dialog_add_amount_operator)
+        valueLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL)
+//        valueView.layoutParams =
+
         this.valueTextView = valueView
         layout.addView(valueView)
 
@@ -361,20 +379,29 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
     }
 
 
-    private fun valueRowViewLayout() : LinearLayout
+    private fun valueRowViewLayout() : RelativeLayout
     {
-        val layout              = LinearLayoutBuilder()
+        val layout              = RelativeLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 70
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.orientation      = LinearLayout.HORIZONTAL
-        layout.gravity          = Gravity.CENTER_VERTICAL
+        layout.padding.leftDp   = 6f
+        layout.padding.rightDp  = 6f
 
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 10f
+//        val bgColorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        //layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        layout.backgroundColor  = Color.WHITE
 
-        return layout.linearLayout(sheetUIContext.context)
+        layout.margin.leftDp        = 3f
+        layout.margin.rightDp       = 3f
+        layout.margin.bottomDp       = 4f
+
+        layout.corners          = Corners(0.0, 0.0, 2.0, 1.0)
+
+        return layout.relativeLayout(sheetUIContext.context)
     }
 
 
@@ -382,9 +409,13 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
     {
         val value               = TextViewBuilder()
 
-        value.width             = LinearLayout.LayoutParams.MATCH_PARENT
-        value.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-        value.weight            = 5f
+        value.id                = R.id.dialog_add_amount_value
+
+        value.layoutType        = LayoutType.RELATIVE
+
+        value.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
+        value.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
+
 
         value.text              = "0"
 
@@ -406,13 +437,20 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         // -------------------------------------------------------------------------------------
 
         val layout      = LinearLayoutBuilder()
+
         val icon        = ImageViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.id               = R.id.dialog_add_amount_delete
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
         layout.padding.topDp    = 15f
         layout.padding.bottomDp = 15f
@@ -446,30 +484,52 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
     }
 
 
-    private fun operatorSignView() : ImageView
+    private fun operatorSignView() : LinearLayout
     {
-        val operator            = ImageViewBuilder()
 
-        operator.widthDp        = 30
-        operator.heightDp       = 30
-        operator.weight         = 1f
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
 
-        operator.padding.topDp   = 4f
-        operator.margin.rightDp   = 5f
+        val layout          = LinearLayoutBuilder()
+        val icon            = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.id               = R.id.dialog_add_amount_operator
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.rightDp   = 5f
+        layout.padding.topDp    = 4f
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 26
+        icon.heightDp           = 26
 
         if (this.operation == AddOperation.ADD)
-            operator.image = R.drawable.icon_plus_sign
+            icon.image = R.drawable.icon_plus_sign
         else
-            operator.image = R.drawable.icon_minus_sign
+            icon.image = R.drawable.icon_minus_sign
 
         val bsButtonColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_25"))))
-        operator.color          = SheetManager.color(sheetUIContext.sheetId, bsButtonColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, bsButtonColorTheme)
 
-        operator.addRule(RelativeLayout.ALIGN_END)
+        icon.addRule(RelativeLayout.ALIGN_END)
 
-        return operator.imageView(sheetUIContext.context)
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 
@@ -526,19 +586,64 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         number.sizeSp               = 25f
 
+        number.font               = Font.typeface(TextFont.default(),
+                                        TextFontStyle.Regular,
+                                        sheetUIContext.context)
+
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_17"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         number.color                = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        number.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+//        number.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        number.backgroundColor      = Color.WHITE
 
-        number.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+        number.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         number.onClick              = onClick
+
+        return number.textView(sheetUIContext.context)
+    }
+
+
+    private fun decimalPointButtonView() : TextView
+    {
+        val number                  = TextViewBuilder()
+
+        number.width                = 0
+        number.height               = LinearLayout.LayoutParams.MATCH_PARENT
+        number.weight               = 1f
+
+        number.gravity              = Gravity.CENTER
+
+        number.margin.leftDp        = 1f
+        number.margin.rightDp       = 1f
+
+        number.text                 = "."
+
+        number.sizeSp               = 33f
+
+        number.font               = Font.typeface(TextFont.default(),
+                                        TextFontStyle.Regular,
+                                        sheetUIContext.context)
+
+        val textColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        number.color                = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+//        number.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        number.backgroundColor      = Color.WHITE
+
+        number.corners              = Corners(1.0, 1.0, 1.0, 1.0)
+
+        //number.onClick              = onClick
 
         return number.textView(sheetUIContext.context)
     }
@@ -563,21 +668,21 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green_90"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_80"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.onClick          = View.OnClickListener {
             val sheetActivity = sheetUIContext.context as SheetActivity
             val adderDialog = AdderDialogFragment.newInstance(this.currentAdderState(),
-                    SheetContext(sheetUIContext))
+                                                              SheetContext(sheetUIContext))
             adderDialog.show(sheetActivity.supportFragmentManager, "")
             dialog.dismiss()
         }
 
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
+        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 1f
 
         layout.child(icon)
 

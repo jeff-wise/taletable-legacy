@@ -4,6 +4,7 @@ package com.kispoko.tome.rts.game.engine
 
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.engine.function.FunctionId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.reference.TextReference
@@ -86,6 +87,18 @@ class ProgramDoesNotExist(val programId : ProgramId) : EngineError()
             """
             Engine Error: Program Does Not Exist
                 Program Id: $programId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class MechanicDoesNotExist(val mechanicId : MechanicId) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Mechanic Does Not Exist
+                Mechanic Id: $mechanicId
             """
 
     override fun logMessage(): String = userMessage()

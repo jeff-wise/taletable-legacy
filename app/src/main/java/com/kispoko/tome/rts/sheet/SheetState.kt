@@ -2,13 +2,14 @@
 package com.kispoko.tome.rts.sheet
 
 
-import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.EngineValueText
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.*
 import maybe.Just
@@ -57,6 +58,9 @@ class SheetState(val sheetContext : SheetContext,
 
     private val mechanicsByReqVariableId : MutableMap<VariableId,MutableSet<MechanicState>> =
             mutableMapOf()
+
+    private val activeMechanicsByCateogryId : MutableMap<MechanicCategoryId,MutableSet<Mechanic>> = mutableMapOf()
+
 
     // Search Indexes
     // -----------------------------------------------------------------------------------------
@@ -283,32 +287,67 @@ class SheetState(val sheetContext : SheetContext,
         val event = AppStateEvent(mechanicAddedEvent)
 
         ApplicationLog.event(event)
+
+        val categoryId = mechanic.categoryId()
+        if (!this.activeMechanicsByCateogryId.containsKey(mechanic.categoryId()))
+            this.activeMechanicsByCateogryId.put(categoryId, mutableSetOf())
+
+        val activeMechanics = this.activeMechanicsByCateogryId[categoryId]
+        activeMechanics?.add(mechanic)
     }
 
 
     override fun removeMechanic(mechanic : Mechanic)
     {
-        mechanic.variables().forEach { this.removeVariable(it.variableId()) }
+        when (mechanic.mechanicType()) {
+            is MechanicType.Auto -> {
+                mechanic.variables().forEach { this.removeVariable(it.variableId()) }
+                val event = MechanicRemoved(mechanic.mechanicId(),
+                        mechanic.variables().map { it.variableId() }.toSet() )
+                ApplicationLog.event(AppStateEvent(event))
+            }
+            is MechanicType.OptionSelected -> {
+                mechanic.variables().forEach { this.removeVariable(it.variableId()) }
+                val event = MechanicRemoved(mechanic.mechanicId(),
+                        mechanic.variables().map { it.variableId() }.toSet() )
+                ApplicationLog.event(AppStateEvent(event))
+            }
+            else -> {
+                val event = MechanicRemoved(mechanic.mechanicId(), setOf())
+                ApplicationLog.event(AppStateEvent(event))
+            }
+        }
 
-        val event = MechanicRemoved(mechanic.mechanicId(),
-                                    mechanic.variables().map { it.variableId() }.toSet() )
 
-        ApplicationLog.event(AppStateEvent(event))
+        val categoryId = mechanic.categoryId()
+        if (this.activeMechanicsByCateogryId.containsKey(categoryId)) {
+            val activeMechanics = this.activeMechanicsByCateogryId[categoryId]
+            activeMechanics?.remove(mechanic)
+        }
     }
+
+
+    override fun activeMechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic> =
+        if (this.activeMechanicsByCateogryId.containsKey(categoryId))
+            this.activeMechanicsByCateogryId[categoryId]!!
+        else
+            setOf()
 
 
     fun onVariableUpdate(variable : Variable)
     {
     //    ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
-        this.updateListeners(variable)
 
-        when (variable) {
-            is BooleanVariable -> {
-                mechanicsByReqVariableId[variable.variableId()]?.forEach {
-                    it.update(variable, this)
-                }
-            }
-        }
+        // TODO redunant?
+//        when (variable) {
+//            is BooleanVariable -> {
+//                mechanicsByReqVariableId[variable.variableId()]?.forEach {
+//                    it.update(variable, this)
+//                }
+//            }
+//        }
+
+        this.updateListeners(variable)
     }
 
 
@@ -364,19 +403,22 @@ class SheetState(val sheetContext : SheetContext,
             {
                 this.booleanVariableWithId(variableId) apDo { booleanVariable ->
                     booleanVariable.updateValue(engineValue.value, sheetContext.sheetId)
+
+                    // calling this in Variable.kt to ensure onUpdate is called afterwards
+                    //this.onVariableUpdate(booleanVariable)
                 }
 
-                val variableEff = this.variableWithId(variableId)
-                when (variableEff) {
-                    is Val -> {
-                        val variable = variableEff.value
-                        when (variable) {
-                            is BooleanVariable ->
-                                mechanicsByReqVariableId[variableId]?.forEach { it.update(variable, this) }
-                        }
-                    }
-                    is Err -> ApplicationLog.error(variableEff.error)
-                }
+//                val variableEff = this.variableWithId(variableId)
+//                when (variableEff) {
+//                    is Val -> {
+//                        val variable = variableEff.value
+//                        when (variable) {
+//                            is BooleanVariable ->
+//                                mechanicsByReqVariableId[variableId]?.forEach { it.update(variable, this) }
+//                        }
+//                    }
+//                    is Err -> ApplicationLog.error(variableEff.error)
+//                }
             }
             is EngineValueNumber ->
             {
@@ -643,6 +685,8 @@ interface MechanicStateMachine
 {
     fun addMechanic(mechanic : Mechanic)
     fun removeMechanic(mechanic : Mechanic)
+
+    fun activeMechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic>
 }
 
 

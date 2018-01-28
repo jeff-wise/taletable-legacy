@@ -17,9 +17,7 @@ import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
-import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.value.ValueReference
-import com.kispoko.tome.model.game.engine.value.ValueSet
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext

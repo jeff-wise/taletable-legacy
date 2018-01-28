@@ -16,6 +16,7 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -27,7 +28,9 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.RulebookReference
 import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
+import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
@@ -36,6 +39,7 @@ import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Width
 import com.kispoko.tome.model.sheet.widget.table.*
+import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -1321,6 +1325,13 @@ data class MechanicWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var viewId : Int? = null
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -1412,7 +1423,56 @@ data class MechanicWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) { }
+    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    {
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+        val sheetContext = SheetContext(sheetUIContext)
+
+        val mechanics = GameManager.engine(sheetUIContext.gameId)
+                            .apply { effValue<AppError,Set<Mechanic>>(it.mechanicsInCategory(this.categoryId())) }
+
+        when (mechanics) {
+            is Val -> {
+                mechanics.value.forEach { mechanic ->
+                    when (mechanic.mechanicType()) {
+                        is MechanicType.Option -> {
+                            Log.d("***WIDGET", "mechanic in category on variable setting")
+                            mechanic.variables().forEach { optVar ->
+                                optVar.setOnUpdateListener {
+                                    rootView?.let {
+                                        Log.d("***WIDGET", "update mechanic widget view")
+                                        this.updateView(it, sheetUIContext)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            is Err -> ApplicationLog.error(mechanics.error)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    {
+        val viewId = this.viewId
+        if (viewId != null)
+        {
+            Log.d("***WIDGET", "view id is not null")
+            val layout = rootView.findViewById(viewId) as LinearLayout?
+            if (layout != null) {
+                Log.d("***WIDGET", "calling update view")
+                MechanicWidgetViewBuilder(this, sheetUIContext).updateView(layout)
+            }
+        }
+    }
 
 }
 
@@ -2015,9 +2075,11 @@ data class PointsWidget(override val id : UUID,
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
             val layout = rootView.findViewById(layoutViewId) as LinearLayout?
-            layout?.removeAllViews()
-            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
-            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
+            if (layout != null) {
+                PointsWidgetViewBuilder(this, sheetUIContext).updateView(layout)
+            }
+//            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
+//            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
         }
     }
 
@@ -2382,7 +2444,6 @@ data class RollWidget(override val id : UUID,
 
     private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
     {
-        Log.d("****WIDGET", "update roll widget view")
         val layoutId = this.layoutId
         if (layoutId != null)
         {
@@ -2395,7 +2456,6 @@ data class RollWidget(override val id : UUID,
 
 
 }
-
 
 
 /**

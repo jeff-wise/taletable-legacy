@@ -9,19 +9,18 @@ import com.kispoko.tome.db.DB_EngineValue
 import com.kispoko.tome.db.engineTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.RowValue7
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.Program
@@ -74,6 +73,9 @@ data class Engine(override val id : UUID,
                                     mechanicCategories.associateBy { it.categoryId() }
                                             as MutableMap<MechanicCategoryId,MechanicCategory>
 
+    private val mechanicById : MutableMap<MechanicId,Mechanic> =
+                                        mechanics.associateBy { it.mechanicId() }
+                                                as MutableMap<MechanicId,Mechanic>
 
     private val programById : MutableMap<ProgramId,Program> =
                                             programs.associateBy { it.programId() }
@@ -351,6 +353,11 @@ data class Engine(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun mechanics() : List<Mechanic> = this.mechanics
+
+
+    fun mechanicWithId(mechanicId : MechanicId) : AppEff<Mechanic> =
+            note(this.mechanicById[mechanicId],
+                 AppEngineError(MechanicDoesNotExist(mechanicId)))
 
 
     fun mechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic> =

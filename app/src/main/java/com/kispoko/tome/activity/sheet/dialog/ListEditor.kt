@@ -218,7 +218,7 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
@@ -303,15 +303,16 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = Color.WHITE
 
         layout.padding.leftDp       = 10f
         layout.padding.rightDp      = 10f
-        layout.padding.topDp        = 8f
-        layout.padding.bottomDp     = 8f
+        layout.padding.topDp        = 4f
+        layout.padding.bottomDp     = 4f
 
 //        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
@@ -333,12 +334,12 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
         title.text          = this.valueSet.labelString()
 
         title.font          = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Medium,
+                                            TextFontStyle.Bold,
                                             sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         title.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         title.sizeSp          = 17f
@@ -367,10 +368,10 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
 
         layout.corners      = Corners(3.0, 3.0, 3.0, 3.0)
 
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
-        layout.padding.leftDp   = 17f
-        layout.padding.rightDp  = 17f
+        layout.padding.topDp    = 10f
+        layout.padding.bottomDp = 10f
+        layout.padding.leftDp   = 20f
+        layout.padding.rightDp  = 20f
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
@@ -404,7 +405,7 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
         icon.widthDp        = 22
         icon.heightDp       = 22
 
-        icon.image          = R.drawable.icon_check
+        icon.image          = R.drawable.icon_check_bold
 
 //        val colorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
@@ -570,10 +571,11 @@ object ListEditor
 
         layout.margin.topDp         = 1f
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = Color.WHITE
 
         return layout.linearLayout(sheetUIContext.context)
     }

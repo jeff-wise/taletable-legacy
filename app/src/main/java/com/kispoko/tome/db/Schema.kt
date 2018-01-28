@@ -359,21 +359,25 @@ typealias DB_IconFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val mechanicTable =
-    Table7("mechanic",
+    Table9("mechanic",
            "mechanic_id",
            "label",
            "description",
            "summary",
+           "annotation",
            "category_id",
+           "mechanic_type",
            "requirements",
            "variables")
 
 typealias DB_MechanicValue =
-    RowValue7<PrimValue<MechanicId>,
+    RowValue9<PrimValue<MechanicId>,
               PrimValue<MechanicLabel>,
               PrimValue<MechanicDescription>,
               PrimValue<MechanicSummary>,
+              MaybePrimValue<MechanicAnnotation>,
               PrimValue<MechanicCategoryId>,
+              PrimValue<MechanicType>,
               PrimValue<MechanicRequirements>,
               CollValue<Variable>>
 
@@ -1113,20 +1117,24 @@ typealias DB_WidgetMechanicValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetMechanicFormatTable =
-    Table6("widget_mechanic_format",
+    Table8("widget_mechanic_format",
            "widget_format",
            "view_type",
            "mechanic_format",
            "header_format",
            "mechanic_header_format",
-           "mechanic_summary_format")
+           "mechanic_summary_format",
+           "option_element_format",
+           "option_label_format")
 
 typealias DB_WidgetMechanicFormatValue =
-    RowValue6<ProdValue<WidgetFormat>,
+    RowValue8<ProdValue<WidgetFormat>,
               PrimValue<MechanicWidgetViewType>,
               ProdValue<ElementFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<ElementFormat>,
               ProdValue<TextFormat>>
 
 

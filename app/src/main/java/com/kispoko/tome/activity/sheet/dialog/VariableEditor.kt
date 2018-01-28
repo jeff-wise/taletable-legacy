@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.util.Log
+import com.kispoko.tome.R.string.variable
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.value.ValueId
@@ -105,7 +106,8 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                                                 0.0,
                                                 setOf(),
                                                 numberVariable.label().value,
-                                                updateTarget)
+                                                updateTarget,
+                                                numberVariable.variableId())
                     val adderDialog = AdderDialogFragment.newInstance(adderState,
                                                                       SheetContext(sheetUIContext))
                     adderDialog.show(sheetActivity.supportFragmentManager, "")

@@ -1168,11 +1168,24 @@ types:
         The description should explain what the mechanic does and how, as well as detail situations 
         when it should be used. The description should relate the mechanic to the game rules that it 
         was created to emulate.
+    - name: annotation
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Annotation
     - name: category_id
       type:
         type: custom_type
         custom_type: mechanic_category_id
       presence: required
+      description: >
+        The category of the mechanic should group the mechanic with other related mechanics.
+    - name: mechanic_type
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
       description: >
         The category of the mechanic should group the mechanic with other related mechanics.
     - name: requirements

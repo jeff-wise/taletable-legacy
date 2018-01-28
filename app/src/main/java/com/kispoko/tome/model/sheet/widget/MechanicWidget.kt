@@ -2,24 +2,33 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.dialog.MechanicOptionDialog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
+import com.kispoko.tome.lib.orm.RowValue8
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.game.engine.mechanic.Mechanic
+import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -40,7 +49,10 @@ data class MechanicWidgetFormat(override val id : UUID,
                                 val mechanicFormat : ElementFormat,
                                 val headerFormat : TextFormat,
                                 val mechanicHeaderFormat : TextFormat,
-                                val mechanicSummaryFormat : TextFormat)
+                                val mechanicSummaryFormat : TextFormat,
+                                val annotationFormat : TextFormat,
+                                val optionElementFormat : ElementFormat,
+                                val optionLabelFormat : TextFormat)
                                  : ToDocument, ProdType, Serializable
 {
 
@@ -53,25 +65,34 @@ data class MechanicWidgetFormat(override val id : UUID,
                 mechanicFormat : ElementFormat,
                 headerFormat : TextFormat,
                 mechanicHeaderFormat : TextFormat,
-                mechanicSummaryFormat : TextFormat)
+                mechanicSummaryFormat : TextFormat,
+                annotationFormat : TextFormat,
+                optionElementFormat : ElementFormat,
+                optionLabelFormat : TextFormat)
         : this(UUID.randomUUID(),
                widgetFormat,
                viewType,
                mechanicFormat,
                headerFormat,
                mechanicHeaderFormat,
-               mechanicSummaryFormat)
+               mechanicSummaryFormat,
+               annotationFormat,
+               optionElementFormat,
+               optionLabelFormat)
 
 
     companion object : Factory<MechanicWidgetFormat>
     {
 
-        private fun defaultWidgetFormat()          = WidgetFormat.default()
-        private fun defaultViewType()              = MechanicWidgetViewType.Boxes
-        private fun defaultMechanicFormat()        = ElementFormat.default()
-        private fun defaultHeaderFormat()          = TextFormat.default()
-        private fun defaultMechanicHeaderFormat()  = TextFormat.default()
-        private fun defaultMechanicSummaryFormat() = TextFormat.default()
+        private fun defaultWidgetFormat()           = WidgetFormat.default()
+        private fun defaultViewType()               = MechanicWidgetViewType.Boxes
+        private fun defaultMechanicFormat()         = ElementFormat.default()
+        private fun defaultHeaderFormat()           = TextFormat.default()
+        private fun defaultMechanicHeaderFormat()   = TextFormat.default()
+        private fun defaultMechanicSummaryFormat()  = TextFormat.default()
+        private fun defaultAnnotationFormat()       = TextFormat.default()
+        private fun defaultOptionElementFormat()    = ElementFormat.default()
+        private fun defaultOptionLabelFormat()      = TextFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicWidgetFormat> = when (doc)
@@ -102,8 +123,20 @@ data class MechanicWidgetFormat(override val id : UUID,
                       // Mechanic Summary Format
                       split(doc.maybeAt("mechanic_summary_format"),
                             effValue(defaultMechanicSummaryFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Annotation Format
+                      split(doc.maybeAt("annotation_format"),
+                            effValue(defaultAnnotationFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Option Element Format
+                      split(doc.maybeAt("option_element_format"),
+                            effValue(defaultOptionElementFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Option Label Format
+                      split(doc.maybeAt("option_label_format"),
+                            effValue(defaultOptionLabelFormat()),
                             { TextFormat.fromDocument(it) })
-                      )
+                )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -114,7 +147,10 @@ data class MechanicWidgetFormat(override val id : UUID,
                                              defaultMechanicFormat(),
                                              defaultHeaderFormat(),
                                              defaultMechanicHeaderFormat(),
-                                             defaultMechanicSummaryFormat())
+                                             defaultMechanicSummaryFormat(),
+                                             defaultAnnotationFormat(),
+                                             defaultOptionElementFormat(),
+                                             defaultOptionLabelFormat())
 
     }
 
@@ -129,7 +165,9 @@ data class MechanicWidgetFormat(override val id : UUID,
             "mechanic_format" to this.mechanicFormat.toDocument(),
             "header_format" to this.headerFormat.toDocument(),
             "mechanic_header_format" to this.mechanicHeaderFormat.toDocument(),
-            "mechanic_summary_format" to this.mechanicSummaryFormat.toDocument()
+            "mechanic_summary_format" to this.mechanicSummaryFormat.toDocument(),
+            "option_element_format" to this.optionElementFormat().toDocument(),
+            "option_label_format" to this.optionLabelFormat().toDocument()
     ))
 
 
@@ -155,6 +193,15 @@ data class MechanicWidgetFormat(override val id : UUID,
     fun mechanicSummaryFormat() : TextFormat = this.mechanicSummaryFormat
 
 
+    fun annotationFormat() : TextFormat = this.annotationFormat
+
+
+    fun optionElementFormat() : ElementFormat = this.optionElementFormat
+
+
+    fun optionLabelFormat() : TextFormat = this.optionLabelFormat
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -166,13 +213,15 @@ data class MechanicWidgetFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetMechanicFormatValue =
-        RowValue6(widgetMechanicFormatTable,
+        RowValue8(widgetMechanicFormatTable,
                   ProdValue(this.widgetFormat),
                   PrimValue(this.viewType),
                   ProdValue(this.mechanicFormat),
                   ProdValue(this.headerFormat),
                   ProdValue(this.mechanicHeaderFormat),
-                  ProdValue(this.mechanicSummaryFormat))
+                  ProdValue(this.mechanicSummaryFormat),
+                  ProdValue(this.optionElementFormat),
+                  ProdValue(this.optionLabelFormat))
 
 }
 
@@ -222,9 +271,21 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     {
         val layout = WidgetView.layout(this.mechanicWidget.widgetFormat(), sheetUIContext)
 
-        layout.addView(this.mainView())
+        val viewId = Util.generateViewId()
+        layout.id = viewId
+        mechanicWidget.viewId = viewId
+
+        this.updateView(layout)
 
         return layout
+    }
+
+
+    fun updateView(layout : LinearLayout)
+    {
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        contentLayout.removeAllViews()
+        contentLayout.addView(this.mainView())
     }
 
 
@@ -242,12 +303,27 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         }
 
         // Mechanic List
-        GameManager.engine(sheetUIContext.gameId) apDo {
-            val mechanics = it.mechanicsInCategory(mechanicWidget.categoryId())
-            mechanics.forEach {
-                layout.addView(this.mechanicView(it.labelString(), it.summaryString()))
+        val categoryId = mechanicWidget.categoryId()
+        SheetManager.sheetState(sheetUIContext.sheetId) apDo {
+        it.activeMechanicsInCategory(categoryId).forEach {
+            when (it.mechanicType()) {
+                is MechanicType.Auto -> {
+                    layout.addView(this.mechanicView(it))
+                }
+                is MechanicType.OptionSelected -> {
+                    layout.addView(this.mechanicView(it))
+                }
+                is MechanicType.Option -> {
+                    layout.addView(this.optionMechanicView(it))
+                }
             }
-        }
+        } }
+//        GameManager.engine(sheetUIContext.gameId) apDo {
+//            val mechanics = it.acti(mechanicWidget.categoryId())
+//            mechanics.forEach {
+//                layout.addView(this.mechanicView(it.labelString(), it.summaryString()))
+//            }
+//        }
 
         return layout
     }
@@ -285,18 +361,19 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     }
 
 
-    // Mechanic
+    // MECHANIC AUTO
     // -----------------------------------------------------------------------------------------
 
-    private fun mechanicView(headerString : String, summaryString : String) : LinearLayout
+    private fun mechanicView(mechanic : Mechanic) : LinearLayout
     {
         val layout = this.mechanicViewLayout()
 
         // Header
-        layout.addView(this.mechanicHeaderView(headerString))
+        layout.addView(this.mechanicHeaderView(mechanic))
 
         // Summary
-        layout.addView(this.mechanicSummaryView(summaryString))
+        layout.addView(this.mechanicSummaryView(mechanic.summaryString()))
+
 
         return layout
     }
@@ -325,7 +402,54 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     }
 
 
-    private fun mechanicHeaderView(headerString : String) : TextView
+    private fun mechanicAnnotationView(annotationString : String) : TextView
+    {
+        val annotation          = TextViewBuilder()
+        val format              = mechanicWidget.format().annotationFormat()
+
+        annotation.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        annotation.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        annotation.text         = annotationString
+
+        format.styleTextViewBuilder(annotation, sheetUIContext)
+
+        return annotation.textView(sheetUIContext.context)
+    }
+
+
+    private fun mechanicHeaderView(mechanic : Mechanic) : LinearLayout
+    {
+        val layout      = this.mechanicHeaderLayout()
+
+        layout.addView(this.mechanicHeaderTextView(mechanic.labelString()))
+
+        when (mechanic.mechanicType()) {
+            is MechanicType.OptionSelected -> {
+                layout.addView(this.mechanicOptionSelectedView())
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun mechanicHeaderLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun mechanicHeaderTextView(headerString : String) : TextView
     {
         val header              = TextViewBuilder()
 
@@ -341,6 +465,52 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     }
 
 
+    private fun mechanicOptionSelectedView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout          = LinearLayoutBuilder()
+        val icon            = ImageViewBuilder()
+
+        val elementFormat = mechanicWidget.format().optionElementFormat()
+        val textFormat = mechanicWidget.format().optionLabelFormat()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity      = Gravity.CENTER
+
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, elementFormat.backgroundColorTheme())
+
+        layout.padding.topDp     = 3f
+        layout.padding.bottomDp     = 3f
+        layout.padding.leftDp     = 6f
+        layout.padding.rightDp     = 6f
+
+        layout.corners      = Corners(2.0, 2.0, 2.0, 2.0)
+
+        layout.margin.leftDp        = 7f
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp        = 17
+        icon.heightDp       = 17
+
+        icon.image          = R.drawable.icon_replace
+
+        icon.color          = SheetManager.color(sheetUIContext.sheetId, textFormat.colorTheme())
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
     private fun mechanicSummaryView(summaryString : String) : TextView
     {
         val header              = TextViewBuilder()
@@ -351,6 +521,67 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         header.text             = summaryString
 
         mechanicWidget.format().mechanicSummaryFormat()
+                      .styleTextViewBuilder(header, sheetUIContext)
+
+        return header.textView(sheetUIContext.context)
+    }
+
+
+    // MECHANIC OPTION
+    // -----------------------------------------------------------------------------------------
+
+    private fun optionMechanicView(mechanic : Mechanic) : LinearLayout
+    {
+        val layout = this.optionMechanicViewLayout()
+
+        // Header
+        layout.addView(this.optionMechanicLabelView(mechanic.summaryString()))
+
+        layout.setOnClickListener {
+            val activity = sheetUIContext.context as AppCompatActivity
+            val dialog = MechanicOptionDialog.newInstance(mechanic.mechanicId(),
+                                                          SheetContext(sheetUIContext))
+            dialog.show(activity.supportFragmentManager, "")
+
+        }
+
+        return layout
+    }
+
+
+    private fun optionMechanicViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        val format              = mechanicWidget.format().optionElementFormat()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
+                                                     format.backgroundColorTheme())
+
+        layout.corners          = format.corners()
+
+        layout.marginSpacing    = format.margins()
+        layout.paddingSpacing   = format.padding()
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun optionMechanicLabelView(headerString : String) : TextView
+    {
+        val header              = TextViewBuilder()
+
+        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        header.text             = headerString
+
+        mechanicWidget.format().optionLabelFormat()
                       .styleTextViewBuilder(header, sheetUIContext)
 
         return header.textView(sheetUIContext.context)

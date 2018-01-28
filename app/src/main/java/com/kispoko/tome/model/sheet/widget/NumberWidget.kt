@@ -9,8 +9,11 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.cell
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
+import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -23,9 +26,7 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -313,7 +314,6 @@ data class NumberWidgetValuePostfix(val value : String) : SQLSerializable, Seria
 }
 
 
-
 object NumberWidgetView
 {
 
@@ -323,6 +323,20 @@ object NumberWidgetView
              sheetUIContext: SheetUIContext) : View
     {
         val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
+
+        layout.setOnClickListener {
+            val valueVariable = numberWidget.valueVariable(SheetContext(sheetUIContext))
+            when (valueVariable)
+            {
+                is effect.Val ->
+                {
+                    openNumberVariableEditorDialog(valueVariable.value,
+                                                   UpdateTargetNumberWidget(numberWidget.id),
+                                                   sheetUIContext)
+                }
+                is Err -> ApplicationLog.error(valueVariable.error)
+            }
+        }
 
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 

@@ -1219,6 +1219,24 @@ types:
         custom_type: element_format
       presence: optional
       description: Mechanic background format.
+    - name: annotation_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Mechanic background format.
+    - name: option_element_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: Mechanic background format.
+    - name: option_label_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Mechanic background format.
 - type: product_type
   product_type:
     name: widget_number

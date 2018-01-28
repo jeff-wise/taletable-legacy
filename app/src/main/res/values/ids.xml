@@ -46,6 +46,16 @@
     <item name="program_list_item_parameter_type_3" type="id"/>
     <item name="program_list_item_result_type" type="id"/>
 
+    <!-- ADD AMOUNT DIALOG FRAGMENT -->
+    <item name="dialog_add_amount_operator" type="id"/>
+    <item name="dialog_add_amount_value" type="id"/>
+    <item name="dialog_add_amount_delete" type="id"/>
+
+    <!-- MECHANIC OPTIONS DIALOG FRAGMENT -->
+    <item name="dialog_mechanic_options_layout" type="id"/>
+    <item name="dialog_mechanic_options_title" type="id"/>
+    <item name="dialog_mechanic_options_summary" type="id"/>
+
     <!-- STATEMENT LIST ITEM -->
     <item name="statement_list_item_layout" type="id"/>
     <item name="statement_list_item_variable" type="id"/>

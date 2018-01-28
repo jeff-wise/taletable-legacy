@@ -15,11 +15,13 @@ import android.widget.TextView
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
-import com.kispoko.tome.R.id.button
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.dice.RollModifier
 import com.kispoko.tome.model.game.engine.dice.RollSummary
+import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -125,16 +127,16 @@ class AdderDialogFragment : DialogFragment()
 
             val adderState = this.adderState
 
-            if (adderState != null)
+            return if (adderState != null)
             {
                 val adderEditorView = AdderEditorViewBuilder(adderState,
                                                              sheetUIContext,
                                                              this)
-                return adderEditorView.view()
+                adderEditorView.view()
             }
             else
             {
-                return super.onCreateView(inflater, container, savedInstanceState)
+                super.onCreateView(inflater, container, savedInstanceState)
             }
         }
         else
@@ -175,7 +177,8 @@ data class AdderState(val originalValue : Double,
                       val delta : Double,
                       val diceRolls : Set<DiceRoll>,
                       val valueName : String?,
-                      val updateTarget : UpdateTarget) : Serializable
+                      val updateTarget : UpdateTarget,
+                      val variableId : VariableId?) : Serializable
 
 
 // ---------------------------------------------------------------------------------------------
@@ -395,6 +398,18 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 SheetManager.updateSheet(sheetUIContext.sheetId,
                                          pointsWidgeUpdate,
                                          sheetUIContext.sheetUI())
+            }
+            is UpdateTargetNumberWidget ->
+            {
+//                val numberWidgetUpdate = NumberWidgetUpdateValue(adderState.updateTarget.numberWidgetId,
+//                                                                 finalValue)
+
+                this.adderState.variableId?.let { varId ->
+                    SheetManager.sheetState(sheetContext.sheetId) apDo {
+                    it.updateVariable(varId, EngineValueNumber(finalValue), sheetContext)
+                    }
+                }
+
             }
             is UpdateTargetNumberCell ->
             {
@@ -667,7 +682,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         icon.image              = R.drawable.icon_dice_roll_filled
 
         val iconColorTheme      = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_3")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         icon.color              = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
@@ -778,7 +793,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.padding.leftDp   = 8f
@@ -876,7 +891,8 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         value.sizeSp            = 20f
 
-        value.padding.rightDp   = 3f
+        value.padding.rightDp   = 6f
+        value.padding.leftDp    = 3f
 
         return value.textView(sheetUIContext.context)
     }
@@ -1182,6 +1198,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         // -X
         val minusNumOnClick = View.OnClickListener {
             val dialog = AddAmountDialogFragment.newInstance(AddOperation.SUBTRACT,
+                                                             adderState.valueName ?: "",
                                                              this.currentAdderState(),
                                                              SheetContext(sheetUIContext))
             dialog.show(activity.supportFragmentManager, "")
@@ -1212,6 +1229,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         // +X
         val plusNumOnClick = View.OnClickListener {
             val dialog = AddAmountDialogFragment.newInstance(AddOperation.ADD,
+                                                             adderState.valueName ?: "",
                                                              this.currentAdderState(),
                                                              SheetContext(sheetUIContext))
             dialog.show(activity.supportFragmentManager, "")
@@ -1476,7 +1494,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green_90"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_80"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners              = Corners(0.0, 0.0, 0.0, 0.0)
@@ -1494,7 +1512,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         icon.widthDp        = 18
         icon.heightDp       = 18
 
-        icon.image          = R.drawable.icon_check
+        icon.image          = R.drawable.icon_check_bold
 
 //        val iconColorTheme  = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),

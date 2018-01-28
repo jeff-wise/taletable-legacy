@@ -6,8 +6,10 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.RowValue8
+import com.kispoko.tome.lib.orm.RowValue9
 import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -17,7 +19,12 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -31,7 +38,9 @@ data class Mechanic(override val id : UUID,
                     val label : MechanicLabel,
                     val description : MechanicDescription,
                     val summary : MechanicSummary,
+                    val annotation : Maybe<MechanicAnnotation>,
                     val categoryId : MechanicCategoryId,
+                    val mechanicType : MechanicType,
                     val requirements : MutableList<VariableId>,
                     val variables : MutableList<Variable>)
                      : ToDocument, ProdType, Serializable
@@ -45,7 +54,9 @@ data class Mechanic(override val id : UUID,
                 label : MechanicLabel,
                 description : MechanicDescription,
                 summary : MechanicSummary,
+                annotation : Maybe<MechanicAnnotation>,
                 categoryId : MechanicCategoryId,
+                mechanicType : MechanicType,
                 requirements : List<VariableId>,
                 variables : List<Variable>)
         : this(UUID.randomUUID(),
@@ -53,7 +64,9 @@ data class Mechanic(override val id : UUID,
                label,
                description,
                summary,
+               annotation,
                categoryId,
+               mechanicType,
                requirements.toMutableList(),
                variables.toMutableList())
 
@@ -73,8 +86,16 @@ data class Mechanic(override val id : UUID,
                       doc.at("description") ap { MechanicDescription.fromDocument(it) },
                       // Summary
                       doc.at("summary") ap { MechanicSummary.fromDocument(it) },
+                      // Annotation
+                      split(doc.maybeAt("annotation"),
+                            effValue<ValueError,Maybe<MechanicAnnotation>>(Nothing()),
+                            { apply(::Just, MechanicAnnotation.fromDocument(it)) }),
                       // Category Id
                       doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) },
+                      // Category Id
+                      split(doc.maybeAt("mechanic_type"),
+                            effValue<ValueError,MechanicType>(MechanicType.Auto),
+                            { MechanicType.fromDocument(it) }),
                       // Requirements
                       split(doc.maybeList("requirements"),
                             effValue(listOf()),
@@ -99,6 +120,7 @@ data class Mechanic(override val id : UUID,
         "description" to this.description().toDocument(),
         "summary" to this.summary().toDocument(),
         "category_id" to this.categoryId().toDocument(),
+        "mechanic_type" to this.mechanicType().toDocument(),
         "requirements" to DocList(this.requirements().map { it.toDocument() }),
         "variables" to DocList(this.variables().map { it.toDocument() })
     ))
@@ -129,7 +151,13 @@ data class Mechanic(override val id : UUID,
     fun summaryString() : String = this.summary.value
 
 
+    fun annotation() : Maybe<MechanicAnnotation> = this.annotation
+
+
     fun categoryId() : MechanicCategoryId = this.categoryId
+
+
+    fun mechanicType() : MechanicType = this.mechanicType
 
 
     fun requirements() : List<VariableId> = this.requirements
@@ -149,13 +177,16 @@ data class Mechanic(override val id : UUID,
 
 
     override fun rowValue() : DB_MechanicValue =
-        RowValue7(mechanicTable, PrimValue(this.mechanicId),
-                                 PrimValue(this.label),
-                                 PrimValue(this.description),
-                                 PrimValue(this.summary),
-                                 PrimValue(this.categoryId),
-                                 PrimValue(MechanicRequirements(this.requirements)),
-                                 CollValue(this.variables))
+        RowValue9(mechanicTable,
+                  PrimValue(this.mechanicId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(this.summary),
+                  MaybePrimValue(this.annotation),
+                  PrimValue(this.categoryId),
+                  PrimValue(this.mechanicType),
+                  PrimValue(MechanicRequirements(this.requirements)),
+                  CollValue(this.variables))
 
 }
 
@@ -267,6 +298,77 @@ data class MechanicDescription(val value : String) : ToDocument, SQLSerializable
 
 
 /**
+ * Mechanic Type
+ */
+sealed class MechanicType : ToDocument, SQLSerializable, Serializable
+{
+
+    object Auto : MechanicType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "auto" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("auto")
+    }
+
+
+    object Option : MechanicType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "option" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("option")
+    }
+
+
+    object OptionSelected : MechanicType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "option_selected" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("option_selected")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<MechanicType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "auto"            -> effValue<ValueError,MechanicType>(MechanicType.Auto)
+                "option"          -> effValue<ValueError,MechanicType>(MechanicType.Option)
+                "option_selected" -> effValue<ValueError,MechanicType>(MechanicType.OptionSelected)
+                else              -> effError<ValueError,MechanicType>(
+                                         UnexpectedValue("MechanicType", doc.text, doc.path))
+            }
+            else                  -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+}
+
+
+/**
  * Mechanic Summary
  */
 data class MechanicSummary(val value : String) : ToDocument, SQLSerializable, Serializable
@@ -281,6 +383,42 @@ data class MechanicSummary(val value : String) : ToDocument, SQLSerializable, Se
         override fun fromDocument(doc: SchemaDoc): ValueParser<MechanicSummary> = when (doc)
         {
             is DocText -> effValue(MechanicSummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Mechanic Annotation
+ */
+data class MechanicAnnotation(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<MechanicAnnotation>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<MechanicAnnotation> = when (doc)
+        {
+            is DocText -> effValue(MechanicAnnotation(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

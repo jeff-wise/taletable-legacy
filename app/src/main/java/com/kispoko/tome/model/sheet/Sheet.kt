@@ -269,6 +269,11 @@ data class Sheet(override val id : UUID,
                 val booleanWidget = this.booleanWidgetById[widgetUpdate.widgetId]
                 booleanWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
             }
+            is WidgetUpdateNumberWidget ->
+            {
+//                val listWidget = this.listWidgetById[widgetUpdate.widgetId]
+//                listWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+            }
             is WidgetUpdateListWidget ->
             {
                 val listWidget = this.listWidgetById[widgetUpdate.widgetId]
