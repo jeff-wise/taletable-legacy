@@ -2,6 +2,7 @@
 package com.kispoko.tome.rts.sheet
 
 
+import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
@@ -16,7 +17,7 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import org.apache.commons.collections4.trie.PatriciaTrie
-
+import java.util.*
 
 
 /**
@@ -24,8 +25,11 @@ import org.apache.commons.collections4.trie.PatriciaTrie
  */
 interface State
 {
-    fun addVariable(variable : Variable)
+    fun addVariable(variable : Variable, parentVariable : Variable? = null)
 }
+
+
+data class RelationListener(val tag : VariableTag, val variableId : VariableId)
 
 
 /**
@@ -49,6 +53,7 @@ class SheetState(val sheetContext : SheetContext,
 
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
+    private val listenerTagsByRelation : MutableMap<VariableRelation,MutableSet<RelationListener>> = mutableMapOf()
 
     private val onChangeListenersById : MutableMap<VariableId,MutableSet<OnVariableChangeListener>> = mutableMapOf()
 
@@ -106,7 +111,7 @@ class SheetState(val sheetContext : SheetContext,
      * then the new variable replaces the old variable.
      * @param variable The variable to add.
     */
-    override fun addVariable(variable : Variable)
+    override fun addVariable(variable : Variable, parentVariable : Variable?)
     {
         // TODO add log event for if variable with name already exist
         // TODO make sure variable does not depend on itself.
@@ -131,6 +136,9 @@ class SheetState(val sheetContext : SheetContext,
 
         for (tag in variable.tags())
         {
+
+            ApplicationLog.event(AppStateEvent(VariableTagAdded(variableId, tag)))
+
             if (variablesByTag.containsKey(tag))
                 variablesByTag[tag]!!.add(variable)
             else
@@ -161,6 +169,16 @@ class SheetState(val sheetContext : SheetContext,
                     else
                         listenersByTag.put(variableRef, mutableSetOf(variable))
                 }
+                is RelatedVariableSet ->
+                {
+                    val tag = variableRef.tag
+                    val relation = variableRef.relation
+                    if (!listenerTagsByRelation.containsKey(relation))
+                        listenerTagsByRelation.put(relation, mutableSetOf())
+
+                    val listenerSet = listenerTagsByRelation[relation]
+                    listenerSet!!.add(RelationListener(tag, variable.variableId()))
+                }
             }
         }
 
@@ -172,13 +190,20 @@ class SheetState(val sheetContext : SheetContext,
                 mechanicsByReqVariableId[variableId]?.forEach { it.update(variable, this) }
         }
 
+        // (5.5) Call variable on add to state
+        // -------------------------------------------------------------------------------------
+
+        variable.onAddToState(sheetContext, parentVariable)
+
+
         // (6) Add companion variables to the state
         // -------------------------------------------------------------------------------------
 
         val companionVariables = variable.companionVariables(sheetContext)
         when (companionVariables)
         {
-            is Val -> companionVariables.value.forEach { this.addVariable(it) }
+            is Val -> companionVariables.value.forEach { this.addVariable(it, variable)
+            }
             is Err -> ApplicationLog.error(companionVariables.error)
         }
 
@@ -186,9 +211,10 @@ class SheetState(val sheetContext : SheetContext,
         // (7) Notify all current listeners of this variable
         // -------------------------------------------------------------------------------------
 
-        this.updateListeners(variable)
+        this.updateListeners(variable, UUID.randomUUID())
 
         ApplicationLog.event(AppStateEvent(VariableAdded(variableId)))
+
     }
 
 
@@ -202,7 +228,7 @@ class SheetState(val sheetContext : SheetContext,
         // (1) Notify listeners (before they are removed)
         // -------------------------------------------------------------------------------------
 
-        this.onRemoveUpdateListeners(variable!!)
+        this.onRemoveUpdateListeners(variable!!, UUID.randomUUID())
 
         // (2) Remove from Id index
         // -------------------------------------------------------------------------------------
@@ -234,8 +260,31 @@ class SheetState(val sheetContext : SheetContext,
         {
             when (variableRef)
             {
-                is VariableId -> listenersById[variableRef]?.remove(variable)
-                is VariableTag -> listenersByTag[variableRef]?.remove(variable)
+                is VariableId ->
+                {
+                    listenersById[variableRef]?.remove(variable)
+                }
+                is VariableTag ->
+                {
+                    listenersByTag[variableRef]?.remove(variable)
+                }
+                is RelatedVariableSet ->
+                {
+//                    val relation = variableRef.relation
+//                    val tag = variableRef.tag
+//                    if (listenerTagsByRelation.containsKey(relation))
+//                    {
+//                        val tagMap = listenerTagsByRelation[relation]!!
+//                        if (tagMap.containsKey(tag))
+//                        {
+//                            val currentCount = tagMap[tag]!!
+//                            if (currentCount == 1)
+//                                tagMap.remove(tag)
+//                            else
+//                                tagMap.put(tag, currentCount - 1)
+//                        }
+//                    }
+                }
             }
         }
 
@@ -347,11 +396,11 @@ class SheetState(val sheetContext : SheetContext,
 //            }
 //        }
 
-        this.updateListeners(variable)
+        this.updateListeners(variable, UUID.randomUUID())
     }
 
 
-    fun onRemoveUpdateListeners(variable : Variable)
+    fun onRemoveUpdateListeners(variable : Variable, updateId : UUID)
     {
         // (1) Update listeners of variable id
         // -------------------------------------------------------------------------------------
@@ -361,8 +410,12 @@ class SheetState(val sheetContext : SheetContext,
         {
             for (listener in listenersById[variableId]!!)
             {
-                listener.onUpdate()
-                this.updateListeners(listener)
+                if (listener.lastUpdateId != updateId)
+                {
+                    listener.onUpdate()
+                    listener.lastUpdateId = updateId
+                    this.updateListeners(listener, updateId)
+                }
             }
 
         }
@@ -376,13 +429,37 @@ class SheetState(val sheetContext : SheetContext,
             {
                 for (listener in listenersByTag[tag]!!)
                 {
-                    listener.onUpdate()
-                    this.updateListeners(listener)
+                    if (listener.lastUpdateId != updateId)
+                    {
+                        listener.onUpdate()
+                        listener.lastUpdateId = updateId
+                        this.updateListeners(listener, updateId)
+                    }
                 }
             }
         }
 
-        // (3) Update on change listeners
+        // (3) Update listeners of variable relation
+        // -------------------------------------------------------------------------------------
+
+//        val relation = variable.relation()
+//        when (relation)
+//        {
+//            is Just ->
+//            {
+//                if (listenerTagsByRelation.containsKey(relation.value))
+//                {
+//                    val tagMap = listenerTagsByRelation[relation.value]
+//                    val tags = tagMap!!.keys
+//                    tags.forEach {
+//                        this.variables
+//
+//                    }
+//                }
+//            }
+//        }
+
+        // (4) Update on change listeners
         // -------------------------------------------------------------------------------------
 
         if (onChangeListenersById.containsKey(variableId))
@@ -439,7 +516,7 @@ class SheetState(val sheetContext : SheetContext,
     /**
      * Update all listeners that the variable has been changed.
      */
-    fun updateListeners(variable : Variable)
+    fun updateListeners(variable : Variable, updateId : UUID)
     {
         ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
 
@@ -451,8 +528,12 @@ class SheetState(val sheetContext : SheetContext,
         {
             for (listener in listenersById[variableId]!!)
             {
-                listener.onUpdate()
-                this.updateListeners(listener)
+                if (listener.lastUpdateId != updateId)
+                {
+                    listener.onUpdate()
+                    listener.lastUpdateId = updateId
+                    this.updateListeners(listener, updateId)
+                }
             }
 
         }
@@ -466,8 +547,48 @@ class SheetState(val sheetContext : SheetContext,
             {
                 for (listener in listenersByTag[tag]!!)
                 {
-                    listener.onUpdate()
-                    this.updateListeners(listener)
+                    if (listener.lastUpdateId != updateId)
+                    {
+                        listener.onUpdate()
+                        listener.lastUpdateId = updateId
+                        this.updateListeners(listener, updateId)
+                    }
+                }
+            }
+        }
+
+        // (3) Update any relation listeners
+        // -------------------------------------------------------------------------------------
+
+        val mRelation = variable.relation()
+        when (mRelation)
+        {
+            is Just ->
+            {
+                val relation = mRelation.value
+                if (listenerTagsByRelation.containsKey(relation))
+                {
+                    val listeners = listenerTagsByRelation[relation]!!
+                    listeners.forEach { listener ->
+                        val parentWithTag = variable.relatedParents().any { parentVarId ->
+                            val parentVar = this.variableWithId(parentVarId)
+                            when (parentVar) {
+                                is Val -> parentVar.value.tags().contains(listener.tag)
+                                is Err -> false
+                            }
+                        }
+                        if (parentWithTag)
+                        {
+                            this.variableWithId(listener.variableId) apDo { listenerVar ->
+                                if (listenerVar.lastUpdateId != updateId)
+                                {
+                                    listenerVar.onUpdate()
+                                    listenerVar.lastUpdateId = updateId
+                                    this.updateListeners(listenerVar, updateId)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -543,6 +664,36 @@ class SheetState(val sheetContext : SheetContext,
                 }
 
             }
+            is RelatedVariable  -> {
+                val variableId = VariableId(variableReference.name.value)
+                val relation = variableReference.relation
+                this.variableWithId(variableId)
+                        .apply { effValue<AppError,Maybe<VariableId>>(it.relatedVariableId(relation)) }
+                        .apply { note<AppError,VariableId>(it.toNullable(), AppStateError(VariableDoesNotHaveRelation(variableId,relation))) }
+                        .apply { this.variableWithId(it) }
+                        .apply { effValue<AppError,Set<Variable>>(setOf(it)) }
+            }
+            is RelatedVariableSet -> {
+                val relation = variableReference.relation
+                val variableTag = variableReference.tag
+                fun relatedVariables(variableSet : Set<Variable>) : Set<Variable> {
+                    val relatedVariableSet : MutableSet<Variable> = mutableSetOf()
+                    variableSet.forEach {
+                        val relatedVarId = it.relatedVariableId(relation)
+                        when (relatedVarId) {
+                             is Just -> {
+                                 val relatedVar = this.variableWithId(relatedVarId.value)
+                                 when (relatedVar) {
+                                     is Val -> relatedVariableSet.add(relatedVar.value)
+                             }
+                        } }
+                    }
+                    return relatedVariableSet
+                }
+                this.variablesWithTag(variableTag)
+                     .apply { effValue<AppError,Set<Variable>>(relatedVariables(it)) }
+            }
+
         }
 
 
@@ -602,12 +753,14 @@ class SheetState(val sheetContext : SheetContext,
     fun numberVariables(variableReference : VariableReference,
                         context : Maybe<VariableNamespace> = Nothing()) : AppEff<Set<NumberVariable>>
     {
-
         return this.variables(variableReference, context) ap {
-            if (it.isNotEmpty())
-                it.mapM { variable -> variable.numberVariable(sheetContext.sheetId) }
-            else
-                effValue(setOf())
+            val numberVariableSet : MutableSet<NumberVariable> = mutableSetOf()
+            it.forEach { variable ->
+                when (variable) {
+                    is NumberVariable -> numberVariableSet.add(variable)
+                }
+            }
+            effValue<AppError,Set<NumberVariable>>(numberVariableSet)
         }
     }
 

@@ -743,10 +743,10 @@ types:
       presence: optional
       description: >
         The boolean widget formatting options.
-    - name: value_variable_id
+    - name: value_variables_reference
       type:
         type: custom_type
-        custom_type: variable_id
+        custom_type: variable_reference
       presence: required
       description: >
         The widget value.
@@ -2224,6 +2224,12 @@ types:
       presence: optional
       description: >
         Are cell in this column namespaced?
+    - name: relation
+      type:
+        type: prim_type
+        prim_type:  string
+      presence: optional
+      description: Variable relation
 - type: product_type
   product_type:
     name: table_widget_boolean_column_format
@@ -2239,17 +2245,17 @@ types:
       presence: optional
       description: >
         The column format.
-    - name: true_style
+    - name: true_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The true value text style.
-    - name: false_style
+    - name: false_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The false value text style.
@@ -2329,6 +2335,12 @@ types:
       presence: optional
       description: >
         The editor type.
+    - name: relation
+      type:
+        type: prim_type
+        prim_type:  string
+      presence: optional
+      description: Variable relation
 - type: product_type
   product_type:
     name: table_widget_number_column_format
@@ -2406,6 +2418,19 @@ types:
       presence: optional
       description: >
         Action for the cells.
+    - name: relation
+      type:
+        type: prim_type
+        prim_type:  string
+      presence: optional
+      description: Variable relation
+    - name: tags
+      type: 
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: >
+        Tags that can be used to place the variable in a group.
     - name: is_namespaced
       type:
         type: prim_type
@@ -2572,24 +2597,24 @@ types:
       presence: optional
       description: >
         The cell background color.
-    - name: text_style
+    - name: text_format
       type:
         type: custom_type
         custom_type: text_style
       presence: optional
       description: >
         The cell text style
-    - name: true_style
+    - name: true_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The cell text style when the value is true.
-    - name: false_style
+    - name: false_format
       type:
         type: custom_type
-        custom_type: text_style
+        custom_type: text_format
       presence: optional
       description: >
         The cell text style when the value is false.
@@ -2887,6 +2912,13 @@ types:
       type: 
         type: custom_type
         custom_type: dice_roll_group
+      presence: optional
+      description: >
+        The id of the summation that represents the roll.
+    - name: auto_rolls
+      type: 
+        type: prim_type
+        prim_type: number
       presence: optional
       description: >
         The id of the summation that represents the roll.

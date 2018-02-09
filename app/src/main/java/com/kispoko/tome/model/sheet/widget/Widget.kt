@@ -17,6 +17,7 @@ import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -122,9 +123,11 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
 
     abstract fun widgetFormat() : WidgetFormat
 
+
     abstract fun view(sheetUIContext : SheetUIContext) : View
 
-    open fun variables(sheetContext : SheetContext) : Set<Variable> = setOf()
+
+//    open fun variables(sheetContext : SheetContext) : Set<Variable> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -628,7 +631,7 @@ data class ActionWidget(override val id : UUID,
 data class BooleanWidget(override val id : UUID,
                          private val widgetId : WidgetId,
                          private val format : BooleanWidgetFormat,
-                         private val valueVariableId : VariableId) : Widget()
+                         private val valueVariablesReference : VariableReference) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -644,11 +647,11 @@ data class BooleanWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : BooleanWidgetFormat,
-                valueVariableId : VariableId)
+                valueVariablesReference : VariableReference)
         : this(UUID.randomUUID(),
                widgetId,
                format,
-               valueVariableId)
+               valueVariablesReference)
 
 
     companion object : Factory<Widget>
@@ -664,8 +667,8 @@ data class BooleanWidget(override val id : UUID,
                       split(doc.maybeAt("format"),
                             effValue(BooleanWidgetFormat.default()),
                             { BooleanWidgetFormat.fromDocument(it) }),
-                      // Value Variable Id
-                      doc.at("value_variable_id") ap { VariableId.fromDocument(it) }
+                      // Value Variables Reference
+                      doc.at("value_variables_reference") ap { VariableReference.fromDocument(it) }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -680,7 +683,7 @@ data class BooleanWidget(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
         "format" to this.format().toDocument(),
-        "value_variable_id" to this.valueVariableId().toDocument()
+        "value_variables_reference" to this.valueVariablesReference().toDocument()
     ))
 
 
@@ -694,7 +697,7 @@ data class BooleanWidget(override val id : UUID,
     fun format() : BooleanWidgetFormat = this.format
 
 
-    fun valueVariableId() : VariableId = this.valueVariableId
+    fun valueVariablesReference() : VariableReference = this.valueVariablesReference
 
 
     // -----------------------------------------------------------------------------------------
@@ -725,7 +728,7 @@ data class BooleanWidget(override val id : UUID,
         RowValue3(widgetBooleanTable,
                   PrimValue(this.widgetId),
                   ProdValue(this.format),
-                  PrimValue(this.valueVariableId))
+                  PrimValue(this.valueVariablesReference))
 
 
     // -----------------------------------------------------------------------------------------
@@ -741,15 +744,63 @@ data class BooleanWidget(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
+    fun variables(sheetContext : SheetContext) : AppEff<Set<BooleanVariable>> =
+            SheetManager.sheetState(sheetContext.sheetId)
+                    .apply { it.variables(this.valueVariablesReference) }
+                    .apply { effValue<AppError,Set<BooleanVariable>>(filterBooleanVariables(it)) }
 
-    fun variable(sheetContext : SheetContext) : AppEff<BooleanVariable> =
-        SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.booleanVariableWithId(this.valueVariableId()) }
+
+    private fun filterBooleanVariables(variableSet : Set<Variable>) : Set<BooleanVariable>
+    {
+        val booleanVariables : MutableSet<BooleanVariable> = mutableSetOf()
+
+        variableSet.forEach {
+            when (it) {
+                is BooleanVariable -> booleanVariables.add(it)
+            }
+        }
+
+        return booleanVariables
+    }
+
+
+//    fun variable(sheetContext : SheetContext) : AppEff<BooleanVariable>
+//    {
+//        val variables = this.variables(sheetContext)
+//        return when (variables) {
+//            is Val -> {
+//                val first = variables.value.toList().firstOrNull()
+//                if (first != null) {
+//                    when (first) {
+//                        is BooleanVariable -> effValue(first)
+//                        else               -> effError<AppError,BooleanVariable>(AppStateError(VariableIsOfUnexpectedType(sheetContext.sheetId,
+//                                                                                                first.variableId(),
+//                                                                                                VariableType.BOOLEAN,
+//                                                                                                first.type())))
+//                    }
+//                }
+//                else {
+//                    effError<AppError,BooleanVariable>(AppStateError(VariableDoesNotExist(sheetContext.sheetId, this.valueVariablesReference)))
+//                }
+//            }
+//            is Err -> {
+//                effError(variables.error)
+//            }
+//        }
+//
+//    }
 
 
     fun variableValue(sheetContext : SheetContext) : AppEff<Boolean> =
-            this.variable(sheetContext)
-                .apply { it.value() }
+            this.variables(sheetContext)
+                .apply { if (it.isNotEmpty()) {
+                            it.mapM { it.value() }
+                         }
+                         else {
+                            effValue(setOf())
+                         }
+                }
+                .apply { effValue<AppError,Boolean>(it.all { it }) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -763,8 +814,7 @@ data class BooleanWidget(override val id : UUID,
         {
             is BooleanWidgetUpdateToggle ->
             {
-                Log.d("***WIDGET", "boolean update toggle")
-                this.toggleValue(SheetContext(sheetUIContext))
+                this.toggleValues(SheetContext(sheetUIContext))
                 this.updateView(rootView, sheetUIContext)
             }
         }
@@ -781,12 +831,16 @@ data class BooleanWidget(override val id : UUID,
     }
 
 
-    fun toggleValue(sheetContext : SheetContext)
+    fun toggleValues(sheetContext : SheetContext)
     {
-        val booleanVariable = this.variable(sheetContext)
-        when (booleanVariable) {
-            is Val -> booleanVariable.value.toggleValue(sheetContext.sheetId)
-            is Err -> ApplicationLog.error(booleanVariable.error)
+        val booleanVariables = this.variables(sheetContext)
+        when (booleanVariables) {
+            is Val -> {
+                booleanVariables.value.forEach {
+                    it.toggleValue(sheetContext.sheetId)
+                }
+            }
+            is Err -> ApplicationLog.error(booleanVariables.error)
         }
     }
 
@@ -1437,11 +1491,9 @@ data class MechanicWidget(override val id : UUID,
                 mechanics.value.forEach { mechanic ->
                     when (mechanic.mechanicType()) {
                         is MechanicType.Option -> {
-                            Log.d("***WIDGET", "mechanic in category on variable setting")
                             mechanic.variables().forEach { optVar ->
                                 optVar.setOnUpdateListener {
                                     rootView?.let {
-                                        Log.d("***WIDGET", "update mechanic widget view")
                                         this.updateView(it, sheetUIContext)
                                     }
                                 }
@@ -1465,10 +1517,8 @@ data class MechanicWidget(override val id : UUID,
         val viewId = this.viewId
         if (viewId != null)
         {
-            Log.d("***WIDGET", "view id is not null")
             val layout = rootView.findViewById(viewId) as LinearLayout?
             if (layout != null) {
-                Log.d("***WIDGET", "calling update view")
                 MechanicWidgetViewBuilder(this, sheetUIContext).updateView(layout)
             }
         }
@@ -1612,7 +1662,9 @@ data class NumberWidget(override val id : UUID,
         val rootView = sheetActivity.rootSheetView()
         val sheetContext = SheetContext(sheetUIContext)
 
+
         this.valueVariable(sheetContext) apDo { currentValueVar ->
+            //Log.d("****WIDGET", "${currentValueVar.label().value} value var deps: ${currentValueVar.dependencies(sheetContext)}")
             currentValueVar.setOnUpdateListener {
                 rootView?.let {
                     this.updateView(it, sheetUIContext)
@@ -2423,11 +2475,9 @@ data class RollWidget(override val id : UUID,
         }
 
         deps.forEach { varRef ->
-            Log.d("****WIDGET", "roll widget dep: ${varRef}")
             SheetManager.sheetState(sheetUIContext.sheetId) apDo { state ->
             state.variable(varRef)                          apDo { variable ->
                variable.setOnUpdateListener {
-                   Log.d("****WIDGET", "roll widget add var listener: ${variable.label().value}")
                    rootView?.let {
                        this.updateView(it, sheetUIContext)
                    }
@@ -2548,7 +2598,7 @@ data class StoryWidget(override val id : UUID,
     }
 
 
-    override fun variables(sheetContext : SheetContext) : Set<Variable> =
+    fun variables(sheetContext : SheetContext) : Set<Variable> =
         this.variableParts().mapNotNull { part ->
             val variable = SheetManager.sheetState(sheetContext.sheetId)
                                        .apply { it.variableWithId(part.variableId()) }
@@ -2863,7 +2913,7 @@ data class TableWidget(override val id : UUID,
     // INDEXES
     // -----------------------------------------------------------------------------------------
 
-    private var namespaceColumn : Int? = null
+    //private var namespaceColumn : Int? = null
 
     private val numberCellById : MutableMap<UUID, TableWidgetNumberCell> = mutableMapOf()
 
@@ -2882,14 +2932,14 @@ data class TableWidget(override val id : UUID,
             }
         }
 
-        this.columns().forEachIndexed { index, column ->
-            when (column) {
-                is TableWidgetTextColumn -> {
-                    if (column.definesNamespaceBoolean() && namespaceColumn == null)
-                        namespaceColumn = index
-                }
-            }
-        }
+//        this.columns().forEachIndexed { index, column ->
+//            when (column) {
+//                is TableWidgetTextColumn -> {
+//                    if (column.definesNamespaceBoolean() && namespaceColumn == null)
+//                        namespaceColumn = index
+//                }
+//            }
+//        }
     }
 
 
@@ -3138,22 +3188,25 @@ data class TableWidget(override val id : UUID,
     private fun addBooleanCellVariable(booleanCell : TableWidgetBooleanCell,
                                        rowIndex : Int,
                                        cellIndex : Int,
-                                       namespace : VariableNamespace?,
-                                       sheetUIContext : SheetUIContext)
+//                                       namespace : VariableNamespace?,
+                                       sheetUIContext : SheetUIContext) : Variable
     {
         val column = this.columns()[cellIndex]
-        val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex, namespace)
+        val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex)
         val variable = BooleanVariable(variableId,
                                        VariableLabel(column.nameString()),
                                        VariableDescription(column.nameString()),
                                        listOf(),
+                                       column.variableRelation(),
                                        booleanCell.variableValue())
         variable.setOnUpdateListener {
             booleanCell.updateView(sheetUIContext)
         }
         SheetManager.addVariable(sheetUIContext.sheetId, variable)
         booleanCell.variableId = variableId
-        booleanCell.namespace = namespace
+//        booleanCell.namespace = namespace
+
+        return variable
     }
 
 
@@ -3163,53 +3216,68 @@ data class TableWidget(override val id : UUID,
     private fun addNumberCellVariable(numberCell : TableWidgetNumberCell,
                                       rowIndex : Int,
                                       cellIndex : Int,
-                                      namespace : VariableNamespace?,
-                                      sheetUIContext : SheetUIContext)
+//                                      namespace : VariableNamespace?,
+                                      sheetUIContext : SheetUIContext) : Variable
     {
         val column = this.columns()[cellIndex]
-        val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex, namespace)
+        val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex) //, namespace)
         val variable = NumberVariable(variableId,
                                       VariableLabel(column.nameString()),
                                       VariableDescription(column.nameString()),
                                       listOf(),
+                                      column.variableRelation(),
                                       numberCell.variableValue())
         variable.setOnUpdateListener {
             numberCell.updateView(sheetUIContext)
         }
         SheetManager.addVariable(sheetUIContext.sheetId, variable)
         numberCell.variableId = variableId
-        numberCell.namespace = namespace
+//        numberCell.namespace = namespace
+
+        return variable
     }
 
 
     private fun addTextCellVariable(textCell : TableWidgetTextCell,
                                     rowIndex : Int,
                                     cellIndex : Int,
-                                    namespace : VariableNamespace?,
-                                    sheetUIContext : SheetUIContext)
+//                                    namespace : VariableNamespace?,
+                                    sheetUIContext : SheetUIContext) : Variable
     {
-        val column = this.columns()[cellIndex]
-        val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex, namespace)
+        val column = this.columns()[cellIndex] as TableWidgetTextColumn
+        val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex) //, namespace)
         val variable = TextVariable(variableId,
                                     VariableLabel(column.nameString()),
                                     VariableDescription(column.nameString()),
                                     listOf(),
+                                    column.variableRelation(),
                                     textCell.variableValue())
+
+        // Add relations
+
+//        this.rows()[rowIndex].cells().forEach { cell ->
+//        }
+
+
+        variable.addTags(column.tags().toSet())
+//
         variable.setOnUpdateListener {
             textCell.updateView(sheetUIContext)
         }
         SheetManager.addVariable(sheetUIContext.sheetId, variable)
         textCell.variableId = variableId
-        textCell.namespace = namespace
+//        textCell.namespace = namespace
+
+        return variable
     }
 
 
     private fun cellVariableId(variablePrefix : String,
-                               rowIndex : Int,
-                               namespace : VariableNamespace?) : VariableId =
-        if (namespace != null)
-            VariableId(namespace, VariableName(variablePrefix))
-        else
+                               rowIndex : Int) : VariableId =
+                               //namespace : VariableNamespace?) : VariableId =
+//        if (namespace != null)
+//            VariableId(namespace, VariableName(variablePrefix))
+//        else
             VariableId(variablePrefix + "_row_" + rowIndex.toString())
 
 
@@ -3244,46 +3312,86 @@ data class TableWidget(override val id : UUID,
         {
             val row = this.rows()[rowIndex]
 
-            var namespace : VariableNamespace? = null
-            val nsCol = this.namespaceColumn
-            if (nsCol != null)
-            {
-                val cell = row.cells()[nsCol]
-                when (cell) {
-                    is TableWidgetTextCell -> {
-                        val valueStringEff = cell.variableValue().value(SheetContext(sheetUIContext))
-                        when (valueStringEff) {
-                            is Val -> {
-                                val valueString = valueStringEff.value
-                                when (valueString) {
-                                    is Just ->
-                                    {
-                                        val nsString = valueString.value.toLowerCase().replace(" ", "_")
-                                        namespace = VariableNamespace(nsString)
-                                    }
-                                }
-                            }
-                            is Err -> ApplicationLog.error(valueStringEff.error)
-                        }
-                    }
-                }
-            }
+//            var namespace : VariableNamespace? = null
+//            val nsCol = this.namespaceColumn
+//            if (nsCol != null)
+//            {
+//                val cell = row.cells()[nsCol]
+//                when (cell) {
+//                    is TableWidgetTextCell -> {
+//                        val valueStringEff = cell.variableValue().value(SheetContext(sheetUIContext))
+//                        when (valueStringEff) {
+//                            is Val -> {
+//                                val valueString = valueStringEff.value
+//                                when (valueString) {
+//                                    is Just ->
+//                                    {
+//                                        val nsString = valueString.value.toLowerCase().replace(" ", "_")
+//                                        namespace = VariableNamespace(nsString)
+//                                    }
+//                                }
+//                            }
+//                            is Err -> ApplicationLog.error(valueStringEff.error)
+//                        }
+//                    }
+//                }
+//            }
+
+            val rowVariables : MutableList<Variable> = mutableListOf()
 
             row.cells().forEachIndexed { cellIndex, cell ->
                 when (cell) {
                     is TableWidgetBooleanCell ->
                     {
-                        addBooleanCellVariable(cell, rowIndex, cellIndex, namespace, sheetUIContext)
+//                        val booleanVar = addBooleanCellVariable(cell, rowIndex, cellIndex, namespace, sheetUIContext)
+                        val booleanVar = addBooleanCellVariable(cell, rowIndex, cellIndex, sheetUIContext)
+                        rowVariables.add(booleanVar)
                     }
                     is TableWidgetNumberCell ->
                     {
                         this.numberCellById.put(cell.id, cell)
-                        addNumberCellVariable(cell, rowIndex, cellIndex, namespace, sheetUIContext)
+                        val numberVar = addNumberCellVariable(cell, rowIndex, cellIndex, sheetUIContext)
+                        rowVariables.add(numberVar)
                     }
                     is TableWidgetTextCell ->
                     {
                         this.textCellById.put(cell.id, cell)
-                        addTextCellVariable(cell, rowIndex, cellIndex, namespace, sheetUIContext)
+                        val textVar = addTextCellVariable(cell, rowIndex, cellIndex, sheetUIContext)
+                        rowVariables.add(textVar)
+                    }
+                }
+            }
+
+            rowVariables.forEachIndexed { i, iVar ->
+                rowVariables.forEachIndexed { j, jVar ->
+                    val relation = jVar.relation()
+                    when (relation) {
+                        is Just -> {
+                            iVar.addRelation(relation.value, jVar.variableId(), SheetContext(sheetUIContext))
+
+
+//                            when (jVar) {
+//                                is NumberVariable -> {
+//                                    val numberVarValue = jVar.variableValue
+//                                    when (numberVarValue) {
+//                                        is NumberVariableValueValue -> {
+//                                            val varValue = GameManager.engine(sheetUIContext.gameId) ap {
+//                                                it.value(numberVarValue.valueReference, SheetContext(sheetUIContext))
+//                                            }
+//
+//                                            when (varValue) {
+//                                                is Val -> {
+//                                                    varValue.value.variables().forEach {
+//                                                        if (it.relation())
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//
+//                            }
+                        }
                     }
                 }
             }
@@ -3301,7 +3409,7 @@ data class TableWidget(override val id : UUID,
                 when (cell) {
                     is TableWidgetBooleanCell ->
                     {
-                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex, null)
+                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex) //, null)
                         cell.valueVariable(sheetContext)              apDo { boolVar ->
                         SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
                             sheetState.updateVariableId(boolVar.variableId(), newVarId)
@@ -3310,7 +3418,7 @@ data class TableWidget(override val id : UUID,
                     }
                     is TableWidgetNumberCell ->
                     {
-                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex, null)
+                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex) //, null)
                         cell.valueVariable(sheetContext)              apDo { numVar ->
                         SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
                             sheetState.updateVariableId(numVar.variableId(), newVarId)
@@ -3319,7 +3427,7 @@ data class TableWidget(override val id : UUID,
                     }
                     is TableWidgetTextCell ->
                     {
-                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex, null)
+                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex) //, null)
                         cell.valueVariable(sheetContext)              apDo { textVar ->
                         SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
                             sheetState.updateVariableId(textVar.variableId(), newVarId)

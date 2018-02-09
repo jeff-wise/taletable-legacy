@@ -11,10 +11,7 @@ import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.engine.variable.BooleanVariableValue
-import com.kispoko.tome.model.game.engine.variable.NumberVariableValue
-import com.kispoko.tome.model.game.engine.variable.TextVariableValue
-import com.kispoko.tome.model.sheet.style.ElementFormat
+import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.Action
@@ -41,6 +38,7 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 sealed class TableWidgetColumn(open val columnName : ColumnName,
                                open val variablePrefix : ColumnVariablePrefix,
+                               open val variableRelation : Maybe<VariableRelation>,
                                open val isColumnNamespaced : IsColumnNamespaced)
                                 : ToDocument, ProdType, Serializable
 {
@@ -88,6 +86,9 @@ sealed class TableWidgetColumn(open val columnName : ColumnName,
     fun variablePrefixString() : String = this.variablePrefix.value
 
 
+    fun variableRelation() : Maybe<VariableRelation> = this.variableRelation
+
+
     fun isColumnNamespacedBoolean() : Boolean = this.isColumnNamespaced.value
 
 
@@ -111,10 +112,11 @@ data class TableWidgetBooleanColumn(
         override val id : UUID,
         override val columnName : ColumnName,
         override val variablePrefix : ColumnVariablePrefix,
+        override val variableRelation : Maybe<VariableRelation>,
         override val isColumnNamespaced:  IsColumnNamespaced,
         val defaultValue : BooleanVariableValue,
         val format : BooleanColumnFormat)
-          : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
+          : TableWidgetColumn(columnName, variablePrefix, variableRelation, isColumnNamespaced)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -123,12 +125,14 @@ data class TableWidgetBooleanColumn(
 
     constructor(columnName : ColumnName,
                 variablePrefix : ColumnVariablePrefix,
+                variableRelation : Maybe<VariableRelation>,
                 isColumnNamespaced : IsColumnNamespaced,
                 defaultValue : BooleanVariableValue,
                 format : BooleanColumnFormat)
         : this(UUID.randomUUID(),
                columnName,
                variablePrefix,
+               variableRelation,
                isColumnNamespaced,
                defaultValue,
                format)
@@ -145,6 +149,10 @@ data class TableWidgetBooleanColumn(
                       doc.at("name") ap { ColumnName.fromDocument(it) },
                       // Variable Prefix
                       doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Is Column Namespaced
                       split(doc.maybeAt("is_namespaced"),
                             effValue(IsColumnNamespaced(false)),
@@ -227,12 +235,14 @@ data class TableWidgetNumberColumn(
                 override val id : UUID,
                 override val columnName : ColumnName,
                 override val variablePrefix : ColumnVariablePrefix,
+                override val variableRelation : Maybe<VariableRelation>,
                 override val isColumnNamespaced : IsColumnNamespaced,
+                val tags : List<VariableTag>,
                 val defaultValue : NumberVariableValue,
                 val format : NumberColumnFormat,
                 val action : Maybe<Action>,
                 val editorType : NumericEditorType)
-                 : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
+                 : TableWidgetColumn(columnName, variablePrefix, variableRelation, isColumnNamespaced)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -241,7 +251,9 @@ data class TableWidgetNumberColumn(
 
     constructor(columnName : ColumnName,
                 variablePrefix : ColumnVariablePrefix,
+                variableRelation : Maybe<VariableRelation>,
                 isColumnNamespaced : IsColumnNamespaced,
+                tags : List<VariableTag>,
                 defaultValue : NumberVariableValue,
                 format : NumberColumnFormat,
                 action : Maybe<Action>,
@@ -249,7 +261,9 @@ data class TableWidgetNumberColumn(
         : this(UUID.randomUUID(),
                columnName,
                variablePrefix,
+               variableRelation,
                isColumnNamespaced,
+               tags,
                defaultValue,
                format,
                action,
@@ -271,10 +285,18 @@ data class TableWidgetNumberColumn(
                       doc.at("name") ap { ColumnName.fromDocument(it) },
                       // Variable Prefix
                       doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Is Column Namespaced
                       split(doc.maybeAt("is_namespaced"),
                             effValue(IsColumnNamespaced(false)),
                             { IsColumnNamespaced.fromDocument(it) }),
+                      // Tags
+                      split(doc.maybeList("tags"),
+                            effValue(listOf()),
+                            { it.map { VariableTag.fromDocument(it) } }),
                       // Default Value
                       doc.at("default_value") ap { NumberVariableValue.fromDocument(it) },
                       // Format
@@ -318,9 +340,12 @@ data class TableWidgetNumberColumn(
 
     fun defaultValue() : NumberVariableValue = this.defaultValue
 
+
     fun format() : NumberColumnFormat = this.format
 
+
     fun editorType() : NumericEditorType = this.editorType
+
 
     fun action() : Maybe<Action> = this.action
 
@@ -356,6 +381,9 @@ data class TableWidgetNumberColumn(
     }
 
 
+    fun tags() : List<VariableTag> = this.tags
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -386,21 +414,26 @@ data class TableWidgetTextColumn(
         override val id : UUID,
         override val columnName : ColumnName,
         override val variablePrefix : ColumnVariablePrefix,
+        override val variableRelation : Maybe<VariableRelation>,
         override val isColumnNamespaced : IsColumnNamespaced,
+        val tags : List<VariableTag>,
         val defaultValue : TextVariableValue,
         val format : TextColumnFormat,
         val action : Maybe<Action>,
         val definesNamespace : DefinesNamespace)
-         : TableWidgetColumn(columnName, variablePrefix, isColumnNamespaced)
+         : TableWidgetColumn(columnName, variablePrefix, variableRelation, isColumnNamespaced)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    // TODO remove namespace columns, use relations
     constructor(columnName : ColumnName,
                 variablePrefix : ColumnVariablePrefix,
+                variableRelation : Maybe<VariableRelation>,
                 isColumnNamespaced : IsColumnNamespaced,
+                tags : List<VariableTag>,
                 defaultValue : TextVariableValue,
                 format : TextColumnFormat,
                 action : Maybe<Action>,
@@ -408,7 +441,9 @@ data class TableWidgetTextColumn(
         : this(UUID.randomUUID(),
                columnName,
                variablePrefix,
+               variableRelation,
                isColumnNamespaced,
+               tags,
                defaultValue,
                format,
                action,
@@ -427,10 +462,18 @@ data class TableWidgetTextColumn(
                       doc.at("name") ap { ColumnName.fromDocument(it) },
                       // Variable Prefix
                       doc.at("variable_prefix") ap { ColumnVariablePrefix.fromDocument(it) },
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Is Column Namespaced
                       split(doc.maybeAt("is_namespaced"),
                             effValue(IsColumnNamespaced(false)),
                             { IsColumnNamespaced.fromDocument(it) }),
+                      // Tags
+                      split(doc.maybeList("tags"),
+                            effValue(listOf()),
+                            { it.map { VariableTag.fromDocument(it) } }),
                       // Default Value
                       doc.at("default_value") ap { TextVariableValue.fromDocument(it) },
                       // Format
@@ -511,6 +554,9 @@ data class TableWidgetTextColumn(
 
         return ""
     }
+
+
+    fun tags() : List<VariableTag> = this.tags
 
 
     // -----------------------------------------------------------------------------------------

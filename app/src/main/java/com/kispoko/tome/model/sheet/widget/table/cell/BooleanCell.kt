@@ -13,11 +13,8 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue5
-import com.kispoko.tome.lib.orm.RowValue6
-import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TextViewBuilder
@@ -284,14 +281,6 @@ object BooleanCellView
 
             valueView.text = column.format().falseTextString()
 
-            // No false style, but need to undo true style
-//            if (falseStyle == null && trueStyle != null) {
-//                defaultStyle.styleTextView(valueView, sheetUIContext)
-//                Log.d("***BooleanCell", defaultStyle.toString())
-//            }
-//            else {
-//                falseStyle?.styleTextView(valueView, sheetUIContext)
-//            }
             falseFormat.styleTextView(valueView, sheetUIContext)
         }
         else
@@ -299,13 +288,6 @@ object BooleanCellView
             cell.valueVariable(sheetContext) apDo { it.updateValue(true, sheetContext.sheetId) }
 
             valueView.text = column.format().trueTextString()
-
-            // No true style, but need to undo false style
-//            if (trueStyle == null && falseStyle != null)
-//                defaultStyle.styleTextView(valueView, sheetUIContext)
-//            else
-//                trueStyle?.styleTextView(valueView, sheetUIContext)
-
             trueFormat.styleTextView(valueView, sheetUIContext)
         }
 

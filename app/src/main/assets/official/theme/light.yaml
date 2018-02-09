@@ -4,6 +4,10 @@ palette:
   color: '#FFFFFF'
 - color_id: grey_500
   color: '#7F000000'
+- color_id: grey_400
+  color: '#66000000'
+- color_id: grey_300
+  color: '#4D000000'
 - color_id: light_grey_1
   color: '#FAFAFA'
 - color_id: light_grey_2
@@ -104,14 +108,18 @@ palette:
   color: '#CD1BC058'
 - color_id: green_70
   color: '#B21BC058'
-- color_id: green_x
-  color: '#11AB5D'
-- color_id: green_90_x
-  color: '#E611AB5D'
-- color_id: green_80_x
-  color: '#CD11AB5D'
-- color_id: green_70_x
-  color: '#B211AB5D'
+- color_id: green_60
+  color: '#991BC058'
+- color_id: green_50
+  color: '#801BC058'
+- color_id: green_40
+  color: '#661BC058'
+- color_id: green_30
+  color: '#4D1BC058'
+- color_id: green_20
+  color: '#331BC058'
+- color_id: green_10
+  color: '#1A1BC058'
 - color_id: red
   color: '#C32C39'
 - color_id: red_90
@@ -160,6 +168,8 @@ palette:
   color: '#CD6734B5'
 - color_id: purple_70
   color: '#B26734B5'
+- color_id: transparent
+  color: '#00FFFFFF'
 ui_colors:
   toolbar_background: dark_grey_8
   toolbar_icons: light_grey_4

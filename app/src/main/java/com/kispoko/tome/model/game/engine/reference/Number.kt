@@ -232,7 +232,7 @@ data class NumberReferenceVariable(val variableReference : VariableReference)
     override fun components(sheetContext : SheetContext) : List<TermComponent>
     {
         val variables = SheetManager.sheetState(sheetContext.sheetId)
-                                    .apply { it.variables(this.variableReference) }
+                                    .apply { it.numberVariables(this.variableReference) }
 
         when (variables)
         {

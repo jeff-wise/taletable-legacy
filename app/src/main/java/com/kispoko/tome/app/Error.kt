@@ -33,6 +33,14 @@ sealed class AppError : ApplicationError
 }
 
 
+class AppVoidError() : AppError()
+{
+    override fun debugMessage(): String = "void"
+
+    override fun logMessage(): String = "void"
+}
+
+
 class AppSheetError(val error : SheetError) : AppError()
 {
     override fun debugMessage(): String = error.debugMessage()

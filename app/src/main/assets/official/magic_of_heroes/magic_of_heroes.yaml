@@ -705,67 +705,67 @@ engine:
         value_text:
           value_id: acid
           description: Acid damage.
-          value: Acid
+          value: Acid Damage
       - type: value_text
         value_text:
           value_id: bludgeoning
           description: Bludgeoning damage.
-          value: Bludgeoning
+          value: Bludgeoning Damage
       - type: value_text
         value_text:
           value_id: cold
           description: Cold damage.
-          value: Cold
+          value: Cold Damage
       - type: value_text
         value_text:
           value_id: fire
           description: Fire damage.
-          value: Fire
+          value: Fire Damage
       - type: value_text
         value_text:
           value_id: force
           description: Force damage.
-          value: Force
+          value: Force Damage
       - type: value_text
         value_text:
           value_id: lightning
           description: Lightning damage.
-          value: Lightning
+          value: Lightning Damage
       - type: value_text
         value_text:
           value_id: necrotic
           description: Necrotic damage.
-          value: Necrotic
+          value: Necrotic Damage
       - type: value_text
         value_text:
           value_id: piercing
           description: Piercing damage.
-          value: Piercing
+          value: Piercing Damage
       - type: value_text
         value_text:
           value_id: poison
           description: Poison damage.
-          value: Poison
+          value: Poison Damage
       - type: value_text
         value_text:
           value_id: psychic
           description: Psychic damage.
-          value: Psychic
+          value: Psychic Damage
       - type: value_text
         value_text:
           value_id: radiant
           description: Radidant damage.
-          value: Radiant
+          value: Radiant Damage
       - type: value_text
         value_text:
           value_id: slashing
           description: Slashing damage.
-          value: Slashing
+          value: Slashing Damage
       - type: value_text
         value_text:
           value_id: thunder
           description: Thunder damage.
-          value: Thunder
+          value: Thunder Damage
       - type: value_text
         value_text:
           value_id: nothing
@@ -1284,6 +1284,7 @@ engine:
               description: The weight of a club.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1300,6 +1301,7 @@ engine:
               description: The weight of a dagger.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -1316,6 +1318,7 @@ engine:
               description: The weight of a greatclub.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -1332,6 +1335,7 @@ engine:
               description: The weight of a handaxe.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1348,6 +1352,7 @@ engine:
               description: The weight of a javelin.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1364,6 +1369,7 @@ engine:
               description: The weight of a light hammer.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1380,6 +1386,7 @@ engine:
               description: The weight of a Mace.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -1396,6 +1403,7 @@ engine:
               description: The weight of a Quarterstaff.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -1412,6 +1420,7 @@ engine:
               description: The weight of a Sickle.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1428,6 +1437,7 @@ engine:
               description: The weight of a Spear.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -1452,6 +1462,7 @@ engine:
               description: The weight of a Light Crossbow.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -1468,6 +1479,7 @@ engine:
               description: The weight of a Dart.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.25
@@ -1484,6 +1496,7 @@ engine:
               description: The weight of a Shortbow.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1500,6 +1513,7 @@ engine:
               description: The weight of a Sling.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -1524,6 +1538,7 @@ engine:
               description: The weight of a Battleaxe.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -1540,6 +1555,7 @@ engine:
               description: The weight of a Flail.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1556,6 +1572,7 @@ engine:
               description: The weight of a Glaive.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 6
@@ -1572,6 +1589,7 @@ engine:
               description: The weight of a Greataxe.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 7
@@ -1588,6 +1606,7 @@ engine:
               description: The weight of a Greatsword.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 6
@@ -1604,6 +1623,7 @@ engine:
               description: The weight of a Halberd.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 6
@@ -1620,6 +1640,7 @@ engine:
               description: The weight of a Lance.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 6
@@ -1636,6 +1657,7 @@ engine:
               description: The weight of a Longsword.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -1652,6 +1674,7 @@ engine:
               description: The weight of a Maul.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -1668,6 +1691,7 @@ engine:
               description: The weight of a Morningstar.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -1684,6 +1708,7 @@ engine:
               description: The weight of a Pike.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 18
@@ -1700,6 +1725,7 @@ engine:
               description: The weight of a Rapier.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1716,6 +1742,7 @@ engine:
               description: The weight of a Scimitar.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -1732,6 +1759,7 @@ engine:
               description: The weight of a Shortsword.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1748,6 +1776,7 @@ engine:
               description: The weight of a Trident.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -1764,6 +1793,7 @@ engine:
               description: The weight of a War Pick.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1780,6 +1810,7 @@ engine:
               description: The weight of a Warhammer.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1796,6 +1827,7 @@ engine:
               description: The weight of a Whip.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -1820,6 +1852,7 @@ engine:
               description: The weight of a Blowgun.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -1836,6 +1869,7 @@ engine:
               description: The weight of a Hand Crossbow.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -1852,6 +1886,7 @@ engine:
               description: The weight of a Heavy Crossbow.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 18
@@ -1868,6 +1903,7 @@ engine:
               description: The weight of a Longbow.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -1884,6 +1920,7 @@ engine:
               description: The weight of a Net.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -1930,6 +1967,7 @@ engine:
               description: The weight of a single arrow.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.05
@@ -1946,6 +1984,7 @@ engine:
               description: The weight of a single blowgun needle.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.02
@@ -1962,6 +2001,7 @@ engine:
               description: The weight of a single crossbow bolt.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.075
@@ -1978,6 +2018,7 @@ engine:
               description: The weight of a single sling bullet.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.075
@@ -2005,6 +2046,7 @@ engine:
               description: The weight of a crystal arcane focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2021,6 +2063,7 @@ engine:
               description: The weight of an orb arcane focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -2037,6 +2080,7 @@ engine:
               description: The weight of a rod arcane focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2053,6 +2097,7 @@ engine:
               description: The weight of a staff arcane focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -2069,6 +2114,7 @@ engine:
               description: The weight of a wand arcane focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2097,6 +2143,7 @@ engine:
               description: The weight of a sprig of mistletoe druidic focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2113,6 +2160,7 @@ engine:
               description: The weight of a totem druidic focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2129,6 +2177,7 @@ engine:
               description: The weight of a wooden staff druidic focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -2145,6 +2194,7 @@ engine:
               description: The weight of a yew wand druidic focus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2174,6 +2224,7 @@ engine:
               description: The weight of an amulet (holy symbol).
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2190,6 +2241,7 @@ engine:
               description: The weight of an emblem (holy symbol).
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2206,6 +2258,7 @@ engine:
               description: The weight of a reliquary (holy symbol).
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2230,6 +2283,7 @@ engine:
               description: The weight of an abacus.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2246,6 +2300,7 @@ engine:
               description: The weight of a vial of acid.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2262,6 +2317,7 @@ engine:
               description: The weight of a flask of Alchemist's Fire.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2278,6 +2334,7 @@ engine:
               description: The weight of a vail of Antitoxin.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2294,6 +2351,7 @@ engine:
               description: The weight of a backpack.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -2310,6 +2368,7 @@ engine:
               description: The weight of a bag of 1000 ball bearings.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2326,6 +2385,7 @@ engine:
               description: The weight of a barrel.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 70
@@ -2342,6 +2402,7 @@ engine:
               description: The weight of a basket.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2358,6 +2419,7 @@ engine:
               description: The weight of a bedroll.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 7
@@ -2374,6 +2436,7 @@ engine:
               description: The weight of a bell.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2390,6 +2453,7 @@ engine:
               description: The weight of a blanket.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -2406,6 +2470,7 @@ engine:
               description: The weight of a block and tackle.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -2422,6 +2487,7 @@ engine:
               description: The weight of a book.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -2438,6 +2504,7 @@ engine:
               description: The weight of a bottle (glass).
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2454,6 +2521,7 @@ engine:
               description: The weight of a bucket.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2470,6 +2538,7 @@ engine:
               description: The weight of a bag of 20 caltrops.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2486,6 +2555,7 @@ engine:
               description: The weight of a candle.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2502,6 +2572,7 @@ engine:
               description: The weight of a crossbow bolt case.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2518,6 +2589,7 @@ engine:
               description: The weight of a map or scroll case.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2534,6 +2606,7 @@ engine:
               description: The weight of a 10 foot chain.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -2550,6 +2623,7 @@ engine:
               description: The weight of 1 piece of chalk.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2566,6 +2640,7 @@ engine:
               description: The weight of a chest.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 25
@@ -2582,6 +2657,7 @@ engine:
               description: The weight of a Climber's Kit.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 12
@@ -2598,6 +2674,7 @@ engine:
               description: The weight of common clothes.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -2614,6 +2691,7 @@ engine:
               description: The weight of costume clothes.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -2630,6 +2708,7 @@ engine:
               description: The weight of fine clothes.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 6
@@ -2646,6 +2725,7 @@ engine:
               description: The weight of travelers clothes.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -2662,6 +2742,7 @@ engine:
               description: The weight of a component pouch.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2678,6 +2759,7 @@ engine:
               description: The weight of a crowbar.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -2694,6 +2776,7 @@ engine:
               description: The weight of a fishing tackle.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -2710,6 +2793,7 @@ engine:
               description: The weight of a flask.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2726,6 +2810,7 @@ engine:
               description: The weight of a grappling hook.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -2742,6 +2827,7 @@ engine:
               description: The weight of a hammer.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -2758,6 +2844,7 @@ engine:
               description: The weight of a sledge hammer.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -2774,6 +2861,7 @@ engine:
               description: The weight of a healer's kit.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -2790,6 +2878,7 @@ engine:
               description: The weight of a flask of holy water.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2806,6 +2895,7 @@ engine:
               description: The weight of an hourglass.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2822,6 +2912,7 @@ engine:
               description: The weight of a hunting trap.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 25
@@ -2838,6 +2929,7 @@ engine:
               description: The weight of a 1 ounce bottle of ink.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2854,6 +2946,7 @@ engine:
               description: The weight of a jug.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -2870,6 +2963,7 @@ engine:
               description: The weight of a 10 foot ladder.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 25
@@ -2886,6 +2980,7 @@ engine:
               description: The weight of a lamp.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2902,6 +2997,7 @@ engine:
               description: The weight of a bullseye lantern.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2918,6 +3014,7 @@ engine:
               description: The weight of a hooded lantern.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -2934,6 +3031,7 @@ engine:
               description: The weight of a lock.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2950,6 +3048,7 @@ engine:
               description: The weight of a magnifying glass.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -2966,6 +3065,7 @@ engine:
               description: The weight of a pair of manacles.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 6
@@ -2982,6 +3082,7 @@ engine:
               description: The weight of a mess kit.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -2998,6 +3099,7 @@ engine:
               description: The weight of a steel mirror.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.5
@@ -3014,6 +3116,7 @@ engine:
               description: The weight of a flask of oil.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3030,6 +3133,7 @@ engine:
               description: The weight of a one sheet of paper.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3046,6 +3150,7 @@ engine:
               description: The weight of a one sheet of parchment.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3062,6 +3167,7 @@ engine:
               description: The weight of a vial of perfume.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3078,6 +3184,7 @@ engine:
               description: The weight of a miner's pick.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -3094,6 +3201,7 @@ engine:
               description: The weight of a piton.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.25
@@ -3110,6 +3218,7 @@ engine:
               description: The weight of a vial of basic poison.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3126,6 +3235,7 @@ engine:
               description: The weight of a 10-foot pole.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 7
@@ -3142,6 +3252,7 @@ engine:
               description: The weight of an iron pot.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -3158,6 +3269,7 @@ engine:
               description: The weight of a potion of healing.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.5
@@ -3174,6 +3286,7 @@ engine:
               description: The weight of a pouch.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3190,6 +3303,7 @@ engine:
               description: The weight of a quiver.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3206,6 +3320,7 @@ engine:
               description: The weight of a portable ram.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 35
@@ -3222,6 +3337,7 @@ engine:
               description: The weight of a one day's worth of rations.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 2
@@ -3238,6 +3354,7 @@ engine:
               description: The weight of a robes.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 4
@@ -3245,15 +3362,16 @@ engine:
         value_text:
           value_id: rope_hempen_50_foot
           description: Rope Hempen 50 foot
-          value: Rope, Hempen (50 foot)
+          value: Rope, Hempen (50 ft)
           variables:
           - type: variable_number
             variable_number:
               id: rope_hempen_50_foot_weight
-              label: Rope, Hempen (50 foot) Weight
+              label: Rope, Hempen (50 ft) Weight
               description: The weight of a 50-foot hempen rope.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -3270,6 +3388,7 @@ engine:
               description: The weight of a 50-foot silk rope.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -3286,6 +3405,7 @@ engine:
               description: The weight of a sack.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0.5
@@ -3302,6 +3422,7 @@ engine:
               description: The weight of a merchant's scale.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -3318,6 +3439,7 @@ engine:
               description: The weight of a sealing wax.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3334,6 +3456,7 @@ engine:
               description: The weight of a shovel.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -3350,6 +3473,7 @@ engine:
               description: The weight of a signal whistle.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3366,6 +3490,7 @@ engine:
               description: The weight of a signet ring.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3382,6 +3507,7 @@ engine:
               description: The weight of a bar of soap.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3398,6 +3524,7 @@ engine:
               description: The weight of a spellbook.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 3
@@ -3414,6 +3541,7 @@ engine:
               description: The weight of a 10 iron spikes.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -3430,6 +3558,7 @@ engine:
               description: The weight of a spyglass.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3446,6 +3575,7 @@ engine:
               description: The weight of a spyglass.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3462,6 +3592,7 @@ engine:
               description: The weight of a two-person tent.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 20
@@ -3478,6 +3609,7 @@ engine:
               description: The weight of a tinderbox.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3494,6 +3626,7 @@ engine:
               description: The weight of a torch.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3510,6 +3643,7 @@ engine:
               description: The weight of a vial.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 0
@@ -3526,6 +3660,7 @@ engine:
               description: The weight of a waterskin.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 5
@@ -3542,6 +3677,7 @@ engine:
               description: The weight of a whetstone.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 1
@@ -3565,8 +3701,7 @@ engine:
               id: armor_padded_armor_bonus
               label: Padded Armor Bonus
               description: The bonus to armor class from wearing Padded Armor.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 11
@@ -3577,6 +3712,7 @@ engine:
               description: The weight of Padded Armor.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 8
@@ -3591,11 +3727,21 @@ engine:
           variables:
           - type: variable_number
             variable_number:
+              id: armor_leather_armor_bonus
+              label: Leather Armor Bonus
+              description: The bonus to armor class from wearing Studded Leather Armor.
+              relation: armor_bonus
+              value:
+                type: number_literal
+                number_literal: 11
+          - type: variable_number
+            variable_number:
               id: armor_leather_weight
               label: Leather Armor Weight
               description: The weight of Leather Armor.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 10
@@ -3612,8 +3758,7 @@ engine:
               id: armor_studded_leather_armor_bonus
               label: Studded Leather Armor Bonus
               description: The bonus to armor class from wearing Studded Leather Armor.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 12
@@ -3624,6 +3769,7 @@ engine:
               description: The weight of Studded Leather Armor.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 13
@@ -3649,8 +3795,7 @@ engine:
               id: armor_hide_armor_bonus
               label: Hide Armor Bonus
               description: The bonus to armor class from wearing Hide Armor.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 12
@@ -3661,6 +3806,7 @@ engine:
               description: The weight of Hide Armor.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 12
@@ -3690,6 +3836,7 @@ engine:
               description: The weight of a Chain Shirt.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 20
@@ -3719,6 +3866,7 @@ engine:
               description: The weight of Scale Mail.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 45
@@ -3738,6 +3886,7 @@ engine:
               description: The bonus to armor class from wearing Breastplate.
               tags:
               - armor
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 14
@@ -3777,6 +3926,7 @@ engine:
               description: The weight of Half Plate.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 40
@@ -3804,6 +3954,7 @@ engine:
               description: The bonus to armor class from wearing Ring Mail.
               tags:
               - armor
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 14
@@ -3814,6 +3965,7 @@ engine:
               description: The weight of Ring Mail.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 40
@@ -3833,6 +3985,7 @@ engine:
               description: The weight of Chain Mail.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 55
@@ -3871,6 +4024,7 @@ engine:
               description: The weight of Splint.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 60
@@ -3900,6 +4054,7 @@ engine:
               description: The weight of Plate Armor.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 65
@@ -3924,6 +4079,7 @@ engine:
               description: The weight of a Shield.
               tags:
               - carried_item_weight
+              relation: weight
               value:
                 type: number_literal
                 number_literal: 6
@@ -6420,14 +6576,12 @@ engine:
   - summation_id: gear_total_weight
     summation_name: Total Weight of Gear
     terms:
-    - type: summation_term_number
-      summation_term_number:
+    - type: summation_term_linear_combination
+      summation_term_linear_combination:
         term_name: Gear Weights
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_tag
-            variable_tag: carried_item_weight
+        variable_tag: has_weight
+        value_relation: weight
+        weight_relation: quantity
   - summation_id: general_strength_action
     summation_name: General Strength Action
     terms:
@@ -6571,14 +6725,12 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: dexterity_modifier
-    - type: summation_term_number
-      summation_term_number:
+    - type: summation_term_linear_combination
+      summation_term_linear_combination:
         term_name: Armor
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_tag
-            variable_tag: armor
+        variable_tag: armor
+        value_relation: armor_bonus
+        filter_relation: is_equipped
     - type: summation_term_number
       summation_term_number:
         term_name: Shield

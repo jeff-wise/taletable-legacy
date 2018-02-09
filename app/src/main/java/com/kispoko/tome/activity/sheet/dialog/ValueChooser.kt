@@ -1045,6 +1045,10 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
             {
                 is ValueText ->
                 {
+//                    val isSelectedd = item.equals(this.selectedValue)
+//
+//                    valueViewHolder.setLayout(isSelectedd)
+
                     if (item.equals(this.selectedValue))
                         valueViewHolder.setValueTextSelected(item.value())
                     else
@@ -1135,10 +1139,10 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
             ThemeColorId(ThemeId.Light, ColorId.Theme("green_70"))))
     val greenSummaryColor = SheetManager.color(sheetUIContext.sheetId, hlSummaryColorTheme)
 
-    val summaryColorTheme = ColorTheme(setOf(
+    val selectedBgColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-    val summaryColor      = SheetManager.color(sheetUIContext.sheetId, summaryColorTheme)
+            ThemeColorId(ThemeId.Light, ColorId.Theme("green_30"))))
+    val selectedBgColor      = SheetManager.color(sheetUIContext.sheetId, selectedBgColorTheme)
 
     // -----------------------------------------------------------------------------------------
     // INIT
@@ -1158,6 +1162,12 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     // VIEW HOLDER
     // -----------------------------------------------------------------------------------------
 
+//    fun setLayout(isSelected : Boolean)
+//    {
+//        if (isSelected)
+//        else
+//    }
+
     fun setValueText(valueString : String)
     {
         this.valueView?.text = valueString
@@ -1165,6 +1175,8 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.valueView?.setTextColor(greyColor)
 
         this.iconView?.visibility = View.GONE
+
+//        this.layout?.setBackgroundColor(Color.WHITE)
     }
 
 
@@ -1175,6 +1187,8 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.valueView?.setTextColor(greenColor)
 
         this.iconView?.visibility = View.VISIBLE
+
+//        this.layout?.setBackgroundColor(selectedBgColor)
     }
 
 

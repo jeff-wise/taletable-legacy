@@ -2,10 +2,7 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
-import android.util.Log
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppError
-import com.kispoko.tome.app.AppStateError
+import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -20,9 +17,7 @@ import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
+import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*
@@ -49,6 +44,13 @@ sealed class Variable : ProdType, ToDocument, Serializable
     private var onUpdateListener : () -> Unit = fun() : Unit {}
 
 
+    private val relationToVariableId : MutableMap<VariableRelation,VariableId> = mutableMapOf()
+    private var relatedParentIds : MutableSet<VariableId> = mutableSetOf()
+
+
+    var lastUpdateId : UUID? = null
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -72,6 +74,7 @@ sealed class Variable : ProdType, ToDocument, Serializable
     // STATE
     // -----------------------------------------------------------------------------------------
 
+
     abstract fun variableId() : VariableId
 
 
@@ -85,6 +88,54 @@ sealed class Variable : ProdType, ToDocument, Serializable
 
 
     abstract fun tags() : List<VariableTag>
+
+
+    abstract fun addTags(tags : Set<VariableTag>)
+
+
+//    abstract fun relatedVariableId(relation : VariableRelation) : Maybe<VariableId>
+//
+//
+//    abstract fun addRelation(relation : VariableRelation, variableId : VariableId)
+
+
+    fun addRelatedParent(variableId : VariableId)
+    {
+        this.relatedParentIds.add(variableId)
+    }
+
+
+    fun relatedParents() : Set<VariableId> = this.relatedParentIds
+
+
+//    abstract fun hasRelation(relation : VariableRelation) : Boolean
+//
+//
+//    abstract fun relation() : Maybe<VariableRelation>
+//
+
+    fun relatedVariableId(relation : VariableRelation) : Maybe<VariableId>  =
+        maybe(this.relationToVariableId[relation])
+
+
+    fun addRelation(relation : VariableRelation, variableId: VariableId, sheetContext : SheetContext) {
+        this.relationToVariableId.put(relation, variableId)
+
+        SheetManager.sheetState(sheetContext.sheetId) apDo {
+        it.variableWithId(variableId)                 apDo {
+            it.addRelatedParent(this.variableId())
+        } }
+
+        ApplicationLog.event(AppStateEvent(VariableRelationAdded(variableId, relation)))
+    }
+
+
+    fun hasRelation(relation : VariableRelation) : Boolean =
+            this.relationToVariableId.containsKey(relation)
+
+
+    abstract fun relation() : Maybe<VariableRelation>
+
 
 
     fun booleanVariable(sheetId : SheetId) : AppEff<BooleanVariable> = when (this)
@@ -170,6 +221,10 @@ sealed class Variable : ProdType, ToDocument, Serializable
     }
 
 
+    abstract fun onAddToState(sheetContext : SheetContext, parentVariable : Variable? = null)
+
+
+
     // -----------------------------------------------------------------------------------------
     // UPDATE
     // -----------------------------------------------------------------------------------------
@@ -205,9 +260,15 @@ data class BooleanVariable(override val id : UUID,
                            private var label : VariableLabel,
                            private var description : VariableDescription,
                            private val tags : MutableList<VariableTag>,
+                           private val relation : Maybe<VariableRelation>,
                            private var variableValue : BooleanVariableValue)
                             : Variable()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -217,12 +278,14 @@ data class BooleanVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
                 value : BooleanVariableValue)
         : this(UUID.randomUUID(),
                variableId,
                label,
                description,
                tags.toMutableList(),
+               relation,
                value)
 
 
@@ -243,6 +306,10 @@ data class BooleanVariable(override val id : UUID,
                       split(doc.maybeList("tags"),
                             effValue(listOf()),
                             { it.map { VariableTag.fromDocument(it) } }),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
                       doc.at("value") ap { BooleanVariableValue.fromDocument(it) }
                       )
@@ -286,7 +353,14 @@ data class BooleanVariable(override val id : UUID,
     override fun tags(): List<VariableTag> = this.tags
 
 
+    override fun addTags(tags : Set<VariableTag>) {
+    }
+
+
     fun variableValue() : BooleanVariableValue = this.variableValue
+
+
+    override fun relation() = this.relation
 
 
     // -----------------------------------------------------------------------------------------
@@ -322,6 +396,18 @@ data class BooleanVariable(override val id : UUID,
             this.variableValue().companionVariables(sheetContext)
 
 
+    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    {
+        val rel = this.relation()
+        when (rel)
+        {
+            is Just -> {
+                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+            }
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
@@ -331,7 +417,6 @@ data class BooleanVariable(override val id : UUID,
 
     fun toggleValue(sheetId : SheetId)
     {
-        Log.d("***VARIABLE", "toggle boolean value")
         this.value() apDo {
             if (it)
                 this.updateValue(false, sheetId)
@@ -344,7 +429,6 @@ data class BooleanVariable(override val id : UUID,
 
     fun updateValue(value : Boolean, sheetId : SheetId)
     {
-        Log.d("***VARIABLE", "update boolean value: $value")
         when (this.variableValue())
         {
             is BooleanVariableLiteralValue -> {
@@ -366,9 +450,15 @@ data class DiceRollVariable(override val id : UUID,
                             private var label : VariableLabel,
                             private var description : VariableDescription,
                             private val tags : MutableList<VariableTag>,
+                            private val relation : Maybe<VariableRelation>,
                             val variableValue: DiceRollVariableValue)
                             : Variable()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -378,12 +468,14 @@ data class DiceRollVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
                 value : DiceRollVariableValue)
         : this(UUID.randomUUID(),
                variableId,
                label,
                description,
                tags.toMutableList(),
+               relation,
                value)
 
 
@@ -404,6 +496,10 @@ data class DiceRollVariable(override val id : UUID,
                       split(doc.maybeList("tags"),
                             effValue(listOf()),
                             { it.map { VariableTag.fromDocument(it) } }),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
                       doc.at("value") ap { DiceRollVariableValue.fromDocument(it) }
                       )
@@ -447,6 +543,13 @@ data class DiceRollVariable(override val id : UUID,
     override fun tags(): List<VariableTag> = this.tags
 
 
+    override fun addTags(tags : Set<VariableTag>) {
+    }
+
+
+    override fun relation() = this.relation
+
+
     fun variableValue() : DiceRollVariableValue = this.variableValue
 
 
@@ -484,6 +587,9 @@ data class DiceRollVariable(override val id : UUID,
             this.variableValue().companionVariables(sheetContext)
 
 
+    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?) { }
+
+
     // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
@@ -501,10 +607,16 @@ data class NumberVariable(override val id : UUID,
                           private var label : VariableLabel,
                           private var description : VariableDescription,
                           private val tags : MutableList<VariableTag>,
+                          private val relation : Maybe<VariableRelation>,
                           var variableValue : NumberVariableValue,
                           val history : NumberVariableHistory)
                           : Variable()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -514,12 +626,14 @@ data class NumberVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
                 value : NumberVariableValue)
         : this(UUID.randomUUID(),
                variableId,
                label,
                description,
                tags.toMutableList(),
+               relation,
                value,
                NumberVariableHistory())
 
@@ -528,6 +642,7 @@ data class NumberVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : List<VariableTag>,
+                relation: Maybe<VariableRelation>,
                 value : NumberVariableValue,
                 history : NumberVariableHistory)
         : this(UUID.randomUUID(),
@@ -535,6 +650,7 @@ data class NumberVariable(override val id : UUID,
                label,
                description,
                tags.toMutableList(),
+               relation,
                value,
                history)
 
@@ -556,6 +672,10 @@ data class NumberVariable(override val id : UUID,
                       split(doc.maybeList("tags"),
                             effValue(listOf()),
                             { it.map { VariableTag.fromDocument(it) } }),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
                       doc.at("value") ap { NumberVariableValue.fromDocument(it) },
                       // History
@@ -603,6 +723,13 @@ data class NumberVariable(override val id : UUID,
     override fun tags(): List<VariableTag> = this.tags
 
 
+    override fun addTags(tags : Set<VariableTag>) {
+    }
+
+
+    override fun relation() = this.relation
+
+
     fun variableValue() : NumberVariableValue = this.variableValue
 
 
@@ -641,6 +768,18 @@ data class NumberVariable(override val id : UUID,
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             this.variableValue().companionVariables(sheetContext)
+
+
+    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    {
+        val rel = this.relation()
+        when (rel)
+        {
+            is Just -> {
+                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -683,6 +822,15 @@ data class NumberVariable(override val id : UUID,
     }
 
 
+    fun valueOrError(sheetContext : SheetContext) : AppEff<Double> =
+        this.value(sheetContext) ap {
+            when (it) {
+                is Just -> effValue(it.value)
+                else    -> effError<AppError,Double>(AppStateError(VariableDoesNotHaveValue(this.variableId)))
+            }
+        }
+
+
     fun updateValue(value : Double, sheetId : SheetId)
     {
         when (this.variableValue())
@@ -708,9 +856,15 @@ data class TextVariable(override val id : UUID,
                         private var label : VariableLabel,
                         private var description : VariableDescription,
                         private val tags : MutableList<VariableTag>,
+                        private val relation : Maybe<VariableRelation>,
                         var variableValue : TextVariableValue)
                         : Variable()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -720,12 +874,14 @@ data class TextVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
                 variableValue : TextVariableValue)
         : this(UUID.randomUUID(),
                variableId,
                label,
                description,
                tags.toMutableList(),
+               relation,
                variableValue)
 
 
@@ -746,6 +902,10 @@ data class TextVariable(override val id : UUID,
                       split(doc.maybeList("tags"),
                             effValue(listOf()),
                             { it.map { VariableTag.fromDocument(it) } }),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
                       doc.at("value") ap { TextVariableValue.fromDocument(it) }
                       )
@@ -789,6 +949,14 @@ data class TextVariable(override val id : UUID,
     override fun tags(): List<VariableTag> = this.tags
 
 
+    override fun addTags(tags : Set<VariableTag>) {
+        this.tags.addAll(tags)
+    }
+
+
+    override fun relation() = this.relation
+
+
     fun variableValue() : TextVariableValue = this.variableValue
 
 
@@ -799,7 +967,7 @@ data class TextVariable(override val id : UUID,
     override fun onLoad() {}
 
 
-    override val prodTypeObject: ProdType = this
+    override val prodTypeObject : ProdType = this
 
 
     override fun rowValue() : DB_VariableTextValue =
@@ -818,11 +986,23 @@ data class TextVariable(override val id : UUID,
     override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies(sheetContext)
 
 
-    override fun type(): VariableType = VariableType.TEXT
+    override fun type() : VariableType = VariableType.TEXT
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             this.variableValue().companionVariables(sheetContext)
+
+
+    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    {
+        val rel = this.relation()
+        when (rel)
+        {
+            is Just -> {
+                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -890,10 +1070,15 @@ data class TextListVariable(override val id : UUID,
                             private var label : VariableLabel,
                             private var description : VariableDescription,
                             private val tags : MutableList<VariableTag>,
+                            private val relation : Maybe<VariableRelation>,
                             var variableValue : TextListVariableValue,
                             var valueSetId : Maybe<ValueSetId>)
                             : Variable()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -903,6 +1088,7 @@ data class TextListVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
                 variableValue : TextListVariableValue,
                 valueSetId : Maybe<ValueSetId>)
         : this(UUID.randomUUID(),
@@ -910,6 +1096,7 @@ data class TextListVariable(override val id : UUID,
                label,
                description,
                tags.toMutableList(),
+               relation,
                variableValue,
                valueSetId)
 
@@ -931,6 +1118,10 @@ data class TextListVariable(override val id : UUID,
                       split(doc.maybeList("tags"),
                             effValue(listOf()),
                             { it.map { VariableTag.fromDocument(it) } }),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
                       doc.at("value") ap { TextListVariableValue.fromDocument(it) },
                       // Value Set Id
@@ -978,6 +1169,13 @@ data class TextListVariable(override val id : UUID,
     override fun tags(): List<VariableTag> = this.tags
 
 
+    override fun addTags(tags : Set<VariableTag>) {
+    }
+
+
+    override fun relation() = this.relation
+
+
     fun variableValue() : TextListVariableValue = this.variableValue
 
 
@@ -1016,6 +1214,18 @@ data class TextListVariable(override val id : UUID,
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
             this.variableValue().companionVariables(sheetContext)
+
+
+    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    {
+        val rel = this.relation()
+        when (rel)
+        {
+            is Just -> {
+                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1085,7 +1295,7 @@ data class VariableNamespace(val value : String) : SQLSerializable, Serializable
 /**
  * Variable Name
  */
-data class VariableName(val value : String) : SQLSerializable, Serializable
+data class VariableName(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1094,12 +1304,20 @@ data class VariableName(val value : String) : SQLSerializable, Serializable
 
     companion object : Factory<VariableName>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<VariableName> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableName> = when (doc)
         {
             is DocText -> effValue(VariableName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
@@ -1123,10 +1341,12 @@ sealed class VariableReference : ToDocument, SQLSerializable, Serializable
         override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableReference> =
             when (doc.case())
             {
-                "variable_id"      -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
-                "variable_tag"     -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
-                "variable_context" -> VariableContext.fromDocument(doc) as ValueParser<VariableReference>
-                else               -> effError(UnknownCase(doc.case(), doc.path))
+                "variable_id"          -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_tag"         -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_context"     -> VariableContext.fromDocument(doc) as ValueParser<VariableReference>
+                "related_variable"     -> RelatedVariable.fromDocument(doc) as ValueParser<VariableReference>
+                "related_variable_set" -> RelatedVariableSet.fromDocument(doc) as ValueParser<VariableReference>
+                else                   -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 }
@@ -1145,6 +1365,10 @@ data class VariableId(val namespace : Maybe<VariableNamespace>,
 
     constructor(name : String)
         : this(Nothing(), VariableName(name))
+
+
+    constructor(name : VariableName)
+            : this(Nothing(), name)
 
 
     constructor(namespace : String, name : String)
@@ -1229,22 +1453,6 @@ data class VariableId(val namespace : Maybe<VariableNamespace>,
 
     override fun asSQLValue() : SQLValue = SQLText({ this.toString() })
 
-
-
-    // -----------------------------------------------------------------------------------------
-    // EQUALITY
-    // -----------------------------------------------------------------------------------------
-//
-//    override fun hashCode(): Int {
-////        val namespaceCode = when (this.namespace) {
-////            is Just    -> this.namespace.value
-////            else  -> ""
-////        }
-////        val nameCode = this.name.value
-////        return Objects.hash(namespaceCode, nameCode)
-//
-//        return 12
-//    }
 }
 
 
@@ -1285,6 +1493,144 @@ data class VariableTag(val value : String) : VariableReference(), Serializable
 
 
 /**
+ * Related Variable
+ */
+data class RelatedVariable(val name : VariableName,
+                           val relation : VariableRelation) : VariableReference(), Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(name : String, relation : String)
+        : this(VariableName(name), VariableRelation(relation))
+
+
+    companion object : Factory<RelatedVariable>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RelatedVariable> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::RelatedVariable,
+                      // Name
+                      doc.at("name") ap { VariableName.fromDocument(it) },
+                      // Relation
+                      doc.at("relation") ap { VariableRelation.fromDocument(it) }
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.name().toDocument(),
+        "relation" to this.relation().toDocument())
+    )
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun name() : VariableName = this.name
+
+
+    fun relation() : VariableRelation = this.relation
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() : String = "${this.name().value}->${this.relation().value}"
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.toString() })
+
+}
+
+
+/**
+ * Related Variable Set
+ */
+data class RelatedVariableSet(val tag : VariableTag,
+                              val relation : VariableRelation) : VariableReference(), Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(tag : String, relation : String)
+        : this(VariableTag(tag), VariableRelation(relation))
+
+
+    companion object : Factory<RelatedVariableSet>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RelatedVariableSet> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::RelatedVariableSet,
+                      // Tag
+                      doc.at("tag") ap { VariableTag.fromDocument(it) },
+                      // Relation
+                      doc.at("relation") ap { VariableRelation.fromDocument(it) }
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "tag" to this.tag().toDocument(),
+        "relation" to this.relation().toDocument())
+    )
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun tag() : VariableTag = this.tag
+
+
+    fun relation() : VariableRelation = this.relation
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() : String = "*${this.tag().value}*->${this.relation().value}"
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.toString() })
+
+}
+
+
+/**
  * Variable Context
  */
 data class VariableContext(val value : String) : VariableReference(), Serializable
@@ -1299,6 +1645,42 @@ data class VariableContext(val value : String) : VariableReference(), Serializab
         override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableContext> = when (doc)
         {
             is DocText -> effValue(VariableContext(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Variable Relation
+ */
+data class VariableRelation(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<VariableRelation>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableRelation> = when (doc)
+        {
+            is DocText -> effValue(VariableRelation(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

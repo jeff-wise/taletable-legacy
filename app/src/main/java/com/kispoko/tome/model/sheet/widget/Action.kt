@@ -9,12 +9,12 @@ import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.summation.SummationId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -34,6 +34,7 @@ import java.util.*
 data class Action(override val id : UUID,
                   val actionName : ActionName,
                   val rollGroup : Maybe<DiceRollGroup>,
+                  val autoRolls : AutoRolls,
                   val procedureId : Maybe<ProcedureId>)
                    : ProdType, ToDocument, Serializable
 {
@@ -44,10 +45,12 @@ data class Action(override val id : UUID,
 
     constructor(name : ActionName,
                 rollGroup : Maybe<DiceRollGroup>,
+                autoRolls : AutoRolls,
                 procedureId : Maybe<ProcedureId>)
         : this(UUID.randomUUID(),
                name,
                rollGroup,
+               autoRolls,
                procedureId)
 
 
@@ -64,6 +67,10 @@ data class Action(override val id : UUID,
                       split(doc.maybeAt("roll_group"),
                             effValue<ValueError, Maybe<DiceRollGroup>>(Nothing()),
                             { effApply(::Just, DiceRollGroup.fromDocument(it)) }),
+                      // Auto Rolls
+                      split(doc.maybeAt("auto_rolls"),
+                            effValue(AutoRolls(0)),
+                            { AutoRolls.fromDocument(it) }),
                       // Procedure Id
                       split(doc.maybeAt("procedure_id"),
                             effValue<ValueError,Maybe<ProcedureId>>(Nothing()),
@@ -85,6 +92,9 @@ data class Action(override val id : UUID,
     fun rollGroup() : Maybe<DiceRollGroup> = this.rollGroup
 
 
+    fun autoRolls() : AutoRolls = this.autoRolls
+
+
     fun procedureId() : Maybe<ProcedureId> = this.procedureId
 
 
@@ -93,7 +103,8 @@ data class Action(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "name" to this.name().toDocument()
+        "name" to this.name().toDocument(),
+        "auto_rolls" to this.autoRolls().toDocument()
     ))
     .maybeMerge(this.rollGroup().apply {
         Just(Pair("roll_group", it.toDocument() as SchemaDoc)) })
@@ -152,6 +163,42 @@ data class ActionName(val value : String) : ToDocument, SQLSerializable, java.io
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Auto Rolls
+ */
+data class AutoRolls(val value : Int) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<AutoRolls>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<AutoRolls> = when (doc)
+        {
+            is DocNumber -> effValue(AutoRolls(doc.number.toInt()))
+            else         -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value.toLong()})
 
 }
 

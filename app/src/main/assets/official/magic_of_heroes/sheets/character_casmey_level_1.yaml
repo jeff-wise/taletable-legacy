@@ -567,7 +567,7 @@ variables:
     description: Armor Class Label
     value:
       type: text_literal
-      text_literal: 'armor class'
+      text_literal: 'AC'
 - type: variable_text
   variable_text:
     id: speed_label
@@ -745,14 +745,6 @@ variables:
     value:
       type: summation_id
       summation_id: armor_class
-- type: variable_number
-  variable_number:
-    id: armor_class_resting
-    label: Armor Class While Resting
-    description: Armor Class While Resting
-    value:
-      type: number_literal
-      number_literal: 13
 - type: variable_number
   variable_number:
     id: passive_perception
@@ -1098,7 +1090,7 @@ variables:
     description: My Money Label
     value:
       type: text_literal
-      text_literal: 'my money'
+      text_literal: 'My money'
 - type: variable_text
   variable_text:
     id: gold_label
@@ -1106,7 +1098,7 @@ variables:
     description: Gold Label
     value:
       type: text_literal
-      text_literal: 'gold'
+      text_literal: 'GP'
 - type: variable_number
   variable_number:
     id: gold
@@ -1122,7 +1114,7 @@ variables:
     description: Silver Label
     value:
       type: text_literal
-      text_literal: 'silver'
+      text_literal: 'SP'
 - type: variable_number
   variable_number:
     id: silver
@@ -1138,7 +1130,7 @@ variables:
     description: Copper Label
     value:
       type: text_literal
-      text_literal: 'copper'
+      text_literal: 'CP'
 - type: variable_number
   variable_number:
     id: copper
@@ -1147,6 +1139,54 @@ variables:
     value:
       type: number_literal
       number_literal: 30
+- type: variable_text
+  variable_text:
+    id: platinum_label
+    label: Platinum Label
+    description: Platinum Label
+    value:
+      type: text_literal
+      text_literal: 'PP'
+- type: variable_number
+  variable_number:
+    id: platinum
+    label: Platinum
+    description: Platinum
+    value:
+      type: number_literal
+      number_literal: 0
+- type: variable_text
+  variable_text:
+    id: electrum_label
+    label: Electrum Label
+    description: Electrum Label
+    value:
+      type: text_literal
+      text_literal: 'EP'
+- type: variable_number
+  variable_number:
+    id: electrum
+    label: Electrum
+    description: Electrum
+    value:
+      type: number_literal
+      number_literal: 0
+- type: variable_text
+  variable_text:
+    id: total_weight_label
+    label: Total Weight Label
+    description: Total Weight Label
+    value:
+      type: text_literal
+      text_literal: 'Total weight of my gear'
+- type: variable_text
+  variable_text:
+    id: encumbrance_label
+    label: Encumbrance Label
+    description: Encumbrance Label
+    value:
+      type: text_literal
+      text_literal: 'Encumbrance'
 - type: variable_text
   variable_text:
     id: my_money_label
@@ -1155,54 +1195,6 @@ variables:
     value:
       type: text_literal
       text_literal: 'my money'
-- type: variable_text
-  variable_text:
-    id: gold_label
-    label: Gold Label
-    description: Gold Label
-    value:
-      type: text_literal
-      text_literal: 'gold'
-- type: variable_number
-  variable_number:
-    id: gold
-    label: Gold
-    description: Gold
-    value:
-      type: number_literal
-      number_literal: 107
-- type: variable_text
-  variable_text:
-    id: silver_label
-    label: Silver Label
-    description: Silver Label
-    value:
-      type: text_literal
-      text_literal: 'silver'
-- type: variable_number
-  variable_number:
-    id: silver
-    label: Silver
-    description: Silver
-    value:
-      type: number_literal
-      number_literal: 12
-- type: variable_text
-  variable_text:
-    id: copper_label
-    label: Copper Label
-    description: Copper Label
-    value:
-      type: text_literal
-      text_literal: 'copper'
-- type: variable_number
-  variable_number:
-    id: copper
-    label: Copper
-    description: Copper
-    value:
-      type: number_literal
-      number_literal: 30
 - type: variable_number
   variable_number:
     id: max_hit_points
@@ -1347,6 +1339,14 @@ variables:
     value:
       type: boolean_literal
       boolean_literal: true
+- type: variable_boolean
+  variable_boolean:
+    id: has_inspiration
+    label: 'Has inspiration?'
+    description: Has inspiration point?
+    value:
+      type: boolean_literal
+      boolean_literal: false
 - type: variable_text
   variable_text:
     id: bears
@@ -1370,7 +1370,7 @@ variables:
     description: Backpack Table Label
     value:
       type: text_literal
-      text_literal: 'my backpack'
+      text_literal: 'My backpack'
 - type: variable_text
   variable_text:
     id: dazzle_audience_quote
@@ -1400,6 +1400,14 @@ variables:
       text_literal: 'My Dad, when I was 11'
 - type: variable_text
   variable_text:
+    id: story_label
+    label: Story Label
+    description: Story Label
+    value:
+      type: text_literal
+      text_literal: My Story
+- type: variable_text
+  variable_text:
     id: story_part_1
     label: Story Part 1
     description: Story Part 1
@@ -1422,7 +1430,7 @@ variables:
 
         I had always known that my father was a risk-taker. From my earliest memories he loved to
         play cards, roll the dice, and bet on everything. He was a performer in the Endless Carnival,
-        where he walked along a rope one-hundred feet in the air, swung from trapezes updside-down,
+        where he risked his own life, walked along a rope one-hundred feet in the air, swung from trapezes updside-down,
         and juggled a dozen razor-sharp knives at one time. He was a gambler, but he was also a winner,
         and as long as he was winning, our life was good.
 
@@ -1504,42 +1512,39 @@ sections:
                   margins:
                     bottom: 6
             value_variable_id: name_label
-      - format:
-          element_format:
-            corners:
-              top_right_radius: 2
-              top_left_radius: 2
-              bottom_left_radius: 2
-              bottom_right_radius: 2
-            background_color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: white
-            padding:
-              left: 8
-              right: 8
-              top: 10
-              bottom: 10
-        widgets:
-        - type: widget_text
-          widget_text:
+      - widgets:
+        - type: widget_story
+          widget_story:
             id: name
-            value_variable_id: name
             format:
               widget_format:
                 element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
                   horizontal_alignment: left
-              value_format:
-                element_format:
-                  horizontal_alignment: left
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_blue_8
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: semi_bold
-                size: 22
+                  padding:
+                    top: 8
+                    bottom: 8
+                    left: 8
+                    right: 8
+                  width:
+                    type: width_justify
+                    width_justify: justify
+            story:
+            - type: story_part_variable
+              story_part_variable:
+                variable_id: name
+                text_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_blue_8
+                    - theme_id: light
+                      color_id: light_blue
+                  font_style: semi_bold
+                  size: 22
     - format:
         element_format:
           padding:
@@ -1588,15 +1593,15 @@ sections:
             padding:
               left: 8
               right: 8
-              top: 12
-              bottom: 6
+              top: 6
+              bottom: 12
         widgets:
         - type: widget_story
           widget_story:
             id: summary
             format:
-              line_spacing: 14
-              line_height: 1.7
+              line_spacing: 8
+              line_height: 18
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -1802,8 +1807,6 @@ sections:
               widget_format:
                 element_format:
                   horizontal_alignment: left
-                  margins:
-                    bottom: 6
             value_variable_id: xp_label
       - widgets:
         - type: widget_text
@@ -2743,13 +2746,13 @@ sections:
                   width:
                     type: width_justify
                     width_justify: justify
-              line_spacing: 12
-              line_height: 1.9
+              line_spacing: 5
+              line_height: 17
               text_format:
                 element_format:
                   padding:
-                    top: 12
-                    bottom: 2
+                    top: 10
+                    bottom: 10
             story:
             - type: story_part_span
               story_part_span:
@@ -2816,13 +2819,13 @@ sections:
                   width:
                     type: width_justify
                     width_justify: justify
-              line_spacing: 12
-              line_height: 1.9
+              line_spacing: 5
+              line_height: 17
               text_format:
                 element_format:
                   padding:
-                    top: 12
-                    bottom: 2
+                    top: 10
+                    bottom: 10
             story:
             - type: story_part_span
               story_part_span:
@@ -3522,6 +3525,7 @@ sections:
             left: 6
             right: 6
             top: 15
+            bottom: 15
       rows:
       - widgets:
         - type: widget_text
@@ -3567,60 +3571,6 @@ sections:
                       color_id: white
                   horizontal_alignment: left
             value_variable_id: background_flaw
-    - format:
-        element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_9
-            - theme_id: light
-              color_id: white
-          margins:
-            top: 15
-          padding:
-            left: 10
-            right: 10
-            bottom: 20
-            top: 15
-      rows:
-      - format:
-          element_format:
-            padding:
-              top: 6
-              bottom: 8
-              left: 8
-              right: 8
-            background_color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: dark_grey_5
-              - theme_id: light
-                color_id: light_grey_3
-            margins:
-              top: 15
-            corners:
-              top_right_radius: 4
-              top_left_radius: 4
-              bottom_left_radius: 4
-              bottom_right_radius: 4
-        widgets:
-        - type: widget_story
-          widget_story:
-            id: fears
-            format:
-              widget_format:
-                element_format:
-                  horizontal_alignment: left
-            story:
-            - type: story_part_span
-              story_part_span:
-                text: '. One escaped his cage in the Carnival when I was a kid. I never stopped having nightmares.'
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_12
-                  size: 18
   - name: Status
     format:
       element_format:
@@ -3647,6 +3597,68 @@ sections:
             thickness: 1
       rows:
       - widgets:
+        - type: widget_boolean
+          widget_boolean:
+            id: inspiration
+            value_variables_reference:
+              type: variable_id
+              variable_id: has_inspiration
+            format:
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_4
+                    - theme_id: light
+                      color_id: light_grey_3
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  height: 42
+                  margins:
+                    left: 10
+                  padding:
+                    left: 8
+                    right: 8
+              true_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_21
+                  - theme_id: light
+                    color_id: green_90
+                font_style: semi_bold
+                size: 18
+              false_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_21
+                  - theme_id: light
+                    color_id: dark_grey_20
+                font_style: semi_bold
+                size: 18
+              true_text: 'I am inspired'
+              false_text: 'I am not inspired'
+    - format:
+        element_format:
+          padding:
+            left: 6
+            right: 6
+            top: 10
+            bottom: 15
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_10
+            thickness: 1
+      rows:
+      - widgets:
         - type: widget_text
           widget_text:
             id: defense_label
@@ -3658,8 +3670,8 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_18
-                font_style: medium
-                size: 15
+                font_style: bold
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -3679,8 +3691,8 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_12
-                size: 19
+                    color_id: white
+                size: 22
                 font_style: medium
               widget_format:
                 column: 1
@@ -3688,7 +3700,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: white
+                      color_id: orange_90
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3716,13 +3728,13 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue
+                      color_id: orange_90
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
                   height: 42
                   padding:
-                    left: 16
+                    left: 0
                     right: 16
               value_format:
                 color_theme:
@@ -3738,6 +3750,54 @@ sections:
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
+        - type: widget_boolean
+          widget_boolean:
+            id: wearing_armor
+            value_variables_reference:
+              type: related_variable_set
+              related_variable_set:
+                tag: armor
+                relation: is_equipped
+            format:
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_4
+                    - theme_id: light
+                      color_id: light_grey_3
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  height: 42
+                  margins:
+                    left: 10
+                  padding:
+                    left: 8
+                    right: 8
+              true_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_21
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              false_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_21
+                  - theme_id: light
+                    color_id: dark_grey_20
+                font_style: semi_bold
+                size: 18
+              true_text: 'I am armored'
+              false_text: 'I am unarmored'
       - format:
           element_format:
             background_color_theme:
@@ -3810,8 +3870,8 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_18
-                font_style: medium
-                size: 15
+                font_style: bold
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -3884,7 +3944,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_10
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: orange
                 font_style: medium
                 size: 18
               info_style: limit_label_max_right
@@ -4059,6 +4119,7 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_12
+                font_style: medium
                 size: 18
               item_format:
                 color_theme:
@@ -4092,8 +4153,8 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_18
-                font_style: medium
-                size: 15
+                font_style: bold
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -4855,8 +4916,8 @@ sections:
                   widget_story:
                     id: walk_speed
                     format:
-                      line_spacing: 14
-                      line_height: 1.7
+                      line_spacing: 5
+                      line_height: 17
                       text_format:
                         element_format:
                           padding:
@@ -5653,8 +5714,8 @@ sections:
                       widget_format:
                         element_format:
                           horizontal_alignment: left
-                      line_spacing: 14
-                      line_height: 1.7
+                      line_spacing: 5
+                      line_height: 17
                       text_format:
                         element_format:
                           padding:
@@ -5727,7 +5788,7 @@ sections:
                             background_color_theme:
                               theme_color_ids:
                               - theme_id: light
-                                color_id: red_80
+                                color_id: grey_300
                           color_theme:
                             theme_color_ids:
                             - theme_id: dark
@@ -5759,8 +5820,8 @@ sections:
                           horizontal_alignment: left
                           margins:
                             top: 12
-                      line_spacing: 14
-                      line_height: 1.7
+                      line_spacing: 5
+                      line_height: 17
                       text_format:
                         element_format:
                           padding:
@@ -5822,7 +5883,7 @@ sections:
                             background_color_theme:
                               theme_color_ids:
                               - theme_id: light
-                                color_id: red_80
+                                color_id: grey_300
                           color_theme:
                             theme_color_ids:
                             - theme_id: dark
@@ -5995,8 +6056,8 @@ sections:
                       widget_format:
                         element_format:
                           horizontal_alignment: left
-                      line_spacing: 14
-                      line_height: 1.7
+                      line_spacing: 5
+                      line_height: 17
                       text_format:
                         element_format:
                           padding:
@@ -6029,7 +6090,7 @@ sections:
                             background_color_theme:
                               theme_color_ids:
                               - theme_id: light
-                                color_id: light_blue_90
+                                color_id: light_blue_80
                           color_theme:
                             theme_color_ids:
                             - theme_id: dark
@@ -6070,7 +6131,7 @@ sections:
                             background_color_theme:
                               theme_color_ids:
                               - theme_id: light
-                                color_id: red_80
+                                color_id: grey_300
                           color_theme:
                             theme_color_ids:
                             - theme_id: dark
@@ -6101,8 +6162,8 @@ sections:
                           horizontal_alignment: left
                           margins:
                             top: 12
-                      line_spacing: 14
-                      line_height: 1.7
+                      line_spacing: 5
+                      line_height: 17
                       text_format:
                         element_format:
                           padding:
@@ -6133,7 +6194,7 @@ sections:
                             background_color_theme:
                               theme_color_ids:
                               - theme_id: light
-                                color_id: light_blue_90
+                                color_id: light_blue_80
                           color_theme:
                             theme_color_ids:
                             - theme_id: dark
@@ -6174,7 +6235,7 @@ sections:
                             background_color_theme:
                               theme_color_ids:
                               - theme_id: light
-                                color_id: red_80
+                                color_id: grey_300
                           color_theme:
                             theme_color_ids:
                             - theme_id: dark
@@ -6210,8 +6271,8 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_18
-                font_style: medium
-                size: 15
+                font_style: bold
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -6942,7 +7003,9 @@ sections:
                 - type: widget_boolean
                   widget_boolean:
                     id: skill_acrobatics_is_proficient
-                    value_variable_id: skill_acrobatics_is_proficient
+                    value_variables_reference:
+                      type: variable_id
+                      variable_id: skill_acrobatics_is_proficient
                     format:
                       widget_format:
                         element_format:
@@ -7030,8 +7093,8 @@ sections:
                           width:
                             type: width_justify
                             width_justify: justify
-                      line_spacing: 12
-                      line_height: 1.9
+                      line_spacing: 5
+                      line_height: 17
                       text_format:
                         element_format:
                           padding:
@@ -7096,8 +7159,8 @@ sections:
                           width:
                             type: width_justify
                             width_justify: justify
-                      line_spacing: 12
-                      line_height: 1.9
+                      line_spacing: 5
+                      line_height: 17
                       text_format:
                         element_format:
                           padding:
@@ -7340,6 +7403,13 @@ sections:
           padding:
             top: 15
             bottom: 15
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_10
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -7359,8 +7429,8 @@ sections:
                 element_format:
                   horizontal_alignment: left
                   margins:
-                    bottom: 5
-                    left: 10
+                    bottom: 10
+                    left: 6
             value_variable_id: armor_table_label
       - widgets:
         - type: widget_table
@@ -7371,8 +7441,8 @@ sections:
               widget_format:
                 element_format:
                   margins:
-                    left: 10
-                    right: 10
+                    left: 6
+                    right: 6
               header_format:
                 text_format:
                   element_format:
@@ -7384,15 +7454,16 @@ sections:
                         color_id: white
                     padding:
                       left: 10
-                      top: 8
-                      bottom: 8
+                      top: 10
+                      bottom: 10
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_22
                     - theme_id: light
                       color_id: dark_grey_22
-                  size: 14
+                  font_style: medium
+                  size: 15
               row_format:
                 text_format:
                   element_format:
@@ -7403,10 +7474,10 @@ sections:
                       - theme_id: light
                         color_id: white
                     margins:
-                      top: 2
+                      top: 1
                     padding:
-                      left: 10
-                      top: 10
+                      left: 8
+                      top: 8
                       bottom: 10
             columns:
             - type: table_widget_text_column
@@ -7417,6 +7488,9 @@ sections:
                 default_value:
                   type: value_set_id
                   value_set_id: armor_and_shields
+                tags:
+                - has_weight
+                - armor
                 format:
                   column_format:
                     text_format:
@@ -7428,15 +7502,17 @@ sections:
                           color_id: light_grey_5
                         - theme_id: light
                           color_id: light_blue
-                      size: 17
+                      font_style: medium
+                      size: 18
                     width: 3
-            - type: table_widget_boolean_column
-              table_widget_boolean_column:
-                name: Is Equipped?
-                variable_prefix: is_armor_equipped
+            - type: table_widget_number_column
+              table_widget_number_column:
+                name: Quantity
+                variable_prefix: quantity
+                relation: quantity
                 default_value:
-                  type: boolean_literal
-                  boolean_literal: false
+                  type: number_literal
+                  number_literal: 1
                 format:
                   column_format:
                     text_format:
@@ -7445,17 +7521,40 @@ sections:
                         - theme_id: dark
                           color_id: light_grey_7
                         - theme_id: light
-                          color_id: dark_grey_10
-                      size: 17
-                    true_format:
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: dark
-                          color_id: light_grey_7
-                        - theme_id: light
-                          color_id: green
-                      size: 17
+                          color_id: dark_grey_16
+                      font_style: semi_bold
+                      size: 18
                     width: 2
+                  editor_type: adder
+            - type: table_widget_boolean_column
+              table_widget_boolean_column:
+                name: Is Equipped?
+                variable_prefix: is_armor_equipped
+                default_value:
+                  type: boolean_literal
+                  boolean_literal: false
+                relation: is_equipped
+                format:
+                  column_format:
+                    width: 2
+                  false_format:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_7
+                      - theme_id: light
+                        color_id: dark_grey_16
+                    font_style: medium
+                    size: 18
+                  true_format:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_7
+                      - theme_id: light
+                        color_id: green_90
+                    font_style: medium
+                    size: 18
                   true_text: 'Yes'
                   false_text: 'No'
             rows:
@@ -7471,6 +7570,11 @@ sections:
                       value_id:
                         type: text_literal
                         text_literal: leather
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
                   variable_value:
@@ -7479,7 +7583,15 @@ sections:
     - format:
         element_format:
           padding:
-            bottom: 12
+            top: 10
+            bottom: 15
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_10
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -7499,8 +7611,8 @@ sections:
                 element_format:
                   horizontal_alignment: left
                   margins:
-                    bottom: 5
-                    left: 10
+                    bottom: 10
+                    left: 6
             value_variable_id: weapon_table_label
       - widgets:
         - type: widget_table
@@ -7511,8 +7623,8 @@ sections:
               widget_format:
                 element_format:
                   margins:
-                    left: 10
-                    right: 10
+                    left: 6
+                    right: 6
               header_format:
                 text_format:
                   element_format:
@@ -7524,15 +7636,16 @@ sections:
                         color_id: white
                     padding:
                       left: 10
-                      top: 8
-                      bottom: 8
+                      top: 10
+                      bottom: 10
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_22
                     - theme_id: light
                       color_id: dark_grey_22
-                  size: 14
+                  font_style: medium
+                  size: 15
               row_format:
                 text_format:
                   element_format:
@@ -7543,10 +7656,10 @@ sections:
                       - theme_id: light
                         color_id: white
                     margins:
-                      top: 2
+                      top: 1
                     padding:
-                      left: 10
-                      top: 10
+                      left: 8
+                      top: 8
                       bottom: 10
             columns:
             - type: table_widget_text_column
@@ -7557,6 +7670,8 @@ sections:
                 default_value:
                   type: value_set_id
                   value_set_id: weapons
+                tags:
+                - has_weight
                 format:
                   column_format:
                     text_format:
@@ -7568,7 +7683,8 @@ sections:
                           color_id: light_grey_5
                         - theme_id: light
                           color_id: light_blue
-                      size: 17
+                      font_style: medium
+                      size: 18
                     width: 3
             - type: table_widget_number_column
               table_widget_number_column:
@@ -7577,6 +7693,7 @@ sections:
                 default_value:
                   type: number_literal
                   number_literal: 1
+                relation: quantity
                 format:
                   column_format:
                     text_format:
@@ -7585,8 +7702,9 @@ sections:
                         - theme_id: dark
                           color_id: light_grey_7
                         - theme_id: light
-                          color_id: dark_grey_10
-                      size: 17
+                          color_id: dark_grey_16
+                      font_style: semi_bold
+                      size: 18
                     width: 2
                   editor_type: adder
             - type: table_widget_boolean_column
@@ -7598,23 +7716,25 @@ sections:
                   boolean_literal: false
                 format:
                   column_format:
-                    text_format:
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: dark
-                          color_id: light_grey_7
-                        - theme_id: light
-                          color_id: dark_grey_10
-                      size: 17
-                    true_format:
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: dark
-                          color_id: light_grey_7
-                        - theme_id: light
-                          color_id: green
-                      size: 17
                     width: 2
+                  false_format:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_7
+                      - theme_id: light
+                        color_id: dark_grey_16
+                    font_style: medium
+                    size: 18
+                  true_format:
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_7
+                      - theme_id: light
+                        color_id: green_90
+                    font_style: medium
+                    size: 18
                   true_text: 'Yes'
                   false_text: 'No'
             rows:
@@ -7661,14 +7781,21 @@ sections:
                 table_widget_boolean_cell:
                   variable_value:
                     type: boolean_literal
-                    boolean_literal: true
+                    boolean_literal: false
     - format:
         element_format:
           padding:
-            bottom: 12
-          margins:
-            left: 10
-            right: 10
+            top: 10
+            bottom: 15
+            left: 6
+            right: 6
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_10
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -7688,250 +7815,397 @@ sections:
                 element_format:
                   horizontal_alignment: left
                   margins:
-                    bottom: 5
+                    bottom: 10
             value_variable_id: my_money_label
-      - widgets:
-        - type: widget_text
-          widget_text:
-            id: gold_label
-            format:
-              widget_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_6
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_right_radius: 2
-                    top_left_radius: 2
-                  margins:
-                    right: 6
-                  padding:
-                    top: 5
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_20
-                  - theme_id: light
-                    color_id: dark_grey_15
-                size: 14
-            value_variable_id: gold_label
-        - type: widget_text
-          widget_text:
-            id: silver_label
-            format:
-              widget_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_6
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_right_radius: 2
-                    top_left_radius: 2
-                  padding:
-                    top: 5
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_20
-                  - theme_id: light
-                    color_id: dark_grey_15
-                size: 14
-            value_variable_id: silver_label
+      - format:
+          has_columns: true
+        widgets:
         - type: widget_text
           widget_text:
             id: copper_label
             format:
-              widget_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_6
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_right_radius: 2
-                    top_left_radius: 2
-                  margins:
-                    left: 6
-                  padding:
-                    top: 5
               value_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_15
-                size: 14
+                    color_id: dark_grey_12
+                size: 18
+                font_style: medium
+              widget_format:
+                column: 1
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  height: 42
+                  padding:
+                    left: 10
+                    right: 10
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
             value_variable_id: copper_label
-      - widgets:
-        - type: widget_story
-          widget_story:
-            id: gold
-            format:
-              widget_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_6
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    bottom_right_radius: 2
-                    bottom_left_radius: 2
-                  margins:
-                    right: 6
-                  padding:
-                    top: 3
-                    bottom: 5
-            story:
-            - type: story_part_icon
-              story_part_icon:
-                icon: coins
-                icon_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                    - theme_id: dark
-                      color_id: dark_grey_15
-                  size:
-                    width: 23
-                    height: 23
-            - type: story_part_variable
-              story_part_variable:
-                variable_id: gold
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_10
-                    - theme_id: light
-                      color_id: light_blue
-                  ront_style: medium
-                  size: 20
-                  element_format:
-                    margins:
-                      left: 10
-        - type: widget_story
-          widget_story:
-            id: silver
-            format:
-              widget_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_6
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    bottom_right_radius: 2
-                    bottom_left_radius: 2
-                  padding:
-                    top: 3
-                    bottom: 5
-            story:
-            - type: story_part_icon
-              story_part_icon:
-                icon: coins
-                icon_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
-                    - theme_id: light
-                      color_id: dark_grey_15
-                  size:
-                    width: 23
-                    height: 23
-            - type: story_part_variable
-              story_part_variable:
-                variable_id: silver
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_10
-                    - theme_id: light
-                      color_id: light_blue
-                  font_style: medium
-                  size: 20
-                  element_format:
-                    margins:
-                      left: 10
-        - type: widget_story
-          widget_story:
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_number
+          widget_number:
             id: copper
+            value_variable_id: copper
             format:
               widget_format:
+                column: 1
                 element_format:
                   background_color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_6
+                    - theme_id: light
+                      color_id: light_blue_90
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  height: 42
+                  padding:
+                    left: 16
+                    right: 16
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 18
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_text
+          widget_text:
+            id: silver_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+                font_style: medium
+              widget_format:
+                column: 2
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
                     - theme_id: light
                       color_id: white
                   corners:
-                    bottom_right_radius: 2
+                    top_left_radius: 2
                     bottom_left_radius: 2
-                  margins:
-                    left: 6
+                  height: 42
                   padding:
-                    top: 3
-                    bottom: 5
-            story:
-            - type: story_part_icon
-              story_part_icon:
-                icon: coins
-                icon_format:
-                  color_theme:
+                    left: 10
+                    right: 10
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+            value_variable_id: silver_label
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_number
+          widget_number:
+            id: silver
+            value_variable_id: silver
+            format:
+              widget_format:
+                column: 2
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_20
                     - theme_id: light
-                      color_id: dark_grey_15
-                  size:
-                    width: 23
-                    height: 23
-            - type: story_part_variable
-              story_part_variable:
-                variable_id: copper
-                text_format:
-                  color_theme:
+                      color_id: light_blue_90
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  height: 42
+                  padding:
+                    left: 16
+                    right: 16
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 18
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_text
+          widget_text:
+            id: gold_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+                font_style: medium
+              widget_format:
+                column: 3
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_10
                     - theme_id: light
-                      color_id: light_blue
-                  font_style: medium
-                  size: 20
-                  element_format:
-                    margins:
-                      left: 10
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  height: 42
+                  padding:
+                    left: 10
+                    right: 10
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+            value_variable_id: gold_label
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_number
+          widget_number:
+            id: gold
+            value_variable_id: gold
+            format:
+              widget_format:
+                column: 3
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_90
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  height: 42
+                  padding:
+                    left: 16
+                    right: 16
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 18
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+      - format:
+          element_format:
+            margins:
+              top: 15
+          has_columns: true
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: electrum_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+                font_style: medium
+              widget_format:
+                column: 1
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  height: 42
+                  padding:
+                    left: 10
+                    right: 10
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+            value_variable_id: electrum_label
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_number
+          widget_number:
+            id: electrum
+            value_variable_id: electrum
+            format:
+              widget_format:
+                column: 1
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_90
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  height: 42
+                  padding:
+                    left: 16
+                    right: 16
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 18
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_text
+          widget_text:
+            id: platinum_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+                font_style: medium
+              widget_format:
+                column: 2
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  height: 42
+                  padding:
+                    left: 10
+                    right: 10
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+            value_variable_id: platinum_label
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_number
+          widget_number:
+            id: platinum
+            value_variable_id: platinum
+            format:
+              widget_format:
+                column: 2
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_90
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  height: 42
+                  padding:
+                    left: 16
+                    right: 16
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 18
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_text
+          widget_text:
+            id: coins_placeholder
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: transparent
+                size: 18
+                font_style: medium
+              widget_format:
+                column: 3
+                element_format:
+                  height: 42
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+            value_variable_id: platinum_label
     - format:
         element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_9
-            - theme_id: light
-              color_id: white
           padding:
-            bottom: 12
-            top: 12
-          margins:
-            top: 15
+            top: 10
+            bottom: 15
+            left: 6
+            right: 6
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_10
+            thickness: 1
       rows:
       - widgets:
         - type: widget_text
@@ -7944,14 +8218,14 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_21
-                size: 14
+                    color_id: dark_grey_18
+                font_style: bold
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
                   margins:
-                    bottom: 5
-                    left: 10
+                    bottom: 10
             value_variable_id: backpack_table_label
       - widgets:
         - type: widget_table
@@ -7969,17 +8243,18 @@ sections:
                       - theme_id: light
                         color_id: white
                     padding:
-                      left: 12
-                      right: 12
-                      top: 12
-                      bottom: 12
+                      left: 8
+                      right: 8
+                      top: 10
+                      bottom: 10
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_22
                     - theme_id: light
                       color_id: dark_grey_22
-                  size: 14
+                  font_style: medium
+                  size: 16
               row_format:
                 text_format:
                   element_format:
@@ -7989,28 +8264,24 @@ sections:
                         color_id: dark_grey_6
                       - theme_id: light
                         color_id: white
-                    border:
-                      bottom:
-                        thickness: 1
-                        color_theme:
-                          theme_color_ids:
-                          - theme_id: light
-                            color_id: light_grey_3
                     margins:
-                      top: 2
+                      top: 1
                     padding:
-                      left: 12
-                      right: 12
-                      top: 12
-                      bottom: 12
+                      left: 8
+                      right: 8
+                      top: 10
+                      bottom: 10
             columns:
             - type: table_widget_text_column
               table_widget_text_column:
                 name: Name
                 variable_prefix: backpack_item
+                defines_namespace: true
                 default_value:
                   type: value_set_id
                   value_set_id: adventuring_gear
+                tags:
+                - has_weight
                 format:
                   column_format:
                     text_format:
@@ -8022,6 +8293,7 @@ sections:
                           color_id: light_grey_5
                         - theme_id: light
                           color_id: light_blue
+                      font_style: medium
                       size: 17
                     width: 3.5
             - type: table_widget_number_column
@@ -8031,6 +8303,7 @@ sections:
                 default_value:
                   type: number_literal
                   number_literal: 1
+                relation: quantity
                 format:
                   column_format:
                     text_format:
@@ -8039,8 +8312,9 @@ sections:
                         - theme_id: dark
                           color_id: light_grey_7
                         - theme_id: light
-                          color_id: dark_grey_10
-                      size: 16
+                          color_id: dark_grey_15
+                      font_style: medium
+                      size: 18
                     width: 1
                   editor_type: adder
             rows:
@@ -8165,65 +8439,104 @@ sections:
                     number_literal: 1
     - format:
         element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_9
-            - theme_id: light
-              color_id: white
           padding:
             bottom: 15
-            top: 15
-          margins:
-            top: 15
+            top: 10
+            left: 6
+            right: 6
       rows:
       - widgets:
-        - type: widget_story
-          widget_story:
-            id: total_weight_gear
+        - type: widget_text
+          widget_text:
+            id: encumbrance_label
             format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_18
+                font_style: bold
+                size: 16
               widget_format:
                 element_format:
-                  horizontal_alignment: center
-            story:
-            - type: story_part_span
-              story_part_span:
-                text: 'My gear''s total weight is '
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_10
-                    - theme_id: light
-                      color_id: dark_grey_10
-                  size: 20
-            - type: story_part_variable
-              story_part_variable:
-                variable_id: gear_total_weight
-                format:
+                  horizontal_alignment: left
+                  margins:
+                    bottom: 10
+            value_variable_id: encumbrance_label
+      - format:
+          has_columns: true
+        widgets:
+        - type: widget_text
+          widget_text:
+            id: total_weight_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 18
+                font_style: medium
+              widget_format:
+                column: 1
+                element_format:
                   background_color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_6
+                    - theme_id: light
+                      color_id: white
                   corners:
                     top_left_radius: 2
-                    top_right_radius: 2
-                    bottom_right_radius: 2
                     bottom_left_radius: 2
+                  height: 42
                   padding:
-                    top: 6
-                    bottom: 6
-                    left: 6
-                    right: 6
-                text_format:
-                  color_theme:
+                    left: 10
+                    right: 10
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+            value_variable_id: total_weight_label
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
+        - type: widget_number
+          widget_number:
+            id: gear_total_weight
+            value_variable_id: gear_total_weight
+            format:
+              widget_format:
+                column: 1
+                element_format:
+                  background_color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
                     - theme_id: light
                       color_id: light_blue
-                  font_style: bold
-                  size: 20
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  height: 42
+                  padding:
+                    left: 16
+                    right: 16
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_blue_8
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+            rulebook_reference:
+              rulebook_id: core_rules
+              chapter_id: running_a_game
+              section_id: creatures
+              subsection_id: challenge
   - name: Features
     format:
       element_format:
@@ -8484,7 +8797,7 @@ sections:
                   right: 6
               option_label_format:
                 size: 18
-                font_style: semi_bold
+                font_style: bold
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -8499,7 +8812,7 @@ sections:
           - theme_id: dark
             color_id: dark_grey_10
           - theme_id: light
-            color_id: light_grey_55
+            color_id: white
     groups:
     - format:
         element_format:
@@ -8510,12 +8823,34 @@ sections:
             - theme_id: light
               color_id: white
           padding:
-            left: 8
-            right: 8
+            left: 10
+            right: 10
             top: 15
             bottom: 15
       rows:
       - widgets:
+        - type: widget_text
+          widget_text:
+            id: story_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: light_blue_90
+                size: 28
+                font_style: light
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: story_label
+      - format:
+          element_format:
+              margins:
+                top: 10
+        widgets:
         - type: widget_text
           widget_text:
             id: story_part_1
@@ -8537,11 +8872,6 @@ sections:
                     top_right_radius: 1
                     bottom_right_radius: 1
                     bottom_left_radius: 1
-                  padding:
-                    left: 8
-                    right: 8
-                    top: 10
-                    bottom: 10
             value_variable_id: story_part_1
 - name: Adventure
   icon: adventure

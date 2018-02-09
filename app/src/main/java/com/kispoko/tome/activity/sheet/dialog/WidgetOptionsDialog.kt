@@ -197,15 +197,15 @@ class OptionsViewBuidler(val widget : Widget,
 
         // History Button
         val historyButtonOnClick = View.OnClickListener {
-            val variables = widget.variables(sheetContext)
-            if (variables.isNotEmpty())
-            {
-                val intent = Intent(sheetActivity, VariableHistoryActivity::class.java)
-                intent.putExtra("variable", variables.first())
-                intent.putExtra("sheet_context", sheetContext)
-                sheetActivity.startActivity(intent)
-                dialog.dismiss()
-            }
+//            val variables = widget.variables(sheetContext)
+//            if (variables.isNotEmpty())
+//            {
+//                val intent = Intent(sheetActivity, VariableHistoryActivity::class.java)
+//                intent.putExtra("variable", variables.first())
+//                intent.putExtra("sheet_context", sheetContext)
+//                sheetActivity.startActivity(intent)
+//                dialog.dismiss()
+//            }
         }
         layout.addView(this.buttonView(R.drawable.icon_history,
                                        R.string.value_history,

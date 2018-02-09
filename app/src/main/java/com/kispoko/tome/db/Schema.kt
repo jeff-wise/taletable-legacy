@@ -23,6 +23,7 @@ import com.kispoko.tome.model.game.engine.reference.NumberReference
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.summation.SummationName
+import com.kispoko.tome.model.game.engine.summation.term.EitherReferences
 import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
 import com.kispoko.tome.model.game.engine.summation.term.TermName
 import com.kispoko.tome.model.game.engine.value.*
@@ -727,6 +728,24 @@ typealias DB_SummationTermNumberValue =
     RowValue2<MaybePrimValue<TermName>,
              SumValue<NumberReference>>
 
+// TERM: LINEAR COMBINATION
+// ---------------------------------------------------------------------------------------------
+
+val summationTermLinearCombinationTable =
+    Table5("summation_term_linear_combination",
+           "term_name",
+           "variable_tag",
+           "value_relation",
+           "weight_relation",
+           "filter_relation")
+
+typealias DB_SummationTermLinearCombinationValue =
+    RowValue5<MaybePrimValue<TermName>,
+              PrimValue<VariableTag>,
+              MaybePrimValue<VariableRelation>,
+              MaybePrimValue<VariableRelation>,
+              MaybePrimValue<VariableRelation>>
+
 
 // TERM: DICE ROLL
 // ---------------------------------------------------------------------------------------------
@@ -756,6 +775,19 @@ typealias DB_SummationTermConditionalValue =
               SumValue<BooleanReference>,
               SumValue<NumberReference>,
               SumValue<NumberReference>>
+
+
+// TERM: EITHER
+// ---------------------------------------------------------------------------------------------
+
+val summationTermEitherTable =
+    Table2("summation_term_either",
+           "term_name",
+           "either_references")
+
+typealias DB_SummationTermEitherValue =
+    RowValue2<MaybePrimValue<TermName>,
+              PrimValue<EitherReferences>>
 
 
 // TEXT FORMAT
@@ -925,12 +957,12 @@ val widgetBooleanTable =
     Table3("widget_boolean",
            "widget_id",
            "format",
-           "value_variable_id")
+           "value_variables_reference")
 
 typealias DB_WidgetBooleanValue =
     RowValue3<PrimValue<WidgetId>,
               ProdValue<BooleanWidgetFormat>,
-              PrimValue<VariableId>>
+              PrimValue<VariableReference>>
 
 
 // WIDGET: BOOLEAN > FORMAT

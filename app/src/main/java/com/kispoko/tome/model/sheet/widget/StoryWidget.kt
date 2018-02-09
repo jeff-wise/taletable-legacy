@@ -782,19 +782,19 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 
         val wc = storyWidget.story().map { it.wordCount() }.sum()
-        if (wc <= 4 && storyWidget.actionParts().isEmpty())
-        {
-            contentLayout.addView(this.storyFlexView(storyWidget, sheetUIContext))
-        }
-        else
-        {
+//        if (wc <= 4 && storyWidget.actionParts().isEmpty())
+//        {
+//            contentLayout.addView(this.storyFlexView(storyWidget, sheetUIContext))
+//        }
+//        else
+//        {
             val layoutViewId = Util.generateViewId()
             storyWidget.layoutViewId = layoutViewId
             contentLayout.id                = layoutViewId
             val spanView = storySpannableView(storyWidget, sheetUIContext)
 
             contentLayout.addView(spanView)
-        }
+        //}
 
         // Layout on click
         val variableParts = storyWidget.variableParts()
@@ -1314,14 +1314,15 @@ private fun formatSpans(textStyle : TextFormat,
     return when (lineHeight) {
         is Just -> when (lineSpacing) {
             is Just -> {
-                val lineSpacingPx = Util.dpToPixel(lineSpacing.value.value)
-                val bgSpan = RoundedBackgroundHeightSpan(lineHeight.value.value,
-                        lineSpacingPx,
-                        color,
-                        bgColor,
-                        drawable,
-                        iconFormat?.size(),
-                        iconColor)
+                val lineSpacingPx = Util.spToPx(lineSpacing.value.value, sheetUIContext.context)
+                val lineHeightPx = Util.spToPx(lineHeight.value.value, sheetUIContext.context)
+                val bgSpan = RoundedBackgroundHeightSpan(lineHeightPx,
+                                                         lineSpacingPx,
+                                                         color,
+                                                         bgColor,
+                                                         drawable,
+                                                         iconFormat?.size(),
+                                                         iconColor)
                 listOf(bgSpan, typefaceSpan, sizeSpan)
             }
             else -> listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)

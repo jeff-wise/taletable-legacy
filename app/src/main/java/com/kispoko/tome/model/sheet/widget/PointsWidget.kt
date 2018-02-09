@@ -732,6 +732,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
 
+        layout.gravity          = Gravity.TOP
 
         return layout.relativeLayout(sheetUIContext.context)
     }

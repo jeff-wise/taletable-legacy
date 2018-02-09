@@ -1286,6 +1286,10 @@ types:
       description: A variable tag
     - type: variable_context 
       description: A variable in a context.
+    - type: related_variable 
+      description: A related variable.
+    - type: related_variable_set
+      description: A related variable set.
 - type: product_type
   product_type:
     name: variable_boolean
@@ -1341,6 +1345,12 @@ types:
       presence: optional
       description: >
         Tags that can be used to place the variable in a group.
+    - name: relation
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Relation name
 - type: sum_type
   sum_type:
     name: variable_boolean_value
@@ -1419,6 +1429,12 @@ types:
       presence: optional
       description: >
         Tags that can be used to place the variable in a group.
+    - name: relation
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Relation name
 - type: sum_type
   sum_type:
     name: variable_dice_roll_value
@@ -1472,6 +1488,12 @@ types:
       presence: optional
       description: >
         Tags that can be used to place the variable in a group.
+    - name: relation
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Relation name
     - name: history
       type: 
         type: custom_type
@@ -1583,6 +1605,44 @@ types:
       description: The namespace.
 - type: product_type
   product_type:
+    name: related_variable
+    label: Related Variable
+    description: Related variable.
+    group: 'Variable'
+    fields:
+    - name: name
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: Variable id.
+    - name: relation
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Variable relation.
+- type: product_type
+  product_type:
+    name: related_variable_set
+    label: Related Variable Set
+    description: Related variable set.
+    group: 'Variable'
+    fields:
+    - name: tag
+      type: 
+        type: custom_type
+        custom_type: variable_tag
+      presence: required
+      description: Variable tag.
+    - name: relation
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Variable relation.
+- type: product_type
+  product_type:
     name: variable_text
     label: Text Variable
     description: >
@@ -1635,12 +1695,27 @@ types:
       presence: optional
       description: >
         Tags that can be used to place the variable in a group.
+    - name: relation
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Relation name
 - type: primitive_type
   primitive_type:
     name: variable_tag
     label: Variable Tag
     description: >
       The unique identifier of a variable.
+    group: Variable
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: variable_relation
+    label: Variable Relation
+    description: A variable relation.
     group: Variable
     base_type:
       type: prim_type
@@ -1721,6 +1796,12 @@ types:
       presence: optional
       description: >
         Tags that can be used to place the variable in a group.
+    - name: relation
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Relation name
     - name: value_set_id
       type: 
         type: custom_type
@@ -1900,12 +1981,17 @@ types:
     - type: summation_term_number
       description: >
         A literal number.
+    - type: summation_term_linear_combination
+      description: >
+        A literal number.
     - type: summation_term_dice_roll
       description: >
         A dice roll.
     - type: summation_term_conditional
       description: >
         The value depends on if a boolean variable is true or false.
+    - type: summation_term_either
+      description: An either term.
 - type: product_type
   product_type:
     name: summation_term_conditional
@@ -1936,6 +2022,26 @@ types:
       presence: required
       description: >
         The number variable to be the result when the conditional term is false.
+- type: product_type
+  product_type:
+    name: summation_term_either
+    label: Either Term
+    description: Either term
+    group: Summation
+    fields:
+    - name: term_name
+      type: 
+        type: custom_type
+        custom_type: summation_term_name
+      presence: optional
+      description: Term Name
+    - name: either_references
+      type: 
+        type: custom_coll_type
+        custom_coll_type: data_reference_number
+      presence: required
+      description: >
+        A boolean variable that is used to determine which branch to follow.
 - type: primitive_type
   primitive_type:
     name: summation_term_name
@@ -1967,6 +2073,44 @@ types:
       presence: required
       description: >
         The number variable that is the term value.
+- type: product_type
+  product_type:
+    name: summation_term_linear_combination
+    label: Linear Combination Term
+    description: >
+      An integer term is a number that is part of a summation.
+    group: Summation
+    fields:
+    - name: term_name
+      type: 
+        type: custom_type
+        custom_type: summation_term_name
+      presence: optional
+      description: Term Name
+    - name: variable_tag
+      type:
+        type: custom_type
+        custom_type: variable_tag
+      presence: required
+      description: Variable tag
+    - name: value_relation
+      type:
+        type: custom_type
+        custom_type: variable_relation
+      presence: optional
+      description: Variable tag
+    - name: weight_relation
+      type:
+        type: custom_type
+        custom_type: variable_relation
+      presence: optional
+      description: Variable tag
+    - name: filter_relation
+      type:
+        type: custom_type
+        custom_type: variable_relation
+      presence: optional
+      description: Variable tag
 - type: product_type
   product_type:
     name: summation_term_dice_roll

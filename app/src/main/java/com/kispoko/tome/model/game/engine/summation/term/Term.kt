@@ -2,30 +2,33 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
-import com.kispoko.tome.app.ApplicationLog
+import android.util.Log
+import com.kispoko.tome.R.string.variable
+import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.SumValue
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.reference.*
-import com.kispoko.tome.model.game.engine.variable.VariableNamespace
-import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.Sheet
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.util.Util
 import effect.*
 import effect.Err
 import effect.Val
 import maybe.*
 import lulo.document.*
+import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
+import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
@@ -44,13 +47,14 @@ sealed class SummationTerm(open val termName : Maybe<TermName>)
 
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> =
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SummationTerm> =
             when (doc.case())
             {
-                "summation_term_number"      -> SummationTermNumber.fromDocument(doc)
-                "summation_term_dice_roll"   -> SummationTermDiceRoll.fromDocument(doc)
-                "summation_term_conditional" -> SummationTermConditional.fromDocument(doc)
-                else                         -> effError(UnknownCase(doc.case(), doc.path))
+                "summation_term_number"             -> SummationTermNumber.fromDocument(doc)
+                "summation_term_linear_combination" -> SummationTermLinearCombination.fromDocument(doc)
+                "summation_term_dice_roll"          -> SummationTermDiceRoll.fromDocument(doc)
+                "summation_term_conditional"        -> SummationTermConditional.fromDocument(doc)
+                else                                -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -203,6 +207,314 @@ data class SummationTermNumber(override val id : UUID,
 }
 
 
+data class SummationTermLinearCombination(
+                            override val id : UUID,
+                            override val termName : Maybe<TermName>,
+                            val variableTag : VariableTag,
+                            val valueRelation : Maybe<VariableRelation>,
+                            val weightRelation : Maybe<VariableRelation>,
+                            val filterRelation : Maybe<VariableRelation>)
+                             : SummationTerm(termName)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(termName : Maybe<TermName>,
+                variableTag : VariableTag,
+                valueRelation : Maybe<VariableRelation>,
+                weightRelation : Maybe<VariableRelation>,
+                filterRelation : Maybe<VariableRelation>)
+        : this(UUID.randomUUID(),
+               termName,
+               variableTag,
+               valueRelation,
+               weightRelation,
+               filterRelation)
+
+
+    companion object : Factory<SummationTerm>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SummationTerm> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::SummationTermLinearCombination,
+                      // Term Name
+                      split(doc.maybeAt("term_name"),
+                            effValue<ValueError,Maybe<TermName>>(Nothing()),
+                            { apply(::Just, TermName.fromDocument(it)) }),
+                      // Variable Tag
+                      doc.at("variable_tag") ap { VariableTag.fromDocument(it) },
+                      // Value Relation
+                      split(doc.maybeAt("value_relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
+                      // Weight Relation
+                      split(doc.maybeAt("weight_relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
+                      // Filter Relation
+                      split(doc.maybeAt("filter_relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }))
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "variable_tag" to this.variableTag().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun variableTag() = this.variableTag
+
+
+    fun valueRelation() = this.valueRelation
+
+
+    fun weightRelation() = this.weightRelation
+
+
+    // -----------------------------------------------------------------------------------------
+    // VARIABLE
+    // -----------------------------------------------------------------------------------------
+
+    fun relatedValueVariable(variable : Variable, sheetContext : SheetContext) : AppEff<NumberVariable>
+    {
+        return when (this.valueRelation)
+        {
+            is Just ->
+            {
+                val valueVariableId = variable.relatedVariableId(this.valueRelation.value)
+                when (valueVariableId) {
+                    is Just -> {
+                        SheetManager.sheetState(sheetContext.sheetId)
+                                    .apply { it.numberVariableWithId(valueVariableId.value)}
+                    }
+                    else -> effError<AppError,NumberVariable>(AppStateError(
+                                    VariableDoesNotHaveRelation(variable.variableId(), this.valueRelation.value)))
+                }
+            }
+            else ->
+            {
+                variable.numberVariable(sheetContext.sheetId)
+            }
+        }
+    }
+
+
+    fun relatedValue(variable : Variable, sheetContext : SheetContext) : AppEff<Double>
+    {
+        return when (this.valueRelation)
+        {
+            is Just ->
+            {
+                val valueVariableId = variable.relatedVariableId(this.valueRelation.value)
+                when (valueVariableId)
+                {
+                    is Just ->
+                    {
+                        SheetManager.sheetState(sheetContext.sheetId)          ap { sheetState ->
+                        sheetState.numberVariableWithId(valueVariableId.value) ap { numberVar ->
+                        numberVar.value(sheetContext)                          ap { mValue ->
+                            when (mValue) {
+                                is Just -> effValue(mValue.value)
+                                else -> effError<AppError,Double>(AppStateError(
+                                            VariableDoesNotHaveValue(variable.variableId())))
+                            }
+                        } } }
+                    }
+                    else -> effError<AppError,Double>(AppStateError(
+                                VariableDoesNotHaveRelation(variable.variableId(), this.valueRelation.value)))
+                }
+            }
+            else ->
+            {
+                variable.numberVariable(sheetContext.sheetId)
+                        .apply { it.valueOrError(sheetContext) }
+            }
+        }
+
+    }
+
+
+    fun relatedWeight(variable : Variable, sheetContext : SheetContext) : AppEff<Double>
+    {
+        val weightVariableId = this.weightRelation.apply { variable.relatedVariableId(it) }
+        return when (weightVariableId) {
+            is Just -> {
+                SheetManager.sheetState(sheetContext.sheetId)           ap { sheetState ->
+                sheetState.numberVariableWithId(weightVariableId.value) ap { numberVar ->
+                numberVar.value(sheetContext)                           ap { mValue ->
+                    when (mValue) {
+                        is Just -> effValue<AppError,Double>(mValue.value)
+                        else    -> effValue(1.0)
+                    }
+                } } }
+            }
+            else -> effValue(1.0)
+        }
+    }
+
+
+    fun relatedFilter(variable : Variable, sheetContext : SheetContext) : AppEff<Boolean>
+    {
+        val filterVariableId = this.filterRelation.apply { variable.relatedVariableId(it) }
+        return when (filterVariableId) {
+            is Just -> {
+                SheetManager.sheetState(sheetContext.sheetId)            ap { sheetState ->
+                sheetState.booleanVariableWithId(filterVariableId.value) ap { booleanVar ->
+                booleanVar.value()
+                } }
+            }
+            else -> effValue(true)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TERM
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    {
+        val referenceSet : MutableSet<VariableReference> = mutableSetOf()
+
+        when (this.valueRelation) {
+            is Just -> referenceSet.add(RelatedVariableSet(this.variableTag, this.valueRelation.value))
+        }
+
+        when (this.weightRelation) {
+            is Just -> referenceSet.add(RelatedVariableSet(this.variableTag, this.weightRelation.value))
+        }
+
+        when (this.filterRelation) {
+            is Just -> referenceSet.add(RelatedVariableSet(this.variableTag, this.filterRelation.value))
+        }
+
+        return referenceSet
+    }
+
+
+
+    override fun value(sheetContext : SheetContext,
+                       context : Maybe<VariableNamespace>) : Maybe<Double>
+    {
+        val variablesEff = SheetManager.sheetState(sheetContext.sheetId)
+                           .apply { it.variablesWithTag(this.variableTag()) }
+
+
+        when (variablesEff)
+        {
+            is Val ->
+            {
+                var sum = 0.0
+                val variables = variablesEff.value
+
+                variables.forEach { variable ->
+                    this.relatedValue(variable, sheetContext)  apDo { value ->
+                    this.relatedWeight(variable, sheetContext) apDo { weight ->
+                    this.relatedFilter(variable, sheetContext) apDo { filter ->
+                        if (filter) { sum += (value * weight) }
+                    } } }
+                }
+
+                return Just(sum)
+
+            }
+            is Err -> ApplicationLog.error(variablesEff.error)
+        }
+
+        return Nothing()
+    }
+
+
+    override fun summary(sheetContext : SheetContext) : TermSummary?
+    {
+        val variablesEff = SheetManager.sheetState(sheetContext.sheetId)
+                                       .apply { it.variablesWithTag(this.variableTag()) }
+
+        Log.d("***TERM", "linear combination summary")
+
+        when (variablesEff)
+        {
+            is Val ->
+            {
+                val variables = variablesEff.value
+                Log.d("***TERM", "found variables: ${variables}")
+                var components : MutableList<TermComponent> = mutableListOf()
+
+                variables.forEach { variable ->
+
+                    val x = this.relatedValueVariable(variable, sheetContext) ap { valueVariable ->
+                    valueVariable.valueOrError(sheetContext)          ap { value ->
+                    this.relatedWeight(variable, sheetContext)        ap { weight ->
+                    this.relatedFilter(variable, sheetContext)        ap { filter ->
+                        if (filter)
+                        {
+                            val total = value * weight
+                            val component = TermComponent(valueVariable.label().value,
+                                                          Util.doubleString(total),
+                                                          Util.doubleString(value),
+                                                          Util.doubleString(weight))
+                            //components.add(component)
+                            effValue(component)
+                        }
+                        else
+                        {
+                            effError<AppError,TermComponent>(AppVoidError())
+
+                        }
+                    } } } }
+
+                    when (x) {
+                        is Val -> components.add(x.value)
+                        is Err -> ApplicationLog.error(x.error)
+                    }
+                }
+
+                return TermSummary(this.termName().toNullable()?.value, components, this)
+            }
+            is Err -> ApplicationLog.error(variablesEff.error)
+        }
+
+        return null
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_SummationTermLinearCombinationValue =
+        RowValue5(summationTermLinearCombinationTable,
+                  MaybePrimValue(this.termName),
+                  PrimValue(this.variableTag),
+                  MaybePrimValue(this.valueRelation),
+                  MaybePrimValue(this.weightRelation),
+                  MaybePrimValue(this.filterRelation))
+
+}
+
+
 data class SummationTermDiceRoll(override val id : UUID,
                                  override val termName : Maybe<TermName>,
                                  val diceRollReference : DiceRollReference)
@@ -333,7 +645,7 @@ data class SummationTermConditional(override val id : UUID,
                                     override val termName : Maybe<TermName>,
                                     val conditionalValueReference : BooleanReference,
                                     val trueValueReference : NumberReference,
-                                    val falseValueReference: NumberReference)
+                                    val falseValueReference : NumberReference)
                                       : SummationTerm(termName)
 {
 
@@ -505,6 +817,180 @@ data class SummationTermConditional(override val id : UUID,
 }
 
 
+data class SummationTermEither(override val id : UUID,
+                               override val termName : Maybe<TermName>,
+                               val eitherReferences : List<NumberReference>)
+                                : SummationTerm(termName)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(termName : Maybe<TermName>,
+                eitherReferences : List<NumberReference>)
+        : this(UUID.randomUUID(),
+               termName,
+               eitherReferences)
+
+
+    companion object : Factory<SummationTerm>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SummationTerm> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::SummationTermEither,
+                      // Term Name
+                      split(doc.maybeAt("term_name"),
+                            effValue<ValueError,Maybe<TermName>>(Nothing()),
+                            { effApply(::Just, TermName.fromDocument(it)) }),
+                      // Either References
+                      doc.list("either_references") ap {
+                          it.map { NumberReference.fromDocument(it) }
+                      })
+            }
+
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+    ))
+    .maybeMerge(this.termName.apply {
+        Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
+    .withCase("summation_term_either")
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun eitherReferences() : List<NumberReference> = this.eitherReferences
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_SummationTermEitherValue =
+        RowValue2(summationTermEitherTable,
+                  MaybePrimValue(this.termName),
+                  PrimValue(EitherReferences(this.eitherReferences)))
+
+
+    // -----------------------------------------------------------------------------------------
+    // TERM
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference> =
+            this.eitherReferences().fold(setOf(), { depsSet, ref -> depsSet.plus(ref.dependencies()) })
+
+
+    override fun value(sheetContext : SheetContext,
+                       context : Maybe<VariableNamespace>) : Maybe<Double>
+    {
+        this.eitherReferences().forEach {
+            val numbers = SheetData.numbers(sheetContext, it)
+            when (numbers) {
+                is Val -> {
+                    val numberList = numbers.value
+                    if (numberList.isNotEmpty())
+                        return Just(numbers.value.filterJust().sum())
+                }
+            }
+        }
+
+        return Nothing()
+    }
+
+
+    fun firstReference(sheetContext : SheetContext) : NumberReference?
+    {
+        this.eitherReferences().forEach { numberRef ->
+            val numbers = SheetData.numbers(sheetContext, numberRef)
+            when (numbers) {
+                is Val -> {
+                    val numberList = numbers.value
+                    if (numberList.isNotEmpty())
+                        return numberRef
+                }
+            }
+        }
+
+        return null
+    }
+
+
+    override fun summary(sheetContext : SheetContext) : TermSummary?
+    {
+        val numberReference = this.firstReference(sheetContext)
+
+        if (numberReference != null)
+        {
+
+            val components = numberReference.components(sheetContext)
+
+            if (components.isNotEmpty())
+            {
+                return TermSummary(this.termName().toNullable()?.value, components, this)
+            }
+            else
+            {
+                val termName = this.termName()
+                when (termName)
+                {
+                    is Just ->
+                    {
+                        val value = SheetData.number(sheetContext, numberReference)
+                        when (value)
+                        {
+                            is effect.Val -> {
+                                return TermSummary(termName().toNullable()?.value,
+                                                   listOf(TermComponent(termName.value.value, value.value.toString())),
+                                                   this)
+                            }
+                            is Err -> ApplicationLog.error(value.error)
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return null
+    }
+
+}
+
+
+/**
+ * Either References
+ */
+data class EitherReferences(val parameters : List<NumberReference>)
+                : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
+
+
 /**
  * Term Name
  */
@@ -547,5 +1033,8 @@ data class TermSummary(val name : String?,
                        val term : SummationTerm)
 
 
-data class TermComponent(val name : String, val value : String)
+data class TermComponent(val name : String,
+                         val value : String,
+                         val baseValue : String? = null,
+                         val multiplier : String? = null)
 

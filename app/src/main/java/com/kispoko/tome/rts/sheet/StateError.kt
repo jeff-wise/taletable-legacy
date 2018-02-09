@@ -3,10 +3,7 @@ package com.kispoko.tome.rts.sheet
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.game.engine.variable.VariableId
-import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.model.game.engine.variable.VariableTag
-import com.kispoko.tome.model.game.engine.variable.VariableType
+import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
 
 
@@ -39,7 +36,7 @@ class VariableWithTagDoesNotExist(val sheetId : SheetId,
 {
     override fun debugMessage(): String =
             """
-            Engine Error: Variable Not Found
+            Engine Error: Variable With Tag Does Not Exist
                 Sheet Id: $sheetId
                 Variable Tag: ${variableTag.value}
             """
@@ -86,6 +83,32 @@ class VariableIsOfUnexpectedType(val sheetId : SheetId,
                 Variable Id: $variableId
                 Expected Type: $expectedType
                 Actual Type: $actualType
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class VariableDoesNotHaveRelation(val variableId : VariableId,
+                                  val relation : VariableRelation) : StateError()
+{
+    override fun debugMessage(): String =
+            """
+            State Error: Variable Does Not Have Relation
+                Variable Id: $variableId
+                Relation: ${relation.value}
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class VariableDoesNotHaveValue(val variableId : VariableId) : StateError()
+{
+    override fun debugMessage(): String =
+            """
+            State Error: Variable Does Not Have Value
+                Variable Id: $variableId
             """
 
     override fun logMessage(): String = userMessage()

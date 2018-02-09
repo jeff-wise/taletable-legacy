@@ -141,11 +141,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.sheet.widget.text.TextEditorActivity"
-            android:label="Text Editor"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".activity.widget.QuoteEditorActivity"
             android:label="Quote Editor"
             android:theme="@style/AppTheme.NoActionBar"

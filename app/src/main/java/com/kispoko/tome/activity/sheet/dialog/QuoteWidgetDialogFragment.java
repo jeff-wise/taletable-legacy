@@ -19,10 +19,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.sheet.widget.text.TextEditorActivity;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
-import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
@@ -343,17 +341,17 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         layout.margin.rightDp   = 15f;
         layout.margin.topDp     = 2f;
 
-        layout.onClick          = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(getContext(), TextEditorActivity.class);
-                intent.putExtra("quote_widget", quoteWidget);
-                dismiss();
-                startActivity(intent);
-            }
-        };
+//        layout.onClick          = new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                Intent intent = new Intent(getContext(), TextEditorActivity.class);
+//                intent.putExtra("quote_widget", quoteWidget);
+//                dismiss();
+//                startActivity(intent);
+//            }
+//        };
 
 
         layout.child(button);

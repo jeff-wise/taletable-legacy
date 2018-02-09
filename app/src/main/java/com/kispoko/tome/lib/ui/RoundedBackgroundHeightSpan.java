@@ -30,7 +30,7 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
     private final int backgroundColor;
 
     private final int lineSpacing;
-    private final float lineHeight;
+    private final int lineHeight;
 
 
     private Drawable drawable;
@@ -38,7 +38,7 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
     private Integer iconColor;
 
 
-    public RoundedBackgroundHeightSpan(float lineHeight, int lineSpacing, int textColor, int backgroundColor)
+    public RoundedBackgroundHeightSpan(int lineHeight, int lineSpacing, int textColor, int backgroundColor)
     {
         super();
 
@@ -54,7 +54,7 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
     }
 
 
-    public RoundedBackgroundHeightSpan(float lineHeight,
+    public RoundedBackgroundHeightSpan(int lineHeight,
                                        int lineSpacing,
                                        int textColor,
                                        int backgroundColor,
@@ -79,20 +79,15 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
     @Override
     public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint)
     {
-        final float textSize = paint.getTextSize();
         final float textLength = x + this.measureText(paint, text, start, end);
-        //final float badgeHeight = textSize * this.lineHeight;
-        final float badgeHeight = lineSpacing * lineHeight;
-        // final float textOffsetVertical = textSize * 0.5f;
+        final float badgeHeight = lineSpacing + lineHeight;
 
 
-//        RectF badge = new RectF(x, y, textLength, y + badgeHeight);
         RectF badge = new RectF(x, y - badgeHeight, textLength, y + badgeHeight * 0.5f);
         paint.setColor(this.backgroundColor);
         canvas.drawRoundRect(badge, CORNER_RADIUS, CORNER_RADIUS, paint);
 
         paint.setColor(this.textColor);
-//        canvas.drawText(text, start, end, x, y + textOffsetVertical, paint);
         canvas.drawText(text, start, end, x, y, paint);
 
 
@@ -108,17 +103,7 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
 
             if (this.iconColor != null) {
                 paint.setColor(this.iconColor);
-                //Log.d("***ROUNDED BACK", "setting icon color: " + Integer.toString(this.iconColor, 16));
             }
-//            else {
-//                Log.d("***ROUNDED BACK", "setting text color");
-//                paint.setColor(this.textColor);
-//            }
-
-//            if (iconColor != null) {
-//                drawable.setColorFilter(new PorterDuffColorFilter(Color.MAGENTA, PorterDuff.Mode.SRC_IN));
-//                Log.d("***ROUNDED BACK", "setting icon color: " + Integer.toString(iconColor, 16));
-//            }
 
             drawable.setBounds(
                     xOrigin,
