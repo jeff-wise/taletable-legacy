@@ -7,14 +7,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.description
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.sheet.style.Corners
@@ -24,11 +23,11 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.*
 import effect.Err
 import effect.Val
 import maybe.Just
+
 
 
 /**
@@ -168,20 +167,38 @@ class ProcedureViewBuilder(val procedure : Procedure,
                            val dialog : ProcedureDialog)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    val sheetContext = SheetContext(sheetUIContext)
+
+    val parameterTypes : MutableList<EngineValueType> = mutableListOf()
+
+    init {
+        val program = procedure.program(sheetContext)
+        when (program) {
+            is Val -> {
+                this.parameterTypes.addAll(program.value.typeSignature().parameterTypes)
+            }
+        }
+    }
+
+
+    var currentParameter : Int = 0
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
 
     fun view() : View
     {
         val layout = this.viewLayout()
 
-        // Description
-        layout.addView(this.descriptionTextView())
-
-        // Footer
-        layout.addView(this.footerView())
+        layout.addView(this.descriptionView())
 
         return layout
     }
-
 
 
     private fun viewLayout() : LinearLayout
@@ -209,6 +226,35 @@ class ProcedureViewBuilder(val procedure : Procedure,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // DESCRIPTION VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun descriptionView() : LinearLayout
+    {
+        val layout      = this.descriptionViewLayout()
+
+        layout.addView(this.descriptionTextView())
+
+        layout.addView(this.descriptionFooterView())
+
+        return layout
+    }
+
+
+    private fun descriptionViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
     private fun descriptionTextView() : TextView
     {
         val description           = TextViewBuilder()
@@ -230,7 +276,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         description.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         description.sizeSp          = 18f
@@ -239,9 +285,9 @@ class ProcedureViewBuilder(val procedure : Procedure,
     }
 
 
-    private fun footerView() : LinearLayout
+    private fun descriptionFooterView() : LinearLayout
     {
-        val layout = this.footerViewLayout()
+        val layout = this.descriptionFooterViewLayout()
 
         layout.addView(this.doButtonView())
 
@@ -249,7 +295,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
     }
 
 
-    private fun footerViewLayout() : LinearLayout
+    private fun descriptionFooterViewLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -278,7 +324,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation  = LinearLayout.HORIZONTAL
@@ -288,7 +334,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_90"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        layout.gravity          = Gravity.CENTER_VERTICAL
+        layout.gravity          = Gravity.CENTER
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
@@ -317,7 +363,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
         }
 
         layout.child(label)
-              .child(icon)
+        //      .child(icon)
 
         // (3 A) Label
         // -------------------------------------------------------------------------------------
@@ -333,7 +379,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
         }
 
         label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.SemiBold,
                                                 sheetUIContext.context)
 
 //        val labelColorTheme = ColorTheme(setOf(

@@ -2,8 +2,6 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -284,7 +282,6 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
                 contentLayout.removeAllViews()
                 contentLayout.addView(this.headerView())
                 expanderWidget.groups().forEach {
-                    Log.d("***EXPANDER WIDGET", "group view")
                     contentLayout.addView(it.view(sheetUIContext))
                 }
 
@@ -309,7 +306,7 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
         val iconView = this.headerIconView()
         this.iconView = iconView
         iconLayout.addView(iconView)
-        layout.addView(iconLayout)
+        // layout.addView(iconLayout)
 
         // Label
         layout.addView(this.headerLabelView())

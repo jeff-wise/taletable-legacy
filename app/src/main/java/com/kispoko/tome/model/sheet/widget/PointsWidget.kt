@@ -3,7 +3,6 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.RowValue7
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
@@ -402,14 +401,53 @@ sealed class PointsInfoStyle : ToDocument, SQLSerializable, Serializable
 
 
 /**
+ * Points Widget Counter Active Text
+ */
+data class PointsWidgetCounterActiveText(val value : String)
+                : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<PointsWidgetCounterActiveText>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<PointsWidgetCounterActiveText> = when (doc)
+        {
+            is DocText -> effValue(PointsWidgetCounterActiveText(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
  * Bar Format
  */
 data class PointsBarFormat(override val id : UUID,
+                           val elementFormat : ElementFormat,
                            val barStyle : PointsBarStyle,
                            val barHeight : PointsBarHeight,
                            val limitFormat : TextFormat,
                            val currentFormat : TextFormat,
-                           val counterActiveIcon : Maybe<Icon>)
+                           val counterActiveIcon : Maybe<IconType>,
+                           val counterActiveText : Maybe<PointsWidgetCounterActiveText>)
                             : ToDocument, ProdType, Serializable
 {
 
@@ -417,22 +455,27 @@ data class PointsBarFormat(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(barStyle : PointsBarStyle,
+    constructor(elementFormat : ElementFormat,
+                barStyle : PointsBarStyle,
                 barHeight : PointsBarHeight,
                 limitFormat : TextFormat,
                 currentFormat : TextFormat,
-                counterActiveIcon : Maybe<Icon>)
+                counterActiveIcon : Maybe<IconType>,
+                counterActiveText : Maybe<PointsWidgetCounterActiveText>)
         : this(UUID.randomUUID(),
+               elementFormat,
                barStyle,
                barHeight,
                limitFormat,
                currentFormat,
-               counterActiveIcon)
+               counterActiveIcon,
+               counterActiveText)
 
 
     companion object : Factory<PointsBarFormat>
     {
 
+        private fun defaultElementFormat()  = ElementFormat.default()
         private fun defaultBarStyle()       = PointsBarStyle.Simple
         private fun defaultBarHeight()      = PointsBarHeight(8)
         private fun defaultLimitFormat()    = TextFormat.default()
@@ -444,6 +487,10 @@ data class PointsBarFormat(override val id : UUID,
             is DocDict ->
             {
                 apply(::PointsBarFormat,
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue(defaultElementFormat()),
+                            { ElementFormat.fromDocument(it) }),
                       // Bar Style
                       split(doc.maybeAt("bar_style"),
                             effValue<ValueError,PointsBarStyle>(defaultBarStyle()),
@@ -462,18 +509,24 @@ data class PointsBarFormat(override val id : UUID,
                             { TextFormat.fromDocument(it) }),
                       // Counter Active Icon
                       split(doc.maybeAt("counter_active_icon"),
-                            effValue<ValueError,Maybe<Icon>>(Nothing()),
-                            { apply(::Just, Icon.fromDocument(it)) })
+                            effValue<ValueError,Maybe<IconType>>(Nothing()),
+                            { apply(::Just, IconType.fromDocument(it)) }),
+                      // Counter Active Text
+                      split(doc.maybeAt("counter_active_text"),
+                            effValue<ValueError,Maybe<PointsWidgetCounterActiveText>>(Nothing()),
+                            { apply(::Just, PointsWidgetCounterActiveText.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() = PointsBarFormat(defaultBarStyle(),
+        fun default() = PointsBarFormat(defaultElementFormat(),
+                                        defaultBarStyle(),
                                         defaultBarHeight(),
                                         defaultLimitFormat(),
                                         defaultCurrentFormat(),
+                                        Nothing(),
                                         Nothing())
 
     }
@@ -484,6 +537,7 @@ data class PointsBarFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "element_format" to this.elementFormat().toDocument(),
         "bar_style" to this.barStyle().toDocument(),
         "bar_height" to this.barHeight().toDocument(),
         "limit_format" to this.limitFormat().toDocument(),
@@ -494,6 +548,8 @@ data class PointsBarFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+    fun elementFormat() : ElementFormat = this.elementFormat
 
 
     fun barStyle() : PointsBarStyle = this.barStyle
@@ -508,6 +564,9 @@ data class PointsBarFormat(override val id : UUID,
     fun currentFormat() : TextFormat = this.currentFormat
 
 
+    fun counterActiveText() : Maybe<PointsWidgetCounterActiveText> = this.counterActiveText
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -519,12 +578,14 @@ data class PointsBarFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetPointsBarFormatValue =
-        RowValue5(widgetPointsBarFormatTable,
+        RowValue7(widgetPointsBarFormatTable,
+                  ProdValue(this.elementFormat),
                   PrimValue(this.barStyle),
                   PrimValue(this.barHeight),
                   ProdValue(this.limitFormat),
                   ProdValue(this.currentFormat),
-                  MaybePrimValue(this.counterActiveIcon))
+                  MaybePrimValue(this.counterActiveIcon),
+                  MaybePrimValue(this.counterActiveText))
 
 }
 
@@ -554,12 +615,23 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         contentLayout.removeAllViews()
 
-        contentLayout.orientation = LinearLayout.VERTICAL
 
-        //contentLayout.gravity       = Gravity.CENTER_VERTICAL
+        // contentLayout.gravity       = Gravity.CENTER_VERTICAL
 
         // Above Bar
-        contentLayout.addView(this.infoView())
+        val infoPosition = pointsWidget.format().infoFormat().elementFormat().position()
+        when (infoPosition)
+        {
+            is Position.Top -> {
+                contentLayout.orientation = LinearLayout.VERTICAL
+                contentLayout.addView(this.infoView())
+            }
+            is Position.Left -> {
+                contentLayout.orientation = LinearLayout.HORIZONTAL
+                contentLayout.addView(this.infoView())
+            }
+        }
+
 
         // Bar
         when (pointsWidget.format().barFormat().barStyle)
@@ -640,20 +712,19 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             }
             is PointsInfoStyle.LabelLeftSlashRight ->
             {
-                layout = this.aboveBarLinearLayout(pointsWidget.format().infoFormat(), sheetUIContext)
+                layout = this.infoViewLinearLayout(pointsWidget.format().infoFormat())
+                val infoContentLayout = layout.findViewById(R.id.content) as LinearLayout
 
-//                val layoutParams = layout.layoutParams as LinearLayout.LayoutParams
-//                layoutParams.gravity    = Gravity.START or Gravity.CENTER_VERTICAL
-//                layout.layoutParams = layoutParams
+                val border = pointsWidget.format().infoFormat().elementFormat().border()
 
                 if (currentPointsString != null) {
-                    layout.addView(this.currentPointsView(currentPointsString,
+                    infoContentLayout.addView(this.currentPointsView(currentPointsString,
                                                           pointsWidget.format().currentTextFormat(),
                                                           sheetUIContext))
                 }
 
                 val slashView = this.slashTextView(pointsWidget.format().limitTextFormat(), sheetUIContext)
-                layout.addView(slashView)
+                infoContentLayout.addView(slashView)
 
 
                 if (limitPointsString != null) {
@@ -664,7 +735,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                     val layoutParams = limitPointsView.layoutParams as RelativeLayout.LayoutParams
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END)
                     limitPointsView.layoutParams = layoutParams
-                    layout.addView(limitPointsView)
+                    infoContentLayout.addView(limitPointsView)
                 }
 
                 val label = pointsWidget.label()
@@ -676,14 +747,21 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                         val layoutParams = labelView.layoutParams as RelativeLayout.LayoutParams
                         layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.points_bar_current)
                         labelView.layoutParams = layoutParams
-                        layout.addView(labelView)
+                        infoContentLayout.addView(labelView)
                     }
                 }
+
+//                val rightBorder = border.right()
+//                when (rightBorder) {
+//                    is Just -> {
+//                        layout.addView(infoViewVerticalBorder(rightBorder.value))
+//                    }
+//                }
 
             }
             is PointsInfoStyle.CenterLabelRight ->
             {
-                layout = this.aboveBarLinearLayout(pointsWidget.format().infoFormat(), sheetUIContext)
+                layout = this.infoViewLinearLayout(pointsWidget.format().infoFormat())
 
                 if (currentPointsString != null) {
                     val currView = this.currentPointsLinearView(currentPointsString,
@@ -738,21 +816,80 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     }
 
 
-    private fun aboveBarLinearLayout(format : TextFormat,
-                                     sheetUIContext : SheetUIContext) : LinearLayout
+    private fun infoViewVerticalBorder(border : BorderEdge) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
-        layout.layoutType       = LayoutType.LINEAR
-        layout.weight           = 1f
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = 0
 
-        layout.gravity          = format.elementFormat().alignment().gravityConstant() or
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+    private fun infoViewLinearLayout(format : TextFormat) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val contentLayout       = LinearLayoutBuilder()
+        val borderView          = LinearLayoutBuilder()
+
+        // (2) Main Layout
+        // -------------------------------------------------------------------------------------
+
+        when (format.elementFormat().position())
+        {
+            is Position.Top -> {
+                layout.weight           = 1f
+                layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+                layout.height           = 0
+            }
+            is Position.Bottom -> {
+                layout.weight           = 1f
+                layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+                layout.height           = 0
+            }
+            is Position.Left -> {
+                layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+                layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+            }
+            is Position.Right -> {
+                layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+                layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+            }
+        }
+
+        layout.marginSpacing            = format.elementFormat().margins()
+
+        layout.child(contentLayout)
+
+        // (3) Content Layout
+        // -------------------------------------------------------------------------------------
+
+        contentLayout.id        = R.id.content
+
+        contentLayout.width     = LinearLayout.LayoutParams.MATCH_PARENT
+        contentLayout.height    = LinearLayout.LayoutParams.MATCH_PARENT
+
+        contentLayout.gravity   = format.elementFormat().alignment().gravityConstant() or
                                     format.elementFormat().verticalAlignment().gravityConstant()
 
-        layout.paddingSpacing   = format.elementFormat().padding()
-        layout.marginSpacing    = format.elementFormat().margins()
+        contentLayout.paddingSpacing   = format.elementFormat().padding()
+
+        // (4) Border
+        // -------------------------------------------------------------------------------------
+
+        val rightBorder = format.elementFormat().border().right()
+        when (rightBorder) {
+            is Just -> {
+                borderView.widthDp          = rightBorder.value.thickness().value
+                borderView.height           = LinearLayout.LayoutParams.MATCH_PARENT
+
+                borderView.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, rightBorder.value.colorTheme())
+
+                layout.child(borderView)
+            }
+        }
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -891,6 +1028,9 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
+        layout.paddingSpacing   = pointsWidget.format().barFormat().elementFormat().padding()
+        layout.marginSpacing   = pointsWidget.format().barFormat().elementFormat().margins()
+
         return layout.linearLayout(sheetUIContext.context)
     }
 
@@ -902,14 +1042,14 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         val width = format.elementFormat().width()
         when (width) {
-            is Width.Fixed -> layout.width = width.value.toInt()
+            is Width.Fixed -> layout.widthDp = width.value.toInt()
             else           -> layout.width = LinearLayout.LayoutParams.WRAP_CONTENT
         }
 
         val height = format.elementFormat().height()
         when (height) {
-            is Height.Fixed -> layout.width = height.value.toInt()
-            else            -> layout.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+            else            -> layout.height = LinearLayout.LayoutParams.WRAP_CONTENT
         }
 
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
@@ -933,6 +1073,23 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                 icon.image          = activeIcon.value.drawableResId()
 
                 layout.child(icon)
+            }
+        }
+
+
+        val activeText = pointsWidget.format().barFormat().counterActiveText()
+        when (activeText) {
+            is Just -> {
+                val textView      = TextViewBuilder()
+
+                textView.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+                textView.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+                textView.text         = activeText.value.value
+
+                pointsWidget.format().barFormat().currentFormat().styleTextViewBuilder(textView, sheetUIContext)
+
+                layout.child(textView)
             }
         }
 

@@ -430,6 +430,9 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
             buttonRollTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
 
+            val padding = format.elementFormat().padding()
+            buttonLayout?.setPadding(padding.leftPx(), padding.topPx(), padding.rightPx(), padding.bottomPx())
+
         }
         // ROLL VIEW
         else
@@ -468,6 +471,9 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
                                                 format.colorTheme()))
 
             buttonResultTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
+
+            val padding = format.elementFormat().padding()
+            buttonLayout?.setPadding(padding.leftPx(), padding.topPx(), padding.rightPx(), padding.bottomPx())
 
         }
 

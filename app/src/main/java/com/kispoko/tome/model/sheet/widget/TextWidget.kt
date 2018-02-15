@@ -168,18 +168,6 @@ object TextWidgetView
 
         contentLayout.addView(this.mainView(textWidget, format, sheetUIContext))
 
-        val rulebookReference = textWidget.rulebookReference()
-        when (rulebookReference) {
-            is Just -> {
-                layout.setOnLongClickListener {
-                    val sheetActivity = sheetUIContext.context as SheetActivity
-                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
-                                                                   SheetContext(sheetUIContext))
-                    dialog.show(sheetActivity.supportFragmentManager, "")
-                    true
-                }
-            }
-        }
 
         return layout
     }
@@ -244,6 +232,20 @@ object TextWidgetView
             }
         }
 
+        val rulebookReference = textWidget.rulebookReference()
+        when (rulebookReference) {
+            is Just -> {
+                Log.d("***TEXT WIDGET", "set on long click listener")
+                layout.setOnLongClickListener {
+                    Log.d("***TEXT WIDGET", "on long lick")
+                    val sheetActivity = sheetUIContext.context as SheetActivity
+                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
+                                                                   SheetContext(sheetUIContext))
+                    dialog.show(sheetActivity.supportFragmentManager, "")
+                    true
+                }
+            }
+        }
 
         return layout
     }

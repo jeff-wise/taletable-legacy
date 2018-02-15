@@ -118,11 +118,11 @@ class VariableHistoryActivity : AppCompatActivity()
         val sheetContext = this.sheetContext
         if (variable != null && sheetContext != null)
         {
-            val entryItems = variableEntryItems(variable, sheetContext)
-            val viewBuilder = VariableHistoryViewBuilder(entryItems,
-                                                         this.appSettings.themeId(),
-                                                         this)
-            contentView.addView(viewBuilder.view())
+//            val entryItems = variableEntryItems(variable, sheetContext)
+//            val viewBuilder = VariableHistoryViewBuilder(entryItems,
+//                                                         this.appSettings.themeId(),
+//                                                         this)
+//            contentView.addView(viewBuilder.view())
         }
     }
 
@@ -173,31 +173,31 @@ class VariableHistoryActivity : AppCompatActivity()
 
 data class EntryItem(val value : String, val note : String?)
 
-
-fun variableEntryItems(variable : Variable, sheetContext : SheetContext) : List<EntryItem> =
-    when (variable)
-    {
-        is NumberVariable ->
-        {
-            variable.history().entries().mapNotNull {
-                val valueEff = it.value().value(sheetContext)
-                when (valueEff) {
-                    is Val -> {
-                        val value = valueEff.value
-                        when (value) {
-                            is Just -> EntryItem(Util.doubleString(value.value), it.description().toNullable()?.value)
-                            else -> null
-                        }
-                    }
-                    is Err -> {
-                        ApplicationLog.error(valueEff.error)
-                        null
-                    }
-                }
-            }.reversed()
-        }
-        else -> listOf()
-    }
+//
+//fun variableEntryItems(variable : Variable, sheetContext : SheetContext) : List<EntryItem> =
+//    when (variable)
+//    {
+//        is NumberVariable ->
+//        {
+//            variable.history().entries().mapNotNull {
+//                val valueEff = it.value().value(sheetContext)
+//                when (valueEff) {
+//                    is Val -> {
+//                        val value = valueEff.value
+//                        when (value) {
+//                            is Just -> EntryItem(Util.doubleString(value.value), it.description().toNullable()?.value)
+//                            else -> null
+//                        }
+//                    }
+//                    is Err -> {
+//                        ApplicationLog.error(valueEff.error)
+//                        null
+//                    }
+//                }
+//            }.reversed()
+//        }
+//        else -> listOf()
+//    }
 
 
 

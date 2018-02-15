@@ -5075,6 +5075,121 @@ engine:
       result:
         type: engine_value_text
         engine_value_text: 'soldier_flaws'
+  - function_id: hit_die_by_class
+    label: Hit Die by Class
+    description: The hit die for each class.
+    type_signature:
+      parameter1_type: text
+      result_type: dice_roll
+    tuples:
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: barbarian
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 12
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: bard
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 8
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: cleric
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 8
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: druid
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 8
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: fighter
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 10
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: monk
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 8
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: paladin
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 10
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: ranger
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 10
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: rogue
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 8
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: sorcerer
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: warlock
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 8
+            quantity: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: wizard
+      result:
+        type: dice_roll
+        dice_roll:
+          quantities:
+          - sides: 6
+            quantity: 1
   - function_id: ability_modifier
     label: Ability Modifier
     description:
@@ -5552,6 +5667,35 @@ engine:
         type: program_parameter_index
         program_parameter_index: 1
     result_binding_name: result
+  - program_id: hit_die_by_class
+    label: Hit Die
+    description: The hit die by class.
+    type_signature:
+      parameter_types:
+      - text
+      result_type: dice_roll
+    statements:
+    - binding_name: result
+      function_id: hit_die_by_class
+      parameter1:
+        type: data_reference
+        data_reference:
+          type: data_reference_text
+          data_reference_text:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: class
+    result_binding_name: result
+  - program_id: hit_dice_to_hit_points
+    label: Hit Dice to Hit Points
+    description: Hit Dice to Hit Points
+    type_signature:
+      parameter_types:
+      - number
+      result_type: number
+    statements:
+    result_binding_name: result
   - program_id: add_second_wind_hit_points
     label: Add Second Wind Hit Points
     description: Add second wind hit points
@@ -5618,8 +5762,11 @@ engine:
   - procedure_id: short_rest
     procedure_name: Short Rest
     updates:
+    - variable_ids:
+      - current_hit_points
+      program_id: hit_dice_to_hit_points
     description:
-      template: 'I spend at least one hour doing non-strenuous activity.'
+      template: 'I spend at least one hour doing non-strenuous activity. I may then spend hit dice to heal myself.'
       variable_ids:
       - 'level'
     action_label: 'Take Short Rest'
@@ -6129,9 +6276,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_animal_handling_bonus
-    summation_name: Skill (Animal Handling) Bonus
+  - summation_id: skill_animal_handling_roll
+    summation_name: Skill (Animal Handling) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6145,7 +6300,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: animal_handling::is_proficient
+            variable_id: skill_animal_handling_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6154,9 +6309,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_arcana_bonus
-    summation_name: Skill (Arcana) Bonus
+  - summation_id: skill_arcana_roll
+    summation_name: Skill (Arcana) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6170,7 +6333,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: arcana::is_proficient
+            variable_id: skill_arcana_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6179,9 +6342,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_athletics_bonus
-    summation_name: Skill (Athletics) Bonus
+  - summation_id: skill_athletics_roll
+    summation_name: Skill (Athletics) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6195,7 +6366,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: athletics::is_proficient
+            variable_id: skill_athletics_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6204,9 +6375,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_deception_bonus
-    summation_name: Skill (Deception) Bonus
+  - summation_id: skill_deception_roll
+    summation_name: Skill (Deception) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6220,7 +6399,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: deception::is_proficient
+            variable_id: skill_deception_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6229,9 +6408,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_history_bonus
-    summation_name: Skill (History) Bonus
+  - summation_id: skill_history_roll
+    summation_name: Skill (History) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6245,7 +6432,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: history::is_proficient
+            variable_id: skill_history_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6254,9 +6441,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_insight_bonus
-    summation_name: Skill (Insight) Bonus
+  - summation_id: skill_insight_roll
+    summation_name: Skill (Insight) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6270,7 +6465,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: insight::is_proficient
+            variable_id: skill_insight_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6279,9 +6474,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_intimidation_bonus
-    summation_name: Skill (Intimidation) Bonus
+  - summation_id: skill_intimidation_roll
+    summation_name: Skill (Intimidation) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6295,7 +6498,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: intimidation::is_proficient
+            variable_id: skill_intimidation_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6304,9 +6507,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_investigation_bonus
-    summation_name: Skill (Investigation) Bonus
+  - summation_id: skill_investigation_roll
+    summation_name: Skill (Investigation) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6320,7 +6531,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: investigation::is_proficient
+            variable_id: skill_investigation_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6329,9 +6540,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_medicine_bonus
-    summation_name: Skill (Medicine) Bonus
+  - summation_id: skill_medicine_roll
+    summation_name: Skill (Medicine) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6345,7 +6564,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: medicine::is_proficient
+            variable_id: skill_medicine_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6354,9 +6573,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_nature_bonus
-    summation_name: Skill (Nature) Bonus
+  - summation_id: skill_nature_roll
+    summation_name: Skill (Nature) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6370,7 +6597,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: nature::is_proficient
+            variable_id: skill_nature_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6379,9 +6606,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_perception_bonus
-    summation_name: Skill (Perception) Bonus
+  - summation_id: skill_perception_roll
+    summation_name: Skill (Perception) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6395,7 +6630,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: perception::is_proficient
+            variable_id: skill_perception_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6404,9 +6639,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_performance_bonus
-    summation_name: Skill (Performance) Bonus
+  - summation_id: skill_performance_roll
+    summation_name: Skill (Performance) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6420,7 +6663,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: performance::is_proficient
+            variable_id: skill_performance_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6429,9 +6672,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_persuasion_bonus
-    summation_name: Skill (Persuasion) Bonus
+  - summation_id: skill_persuasion_roll
+    summation_name: Skill (Persuasion) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6445,7 +6696,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: persuasion::is_proficient
+            variable_id: skill_persuasion_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6454,9 +6705,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_religion_bonus
-    summation_name: Skill (Religion) Bonus
+  - summation_id: skill_religion_roll
+    summation_name: Skill (Religion) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6470,7 +6729,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: religion::is_proficient
+            variable_id: skill_religion_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6479,9 +6738,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_sleight_of_hand_bonus
-    summation_name: Skill (Sleight of Hand) Bonus
+  - summation_id: skill_sleight_of_hand_roll
+    summation_name: Skill (Sleight of Hand) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6495,7 +6762,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: sleight_of_hand::is_proficient
+            variable_id: skill_sleight_of_hand_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6504,9 +6771,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_stealth_bonus
-    summation_name: Skill (Stealth) Bonus
+  - summation_id: skill_stealth_roll
+    summation_name: Skill (Stealth) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6520,7 +6795,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: stealth::is_proficient
+            variable_id: skill_stealth_is_proficient
         when_true:
           type: variable_reference
           variable_reference:
@@ -6529,9 +6804,17 @@ engine:
         when_false:
           type: number_literal
           number_literal: 0
-  - summation_id: skill_survival_bonus
-    summation_name: Skill (Survival) Bonus
+  - summation_id: skill_survival_roll
+    summation_name: Skill (Survival) Roll
     terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
@@ -6545,7 +6828,7 @@ engine:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: survival::is_proficient
+            variable_id: skill_survival_is_proficient
         when_true:
           type: variable_reference
           variable_reference:

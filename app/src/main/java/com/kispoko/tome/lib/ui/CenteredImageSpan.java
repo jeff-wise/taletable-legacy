@@ -53,10 +53,11 @@ public class CenteredImageSpan extends ImageSpan
         int drawableHeight = b.getIntrinsicHeight();
         int fontAscent = paint.getFontMetricsInt().ascent;
         int fontDescent = paint.getFontMetricsInt().descent;
-        int transY = bottom - b.getBounds().bottom +  // align bottom to bottom
-                (drawableHeight - fontDescent + fontAscent) / 2;  // align center to center
-//        int transY = top - b.getBounds().top +  // align bottom to bottom
+//        int transY = bottom - b.getBounds().bottom +  // align bottom to bottom
 //                (drawableHeight - fontDescent + fontAscent) / 2;  // align center to center
+        int transY = top - b.getBounds().top +  // align bottom to bottom
+//                (drawableHeight - fontDescent + fontAscent) / 2;  // align center to center
+        (drawableHeight + fontAscent) / 2;  // align center to center
 
 
         canvas.translate(x, transY);

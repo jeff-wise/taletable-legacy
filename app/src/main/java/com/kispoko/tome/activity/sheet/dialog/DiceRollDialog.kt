@@ -492,7 +492,7 @@ class DiceRollerViewBuilder(val diceRollGroup : DiceRollGroup,
         val scrollView = ScrollViewBuilder()
 
         scrollView.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        scrollView.heightDp         = 360
+        scrollView.heightDp         = 300
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),

@@ -153,6 +153,18 @@ class ProcedureDoesNotExist(val procedureId : ProcedureId) : EngineError()
 }
 
 
+class ProcedureDoesNotHaveUpdates(val procedureId : ProcedureId) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Procedure Does Not Have Updates
+                Procedure Id: $procedureId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
 class TextReferenceIsNull(val reference : TextReference) : EngineError()
 {
     override fun debugMessage(): String =

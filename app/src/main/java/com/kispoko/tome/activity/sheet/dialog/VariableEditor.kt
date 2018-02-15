@@ -164,7 +164,8 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val dialog = TextEditorDialogFragment.newInstance(title,
                                                               text,
                                                               updateTarget,
-                                                              SheetContext(sheetUIContext))
+                                                              SheetContext(sheetUIContext),
+                                                              textVariable.variableId())
             dialog.show(sheetActivity.supportFragmentManager, "")
         }
         is TextVariableValueValue ->

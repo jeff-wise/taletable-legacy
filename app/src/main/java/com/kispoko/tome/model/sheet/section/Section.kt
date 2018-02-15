@@ -3,9 +3,7 @@ package com.kispoko.tome.model.sheet.section
 
 
 import com.kispoko.tome.db.DB_SectionValue
-import com.kispoko.tome.db.DB_ValueSetBaseValue
 import com.kispoko.tome.db.sectionTable
-import com.kispoko.tome.db.valueSetBaseTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue3
@@ -15,7 +13,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.page.Page
-import com.kispoko.tome.model.sheet.style.Icon
+import com.kispoko.tome.model.sheet.style.IconType
 import com.kispoko.tome.rts.sheet.SheetUIContext
 import effect.apply
 import effect.effError
@@ -34,7 +32,7 @@ import java.util.*
 data class Section(override val id : UUID,
                    private var sectionName : SectionName,
                    private var pages : List<Page>,
-                   private var icon : Icon)
+                   private var icon : IconType)
                     : ProdType, ToDocument, Serializable
 {
 
@@ -44,7 +42,7 @@ data class Section(override val id : UUID,
 
     constructor(name : SectionName,
                 pages : List<Page>,
-                icon : Icon)
+                icon : IconType)
         : this(UUID.randomUUID(),
                name,
                pages,
@@ -66,7 +64,7 @@ data class Section(override val id : UUID,
                               Page.fromDocument(doc, index)
                           } },
                       // Icon
-                      doc.at("icon") ap { Icon.fromDocument(it) }
+                      doc.at("icon") ap { IconType.fromDocument(it) }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -84,7 +82,7 @@ data class Section(override val id : UUID,
 
     fun pages() : List<Page> = this.pages
 
-    fun icon() : Icon = this.icon
+    fun icon() : IconType = this.icon
 
 
     // -----------------------------------------------------------------------------------------

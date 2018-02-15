@@ -264,7 +264,7 @@ types:
     - name: icon
       type:
         type: custom_type
-        custom_type: icon
+        custom_type: icon_type
       presence: required
       description: >
         The icon that is displayed on mobile in the bottom navigation tab that 
@@ -717,7 +717,7 @@ types:
     - name: button_icon
       type: 
         type: custom_type
-        custom_type: icon
+        custom_type: icon_type
       presence: optional
       description: The description format.
 - type: product_type
@@ -798,6 +798,18 @@ types:
         prim_type: string
       presence: optional
       description: The false label.
+    - name: true_icon
+      type:
+        type: custom_type
+        custom_type: icon
+      presence: optional
+      description: The true icon.
+    - name: false_icon
+      type:
+        type: custom_type
+        custom_type: icon
+      presence: optional
+      description: The false icon.
 - type: product_type
   product_type:
     name: widget_expander
@@ -1638,6 +1650,12 @@ types:
       Points Widget formatting options.
     group: 'Widget: Points'
     fields:
+    - name: element_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: Points bar element format.
     - name: bar_style
       type:
         type: custom_type
@@ -1671,7 +1689,13 @@ types:
     - name: counter_active_icon
       type:
         type: custom_type
-        custom_type: icon
+        custom_type: icon_type
+      presence: optional
+      description: Current Color Theme
+    - name: counter_active_text
+      type:
+        type: prim_type
+        prim_type: string
       presence: optional
       description: Current Color Theme
 - type: product_type
@@ -1951,12 +1975,6 @@ types:
         custom_type: icon
       presence: required
       description: The icon
-    - name: icon_format
-      type:
-        type: custom_type
-        custom_type: icon_format
-      presence: optional
-      description: The icon format.
 - type: product_type
   product_type: 
     name: story_part_action
@@ -3189,6 +3207,31 @@ types:
       description: The top border.
 - type: product_type
   product_type:
+    name: icon
+    label: Icon
+    description: Icon
+    group: Style
+    fields:
+    - name: icon_type
+      type: 
+        type: custom_type
+        custom_type: icon_type
+      presence: optional
+      description: The icon color.
+    - name: element_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The icon element format.
+    - name: icon_format
+      type:
+        type: custom_type
+        custom_type: icon_format
+      presence: optional
+      description: The icon format.
+- type: product_type
+  product_type:
     name: icon_format
     label: Icon Format
     description: Icon Format
@@ -3227,9 +3270,9 @@ types:
       description: The height.
 - type: primitive_type
   primitive_type:
-    name: icon
-    label: Icon
-    description: An icon.
+    name: icon_type
+    label: Icon Type
+    description: An icon type.
     group: Style
     base_type:
       type: prim_type

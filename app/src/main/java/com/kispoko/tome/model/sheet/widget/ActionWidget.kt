@@ -4,7 +4,6 @@ package com.kispoko.tome.model.sheet.widget
 
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -27,7 +26,7 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
-import com.kispoko.tome.model.sheet.style.Icon
+import com.kispoko.tome.model.sheet.style.IconType
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.Width
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -57,7 +56,7 @@ data class ActionWidgetFormat(override val id : UUID,
                               val descriptionInactiveFormat : Maybe<TextFormat>,
                               val buttonFormat : TextFormat,
                               val buttonInactiveFormat : Maybe<TextFormat>,
-                              val buttonIcon : Maybe<Icon>)
+                              val buttonIcon : Maybe<IconType>)
                                : ToDocument, ProdType, Serializable
 {
 
@@ -71,7 +70,7 @@ data class ActionWidgetFormat(override val id : UUID,
                 descriptionInactiveFormat : Maybe<TextFormat>,
                 buttonFormat : TextFormat,
                 buttonInactiveFormat : Maybe<TextFormat>,
-                buttonIcon : Maybe<Icon>)
+                buttonIcon : Maybe<IconType>)
         : this(UUID.randomUUID(),
                widgetFormat,
                viewType,
@@ -89,7 +88,7 @@ data class ActionWidgetFormat(override val id : UUID,
         private fun defaultViewType()                   = ActionWidgetViewType.InlineLeftButton
         private fun defaultDescriptionFormat()          = TextFormat.default()
         private fun defaultButtonFormat()               = TextFormat.default()
-        private fun defaultButtonIcon()                 = Nothing<Icon>()
+        private fun defaultButtonIcon()                 = Nothing<IconType>()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<ActionWidgetFormat> = when (doc)
@@ -123,8 +122,8 @@ data class ActionWidgetFormat(override val id : UUID,
                            { apply(::Just, TextFormat.fromDocument(it)) }),
                      // Button Icon
                      split(doc.maybeAt("button_icon"),
-                           effValue<ValueError,Maybe<Icon>>(defaultButtonIcon()),
-                           { apply(::Just, Icon.fromDocument(it)) })
+                           effValue<ValueError,Maybe<IconType>>(defaultButtonIcon()),
+                           { apply(::Just, IconType.fromDocument(it)) })
                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -176,7 +175,7 @@ data class ActionWidgetFormat(override val id : UUID,
     fun buttonInactiveFormat() : Maybe<TextFormat> = this.buttonInactiveFormat
 
 
-    fun buttonIcon() : Maybe<Icon> = this.buttonIcon
+    fun buttonIcon() : Maybe<IconType> = this.buttonIcon
 
 
     // -----------------------------------------------------------------------------------------

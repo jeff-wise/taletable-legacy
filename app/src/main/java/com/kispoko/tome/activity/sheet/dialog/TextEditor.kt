@@ -14,6 +14,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.engine.EngineValueText
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -38,6 +40,7 @@ class TextEditorDialogFragment : DialogFragment()
     private var text             : String? = null
     private var updateTarget     : UpdateTarget? = null
     private var sheetContext     : SheetContext? = null
+    private var variableId       : VariableId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -49,7 +52,8 @@ class TextEditorDialogFragment : DialogFragment()
         fun newInstance(title : String,
                         text : String,
                         updateTarget : UpdateTarget,
-                        sheetContext : SheetContext) : TextEditorDialogFragment
+                        sheetContext : SheetContext,
+                        variableId : VariableId? = null) : TextEditorDialogFragment
         {
             val dialog = TextEditorDialogFragment()
 
@@ -58,6 +62,8 @@ class TextEditorDialogFragment : DialogFragment()
             args.putString("title", title)
             args.putSerializable("update_target", updateTarget)
             args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("variable_id", variableId)
+
             dialog.arguments = args
 
             return dialog
@@ -78,6 +84,7 @@ class TextEditorDialogFragment : DialogFragment()
         this.text         = arguments.getString("text")
         this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
+        this.variableId   = arguments.getSerializable("variable_id") as VariableId?
 
 
         // (2) Initialize UI
@@ -125,6 +132,7 @@ class TextEditorDialogFragment : DialogFragment()
                 val viewBuilder = TextEditorViewBuilder(title,
                                                         text,
                                                         updateTarget,
+                                                        this.variableId,
                                                         sheetUIContext,
                                                         this)
                 viewBuilder.view()
@@ -162,6 +170,7 @@ class TextEditorDialogFragment : DialogFragment()
 class TextEditorViewBuilder(val title : String,
                             val text : String,
                             val updateTarget : UpdateTarget,
+                            val variableId : VariableId?,
                             val sheetUIContext : SheetUIContext,
                             val dialog : DialogFragment)
 {
@@ -496,6 +505,18 @@ class TextEditorViewBuilder(val title : String,
             {
                 when (updateTarget)
                 {
+                    is UpdateTargetStoryWidgetPart ->
+                    {
+                        if (variableId != null)
+                        {
+                            SheetManager.sheetState(sheetUIContext.sheetId) apDo {
+                                it.updateVariable(variableId,
+                                                  EngineValueText(currentValue),
+                                                  SheetContext(sheetUIContext))
+                            }
+                            dialog.dismiss()
+                        }
+                    }
                     is UpdateTargetTextWidget ->
                     {
                         val textWidgetUpdate = TextWidgetUpdateSetText(updateTarget.textWidgetId,

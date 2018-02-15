@@ -93,12 +93,6 @@ sealed class Variable : ProdType, ToDocument, Serializable
     abstract fun addTags(tags : Set<VariableTag>)
 
 
-//    abstract fun relatedVariableId(relation : VariableRelation) : Maybe<VariableId>
-//
-//
-//    abstract fun addRelation(relation : VariableRelation, variableId : VariableId)
-
-
     fun addRelatedParent(variableId : VariableId)
     {
         this.relatedParentIds.add(variableId)
@@ -107,12 +101,6 @@ sealed class Variable : ProdType, ToDocument, Serializable
 
     fun relatedParents() : Set<VariableId> = this.relatedParentIds
 
-
-//    abstract fun hasRelation(relation : VariableRelation) : Boolean
-//
-//
-//    abstract fun relation() : Maybe<VariableRelation>
-//
 
     fun relatedVariableId(relation : VariableRelation) : Maybe<VariableId>  =
         maybe(this.relationToVariableId[relation])
@@ -135,7 +123,6 @@ sealed class Variable : ProdType, ToDocument, Serializable
 
 
     abstract fun relation() : Maybe<VariableRelation>
-
 
 
     fun booleanVariable(sheetId : SheetId) : AppEff<BooleanVariable> = when (this)
@@ -194,6 +181,22 @@ sealed class Variable : ProdType, ToDocument, Serializable
 
 
     // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    open fun historyVariableId() = VariableId(this.variableId().name.value + "__history__")
+
+
+    open fun historyVariableLabel() = VariableLabel(this.label().value + " History")
+
+
+    open fun historyVariableDescription() = VariableDescription(this.description().value + " history")
+
+
+    abstract fun historyVariable() : Variable
+
+
+    // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
@@ -239,14 +242,14 @@ sealed class Variable : ProdType, ToDocument, Serializable
     // VALUE STRING
     // -----------------------------------------------------------------------------------------
 
-    open fun valueString(sheetContext : SheetContext)
-                          : AppEff<String> = when (this)
+    open fun valueString(sheetContext : SheetContext) : AppEff<String> = when (this)
     {
-        is BooleanVariable  -> this.value() ap { effValue<AppError,String>(it.toString()) }
-        is DiceRollVariable -> effValue(this.value().toString())
-        is NumberVariable   -> this.valueString(sheetContext)
-        is TextVariable     -> this.valueString(sheetContext)
-        is TextListVariable -> this.valueString(sheetContext)
+        is BooleanVariable      -> this.value() ap { effValue<AppError,String>(it.toString()) }
+        is DiceRollVariable     -> effValue(this.value().toString())
+        is NumberVariable       -> this.valueString(sheetContext)
+        is NumberListVariable   -> this.valueString(sheetContext)
+        is TextVariable         -> this.valueString(sheetContext)
+        is TextListVariable     -> this.valueString(sheetContext)
     }
 
 }
@@ -361,6 +364,19 @@ data class BooleanVariable(override val id : UUID,
 
 
     override fun relation() = this.relation
+
+
+    // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    override fun historyVariable() =
+            NumberVariable(this.historyVariableId(),
+                           this.historyVariableLabel(),
+                           this.historyVariableDescription(),
+                           listOf(),
+                           Nothing(),
+                           NumberVariableLiteralValue(0.0))
 
 
     // -----------------------------------------------------------------------------------------
@@ -591,6 +607,19 @@ data class DiceRollVariable(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    override fun historyVariable() =
+            NumberVariable(this.historyVariableId(),
+                           this.historyVariableLabel(),
+                           this.historyVariableDescription(),
+                           listOf(),
+                           Nothing(),
+                           NumberVariableLiteralValue(0.0))
+
+
+    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -608,8 +637,7 @@ data class NumberVariable(override val id : UUID,
                           private var description : VariableDescription,
                           private val tags : MutableList<VariableTag>,
                           private val relation : Maybe<VariableRelation>,
-                          var variableValue : NumberVariableValue,
-                          val history : NumberVariableHistory)
+                          var variableValue : NumberVariableValue)
                           : Variable()
 {
 
@@ -626,7 +654,7 @@ data class NumberVariable(override val id : UUID,
                 label : VariableLabel,
                 description : VariableDescription,
                 tags : List<VariableTag>,
-                relation : Maybe<VariableRelation>,
+                relation: Maybe<VariableRelation>,
                 value : NumberVariableValue)
         : this(UUID.randomUUID(),
                variableId,
@@ -634,25 +662,7 @@ data class NumberVariable(override val id : UUID,
                description,
                tags.toMutableList(),
                relation,
-               value,
-               NumberVariableHistory())
-
-
-    constructor(variableId : VariableId,
-                label : VariableLabel,
-                description : VariableDescription,
-                tags : List<VariableTag>,
-                relation: Maybe<VariableRelation>,
-                value : NumberVariableValue,
-                history : NumberVariableHistory)
-        : this(UUID.randomUUID(),
-               variableId,
-               label,
-               description,
-               tags.toMutableList(),
-               relation,
-               value,
-               history)
+               value)
 
 
     companion object : Factory<NumberVariable>
@@ -677,11 +687,7 @@ data class NumberVariable(override val id : UUID,
                             effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
                             { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
-                      doc.at("value") ap { NumberVariableValue.fromDocument(it) },
-                      // History
-                      split(doc.maybeAt("history"),
-                            effValue(NumberVariableHistory()),
-                            { NumberVariableHistory.fromDocument(it) })
+                      doc.at("value") ap { NumberVariableValue.fromDocument(it) }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -733,9 +739,6 @@ data class NumberVariable(override val id : UUID,
     fun variableValue() : NumberVariableValue = this.variableValue
 
 
-    fun history() : NumberVariableHistory = this.history
-
-
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -780,6 +783,19 @@ data class NumberVariable(override val id : UUID,
             }
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    override fun historyVariable() : NumberListVariable =
+            NumberListVariable(this.historyVariableId(),
+                               this.historyVariableLabel(),
+                               this.historyVariableDescription(),
+                               listOf(),
+                               Nothing(),
+                               Nothing())
 
 
     // -----------------------------------------------------------------------------------------
@@ -838,9 +854,226 @@ data class NumberVariable(override val id : UUID,
             is NumberVariableLiteralValue ->
             {
                 this.variableValue = NumberVariableLiteralValue(value)
-                this.history().append(this.variableValue())
                 SheetManager.onVariableUpdate(sheetId, this)
                 this.onUpdate()
+            }
+        }
+    }
+
+}
+
+
+/**
+ * Number List Variable
+ */
+data class NumberListVariable(override val id : UUID,
+                              private var variableId : VariableId,
+                              private var label : VariableLabel,
+                              private var description : VariableDescription,
+                              private val tags : MutableList<VariableTag>,
+                              private val relation : Maybe<VariableRelation>,
+                              var variableValue : NumberListVariableValue,
+                              var valueSetId : Maybe<ValueSetId>)
+                               : Variable()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(variableId : VariableId,
+                label : VariableLabel,
+                description : VariableDescription,
+                tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
+                valueSetId : Maybe<ValueSetId>)
+        : this(UUID.randomUUID(),
+               variableId,
+               label,
+               description,
+               tags.toMutableList(),
+               relation,
+               NumberListVariableLiteralValue(listOf()),
+               valueSetId)
+
+
+    constructor(variableId : VariableId,
+                label : VariableLabel,
+                description : VariableDescription,
+                tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
+                variableValue : NumberListVariableValue,
+                valueSetId : Maybe<ValueSetId>)
+        : this(UUID.randomUUID(),
+               variableId,
+               label,
+               description,
+               tags.toMutableList(),
+               relation,
+               variableValue,
+               valueSetId)
+
+
+    companion object : Factory<NumberListVariable>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<NumberListVariable> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::NumberListVariable,
+                      // Variable Id
+                      doc.at("id") ap { VariableId.fromDocument(it) },
+                      // Label
+                      doc.at("label") ap { VariableLabel.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { VariableDescription.fromDocument(it) },
+                      // Tags
+                      split(doc.maybeList("tags"),
+                            effValue(listOf()),
+                            { it.map { VariableTag.fromDocument(it) } }),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
+                      // Value
+                      doc.at("value") ap { NumberListVariableValue.fromDocument(it) },
+                      // Value Set Id
+                      split(doc.maybeAt("value_set_id"),
+                            effValue<ValueError,Maybe<ValueSetId>>(Nothing()),
+                            { apply(::Just, ValueSetId.fromDocument(it)) } )
+                    )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.variableId.toDocument(),
+        "label" to this.label.toDocument(),
+        "description" to this.description.toDocument(),
+        "tags" to DocList(this.tags.map { it.toDocument() }),
+        "value" to this.variableValue.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // STATE
+    // -----------------------------------------------------------------------------------------
+
+    override fun variableId() : VariableId = this.variableId
+
+
+    override fun setVariableId(variableId : VariableId) {
+        this.variableId = variableId
+    }
+
+
+    override fun description() : VariableDescription = this.description
+
+
+    override fun label() : VariableLabel = this.label
+
+
+    override fun tags(): List<VariableTag> = this.tags
+
+
+    override fun addTags(tags : Set<VariableTag>) {
+    }
+
+
+    override fun relation() = this.relation
+
+
+    fun variableValue() : NumberListVariableValue = this.variableValue
+
+
+    fun valueSetId() : Maybe<ValueSetId> = this.valueSetId
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() {}
+
+
+    override val prodTypeObject: ProdType = this
+
+
+    override fun rowValue() : DB_VariableNumberListValue =
+        RowValue6(variableNumberListTable,
+                  PrimValue(this.variableId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(VariableTagSet(this.tags)),
+                  SumValue(this.variableValue),
+                  MaybePrimValue(this.valueSetId))
+
+
+    // -----------------------------------------------------------------------------------------
+    // VARIABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
+
+
+    override fun type(): VariableType = VariableType.TEXT
+
+
+    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(sheetContext)
+
+
+    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    {
+        val rel = this.relation()
+        when (rel)
+        {
+            is Just -> {
+                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+            }
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    override fun historyVariable() =
+            NumberVariable(this.historyVariableId(),
+                           this.historyVariableLabel(),
+                           this.historyVariableDescription(),
+                           listOf(),
+                           Nothing(),
+                           NumberVariableLiteralValue(0.0))
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value(sheetContext : SheetContext) : AppEff<List<Double>> =
+            this.variableValue().value(sheetContext)
+
+
+    fun updateLiteralValue(value : List<Double>, sheetId : SheetId)
+    {
+        when (this.variableValue())
+        {
+            is NumberListVariableLiteralValue ->
+            {
+                this.variableValue = NumberListVariableLiteralValue(value)
+                SheetManager.onVariableUpdate(sheetId, this)
             }
         }
     }
@@ -1006,6 +1239,19 @@ data class TextVariable(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    override fun historyVariable() =
+            NumberVariable(this.historyVariableId(),
+                           this.historyVariableLabel(),
+                           this.historyVariableDescription(),
+                           listOf(),
+                           Nothing(),
+                           NumberVariableLiteralValue(0.0))
+
+
+    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -1042,12 +1288,14 @@ data class TextVariable(override val id : UUID,
             {
                 this.variableValue = TextVariableLiteralValue(value)
                 SheetManager.onVariableUpdate(sheetId, this)
+                this.onUpdate()
             }
             is TextVariableValueValue -> {
                 val valueSetId = currentVariableValue.valueReference.valueSetId
                 val newValueReference = ValueReference(valueSetId, TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
                 SheetManager.onVariableUpdate(sheetId, this)
+                this.onUpdate()
             }
             is TextVariableValueUnknownValue -> {
                 val valueSetId = currentVariableValue.valueSetId
@@ -1055,6 +1303,7 @@ data class TextVariable(override val id : UUID,
                                                        TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
                 SheetManager.onVariableUpdate(sheetId, this)
+                this.onUpdate()
             }
         }
     }
@@ -1226,6 +1475,19 @@ data class TextListVariable(override val id : UUID,
             }
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    override fun historyVariable() =
+            NumberVariable(this.historyVariableId(),
+                           this.historyVariableLabel(),
+                           this.historyVariableDescription(),
+                           listOf(),
+                           Nothing(),
+                           NumberVariableLiteralValue(0.0))
 
 
     // -----------------------------------------------------------------------------------------

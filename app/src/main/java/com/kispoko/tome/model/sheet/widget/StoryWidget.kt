@@ -424,19 +424,15 @@ data class StoryPartVariable(override val id : UUID,
  * Story Part Icon
  */
 data class StoryPartIcon(override val id : UUID,
-                         val icon : Icon,
-                         val iconFormat : IconFormat) : StoryPart(), Serializable
+                         val icon : Icon)
+                          : StoryPart(), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(icon : Icon,
-                format : IconFormat)
-        : this(UUID.randomUUID(),
-               icon,
-               format)
+    constructor(icon : Icon) : this(UUID.randomUUID(), icon)
 
 
     companion object : Factory<StoryPartIcon>
@@ -445,11 +441,7 @@ data class StoryPartIcon(override val id : UUID,
         {
             is DocDict -> apply(::StoryPartIcon,
                                 // Icon
-                                doc.at("icon") ap { Icon.fromDocument(it) },
-                                // Format
-                                split(doc.maybeAt("icon_format"),
-                                      effValue(IconFormat.default()),
-                                      { IconFormat.fromDocument(it) })
+                                doc.at("icon") ap { Icon.fromDocument(it) }
                                 )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -461,8 +453,7 @@ data class StoryPartIcon(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "icon" to this.icon().toDocument(),
-        "icon_format" to this.iconFormat().toDocument()
+        "icon" to this.icon().toDocument()
     ))
 
 
@@ -471,8 +462,6 @@ data class StoryPartIcon(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun icon() : Icon = this.icon
-
-    fun iconFormat() : IconFormat = this.iconFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -493,9 +482,8 @@ data class StoryPartIcon(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetStoryPartIconValue =
-        RowValue2(widgetStoryPartIconTable,
-                  PrimValue(this.icon),
-                  ProdValue(this.iconFormat))
+        RowValue1(widgetStoryPartIconTable,
+                  ProdValue(this.icon))
 
 }
 
@@ -779,49 +767,58 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
     {
         val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
 
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        val viewId = Util.generateViewId()
+        storyWidget.viewId  = viewId
+        layout.id           = viewId
 
-        val wc = storyWidget.story().map { it.wordCount() }.sum()
+        this.updateView(layout)
+
+//        val wc = storyWidget.story().map { it.wordCount() }.sum()
 //        if (wc <= 4 && storyWidget.actionParts().isEmpty())
 //        {
 //            contentLayout.addView(this.storyFlexView(storyWidget, sheetUIContext))
 //        }
 //        else
 //        {
-            val layoutViewId = Util.generateViewId()
-            storyWidget.layoutViewId = layoutViewId
-            contentLayout.id                = layoutViewId
-            val spanView = storySpannableView(storyWidget, sheetUIContext)
 
-            contentLayout.addView(spanView)
         //}
 
         // Layout on click
-        val variableParts = storyWidget.variableParts()
-        if (variableParts.size == 1)
-        {
-            var variablePartIndex = 0
-            storyWidget.story().forEachIndexed { index, storyPart ->
-                when (storyPart) {
-                    is StoryPartVariable -> variablePartIndex = index
-                }
-            }
-            val variable = variableParts.first().variable(SheetContext(sheetUIContext))
-            if (variable != null) {
-//                layout.setOnClickListener {
-//                    openVariableEditorDialog(
-//                            variable,
-//                            UpdateTargetStoryWidgetPart(storyWidget.id, variablePartIndex),
-//                            sheetUIContext)
+//        val variableParts = storyWidget.variableParts()
+//        if (variableParts.size == 1)
+//        {
+//            var variablePartIndex = 0
+//            storyWidget.story().forEachIndexed { index, storyPart ->
+//                when (storyPart) {
+//                    is StoryPartVariable -> variablePartIndex = index
 //                }
-            }
-
-        }
+//            }
+//            val variable = variableParts.first().variable(SheetContext(sheetUIContext))
+//            if (variable != null) {
+////                layout.setOnClickListener {
+////                    openVariableEditorDialog(
+////                            variable,
+////                            UpdateTargetStoryWidgetPart(storyWidget.id, variablePartIndex),
+////                            sheetUIContext)
+////                }
+//            }
+//
+//        }
 
 
         return layout
     }
 
+
+    fun updateView(layout : LinearLayout)
+    {
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+
+        contentLayout.removeAllViews()
+
+        val spanView = storySpannableView(storyWidget, sheetUIContext)
+        contentLayout.addView(spanView)
+    }
 
 
     fun storyFlexView(storyWidget : StoryWidget,
@@ -1003,17 +1000,19 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
     {
         val icon            = ImageViewBuilder()
 
+        val iconFormat      = storyPart.icon().iconFormat()
+
         icon.layoutType     = LayoutType.FLEXBOX
 
-        icon.widthDp        = storyPart.iconFormat().size().width
-        icon.heightDp       = storyPart.iconFormat().size().height
+        icon.widthDp        = iconFormat.size().width
+        icon.heightDp       = iconFormat.size().height
 
-        icon.image          = storyPart.icon().drawableResId()
+        icon.image          = storyPart.icon().iconType().drawableResId()
 
-        icon.iconSize       = storyPart.iconFormat().size()
+        icon.iconSize       = iconFormat.size()
 
         icon.color          = SheetManager.color(sheetUIContext.sheetId,
-                                                 storyPart.iconFormat().colorTheme())
+                                                 iconFormat.colorTheme())
 
         return icon.imageView(sheetUIContext.context)
     }
@@ -1206,16 +1205,16 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
             {
                 val vectorDrawable =
                         VectorDrawableCompat.create(sheetUIContext.context.resources,
-                                                    storyPart.icon().drawableResId(), null)
+                                                    storyPart.icon().iconType().drawableResId(), null)
 
                 vectorDrawable?.setBounds(
                         0,
                         0,
-                        Util.dpToPixel(storyPart.iconFormat().size().width.toFloat()),
-                        Util.dpToPixel(storyPart.iconFormat().size().height.toFloat()))
+                        Util.dpToPixel(storyPart.icon().iconFormat().size().width.toFloat()),
+                        Util.dpToPixel(storyPart.icon().iconFormat().size().height.toFloat()))
 
                 val color = SheetManager.color(sheetUIContext.sheetId,
-                                               storyPart.iconFormat().colorTheme())
+                                               storyPart.icon().iconFormat().colorTheme())
                 vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
                                                                     PorterDuff.Mode.SRC_IN)
 

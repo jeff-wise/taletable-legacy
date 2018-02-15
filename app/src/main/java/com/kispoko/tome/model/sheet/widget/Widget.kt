@@ -17,7 +17,6 @@ import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
-import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -373,6 +372,7 @@ data class WidgetId(val value : String) : ToDocument, SQLSerializable, Serializa
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -638,7 +638,7 @@ data class BooleanWidget(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var viewId : Int? = null
+    var layoutId : Int? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -822,11 +822,11 @@ data class BooleanWidget(override val id : UUID,
 
     private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
     {
-        val viewId = this.viewId
+        val viewId = this.layoutId
         if (viewId != null) {
-            val simpleView = rootView.findViewById(viewId) as LinearLayout?
-            simpleView?.removeAllViews()
-            simpleView?.addView(BooleanWidgetViewBuilder(this, sheetUIContext).simpleTextView())
+            val layout = rootView.findViewById(viewId) as LinearLayout?
+            if (layout != null)
+                BooleanWidgetViewBuilder(this, sheetUIContext).updateView(layout)
         }
     }
 
@@ -2521,7 +2521,7 @@ data class StoryWidget(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var layoutViewId : Int? = null
+    var viewId : Int? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -2679,21 +2679,21 @@ data class StoryWidget(override val id : UUID,
                 }
 
                 // Update View
-                val layoutViewId = this.layoutViewId
-                if (layoutViewId == null)
-                {
-                    val viewId = part.viewId
-                    if (viewId != null) {
-                        val textView = rootView.findViewById(viewId) as TextView
-                        textView?.text = Util.doubleString(partUpdate.newNumber)
-                    }
-                }
-                else
-                {
-                    val layout = rootView.findViewById(layoutViewId) as LinearLayout
-                    layout.removeAllViews()
-                    layout.addView(storySpannableView(this, sheetUIContext))
-                }
+//                val layoutViewId = this.layoutViewId
+//                if (layoutViewId == null)
+//                {
+//                    val viewId = part.viewId
+//                    if (viewId != null) {
+//                        val textView = rootView.findViewById(viewId) as TextView
+//                        textView?.text = Util.doubleString(partUpdate.newNumber)
+//                    }
+//                }
+//                else
+//                {
+//                    val layout = rootView.findViewById(layoutViewId) as LinearLayout
+//                    layout.removeAllViews()
+//                    layout.addView(storySpannableView(this, sheetUIContext))
+//                }
             }
         }
     }
@@ -2723,21 +2723,21 @@ data class StoryWidget(override val id : UUID,
                 }
 
                 // Update View
-                val layoutViewId = this.layoutViewId
-                if (layoutViewId == null)
-                {
-                    val viewId = part.viewId
-                    if (viewId != null) {
-                        val textView = rootView.findViewById(viewId) as TextView
-                        textView?.text = newValue
-                    }
-                }
-                else
-                {
-                    val layout = rootView.findViewById(layoutViewId) as LinearLayout
-                    layout.removeAllViews()
-                    layout.addView(storySpannableView(this, sheetUIContext))
-                }
+//                val layoutViewId = this.layoutViewId
+//                if (layoutViewId == null)
+//                {
+//                    val viewId = part.viewId
+//                    if (viewId != null) {
+//                        val textView = rootView.findViewById(viewId) as TextView
+//                        textView?.text = newValue
+//                    }
+//                }
+//                else
+//                {
+//                    val layout = rootView.findViewById(layoutViewId) as LinearLayout
+//                    layout.removeAllViews()
+//                    layout.addView(storySpannableView(this, sheetUIContext))
+//                }
             }
         }
     }
@@ -2749,11 +2749,35 @@ data class StoryWidget(override val id : UUID,
 
     override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
     {
-//        this.story().mapNotNull { it.variable(sheetContext) }
-//                    .forEach { this.addVariableToState(sheetContext.sheetId, it) }
-//
-//        this.variables().forEach { this.addVariableToState(sheetContext.sheetId, it) }
+        val sheetActivity = sheetUIContext.context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+        val sheetContext = SheetContext(sheetUIContext)
+
+
+        this.variables(sheetContext).forEach {
+            Log.d("****WIDGET", "set listener: ${it.variableId()}")
+            it.setOnUpdateListener {
+                Log.d("***WIDGET", "story widget variable part updated")
+                rootView?.let {
+                    this.updateView(it, sheetUIContext)
+                }
+            }
+        }
     }
+
+
+    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    {
+        val viewId = this.viewId
+        if (viewId != null) {
+            val layout = rootView.findViewById(viewId) as LinearLayout?
+            Log.d("***WIDGET", "story widget update view")
+            if (layout != null)
+                StoryWidgetViewBuilder(this, sheetUIContext).updateView(layout)
+        }
+    }
+
+
 
 }
 

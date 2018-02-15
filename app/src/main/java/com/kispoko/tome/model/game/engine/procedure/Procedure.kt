@@ -2,6 +2,8 @@
 package com.kispoko.tome.model.game.engine.procedure
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.db.DB_ProcedureValue
 import com.kispoko.tome.db.procedureTable
 import com.kispoko.tome.lib.Factory
@@ -14,11 +16,13 @@ import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
 import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.game.engine.ProcedureDoesNotHaveUpdates
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
@@ -136,6 +140,20 @@ data class Procedure(override val id : UUID,
                   PrimValue(ProcedureUpdates(this.procedureUpdates)),
                   MaybeProdValue(this.description),
                   MaybePrimValue(this.actionLabel))
+
+
+    // -----------------------------------------------------------------------------------------
+    // PROGRAMS
+    // -----------------------------------------------------------------------------------------
+
+    fun program(sheetContext : SheetContext) : AppEff<Program> =
+        if (this.procedureUpdates.isNotEmpty()) {
+            val programId = this.procedureUpdates.first().programId
+            SheetManager.program(programId, sheetContext)
+        }
+        else {
+            effError(AppEngineError(ProcedureDoesNotHaveUpdates(this.procedureId)))
+        }
 
 
     // -----------------------------------------------------------------------------------------

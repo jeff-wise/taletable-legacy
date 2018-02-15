@@ -208,7 +208,19 @@ class SheetState(val sheetContext : SheetContext,
         }
 
 
-        // (7) Notify all current listeners of this variable
+        // (7) Create history variable
+        // -------------------------------------------------------------------------------------
+
+        when (variable)
+        {
+            is NumberVariable ->
+            {
+                this.addVariable(variable.historyVariable())
+            }
+        }
+
+
+        // (8) Notify all current listeners of this variable
         // -------------------------------------------------------------------------------------
 
         this.updateListeners(variable, UUID.randomUUID())
@@ -308,6 +320,8 @@ class SheetState(val sheetContext : SheetContext,
 
     fun updateVariableId(currentVariableId : VariableId, newVariableId : VariableId)
     {
+        // TODO update history variable as well
+
         // (1) Get Variable
         val currentVariable = this.variableById[currentVariableId]
 

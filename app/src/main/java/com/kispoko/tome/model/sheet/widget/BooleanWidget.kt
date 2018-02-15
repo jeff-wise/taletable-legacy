@@ -2,26 +2,29 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.id.textView
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.DB_WidgetBooleanFormatValue
 import com.kispoko.tome.db.widgetBooleanFormatTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
-import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.RowValue8
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.Icon
+import com.kispoko.tome.model.sheet.style.IconType
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
@@ -31,6 +34,9 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -45,7 +51,9 @@ data class BooleanWidgetFormat(override val id : UUID,
                                val trueFormat : TextFormat,
                                val falseFormat : TextFormat,
                                val trueText : TrueText,
-                               val falseText : FalseText)
+                               val falseText : FalseText,
+                               val trueIcon : Maybe<Icon>,
+                               val falseIcon : Maybe<Icon>)
                                 : ToDocument, ProdType, Serializable
 {
 
@@ -58,14 +66,18 @@ data class BooleanWidgetFormat(override val id : UUID,
                 trueFormat : TextFormat,
                 falseFormat : TextFormat,
                 trueText : TrueText,
-                falseText : FalseText)
+                falseText : FalseText,
+                trueIcon : Maybe<Icon>,
+                falseIcon : Maybe<Icon>)
         : this(UUID.randomUUID(),
                widgetFormat,
                viewType,
                trueFormat,
                falseFormat,
                trueText,
-               falseText)
+               falseText,
+               trueIcon,
+               falseIcon)
 
 
     companion object : Factory<BooleanWidgetFormat>
@@ -107,7 +119,15 @@ data class BooleanWidgetFormat(override val id : UUID,
                       // False Text
                       split(doc.maybeAt("false_text"),
                             effValue(defaultFalseText()),
-                            { FalseText.fromDocument(it) })
+                            { FalseText.fromDocument(it) }),
+                      // True Icon
+                      split(doc.maybeAt("true_icon"),
+                            effValue<ValueError,Maybe<Icon>>(Nothing()),
+                            { apply(::Just, Icon.fromDocument(it)) }),
+                      // False Icon
+                      split(doc.maybeAt("false_icon"),
+                            effValue<ValueError,Maybe<Icon>>(Nothing()),
+                            { apply(::Just, Icon.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -119,7 +139,9 @@ data class BooleanWidgetFormat(override val id : UUID,
                                             defaultTrueFormat(),
                                             defaultFalseFormat(),
                                             defaultTrueText(),
-                                            defaultFalseText())
+                                            defaultFalseText(),
+                                            Nothing(),
+                                            Nothing())
     }
 
 
@@ -155,6 +177,12 @@ data class BooleanWidgetFormat(override val id : UUID,
     fun falseText() : FalseText = this.falseText
 
 
+    fun trueIcon() : Maybe<Icon> = this.trueIcon
+
+
+    fun falseIcon() : Maybe<Icon> = this.falseIcon
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -166,13 +194,15 @@ data class BooleanWidgetFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetBooleanFormatValue =
-        RowValue6(widgetBooleanFormatTable,
+        RowValue8(widgetBooleanFormatTable,
                   ProdValue(this.widgetFormat),
                   PrimValue(this.viewType),
                   ProdValue(this.trueFormat),
                   ProdValue(this.falseFormat),
                   PrimValue(this.trueText),
-                  PrimValue(this.falseText))
+                  PrimValue(this.falseText),
+                  MaybeProdValue(this.trueIcon),
+                  MaybeProdValue(this.falseIcon))
 
 }
 
@@ -302,12 +332,22 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
     {
         val layout = WidgetView.layout(booleanWidget.widgetFormat(), sheetUIContext)
 
+        val layoutId = Util.generateViewId()
+        layout.id = layoutId
+        booleanWidget.layoutId = layoutId
+
+        this.updateView(layout)
+
+        return layout
+    }
+
+
+    fun updateView(layout : LinearLayout)
+    {
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        contentLayout.removeAllViews()
 
         val simpleView = this.simpleView()
-        val viewId = Util.generateViewId()
-        simpleView.id = viewId
-        booleanWidget.viewId = viewId
         contentLayout.addView(simpleView)
 
         layout.setOnClickListener {
@@ -315,7 +355,6 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
             SheetManager.updateSheet(sheetUIContext.sheetId, BooleanWidgetUpdateToggle(booleanWidget.id) , sheetUI)
         }
 
-        return layout
     }
 
 
@@ -323,7 +362,28 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
     {
         val layout      = this.simpleViewLayout()
 
-        layout.addView(this.simpleTextView())
+        booleanWidget.variableValue(SheetContext(sheetUIContext)) apDo { currentValue ->
+
+            val format = booleanWidget.format()
+
+            if (currentValue)
+            {
+                val trueIcon = booleanWidget.format().trueIcon()
+                when (trueIcon) {
+                    is Just -> layout.addView(this.iconView(trueIcon.value))
+                }
+            }
+            else
+            {
+                val falseIcon = booleanWidget.format().falseIcon()
+                when (falseIcon) {
+                    is Just -> layout.addView(this.iconView(falseIcon.value))
+                }
+            }
+
+            layout.addView(this.simpleTextView(currentValue))
+
+        }
 
         return layout
     }
@@ -331,16 +391,18 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
 
     fun simpleViewLayout() : LinearLayout
     {
-        val layout      = LinearLayoutBuilder()
+        val layout          = LinearLayoutBuilder()
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity      = Gravity.CENTER_VERTICAL
 
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    fun simpleTextView() : TextView
+    fun simpleTextView(currentValue : Boolean) : TextView
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -350,26 +412,18 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
         text.width          = LinearLayout.LayoutParams.WRAP_CONTENT
         text.height         = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        var valueString     = ""
-        var format          = TextFormat.default()
-        val currentValue    = booleanWidget.variableValue(SheetContext(sheetUIContext))
+        var valueString : String
+        var format : TextFormat
 
-        when (currentValue)
+        if (currentValue)
         {
-            is Val ->
-            {
-                if (currentValue.value)
-                {
-                    valueString = booleanWidget.format().trueText().value
-                    format = booleanWidget.format().trueFormat()
-                }
-                else
-                {
-                    valueString = booleanWidget.format().falseText().value
-                    format = booleanWidget.format().falseFormat()
-                }
-            }
-            is Err -> ApplicationLog.error(currentValue.error)
+            valueString = booleanWidget.format().trueText().value
+            format = booleanWidget.format().trueFormat()
+        }
+        else
+        {
+            valueString = booleanWidget.format().falseText().value
+            format = booleanWidget.format().falseFormat()
         }
 
 
@@ -384,6 +438,41 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
         text.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
 
         return text.textView(sheetUIContext.context)
+    }
+
+
+    private fun iconView(_icon : Icon) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout          = LinearLayoutBuilder()
+        val icon            = ImageViewBuilder()
+
+        val iconFormat      = _icon.iconFormat()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.paddingSpacing   = _icon.elementFormat().padding()
+        layout.marginSpacing    = _icon.elementFormat().margins()
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = iconFormat.size().width
+        icon.heightDp           = iconFormat.size().height
+
+        icon.image              = _icon.iconType().drawableResId()
+
+        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconFormat.colorTheme())
+
+        return layout.linearLayout(sheetUIContext.context)
     }
 
 

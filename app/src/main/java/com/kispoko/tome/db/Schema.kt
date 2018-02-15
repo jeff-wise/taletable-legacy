@@ -343,6 +343,22 @@ typealias DB_GroupRowFormatValue =
               MaybeProdValue<Border>>
 
 
+// ICON
+// ---------------------------------------------------------------------------------------------
+
+val iconTable =
+    Table3("icon",
+           "icon_type",
+           "element_format",
+           "icon_format")
+
+
+typealias DB_IconValue =
+    RowValue3<PrimValue<IconType>,
+              ProdValue<ElementFormat>,
+              ProdValue<IconFormat>>
+
+
 // ICON FORMAT
 // ---------------------------------------------------------------------------------------------
 
@@ -608,7 +624,7 @@ val sectionTable =
 typealias DB_SectionValue =
     RowValue3<PrimValue<SectionName>,
               CollValue<Page>,
-              PrimValue<Icon>>
+              PrimValue<IconType>>
 
 
 // SESSION
@@ -947,7 +963,7 @@ typealias DB_WidgetActionFormatValue =
               PrimValue<ActionWidgetViewType>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
-              MaybePrimValue<Icon>>
+              MaybePrimValue<IconType>>
 
 
 // WIDGET: BOOLEAN
@@ -969,21 +985,25 @@ typealias DB_WidgetBooleanValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetBooleanFormatTable =
-    Table6("widget_boolean_format",
+    Table8("widget_boolean_format",
            "widget_format",
            "view_type",
            "true_format",
            "false_format",
            "true_text",
-           "false_text")
+           "false_text",
+           "true_icon",
+           "false_icon")
 
 typealias DB_WidgetBooleanFormatValue =
-    RowValue6<ProdValue<WidgetFormat>,
+    RowValue8<ProdValue<WidgetFormat>,
               PrimValue<BooleanWidgetViewType>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
               PrimValue<TrueText>,
-              PrimValue<FalseText>>
+              PrimValue<FalseText>,
+              MaybeProdValue<Icon>,
+              MaybeProdValue<Icon>>
 
 // WIDGET: EXPANDER
 // ---------------------------------------------------------------------------------------------
@@ -1269,19 +1289,23 @@ typealias DB_WidgetPointsFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetPointsBarFormatTable =
-    Table5("widget_points_bar_format",
+    Table7("widget_points_bar_format",
+           "element_format",
            "style",
            "height",
            "limit_format",
            "current_format",
-           "counter_active_icon")
+           "counter_active_icon",
+           "counter_active_text")
 
 typealias DB_WidgetPointsBarFormatValue =
-    RowValue5<PrimValue<PointsBarStyle>,
+    RowValue7<ProdValue<ElementFormat>,
+              PrimValue<PointsBarStyle>,
               PrimValue<PointsBarHeight>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
-              MaybePrimValue<Icon>>
+              MaybePrimValue<IconType>,
+              MaybePrimValue<PointsWidgetCounterActiveText>>
 
 
 // WIDGET: QUOTE
@@ -1422,13 +1446,11 @@ typealias DB_WidgetStoryPartVariableValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetStoryPartIconTable =
-    Table2("widget_story_part_icon",
-           "icon",
-           "icon_format")
+    Table1("widget_story_part_icon",
+           "icon")
 
 typealias DB_WidgetStoryPartIconValue =
-    RowValue2<PrimValue<Icon>,
-              ProdValue<IconFormat>>
+    RowValue1<ProdValue<Icon>>
 
 
 // WIDGET: STORY > PART: ACTION
@@ -1888,6 +1910,27 @@ typealias DB_VariableNumberValue =
               PrimValue<VariableDescription>,
               PrimValue<VariableTagSet>,
               SumValue<NumberVariableValue>>
+
+
+// VARIABLE: NUMBER LIST
+// ---------------------------------------------------------------------------------------------
+
+val variableNumberListTable =
+    Table6("variable_list_number",
+           "variable_id",
+           "label",
+           "description",
+           "tags",
+           "variable_value",
+           "value_set_id")
+
+typealias DB_VariableNumberListValue =
+    RowValue6<PrimValue<VariableId>,
+              PrimValue<VariableLabel>,
+              PrimValue<VariableDescription>,
+              PrimValue<VariableTagSet>,
+              SumValue<NumberListVariableValue>,
+              MaybePrimValue<ValueSetId>>
 
 
 // VARIABLE: TEXT
