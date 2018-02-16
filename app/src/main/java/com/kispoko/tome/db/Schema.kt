@@ -490,29 +490,38 @@ typealias DB_ProgramValue =
     RowValue6<PrimValue<ProgramId>,
               PrimValue<ProgramLabel>,
               PrimValue<ProgramDescription>,
-              PrimValue<ProgramTypeSignature>,
+              ProdValue<ProgramTypeSignature>,
               CollValue<Statement>,
               PrimValue<StatementBindingName>>
+
+
+// PROGRAM PARAMETER
+// ---------------------------------------------------------------------------------------------
+
+val programParameterTable =
+    Table4("program_parameter",
+           "type",
+           "default_value",
+           "label",
+           "input_message")
+
+typealias DB_ProgramParameterValue =
+    RowValue4<PrimValue<EngineValueType>,
+              MaybeSumValue<EngineValue>,
+              PrimValue<ProgramParameterLabel>,
+              ProdValue<Message>>
 
 
 // PROGRAM TYPE SIGNATURE
 // ---------------------------------------------------------------------------------------------
 
 val programTypeSignatureTable =
-    Table6("program_type_signature",
-           "parameter1_type",
-           "parameter2_type",
-           "parameter3_type",
-           "parameter4_type",
-           "parameter5_type",
-           "result_type")
+    Table2("program_type_signature",
+           "parameters",
+           "result")
 
 typealias DB_ProgramTypeSignatureValue =
-    RowValue6<PrimValue<EngineValueType>,
-              MaybePrimValue<EngineValueType>,
-              MaybePrimValue<EngineValueType>,
-              MaybePrimValue<EngineValueType>,
-              MaybePrimValue<EngineValueType>,
+    RowValue2<CollValue<ProgramParameter>,
               PrimValue<EngineValueType>>
 
 

@@ -15,6 +15,7 @@ import android.widget.TextView
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.name
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.*
@@ -258,15 +259,14 @@ class DiceViewBuilder(val operation : DiceOperation,
         {
             this.diceView?.removeAllViews()
             val sortedEntries = this.diceCountMap.entries.sortedBy { it.key }
-            var index : Int = 0
+            var index = 0
             sortedEntries.forEach { (sides, count) ->
                 if (count != 0)
                 {
-                    if (index > 0)
-                    {
-                        Log.d("***DICEDIALOG", "adding die plus view")
+//                    if (index > 0)
+//                    {
                         this.diceView?.addView(this.diePlusView())
-                    }
+                    //}
                     this.diceView?.addView(this.dieView(sides, count))
                     index += 1
                 }
@@ -355,7 +355,7 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         layout.padding.bottomDp = 5f
@@ -394,6 +394,15 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         layout.orientation  = LinearLayout.VERTICAL
 
+        layout.backgroundColor  = Color.WHITE
+
+        layout.corners      = Corners(2.0, 2.0, 2.0, 2.0)
+
+        layout.margin.leftDp    = 3f
+        layout.margin.rightDp   = 3f
+        layout.margin.topDp    = 2f
+        layout.margin.bottomDp    = 2f
+
         return layout.linearLayout(sheetUIContext.context)
     }
 
@@ -409,12 +418,12 @@ class DiceViewBuilder(val operation : DiceOperation,
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
         name.margin.topDp       = 10f
-        name.margin.leftDp      = 12f
+        name.margin.leftDp      = 10f
 
         if (operation == DiceOperation.ADD)
-            name.text           = sheetUIContext.context.getString(R.string.add_dice).toLowerCase()
+            name.text           = sheetUIContext.context.getString(R.string.add_dice)
         else if (operation == DiceOperation.SUBTRACT)
-            name.text           = sheetUIContext.context.getString(R.string.subtract).toUpperCase()
+            name.text           = sheetUIContext.context.getString(R.string.subtract)
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
@@ -425,7 +434,7 @@ class DiceViewBuilder(val operation : DiceOperation,
                                                 TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
-        name.sizeSp             = 14f
+        name.sizeSp             = 16f
 
         return name.textView(sheetUIContext.context)
     }
@@ -434,37 +443,65 @@ class DiceViewBuilder(val operation : DiceOperation,
     // Screen Main View
     // -----------------------------------------------------------------------------------------
 
-    private fun screenMainView() : LinearLayout
+    private fun screenMainView() : RelativeLayout
     {
         val layout = this.screenMainViewLayout()
 
+        val leftLayout = this.screenLeftViewLayout()
+        layout.addView(leftLayout)
+
         // Operator
-        layout.addView(this.operatorView())
+//        leftLayout.addView(this.operatorView())
+
 
         // Dice
         val diceView = this.diceView()
         this.diceView = diceView
-        layout.addView(diceView)
+        leftLayout.addView(diceView)
 
         // Undo Button
-        layout.addView(this.undoButtonView())
+        //layout.addView(this.undoButtonView())
 
         return layout
     }
 
 
-    private fun screenMainViewLayout() : LinearLayout
+    private fun screenMainViewLayout() : RelativeLayout
     {
-        val layout              = LinearLayoutBuilder()
+        val layout              = RelativeLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.HORIZONTAL
-        layout.gravity          = Gravity.CENTER_VERTICAL
+//        layout.gravity          = Gravity.CENTER_VERTICAL
+
+//        val bgColorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+//        layout.backgroundColor         = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
+//        layout.padding.leftDp   = 10f
+
+        return layout.relativeLayout(sheetUIContext.context)
+    }
+
+
+    private fun screenLeftViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+        layout.gravity          = Gravity.BOTTOM
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+//        layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -481,10 +518,10 @@ class DiceViewBuilder(val operation : DiceOperation,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width        = 0
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight       = 1f
 
+        layout.layoutGravity  = Gravity.BOTTOM
         layout.gravity      = Gravity.CENTER
 
         layout.child(icon)
@@ -519,6 +556,8 @@ class DiceViewBuilder(val operation : DiceOperation,
     {
         val layout = this.diceViewLayout()
 
+        layout.addView(this.chooseDiceTextView())
+
         return layout
     }
 
@@ -549,8 +588,34 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         die.color               = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        die.font                = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Regular,
+                                                sheetUIContext.context)
+
+        die.sizeSp              = 30f
+
+        return die.textView(sheetUIContext.context)
+    }
+
+
+    private fun chooseDiceTextView() : TextView
+    {
+        val die                 = TextViewBuilder()
+
+        die.layoutType          = LayoutType.FLEXBOX
+        die.width               = FlexboxLayout.LayoutParams.WRAP_CONTENT
+        die.height              = FlexboxLayout.LayoutParams.WRAP_CONTENT
+
+        die.text                = "Choose dice\u2026"
+
+//        val colorTheme  = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_26"))))
+//        die.color               = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        die.color               = Color.WHITE
 
         die.font                = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
@@ -614,15 +679,19 @@ class DiceViewBuilder(val operation : DiceOperation,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.topDp    = 12f
-        layout.padding.bottomDp = 12f
+        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+//        layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+
+//        layout.padding.topDp    = 12f
+//        layout.padding.bottomDp = 12f
         layout.padding.leftDp   = 12f
-        layout.padding.rightDp  = 12f
+//        layout.padding.rightDp  = 12f
 
-        layout.gravity          = Gravity.CENTER
+//        layout.gravity          = Gravity.CENTER
 
         layout.margin.rightDp   = 10f
 
@@ -706,10 +775,11 @@ class DiceViewBuilder(val operation : DiceOperation,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         dice.color              = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        dice.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+//        dice.backgroundColor    = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        dice.backgroundColor    = Color.WHITE
 
         dice.corners            = Corners(2.0, 2.0, 2.0, 2.0)
 
@@ -849,8 +919,8 @@ class DiceViewBuilder(val operation : DiceOperation,
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
+        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 1f
 
         layout.child(icon)
               .child(label)
@@ -929,8 +999,8 @@ class DiceViewBuilder(val operation : DiceOperation,
             }
         }
 
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
+        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 1f
 
         layout.child(icon)
              .child(label)

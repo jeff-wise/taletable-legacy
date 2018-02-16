@@ -7,19 +7,22 @@ import com.kispoko.tome.app.AppEvalError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.game.engine.interpreter.ResultBindingDoesNotExist
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
 import maybe.Nothing
@@ -146,7 +149,7 @@ data class Program(override val id : UUID,
         RowValue6(programTable, PrimValue(this.programId),
                                 PrimValue(this.label),
                                 PrimValue(this.description),
-                                PrimValue(this.typeSignature),
+                                ProdValue(this.typeSignature),
                                 CollValue(this.statements),
                                 PrimValue(this.resultBindingName))
 
@@ -202,120 +205,6 @@ data class Program(override val id : UUID,
 
 
 }
-
-
-/**
- * Program Type Signature
- */
-//data class ProgramTypeSignature(override val id : UUID,
-//                                val parameterTypes : List<EngineValueType>)
-//                                : ToDocument, SQLSerializable
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(parameterTypes : List<EngineValueType>)
-//        : this(UUID.randomUUID(),
-//               parameterTypes)
-//
-//
-//    companion object : Factory<ProgramTypeSignature>
-//    {
-//        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramTypeSignature> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                apply(::ProgramTypeSignature,
-//                      // Parameter 1 Type
-//                      doc.at("parameter1_type") ap { EngineValueType.fromDocument(it) },
-//                      // Parameter 2 Type
-//                      split(doc.maybeAt("parameter2_type"),
-//                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-//                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
-//                      // Parameter 3 Type
-//                      split(doc.maybeAt("parameter3_type"),
-//                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-//                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
-//                      // Parameter 4 Type
-//                      split(doc.maybeAt("parameter4_type"),
-//                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-//                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
-//                      // Parameter 5 Type
-//                      split(doc.maybeAt("parameter5_type"),
-//                            effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
-//                            { effApply(::Just, EngineValueType.fromDocument(it)) }),
-//                      // Result Type
-//                      doc.at("result_type") ap { EngineValueType.fromDocument(it) }
-//                      )
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//            "parameter1_type" to this.parameter1Type().toDocument(),
-//            "result_type" to this.resultType().toDocument()
-//    ))
-//    .maybeMerge(this.parameter2Type().apply {
-//        Just(Pair("parameter2_type", it.toDocument())) })
-//    .maybeMerge(this.parameter3Type().apply {
-//        Just(Pair("parameter3_type", it.toDocument())) })
-//    .maybeMerge(this.parameter4Type().apply {
-//        Just(Pair("parameter4_type", it.toDocument())) })
-//    .maybeMerge(this.parameter5Type().apply {
-//        Just(Pair("parameter5_type", it.toDocument())) })
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun parameter1Type() : EngineValueType = this.parameter1Type
-//
-//
-//    fun parameter2Type() : Maybe<EngineValueType> = this.parameter2Type
-//
-//
-//    fun parameter3Type() : Maybe<EngineValueType> = this.parameter3Type
-//
-//
-//    fun parameter4Type() : Maybe<EngineValueType> = this.parameter4Type
-//
-//
-//    fun parameter5Type() : Maybe<EngineValueType> = this.parameter5Type
-//
-//
-//    fun resultType() : EngineValueType = this.resultType
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_ProgramTypeSignatureValue =
-//        RowValue6(programTypeSignatureTable,
-//                  PrimValue(this.parameter1Type),
-//                  MaybePrimValue(this.parameter2Type),
-//                  MaybePrimValue(this.parameter3Type),
-//                  MaybePrimValue(this.parameter4Type),
-//                  MaybePrimValue(this.parameter5Type),
-//                  PrimValue(this.resultType))
-//
-//}
 
 
 /**
@@ -403,7 +292,7 @@ data class ProgramDescription(val value : String) : ToDocument, SQLSerializable,
 
     companion object : Factory<ProgramDescription>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramDescription> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramDescription> = when (doc)
         {
             is DocText -> effValue(ProgramDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -485,7 +374,7 @@ data class ProgramParameters(val parameters : List<DataReference>)
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this) })
 
 }
 
@@ -493,30 +382,36 @@ data class ProgramParameters(val parameters : List<DataReference>)
 /**
  * Program Parameters
  */
-data class ProgramTypeSignature(val parameterTypes : List<EngineValueType>,
-                                val resultType : EngineValueType)
-                : SQLSerializable, Serializable
+data class ProgramTypeSignature(override val id : UUID,
+                                val parameters : List<ProgramParameter>,
+                                val result : EngineValueType)
+                                 : ProdType, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(parameters : List<ProgramParameter>,
+                resultType : EngineValueType)
+        : this(UUID.randomUUID(),
+               parameters,
+               resultType)
+
+
     companion object : Factory<ProgramTypeSignature>
     {
-
-        // TODO do culebra example
         override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramTypeSignature> = when (doc)
         {
             is DocDict ->
             {
                 apply(::ProgramTypeSignature,
-                      // Parameter Types
-                      split(doc.maybeList("parameter_types"),
+                      // Parameters
+                      split(doc.maybeList("parameters"),
                             effValue(listOf()),
-                            { it.map { EngineValueType.fromDocument(it) } }),
-                              // Result Type
-                      doc.at("result_type") ap { EngineValueType.fromDocument(it) }
+                            { it.map { ProgramParameter.fromDocument(it) } }),
+                      // Result
+                      doc.at("result") ap { EngineValueType.fromDocument(it) }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -525,10 +420,39 @@ data class ProgramTypeSignature(val parameterTypes : List<EngineValueType>,
 
 
     // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
+    // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+    override fun toDocument() = DocDict(mapOf(
+        "parameters" to DocList(this.parameters().map { it.toDocument() }),
+        "result" to this.result().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun parameters() : List<ProgramParameter> = this.parameters
+
+
+    fun result() : EngineValueType = this.result
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_ProgramTypeSignatureValue =
+        RowValue2(programTypeSignatureTable,
+                  CollValue(this.parameters),
+                  PrimValue(this.result))
 
 }
 
@@ -560,4 +484,136 @@ data class ProgramParameterValues(val values : List<EngineValue>)
 
 }
 
+
+/**
+ * Program Parameter
+ */
+data class ProgramParameter(override val id : UUID,
+                            val parameterType : EngineValueType,
+                            val defaultValue : Maybe<EngineValue>,
+                            val label : ProgramParameterLabel,
+                            val inputMessage : Message)
+                             : ToDocument, ProdType, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(parameterType : EngineValueType,
+                defaultValue : Maybe<EngineValue>,
+                label : ProgramParameterLabel,
+                inputMessage : Message)
+        : this(UUID.randomUUID(),
+               parameterType,
+               defaultValue,
+               label,
+               inputMessage)
+
+
+    companion object : Factory<ProgramParameter>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramParameter> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ProgramParameter,
+                      // Parameter Type
+                      doc.at("type") ap { EngineValueType.fromDocument(it) },
+                      // Default Value
+                      split(doc.maybeAt("default_value"),
+                            effValue<ValueError,Maybe<EngineValue>>(Nothing()),
+                            { apply(::Just, EngineValue.fromDocument(it)) }),
+                      // Label
+                      doc.at("label") ap { ProgramParameterLabel.fromDocument(it) },
+                      // Input Message
+                      doc.at("input_message") ap { Message.fromDocument(it) }
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "type" to this.parameterType().toDocument(),
+        "label" to this.label().toDocument(),
+        "input_message" to this.inputMessage().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun parameterType() : EngineValueType = this.parameterType
+
+
+    fun label() : ProgramParameterLabel = this.label
+
+
+    fun defaultValue() : Maybe<EngineValue> = this.defaultValue
+
+
+    fun inputMessage() : Message = this.inputMessage
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_ProgramParameterValue =
+        RowValue4(programParameterTable,
+                  PrimValue(this.parameterType),
+                  MaybeSumValue(this.defaultValue),
+                  PrimValue(this.label),
+                  ProdValue(this.inputMessage))
+
+}
+
+
+/**
+ * Program Parameter Label
+ */
+data class ProgramParameterLabel(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ProgramParameterLabel>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramParameterLabel> = when (doc)
+        {
+            is DocText -> effValue(ProgramParameterLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
 

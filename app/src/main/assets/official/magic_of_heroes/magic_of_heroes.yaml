@@ -112,27 +112,52 @@ engine:
         value_text:
           value_id: trait_1
           description: Trait 1
-          value: Trait 1
+          value: I will do almost anything to impress someone. I drink in attention as generously as I drink my wine.
       - type: value_text
         value_text:
           value_id: trait_2
           description: Trait 2
-          value: Trait 2
+          value: I believe the way to handle most situations is to dive in head first (metaphorically and literally).
       - type: value_text
         value_text:
           value_id: trait_3
           description: Trait 3
-          value: Trait 3
+          value: The world is full of damsels in distress, and I would duel a thousand scoundrels to save them.
       - type: value_text
         value_text:
           value_id: trait_4
           description: Trait 4
-          value: Trait 4
+          value: The tip of my sword is sharper than my wit, and it hasn't failed me yet.
       - type: value_text
         value_text:
           value_id: trait_5
           description: Trait 5
-          value: Trait 5
+          value: Life can be pretty dark, so I always try to brighten it with humor.
+      - type: value_text
+        value_text:
+          value_id: trait_6
+          description: Trait 6
+          value: I live my life without boundaries. I go where I want, I do what I want, and I want it all.
+      - type: value_text
+        value_text:
+          value_id: trait_7
+          description: Trait 7
+          value: I'm not afraid of anything except for others thinking that I am afraid of something.
+      - type: value_text
+        value_text:
+          value_id: trait_8
+          description: Trait 8
+          value: Life is a boat without oars. I might find a beach, or I might find a waterfall. Doesn't matter to me.
+      - type: value_text
+        value_text:
+          value_id: trait_9
+          description: Trait 9
+          value: Society is failing us as corruption rots the bureaucracy and nobility. We have to do something.
+      - type: value_text
+        value_text:
+          value_id: trait_10
+          description: Trait 10
+          value: I don't appreciate distractions when there is important work to be done.
   - type: value_set_base
     value_set_base:
       value_set_id: swashbuckler_ideals
@@ -145,27 +170,27 @@ engine:
         value_text:
           value_id: ideal_1
           description: Ideal 1
-          value: Ideal 1
+          value: 'Chivalry. I always put others before my self, and often go out of my way to do so.'
       - type: value_text
         value_text:
           value_id: ideal_2
           description: Ideal 2
-          value: Ideal 2
+          value: 'Revolution. The world suffers from corruption. We must raze the foundations of society to grow a better world.'
       - type: value_text
         value_text:
           value_id: ideal_3
           description: Ideal 3
-          value: Ideal 3
+          value: 'Exploration. Only through new experiences and diverse relationships can one gain a new perspective.'
       - type: value_text
         value_text:
           value_id: ideal_4
           description: Ideal 4
-          value: Ideal 4
+          value: 'Flamboyance. Self-expression is a celebration of life and the path to happiness for you and your peers.'
       - type: value_text
         value_text:
           value_id: ideal_5
           description: Ideal 5
-          value: Ideal 5
+          value: 'Justice. I believe in equal opportunity for everyone, and I have no problem'
       - type: value_text
         value_text:
           value_id: ideal_6
@@ -3824,8 +3849,7 @@ engine:
               id: armor_chain_shirt_armor_bonus
               label: Chain Shirt Armor Bonus
               description: The bonus to armor class from wearing a Chain Shirt.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 13
@@ -3854,8 +3878,7 @@ engine:
               id: armor_scale_mail_armor_bonus
               label: Scale Mail Armor Bonus
               description: The bonus to armor class from wearing Scale Mail.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 14
@@ -3884,8 +3907,7 @@ engine:
               id: armor_breastplate_armor_bonus
               label: Breastplate Armor Bonus
               description: The bonus to armor class from wearing Breastplate.
-              tags:
-              - armor
+              relation: armor_bonus
               relation: weight
               value:
                 type: number_literal
@@ -3914,8 +3936,7 @@ engine:
               id: armor_halfplate_armor_bonus
               label: Half Plate Armor Bonus
               description: The bonus to armor class from wearing Half Plate.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 15
@@ -3952,9 +3973,7 @@ engine:
               id: armor_ring_mail_armor_bonus
               label: Ring Mail Armor Bonus
               description: The bonus to armor class from wearing Ring Mail.
-              tags:
-              - armor
-              relation: weight
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 14
@@ -3983,9 +4002,7 @@ engine:
               id: armor_chain_mail_weight
               label: Chain Mail Weight
               description: The weight of Chain Mail.
-              tags:
-              - carried_item_weight
-              relation: weight
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 55
@@ -4012,8 +4029,7 @@ engine:
               id: armor_splint_armor_bonus
               label: Splint Armor Bonus
               description: The bonus to armor class from wearing Splint.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 17
@@ -4042,8 +4058,7 @@ engine:
               id: armor_plate_armor_bonus
               label: Plate Armor Bonus
               description: The bonus to armor class from wearing Plate.
-              tags:
-              - armor
+              relation: armor_bonus
               value:
                 type: number_literal
                 number_literal: 18
@@ -4072,6 +4087,15 @@ engine:
           description: 'Shield'
           value: Shield
           variables:
+          - type: variable_number
+            variable_number:
+              id: shield_armor_bonus
+              label: Shield Armor Bonus
+              description: The bonus to armor class from using a shield.
+              relation: armor_bonus
+              value:
+                type: number_literal
+                number_literal: 2
           - type: variable_number
             variable_number:
               id: shield_weight
@@ -5571,9 +5595,12 @@ engine:
     label: Ability Modifier
     description: Calcuates the ability modifier of an ability score.
     type_signature:
-      parameter_types:
-      - number
-      result_type: number
+      parameters:
+      - type: number
+        label: Ability Score
+        input_message:
+          template: Ability Score
+      result: number
     statements:
     - binding_name: result
       function_id: ability_modifier
@@ -5585,7 +5612,7 @@ engine:
     label: Background Personality Trait Value Set Id
     description: The peronality trait value set for a background.
     type_signature:
-      result_type: text
+      result: text
     statements:
     - binding_name: result
       function_id: background_personality_trait_value_set_id
@@ -5603,7 +5630,7 @@ engine:
     label: Background Ideal Value Set Id
     description: The ideal value set for a background.
     type_signature:
-      result_type: text
+      result: text
     statements:
     - binding_name: result
       function_id: background_ideal_value_set_id
@@ -5621,7 +5648,7 @@ engine:
     label: Background Bond Value Set Id
     description: The bond value set for a background.
     type_signature:
-      result_type: text
+      result: text
     statements:
     - binding_name: result
       function_id: background_bond_value_set_id
@@ -5639,7 +5666,7 @@ engine:
     label: Background Flaw Value Set Id
     description: The flaw value set for a background.
     type_signature:
-      result_type: text
+      result: text
     statements:
     - binding_name: result
       function_id: background_flaw_value_set_id
@@ -5657,9 +5684,12 @@ engine:
     label: Proficency Bonus
     description: Calcuates the proficiency bonus base on the current level.
     type_signature:
-      parameter_types:
-      - number
-      result_type: number
+      parameters:
+      - type: number
+        label: Level
+        input_message:
+          template: Level
+      result: number
     statements:
     - binding_name: result
       function_id: proficiency_bonus
@@ -5671,9 +5701,12 @@ engine:
     label: Hit Die
     description: The hit die by class.
     type_signature:
-      parameter_types:
-      - text
-      result_type: dice_roll
+      parameters:
+      - type: text
+        label: Class
+        input_message:
+          template: Class
+      result: dice_roll
     statements:
     - binding_name: result
       function_id: hit_die_by_class
@@ -5691,18 +5724,19 @@ engine:
     label: Hit Dice to Hit Points
     description: Hit Dice to Hit Points
     type_signature:
-      parameter_types:
-      - number
-      result_type: number
+      parameters:
+      - type: number
+        label: Hit Dice
+        input_message:
+          template: Hit Dice
+      result: number
     statements:
     result_binding_name: result
   - program_id: add_second_wind_hit_points
     label: Add Second Wind Hit Points
     description: Add second wind hit points
     type_signature:
-      parameter_types:
-      - number
-      result_type: number
+      result: number
     statements:
     - binding_name: roll_result
       function_id: dice_roll
@@ -5744,7 +5778,7 @@ engine:
     label: Inactivate Second Wind
     description: Inactivate Second Wind
     type_signature:
-      result_type: boolean
+      result: boolean
     statements:
     - binding_name: result
       function_id: falsify
@@ -5766,7 +5800,7 @@ engine:
       - current_hit_points
       program_id: hit_dice_to_hit_points
     description:
-      template: 'I spend at least one hour doing non-strenuous activity. I may then spend hit dice to heal myself.'
+      template: 'I spend at least one hour doing non-strenuous activity.'
       variable_ids:
       - 'level'
     action_label: 'Take Short Rest'
@@ -7014,14 +7048,11 @@ engine:
         variable_tag: armor
         value_relation: armor_bonus
         filter_relation: is_equipped
-    - type: summation_term_number
-      summation_term_number:
-        term_name: Shield
-        value:
+        default_value:
           type: variable_reference
           variable_reference:
-            type: variable_tag
-            variable_tag: shield
+            type: variable_id
+            variable_id: base_armor_class
   - summation_id: passive_perception
     summation_name: Passive Perception
     terms:

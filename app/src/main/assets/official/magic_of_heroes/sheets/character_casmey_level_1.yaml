@@ -836,6 +836,14 @@ variables:
       summation_id: armor_class
 - type: variable_number
   variable_number:
+    id: base_armor_class
+    label: Base Armor Class
+    description: Base Armor Class
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
     id: passive_perception
     label: Passive Perception
     description: Passive Perception
@@ -3643,13 +3651,15 @@ sections:
             id: background_personality_trait_1
             format:
               value_format:
+                element_format:
+                  horizontal_alignment: left
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_12
-                font_style: medium
+                font_style: regular
                 size: 17
               widget_format:
                 element_format:
@@ -3672,13 +3682,15 @@ sections:
             id: background_personality_trait_2
             format:
               value_format:
+                element_format:
+                  horizontal_alignment: left
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_12
-                font_style: medium
+                font_style: regular
                 size: 17
               widget_format:
                 element_format:
@@ -3737,6 +3749,8 @@ sections:
             id: background_ideal
             format:
               value_format:
+                element_format:
+                  horizontal_alignment: left
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -3802,6 +3816,8 @@ sections:
             id: background_bond
             format:
               value_format:
+                element_format:
+                  horizontal_alignment: left
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -3868,6 +3884,8 @@ sections:
             id: background_flaw
             format:
               value_format:
+                element_format:
+                  horizontal_alignment: left
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -14125,10 +14143,32 @@ sections:
                     value_reference:
                       value_set_id:
                         type: text_literal
-                        text_literal: light_armor
+                        text_literal: armor_and_shields
                       value_id:
                         type: text_literal
                         text_literal: leather
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  variable_value:
+                    type: number_literal
+                    number_literal: 1
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  variable_value:
+                    type: boolean_literal
+                    boolean_literal: true
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  variable_value:
+                    type: value_reference
+                    value_reference:
+                      value_set_id:
+                        type: text_literal
+                        text_literal: armor_and_shields
+                      value_id:
+                        type: text_literal
+                        text_literal: shield
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:

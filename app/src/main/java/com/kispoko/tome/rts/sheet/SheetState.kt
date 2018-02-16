@@ -410,6 +410,15 @@ class SheetState(val sheetContext : SheetContext,
 //            }
 //        }
 
+        val companionVariables = variable.companionVariables(sheetContext)
+        when (companionVariables)
+        {
+            is Val -> companionVariables.value.forEach { this.addVariable(it, variable)
+            }
+            is Err -> ApplicationLog.error(companionVariables.error)
+        }
+
+
         this.updateListeners(variable, UUID.randomUUID())
     }
 
@@ -520,7 +529,7 @@ class SheetState(val sheetContext : SheetContext,
             is EngineValueText ->
             {
                 this.textVariableWithId(variableId) apDo { textVar ->
-                    textVar.updateValue(engineValue.value, sheetContext.sheetId)
+                    textVar.updateValue(engineValue.value, sheetContext)
                 }
             }
         }

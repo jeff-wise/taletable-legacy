@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.dice
 
 
+import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -176,9 +177,12 @@ data class DiceRoll(override val id : UUID,
 
     fun addModifier(modifier : RollModifier) : DiceRoll
     {
-        val modifiers = this.modifiers().plusElement(modifier)
+//        val modifiers = this.modifiers().plusElement(modifier)
+//
+//        return DiceRoll(this.quantities(), modifiers)
 
-        return DiceRoll(this.quantities(), modifiers)
+        this.modifiers.add(modifier)
+        return this
     }
 
 

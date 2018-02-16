@@ -2714,7 +2714,7 @@ data class StoryWidget(override val id : UUID,
                 var newValue : String? = null
                 when (variable) {
                     is TextVariable -> {
-                        variable.updateValue(partUpdate.newValueId.value, sheetUIContext.sheetId)
+                        variable.updateValue(partUpdate.newValueId.value, sheetContext)
                         val updatedValue = variable.value(sheetContext)
                         when (updatedValue) {
                             is Val -> newValue = maybeValue("", updatedValue.value)
@@ -3120,7 +3120,7 @@ data class TableWidget(override val id : UUID,
             is Val ->
             {
                 val textVariable = variable.value
-                textVariable.updateValue(cellUpdate.newValueId.value, sheetContext.sheetId)
+                textVariable.updateValue(cellUpdate.newValueId.value, sheetContext)
                 val updatedValue = textVariable.value(sheetContext)
                 when (updatedValue) {
                     is Val -> newValue = maybeValue("", updatedValue.value)
@@ -3228,7 +3228,6 @@ data class TableWidget(override val id : UUID,
         }
         SheetManager.addVariable(sheetUIContext.sheetId, variable)
         booleanCell.variableId = variableId
-//        booleanCell.namespace = namespace
 
         return variable
     }
@@ -3256,7 +3255,6 @@ data class TableWidget(override val id : UUID,
         }
         SheetManager.addVariable(sheetUIContext.sheetId, variable)
         numberCell.variableId = variableId
-//        numberCell.namespace = namespace
 
         return variable
     }
@@ -3277,20 +3275,13 @@ data class TableWidget(override val id : UUID,
                                     column.variableRelation(),
                                     textCell.variableValue())
 
-        // Add relations
-
-//        this.rows()[rowIndex].cells().forEach { cell ->
-//        }
-
-
         variable.addTags(column.tags().toSet())
-//
+
         variable.setOnUpdateListener {
             textCell.updateView(sheetUIContext)
         }
         SheetManager.addVariable(sheetUIContext.sheetId, variable)
         textCell.variableId = variableId
-//        textCell.namespace = namespace
 
         return variable
     }
@@ -3298,10 +3289,6 @@ data class TableWidget(override val id : UUID,
 
     private fun cellVariableId(variablePrefix : String,
                                rowIndex : Int) : VariableId =
-                               //namespace : VariableNamespace?) : VariableId =
-//        if (namespace != null)
-//            VariableId(namespace, VariableName(variablePrefix))
-//        else
             VariableId(variablePrefix + "_row_" + rowIndex.toString())
 
 
@@ -3391,7 +3378,7 @@ data class TableWidget(override val id : UUID,
                     val relation = jVar.relation()
                     when (relation) {
                         is Just -> {
-                            iVar.addRelation(relation.value, jVar.variableId(), SheetContext(sheetUIContext))
+                            iVar.setRelation(relation.value, jVar.variableId(), SheetContext(sheetUIContext))
 
 
 //                            when (jVar) {
@@ -3589,7 +3576,7 @@ data class TextWidget(override val id : UUID,
     {
         val textVariable = this.valueVariable(sheetContext)
         when (textVariable) {
-            is Val -> textVariable.value.updateValue(newText, sheetContext.sheetId)
+            is Val -> textVariable.value.updateValue(newText, sheetContext)
             is Err -> ApplicationLog.error(textVariable.error)
         }
     }

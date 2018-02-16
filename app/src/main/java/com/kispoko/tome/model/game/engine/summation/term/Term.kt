@@ -3,7 +3,6 @@ package com.kispoko.tome.model.game.engine.summation.term
 
 
 import android.util.Log
-import com.kispoko.tome.R.string.variable
 import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -17,7 +16,6 @@ import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -25,7 +23,6 @@ import effect.Err
 import effect.Val
 import maybe.*
 import lulo.document.*
-import lulo.schema.Prim
 import lulo.value.*
 import lulo.value.UnexpectedType
 import org.apache.commons.lang3.SerializationUtils
@@ -213,7 +210,8 @@ data class SummationTermLinearCombination(
                             val variableTag : VariableTag,
                             val valueRelation : Maybe<VariableRelation>,
                             val weightRelation : Maybe<VariableRelation>,
-                            val filterRelation : Maybe<VariableRelation>)
+                            val filterRelation : Maybe<VariableRelation>,
+                            val defaultValue : Maybe<NumberReference>)
                              : SummationTerm(termName)
 {
 
@@ -225,13 +223,15 @@ data class SummationTermLinearCombination(
                 variableTag : VariableTag,
                 valueRelation : Maybe<VariableRelation>,
                 weightRelation : Maybe<VariableRelation>,
-                filterRelation : Maybe<VariableRelation>)
+                filterRelation : Maybe<VariableRelation>,
+                defaultValue : Maybe<NumberReference>)
         : this(UUID.randomUUID(),
                termName,
                variableTag,
                valueRelation,
                weightRelation,
-               filterRelation)
+               filterRelation,
+               defaultValue)
 
 
     companion object : Factory<SummationTerm>
@@ -258,7 +258,12 @@ data class SummationTermLinearCombination(
                       // Filter Relation
                       split(doc.maybeAt("filter_relation"),
                             effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
-                            { apply(::Just, VariableRelation.fromDocument(it)) }))
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
+                      // Default Value
+                      split(doc.maybeAt("default_value"),
+                            effValue<ValueError,Maybe<NumberReference>>(Nothing()),
+                            { apply(::Just, NumberReference.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -285,6 +290,12 @@ data class SummationTermLinearCombination(
 
 
     fun weightRelation() = this.weightRelation
+
+
+    fun filterRelation() : Maybe<VariableRelation> = this.filterRelation
+
+
+    fun defaultValueReference() : Maybe<NumberReference> = this.defaultValue
 
 
     // -----------------------------------------------------------------------------------------
@@ -431,6 +442,21 @@ data class SummationTermLinearCombination(
                     } } }
                 }
 
+                // Add default variable if not variables currently match tag
+                if (sum == 0.0) {
+                    when (this.defaultValue) {
+                        is Just -> {
+                            SheetData.number(sheetContext, this.defaultValue.value) apDo {
+                                when (it) {
+                                    is Just -> {
+                                        sum += it.value
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 return Just(sum)
 
             }
@@ -446,14 +472,12 @@ data class SummationTermLinearCombination(
         val variablesEff = SheetManager.sheetState(sheetContext.sheetId)
                                        .apply { it.variablesWithTag(this.variableTag()) }
 
-        Log.d("***TERM", "linear combination summary")
-
         when (variablesEff)
         {
             is Val ->
             {
                 val variables = variablesEff.value
-                Log.d("***TERM", "found variables: ${variables}")
+                Log.d("***TERM", "linear combination variables: $variables")
                 var components : MutableList<TermComponent> = mutableListOf()
 
                 variables.forEach { variable ->
@@ -479,9 +503,20 @@ data class SummationTermLinearCombination(
                         }
                     } } } }
 
+                    Log.d("***TERM", "component: $x")
+
                     when (x) {
                         is Val -> components.add(x.value)
                         is Err -> ApplicationLog.error(x.error)
+                    }
+                }
+
+                // Add default variable if not variables currently match tag
+                if (components.isEmpty()) {
+                    when (this.defaultValue) {
+                        is Just -> {
+                            components.addAll(this.defaultValue.value.components(sheetContext))
+                        }
                     }
                 }
 

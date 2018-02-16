@@ -7,6 +7,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,6 +19,7 @@ import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
+import com.kispoko.tome.model.game.engine.program.ProgramParameter
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -173,13 +177,13 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
     val sheetContext = SheetContext(sheetUIContext)
 
-    val parameterTypes : MutableList<EngineValueType> = mutableListOf()
+    val parameters : MutableList<ProgramParameter> = mutableListOf()
 
     init {
         val program = procedure.program(sheetContext)
         when (program) {
             is Val -> {
-                this.parameterTypes.addAll(program.value.typeSignature().parameterTypes)
+                this.parameters.addAll(program.value.typeSignature().parameters())
             }
         }
     }
@@ -210,10 +214,10 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
+        layout.backgroundColor  = Color.WHITE
 
         layout.padding.topDp    = 10f
         layout.padding.bottomDp = 12f
@@ -235,6 +239,8 @@ class ProcedureViewBuilder(val procedure : Procedure,
         val layout      = this.descriptionViewLayout()
 
         layout.addView(this.descriptionTextView())
+
+        layout.addView(this.parametersView())
 
         layout.addView(this.descriptionFooterView())
 
@@ -406,4 +412,133 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         return layout.linearLayout(sheetUIContext.context)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // PARAMETERS
+    // -----------------------------------------------------------------------------------------
+
+    private fun parametersView() : LinearLayout
+    {
+        val layout  = this.parametersViewLayout()
+
+//        this.parameters.forEach {
+//            layout.addView(this.parameterView(it))
+//        }
+
+        return layout
+    }
+
+
+
+    private fun parametersViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+
+
+
+    private fun parameterView() : LinearLayout
+    {
+        val layout  = this.parameterViewLayout()
+
+        return layout
+    }
+
+
+    private fun parameterViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        return layout.linearLayout(sheetUIContext.context)
+    }
+//
+//
+//
+//    private fun parameterSpannableString(description : String,
+//                                         valueStrings : List<String>) : SpannableStringBuilder
+//    {
+//        val builder = SpannableStringBuilder()
+//        var currentIndex = 0
+//
+//        val parts = description.split("$$$")
+//        val part1 : String = parts[0]
+//
+//        // > Part 1
+//        builder.append(part1)
+//
+//        this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+//            builder.setSpan(it, 0, part1.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+//        }
+//
+//        currentIndex += part1.length
+//
+//        val items = valueStrings.take(valueStrings.size - 1)
+//        val lastItem = valueStrings.elementAt(valueStrings.size - 1)
+//
+//        // > Items
+//        items.forEach { item ->
+//            builder.append(item)
+//
+//            this.formatSpans(listWidget.format().itemFormat()).forEach {
+//                builder.setSpan(it, currentIndex, currentIndex + item.length, SPAN_INCLUSIVE_EXCLUSIVE)
+//            }
+//
+//            currentIndex += item.length
+//
+//            if (items.size > 1) {
+//                builder.append(", ")
+//
+//                this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+//                    builder.setSpan(it, currentIndex, currentIndex + 2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+//                }
+//
+//                currentIndex += 2
+//            }
+//        }
+//
+//        if (items.size == 1)
+//        {
+//            builder.append(" and ")
+//
+//            this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+//                builder.setSpan(it, currentIndex, currentIndex + 5, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+//            }
+//
+//            currentIndex += 5
+//        }
+//        else if (items.size > 1)
+//        {
+//            builder.append("and ")
+//
+//            this.formatSpans(listWidget.format().descriptionFormat()).forEach {
+//                builder.setSpan(it, currentIndex, currentIndex + 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+//            }
+//
+//            currentIndex += 4
+//
+//        }
+//
+//        builder.append(lastItem)
+//
+//        this.formatSpans(listWidget.format().itemFormat()).forEach {
+//            builder.setSpan(it, currentIndex, currentIndex + lastItem.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+//        }
+//
+//        return builder
+//    }
+
+
 }

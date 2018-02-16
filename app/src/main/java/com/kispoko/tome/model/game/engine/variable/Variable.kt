@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import com.kispoko.tome.R.string.variables
 import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -106,7 +107,10 @@ sealed class Variable : ProdType, ToDocument, Serializable
         maybe(this.relationToVariableId[relation])
 
 
-    fun addRelation(relation : VariableRelation, variableId: VariableId, sheetContext : SheetContext) {
+    fun setRelation(relation : VariableRelation,
+                    variableId : VariableId,
+                    sheetContext : SheetContext)
+    {
         this.relationToVariableId.put(relation, variableId)
 
         SheetManager.sheetState(sheetContext.sheetId) apDo {
@@ -418,7 +422,7 @@ data class BooleanVariable(override val id : UUID,
         when (rel)
         {
             is Just -> {
-                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
             }
         }
     }
@@ -779,7 +783,7 @@ data class NumberVariable(override val id : UUID,
         when (rel)
         {
             is Just -> {
-                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
             }
         }
     }
@@ -1039,7 +1043,7 @@ data class NumberListVariable(override val id : UUID,
         when (rel)
         {
             is Just -> {
-                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
             }
         }
     }
@@ -1232,7 +1236,7 @@ data class TextVariable(override val id : UUID,
         when (rel)
         {
             is Just -> {
-                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
             }
         }
     }
@@ -1279,7 +1283,7 @@ data class TextVariable(override val id : UUID,
 //    }
 
 
-    fun updateValue(value : String, sheetId : SheetId)
+    fun updateValue(value : String, sheetContext : SheetContext)
     {
         val currentVariableValue = this.variableValue()
         when (currentVariableValue)
@@ -1287,14 +1291,15 @@ data class TextVariable(override val id : UUID,
             is TextVariableLiteralValue ->
             {
                 this.variableValue = TextVariableLiteralValue(value)
-                SheetManager.onVariableUpdate(sheetId, this)
+                SheetManager.onVariableUpdate(sheetContext.sheetId, this)
                 this.onUpdate()
             }
             is TextVariableValueValue -> {
                 val valueSetId = currentVariableValue.valueReference.valueSetId
                 val newValueReference = ValueReference(valueSetId, TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
-                SheetManager.onVariableUpdate(sheetId, this)
+//                this.updateRelations(sheetContext)
+                SheetManager.onVariableUpdate(sheetContext.sheetId, this)
                 this.onUpdate()
             }
             is TextVariableValueUnknownValue -> {
@@ -1302,10 +1307,32 @@ data class TextVariable(override val id : UUID,
                 val newValueReference = ValueReference(TextReferenceLiteral(valueSetId.value),
                                                        TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
-                SheetManager.onVariableUpdate(sheetId, this)
+                SheetManager.onVariableUpdate(sheetContext.sheetId, this)
                 this.onUpdate()
             }
         }
+    }
+
+
+    private fun updateRelations(sheetContext : SheetContext)
+    {
+        when (this.variableValue)
+        {
+            is TextVariableValueValue ->
+            {
+                this.variableValue.companionVariables(sheetContext) apDo {
+                    it.forEach { variable ->
+                        val relation = variable.relation()
+                        when (relation) {
+                            is Just -> {
+                                this.setRelation(relation.value, variable.variableId(), sheetContext)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }
@@ -1471,7 +1498,7 @@ data class TextListVariable(override val id : UUID,
         when (rel)
         {
             is Just -> {
-                parentVariable?.addRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
             }
         }
     }

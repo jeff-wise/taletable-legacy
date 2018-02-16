@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -265,7 +266,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         if (this.adderState.diceRolls.isEmpty())
             this.valueTextView?.text = Util.doubleString(this.currentValue)
         else
-            this.valueTextView?.text = this.diceRoll().rangeString(this.adderState.originalValue)
+            this.valueTextView?.text = this.diceRoll().rangeString(0.0)
 
 //            singleValueTextView?.text = Util.doubleString(this.currentValue)
 //
@@ -294,7 +295,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         if (this.adderState.diceRolls.isEmpty())
             this.valueTextView?.text = Util.doubleString(this.currentValue)
         else
-            this.valueTextView?.text = this.diceRoll().rangeString(this.adderState.originalValue)
+            this.valueTextView?.text = this.diceRoll().rangeString(0.0)
         //this.valueTextView?.text = Util.doubleString(this.currentValue)
 
 
@@ -345,11 +346,13 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
     private fun diceRoll() : DiceRoll
     {
-        var diceRoll = this.adderState.diceRolls.fold(DiceRoll(),
+        val diceRoll = this.adderState.diceRolls.fold(DiceRoll(),
                                                       {roll1, roll2 -> roll1.add(roll2)})
 
         if (this.delta != 0.0)
-            diceRoll = diceRoll.addModifier(RollModifier(this.delta))
+            diceRoll.addModifier(RollModifier(this.delta))
+
+        diceRoll.addModifier(RollModifier(adderState.originalValue))
 
         return diceRoll
     }
@@ -363,8 +366,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
             val rollSummary = diceRoll.rollSummary()
             this.currentRoll = rollSummary
 
+            val newValue = rollSummary.value
+
             this.valueView?.removeAllViews()
-            this.valueView?.addView(this.rollResultView(rollSummary.value.toString()))
+            this.valueView?.addView(this.rollResultView(newValue.toString()))
             // this.valueView?.addView(this.valueTextView)
 
 //            this.rollView?.visibility = View.VISIBLE
@@ -537,7 +542,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_24"))))
         name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         name.font               = Font.typeface(TextFont.default(),
@@ -912,8 +917,13 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val valueColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("red_80"))))
         value.color             = SheetManager.color(sheetUIContext.sheetId, valueColorTheme)
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+        value.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         value.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Light,
@@ -1575,7 +1585,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_80"))))
         layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
         layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
@@ -1666,7 +1676,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         label.color         = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
 
         label.font          = Font.typeface(TextFont.default(),

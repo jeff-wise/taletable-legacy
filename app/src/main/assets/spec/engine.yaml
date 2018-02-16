@@ -905,19 +905,50 @@ types:
         The program statement that calculates the program result value.
 - type: product_type
   product_type:
+    name: program_parameter
+    label: Program Parameter
+    description: Program parameter.
+    group: Program
+    fields:
+    - name: type
+      type: 
+        type: custom_type
+        custom_type: engine_value_type
+      presence: required
+      description: Engine value type.
+    - name: default_value
+      type: 
+        type: custom_type
+        custom_type: engine_value
+      presence: optional
+      description: Default value.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Label
+    - name: input_message
+      type:
+        type: custom_type
+        custom_type: message
+      presence: required
+      description: Input message.
+- type: product_type
+  product_type:
     name: program_type_signature
     label: Program Type Signature
     description: >
       A program type signature.
     group: Program
     fields:
-    - name: parameter_types
+    - name: parameters
       type: 
         type: custom_coll_type
-        custom_coll_type: engine_value_type
+        custom_coll_type: program_parameter
       presence: optional
       description: The parameter types.
-    - name: result_type
+    - name: result
       type:
         type: custom_type
         custom_type: engine_value_type
@@ -2111,6 +2142,12 @@ types:
         custom_type: variable_relation
       presence: optional
       description: Variable tag
+    - name: default_value
+      type:
+        type: custom_type
+        custom_type: data_reference_number
+      presence: optional
+      description: Default value reference.
 - type: product_type
   product_type:
     name: summation_term_dice_roll
