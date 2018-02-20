@@ -523,7 +523,7 @@ class SheetState(val sheetContext : SheetContext,
             is EngineValueNumber ->
             {
                 this.numberVariableWithId(variableId) apDo { numberVariable ->
-                    numberVariable.updateValue(engineValue.value, sheetContext.sheetId)
+                    numberVariable.updateValue(engineValue.value, sheetContext)
                 }
             }
             is EngineValueText ->

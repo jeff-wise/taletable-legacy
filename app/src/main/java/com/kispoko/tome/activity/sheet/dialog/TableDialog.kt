@@ -15,6 +15,7 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.ColorId
@@ -166,8 +167,10 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+
+        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -216,8 +219,8 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.padding.leftDp   = 12f
-        layout.padding.rightDp  = 12f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
         layout.padding.topDp    = 10f
         layout.padding.bottomDp = 10f
 
@@ -232,12 +235,12 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         title.textId            = R.string.table_actions
 
         title.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+                                                TextFontStyle.Bold,
                                                 sheetUIContext.context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         title.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
 
         title.sizeSp            = 18f
@@ -289,7 +292,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         }
         layout.addView(this.actionButtonView(R.string.insert_row_above,
                                              R.drawable.icon_insert_row_above,
-                                             28,
+                                             26,
                                              insertRowAboveOnClick))
 
         // Insert Row Below
@@ -314,21 +317,21 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         }
         layout.addView(this.actionButtonView(R.string.insert_row_below,
                                              R.drawable.icon_insert_row_below,
-                                             28,
+                                             26,
                                              insertRowBelowOnClick))
 
         // Delete
         val moreOnClick = View.OnClickListener { }
         layout.addView(this.actionButtonView(R.string.delete_row,
                                              R.drawable.icon_delete_row,
-                                             28,
+                                             26,
                                              moreOnClick))
 
         // Sort
         val sortOnClick = View.OnClickListener { }
         layout.addView(this.actionButtonView(R.string.sort_table,
                                              R.drawable.icon_sorting_options,
-                                             28,
+                                             26,
                                              sortOnClick))
 
         return layout
@@ -344,7 +347,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.bottomDp = 8f
+        layout.padding.bottomDp = 4f
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -380,9 +383,9 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         layout.padding.bottomDp = 10f
         layout.padding.topDp    = 10f
 
-        layout.margin.leftDp    = 8f
-        layout.margin.rightDp   = 8f
-        layout.margin.topDp     = 8f
+        layout.margin.leftDp    = 4f
+        layout.margin.rightDp   = 4f
+        layout.margin.topDp     = 4f
 
         layout.child(icon)
               .child(label)
@@ -411,7 +414,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         label.textId            = labelId
 
         label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.Medium,
                                                 sheetUIContext.context)
 
         val labelColorTheme = ColorTheme(setOf(
@@ -419,7 +422,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         label.color             = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
 
-        label.sizeSp            = 20f
+        label.sizeSp            = 19f
 
         return layout.linearLayout(sheetUIContext.context)
     }

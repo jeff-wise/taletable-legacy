@@ -15,8 +15,8 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.RowValue8
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
@@ -52,7 +52,7 @@ data class PointsWidgetFormat(override val id : UUID,
                               val labelTextFormat : TextFormat,
                               val infoStyle : PointsInfoStyle,
                               val infoFormat : TextFormat,
-                              val barFormat : PointsBarFormat)
+                              val barFormat : PointsWidgetBarFormat)
                                : ToDocument, ProdType, Serializable
 {
 
@@ -66,7 +66,7 @@ data class PointsWidgetFormat(override val id : UUID,
                 labelTextFormat : TextFormat,
                 infoStyle : PointsInfoStyle,
                 infoFormat : TextFormat,
-                barFormat : PointsBarFormat)
+                barFormat : PointsWidgetBarFormat)
         : this(UUID.randomUUID(),
                widgetFormat,
                limitTextFormat,
@@ -86,7 +86,7 @@ data class PointsWidgetFormat(override val id : UUID,
         private fun defaultLabelTextFormat()   = TextFormat.default()
         private fun defaultInfoStyle()         = PointsInfoStyle.CenterLabelRight
         private fun defaultInfoFormat()        = TextFormat.default()
-        private fun defaultBarFormat()         = PointsBarFormat.default()
+        private fun defaultBarFormat()         = PointsWidgetBarFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<PointsWidgetFormat> = when (doc)
@@ -121,7 +121,7 @@ data class PointsWidgetFormat(override val id : UUID,
                       // Bar Format
                       split(doc.maybeAt("bar_format"),
                             effValue(defaultBarFormat()),
-                            { PointsBarFormat.fromDocument(it) })
+                            { PointsWidgetBarFormat.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -176,7 +176,7 @@ data class PointsWidgetFormat(override val id : UUID,
     fun infoFormat() : TextFormat = this.infoFormat
 
 
-    fun barFormat() : PointsBarFormat  = this.barFormat
+    fun barFormat() : PointsWidgetBarFormat = this.barFormat
 
 
     // -----------------------------------------------------------------------------------------
@@ -440,15 +440,16 @@ data class PointsWidgetCounterActiveText(val value : String)
 /**
  * Bar Format
  */
-data class PointsBarFormat(override val id : UUID,
-                           val elementFormat : ElementFormat,
-                           val barStyle : PointsBarStyle,
-                           val barHeight : PointsBarHeight,
-                           val limitFormat : TextFormat,
-                           val currentFormat : TextFormat,
-                           val counterActiveIcon : Maybe<IconType>,
-                           val counterActiveText : Maybe<PointsWidgetCounterActiveText>)
-                            : ToDocument, ProdType, Serializable
+data class PointsWidgetBarFormat(override val id : UUID,
+                                 val elementFormat : ElementFormat,
+                                 val barStyle : PointsBarStyle,
+                                 val barHeight : PointsBarHeight,
+                                 val limitFormat : TextFormat,
+                                 val currentFormat : TextFormat,
+                                 val counterActiveIcon : Maybe<IconType>,
+                                 val counterActiveText : Maybe<PointsWidgetCounterActiveText>,
+                                 val counterInactiveText : Maybe<PointsWidgetCounterActiveText>)
+                                  : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -461,7 +462,8 @@ data class PointsBarFormat(override val id : UUID,
                 limitFormat : TextFormat,
                 currentFormat : TextFormat,
                 counterActiveIcon : Maybe<IconType>,
-                counterActiveText : Maybe<PointsWidgetCounterActiveText>)
+                counterActiveText : Maybe<PointsWidgetCounterActiveText>,
+                counterInactiveText : Maybe<PointsWidgetCounterActiveText>)
         : this(UUID.randomUUID(),
                elementFormat,
                barStyle,
@@ -469,10 +471,11 @@ data class PointsBarFormat(override val id : UUID,
                limitFormat,
                currentFormat,
                counterActiveIcon,
-               counterActiveText)
+               counterActiveText,
+               counterInactiveText)
 
 
-    companion object : Factory<PointsBarFormat>
+    companion object : Factory<PointsWidgetBarFormat>
     {
 
         private fun defaultElementFormat()  = ElementFormat.default()
@@ -482,11 +485,11 @@ data class PointsBarFormat(override val id : UUID,
         private fun defaultCurrentFormat()  = TextFormat.default()
 
 
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<PointsBarFormat> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<PointsWidgetBarFormat> = when (doc)
         {
             is DocDict ->
             {
-                apply(::PointsBarFormat,
+                apply(::PointsWidgetBarFormat,
                       // Element Format
                       split(doc.maybeAt("element_format"),
                             effValue(defaultElementFormat()),
@@ -514,6 +517,10 @@ data class PointsBarFormat(override val id : UUID,
                       // Counter Active Text
                       split(doc.maybeAt("counter_active_text"),
                             effValue<ValueError,Maybe<PointsWidgetCounterActiveText>>(Nothing()),
+                            { apply(::Just, PointsWidgetCounterActiveText.fromDocument(it)) }),
+                      // Counter Inactive Text
+                      split(doc.maybeAt("counter_inactive_text"),
+                            effValue<ValueError,Maybe<PointsWidgetCounterActiveText>>(Nothing()),
                             { apply(::Just, PointsWidgetCounterActiveText.fromDocument(it)) })
                       )
             }
@@ -521,11 +528,12 @@ data class PointsBarFormat(override val id : UUID,
         }
 
 
-        fun default() = PointsBarFormat(defaultElementFormat(),
+        fun default() = PointsWidgetBarFormat(defaultElementFormat(),
                                         defaultBarStyle(),
                                         defaultBarHeight(),
                                         defaultLimitFormat(),
                                         defaultCurrentFormat(),
+                                        Nothing(),
                                         Nothing(),
                                         Nothing())
 
@@ -567,6 +575,9 @@ data class PointsBarFormat(override val id : UUID,
     fun counterActiveText() : Maybe<PointsWidgetCounterActiveText> = this.counterActiveText
 
 
+    fun counterInactiveText() : Maybe<PointsWidgetCounterActiveText> = this.counterInactiveText
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -578,14 +589,15 @@ data class PointsBarFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetPointsBarFormatValue =
-        RowValue7(widgetPointsBarFormatTable,
+        RowValue8(widgetPointsBarFormatTable,
                   ProdValue(this.elementFormat),
                   PrimValue(this.barStyle),
                   PrimValue(this.barHeight),
                   ProdValue(this.limitFormat),
                   ProdValue(this.currentFormat),
                   MaybePrimValue(this.counterActiveIcon),
-                  MaybePrimValue(this.counterActiveText))
+                  MaybePrimValue(this.counterActiveText),
+                  MaybePrimValue(this.counterInactiveText))
 
 }
 
@@ -594,6 +606,17 @@ data class PointsBarFormat(override val id : UUID,
 class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                               val sheetUIContext : SheetUIContext)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    val sheetContext = SheetContext(sheetUIContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
 
     fun view() : View
     {
@@ -615,9 +638,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         contentLayout.removeAllViews()
 
-
-        // contentLayout.gravity       = Gravity.CENTER_VERTICAL
-
         // Above Bar
         val infoPosition = pointsWidget.format().infoFormat().elementFormat().position()
         when (infoPosition)
@@ -632,7 +652,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             }
         }
 
-
         // Bar
         when (pointsWidget.format().barFormat().barStyle)
         {
@@ -643,25 +662,27 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             else ->
             {
                 contentLayout.addView(this.barView())
-            }
-        }
 
-        contentLayout.setOnClickListener {
-            val currentValueVariable =
-                    pointsWidget.currentValueVariable(SheetContext(sheetUIContext))
+                contentLayout.setOnClickListener {
+                    val currentValueVariable =
+                            pointsWidget.currentValueVariable(SheetContext(sheetUIContext))
 
-            when (currentValueVariable)
-            {
-                is effect.Val ->
-                {
-                    openNumberVariableEditorDialog(currentValueVariable.value,
-                                                   NumericEditorType.Adder,
-                                                   UpdateTargetPointsWidget(pointsWidget.id),
-                                                   sheetUIContext)
+                    when (currentValueVariable)
+                    {
+                        is effect.Val ->
+                        {
+                            openNumberVariableEditorDialog(currentValueVariable.value,
+                                                           NumericEditorType.Adder,
+                                                           UpdateTargetPointsWidget(pointsWidget.id),
+                                                           sheetUIContext)
+                        }
+                        is Err -> ApplicationLog.error(currentValueVariable.error)
+                    }
                 }
-                is Err -> ApplicationLog.error(currentValueVariable.error)
             }
         }
+
+
     }
 
 
@@ -1007,10 +1028,10 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         {
             for (i in 1..limitValue) {
                 if (i <= currentValue) {
-                    layout.addView(this.counterBarActiveView())
+                    layout.addView(this.counterBarActiveView(i))
                 }
                 else {
-                    layout.addView(this.counterBarInactiveView())
+                    layout.addView(this.counterBarInactiveView(i))
                 }
             }
         }
@@ -1035,7 +1056,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     }
 
 
-    private fun counterBarActiveView() : LinearLayout
+    private fun counterBarActiveView(index : Int) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
         val format              = pointsWidget.format().barFormat().currentFormat()
@@ -1093,11 +1114,24 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             }
         }
 
+
+        layout.onClick = View.OnClickListener {
+            pointsWidget.currentValueVariable(sheetContext) apDo { valueVariable ->
+            valueVariable.valueOrError(sheetContext)        apDo { value ->
+                if (value.toInt() != index) {
+                    valueVariable.updateValue(index.toDouble(), sheetContext)
+                }
+                else {
+                    valueVariable.updateValue((index - 1).toDouble(), sheetContext)
+                }
+            } }
+        }
+
         return layout.linearLayout(sheetUIContext.context)
     }
 
 
-    private fun counterBarInactiveView() : LinearLayout
+    private fun counterBarInactiveView(index : Int) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
         val format              = pointsWidget.format().barFormat().limitFormat()
@@ -1143,6 +1177,31 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
                 layout.child(icon)
             }
+        }
+
+        val inactiveText = pointsWidget.format().barFormat().counterInactiveText()
+        when (inactiveText) {
+            is Just -> {
+                val textView      = TextViewBuilder()
+
+                textView.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+                textView.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+                textView.text         = inactiveText.value.value
+
+                pointsWidget.format().barFormat().limitFormat().styleTextViewBuilder(textView, sheetUIContext)
+
+                layout.child(textView)
+            }
+        }
+
+        layout.onClick = View.OnClickListener {
+            pointsWidget.currentValueVariable(sheetContext) apDo { valueVariable ->
+            valueVariable.valueOrError(sheetContext)        apDo { value ->
+                if (value.toInt() != index) {
+                    valueVariable.updateValue(index.toDouble(), sheetContext)
+                }
+            } }
         }
 
 

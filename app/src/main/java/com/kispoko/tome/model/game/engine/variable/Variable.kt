@@ -2,7 +2,7 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
-import com.kispoko.tome.R.string.variables
+import com.kispoko.tome.R.string.*
 import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -17,6 +17,7 @@ import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
+import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.Util
@@ -641,8 +642,9 @@ data class NumberVariable(override val id : UUID,
                           private var description : VariableDescription,
                           private val tags : MutableList<VariableTag>,
                           private val relation : Maybe<VariableRelation>,
-                          var variableValue : NumberVariableValue)
-                          : Variable()
+                          var variableValue : NumberVariableValue,
+                          var constraint : Maybe<NumberConstraint>)
+                           : Variable()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -666,7 +668,25 @@ data class NumberVariable(override val id : UUID,
                description,
                tags.toMutableList(),
                relation,
-               value)
+               value,
+               Nothing())
+
+
+    constructor(variableId : VariableId,
+                label : VariableLabel,
+                description : VariableDescription,
+                tags : List<VariableTag>,
+                relation: Maybe<VariableRelation>,
+                value : NumberVariableValue,
+                constraint : Maybe<NumberConstraint>)
+        : this(UUID.randomUUID(),
+               variableId,
+               label,
+               description,
+               tags.toMutableList(),
+               relation,
+               value,
+               constraint)
 
 
     companion object : Factory<NumberVariable>
@@ -691,7 +711,11 @@ data class NumberVariable(override val id : UUID,
                             effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
                             { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
-                      doc.at("value") ap { NumberVariableValue.fromDocument(it) }
+                      doc.at("value") ap { NumberVariableValue.fromDocument(it) },
+                      // Constraint
+                      split(doc.maybeAt("constraint"),
+                            effValue<ValueError,Maybe<NumberConstraint>>(Nothing()),
+                            { apply(::Just, NumberConstraint.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -741,6 +765,9 @@ data class NumberVariable(override val id : UUID,
 
 
     fun variableValue() : NumberVariableValue = this.variableValue
+
+
+    fun constraint() : Maybe<NumberConstraint> = this.constraint
 
 
     // -----------------------------------------------------------------------------------------
@@ -851,15 +878,30 @@ data class NumberVariable(override val id : UUID,
         }
 
 
-    fun updateValue(value : Double, sheetId : SheetId)
+    fun updateValue(value : Double, sheetContext : SheetContext)
     {
         when (this.variableValue())
         {
             is NumberVariableLiteralValue ->
             {
-                this.variableValue = NumberVariableLiteralValue(value)
-                SheetManager.onVariableUpdate(sheetId, this)
-                this.onUpdate()
+                val constraint = this.constraint
+                when (constraint)
+                {
+                    is Just ->
+                    {
+                        constraint.value.constrainedValue(value, sheetContext) apDo {
+                            this.variableValue = NumberVariableLiteralValue(it)
+                            SheetManager.onVariableUpdate(sheetContext.sheetId, this)
+                            this.onUpdate()
+                        }
+                    }
+                    is Nothing ->
+                    {
+                        this.variableValue = NumberVariableLiteralValue(value)
+                        SheetManager.onVariableUpdate(sheetContext.sheetId, this)
+                        this.onUpdate()
+                    }
+                }
             }
         }
     }

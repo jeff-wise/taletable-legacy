@@ -3,6 +3,8 @@ package com.kispoko.tome.rts.sheet
 
 
 import com.kispoko.tome.app.ApplicationError
+import com.kispoko.tome.model.game.engine.reference.DataReference
+import com.kispoko.tome.model.game.engine.reference.NumberReference
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
 
@@ -109,6 +111,18 @@ class VariableDoesNotHaveValue(val variableId : VariableId) : StateError()
             """
             State Error: Variable Does Not Have Value
                 Variable Id: $variableId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class NumberReferenceDoesNotHaveValue(val numberReference : NumberReference) : StateError()
+{
+    override fun debugMessage(): String =
+            """
+            State Error: Number Reference Does Not Have Value
+                Number Reference: $numberReference
             """
 
     override fun logMessage(): String = userMessage()

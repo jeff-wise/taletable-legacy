@@ -1291,29 +1291,31 @@ typealias DB_WidgetPointsFormatValue =
               ProdValue<TextFormat>,
               PrimValue<PointsInfoStyle>,
               ProdValue<TextFormat>,
-              ProdValue<PointsBarFormat>>
+              ProdValue<PointsWidgetBarFormat>>
 
 
 // WIDGET: POINTS > BAR FORMAT
 // ---------------------------------------------------------------------------------------------
 
 val widgetPointsBarFormatTable =
-    Table7("widget_points_bar_format",
+    Table8("widget_points_bar_format",
            "element_format",
            "style",
            "height",
            "limit_format",
            "current_format",
            "counter_active_icon",
-           "counter_active_text")
+           "counter_active_text",
+           "counter_inactive_text")
 
 typealias DB_WidgetPointsBarFormatValue =
-    RowValue7<ProdValue<ElementFormat>,
+    RowValue8<ProdValue<ElementFormat>,
               PrimValue<PointsBarStyle>,
               PrimValue<PointsBarHeight>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
               MaybePrimValue<IconType>,
+              MaybePrimValue<PointsWidgetCounterActiveText>,
               MaybePrimValue<PointsWidgetCounterActiveText>>
 
 

@@ -242,8 +242,7 @@ class SummationActivity : AppCompatActivity()
                                             {
                                                 is NumberVariable ->
                                                 {
-                                                    variable.updateValue(message.newValue,
-                                                                         sheetContext.sheetId)
+                                                    variable.updateValue(message.newValue, sheetContext)
                                                     val summation = this.summation
                                                     if (summation != null)
                                                         this.renderView(summation, sheetContext)

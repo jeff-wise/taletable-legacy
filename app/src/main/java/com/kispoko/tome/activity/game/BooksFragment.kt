@@ -159,7 +159,7 @@ class GameInfoViewBuilder(val game : Game,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
 
         return layout.linearLayout(context)
@@ -216,7 +216,7 @@ class GameInfoViewBuilder(val game : Game,
 
         val titleColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         title.color             = ThemeManager.color(themeId, titleColorTheme)
 
         title.font              = Font.typeface(TextFont.default(),

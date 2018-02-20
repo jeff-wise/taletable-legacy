@@ -2115,8 +2115,7 @@ data class PointsWidget(override val id : UUID,
     {
         val currentValueVariable = this.currentValueVariable(sheetContext)
         when (currentValueVariable) {
-            is Val -> currentValueVariable.value.updateValue(newCurrentValue,
-                                                             sheetContext.sheetId)
+            is Val -> currentValueVariable.value.updateValue(newCurrentValue, sheetContext)
             is Err -> ApplicationLog.error(currentValueVariable.error)
         }
     }
@@ -2674,7 +2673,7 @@ data class StoryWidget(override val id : UUID,
                 when (variable) {
                     is NumberVariable ->
                     {
-                        variable.updateValue(partUpdate.newNumber, sheetUIContext.sheetId)
+                        variable.updateValue(partUpdate.newNumber, SheetContext(sheetUIContext))
                     }
                 }
 

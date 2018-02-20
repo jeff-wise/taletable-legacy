@@ -772,7 +772,7 @@ variables:
             program_id: background_personality_trait_value_set_id
         value_id:
           type: text_literal
-          text_literal: trait_1
+          text_literal: trait_5
 - type: variable_text
   variable_text:
     id: background_ideal
@@ -1345,6 +1345,17 @@ variables:
     id: current_hit_points
     label: Current Hit Points
     description: Current hit points.
+    constraint:
+      type: number_constraint_range
+      number_constraint_range:
+        min:
+          type: number_literal
+          number_literal: 0
+        max:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: max_hit_points
     value:
       type: number_literal
       number_literal: 7
@@ -3757,7 +3768,7 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_12
-                font_style: medium
+                font_style: regular
                 size: 17
               widget_format:
                 element_format:
@@ -3824,7 +3835,7 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_12
-                font_style: medium
+                font_style: regular
                 size: 17
               widget_format:
                 element_format:
@@ -3892,7 +3903,7 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_12
-                font_style: medium
+                font_style: regular
                 size: 17
               widget_format:
                 element_format:
@@ -4405,6 +4416,7 @@ sections:
               bar_format:
                 bar_style: counter
                 counter_active_text: 'HD'
+                counter_inactive_text: 'HD'
                 element_format:
                   padding:
                     top: 4
@@ -4415,7 +4427,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: dark_grey_12
+                      color_id: dark_grey_24
                   font_style: bold
                   element_format:
                     background_color_theme:
@@ -4485,10 +4497,10 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: dark_grey_12
+                      color_id: dark_grey_14
                   size:
-                    width: 25
-                    height: 25
+                    width: 23
+                    height: 23
               button_inactive_format:
                 element_format:
                   background_color_theme:
@@ -4509,26 +4521,26 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: dark_grey_12
+                      color_id: dark_grey_14
                   size:
-                    width: 25
-                    height: 25
+                    width: 23
+                    height: 23
               description_format:
                 element_format:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_grey_2
+                      color_id: white
                   corners:
                     top_right_radius: 4
                     bottom_right_radius: 4
                   padding:
                     right: 8
-                    left: 8
+                    bottom: 2
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_16
                 font_style: medium
                 size: 18
               description_inactive_format:
@@ -4542,11 +4554,11 @@ sections:
                     bottom_right_radius: 4
                   padding:
                     right: 8
-                    left: 8
+                    bottom: 2
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_16
                 font_style: medium
                 size: 18
               button_icon: heart_plus
@@ -4825,354 +4837,474 @@ sections:
             right: 6
             bottom: 15
       rows:
-      - format:
-          element_format:
-            padding:
-              bottom: 10
-              left: 8
-              right: 8
-              top: 10
-          border:
-            bottom:
-              color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_grey_2
-              thickness: 1
-        widgets:
-        - type: widget_action
-          widget_action:
-            id: roll_death_save
+      - widgets:
+        - type: widget_expander
+          widget_expander:
+            id: death_saving_throws
+            label: "Death Saving Throws\u2026"
             format:
               widget_format:
                 element_format:
-                  horizontal_alignment: left
-                  height: 42
-              button_format:
-                element_format:
                   background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: purple_90
-                  corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
-                  padding:
-                    right: 12
-                    left: 12
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                icon_format:
-                  color_theme:
                     theme_color_ids:
                     - theme_id: light
                       color_id: white
-                  size:
-                    width: 25
-                    height: 25
-              button_inactive_format:
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  width:
+                    type: width_justify
+                    width_justify: justify
+              header_open_format:
                 element_format:
                   background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: red_90
-                  corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
-                  padding:
-                    right: 12
-                    left: 12
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                icon_format:
-                  color_theme:
                     theme_color_ids:
                     - theme_id: light
                       color_id: white
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                  padding:
+                    top: 10
+                    bottom: 10
+                    right: 6
+                    left: 6
+              header_closed_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                  padding:
+                    top: 10
+                    bottom: 10
+                    right: 6
+                    left: 6
+              header_label_open_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 19
+              header_label_closed_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_blue
+                font_style: semi_bold
+                size: 19
+              header_icon_closed_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    top: 6
+                    bottom: 6
+                    right: 6
+                    left: 6
+                icon_format:
                   size:
-                    width: 25
-                    height: 25
-              description_format:
+                    width: 19
+                    height: 19
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+              header_icon_open_format:
                 element_format:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: purple_70
+                      color_id: white
                   corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
+                    top_right_radius: 2
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
                   padding:
-                    right: 15
-                    left: 15
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                size: 18
-              description_inactive_format:
+                    top: 6
+                    bottom: 6
+                    right: 6
+                    left: 6
+                icon_format:
+                  size:
+                    width: 19
+                    height: 19
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: dark_grey_14
+            groups:
+            - format:
                 element_format:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: red_70
+                      color_id: white
                   corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
-                  padding:
-                    right: 15
-                    left: 15
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                size: 18
-              button_icon: dice_roll_filled
-            procedure_id: second_wind
-            active_variable_id: can_use_second_wind
-            description: 'Roll Death Saving Throw'
-      - format:
-          has_columns: true
-          element_format:
-            padding:
-              left: 8
-              right: 8
-              top: 10
-              bottom: 10
-          border:
-            top:
-              color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_grey_55
-              thickness: 2
-        widgets:
-        - type: widget_points
-          widget_points:
-            id: life_saves
-            label: Life Saves
-            format:
-              limit_text_format:
-                element_format:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
                   margins:
-                    left: 3
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              current_text_format:
-                element_format:
-                  margins:
-                    right: 2
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: purple
-                font_style: semi_bold
-                size: 18
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              info_style: label_left_slash_right
-              info_format:
-                element_format:
-                  horizontal_alignment: left
-                  margins:
-                    bottom: 6
-              bar_format:
-                bar_height: 13
-                bar_style: counter
-                counter_active_icon: heart
-                limit_format:
-                  icon_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: medium_grey_7
-                      - theme_id: light
-                        color_id: dark_grey_18
-                    size:
-                      width: 27
-                      height: 27
+                    left: 6
+                    right: 6
+                    bottom: 15
+              rows:
+              - format:
                   element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_3
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
+                    padding:
+                      bottom: 10
+                      left: 8
                       right: 8
-                current_format:
-                  icon_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: light_blue_10
-                      - theme_id: light
-                        color_id: white
-                    size:
-                      width: 22
-                      height: 22
+                      top: 10
+                widgets:
+                - type: widget_action
+                  widget_action:
+                    id: roll_death_save
+                    format:
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          height: 42
+                      button_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: purple_90
+                          corners:
+                            top_left_radius: 4
+                            bottom_left_radius: 4
+                          padding:
+                            right: 12
+                            left: 12
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        icon_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: white
+                          size:
+                            width: 25
+                            height: 25
+                      button_inactive_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: red_90
+                          corners:
+                            top_left_radius: 4
+                            bottom_left_radius: 4
+                          padding:
+                            right: 12
+                            left: 12
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        icon_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: white
+                          size:
+                            width: 25
+                            height: 25
+                      description_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: purple_70
+                          corners:
+                            top_right_radius: 4
+                            bottom_right_radius: 4
+                          padding:
+                            right: 15
+                            left: 15
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        size: 18
+                      description_inactive_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: red_70
+                          corners:
+                            top_right_radius: 4
+                            bottom_right_radius: 4
+                          padding:
+                            right: 15
+                            left: 15
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        size: 18
+                      button_icon: dice_roll_filled
+                    procedure_id: second_wind
+                    active_variable_id: can_use_second_wind
+                    description: 'Roll Death Saving Throw'
+              - format:
+                  has_columns: true
                   element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: purple_80
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
-                      left: 4
-                      right: 4
-            limit_value_variable_id: max_life_saves
-            current_value_variable_id: current_life_saves
-      - format:
-          element_format:
-            padding:
-              left: 8
-              right: 8
-        widgets:
-        - type: widget_points
-          widget_points:
-            id: death_saves
-            label: Death Saves
-            format:
-              limit_text_format:
-                element_format:
-                  margins:
-                    left: 3
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              current_text_format:
-                element_format:
-                  margins:
-                    right: 2
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: purple
-                font_style: semi_bold
-                size: 18
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              info_style: label_left_slash_right
-              info_format:
-                element_format:
-                  horizontal_alignment: left
-                  margins:
-                    bottom: 6
-              bar_format:
-                bar_height: 13
-                bar_style: counter
-                counter_active_icon: skull
-                limit_format:
-                  icon_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: medium_grey_7
-                      - theme_id: light
-                        color_id: dark_grey_18
-                    size:
-                      width: 27
-                      height: 27
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_3
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
+                    padding:
+                      left: 8
                       right: 8
-                      bottom: 6
-                current_format:
-                  icon_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: white
-                    size:
-                      width: 22
-                      height: 22
+                      top: 10
+                      bottom: 10
+                  border:
+                    top:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: light_grey_55
+                      thickness: 2
+                widgets:
+                - type: widget_points
+                  widget_points:
+                    id: life_saves
+                    label: Life Saves
+                    format:
+                      limit_text_format:
+                        element_format:
+                          margins:
+                            left: 3
+                          vertical_alignment: bottom
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: dark_grey_10
+                        size: 18
+                      current_text_format:
+                        element_format:
+                          margins:
+                            right: 2
+                          vertical_alignment: bottom
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: purple
+                        font_style: semi_bold
+                        size: 18
+                      label_text_format:
+                        element_format:
+                          margins:
+                            left: 5
+                          vertical_alignment: bottom
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: dark_grey_10
+                        size: 18
+                      info_style: label_left_slash_right
+                      info_format:
+                        element_format:
+                          horizontal_alignment: left
+                          margins:
+                            bottom: 6
+                      bar_format:
+                        bar_height: 13
+                        bar_style: counter
+                        counter_active_icon: heart
+                        limit_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: medium_grey_7
+                              - theme_id: light
+                                color_id: dark_grey_18
+                            size:
+                              width: 27
+                              height: 27
+                          element_format:
+                            background_color_theme:
+                              theme_color_ids:
+                              - theme_id: light
+                                color_id: light_grey_3
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            height: 45
+                            width:
+                              type: number_literal
+                              number_literal: 45
+                            margins:
+                              right: 8
+                        current_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_blue_10
+                              - theme_id: light
+                                color_id: white
+                            size:
+                              width: 22
+                              height: 22
+                          element_format:
+                            background_color_theme:
+                              theme_color_ids:
+                              - theme_id: light
+                                color_id: purple_80
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            height: 45
+                            width:
+                              type: number_literal
+                              number_literal: 45
+                            margins:
+                              left: 4
+                              right: 4
+                    limit_value_variable_id: max_life_saves
+                    current_value_variable_id: current_life_saves
+              - format:
                   element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_blue_80
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
-                      left: 4
-                      right: 4
-            limit_value_variable_id: max_death_saves
-            current_value_variable_id: current_death_saves
+                    padding:
+                      left: 8
+                      right: 8
+                widgets:
+                - type: widget_points
+                  widget_points:
+                    id: death_saves
+                    label: Death Saves
+                    format:
+                      limit_text_format:
+                        element_format:
+                          margins:
+                            left: 3
+                          vertical_alignment: bottom
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: dark_grey_10
+                        size: 18
+                      current_text_format:
+                        element_format:
+                          margins:
+                            right: 2
+                          vertical_alignment: bottom
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: purple
+                        font_style: semi_bold
+                        size: 18
+                      label_text_format:
+                        element_format:
+                          margins:
+                            left: 5
+                          vertical_alignment: bottom
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: dark_grey_10
+                        size: 18
+                      info_style: label_left_slash_right
+                      info_format:
+                        element_format:
+                          horizontal_alignment: left
+                          margins:
+                            bottom: 6
+                      bar_format:
+                        bar_height: 13
+                        bar_style: counter
+                        counter_active_icon: skull
+                        limit_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: medium_grey_7
+                              - theme_id: light
+                                color_id: dark_grey_18
+                            size:
+                              width: 27
+                              height: 27
+                          element_format:
+                            background_color_theme:
+                              theme_color_ids:
+                              - theme_id: light
+                                color_id: light_grey_3
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            height: 45
+                            width:
+                              type: number_literal
+                              number_literal: 45
+                            margins:
+                              right: 8
+                              bottom: 6
+                        current_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: light
+                                color_id: white
+                            size:
+                              width: 22
+                              height: 22
+                          element_format:
+                            background_color_theme:
+                              theme_color_ids:
+                              - theme_id: light
+                                color_id: light_blue_80
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            height: 45
+                            width:
+                              type: number_literal
+                              number_literal: 45
+                            margins:
+                              left: 4
+                              right: 4
+                    limit_value_variable_id: max_death_saves
+                    current_value_variable_id: current_death_saves
   - name: Combat
     format:
       element_format:
@@ -7510,7 +7642,7 @@ sections:
     - format:
         element_format:
           padding:
-            top: 15
+            top: 10
             bottom: 15
             left: 6
             right: 6

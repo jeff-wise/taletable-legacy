@@ -1698,6 +1698,12 @@ types:
         prim_type: string
       presence: optional
       description: Current Color Theme
+    - name: counter_inactive_text
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Current Color Theme
 - type: product_type
   product_type:
     name: widget_quote

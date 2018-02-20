@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import br.tiagohm.markdownview.MarkdownView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.game.rulebook.StyleSheet
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.RulebookExcerpt
 import com.kispoko.tome.model.game.RulebookReference
@@ -445,7 +446,7 @@ class ExcerptViewBuilder(val excerpt : RulebookExcerpt,
         body.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
 //        body.markdownText       = bodyString
-        body.stylesheet         = com.kispoko.tome.activity.game.rulebook.StyleSheet.lightTheme
+        body.stylesheet         = StyleSheet(sheetUIContext.context).lightTheme
 //
 
         return body.textView(sheetUIContext.context)

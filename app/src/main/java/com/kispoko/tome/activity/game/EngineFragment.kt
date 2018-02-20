@@ -4,6 +4,7 @@ package com.kispoko.tome.activity.game
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -33,6 +34,7 @@ import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.theme.ThemeManager
 import effect.Err
 import effect.Val
+
 
 
 /**
@@ -216,7 +218,7 @@ class EngineFragment : Fragment()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
 
         layout.padding.leftDp   = 8f
@@ -265,15 +267,16 @@ class EngineFragment : Fragment()
 
 //        layout.gravity          = Gravity.CENTER_VERTICAL
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
+        layout.backgroundColor  = Color.WHITE
 
         layout.margin.topDp     = 8f
 
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
+        layout.padding.leftDp   = 4f
+        layout.padding.rightDp  = 4f
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
 
@@ -299,12 +302,12 @@ class EngineFragment : Fragment()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         header.color            = ThemeManager.color(themeId, colorTheme)
 
-        header.font             = Font.typeface(TextFont.FiraSans,
-                                                    TextFontStyle.Regular,
-                                                    context)
+        header.font             = Font.typeface(TextFont.default(),
+                                                TextFontStyle.SemiBold,
+                                                context)
 
         header.sizeSp           = 17f
 
@@ -326,10 +329,10 @@ class EngineFragment : Fragment()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         description.color           = ThemeManager.color(themeId, colorTheme)
 
-        description.font            = Font.typeface(TextFont.FiraSans,
+        description.font            = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -418,7 +421,7 @@ class EngineFragment : Fragment()
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         label.color            = ThemeManager.color(themeId, labelColorTheme)
 
-        label.font             = Font.typeface(TextFont.FiraSans,
+        label.font             = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 

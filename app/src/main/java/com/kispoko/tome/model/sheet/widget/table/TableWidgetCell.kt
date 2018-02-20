@@ -433,7 +433,7 @@ data class TableWidgetNumberCell(override val id : UUID,
 
     fun updateValue(newValue : Double, sheetContext : SheetContext) =
         this.valueVariable(sheetContext) apDo {
-            it.updateValue(newValue, sheetContext.sheetId) }
+            it.updateValue(newValue, sheetContext) }
 
 
     // -----------------------------------------------------------------------------------------

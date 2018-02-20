@@ -217,7 +217,7 @@ class BookViewBuilder(val themeId : ThemeId,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
 
         return layout.linearLayout(context)
@@ -232,15 +232,14 @@ class BookViewBuilder(val themeId : ThemeId,
         header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         header.font             = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+                                                TextFontStyle.SemiBold,
                                                 context)
 
-        header.margin.topDp     = 8f
-        header.margin.leftDp    = 10f
+        header.margin.leftDp    = 8f
 
         header.text             = headerString
 
-        header.sizeSp           = 20f
+        header.sizeSp           = 19f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -268,13 +267,13 @@ class BookViewBuilder(val themeId : ThemeId,
         layout.backgroundColor  = Color.WHITE
 
         layout.margin.topDp     = 12f
-        layout.margin.bottomDp  = 12f
+        layout.margin.bottomDp  = 15f
 
         layout.padding.topDp    = 10f
         layout.padding.bottomDp = 10f
 
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 10f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
 
         layout.child(authors)
 
@@ -285,10 +284,10 @@ class BookViewBuilder(val themeId : ThemeId,
         authors.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
         authors.font            = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.SemiBold,
                                                 context)
 
-        authors.sizeSp             = 20f
+        authors.sizeSp             = 18f
 
         val descriptionColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -347,11 +346,11 @@ class BookViewBuilder(val themeId : ThemeId,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.topDp     = 8f
-        layout.margin.bottomDp  = 12f
+        layout.margin.topDp     = 5f
+        layout.margin.bottomDp  = 15f
 
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 10f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
 
         layout.child(text)
 
@@ -362,7 +361,7 @@ class BookViewBuilder(val themeId : ThemeId,
         text.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
         text.markdownText       = rulebook.abstract().value
-        text.stylesheet         = StyleSheet.lightTheme
+        text.stylesheet         = StyleSheet(context).lightTheme
 
         return layout.linearLayout(context)
     }
@@ -384,11 +383,11 @@ class BookViewBuilder(val themeId : ThemeId,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.topDp     = 8f
-        layout.margin.bottomDp  = 12f
+        layout.margin.topDp     = 5f
+        layout.margin.bottomDp  = 15f
 
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 10f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
 
         layout.child(text)
 
@@ -399,7 +398,7 @@ class BookViewBuilder(val themeId : ThemeId,
         text.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
         text.markdownText       = rulebook.introduction().value
-        text.stylesheet         = StyleSheet.lightTheme
+        text.stylesheet         = StyleSheet(context).lightTheme
 
         return layout.linearLayout(context)
     }
@@ -426,8 +425,8 @@ class BookViewBuilder(val themeId : ThemeId,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.margin.leftDp    = 10f
-        layout.margin.rightDp   = 10f
+        layout.margin.leftDp    = 8f
+        layout.margin.rightDp   = 8f
         layout.margin.bottomDp  = 20f
         layout.margin.topDp     = 4f
 
@@ -482,7 +481,7 @@ class BookViewBuilder(val themeId : ThemeId,
 
         index.gravity           = Gravity.CENTER_HORIZONTAL
 
-        index.sizeSp            = 22f
+        index.sizeSp            = 20f
 
         index.margin.leftDp     = 15f
         index.margin.rightDp    = 15f
@@ -515,7 +514,7 @@ class BookViewBuilder(val themeId : ThemeId,
                                                 TextFontStyle.Regular,
                                                 context)
 
-        title.sizeSp            = 20f
+        title.sizeSp            = 19f
 
         val titleColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -530,14 +529,14 @@ class BookViewBuilder(val themeId : ThemeId,
 }
 
 
-object StyleSheet
+class StyleSheet(val context : Context)
 {
 
     val lightTheme = InternalStyleSheet()
 
     init {
         val pMarginPx    = Util.dpToPixel(8f)
-        val pTextSizePx  = Util.dpToPixel(4f)
+        val pTextSizePx  = Util.spToPx(4.4f, context)
         val h3TextSizePx = Util.dpToPixel(4.4f)
 //        val pLineHeight = Util.dpToPixel(5f)
 

@@ -170,7 +170,7 @@ engine:
         value_text:
           value_id: ideal_1
           description: Ideal 1
-          value: 'Chivalry. I always put others before my self, and often go out of my way to do so.'
+          value: 'Chivalry. I always put others before myself, and I often go out of my way to do so.'
       - type: value_text
         value_text:
           value_id: ideal_2
