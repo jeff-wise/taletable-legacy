@@ -32,6 +32,7 @@ import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.rts.game.engine.*
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -593,6 +594,13 @@ data class EngineValueNumber(val value : Double) : EngineValue(), SQLSerializabl
 
     override val sumModelObject = this
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() = Util.doubleString(this.value)
+
 }
 
 /**
@@ -647,6 +655,13 @@ data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
 
 
     override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() = this.value.toString()
 
 }
 
@@ -704,6 +719,13 @@ data class EngineValueBoolean(val value : Boolean) : EngineValue(), SQLSerializa
 
     override val sumModelObject = this
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() = this.value.toString()
+
 }
 
 
@@ -757,6 +779,12 @@ data class EngineValueDiceRoll(val value : DiceRoll) : EngineValue(), SQLSeriali
 
     override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this) })
 
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() = this.value.toString()
 
 }
 
@@ -817,6 +845,13 @@ data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSer
 
 
     override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() = this.value.toString()
 
 }
 

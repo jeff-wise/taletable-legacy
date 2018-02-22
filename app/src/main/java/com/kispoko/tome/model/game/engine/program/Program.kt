@@ -8,21 +8,18 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
-import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
-import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.game.engine.interpreter.ResultBindingDoesNotExist
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
 import maybe.Nothing
@@ -484,136 +481,4 @@ data class ProgramParameterValues(val values : List<EngineValue>)
 
 }
 
-
-/**
- * Program Parameter
- */
-data class ProgramParameter(override val id : UUID,
-                            val parameterType : EngineValueType,
-                            val defaultValue : Maybe<EngineValue>,
-                            val label : ProgramParameterLabel,
-                            val inputMessage : Message)
-                             : ToDocument, ProdType, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(parameterType : EngineValueType,
-                defaultValue : Maybe<EngineValue>,
-                label : ProgramParameterLabel,
-                inputMessage : Message)
-        : this(UUID.randomUUID(),
-               parameterType,
-               defaultValue,
-               label,
-               inputMessage)
-
-
-    companion object : Factory<ProgramParameter>
-    {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramParameter> = when (doc)
-        {
-            is DocDict ->
-            {
-                apply(::ProgramParameter,
-                      // Parameter Type
-                      doc.at("type") ap { EngineValueType.fromDocument(it) },
-                      // Default Value
-                      split(doc.maybeAt("default_value"),
-                            effValue<ValueError,Maybe<EngineValue>>(Nothing()),
-                            { apply(::Just, EngineValue.fromDocument(it)) }),
-                      // Label
-                      doc.at("label") ap { ProgramParameterLabel.fromDocument(it) },
-                      // Input Message
-                      doc.at("input_message") ap { Message.fromDocument(it) }
-                      )
-            }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocDict(mapOf(
-        "type" to this.parameterType().toDocument(),
-        "label" to this.label().toDocument(),
-        "input_message" to this.inputMessage().toDocument()
-    ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun parameterType() : EngineValueType = this.parameterType
-
-
-    fun label() : ProgramParameterLabel = this.label
-
-
-    fun defaultValue() : Maybe<EngineValue> = this.defaultValue
-
-
-    fun inputMessage() : Message = this.inputMessage
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ProgramParameterValue =
-        RowValue4(programParameterTable,
-                  PrimValue(this.parameterType),
-                  MaybeSumValue(this.defaultValue),
-                  PrimValue(this.label),
-                  ProdValue(this.inputMessage))
-
-}
-
-
-/**
- * Program Parameter Label
- */
-data class ProgramParameterLabel(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ProgramParameterLabel>
-    {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramParameterLabel> = when (doc)
-        {
-            is DocText -> effValue(ProgramParameterLabel(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLText({this.value})
-
-}
 

@@ -9,7 +9,6 @@ import com.kispoko.tome.db.procedureTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue5
-import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
@@ -18,10 +17,10 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.program.ProgramId
+import com.kispoko.tome.model.game.engine.program.ProgramParameter
 import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
 import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
-import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.ProcedureDoesNotHaveUpdates
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -45,7 +44,8 @@ data class Procedure(override val id : UUID,
                      val procedureName : ProcedureName,
                      val procedureUpdates : List<ProcedureUpdate>,
                      val description : Maybe<Message>,
-                     val actionLabel : Maybe<ProcedureActionLabel>)
+                     val actionLabel : ProcedureActionLabel,
+                     val statistics : ProcedureStatistics)
                       : ProdType, ToDocument, Serializable
 {
 
@@ -57,13 +57,28 @@ data class Procedure(override val id : UUID,
                 procedureName : ProcedureName,
                 procedureUpdates : List<ProcedureUpdate>,
                 description : Maybe<Message>,
-                actionLabel : Maybe<ProcedureActionLabel>)
+                actionLabel : ProcedureActionLabel)
         : this(UUID.randomUUID(),
                procedureId,
                procedureName,
                procedureUpdates,
                description,
-               actionLabel)
+               actionLabel,
+               ProcedureStatistics.default())
+
+    constructor(procedureId : ProcedureId,
+                procedureName : ProcedureName,
+                procedureUpdates : List<ProcedureUpdate>,
+                description : Maybe<Message>,
+                actionLabel : ProcedureActionLabel,
+                statistics : ProcedureStatistics)
+        : this(UUID.randomUUID(),
+               procedureId,
+               procedureName,
+               procedureUpdates,
+               description,
+               actionLabel,
+               statistics)
 
 
     companion object : Factory<Procedure>
@@ -84,9 +99,11 @@ data class Procedure(override val id : UUID,
                             effValue<ValueError,Maybe<Message>>(Nothing()),
                             { apply(::Just, Message.fromDocument(it))}),
                       // Action Label
-                      split(doc.maybeAt("action_label"),
-                            effValue<ValueError,Maybe<ProcedureActionLabel>>(Nothing()),
-                            { apply(::Just, ProcedureActionLabel.fromDocument(it))})
+                      doc.at("action_label") ap { ProcedureActionLabel.fromDocument(it) },
+                      // Statistics
+                      split(doc.maybeAt("statistics"),
+                            effValue(ProcedureStatistics.default()),
+                            { ProcedureStatistics.fromDocument(it) })
                       )
             }
             else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -110,7 +127,10 @@ data class Procedure(override val id : UUID,
     fun description() : Maybe<Message> = this.description
 
 
-    fun actionLabel() : Maybe<ProcedureActionLabel> = this.actionLabel
+    fun actionLabel() : ProcedureActionLabel = this.actionLabel
+
+
+    fun statistics() : ProcedureStatistics = this.statistics
 
 
     // -----------------------------------------------------------------------------------------
@@ -119,7 +139,8 @@ data class Procedure(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "procedure_id" to this.procedureId().toDocument(),
-        "procedure_name" to this.procedureName().toDocument()
+        "procedure_name" to this.procedureName().toDocument(),
+        "action_label" to this.actionLabel().toDocument()
     ))
 
 
@@ -139,7 +160,7 @@ data class Procedure(override val id : UUID,
                   PrimValue(this.procedureName),
                   PrimValue(ProcedureUpdates(this.procedureUpdates)),
                   MaybeProdValue(this.description),
-                  MaybePrimValue(this.actionLabel))
+                  PrimValue(this.actionLabel))
 
 
     // -----------------------------------------------------------------------------------------
@@ -170,6 +191,25 @@ data class Procedure(override val id : UUID,
                 }
             } } }
       }
+
+
+    // -----------------------------------------------------------------------------------------
+    // PARAMETERS
+    // -----------------------------------------------------------------------------------------
+
+    fun parameters(sheetContext : SheetContext) : List<ProgramParameter>
+    {
+        val parameters : MutableList<ProgramParameter> = mutableListOf()
+
+        val program = this.program(sheetContext)
+        when (program) {
+            is Val -> {
+                parameters.addAll(program.value.typeSignature().parameters())
+            }
+        }
+
+        return parameters
+    }
 
 }
 
@@ -247,9 +287,9 @@ data class ProcedureName(val value : String) : ToDocument, SQLSerializable, Seri
 
 
 /**
- * Procedure Action Lable
+ * Procedure Action Label
  */
-data class ProcedureActionLabel(val value : String) : SQLSerializable, Serializable
+data class ProcedureActionLabel(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -264,6 +304,13 @@ data class ProcedureActionLabel(val value : String) : SQLSerializable, Serializa
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 
     // -----------------------------------------------------------------------------------------
@@ -354,6 +401,70 @@ data class ProcedureUpdate(val variableIds : List<VariableId>,
         }
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
+
+
+/**
+ * Procedure Statistics
+ */
+data class ProcedureStatistics(val usedCount : Int,
+                               val usedCountMessage : Maybe<Message>)
+                                : SQLSerializable, ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ProcedureStatistics>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProcedureStatistics> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ProcedureStatistics,
+                      // Times Used
+                      doc.int("used_count"),
+                      // Times Used Message
+                      split(doc.maybeAt("used_count_message"),
+                            effValue<ValueError,Maybe<Message>>(Nothing()),
+                            { apply(::Just, Message.fromDocument(it)) })
+                      )
+            }
+            else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = ProcedureStatistics(0, Nothing())
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun usedCount() : Int = this.usedCount
+
+
+    fun usedCountMessage() : Maybe<Message> = this.usedCountMessage
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "used_count" to DocNumber(this.usedCount().toDouble())
+    ))
 
 
     // -----------------------------------------------------------------------------------------

@@ -97,7 +97,6 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
     {
         is NumberVariableLiteralValue ->
         {
-            Log.d("***VAREDITOR", editorType.toString())
             when (editorType)
             {
                 is NumericEditorType.Adder ->

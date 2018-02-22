@@ -380,9 +380,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
         label.margin.rightDp    = 5f
 
         val labelString = procedure.actionLabel()
-        when (labelString) {
-            is Just -> label.text = labelString.value.value
-        }
+        label.text = labelString.value
 
         label.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.SemiBold,
@@ -464,81 +462,5 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         return layout.linearLayout(sheetUIContext.context)
     }
-//
-//
-//
-//    private fun parameterSpannableString(description : String,
-//                                         valueStrings : List<String>) : SpannableStringBuilder
-//    {
-//        val builder = SpannableStringBuilder()
-//        var currentIndex = 0
-//
-//        val parts = description.split("$$$")
-//        val part1 : String = parts[0]
-//
-//        // > Part 1
-//        builder.append(part1)
-//
-//        this.formatSpans(listWidget.format().descriptionFormat()).forEach {
-//            builder.setSpan(it, 0, part1.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//        }
-//
-//        currentIndex += part1.length
-//
-//        val items = valueStrings.take(valueStrings.size - 1)
-//        val lastItem = valueStrings.elementAt(valueStrings.size - 1)
-//
-//        // > Items
-//        items.forEach { item ->
-//            builder.append(item)
-//
-//            this.formatSpans(listWidget.format().itemFormat()).forEach {
-//                builder.setSpan(it, currentIndex, currentIndex + item.length, SPAN_INCLUSIVE_EXCLUSIVE)
-//            }
-//
-//            currentIndex += item.length
-//
-//            if (items.size > 1) {
-//                builder.append(", ")
-//
-//                this.formatSpans(listWidget.format().descriptionFormat()).forEach {
-//                    builder.setSpan(it, currentIndex, currentIndex + 2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//                }
-//
-//                currentIndex += 2
-//            }
-//        }
-//
-//        if (items.size == 1)
-//        {
-//            builder.append(" and ")
-//
-//            this.formatSpans(listWidget.format().descriptionFormat()).forEach {
-//                builder.setSpan(it, currentIndex, currentIndex + 5, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//            }
-//
-//            currentIndex += 5
-//        }
-//        else if (items.size > 1)
-//        {
-//            builder.append("and ")
-//
-//            this.formatSpans(listWidget.format().descriptionFormat()).forEach {
-//                builder.setSpan(it, currentIndex, currentIndex + 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//            }
-//
-//            currentIndex += 4
-//
-//        }
-//
-//        builder.append(lastItem)
-//
-//        this.formatSpans(listWidget.format().itemFormat()).forEach {
-//            builder.setSpan(it, currentIndex, currentIndex + lastItem.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//        }
-//
-//        return builder
-//    }
-
 
 }

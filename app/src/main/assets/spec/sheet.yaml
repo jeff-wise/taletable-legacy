@@ -2051,6 +2051,12 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
+    - name: bg_skew
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: Background skew.
     - name: text_format
       type:
         type: custom_type

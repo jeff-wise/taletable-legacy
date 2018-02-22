@@ -144,6 +144,11 @@ class GameInfoViewBuilder(val game : Game,
         scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT
         scrollView.height        = LinearLayout.LayoutParams.MATCH_PARENT
 
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+        scrollView.backgroundColor  = ThemeManager.color(themeId, bgColorTheme)
+
         return scrollView.scrollView(context)
     }
 

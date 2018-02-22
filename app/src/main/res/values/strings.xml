@@ -154,6 +154,8 @@
     <string name="add_dice">Add dice</string>
     <string name="subtract">Subtract</string>
 
+    <string name="perform_action">Perform Action</string>
+
     <string name="done">Done</string>
 
     <string name="calculator">Calculator</string>

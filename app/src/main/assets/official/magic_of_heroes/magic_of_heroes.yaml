@@ -5596,10 +5596,11 @@ engine:
     description: Calcuates the ability modifier of an ability score.
     type_signature:
       parameters:
-      - type: number
-        label: Ability Score
-        input_message:
-          template: Ability Score
+      - type: program_parameter_number
+        program_parameter_number:
+          label: Ability Score
+          input_message:
+            template: Ability Score
       result: number
     statements:
     - binding_name: result
@@ -5685,10 +5686,11 @@ engine:
     description: Calcuates the proficiency bonus base on the current level.
     type_signature:
       parameters:
-      - type: number
-        label: Level
-        input_message:
-          template: Level
+      - type: program_parameter_number
+        program_parameter_number:
+          label: Level
+          input_message:
+            template: Level
       result: number
     statements:
     - binding_name: result
@@ -5702,10 +5704,11 @@ engine:
     description: The hit die by class.
     type_signature:
       parameters:
-      - type: text
-        label: Class
-        input_message:
-          template: Class
+      - type: program_parameter_text
+        program_parameter_text:
+          label: Class
+          input_message:
+            template: Class
       result: dice_roll
     statements:
     - binding_name: result
@@ -5725,10 +5728,14 @@ engine:
     description: Hit Dice to Hit Points
     type_signature:
       parameters:
-      - type: number
-        label: Hit Dice
-        input_message:
-          template: Hit Dice
+      - type: program_parameter_number
+        program_parameter_number:
+          label: Hit Dice
+          default_value: 1
+          input_message:
+            template: "I spend &&& hit dice to heal myself. For each hit die spent, I gain 1d8 + $$$ hit points."
+            variable_ids:
+            - constitution_modifier
       result: number
     statements:
     result_binding_name: result
@@ -5800,10 +5807,12 @@ engine:
       - current_hit_points
       program_id: hit_dice_to_hit_points
     description:
-      template: 'I spend at least one hour doing non-strenuous activity.'
-      variable_ids:
-      - 'level'
-    action_label: 'Take Short Rest'
+      template: "I rest for at least 1 hour, doing nothing more strenuous than eating, reading, tending to wounds, etc\u2026"
+    action_label: 'Take a Short Rest'
+    statistics:
+      used_count: 0
+      used_count_message:
+        template: "I have taken $$$ short rests."
   - procedure_id: long_rest
     procedure_name: Long Rest
     updates:

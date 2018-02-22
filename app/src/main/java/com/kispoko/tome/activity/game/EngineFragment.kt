@@ -3,12 +3,10 @@ package com.kispoko.tome.activity.game
 
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +16,6 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.engine
-import com.kispoko.tome.activity.game.engine.function.FunctionListActivity
-import com.kispoko.tome.activity.game.engine.valueset.ValueSetsActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.GameId
@@ -221,9 +216,9 @@ class EngineFragment : Fragment()
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
 
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-        layout.padding.bottomDp = 8f
+        layout.padding.leftDp   = 4f
+        layout.padding.rightDp  = 4f
+        layout.padding.bottomDp = 4f
 
         return layout.linearLayout(context)
 
@@ -275,8 +270,8 @@ class EngineFragment : Fragment()
 
         layout.margin.topDp     = 8f
 
-        layout.padding.leftDp   = 4f
-        layout.padding.rightDp  = 4f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
 
@@ -309,7 +304,7 @@ class EngineFragment : Fragment()
                                                 TextFontStyle.SemiBold,
                                                 context)
 
-        header.sizeSp           = 17f
+        header.sizeSp           = 18f
 
         return header.textView(context)
     }
@@ -329,14 +324,14 @@ class EngineFragment : Fragment()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         description.color           = ThemeManager.color(themeId, colorTheme)
 
         description.font            = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
-        description.sizeSp          = 14f
+        description.sizeSp          = 16f
 
         return description.textView(context)
     }

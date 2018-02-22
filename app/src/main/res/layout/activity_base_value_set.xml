@@ -100,10 +100,10 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:clickable="true"
-                    android:src="@drawable/ic_fab_add"
+                    android:src="@drawable/icon_check"
                     app:layout_anchor="@id/value_list_view"
                     app:layout_anchorGravity="bottom|right"
-                    app:backgroundTint="@color/dark_theme_light_green_13"
+                    app:backgroundTint="@color/light_theme_green_80"
                     app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>

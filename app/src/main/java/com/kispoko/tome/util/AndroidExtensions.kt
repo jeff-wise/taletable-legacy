@@ -31,7 +31,7 @@ import kotlinx.coroutines.experimental.launch
  */
 
 
-fun AppCompatActivity.configureToolbar(title : String)
+fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle? = null)
 {
     // (1) Configure Action Bar
     // -------------------------------------------------------------------------------------
@@ -47,7 +47,10 @@ fun AppCompatActivity.configureToolbar(title : String)
 
     val titleView = this.findViewById(R.id.toolbar_title) as TextView
 
-    titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
+    if (fontStyle != null)
+        titleView.typeface  = Font.typeface(TextFont.default(), fontStyle, this)
+    else
+        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
 
     val trimmedTitle = if (title.length >= 25) {
         title.substring(0, 25).plus("\u2026")
@@ -65,6 +68,9 @@ fun AppCompatActivity.configureToolbar(title : String)
 
     val backButtonView = this.findViewById(R.id.toolbar_back_button) as? ImageView
     backButtonView?.setOnClickListener { this.finish() }
+
+    val closeButtonView = this.findViewById(R.id.toolbar_close_button) as? ImageView
+    closeButtonView?.setOnClickListener { this.finish() }
 
 }
 

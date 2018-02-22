@@ -213,6 +213,10 @@
             android:name=".activity.game.rulebook.RulebookActivity"
             android:label="Rulebook"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.sheet.procedure.RunProcedureActivity"
+            android:label="Run Procedure"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

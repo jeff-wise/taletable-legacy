@@ -31,6 +31,7 @@ import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.mechanic.MechanicType
+import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
@@ -540,6 +541,14 @@ data class ActionWidget(override val id : UUID,
 
     private fun viewBuilder(sheetUIContext : SheetUIContext) =
         this.viewBuilder ?: ActionWidgetViewBuilder(this, sheetUIContext)
+
+
+    // -----------------------------------------------------------------------------------------
+    // PROCEDURE
+    // -----------------------------------------------------------------------------------------
+
+    fun procedure(sheetContext : SheetContext) : AppEff<Procedure> =
+            SheetManager.procedure(this.procedureId, sheetContext)
 
 
     // -----------------------------------------------------------------------------------------

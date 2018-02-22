@@ -1933,7 +1933,8 @@ sections:
             id: summary
             format:
               line_spacing: 8
-              line_height: 18
+              line_height: 36
+              bg_skew: 0.68
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -4651,7 +4652,7 @@ sections:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
-              color_id: dark_grey_15
+              color_id: dark_grey_16
           padding:
             top: 10
             bottom: 10

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.procedure.RunProcedureActivity
 import com.kispoko.tome.activity.sheet.dialog.ProcedureDialog
 import com.kispoko.tome.db.DB_WidgetActionFormatValue
 import com.kispoko.tome.db.widgetActionFormatTable
@@ -372,11 +374,27 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         layout.onClick      = View.OnClickListener {
             if (this.isActive)
             {
-                val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
-                        UpdateTargetActionWidget(actionWidget.id),
-                        SheetContext(sheetUIContext))
-                val activity = sheetUIContext.context as AppCompatActivity
-                dialog.show(activity.supportFragmentManager, "")
+                actionWidget.procedure(sheetContext) apDo { procedure ->
+
+                    val parameters = procedure.parameters(sheetContext)
+
+                    // If no parameters, use dialog
+                    if (parameters.isEmpty()) {
+                        val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
+                                UpdateTargetActionWidget(actionWidget.id),
+                                SheetContext(sheetUIContext))
+                        val activity = sheetUIContext.context as AppCompatActivity
+                        dialog.show(activity.supportFragmentManager, "")
+                    }
+                    // Otherwise, use the activity
+                    else {
+                        val activity = sheetUIContext.context as AppCompatActivity
+                        val intent = Intent(activity, RunProcedureActivity::class.java)
+                        intent.putExtra("procedure_id", actionWidget.procedureId())
+                        intent.putExtra("sheet_context", sheetContext)
+                        activity.startActivity(intent)
+                    }
+                }
             }
             else
             {

@@ -29,7 +29,7 @@ import java.util.*
  * Message
  */
 data class Message(override val id : UUID,
-                   val template: MessageTemplate,
+                   val template : MessageTemplate,
                    val variables : MessageVariables)
                     : ProdType, ToDocument, Serializable
 {
@@ -130,7 +130,7 @@ data class Message(override val id : UUID,
     }
 
 
-    private fun templateString(variableStrings : List<String>) : String
+    fun templateString(variableStrings : List<String>) : String
     {
         val baseString = this.template().value
         val parts = baseString.split("$$$")

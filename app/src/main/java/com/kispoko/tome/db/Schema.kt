@@ -8,9 +8,7 @@ import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.campaign.CampaignName
 import com.kispoko.tome.model.campaign.CampaignSummary
 import com.kispoko.tome.model.game.*
-import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.game.engine.EngineValue
-import com.kispoko.tome.model.game.engine.EngineValueType
+import com.kispoko.tome.model.game.engine.*
 import com.kispoko.tome.model.game.engine.dice.*
 import com.kispoko.tome.model.game.engine.function.*
 import com.kispoko.tome.model.game.engine.function.Function
@@ -28,6 +26,7 @@ import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
 import com.kispoko.tome.model.game.engine.summation.term.TermName
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
 import com.kispoko.tome.model.sheet.Settings
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.SheetName
@@ -471,7 +470,7 @@ typealias DB_ProcedureValue =
               PrimValue<ProcedureName>,
               PrimValue<ProcedureUpdates>,
               MaybeProdValue<Message>,
-              MaybePrimValue<ProcedureActionLabel>>
+              PrimValue<ProcedureActionLabel>>
 
 
 // PROGRAM
@@ -495,19 +494,49 @@ typealias DB_ProgramValue =
               PrimValue<StatementBindingName>>
 
 
-// PROGRAM PARAMETER
+// PROGRAM PARAMETER: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-val programParameterTable =
-    Table4("program_parameter",
-           "type",
+val programParameterBooleanTable =
+    Table3("program_parameter_boolean",
            "default_value",
            "label",
            "input_message")
 
-typealias DB_ProgramParameterValue =
-    RowValue4<PrimValue<EngineValueType>,
-              MaybeSumValue<EngineValue>,
+typealias DB_ProgramParameterBooleanValue =
+    RowValue3<MaybePrimValue<EngineValueBoolean>,
+              PrimValue<ProgramParameterLabel>,
+              ProdValue<Message>>
+
+
+// PROGRAM PARAMETER: NUMBER
+// ---------------------------------------------------------------------------------------------
+
+val programParameterNumberTable =
+    Table4("program_parameter_number",
+           "default_value",
+           "constraint",
+           "label",
+           "input_message")
+
+typealias DB_ProgramParameterNumberValue =
+    RowValue4<MaybePrimValue<EngineValueNumber>,
+              MaybeSumValue<NumberConstraint>,
+              PrimValue<ProgramParameterLabel>,
+              ProdValue<Message>>
+
+
+// PROGRAM PARAMETER: TEXT
+// ---------------------------------------------------------------------------------------------
+
+val programParameterTextTable =
+    Table3("program_parameter_text",
+           "default_value",
+           "label",
+           "input_message")
+
+typealias DB_ProgramParameterTextValue =
+    RowValue3<MaybePrimValue<EngineValueText>,
               PrimValue<ProgramParameterLabel>,
               ProdValue<Message>>
 

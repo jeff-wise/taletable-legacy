@@ -57,6 +57,7 @@ data class StoryWidgetFormat(override val id : UUID,
                              val widgetFormat : WidgetFormat,
                              val lineHeight : Maybe<LineHeight>,
                              val lineSpacing : Maybe<LineSpacing>,
+                             val hlSkew : Maybe<HighlightSkew>,
                              val textFormat : TextFormat)
                               : ToDocument, ProdType, Serializable
 {
@@ -68,11 +69,13 @@ data class StoryWidgetFormat(override val id : UUID,
     constructor(widgetFormat : WidgetFormat,
                 lineHeight : Maybe<LineHeight>,
                 lineSpacing : Maybe<LineSpacing>,
+                hlSkew : Maybe<HighlightSkew>,
                 textFormat : TextFormat)
         : this(UUID.randomUUID(),
                widgetFormat,
                lineHeight,
                lineSpacing,
+               hlSkew,
                textFormat)
 
 
@@ -82,6 +85,7 @@ data class StoryWidgetFormat(override val id : UUID,
         private fun defaultWidgetFormat()   = WidgetFormat.default()
         private fun defaultLineHeight()     = Nothing<LineHeight>()
         private fun defaultLineSpacing()    = Nothing<LineSpacing>()
+        private fun defaultHlSkew()         = Nothing<HighlightSkew>()
         private fun defaultTextFormat()     = TextFormat.default()
 
 
@@ -102,6 +106,10 @@ data class StoryWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("line_spacing"),
                             effValue<ValueError,Maybe<LineSpacing>>(defaultLineSpacing()),
                             { apply(::Just, LineSpacing.fromDocument(it)) }),
+                      // Highlight Skew
+                      split(doc.maybeAt("bg_skew"),
+                            effValue<ValueError,Maybe<HighlightSkew>>(defaultHlSkew()),
+                            { apply(::Just, HighlightSkew.fromDocument(it)) }),
                       // Text Format
                       split(doc.maybeAt("text_format"),
                             effValue(defaultTextFormat()),
@@ -115,6 +123,7 @@ data class StoryWidgetFormat(override val id : UUID,
         fun default() = StoryWidgetFormat(defaultWidgetFormat(),
                                           defaultLineHeight(),
                                           defaultLineSpacing(),
+                                          defaultHlSkew(),
                                           defaultTextFormat())
 
     }
@@ -140,6 +149,9 @@ data class StoryWidgetFormat(override val id : UUID,
 
 
     fun lineHeight() : Maybe<LineHeight> = this.lineHeight
+
+
+    fun hlSkew() : Maybe<HighlightSkew> = this.hlSkew
 
 
     fun textFormat() : TextFormat = this.textFormat
@@ -759,6 +771,44 @@ data class LineHeight(val value : Float) : ToDocument, SQLSerializable, Serializ
 }
 
 
+/**
+ * Highlight Skew
+ */
+data class HighlightSkew(val value : Float) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<HighlightSkew>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<HighlightSkew> = when (doc)
+        {
+            is DocNumber -> effValue(HighlightSkew(doc.number.toFloat()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+
+        fun default() = LineSpacing(0.75f)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLReal({this.value.toDouble()})
+
+}
+
+
 
 class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext : SheetUIContext)
 {
@@ -1033,6 +1083,7 @@ fun storySpannableView(storyWidget : StoryWidget,
                                                  storyWidget.id,
                                                  storyWidget.format().lineHeight(),
                                                  storyWidget.format().lineSpacing(),
+                                                 storyWidget.format().hlSkew.toNullable(),
                                                  sheetUIContext)
 
     //story.lineSpacingAdd    = 1f
@@ -1083,6 +1134,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                                    storyWidgetId : UUID,
                                    lineHeight : Maybe<LineHeight>,
                                    lineSpacing : Maybe<LineSpacing>,
+                                   hlSkew : HighlightSkew?,
                                    sheetUIContext : SheetUIContext) : SpannableStringBuilder
 {
 
@@ -1168,7 +1220,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
         {
             is StoryPartSpan ->
             {
-                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext).forEach {
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, hlSkew, sheetUIContext).forEach {
                     builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
             }
@@ -1197,7 +1249,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
 
                 builder.setSpan(clickSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
 
-                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext).forEach {
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, hlSkew, sheetUIContext).forEach {
                     builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
             }
@@ -1242,7 +1294,8 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                 val imageSpan = CenteredImageSpan(vectorDrawable)
 
                 // TODO android tip mutate
-                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, sheetUIContext, vectorDrawable?.mutate(), storyPart.iconFormat()).forEach {
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, hlSkew, sheetUIContext,
+                            vectorDrawable?.mutate(), storyPart.iconFormat()).forEach {
                     builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
 
@@ -1283,6 +1336,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
 private fun formatSpans(textStyle : TextFormat,
                         lineHeight : Maybe<LineHeight>,
                         lineSpacing : Maybe<LineSpacing>,
+                        hlSkew : HighlightSkew?,
                         sheetUIContext : SheetUIContext,
                         drawable : Drawable? = null,
                         iconFormat : IconFormat? = null) : List<Any>
@@ -1317,6 +1371,8 @@ private fun formatSpans(textStyle : TextFormat,
                 val lineHeightPx = Util.spToPx(lineHeight.value.value, sheetUIContext.context)
                 val bgSpan = RoundedBackgroundHeightSpan(lineHeightPx,
                                                          lineSpacingPx,
+                                                         hlSkew?.value,
+                                                         null,
                                                          color,
                                                          bgColor,
                                                          drawable,

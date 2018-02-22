@@ -798,6 +798,12 @@ types:
         prim_type: string
       presence: optional
       description: Procedure label.
+    - name: statistics
+      type:
+        type: custom_type
+        custom_type: procedure_statistics
+      presence: optional
+      description: Procedure label.
 - type: product_type
   product_type:
     name: procedure_update
@@ -818,6 +824,26 @@ types:
         custom_type: program_id
       presence: required
       description: The program id.
+- type: product_type
+  product_type:
+    name: procedure_statistics
+    label: Procedure Statistics
+    description: Procedure statistics.
+    group: Procedure
+    type: product
+    fields:
+    - name: used_count
+      type: 
+        type: prim_type
+        prim_type: number
+      presence: required
+      description: The number of times the procedure has been used.
+    - name: used_count_message
+      type: 
+        type: custom_type
+        custom_type: message
+      presence: optional
+      description: The used count message.
 - type: product_type
   product_type:
     name: message
@@ -903,23 +929,87 @@ types:
       presence: required
       description: >
         The program statement that calculates the program result value.
-- type: product_type
-  product_type:
+- type: sum_type
+  sum_type:
     name: program_parameter
     label: Program Parameter
-    description: Program parameter.
+    description: >
+      A program parameter.
+    group: Program
+    cases:
+    - type: program_parameter_boolean
+      description: Boolean parameter.
+    - type: program_parameter_number
+      description: Number parameter.
+    - type: program_parameter_text
+      description: Text parameter.
+- type: product_type
+  product_type:
+    name: program_parameter_boolean
+    label: Program Boolean Parameter
+    description: Program boolean parameter.
     group: Program
     fields:
-    - name: type
-      type: 
-        type: custom_type
-        custom_type: engine_value_type
-      presence: required
-      description: Engine value type.
     - name: default_value
       type: 
         type: custom_type
-        custom_type: engine_value
+        custom_type: engine_value_boolean
+      presence: optional
+      description: Default value.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Label
+    - name: input_message
+      type:
+        type: custom_type
+        custom_type: message
+      presence: required
+      description: Input message.
+- type: product_type
+  product_type:
+    name: program_parameter_number
+    label: Program Number Parameter
+    description: Program number parameter.
+    group: Program
+    fields:
+    - name: default_value
+      type: 
+        type: custom_type
+        custom_type: engine_value_number
+      presence: optional
+      description: Default value.
+    - name: constraint
+      type: 
+        type: custom_type
+        custom_type: constraint_number
+      presence: optional
+      description: Number constraint.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Label
+    - name: input_message
+      type:
+        type: custom_type
+        custom_type: message
+      presence: required
+      description: Input message.
+- type: product_type
+  product_type:
+    name: program_parameter_text
+    label: Program Text Parameter
+    description: Program Text parameter.
+    group: Program
+    fields:
+    - name: default_value
+      type: 
+        type: custom_type
+        custom_type: engine_value_text
       presence: optional
       description: Default value.
     - name: label
