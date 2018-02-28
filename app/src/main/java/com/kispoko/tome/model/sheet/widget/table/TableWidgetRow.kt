@@ -4,13 +4,11 @@ package com.kispoko.tome.model.sheet.widget.table
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.MotionEvent
 import android.widget.TableLayout
 import android.widget.TableRow
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
-import com.kispoko.tome.activity.sheet.dialog.AdderDialogFragment
 import com.kispoko.tome.activity.sheet.dialog.TableDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*

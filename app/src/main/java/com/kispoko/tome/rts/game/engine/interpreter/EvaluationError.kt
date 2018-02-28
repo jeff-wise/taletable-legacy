@@ -7,7 +7,7 @@ import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.function.FunctionParameters
 import com.kispoko.tome.model.game.engine.program.ProgramId
-
+import com.kispoko.tome.model.game.engine.program.ProgramParameterName
 
 
 /**
@@ -56,12 +56,26 @@ class BindingDoesNotExist(val bindingName : String, val programId : ProgramId) :
 }
 
 
-class ProgramParameterDoesNotExist(val parameterIndex : Int,
+class ProgramParameterDoesNotExist(val parameterName : ProgramParameterName,
                                    val programId : ProgramId) : EvalError()
 {
     override fun debugMessage(): String =
             """
-            Eval Error: Program Parameter Does Not Exist (at index)
+            Eval Error: Program Parameter Does Not Exist
+                Parameter Name: $parameterName
+                Program Id: $programId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class StatementParameterDoesNotExist(val parameterIndex : Int,
+                                     val programId : ProgramId) : EvalError()
+{
+    override fun debugMessage(): String =
+            """
+            Eval Error: Statement Parameter Does Not Exist
                 Parameter Index: $parameterIndex
                 Program Id: $programId
             """

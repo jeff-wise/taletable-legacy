@@ -5598,6 +5598,7 @@ engine:
       parameters:
       - type: program_parameter_number
         program_parameter_number:
+          name: ability_score
           label: Ability Score
           input_message:
             template: Ability Score
@@ -5606,8 +5607,8 @@ engine:
     - binding_name: result
       function_id: ability_modifier
       parameter1:
-        type: program_parameter_index
-        program_parameter_index: 1
+        type: program_parameter_name
+        program_parameter_name: ability_score
     result_binding_name: result
   - program_id: background_personality_trait_value_set_id
     label: Background Personality Trait Value Set Id
@@ -5685,19 +5686,19 @@ engine:
     label: Proficency Bonus
     description: Calcuates the proficiency bonus base on the current level.
     type_signature:
-      parameters:
-      - type: program_parameter_number
-        program_parameter_number:
-          label: Level
-          input_message:
-            template: Level
       result: number
     statements:
     - binding_name: result
       function_id: proficiency_bonus
       parameter1:
-        type: program_parameter_index
-        program_parameter_index: 1
+        type: data_reference
+        data_reference:
+          type: data_reference_number
+          data_reference_number:
+            type: variable_reference
+            variable_reference:
+              type: variable_id
+              variable_id: level
     result_binding_name: result
   - program_id: hit_die_by_class
     label: Hit Die
@@ -5706,6 +5707,7 @@ engine:
       parameters:
       - type: program_parameter_text
         program_parameter_text:
+          name: class
           label: Class
           input_message:
             template: Class
@@ -5730,6 +5732,7 @@ engine:
       parameters:
       - type: program_parameter_number
         program_parameter_number:
+          name: hit_dice
           label: Hit Dice
           default_value: 1
           input_message:

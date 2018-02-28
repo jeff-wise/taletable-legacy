@@ -5,6 +5,8 @@ package com.kispoko.tome.rts.game
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppGameError
+import com.kispoko.tome.model.book.Book
+import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.game.*
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.official.*
@@ -69,17 +71,17 @@ object GameManager
     // Rulebook
     // -----------------------------------------------------------------------------------------
 
-    fun rulebook(gameId : GameId, rulebookId : RulebookId) : AppEff<Rulebook> =
+    fun rulebook(gameId : GameId, rulebookId : BookId) : AppEff<Book> =
             this.gameWithId(gameId) ap {
-                note<AppError,Rulebook>(it.rulebookWithId(rulebookId),
+                note<AppError, Book>(it.rulebookWithId(rulebookId),
                      AppGameError(GameDoesNotHaveRulebook(gameId, rulebookId)))
             }
 
 
 //    fun rulebookSubsection(gameId : GameId,
-//                           rulebookReference : RulebookReference) : AppEff<RulebookSubsection?> =
+//                           rulebookReference : BookReference) : AppEff<BookSubsection?> =
 //        GameManager.rulebook(gameId)
-//                .apply { effValue<AppError,RulebookSubsection?>(it.subsection(rulebookReference)) }
+//                .apply { effValue<AppError,BookSubsection?>(it.subsection(rulebookReference)) }
 
 
 }

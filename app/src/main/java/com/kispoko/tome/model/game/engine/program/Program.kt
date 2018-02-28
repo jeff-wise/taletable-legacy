@@ -20,6 +20,7 @@ import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
 import maybe.Nothing
@@ -313,41 +314,6 @@ data class ProgramDescription(val value : String) : ToDocument, SQLSerializable,
 }
 
 
-/**
- * Program Parameter
- */
-data class ProgramParameterIndex(val value : Int) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ProgramParameterIndex>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ProgramParameterIndex> = when (doc)
-        {
-            is DocNumber -> effValue(ProgramParameterIndex(doc.number.toInt()))
-            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocNumber(this.value.toDouble())
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() = this.value.asSQLValue()
-
-}
-
 
 /**
  * Program Parameters
@@ -454,11 +420,10 @@ data class ProgramTypeSignature(override val id : UUID,
 }
 
 
-
 /**
  * Program Parameter Values
  */
-data class ProgramParameterValues(val values : List<EngineValue>)
+data class ProgramParameterValues(val parameterMap : Map<String,EngineValue>)
                 : SQLSerializable, Serializable
 {
 
@@ -466,11 +431,30 @@ data class ProgramParameterValues(val values : List<EngineValue>)
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun atIndex(index : Int) : Maybe<EngineValue> =
-        if (index > 0 && index <= values.size)
-            Just(values[index - 1])
+    fun value(name : String) : Maybe<EngineValue> =
+        if (this.parameterMap.containsKey(name))
+            Just(this.parameterMap[name]!!)
         else
             Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ProgramParameterValues>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramParameterValues> = when (doc)
+        {
+            is DocList ->
+            {
+                doc.map { ProgramParameterValue.fromDocument(it) } ap {
+                    effValue<ValueError,ProgramParameterValues>(ProgramParameterValues(it.map { it.toPair() }.toMap()))
+                }
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -480,5 +464,38 @@ data class ProgramParameterValues(val values : List<EngineValue>)
     override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
 
 }
+
+
+/**
+ * Program Parameter Value
+ */
+data class ProgramParameterValue(val name : String, val value : EngineValue) : Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ProgramParameterValue>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramParameterValue> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ProgramParameterValue,
+                      // Name
+                      doc.text("name"),
+                      // Value
+                      doc.at("value") ap { EngineValue.fromDocument(it) })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    fun toPair() : Pair<String,EngineValue> = Pair(this.name, this.value)
+
+}
+
 
 

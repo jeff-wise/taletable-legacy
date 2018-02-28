@@ -337,13 +337,6 @@ variables:
       type: program_invocation
       program_invocation:
         program_id: proficiency_bonus
-        parameters:
-        - type: data_reference_number
-          data_reference_number:
-            type: variable_reference
-            variable_reference:
-              type: variable_id
-              variable_id: level
 - type: variable_number
   variable_number:
     id: hit_die
@@ -395,12 +388,14 @@ variables:
       program_invocation:
         program_id: ability_modifier
         parameters:
-        - type: data_reference_number
-          data_reference_number:
-            type: variable_reference
-            variable_reference:
-              type: variable_id
-              variable_id: strength
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: strength
 - type: variable_number
   variable_number:
     id: base_dexterity
@@ -427,12 +422,14 @@ variables:
       program_invocation:
         program_id: ability_modifier
         parameters:
-        - type: data_reference_number
-          data_reference_number:
-            type: variable_reference
-            variable_reference:
-              type: variable_id
-              variable_id: dexterity
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: dexterity
 - type: variable_number
   variable_number:
     id: base_constitution
@@ -459,12 +456,14 @@ variables:
       program_invocation:
         program_id: ability_modifier
         parameters:
-        - type: data_reference_number
-          data_reference_number:
-            type: variable_reference
-            variable_reference:
-              type: variable_id
-              variable_id: constitution
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: constitution
 - type: variable_number
   variable_number:
     id: base_intelligence
@@ -491,12 +490,14 @@ variables:
       program_invocation:
         program_id: ability_modifier
         parameters:
-        - type: data_reference_number
-          data_reference_number:
-            type: variable_reference
-            variable_reference:
-              type: variable_id
-              variable_id: intelligence
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: intelligence
 - type: variable_number
   variable_number:
     id: base_wisdom
@@ -523,12 +524,14 @@ variables:
       program_invocation:
         program_id: ability_modifier
         parameters:
-        - type: data_reference_number
-          data_reference_number:
-            type: variable_reference
-            variable_reference:
-              type: variable_id
-              variable_id: wisdom
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: wisdom
 - type: variable_number
   variable_number:
     id: base_charisma
@@ -555,12 +558,14 @@ variables:
       program_invocation:
         program_id: ability_modifier
         parameters:
-        - type: data_reference_number
-          data_reference_number:
-            type: variable_reference
-            variable_reference:
-              type: variable_id
-              variable_id: charisma
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: charisma
 - type: variable_text
   variable_text:
     id: passive_perception_label
@@ -1358,7 +1363,7 @@ variables:
             variable_id: max_hit_points
     value:
       type: number_literal
-      number_literal: 7
+      number_literal: 10
 - type: variable_number
   variable_number:
     id: current_hit_dice
@@ -4371,7 +4376,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue_90
                 font_style: bold
-                size: 19
+                size: 18
               current_text_format:
                 element_format:
                   margins:
@@ -4384,7 +4389,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue_90
                 font_style: bold
-                size: 19
+                size: 18
               label_text_format:
                 element_format:
                   margins:
@@ -4397,7 +4402,7 @@ sections:
                   - theme_id: light
                     color_id: dark_grey_18
                 font_style: medium
-                size: 19
+                size: 18
               info_style: label_left_slash_right
               info_format:
                 element_format:
@@ -5454,6 +5459,7 @@ sections:
               - type: summation_id
                 summation_id: initiative_roll
             description: 'Roll Initiative!'
+            result_description: 'Initiative!'
     - format:
         element_format:
           padding:
@@ -14213,7 +14219,7 @@ sections:
                         - theme_id: light
                           color_id: light_blue
                       font_style: medium
-                      size: 18
+                      size: 17
                     width: 3
             - type: table_widget_number_column
               table_widget_number_column:
@@ -14255,7 +14261,7 @@ sections:
                       - theme_id: light
                         color_id: dark_grey_16
                     font_style: medium
-                    size: 18
+                    size: 17
                   true_format:
                     color_theme:
                       theme_color_ids:
@@ -14416,7 +14422,7 @@ sections:
                         - theme_id: light
                           color_id: light_blue
                       font_style: medium
-                      size: 18
+                      size: 17
                     width: 3
             - type: table_widget_number_column
               table_widget_number_column:
@@ -14466,7 +14472,7 @@ sections:
                       - theme_id: light
                         color_id: green_90
                     font_style: medium
-                    size: 18
+                    size: 17
                   true_text: 'Yes'
                   false_text: 'No'
             rows:

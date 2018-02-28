@@ -1815,6 +1815,12 @@ types:
         prim_type: string
       presence: optional
       description: A description of the roll.
+    - name: result_description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: A description of the roll.
 - type: product_type
   product_type:
     name: roll_widget_format

@@ -7,6 +7,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue4
+import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeSumValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
@@ -14,6 +15,7 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.orm.sql.asSQLValue
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
 import com.kispoko.tome.model.game.engine.EngineValueNumber
@@ -40,7 +42,8 @@ import java.util.*
 /**
  * Program Parameter
  */
-sealed class ProgramParameter(open val label : ProgramParameterLabel,
+sealed class ProgramParameter(open val name : ProgramParameterName,
+                              open val label : ProgramParameterLabel,
                               open val inputMessage : Message)
                                : ToDocument, ProdType, java.io.Serializable
 {
@@ -66,6 +69,9 @@ sealed class ProgramParameter(open val label : ProgramParameterLabel,
     // API
     // -----------------------------------------------------------------------------------------
 
+    fun name() : ProgramParameterName = this.name
+
+
     fun label() : ProgramParameterLabel = this.label
 
 
@@ -81,6 +87,50 @@ sealed class ProgramParameter(open val label : ProgramParameterLabel,
         is ProgramParameterNumber  -> this.defaultValue() as Maybe<EngineValue>
         is ProgramParameterText    -> this.defaultValue() as Maybe<EngineValue>
     }
+
+}
+
+
+/**
+ * Program Parameter Name
+ */
+data class ProgramParameterName(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ProgramParameterName>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ProgramParameterName> = when (doc)
+        {
+            is DocText -> effValue(ProgramParameterName(doc.text))
+            else       -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.value.asSQLValue()
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() = this.value
+
 
 }
 
@@ -123,20 +173,23 @@ data class ProgramParameterLabel(val value : String) : ToDocument, SQLSerializab
 
 
 data class ProgramParameterBoolean(override val id : UUID,
+                                   override val name : ProgramParameterName,
                                    val defaultValue : Maybe<EngineValueBoolean>,
                                    override val label : ProgramParameterLabel,
                                    override val inputMessage : Message)
-                                    : ProgramParameter(label, inputMessage)
+                                    : ProgramParameter(name, label, inputMessage)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(defaultValue : Maybe<EngineValueBoolean>,
+    constructor(name : ProgramParameterName,
+                defaultValue : Maybe<EngineValueBoolean>,
                 label : ProgramParameterLabel,
                 inputMessage : Message)
         : this(UUID.randomUUID(),
+               name,
                defaultValue,
                label,
                inputMessage)
@@ -149,6 +202,8 @@ data class ProgramParameterBoolean(override val id : UUID,
             is DocDict ->
             {
                 apply(::ProgramParameterBoolean,
+                      // Name
+                      doc.at("name") ap { ProgramParameterName.fromDocument(it) },
                       // Default Value
                       split(doc.maybeAt("default_value"),
                             effValue<ValueError,Maybe<EngineValueBoolean>>(Nothing()),
@@ -170,6 +225,7 @@ data class ProgramParameterBoolean(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "name" to this.name().toDocument(),
         "label" to this.label().toDocument(),
         "input_message" to this.inputMessage().toDocument()
     ))
@@ -203,7 +259,8 @@ data class ProgramParameterBoolean(override val id : UUID,
 
 
     override fun rowValue() : DB_ProgramParameterBooleanValue =
-        RowValue3(programParameterBooleanTable,
+        RowValue4(programParameterBooleanTable,
+                  PrimValue(this.name),
                   MaybePrimValue(this.defaultValue),
                   PrimValue(this.label),
                   ProdValue(this.inputMessage))
@@ -213,22 +270,25 @@ data class ProgramParameterBoolean(override val id : UUID,
 
 
 data class ProgramParameterNumber(override val id : UUID,
+                                  override val name : ProgramParameterName,
                                   val defaultValue : Maybe<EngineValueNumber>,
                                   val constraint : Maybe<NumberConstraint>,
                                   override val label : ProgramParameterLabel,
                                   override val inputMessage : Message)
-                                   : ProgramParameter(label, inputMessage)
+                                   : ProgramParameter(name, label, inputMessage)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(defaultValue : Maybe<EngineValueNumber>,
+    constructor(name : ProgramParameterName,
+                defaultValue : Maybe<EngineValueNumber>,
                 constraint : Maybe<NumberConstraint>,
                 label : ProgramParameterLabel,
                 inputMessage : Message)
         : this(UUID.randomUUID(),
+               name,
                defaultValue,
                constraint,
                label,
@@ -242,6 +302,8 @@ data class ProgramParameterNumber(override val id : UUID,
             is DocDict ->
             {
                 apply(::ProgramParameterNumber,
+                      // Name
+                      doc.at("name") ap { ProgramParameterName.fromDocument(it) },
                       // Default Value
                       split(doc.maybeAt("default_value"),
                             effValue<ValueError,Maybe<EngineValueNumber>>(Nothing()),
@@ -267,6 +329,7 @@ data class ProgramParameterNumber(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "name" to this.name().toDocument(),
         "label" to this.label().toDocument(),
         "input_message" to this.inputMessage().toDocument()
     ))
@@ -303,7 +366,8 @@ data class ProgramParameterNumber(override val id : UUID,
 
 
     override fun rowValue() : DB_ProgramParameterNumberValue =
-        RowValue4(programParameterNumberTable,
+        RowValue5(programParameterNumberTable,
+                  PrimValue(this.name),
                   MaybePrimValue(this.defaultValue),
                   MaybeSumValue(this.constraint),
                   PrimValue(this.label),
@@ -314,20 +378,23 @@ data class ProgramParameterNumber(override val id : UUID,
 
 
 data class ProgramParameterText(override val id : UUID,
+                                override val name : ProgramParameterName,
                                 val defaultValue : Maybe<EngineValueText>,
                                 override val label : ProgramParameterLabel,
                                 override val inputMessage : Message)
-                                : ProgramParameter(label, inputMessage)
+                                : ProgramParameter(name, label, inputMessage)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(defaultValue : Maybe<EngineValueText>,
+    constructor(name : ProgramParameterName,
+                defaultValue : Maybe<EngineValueText>,
                 label : ProgramParameterLabel,
                 inputMessage : Message)
         : this(UUID.randomUUID(),
+               name,
                defaultValue,
                label,
                inputMessage)
@@ -340,6 +407,8 @@ data class ProgramParameterText(override val id : UUID,
             is DocDict ->
             {
                 apply(::ProgramParameterText,
+                      // Name
+                      doc.at("name") ap { ProgramParameterName.fromDocument(it) },
                       // Default Value
                       split(doc.maybeAt("default_value"),
                             effValue<ValueError,Maybe<EngineValueText>>(Nothing()),
@@ -361,6 +430,7 @@ data class ProgramParameterText(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "name" to this.name().toDocument(),
         "label" to this.label().toDocument(),
         "input_message" to this.inputMessage().toDocument()
     ))
@@ -394,7 +464,8 @@ data class ProgramParameterText(override val id : UUID,
 
 
     override fun rowValue() : DB_ProgramParameterTextValue =
-        RowValue3(programParameterTextTable,
+        RowValue4(programParameterTextTable,
+                  PrimValue(this.name),
                   MaybePrimValue(this.defaultValue),
                   PrimValue(this.label),
                   ProdValue(this.inputMessage))

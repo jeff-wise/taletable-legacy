@@ -24,7 +24,7 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.RulebookReference
+import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
@@ -1218,7 +1218,7 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     }
 
 
-    fun setRulebookReference(rulebookReference : RulebookReference)
+    fun setRulebookReference(rulebookReference : BookReference)
     {
         this.layout?.setOnLongClickListener {
             val sheetActivity = sheetUIContext.context as SheetActivity

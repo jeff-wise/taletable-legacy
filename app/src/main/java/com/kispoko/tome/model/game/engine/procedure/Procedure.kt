@@ -15,9 +15,8 @@ import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.engine.program.Program
-import com.kispoko.tome.model.game.engine.program.ProgramId
-import com.kispoko.tome.model.game.engine.program.ProgramParameter
+import com.kispoko.tome.model.game.engine.EngineValue
+import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
 import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
@@ -167,15 +166,18 @@ data class Procedure(override val id : UUID,
     // PROGRAMS
     // -----------------------------------------------------------------------------------------
 
-    fun program(sheetContext : SheetContext) : AppEff<Program> =
-        if (this.procedureUpdates.isNotEmpty()) {
-            val programId = this.procedureUpdates.first().programId
-            SheetManager.program(programId, sheetContext)
-        }
-        else {
-            effError(AppEngineError(ProcedureDoesNotHaveUpdates(this.procedureId)))
-        }
+//    fun program(sheetContext : SheetContext) : AppEff<Program> =
+//        if (this.procedureUpdates.isNotEmpty()) {
+//            val programId = this.procedureUpdates.first().programId()
+//            SheetManager.program(programId, sheetContext)
+//        }
+//        else {
+//            effError(AppEngineError(ProcedureDoesNotHaveUpdates(this.procedureId)))
+//        }
 
+
+    private fun programs(sheetContext : SheetContext) : AppEff<List<Program>> =
+        this.procedureUpdates.mapM { SheetManager.program(it.programId(), sheetContext) }
 
     // -----------------------------------------------------------------------------------------
     // RUN
@@ -184,7 +186,7 @@ data class Procedure(override val id : UUID,
     fun run(sheetContext : SheetContext) =
         this.procedureUpdates().forEach { (variableIds, programId) ->
             SheetManager.program(programId, sheetContext)                 apDo { program ->
-            program.value(ProgramParameterValues(listOf()), sheetContext) apDo { engineValue ->
+            program.value(ProgramParameterValues(mapOf()), sheetContext) apDo { engineValue ->
             SheetManager.sheetState(sheetContext.sheetId)                 apDo { state ->
                 variableIds.forEach {
                     state.updateVariable(it, engineValue, sheetContext)
@@ -197,14 +199,16 @@ data class Procedure(override val id : UUID,
     // PARAMETERS
     // -----------------------------------------------------------------------------------------
 
-    fun parameters(sheetContext : SheetContext) : List<ProgramParameter>
+    fun parameters(sheetContext : SheetContext) : Map<ProgramId,List<ProgramParameter>>
     {
-        val parameters : MutableList<ProgramParameter> = mutableListOf()
+        val parameters : MutableMap<ProgramId,List<ProgramParameter>> = mutableMapOf()
 
-        val program = this.program(sheetContext)
-        when (program) {
+        val programs = this.programs(sheetContext)
+        when (programs) {
             is Val -> {
-                parameters.addAll(program.value.typeSignature().parameters())
+                programs.value.forEach {
+                    parameters.put(it.programId(), it.typeSignature().parameters())
+                }
             }
         }
 
@@ -375,7 +379,8 @@ data class ProcedureUpdates(val updates : List<ProcedureUpdate>)
  * Procedure Update
  */
 data class ProcedureUpdate(val variableIds : List<VariableId>,
-                           val programId : ProgramId)
+                           val programId : ProgramId,
+                           val resultMessage : Maybe<Message>)
                             : SQLSerializable, Serializable
 {
 
@@ -394,13 +399,30 @@ data class ProcedureUpdate(val variableIds : List<VariableId>,
                      // Variable Id
                      doc.list("variable_ids") ap { it.map { VariableId.fromDocument(it) } },
                      // Program Id
-                     doc.at("program_id") ap { ProgramId.fromDocument(it) }
+                     doc.at("program_id") ap { ProgramId.fromDocument(it) },
+                     // Result Message
+                     split(doc.maybeAt("result_message"),
+                           effValue<ValueError,Maybe<Message>>(Nothing()),
+                           { apply(::Just, Message.fromDocument(it)) })
                      )
            }
            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun variableIds() : List<VariableId> = this.variableIds
+
+
+    fun programId() : ProgramId = this.programId
+
+
+    fun resultMessage() : Maybe<Message> = this.resultMessage
 
 
     // -----------------------------------------------------------------------------------------
@@ -474,4 +496,13 @@ data class ProcedureStatistics(val usedCount : Int,
     override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
 
 }
+
+
+/**
+ * Procedure Invocation
+ */
+data class ProcedureInvocation(val procedureId : ProcedureId,
+                               val parametersByProgram : Map<ProgramId,ProgramParameterValues>)
+                                : Serializable
+
 

@@ -209,8 +209,8 @@ types:
           - binding_name: result
             function_id: ability_modifier
             parameter1:
-              type: program_parameter_index
-              program_parameter_index: 1
+              type: program_parameter_name
+              program_parameter_name: strength_bonus
           result_binding_name: result
         summations:
         - summation_id: dexterity
@@ -824,6 +824,12 @@ types:
         custom_type: program_id
       presence: required
       description: The program id.
+    - name: result_message
+      type: 
+        type: custom_type
+        custom_type: message
+      presence: optional
+      description: The result message
 - type: product_type
   product_type:
     name: procedure_statistics
@@ -929,6 +935,25 @@ types:
       presence: required
       description: >
         The program statement that calculates the program result value.
+- type: product_type
+  product_type:
+    name: program_parameter_value
+    label: Program Parameter Value
+    description: Program parameter value.
+    group: Program
+    fields:
+    - name: name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Parameter name.
+    - name: value
+      type: 
+        type: custom_type
+        custom_type: engine_value
+      presence: required
+      description: Parameter value.
 - type: sum_type
   sum_type:
     name: program_parameter
@@ -950,6 +975,12 @@ types:
     description: Program boolean parameter.
     group: Program
     fields:
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Name
     - name: default_value
       type: 
         type: custom_type
@@ -975,6 +1006,12 @@ types:
     description: Program number parameter.
     group: Program
     fields:
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Name
     - name: default_value
       type: 
         type: custom_type
@@ -1006,6 +1043,12 @@ types:
     description: Program Text parameter.
     group: Program
     fields:
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Name
     - name: default_value
       type: 
         type: custom_type
@@ -1122,9 +1165,28 @@ types:
     - name: parameters
       type:
         type: custom_coll_type
-        custom_coll_type: data_reference
+        custom_coll_type: invocation_parameter
       presence: optional
       description: Parameters
+- type: product_type
+  product_type:
+    name: invocation_parameter
+    label: Invocation Parameter
+    description: Invocation parameter.
+    group: Program
+    fields:
+    - name: name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Parameter name.
+    - name: value
+      type: 
+        type: custom_type
+        custom_type: data_reference
+      presence: required
+      description: Parameter value.
 - type: primitive_type
   primitive_type:
     name: statement_binding_name
@@ -1137,14 +1199,14 @@ types:
       prim_type: string
 - type: primitive_type
   primitive_type:
-    name: program_parameter_index
-    label: Program Parameter Index
+    name: program_parameter_name
+    label: Program Parameter Name
     description: >
       A program parameter index.
     group: Program
     base_type:
       type: prim_type
-      prim_type: number
+      prim_type: string
 - type: sum_type
   sum_type:
     name: statement_parameter
@@ -1155,7 +1217,7 @@ types:
     cases:
     - type: statement_binding_name
       description: Statement binding.
-    - type: program_parameter_index
+    - type: program_parameter_name
       description: A program parameter.
     - type: data_reference
       description: Data reference.

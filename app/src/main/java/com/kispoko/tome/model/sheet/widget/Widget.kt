@@ -26,7 +26,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.RulebookReference
+import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
@@ -1544,7 +1544,7 @@ data class NumberWidget(override val id : UUID,
                         val format : NumberWidgetFormat,
                         val valueVariableId : VariableId,
                         val insideLabel : Maybe<NumberWidgetLabel>,
-                        val rulebookReference : Maybe<RulebookReference>)
+                        val rulebookReference : Maybe<BookReference>)
                          : Widget()
 {
 
@@ -1563,7 +1563,7 @@ data class NumberWidget(override val id : UUID,
                 format : NumberWidgetFormat,
                 valueVariableId : VariableId,
                 insideLabel : Maybe<NumberWidgetLabel>,
-                rulebookReference: Maybe<RulebookReference>)
+                rulebookReference: Maybe<BookReference>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
@@ -1593,8 +1593,8 @@ data class NumberWidget(override val id : UUID,
                             { apply(::Just, NumberWidgetLabel.fromDocument(it)) }),
                       // Rulebook Referenece
                       split(doc.maybeAt("rulebook_reference"),
-                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
-                            { apply(::Just, RulebookReference.fromDocument(it)) })
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { apply(::Just, BookReference.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1628,7 +1628,7 @@ data class NumberWidget(override val id : UUID,
     fun insideLabel() : Maybe<NumberWidgetLabel> = this.insideLabel
 
 
-    fun rulebookReference() : Maybe<RulebookReference> = this.rulebookReference
+    fun rulebookReference() : Maybe<BookReference> = this.rulebookReference
 
 
     // -----------------------------------------------------------------------------------------
@@ -2357,7 +2357,8 @@ data class RollWidget(override val id : UUID,
                       val widgetId : WidgetId,
                       val format : RollWidgetFormat,
                       val rollGroup : DiceRollGroup,
-                      val description : Maybe<RollWidgetDescription>) : Widget()
+                      val description : Maybe<RollWidgetDescription>,
+                      val resultDescription : Maybe<RollWidgetResultDescription>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -2379,7 +2380,21 @@ data class RollWidget(override val id : UUID,
                widgetId,
                format,
                rollGroup,
-               description)
+               description,
+               Nothing())
+
+
+    constructor(widgetId : WidgetId,
+                format : RollWidgetFormat,
+                rollGroup : DiceRollGroup,
+                description : Maybe<RollWidgetDescription>,
+                resultDescription : Maybe<RollWidgetResultDescription>)
+        : this(UUID.randomUUID(),
+               widgetId,
+               format,
+               rollGroup,
+               description,
+               resultDescription)
 
 
     companion object : Factory<RollWidget>
@@ -2400,7 +2415,11 @@ data class RollWidget(override val id : UUID,
                     // Description
                     split(doc.maybeAt("description"),
                           effValue<ValueError,Maybe<RollWidgetDescription>>(Nothing()),
-                          { apply(::Just, RollWidgetDescription.fromDocument(it)) })
+                          { apply(::Just, RollWidgetDescription.fromDocument(it)) }),
+                    // Result Description
+                    split(doc.maybeAt("result_description"),
+                          effValue<ValueError,Maybe<RollWidgetResultDescription>>(Nothing()),
+                          { apply(::Just, RollWidgetResultDescription.fromDocument(it)) })
                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -2435,6 +2454,9 @@ data class RollWidget(override val id : UUID,
     fun description() : Maybe<RollWidgetDescription> = this.description
 
 
+    fun resultDescription() : Maybe<RollWidgetResultDescription> = this.resultDescription
+
+
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
@@ -2459,11 +2481,12 @@ data class RollWidget(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetRollValue =
-        RowValue4(widgetRollTable,
+        RowValue5(widgetRollTable,
                   PrimValue(this.widgetId),
                   ProdValue(this.format),
                   ProdValue(this.rollGroup),
-                  MaybePrimValue(this.description))
+                  MaybePrimValue(this.description),
+                  MaybePrimValue(this.resultDescription))
 
 
     // -----------------------------------------------------------------------------------------
@@ -3468,7 +3491,7 @@ data class TextWidget(override val id : UUID,
                       val widgetId : WidgetId,
                       val format : TextWidgetFormat,
                       val valueVariableId : VariableId,
-                      val rulebookReference : Maybe<RulebookReference>) : Widget()
+                      val rulebookReference : Maybe<BookReference>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -3485,7 +3508,7 @@ data class TextWidget(override val id : UUID,
     constructor(widgetId: WidgetId,
                 format : TextWidgetFormat,
                 valueVariableId : VariableId,
-                rulebookReference : Maybe<RulebookReference>)
+                rulebookReference : Maybe<BookReference>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
@@ -3510,8 +3533,8 @@ data class TextWidget(override val id : UUID,
                       doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
                       // Rulebook Reference
                       split(doc.maybeAt("rulebook_reference"),
-                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
-                            { apply(::Just, RulebookReference.fromDocument(it)) })
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { apply(::Just, BookReference.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -3543,7 +3566,7 @@ data class TextWidget(override val id : UUID,
     fun valueVariableId() : VariableId = this.valueVariableId
 
 
-    fun rulebookReference() : Maybe<RulebookReference> = this.rulebookReference
+    fun rulebookReference() : Maybe<BookReference> = this.rulebookReference
 
 
     // -----------------------------------------------------------------------------------------

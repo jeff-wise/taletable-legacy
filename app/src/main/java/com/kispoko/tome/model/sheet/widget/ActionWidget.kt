@@ -10,6 +10,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.sheet.SheetActivityRequest
 import com.kispoko.tome.activity.sheet.procedure.RunProcedureActivity
 import com.kispoko.tome.activity.sheet.dialog.ProcedureDialog
 import com.kispoko.tome.db.DB_WidgetActionFormatValue
@@ -392,7 +394,7 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
                         val intent = Intent(activity, RunProcedureActivity::class.java)
                         intent.putExtra("procedure_id", actionWidget.procedureId())
                         intent.putExtra("sheet_context", sheetContext)
-                        activity.startActivity(intent)
+                        activity.startActivityForResult(intent, SheetActivityRequest.PROCEDURE_INVOCATION)
                     }
                 }
             }

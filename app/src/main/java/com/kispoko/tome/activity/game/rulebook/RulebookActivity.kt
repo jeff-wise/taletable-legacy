@@ -22,19 +22,17 @@ import android.widget.ScrollView
 import android.widget.TextView
 import br.tiagohm.markdownview.css.InternalStyleSheet
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.name
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.Rulebook
-import com.kispoko.tome.model.game.RulebookId
+import com.kispoko.tome.model.book.Book
+import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
@@ -56,7 +54,7 @@ class RulebookActivity : AppCompatActivity()
     private val appSettings : AppSettings = AppSettings(ThemeId.Light)
 
     private var gameId     : GameId?     = null
-    private var rulebookId : RulebookId? = null
+    private var rulebookId : BookId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -79,7 +77,7 @@ class RulebookActivity : AppCompatActivity()
             this.gameId = this.intent.getSerializableExtra("game_id") as GameId
 
         if (this.intent.hasExtra("rulebook_id"))
-            this.rulebookId = this.intent.getSerializableExtra("rulebook_id") as RulebookId
+            this.rulebookId = this.intent.getSerializableExtra("rulebook_id") as BookId
 
         // (3) Initialize Views
         // -------------------------------------------------------------------------------------
@@ -178,7 +176,7 @@ class RulebookActivity : AppCompatActivity()
 
 
 class BookViewBuilder(val themeId : ThemeId,
-                      val rulebook : Rulebook,
+                      val rulebook : Book,
                       val context : Context)
 {
 

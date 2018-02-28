@@ -20,6 +20,7 @@ import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.game.engine.interpreter.BindingDoesNotExist
 import com.kispoko.tome.rts.game.engine.interpreter.ProgramParameterDoesNotExist
+import com.kispoko.tome.rts.game.engine.interpreter.StatementParameterDoesNotExist
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetData
 import effect.*
@@ -314,7 +315,7 @@ data class Statement(override val id : UUID,
                                  parameter4,
                                  parameter5)
                 else -> effError<AppError,FunctionParameters>(
-                                AppEvalError(ProgramParameterDoesNotExist(1, programId)))
+                                AppEvalError(StatementParameterDoesNotExist(1, programId)))
             }
         }
     }
@@ -361,12 +362,12 @@ data class Statement(override val id : UUID,
             }
             is StatementParameterProgramParameter ->
             {
-                val parameterIndex = statementParameter.index.value
-                val parameter = programParameterValues.atIndex(parameterIndex)
+                val parameterName = statementParameter.name
+                val parameter = programParameterValues.value(parameterName.value)
                 when (parameter) {
                     is Just -> effValue<AppError,Maybe<EngineValue>>(Just(parameter.value))
                     else    -> effError<AppError,Maybe<EngineValue>>(AppEvalError(
-                                        ProgramParameterDoesNotExist(parameterIndex, programId)))
+                                        ProgramParameterDoesNotExist(parameterName, programId)))
                 }
             }
             is StatementParameterReference ->
@@ -431,7 +432,7 @@ sealed class StatementParameter : ToDocument, SumType, Serializable
             {
                 "statement_binding_name"  -> StatementParameterBindingName.fromDocument(doc.nextCase())
                                                 as ValueParser<StatementParameter>
-                "program_parameter_index" -> StatementParameterProgramParameter.fromDocument(doc.nextCase())
+                "program_parameter_name" -> StatementParameterProgramParameter.fromDocument(doc.nextCase())
                                                 as ValueParser<StatementParameter>
                 "data_reference"          -> StatementParameterReference.fromDocument(doc.nextCase())
                                                 as ValueParser<StatementParameter>
@@ -501,7 +502,7 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
 /**
  * Program Parameter Reference
  */
-data class StatementParameterProgramParameter(val index : ProgramParameterIndex)
+data class StatementParameterProgramParameter(val name : ProgramParameterName)
     : StatementParameter()
 {
 
@@ -513,7 +514,7 @@ data class StatementParameterProgramParameter(val index : ProgramParameterIndex)
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<StatementParameterProgramParameter> =
                 effApply(::StatementParameterProgramParameter,
-                           ProgramParameterIndex.fromDocument(doc))
+                           ProgramParameterName.fromDocument(doc))
     }
 
 
@@ -521,14 +522,14 @@ data class StatementParameterProgramParameter(val index : ProgramParameterIndex)
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = this.index.toDocument().withCase("program_parameter_index")
+    override fun toDocument() = this.name.toDocument().withCase("program_parameter")
 
 
     // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = PrimValue(this.index)
+    override fun columnValue() = PrimValue(this.name)
 
 
     override fun case() = "program_parameter"

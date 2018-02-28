@@ -14,13 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.kispoko.tome.R.string.game
 import com.kispoko.tome.activity.game.rulebook.RulebookActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.Rulebook
+import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.ColorId
@@ -172,7 +171,7 @@ class GameInfoViewBuilder(val game : Game,
 
 
 
-    private fun bookButtonView(rulebook : Rulebook) : LinearLayout
+    private fun bookButtonView(rulebook : Book) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -204,7 +203,7 @@ class GameInfoViewBuilder(val game : Game,
             val activity = context as AppCompatActivity
             val intent = Intent(activity, RulebookActivity::class.java)
             intent.putExtra("game_id", game.gameId)
-            intent.putExtra("rulebook_id", rulebook.rulebookId)
+            intent.putExtra("rulebook_id", rulebook.bookId)
             activity.startActivity(intent)
         }
 

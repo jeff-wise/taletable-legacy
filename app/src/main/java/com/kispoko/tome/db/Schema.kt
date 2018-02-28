@@ -4,6 +4,7 @@ package com.kispoko.tome.db
 
 import com.kispoko.tome.lib.orm.*
 import com.kispoko.tome.lib.orm.schema.*
+import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.campaign.CampaignName
 import com.kispoko.tome.model.campaign.CampaignSummary
@@ -260,7 +261,7 @@ val invocationTable =
 
 typealias DB_InvocationValue =
     RowValue2<PrimValue<ProgramId>,
-              PrimValue<ProgramParameters>>
+              PrimValue<InvocationParameters>>
 
 
 // GAME
@@ -281,7 +282,7 @@ typealias DB_GameValue =
               PrimValue<GameSummary>,
               CollValue<Author>,
               ProdValue<Engine>,
-              CollValue<Rulebook>>
+              CollValue<Book>>
 
 
 // GROUP
@@ -498,13 +499,15 @@ typealias DB_ProgramValue =
 // ---------------------------------------------------------------------------------------------
 
 val programParameterBooleanTable =
-    Table3("program_parameter_boolean",
+    Table4("program_parameter_boolean",
+           "name",
            "default_value",
            "label",
            "input_message")
 
 typealias DB_ProgramParameterBooleanValue =
-    RowValue3<MaybePrimValue<EngineValueBoolean>,
+    RowValue4<PrimValue<ProgramParameterName>,
+              MaybePrimValue<EngineValueBoolean>,
               PrimValue<ProgramParameterLabel>,
               ProdValue<Message>>
 
@@ -513,14 +516,16 @@ typealias DB_ProgramParameterBooleanValue =
 // ---------------------------------------------------------------------------------------------
 
 val programParameterNumberTable =
-    Table4("program_parameter_number",
+    Table5("program_parameter_number",
+           "name",
            "default_value",
            "constraint",
            "label",
            "input_message")
 
 typealias DB_ProgramParameterNumberValue =
-    RowValue4<MaybePrimValue<EngineValueNumber>,
+    RowValue5<PrimValue<ProgramParameterName>,
+              MaybePrimValue<EngineValueNumber>,
               MaybeSumValue<NumberConstraint>,
               PrimValue<ProgramParameterLabel>,
               ProdValue<Message>>
@@ -530,13 +535,15 @@ typealias DB_ProgramParameterNumberValue =
 // ---------------------------------------------------------------------------------------------
 
 val programParameterTextTable =
-    Table3("program_parameter_text",
+    Table4("program_parameter_text",
+           "name",
            "default_value",
            "label",
            "input_message")
 
 typealias DB_ProgramParameterTextValue =
-    RowValue3<MaybePrimValue<EngineValueText>,
+    RowValue4<PrimValue<ProgramParameterName>,
+              MaybePrimValue<EngineValueText>,
               PrimValue<ProgramParameterLabel>,
               ProdValue<Message>>
 
@@ -579,11 +586,11 @@ val rulebookTable =
            "chapters")
 
 typealias DB_RulebookValue =
-    RowValue5<PrimValue<RulebookTitle>,
+    RowValue5<PrimValue<BookTitle>,
               CollValue<Author>,
-              PrimValue<RulebookAbstract>,
-              PrimValue<RulebookIntroduction>,
-              CollValue<RulebookChapter>>
+              PrimValue<BookAbstract>,
+              PrimValue<BookIntroduction>,
+              CollValue<BookChapter>>
 
 
 // RULEBOOK CHAPTER
@@ -596,9 +603,9 @@ val rulebookChapterTable =
            "sections")
 
 typealias DB_RulebookChapterValue =
-    RowValue3<PrimValue<RulebookChapterId>,
-              PrimValue<RulebookChapterTitle>,
-              CollValue<RulebookSection>>
+    RowValue3<PrimValue<BookChapterId>,
+              PrimValue<BookChapterTitle>,
+              CollValue<BookSection>>
 
 
 // RULEBOOK SECTION
@@ -612,10 +619,10 @@ val rulebookSectionTable =
            "subsections")
 
 typealias DB_RulebookSectionValue =
-    RowValue4<PrimValue<RulebookSectionId>,
-              PrimValue<RulebookSectionTitle>,
-              PrimValue<RulebookSectionBody>,
-              CollValue<RulebookSubsection>>
+    RowValue4<PrimValue<BookSectionId>,
+              PrimValue<BookSectionTitle>,
+              PrimValue<BookSectionBody>,
+              CollValue<BookSubsection>>
 
 
 // RULEBOOK SUBSECTION
@@ -628,9 +635,9 @@ val rulebookSubsectionTable =
            "body")
 
 typealias DB_RulebookSubsectionValue =
-    RowValue3<PrimValue<RulebookSubsectionId>,
-              PrimValue<RulebookSubsectionTitle>,
-              PrimValue<RulebookSubsectionBody>>
+    RowValue3<PrimValue<BookSubsectionId>,
+              PrimValue<BookSubsectionTitle>,
+              PrimValue<BookSubsectionBody>>
 
 
 // RULEBOOK REFERENCE
@@ -644,10 +651,10 @@ val rulebookReferenceTable =
            "subsection_id")
 
 typealias DB_RulebookReferenceValue =
-    RowValue4<PrimValue<RulebookId>,
-              PrimValue<RulebookChapterId>,
-              MaybePrimValue<RulebookSectionId>,
-              MaybePrimValue<RulebookSubsectionId>>
+    RowValue4<PrimValue<BookId>,
+              PrimValue<BookChapterId>,
+              MaybePrimValue<BookSectionId>,
+              MaybePrimValue<BookSubsectionId>>
 
 
 // SECTION
@@ -1244,7 +1251,7 @@ typealias DB_WidgetNumberValue =
               ProdValue<NumberWidgetFormat>,
               PrimValue<VariableId>,
               MaybePrimValue<NumberWidgetLabel>,
-              MaybeProdValue<RulebookReference>>
+              MaybeProdValue<BookReference>>
 
 
 // WIDGET: NUMBER > FORMAT
@@ -1388,17 +1395,19 @@ typealias DB_WidgetQuoteFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetRollTable =
-    Table4("widget_roll",
+    Table5("widget_roll",
            "widget_id",
            "format",
            "roll_group",
-           "description")
+           "description",
+           "result_description")
 
 typealias DB_WidgetRollValue =
-    RowValue4<PrimValue<WidgetId>,
+    RowValue5<PrimValue<WidgetId>,
               ProdValue<RollWidgetFormat>,
               ProdValue<DiceRollGroup>,
-              MaybePrimValue<RollWidgetDescription>>
+              MaybePrimValue<RollWidgetDescription>,
+              MaybePrimValue<RollWidgetResultDescription>>
 
 
 // WIDGET: ROLL > FORMAT
@@ -1795,7 +1804,7 @@ typealias DB_WidgetTextValue =
     RowValue4<PrimValue<WidgetId>,
               ProdValue<TextWidgetFormat>,
               PrimValue<VariableId>,
-              MaybeProdValue<RulebookReference>>
+              MaybeProdValue<BookReference>>
 
 
 // WIDGET: TEXT > FORMAT
@@ -1829,7 +1838,7 @@ val valueNumberTable =
 typealias DB_ValueNumberValue =
     RowValue5<PrimValue<ValueId>,
               PrimValue<ValueDescription>,
-              MaybeProdValue<RulebookReference>,
+              MaybeProdValue<BookReference>,
               CollValue<Variable>,
               PrimValue<NumberValue>>
 
@@ -1848,7 +1857,7 @@ val valueTextTable =
 typealias DB_ValueTextValue =
     RowValue5<PrimValue<ValueId>,
               PrimValue<ValueDescription>,
-              MaybeProdValue<RulebookReference>,
+              MaybeProdValue<BookReference>,
               CollValue<Variable>,
               PrimValue<TextValue>>
 

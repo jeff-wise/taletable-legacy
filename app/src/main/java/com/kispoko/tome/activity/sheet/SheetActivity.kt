@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -27,7 +28,7 @@ import com.kispoko.tome.activity.nav.SheetNavigationActivity
 import com.kispoko.tome.activity.sheet.state.SheetStateActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.procedure.ProcedureInvocation
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
@@ -59,6 +60,14 @@ object SheetActivityGlobal
     fun cancelLongPressRunnable() {
         touchHandler.removeCallbacks(this.longPressRunnable)
     }
+}
+
+
+object SheetActivityRequest
+{
+
+    val PROCEDURE_INVOCATION = 1
+
 }
 
 
@@ -138,6 +147,21 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
+    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?)
+    {
+        if (requestCode == SheetActivityRequest.PROCEDURE_INVOCATION) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                if (data != null && data.hasExtra("procedure_invocation")) {
+                    val procedureInvocation = data.getSerializableExtra("procedure_invocation") as ProcedureInvocation
+                    Log.d("***SHEET ACTIVITY", "got procedure invocation")
+                }
+            }
+        }
+
+    }
+
+
     // UI
     // -----------------------------------------------------------------------------------------
 
@@ -188,11 +212,11 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // TODO sheet manager remove context reference
-
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        // TODO sheet manager remove context reference
+//
+//    }
 
 
     /**

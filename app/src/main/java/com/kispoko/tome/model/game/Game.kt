@@ -13,6 +13,8 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.book.Book
+import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.game.engine.Engine
 import effect.effApply
 import effect.effError
@@ -35,7 +37,7 @@ data class Game(override val id : UUID,
                 val gameSummary : GameSummary,
                 val authors : MutableList<Author>,
                 val engine : Engine,
-                val rulebooks : List<Rulebook>)
+                val rulebooks : List<Book>)
                  : ToDocument, ProdType, Serializable
 {
 
@@ -43,9 +45,9 @@ data class Game(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private val rulebookById : MutableMap<RulebookId,Rulebook> =
+    private val rulebookById : MutableMap<BookId, Book> =
                         rulebooks.associateBy { it.rulebookId() }
-                                as MutableMap<RulebookId,Rulebook>
+                                as MutableMap<BookId, Book>
 
 
     // -----------------------------------------------------------------------------------------
@@ -57,7 +59,7 @@ data class Game(override val id : UUID,
                 gameSummary : GameSummary,
                 authors : List<Author>,
                 engine : Engine,
-                rulebooks : List<Rulebook>)
+                rulebooks : List<Book>)
         : this(UUID.randomUUID(),
                gameId,
                gameName,
@@ -89,7 +91,7 @@ data class Game(override val id : UUID,
                              // Rulebook
                              split(doc.maybeList("rulebooks"),
                                    effValue(listOf()),
-                                   { it.map { Rulebook.fromDocument(it) } } )
+                                   { it.map { Book.fromDocument(it) } } )
                              )
                 }
             }
@@ -130,7 +132,7 @@ data class Game(override val id : UUID,
     fun engine() : Engine = this.engine
 
 
-    fun rulebooks() : List<Rulebook> = this.rulebooks
+    fun rulebooks() : List<Book> = this.rulebooks
 
 
     // -----------------------------------------------------------------------------------------
@@ -156,7 +158,7 @@ data class Game(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun rulebookWithId(rulebookId : RulebookId) : Rulebook? = this.rulebookById[rulebookId]
+    fun rulebookWithId(rulebookId : BookId) : Book? = this.rulebookById[rulebookId]
 
 }
 

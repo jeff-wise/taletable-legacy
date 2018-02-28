@@ -197,6 +197,8 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.orientation      = LinearLayout.VERTICAL
 
+        layout.corners          = Corners(3.0, 3.0, 0.0, 0.0)
+
         return layout.linearLayout(sheetUIContext.context)
     }
 
@@ -219,8 +221,8 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
         layout.padding.topDp    = 10f
         layout.padding.bottomDp = 10f
 
@@ -340,14 +342,17 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
     private fun actionsViewLayout() : LinearLayout
     {
-        val layout              = LinearLayoutBuilder()
+        val layout                  = LinearLayoutBuilder()
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.orientation      = LinearLayout.VERTICAL
+        layout.orientation          = LinearLayout.VERTICAL
 
-        layout.padding.bottomDp = 4f
+        layout.padding.topDp        = 4f
+        layout.padding.bottomDp     = 4f
+
+        layout.backgroundColor      = Color.WHITE
 
         return layout.linearLayout(sheetUIContext.context)
     }
@@ -378,14 +383,14 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.padding.leftDp   = 12f
-        layout.padding.rightDp  = 10f
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
         layout.padding.bottomDp = 10f
         layout.padding.topDp    = 10f
 
-        layout.margin.leftDp    = 4f
-        layout.margin.rightDp   = 4f
-        layout.margin.topDp     = 4f
+//        layout.margin.leftDp    = 4f
+//        layout.margin.rightDp   = 4f
+//        layout.margin.topDp     = 4f
 
         layout.child(icon)
               .child(label)
@@ -400,7 +405,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         icon.color             = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
 
         icon.margin.rightDp     = 12f
@@ -414,12 +419,12 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         label.textId            = labelId
 
         label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+                                                TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         label.color             = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
 
         label.sizeSp            = 19f

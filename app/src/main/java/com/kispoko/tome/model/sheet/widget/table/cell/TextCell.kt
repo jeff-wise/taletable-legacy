@@ -165,31 +165,34 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         val CLICK_DURATION = 500
 
 
+//        @SuppressLint("ClickableViewAccessibility")
         layout.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action)
             {
                 MotionEvent.ACTION_DOWN -> {
+                    Log.d("***TEXTCELL", "action down")
                     clickTime = System.currentTimeMillis()
                 }
                 MotionEvent.ACTION_UP -> {
+                    Log.d("***TEXTCELL", "action down")
 
                     val upTime = System.currentTimeMillis()
                     if ((upTime - clickTime) < CLICK_DURATION) {
-                        val cellAction = cell.resolveAction(column)
-                        val cellActionRollGroup =  cellAction ap { it.rollGroup() }
-                        when (cellActionRollGroup) {
-                            is Just -> {
-                                val cellNS = cell.namespace
-                                val rowContext = if (cellNS != null) Just(cellNS)
-                                                    else Nothing<VariableNamespace>()
-                                val dialog = DiceRollDialog.newInstance(cellActionRollGroup.value,
-                                                                        SheetContext(sheetUIContext))
-                                dialog.show(sheetActivity.supportFragmentManager, "")
-                            }
-                            else -> {
-                                this.openEditorDialog()
-                            }
-                        }
+                        this.openEditorDialog()
+//                        val cellAction = cell.resolveAction(column)
+//                        val cellActionRollGroup =  cellAction ap { it.rollGroup() }
+//                        when (cellActionRollGroup) {
+//                            is Just -> {
+//                                val cellNS = cell.namespace
+//                                val rowContext = if (cellNS != null) Just(cellNS)
+//                                                    else Nothing<VariableNamespace>()
+//                                val dialog = DiceRollDialog.newInstance(cellActionRollGroup.value,
+//                                                                        SheetContext(sheetUIContext))
+//                                dialog.show(sheetActivity.supportFragmentManager, "")
+//                            }
+//                            else -> {
+//                            }
+//                        }
                     }
                 }
             }

@@ -14,9 +14,9 @@ import br.tiagohm.markdownview.MarkdownView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.game.rulebook.StyleSheet
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.RulebookExcerpt
-import com.kispoko.tome.model.game.RulebookReference
-import com.kispoko.tome.model.game.RulebookReferencePath
+import com.kispoko.tome.model.book.RulebookExcerpt
+import com.kispoko.tome.model.book.BookReference
+import com.kispoko.tome.model.book.RulebookReferencePath
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -40,7 +40,7 @@ class RulebookExcerptDialog : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var rulebookReference : RulebookReference? = null
+    private var rulebookReference : BookReference? = null
     private var sheetContext : SheetContext? = null
 
 
@@ -50,7 +50,7 @@ class RulebookExcerptDialog : DialogFragment()
 
     companion object
     {
-        fun newInstance(rulebookReference : RulebookReference,
+        fun newInstance(rulebookReference : BookReference,
                         sheetContext : SheetContext) : RulebookExcerptDialog
         {
             val dialog = RulebookExcerptDialog()
@@ -74,7 +74,7 @@ class RulebookExcerptDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.rulebookReference = arguments.getSerializable("rulebook_reference") as RulebookReference
+        this.rulebookReference = arguments.getSerializable("rulebook_reference") as BookReference
         this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
 
 

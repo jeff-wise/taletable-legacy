@@ -4,7 +4,7 @@ package com.kispoko.tome.rts.game
 
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.RulebookId
+import com.kispoko.tome.model.book.BookId
 
 
 /**
@@ -28,7 +28,7 @@ class GameDoesNotExist(val gameId : GameId) : GameError()
 }
 
 
-class GameDoesNotHaveRulebook(val gameId : GameId, val rulebookId : RulebookId) : GameError()
+class GameDoesNotHaveRulebook(val gameId : GameId, val rulebookId : BookId) : GameError()
 {
     override fun debugMessage(): String =
             """

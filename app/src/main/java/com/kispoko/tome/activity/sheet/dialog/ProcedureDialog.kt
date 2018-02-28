@@ -177,16 +177,16 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
     val sheetContext = SheetContext(sheetUIContext)
 
-    val parameters : MutableList<ProgramParameter> = mutableListOf()
-
-    init {
-        val program = procedure.program(sheetContext)
-        when (program) {
-            is Val -> {
-                this.parameters.addAll(program.value.typeSignature().parameters())
-            }
-        }
-    }
+//    val parameters : MutableList<ProgramParameter> = mutableListOf()
+//
+//    init {
+//        val parameters = procedure.parameters(sheetContext)
+//        when (parameters) {
+//            is Val -> {
+//                this.parameters.addAll(parameters.value)
+//            }
+//        }
+//    }
 
 
     var currentParameter : Int = 0

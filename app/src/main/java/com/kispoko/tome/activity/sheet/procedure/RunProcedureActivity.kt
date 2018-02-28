@@ -2,6 +2,7 @@
 package com.kispoko.tome.activity.sheet.procedure
 
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -29,8 +30,11 @@ import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
+import com.kispoko.tome.model.game.engine.procedure.ProcedureInvocation
+import com.kispoko.tome.model.game.engine.program.ProgramId
 import com.kispoko.tome.model.game.engine.program.ProgramParameter
 import com.kispoko.tome.model.game.engine.program.ProgramParameterNumber
+import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
 import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.IconSize
@@ -66,8 +70,9 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Light)
 
-
     private var procedure : Procedure? = null
+
+    private var procedureUI : ComplexProcedureUI? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -110,7 +115,6 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
         // > Toolbar
         this.configureToolbar(getString(R.string.perform_action), TextFontStyle.Medium)
 
-
         val statusBarColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
@@ -121,13 +125,14 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
             }
         }
 
-
         // > Theme
         val theme = ThemeManager.theme(this.appSettings.themeId())
         when (theme) {
             is Val -> this.applyTheme(theme.value.uiColors())
             is Err -> ApplicationLog.error(theme.error)
         }
+
+        this.initializeFABView()
 
         // > Tab Views
         this.initializeViews()
@@ -156,6 +161,27 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
+    private fun initializeFABView()
+    {
+        val fabView = this.findViewById(R.id.run_procedure_button)
+        fabView.setOnClickListener {
+            val procedure = this.procedure
+            val procedureUI = this.procedureUI
+            val sheetContext = this.sheetContext
+            if (procedure != null && procedureUI != null && sheetContext != null)
+            {
+                val invocation = ProcedureInvocation(procedure.procedureId(),
+                                                     procedureUI.parameterValuesByProgram())
+                val resultData = Intent()
+                resultData.putExtra("procedure_invocation", invocation)
+
+                this.setResult(RESULT_OK, resultData)
+                this.finish()
+            }
+        }
+    }
+
+
     private fun initializeViews()
     {
         val procedure = this.procedure
@@ -165,11 +191,12 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
             val contentLayout = findViewById(R.id.content) as LinearLayout
             val sheetUIContext = SheetUIContext(sheetContext, this)
 
-            val viewBuilder = ComplexProcedureViewBuilder(procedure, sheetUIContext)
-            contentLayout.addView(viewBuilder.view())
+            val procedureUI = ComplexProcedureUI(procedure, sheetUIContext)
+            contentLayout.addView(procedureUI.view())
+            this.procedureUI = procedureUI
 
-            val footerLayout = findViewById(R.id.footer) as LinearLayout
-            footerLayout.addView(viewBuilder.procedureUsedCountView())
+//            val footerLayout = findViewById(R.id.footer) as LinearLayout
+//            footerLayout.addView(procedureUI.procedureUsedCountView())
         }
     }
 
@@ -242,8 +269,8 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
 
 
-class ComplexProcedureViewBuilder(val procedure : Procedure,
-                                  val sheetUIContext : SheetUIContext)
+class ComplexProcedureUI(val procedure : Procedure,
+                         val sheetUIContext : SheetUIContext)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -252,18 +279,51 @@ class ComplexProcedureViewBuilder(val procedure : Procedure,
 
     val sheetContext = SheetContext(sheetUIContext)
 
-    val parameters = procedure.parameters(sheetContext)
+    val parametersByProgram = procedure.parameters(sheetContext)
 
-    val parameterValues : MutableMap<Int,EngineValue> = mutableMapOf()
+    val parameterValuesByProgram : MutableMap<ProgramId,Map<String,EngineValue>> = mutableMapOf()
+
+    val parameters : MutableList<ProgramParameter> = mutableListOf()
 
     init {
-        parameters.forEachIndexed { index, parameter ->
-            val defaultValue = parameter.parameterDefaultValue()
-            when (defaultValue) {
-                is Just -> parameterValues.put(index, defaultValue.value)
+        parametersByProgram.entries.forEach { e ->
+            val programId = e.key
+            val parameters = e.value
+            val parameterValues : MutableMap<String,EngineValue> = mutableMapOf()
+
+            parameters.forEach { parameter ->
+                val defaultValue = parameter.parameterDefaultValue()
+                when (defaultValue) {
+                    is Just -> parameterValues.put(parameter.name().value, defaultValue.value)
+                }
+            }
+
+        }
+
+        parametersByProgram.values.forEach {
+            it.forEach {
+                parameters.add(it)
             }
         }
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // PARAMETER VALUES
+    // -----------------------------------------------------------------------------------------
+
+    fun parameterValuesByProgram() : Map<ProgramId,ProgramParameterValues>
+    {
+        val m : MutableMap<ProgramId, ProgramParameterValues> = mutableMapOf()
+
+        this.parameterValuesByProgram.forEach {
+            m.put(it.key, ProgramParameterValues(it.value))
+        }
+
+        return m
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
@@ -277,9 +337,17 @@ class ComplexProcedureViewBuilder(val procedure : Procedure,
 
         layout.addView(this.procedureDescriptionView())
 
-        parameters.forEachIndexed { index, parameter ->
-            layout.addView(this.parameterView(parameter, index))
+        var index = 0
+        parametersByProgram.entries.forEach { e ->
+            val programId = e.key
+            e.value.forEach { parameter ->
+                layout.addView(this.parameterView(parameter, programId, index))
+                index += 1
+            }
+
         }
+
+        layout.addView(this.procedureUsedCountView())
 
         return layout
     }
@@ -377,7 +445,9 @@ class ComplexProcedureViewBuilder(val procedure : Procedure,
     }
 
 
-    private fun parameterView(parameter : ProgramParameter, index : Int) : LinearLayout
+    private fun parameterView(parameter : ProgramParameter,
+                              programId : ProgramId,
+                              index : Int) : LinearLayout
     {
         val layout = this.parmeterViewLayout(index)
 
@@ -391,24 +461,32 @@ class ComplexProcedureViewBuilder(val procedure : Procedure,
             {
                 is ProgramParameterNumber ->
                 {
-                    if (this.parameterValues.containsKey(index))
+                    if (this.parameterValuesByProgram.containsKey(programId))
                     {
-                        val parameterValue = this.parameterValues[index]
-                        when (parameterValue)
+                        val parameterValues = this.parameterValuesByProgram[programId]!!
+
+                        val parameterName = parameter.name.value
+                        if (parameterValues.containsKey(parameterName))
                         {
-                            is EngineValueNumber ->
+                            val parameterValue = parameterValues[parameterName]!!
+
+                            when (parameterValue)
                             {
-                                val activity = sheetUIContext.context as RunProcedureActivity
-                                val updateRequest = NumberUpdateRequest(index.toString(),
-                                                                        parameterValue.value,
-                                                                        parameter.constraint,
-                                                                        activity)
-                                val adderDialog = SimpleAdderDialog.newInstance(parameter.label().value,
-                                                                                updateRequest,
-                                                                                sheetContext)
-                                adderDialog.show(activity.supportFragmentManager, "")
+                                is EngineValueNumber ->
+                                {
+                                    val activity = sheetUIContext.context as RunProcedureActivity
+                                    val updateRequest = NumberUpdateRequest(index.toString(),
+                                                                            parameterValue.value,
+                                                                            parameter.constraint)
+                                    val adderDialog = SimpleAdderDialog.newInstance(parameter.label().value,
+                                                                                    updateRequest,
+                                                                                    sheetContext)
+                                    adderDialog.show(activity.supportFragmentManager, "")
+                                }
                             }
+
                         }
+
                     }
                 }
             }
@@ -642,10 +720,10 @@ class ComplexProcedureViewBuilder(val procedure : Procedure,
         }
 
         uses.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+                                                TextFontStyle.Regular,
                                                 sheetUIContext.context)
 
-        uses.sizeSp             = 18f
+        uses.sizeSp             = 16f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
@@ -662,8 +740,7 @@ class ComplexProcedureViewBuilder(val procedure : Procedure,
 
 data class NumberUpdateRequest(val key : String,
                                val currentValue : Double,
-                               val constraint : Maybe<NumberConstraint>,
-                               val numberUpdater : NumberUpdater) : Serializable
+                               val constraint : Maybe<NumberConstraint>) : Serializable
 
 
 interface NumberUpdater

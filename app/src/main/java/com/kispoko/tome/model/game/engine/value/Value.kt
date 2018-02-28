@@ -10,10 +10,9 @@ import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.RulebookReference
+import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.reference.TextReference
 import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
-import com.kispoko.tome.model.game.engine.reference.TextReferenceValue
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
 import com.kispoko.tome.util.Util
@@ -34,7 +33,7 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 sealed class Value(open val valueId : ValueId,
                    open val description : ValueDescription,
-                   open val rulebookReference : Maybe<RulebookReference>,
+                   open val rulebookReference : Maybe<BookReference>,
                    open val variables : List<Variable>,
                    open val valueSetId : ValueSetId)
                     : ToDocument, ProdType, Serializable
@@ -77,7 +76,7 @@ sealed class Value(open val valueId : ValueId,
     fun description() : ValueDescription = this.description
 
 
-    fun rulebookReference() : Maybe<RulebookReference> = this.rulebookReference
+    fun rulebookReference() : Maybe<BookReference> = this.rulebookReference
 
 
     fun variables() : List<Variable> = this.variables
@@ -136,7 +135,7 @@ sealed class Value(open val valueId : ValueId,
 data class ValueNumber(override val id : UUID,
                        override val valueId : ValueId,
                        override val description : ValueDescription,
-                       override val rulebookReference : Maybe<RulebookReference>,
+                       override val rulebookReference : Maybe<BookReference>,
                        override val variables : List<Variable>,
                        override val valueSetId : ValueSetId,
                        val value : NumberValue)
@@ -149,7 +148,7 @@ data class ValueNumber(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : ValueDescription,
-                rulebookReference : Maybe<RulebookReference>,
+                rulebookReference : Maybe<BookReference>,
                 variables : List<Variable>,
                 valueSetId : ValueSetId,
                 value : NumberValue)
@@ -176,8 +175,8 @@ data class ValueNumber(override val id : UUID,
                       doc.at("description") ap { ValueDescription.fromDocument(it) },
                       // Rulebook Reference
                       split(doc.maybeAt("rulebook_reference"),
-                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
-                            { apply(::Just, RulebookReference.fromDocument(it)) }),
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { apply(::Just, BookReference.fromDocument(it)) }),
                       // Variables
                       doc.list("variables") ap { docList ->
                           docList.map { Variable.fromDocument(it) }
@@ -262,7 +261,7 @@ data class ValueNumber(override val id : UUID,
 data class ValueText(override val id : UUID,
                      override val valueId : ValueId,
                      override val description : ValueDescription,
-                     override val rulebookReference : Maybe<RulebookReference>,
+                     override val rulebookReference : Maybe<BookReference>,
                      override val variables : MutableList<Variable>,
                      override val valueSetId : ValueSetId,
                      val value : TextValue)
@@ -275,7 +274,7 @@ data class ValueText(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : ValueDescription,
-                rulebookReference : Maybe<RulebookReference>,
+                rulebookReference : Maybe<BookReference>,
                 variables : List<Variable>,
                 valueSetId : ValueSetId,
                 value : TextValue)
@@ -302,8 +301,8 @@ data class ValueText(override val id : UUID,
                       doc.at("description") ap { ValueDescription.fromDocument(it) },
                       // Rulebook Reference
                       split(doc.maybeAt("rulebook_reference"),
-                            effValue<ValueError,Maybe<RulebookReference>>(Nothing()),
-                            { effApply(::Just, RulebookReference.fromDocument(it)) }),
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { effApply(::Just, BookReference.fromDocument(it)) }),
                       // Variables
                       split(doc.maybeList("variables"),
                             effValue(listOf()),

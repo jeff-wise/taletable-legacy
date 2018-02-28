@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.description
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.db.DB_WidgetRollFormatValue
@@ -329,6 +330,42 @@ data class RollWidgetDescription(val value : String) : ToDocument, SQLSerializab
 
 
 /**
+ * Roll Widget Result Description
+ */
+data class RollWidgetResultDescription(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<RollWidgetResultDescription>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<RollWidgetResultDescription> = when (doc)
+        {
+            is DocText -> effValue(RollWidgetResultDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
  * Roll Text Location
  */
 sealed class RollTextLocation : ToDocument, SQLSerializable, Serializable
@@ -510,6 +547,23 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         descriptionTextView?.background = bgDrawable
 
+        val rollDescription = rollWidget.resultDescription()
+        if (this.isRoll)
+        {
+            when (rollDescription) {
+                is Just -> {
+                    descriptionTextView?.text = rollDescription.value.value
+                }
+            }
+        }
+        else
+        {
+            val description = rollWidget.description()
+            when (description) {
+                is Just -> descriptionTextView?.text = description.value.value
+            }
+
+        }
     }
 
 
