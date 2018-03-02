@@ -31,7 +31,7 @@ import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.official.HeroesCharacterSheetSummary
 import com.kispoko.tome.rts.official.OfficialManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 
 
 

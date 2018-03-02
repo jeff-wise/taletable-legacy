@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.game.engine.search;
+package com.kispoko.tome.rts.entity.engine.search;
 
 
 

@@ -48,6 +48,16 @@ data class OfficialGameLoaded(val gameName : String) : DocLoadEvent()
 }
 
 
+data class OfficialGameBookLoaded(val gameName : String, val bookName : String) : DocLoadEvent()
+{
+    override fun debugMessage() : String = """Official Game Book Loaded:
+            |    Game: $gameName
+            |    Book: $bookName""".trimMargin()
+
+    override fun logMessage(): String = debugMessage()
+}
+
+
 data class OfficialThemeLoaded(val themeName : String) : DocLoadEvent()
 {
     override fun debugMessage() : String = """Official Theme Loaded:

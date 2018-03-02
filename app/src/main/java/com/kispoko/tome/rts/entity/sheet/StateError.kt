@@ -1,12 +1,12 @@
 
-package com.kispoko.tome.rts.sheet
+package com.kispoko.tome.rts.entity.sheet
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.reference.NumberReference
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.rts.entity.EntityId
 
 
 
@@ -19,13 +19,13 @@ sealed class StateError : ApplicationError
 }
 
 
-class VariableWithIdDoesNotExist(val sheetId : SheetId,
+class VariableWithIdDoesNotExist(val entityId : EntityId,
                                  val variableId : VariableId) : StateError()
 {
     override fun debugMessage(): String =
             """
             Engine Error: Variable Not Found
-                Sheet Id: $sheetId
+                Entity Id: $entityId
                 Variable Id: $variableId
             """
 
@@ -33,13 +33,13 @@ class VariableWithIdDoesNotExist(val sheetId : SheetId,
 }
 
 
-class VariableWithTagDoesNotExist(val sheetId : SheetId,
+class VariableWithTagDoesNotExist(val entityId : EntityId,
                                   val variableTag : VariableTag) : StateError()
 {
     override fun debugMessage(): String =
             """
             Engine Error: Variable With Tag Does Not Exist
-                Sheet Id: $sheetId
+                Entity Id: $entityId
                 Variable Tag: ${variableTag.value}
             """
 
@@ -47,13 +47,13 @@ class VariableWithTagDoesNotExist(val sheetId : SheetId,
 }
 
 
-class VariableDoesNotExist(val sheetId : SheetId,
+class VariableDoesNotExist(val entityId : EntityId,
                            val variableReference : VariableReference) : StateError()
 {
     override fun debugMessage(): String =
             """
             Engine Error: Variable Not Found
-                Sheet Id: $sheetId
+                Entity Id: $entityId
                 Variable Reference: $variableReference
             """
 
@@ -73,16 +73,16 @@ class VariableDoesNotHaveValueSet(val variableId : VariableId) : StateError()
 }
 
 
-class VariableIsOfUnexpectedType(val sheetId : SheetId,
-                                 val variableId : VariableId,
+class VariableIsOfUnexpectedType(val entityId : EntityId,
+                                 val variableReference : VariableReference,
                                  val expectedType : VariableType,
                                  val actualType : VariableType) : StateError()
 {
     override fun debugMessage(): String =
             """
             Engine Error: Variable Is Of Unexpected Type
-                Sheet Id: $sheetId
-                Variable Id: $variableId
+                Entity Id: $entityId
+                Variable Reference: $variableReference
                 Expected Type: $expectedType
                 Actual Type: $actualType
             """

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
+import com.kispoko.tome.R.string.variables
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
@@ -11,8 +12,10 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.numberVariables
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -55,7 +58,7 @@ sealed class NumberReference : ToDocument, SumType, Serializable
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    abstract fun components(sheetContext : SheetContext) : List<TermComponent>
+    abstract fun components(entityId : EntityId) : List<TermComponent>
 
 }
 
@@ -111,7 +114,7 @@ data class NumberReferenceLiteral(val value : Double) : NumberReference(), SQLSe
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    override fun components(sheetContext : SheetContext) : List<TermComponent> = listOf()
+    override fun components(entityId : EntityId) : List<TermComponent> = listOf()
 
 }
 
@@ -167,7 +170,7 @@ data class NumberReferenceValue(val valueReference : ValueReference)
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    override fun components(sheetContext : SheetContext) : List<TermComponent> = listOf()
+    override fun components(entityId : EntityId) : List<TermComponent> = listOf()
 
 }
 
@@ -229,17 +232,16 @@ data class NumberReferenceVariable(val variableReference : VariableReference)
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    override fun components(sheetContext : SheetContext) : List<TermComponent>
+    override fun components(entityId : EntityId) : List<TermComponent>
     {
-        val variables = SheetManager.sheetState(sheetContext.sheetId)
-                                    .apply { it.numberVariables(this.variableReference) }
+        val variables = numberVariables(this.variableReference, entityId)
 
         when (variables)
         {
             is Val ->
             {
                 return variables.value.mapNotNull {
-                    val valueString = it.valueString(sheetContext)
+                    val valueString = it.valueString(entityId)
                     when (valueString)
                     {
                         is Val -> TermComponent(it.label().value, valueString.value)

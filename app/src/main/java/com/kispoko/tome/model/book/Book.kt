@@ -4,16 +4,18 @@ package com.kispoko.tome.model.book
 
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue4
-import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.*
 import com.kispoko.tome.lib.orm.schema.CollValue
-import com.kispoko.tome.lib.orm.schema.MaybePrimValue
+import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.Author
+import com.kispoko.tome.model.sheet.group.Group
+import com.kispoko.tome.model.sheet.style.ElementFormat
+import com.kispoko.tome.model.sheet.style.TextFormat
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -35,7 +37,8 @@ data class Book(override val id : UUID,
                 val title : BookTitle,
                 val authors : List<Author>,
                 val abstract : BookAbstract,
-                val introduction : BookIntroduction,
+                val introduction : Maybe<BookContent>,
+                val conclusion : Maybe<BookContent>,
                 val chapters : MutableList<BookChapter>)
                      : ToDocument, ProdType, Serializable
 {
@@ -57,7 +60,8 @@ data class Book(override val id : UUID,
                 title : BookTitle,
                 authors : List<Author>,
                 abstract : BookAbstract,
-                introduction : BookIntroduction,
+                introduction : Maybe<BookContent>,
+                conclusion : Maybe<BookContent>,
                 chapters : List<BookChapter>)
         : this(UUID.randomUUID(),
                rulebookId,
@@ -65,6 +69,7 @@ data class Book(override val id : UUID,
                authors,
                abstract,
                introduction,
+               conclusion,
                chapters.toMutableList())
 
 
@@ -84,7 +89,13 @@ data class Book(override val id : UUID,
                       // Abstract
                       doc.at("abstract") apply { BookAbstract.fromDocument(it) },
                       // Introduction
-                      doc.at("introduction") apply { BookIntroduction.fromDocument(it) },
+                      split(doc.maybeAt("introduction"),
+                            effValue<ValueError,Maybe<BookContent>>(Nothing()),
+                            { apply(::Just, BookContent.fromDocument(it)) }),
+                      // Conclusion
+                      split(doc.maybeAt("conclusion"),
+                            effValue<ValueError,Maybe<BookContent>>(Nothing()),
+                            { apply(::Just, BookContent.fromDocument(it)) }),
                       // Chapters
                       doc.list("chapters") apply {
                           it.mapMut { BookChapter.fromDocument(it) }
@@ -103,7 +114,6 @@ data class Book(override val id : UUID,
         "rulebook_id" to this.rulebookId().toDocument(),
         "title" to this.title().toDocument(),
         "abstract" to this.abstract().toDocument(),
-        "introduction" to this.introduction().toDocument(),
         "chapters" to DocList(this.chapters().map { it.toDocument() })
     ))
 
@@ -124,7 +134,10 @@ data class Book(override val id : UUID,
     fun abstract() : BookAbstract = this.abstract
 
 
-    fun introduction() : BookIntroduction = this.introduction
+    fun introduction() : Maybe<BookContent> = this.introduction
+
+
+    fun conclusion() : Maybe<BookContent> = this.conclusion
 
 
     fun chapters() : List<BookChapter> = this.chapters
@@ -258,12 +271,13 @@ data class Book(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun rowValue() : DB_RulebookValue =
-        RowValue5(rulebookTable,
+    override fun rowValue() : DB_BookValue =
+        RowValue6(bookTable,
                   PrimValue(this.title),
                   CollValue(this.authors),
                   PrimValue(this.abstract),
-                  PrimValue(this.introduction),
+                  MaybeProdValue(this.introduction),
+                  MaybeProdValue(this.conclusion),
                   CollValue(this.chapters))
 
 }
@@ -413,56 +427,34 @@ data class BookIntroduction(val value : String) : ToDocument, SQLSerializable, S
 }
 
 
-// ---------------------------------------------------------------------------------------------
-// BOOK REFERENCE
-// --------------------------------------------------------------------------------------------
-
 /**
- * Book Reference
+ * Book Content
  */
-data class BookReference(override val id : UUID,
-                         val rulebookId : BookId,
-                         val chapterId : BookChapterId,
-                         val sectionId : Maybe<BookSectionId>,
-                         val subsectionId : Maybe<BookSubsectionId>)
-                              : ToDocument, ProdType, Serializable
+data class BookContent(override val id : UUID,
+                       val groups : List<Group>)
+                        : ToDocument, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(rulebookId : BookId,
-                chapterId : BookChapterId,
-                sectionId : Maybe<BookSectionId>,
-                subsectionId : Maybe<BookSubsectionId>)
+    constructor(groups : List<Group>)
         : this(UUID.randomUUID(),
-               rulebookId,
-               chapterId,
-               sectionId,
-               subsectionId)
+               groups)
 
 
-    companion object : Factory<BookReference>
+    companion object : Factory<BookContent>
     {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookReference> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookContent> = when (doc)
         {
             is DocDict ->
             {
-                apply(::BookReference,
-                      // Rulebook Id
-                      doc.at("rulebook_id") apply { BookId.fromDocument(it) },
-                      // Chapter Id
-                      doc.at("chapter_id") apply { BookChapterId.fromDocument(it) },
-                      // Section Id
-                      split(doc.maybeAt("section_id"),
-                            effValue<ValueError,Maybe<BookSectionId>>(Nothing()),
-                            { effApply(::Just, BookSectionId.fromDocument(it)) }),
-                      // Subsection Id
-                      split(doc.maybeAt("subsection_id"),
-                            effValue<ValueError,Maybe<BookSubsectionId>>(Nothing()),
-                            { effApply(::Just, BookSubsectionId.fromDocument(it)) })
-                     )
+                apply(::BookContent,
+                      // Groups
+                      doc.list("groups") apply {
+                          it.mapIndexed { doc, index -> Group.fromDocument(doc, index) } }
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -474,29 +466,15 @@ data class BookReference(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "rulebook_id" to this.rulebookId().toDocument(),
-        "chapter_id" to this.chapterId().toDocument()
+        "groups" to DocList(this.groups.map { it.toDocument() })
     ))
-    .maybeMerge(this.sectionId.apply {
-        Just(Pair("section_id", it.toDocument() as SchemaDoc)) })
-    .maybeMerge(this.subsectionId.apply {
-        Just(Pair("subsection_id", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun rulebookId() : BookId = this.rulebookId
-
-
-    fun chapterId() : BookChapterId = this.chapterId
-
-
-    fun sectionId() : Maybe<BookSectionId> = this.sectionId
-
-
-    fun subsectionId() : Maybe<BookSubsectionId> = this.subsectionId
+    fun groups() : List<Group> = this.groups
 
 
     // -----------------------------------------------------------------------------------------
@@ -509,53 +487,223 @@ data class BookReference(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun rowValue() : DB_RulebookReferenceValue =
-        RowValue4(rulebookReferenceTable,
-                  PrimValue(this.rulebookId),
-                  PrimValue(this.chapterId),
-                  MaybePrimValue(this.sectionId),
-                  MaybePrimValue(this.subsectionId))
-
+    override fun rowValue() : DB_BookContentValue =
+        RowValue1(bookContentTable,
+                  CollValue(this.groups))
 
 }
 
 
 /**
- * Rulebook Reference Path
+ * Book Format
  */
-data class RulebookReferencePath(val bookTitle : BookTitle,
-                                 val chapterTitle : BookChapterTitle,
-                                 val sectionTitle : Maybe<BookSectionTitle>,
-                                 val subsectionTitle : Maybe<BookSubsectionTitle>)
-                                  : Serializable
+data class BookFormat(override val id : UUID,
+                      val elementFormat : ElementFormat,
+                      val chapterIndexFormat : ElementFormat,
+                      val chapterButtonFormat : ChapterButtonFormat)
+                        : ToDocument, ProdType, Serializable
 {
 
-    override fun toString() : String
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(elementFormat : ElementFormat,
+                chapterIndexFormat : ElementFormat,
+                chapterButtonFormat : ChapterButtonFormat)
+        : this(UUID.randomUUID(),
+               elementFormat,
+               chapterIndexFormat,
+               chapterButtonFormat)
+
+
+    companion object : Factory<BookFormat>
     {
-        var s = ""
 
-        s += bookTitle.value
-        s += " \u203A "
-        s += chapterTitle.value
+        private fun defaultElementFormat()       = ElementFormat.default()
+        private fun defaultChapterIndexFormat()  = ElementFormat.default()
+        private fun defaultChapterButtonFormat() = ChapterButtonFormat.default()
 
-        when (this.sectionTitle) {
-            is Just -> {
-                s += " \u203A "
-                s += this.sectionTitle.value.value
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::BookFormat,
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue(defaultElementFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Chapter Index Format
+                      split(doc.maybeAt("chapter_index_format"),
+                            effValue(defaultChapterIndexFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Chapter Button Format
+                      split(doc.maybeAt("chapter_button_format"),
+                            effValue(defaultChapterButtonFormat()),
+                            { ChapterButtonFormat.fromDocument(it) })
+                      )
             }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
-
-        when (this.subsectionTitle) {
-            is Just -> {
-                s += " \u203A "
-                s += this.subsectionTitle.value.value
-            }
-        }
-
-        return s
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "element_format" to this.elementFormat.toDocument(),
+        "chapter_index_format" to this.chapterIndexFormat.toDocument(),
+        "chapter_button_format" to this.chapterButtonFormat.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun elementFormat() : ElementFormat = this.elementFormat
+
+
+    fun chapterIndexFormat() : ElementFormat = this.chapterIndexFormat
+
+
+    fun chapterButtonFormat() : ChapterButtonFormat = this.chapterButtonFormat
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_BookFormatValue =
+        RowValue3(bookFormatTable,
+                  ProdValue(this.elementFormat),
+                  ProdValue(this.chapterIndexFormat),
+                  ProdValue(this.chapterButtonFormat))
 
 }
 
-data class RulebookExcerpt(val title : String, val body : String) : Serializable
+
+/**
+ * Chapter Button Format
+ */
+data class ChapterButtonFormat(override val id : UUID,
+                               val elementFormat : ElementFormat,
+                               val indexFormat : TextFormat,
+                               val titleFormat : TextFormat,
+                               val summaryFormat : TextFormat)
+                                : ToDocument, ProdType, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(elementFormat : ElementFormat,
+                indexFormat : TextFormat,
+                titleFormat : TextFormat,
+                summaryFormat : TextFormat)
+        : this(UUID.randomUUID(),
+               elementFormat,
+               indexFormat,
+               titleFormat,
+               summaryFormat)
+
+
+    companion object : Factory<ChapterButtonFormat>
+    {
+
+        private fun defaultElementFormat()  = ElementFormat.default()
+        private fun defaultIndexFormat()    = TextFormat.default()
+        private fun defaultTitleFormat()    = TextFormat.default()
+        private fun defaultSummaryFormat()  = TextFormat.default()
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ChapterButtonFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ChapterButtonFormat,
+                      // Element Format
+                      split(doc.maybeAt("element_format"),
+                            effValue(defaultElementFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Index Format
+                      split(doc.maybeAt("index_format"),
+                            effValue(defaultIndexFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Title Format
+                      split(doc.maybeAt("title_format"),
+                            effValue(defaultTitleFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Summary Format
+                      split(doc.maybeAt("summary_format"),
+                            effValue(defaultSummaryFormat()),
+                            { TextFormat.fromDocument(it) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = ChapterButtonFormat(defaultElementFormat(),
+                                            defaultIndexFormat(),
+                                            defaultTitleFormat(),
+                                            defaultSummaryFormat())
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "element_format" to this.elementFormat.toDocument(),
+        "index_format" to this.indexFormat.toDocument(),
+        "title_format" to this.titleFormat.toDocument(),
+        "summary_format" to this.summaryFormat.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun elementFormat() : ElementFormat = this.elementFormat
+
+
+    fun indexFormat() : TextFormat = this.indexFormat
+
+
+    fun titleFormat() : TextFormat = this.titleFormat
+
+
+    fun summaryFormat() : TextFormat = this.summaryFormat
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_ChapterButtonFormatValue =
+        RowValue4(chapterButtonFormatTable,
+                  ProdValue(this.elementFormat),
+                  ProdValue(this.indexFormat),
+                  ProdValue(this.titleFormat),
+                  ProdValue(this.summaryFormat))
+
+}
 

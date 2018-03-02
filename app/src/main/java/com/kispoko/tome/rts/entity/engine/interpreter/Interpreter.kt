@@ -1,20 +1,6 @@
 
-package com.kispoko.tome.rts.game.engine.interpreter
+package com.kispoko.tome.rts.entity.engine.interpreter
 
-
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppError
-import com.kispoko.tome.app.AppEvalError
-import com.kispoko.tome.model.game.engine.EngineValue
-import com.kispoko.tome.model.game.engine.EngineValueNumber
-import com.kispoko.tome.model.game.engine.EngineValueType
-import com.kispoko.tome.model.game.engine.function.Function
-import com.kispoko.tome.model.game.engine.program.*
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetData
-import effect.*
-import java.io.Serializable
 
 //
 //

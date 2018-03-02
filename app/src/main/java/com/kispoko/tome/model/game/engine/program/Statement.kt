@@ -17,12 +17,12 @@ import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.function.*
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.game.engine.interpreter.BindingDoesNotExist
-import com.kispoko.tome.rts.game.engine.interpreter.ProgramParameterDoesNotExist
-import com.kispoko.tome.rts.game.engine.interpreter.StatementParameterDoesNotExist
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.engine.interpreter.BindingDoesNotExist
+import com.kispoko.tome.rts.entity.engine.interpreter.ProgramParameterDoesNotExist
+import com.kispoko.tome.rts.entity.engine.interpreter.StatementParameterDoesNotExist
+import com.kispoko.tome.rts.entity.function
+import com.kispoko.tome.rts.entity.sheet.SheetData
 import effect.*
 import maybe.*
 import lulo.document.*
@@ -31,6 +31,7 @@ import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -180,33 +181,33 @@ data class Statement(override val id : UUID,
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    fun dependencies(entityId : EntityId) : Set<VariableReference>
     {
         val deps : MutableSet<VariableReference> = mutableSetOf()
 
         val parameter1 = this.parameter1()
         when (parameter1) {
-            is Just -> deps.addAll(parameter1.value.dependencies(sheetContext))
+            is Just -> deps.addAll(parameter1.value.dependencies(entityId))
         }
 
         val parameter2 = this.parameter2()
         when (parameter2) {
-            is Just -> deps.addAll(parameter2.value.dependencies(sheetContext))
+            is Just -> deps.addAll(parameter2.value.dependencies(entityId))
         }
 
         val parameter3 = this.parameter3()
         when (parameter3) {
-            is Just -> deps.addAll(parameter3.value.dependencies(sheetContext))
+            is Just -> deps.addAll(parameter3.value.dependencies(entityId))
         }
 
         val parameter4 = this.parameter4()
         when (parameter4) {
-            is Just -> deps.addAll(parameter4.value.dependencies(sheetContext))
+            is Just -> deps.addAll(parameter4.value.dependencies(entityId))
         }
 
         val parameter5 = this.parameter5()
         when (parameter5) {
-            is Just -> deps.addAll(parameter5.value.dependencies(sheetContext))
+            is Just -> deps.addAll(parameter5.value.dependencies(entityId))
         }
 
         return deps
@@ -220,30 +221,29 @@ data class Statement(override val id : UUID,
     fun value(programParameterValues : ProgramParameterValues,
               bindings : Map<String, EngineValue>,
               programId : ProgramId,
-              sheetContext : SheetContext) : AppEff<EngineValue>
+              entityId : EntityId) : AppEff<EngineValue>
     {
 
 
         return if (isPlatformFunction(this.functionId))
         {
-            val params = this.platformFunctionParameters(programParameterValues,
-                                                         bindings,
-                                                         programId,
-                                                         sheetContext)
+            val params = platformFunctionParameters(programParameterValues,
+                                                    bindings,
+                                                    programId,
+                                                    entityId)
             params.apply {
                 runPlatformFunction(this.functionId, it)
             }
         }
         else
         {
-            val paramsEff = this.functionParameters(programParameterValues,
-                                                    bindings,
-                                                    programId,
-                                                    sheetContext)
+            val paramsEff = functionParameters(programParameterValues,
+                                               bindings,
+                                               programId,
+                                               entityId)
 
-            GameManager.engine(sheetContext.gameId) ap { engine ->
-            engine.function(this.functionId())      ap { function ->
-            paramsEff                               ap { params ->
+            function(this.functionId(), entityId) ap { function ->
+            paramsEff                             ap { params ->
                 function.value(params)
             } } }
         }
@@ -253,7 +253,7 @@ data class Statement(override val id : UUID,
     fun functionParameters(programParameterValues : ProgramParameterValues,
                            bindings : Map<String,EngineValue>,
                            programId : ProgramId,
-                           sheetContext : SheetContext) : AppEff<FunctionParameters>
+                           entityId : EntityId) : AppEff<FunctionParameters>
     {
         val statementParameter1 = this.parameter1()
         val parameter1 = when (statementParameter1) {
@@ -261,7 +261,7 @@ data class Statement(override val id : UUID,
                                                     programParameterValues,
                                                     bindings,
                                                     programId,
-                                                    sheetContext)
+                                                    entityId)
             else    -> effValue(Nothing())
         }
 
@@ -271,17 +271,17 @@ data class Statement(override val id : UUID,
                                                     programParameterValues,
                                                     bindings,
                                                     programId,
-                                                    sheetContext)
+                                                    entityId)
             else    -> effValue(Nothing())
         }
 
-        val statementParameter3 = this.parameter3()
+        val statementParameter3 = parameter3()
         val parameter3 = when (statementParameter3) {
-            is Just -> this.statementParameterValue(statementParameter3.value,
+            is Just -> statementParameterValue(statementParameter3.value,
                                                        programParameterValues,
                                                        bindings,
                                                        programId,
-                                                       sheetContext)
+                                                       entityId)
             else    -> effValue(Nothing())
         }
 
@@ -291,7 +291,7 @@ data class Statement(override val id : UUID,
                                                        programParameterValues,
                                                        bindings,
                                                        programId,
-                                                       sheetContext)
+                                                       entityId)
             else    -> effValue(Nothing())
         }
 
@@ -301,7 +301,7 @@ data class Statement(override val id : UUID,
                                                        programParameterValues,
                                                        bindings,
                                                        programId,
-                                                       sheetContext)
+                                                       entityId)
             else    -> effValue(Nothing())
         }
 
@@ -324,7 +324,7 @@ data class Statement(override val id : UUID,
     private fun platformFunctionParameters(programParameterValues : ProgramParameterValues,
                                            bindings : Map<String,EngineValue>,
                                            programId : ProgramId,
-                                           sheetContext : SheetContext)
+                                           entityId : EntityId)
                                             : AppEff<PlatformFunctionParameters>
     {
         val justParams = listOf(this.parameter1,
@@ -339,7 +339,7 @@ data class Statement(override val id : UUID,
                                          programParameterValues,
                                          bindings,
                                          programId,
-                                         sheetContext)
+                                         entityId)
         }
         .apply { effValue<AppError,PlatformFunctionParameters>(PlatformFunctionParameters(it.filterJust())) }
     }
@@ -349,7 +349,7 @@ data class Statement(override val id : UUID,
                                         programParameterValues : ProgramParameterValues,
                                         bindings : Map<String,EngineValue>,
                                         programId : ProgramId,
-                                        sheetContext : SheetContext) : AppEff<Maybe<EngineValue>> =
+                                        entityId : EntityId) : AppEff<Maybe<EngineValue>> =
         when (statementParameter)
         {
             is StatementParameterBindingName ->
@@ -372,7 +372,7 @@ data class Statement(override val id : UUID,
             }
             is StatementParameterReference ->
             {
-                SheetData.referenceEngineValue(statementParameter.reference, sheetContext)
+                SheetData.referenceEngineValue(statementParameter.reference, entityId)
             }
         }
 
@@ -441,7 +441,7 @@ sealed class StatementParameter : ToDocument, SumType, Serializable
     }
 
 
-    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
+    open fun dependencies(entityId : EntityId) : Set<VariableReference> = setOf()
 
 }
 
@@ -581,8 +581,8 @@ data class StatementParameterReference(val reference : DataReference) : Statemen
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> {
-        return this.reference.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId): Set<VariableReference> {
+        return this.reference.dependencies(entityId)
     }
 }
 

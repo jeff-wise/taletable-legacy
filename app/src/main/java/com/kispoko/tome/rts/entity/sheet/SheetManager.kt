@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.sheet
+package com.kispoko.tome.rts.entity.sheet
 
 
 import android.content.Context
@@ -33,12 +33,15 @@ import com.kispoko.tome.model.sheet.SheetSummary
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialSheet
-import com.kispoko.tome.rts.theme.ThemeManager
-import com.kispoko.tome.rts.campaign.CampaignManager
-import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.theme.ThemeManager
+import com.kispoko.tome.rts.entity.campaign.CampaignManager
+import com.kispoko.tome.rts.entity.engine.OnVariableChangeListener
+import com.kispoko.tome.rts.entity.engine.EngineState
+import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.official.OfficialManager
-import com.kispoko.tome.rts.theme.ThemeDoesNotHaveColor
-import com.kispoko.tome.rts.theme.ThemeNotSupported
+import com.kispoko.tome.rts.entity.theme.ThemeDoesNotHaveColor
+import com.kispoko.tome.rts.entity.theme.ThemeNotSupported
 import effect.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -117,8 +120,8 @@ object SheetManager
     }
 
 
-    fun sheetState(sheetId : SheetId) : AppEff<SheetState> =
-            this.sheetRecord(sheetId) ap { effValue<AppError,SheetState>(it.state()) }
+    fun sheetState(sheetId : SheetId) : AppEff<EngineState> =
+            this.sheetRecord(sheetId) ap { effValue<AppError, EngineState>(it.state()) }
 
 
     fun addVariable(sheetId : SheetId, variableId : VariableId) =
@@ -453,14 +456,14 @@ object SheetManager
     {
         // Reverse apply for when keep going if is error / until success
         val sheetProcedure = SheetManager.sheetRecord(sheetContext.sheetId) ap {
-            it.sheet().engine().procedureWithId(procedureId)
+            it.sheet().engine().procedure(procedureId)
         }
 
         return when (sheetProcedure)
         {
             is Val -> sheetProcedure
             is Err -> GameManager.engine(sheetContext.gameId) ap {
-                          it.procedureWithId(procedureId)
+                          it.procedure(procedureId)
                       }
         }
     }
@@ -498,7 +501,7 @@ data class SessionSheetRecord(override val id : UUID,
                               private var sessionIndex : SessionRecordIndex,
                               private var lastActive : SheetLastActiveTime,
                               private val sheetContext : SheetContext,
-                              private val state : SheetState,
+                              private val state : EngineState,
                               private val viewState : SheetViewState)
                                : ProdType
 {
@@ -511,7 +514,7 @@ data class SessionSheetRecord(override val id : UUID,
     {
         fun withDefaultView(sheet : Sheet,
                             sheetContext : SheetContext,
-                            state : SheetState) : SessionSheetRecord
+                            state : EngineState) : SessionSheetRecord
         {
             val sections = sheet.sections()
 
@@ -538,7 +541,7 @@ data class SessionSheetRecord(override val id : UUID,
     fun sheet() : Sheet = this.sheet
 
 
-    fun state() : SheetState = this.state
+    fun state() : EngineState = this.state
 
 
     fun viewState() : SheetViewState = this.viewState
@@ -639,7 +642,7 @@ data class SheetSummary(val name : String, val description : String)
 
 interface SheetComponent
 {
-    fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    fun onSheetComponentActive(entityId : EntityId, context : Context)
 
 }
 
@@ -751,7 +754,7 @@ data class Session(override val id : UUID,
         SheetManager.sheetContext(sheet)        apDo { sheetContext ->
         GameManager.engine(sheetContext.gameId) apDo { engine ->
             val sheetRecord = SessionSheetRecord.withDefaultView(sheet, sheetContext,
-                                        SheetState(sheetContext, engine.mechanics()))
+                    EngineState(sheetContext, engine.mechanics()))
 
             sheetRecord.setIndex(sheetRecords().size)
 

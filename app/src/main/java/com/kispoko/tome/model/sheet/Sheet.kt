@@ -3,7 +3,6 @@ package com.kispoko.tome.model.sheet
 
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import com.kispoko.tome.db.DB_SheetValue
 import com.kispoko.tome.db.sheetTable
@@ -23,7 +22,7 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType

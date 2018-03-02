@@ -8,8 +8,6 @@ import android.widget.TextView
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue7
-import com.kispoko.tome.lib.orm.RowValue8
 import com.kispoko.tome.lib.orm.RowValue9
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
@@ -17,8 +15,8 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

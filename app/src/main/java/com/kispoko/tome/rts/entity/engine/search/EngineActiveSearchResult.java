@@ -1,11 +1,9 @@
 
-package com.kispoko.tome.rts.game.engine.search;
+package com.kispoko.tome.rts.entity.engine.search;
 
 
 import com.kispoko.tome.model.game.engine.mechanic.ActiveMechanicSearchResult;
-import com.kispoko.tome.rts.game.engine.ActiveVariableSearchResult;
-import com.kispoko.tome.error.InvalidCaseError;
-import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.rts.entity.engine.ActiveVariableSearchResult;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

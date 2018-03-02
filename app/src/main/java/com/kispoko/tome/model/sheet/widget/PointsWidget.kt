@@ -23,10 +23,10 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.UpdateTargetPointsWidget
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.UpdateTargetPointsWidget
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

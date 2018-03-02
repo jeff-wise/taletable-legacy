@@ -3,9 +3,6 @@ package com.kispoko.tome.model.game.engine.procedure
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.game.engine.program.ProgramId
-import com.kispoko.tome.rts.game.engine.interpreter.EvalError
-
 
 
 /**

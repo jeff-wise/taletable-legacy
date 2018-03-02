@@ -3,23 +3,19 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.program.ProgramParameter
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -27,7 +23,10 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.procedure
+import com.kispoko.tome.rts.entity.sheet.*
 import effect.Err
 import effect.Val
 import maybe.Just
@@ -46,7 +45,7 @@ class ProcedureDialog : DialogFragment()
 
     private var procedureId   : ProcedureId? = null
     private var updateTarget  : UpdateTarget? = null
-    private var sheetContext  : SheetContext? = null
+    private var entityId      : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -57,14 +56,14 @@ class ProcedureDialog : DialogFragment()
     {
         fun newInstance(procedureId : ProcedureId,
                         updateTarget : UpdateTarget,
-                        sheetContext : SheetContext) : ProcedureDialog
+                        entityId : EntityId) : ProcedureDialog
         {
             val dialog = ProcedureDialog()
 
             val args = Bundle()
             args.putSerializable("procedure_id", procedureId)
             args.putSerializable("update_target", updateTarget)
-            args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
             return dialog
@@ -83,7 +82,7 @@ class ProcedureDialog : DialogFragment()
 
         this.procedureId  = arguments.getSerializable("procedure_id") as ProcedureId
         this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
-        this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
+        this.entityId     = arguments.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -116,21 +115,20 @@ class ProcedureDialog : DialogFragment()
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val sheetContext = this.sheetContext
+        val entityId = this.entityId
         val procedureId = this.procedureId
 
-        if (sheetContext != null && procedureId != null)
+        if (entityId != null && procedureId != null)
         {
-            val sheetUIContext  = SheetUIContext(sheetContext, context)
-
-            val procedure = SheetManager.procedure(procedureId, sheetContext)
+            val procedure = procedure(procedureId, entityId)
 
             return when (procedure) {
                 is Val -> {
                     val viewBuilder = ProcedureViewBuilder(procedure.value,
                                                            updateTarget,
-                                                           sheetUIContext,
-                                                           this)
+                                                           this,
+                                                           entityId,
+                                                           context)
                     viewBuilder.view()
                 }
                 is Err -> {
@@ -167,29 +165,17 @@ class ProcedureDialog : DialogFragment()
 
 class ProcedureViewBuilder(val procedure : Procedure,
                            val updateTarget : UpdateTarget?,
-                           val sheetUIContext : SheetUIContext,
-                           val dialog : ProcedureDialog)
+                           val dialog : ProcedureDialog,
+                           val entityId : EntityId,
+                           val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    val sheetContext = SheetContext(sheetUIContext)
-
-//    val parameters : MutableList<ProgramParameter> = mutableListOf()
-//
-//    init {
-//        val parameters = procedure.parameters(sheetContext)
-//        when (parameters) {
-//            is Val -> {
-//                this.parameters.addAll(parameters.value)
-//            }
-//        }
-//    }
-
-
     var currentParameter : Int = 0
+
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
@@ -226,7 +212,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -257,7 +243,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         layout.orientation  = LinearLayout.VERTICAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -271,23 +257,22 @@ class ProcedureViewBuilder(val procedure : Procedure,
         val descriptionTemplate = procedure.description()
         when (descriptionTemplate) {
             is Just -> {
-                val sheetContext = SheetContext(sheetUIContext)
-                description.text = descriptionTemplate.value.toString(sheetContext)
+                description.text = descriptionTemplate.value.toString(entityId)
             }
         }
 
         description.font          = Font.typeface(TextFont.default(),
                                                   TextFontStyle.Regular,
-                                                  sheetUIContext.context)
+                                                  context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        description.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        description.color           = colorOrBlack(colorTheme, entityId)
 
         description.sizeSp          = 18f
 
-        return description.textView(sheetUIContext.context)
+        return description.textView(context)
     }
 
 
@@ -314,7 +299,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         layout.gravity          = Gravity.END
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -338,7 +323,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_90"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         layout.gravity          = Gravity.CENTER
 
@@ -350,18 +335,18 @@ class ProcedureViewBuilder(val procedure : Procedure,
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.onClick          = View.OnClickListener {
-            procedure.run(SheetContext(sheetUIContext))
+            procedure.run(entityId)
 
             if (updateTarget != null)
             {
                 when (updateTarget)
                 {
-                    is UpdateTargetActionWidget ->
-                    {
-                        SheetManager.updateSheet(sheetUIContext.sheetId,
-                                                 ActionWidgetUpdate(updateTarget.actionWidgetId),
-                                                 sheetUIContext.sheetUI())
-                    }
+//                    is UpdateTargetActionWidget ->
+//                    {
+//                        SheetManager.updateSheet(sheetUIContext.sheetId,
+//                                                 ActionWidgetUpdate(updateTarget.actionWidgetId),
+//                                                 sheetUIContext.sheetUI())
+//                    }
                 }
             }
 
@@ -384,7 +369,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         label.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.SemiBold,
-                                                sheetUIContext.context)
+                                                context)
 
 //        val labelColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
@@ -408,7 +393,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
         //icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
         icon.color          = Color.WHITE
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -438,7 +423,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         layout.orientation  = LinearLayout.VERTICAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -460,7 +445,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
 
         layout.orientation  = LinearLayout.VERTICAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 }

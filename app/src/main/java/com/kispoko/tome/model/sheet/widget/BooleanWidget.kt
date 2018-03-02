@@ -12,7 +12,6 @@ import com.kispoko.tome.db.widgetBooleanFormatTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue8
-import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
@@ -24,9 +23,8 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Icon
-import com.kispoko.tome.model.sheet.style.IconType
 import com.kispoko.tome.model.sheet.style.TextFormat
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

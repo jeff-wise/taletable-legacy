@@ -34,8 +34,8 @@ import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val

@@ -5,6 +5,13 @@ package com.kispoko.tome.load
 import android.content.Context
 import com.kispoko.tome.ApplicationAssets
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.load.TomeDoc.cachedBookSchema
+import com.kispoko.tome.load.TomeDoc.cachedCampaignSchema
+import com.kispoko.tome.load.TomeDoc.cachedEngineSchema
+import com.kispoko.tome.load.TomeDoc.cachedGameSchema
+import com.kispoko.tome.load.TomeDoc.cachedSheetSchema
+import com.kispoko.tome.load.TomeDoc.cachedThemeSchema
+import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.sheet.Sheet
@@ -30,11 +37,12 @@ object TomeDoc
     // Properties > Schemas
     // -----------------------------------------------------------------------------------------
 
-    private var sheetSchema : Schema? = null
-    private var campaignSchema : Schema? = null
-    private var gameSchema : Schema? = null
-    private var engineSchema : Schema? = null
-    private var themeSchema : Schema? = null
+    var cachedSheetSchema : Schema? = null
+    var cachedCampaignSchema : Schema? = null
+    var cachedGameSchema : Schema? = null
+    var cachedEngineSchema : Schema? = null
+    var cachedThemeSchema : Schema? = null
+    var cachedBookSchema : Schema? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -61,10 +69,10 @@ object TomeDoc
         {
             val docParse = sheetSchema.parseDocument(templateString,
                                                    listOf(campaignSchema, gameSchema, engineSchema, themeSchema))
-            when (docParse)
+            return when (docParse)
             {
-                is Val -> return effValue(docParse.value)
-                is Err -> return effError(DocumentParseError(sheetName, "sheet", docParse.error))
+                is Val -> effValue(docParse.value)
+                is Err -> effError(DocumentParseError(sheetName, "sheet", docParse.error))
             }
         }
 
@@ -108,10 +116,10 @@ object TomeDoc
         {
             val docParse = campaignSpec.parseDocument(templateString,
                                                       listOf(gameSpec))
-            when (docParse)
+            return when (docParse)
             {
-                is Val -> return effValue(docParse.value)
-                is Err -> return effError(DocumentParseError(campaignName,
+                is Val -> effValue(docParse.value)
+                is Err -> effError(DocumentParseError(campaignName,
                                                              "campaign",
                                                              docParse.error))
             }
@@ -120,10 +128,10 @@ object TomeDoc
         fun campaignFromDocument(specDoc : SchemaDoc) : DocLoader<Campaign>
         {
             val sheetParse = Campaign.fromDocument(specDoc)
-            when (sheetParse)
+            return when (sheetParse)
             {
-                is Val -> return effValue(sheetParse.value)
-                is Err -> return effError(ValueParseError(campaignName,
+                is Val -> effValue(sheetParse.value)
+                is Err -> effError(ValueParseError(campaignName,
                                                           sheetParse.error))
             }
         }
@@ -153,10 +161,10 @@ object TomeDoc
                              engineSchema : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = gameSchema.parseDocument(templateString, listOf(engineSchema))
-            when (docParse)
+            return when (docParse)
             {
-                is Val -> return effValue(docParse.value)
-                is Err -> return effError(DocumentParseError(gameName,
+                is Val -> effValue(docParse.value)
+                is Err -> effError(DocumentParseError(gameName,
                                                              "game",
                                                              docParse.error))
             }
@@ -165,10 +173,10 @@ object TomeDoc
         fun gameFromDocument(specDoc : SchemaDoc) : DocLoader<Game>
         {
             val gameParse = Game.fromDocument(specDoc)
-            when (gameParse)
+            return when (gameParse)
             {
-                is Val -> return effValue(gameParse.value)
-                is Err -> return effError(ValueParseError(gameName,
+                is Val -> effValue(gameParse.value)
+                is Err -> effError(ValueParseError(gameName,
                                                           gameParse.error))
             }
         }
@@ -223,6 +231,49 @@ object TomeDoc
     }
 
 
+    // Load > Book
+    // -----------------------------------------------------------------------------------------
+
+    fun loadBook(inputStream : InputStream,
+                 bookName : String,
+                 context : Context) : DocLoader<Book>
+    {
+        // LET...
+        val templateFileString : DocLoader<String> =
+            effValue(inputStream.bufferedReader().use { it.readText() })
+
+        fun templateDocument(templateString : String,
+                             bookSchema : Schema,
+                             sheetSchema : Schema) : DocLoader<SchemaDoc>
+        {
+            val docParse = bookSchema.parseDocument(templateString,
+                                                   listOf(sheetSchema))
+            return when (docParse)
+            {
+                is Val -> effValue(docParse.value)
+                is Err -> effError(DocumentParseError(bookName, "book", docParse.error))
+            }
+        }
+
+        fun bookFromDocument(specDoc : SchemaDoc) : DocLoader<Book>
+        {
+            val bookParse = Book.fromDocument(specDoc)
+            return when (bookParse)
+            {
+                is Val -> effValue(bookParse.value)
+                is Err -> effError(ValueParseError(bookName, bookParse.error))
+            }
+        }
+
+        // DO...
+        return templateFileString
+               .applyWith(::templateDocument,
+                          bookSchemaLoader(context),
+                          sheetSchemaLoader(context))
+               .apply(::bookFromDocument)
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // SCHEMAS
     // -----------------------------------------------------------------------------------------
@@ -235,20 +286,20 @@ object TomeDoc
      */
     fun sheetSchema(context : Context) : Schema?
     {
-        if (this.sheetSchema == null)
+        if (cachedSheetSchema == null)
         {
             val schemaLoader = loadLuloSchema("sheet", context)
             when (schemaLoader)
             {
                 is Val -> {
-                    this.sheetSchema = schemaLoader.value
+                    cachedSheetSchema = schemaLoader.value
                     ApplicationLog.event(SchemaLoaded("sheet"))
                 }
                 is Err -> ApplicationLog.error(schemaLoader.error)
             }
         }
 
-        return this.sheetSchema
+        return TomeDoc.cachedSheetSchema
     }
 
 
@@ -257,11 +308,11 @@ object TomeDoc
      */
     fun sheetSchemaLoader(context : Context) : DocLoader<Schema>
     {
-        val schema = this.sheetSchema(context)
-        if (schema != null)
-            return effValue(schema)
+        val schema = sheetSchema(context)
+        return if (schema != null)
+            effValue(schema)
         else
-            return effError(SchemaIsNull("sheet"))
+            effError(SchemaIsNull("sheet"))
     }
 
 
@@ -273,20 +324,20 @@ object TomeDoc
      */
     fun campaignSchema(context : Context) : Schema?
     {
-        if (this.campaignSchema == null)
+        if (cachedCampaignSchema == null)
         {
             val schemaLoader = loadLuloSchema("campaign", context)
             when (schemaLoader)
             {
                 is Val -> {
-                    this.campaignSchema = schemaLoader.value
+                    cachedCampaignSchema = schemaLoader.value
                     ApplicationLog.event(SchemaLoaded("campaign"))
                 }
                 is Err -> ApplicationLog.error(schemaLoader.error)
             }
         }
 
-        return this.campaignSchema
+        return cachedCampaignSchema
     }
 
 
@@ -295,11 +346,11 @@ object TomeDoc
      */
     fun campaignSchemaLoader(context : Context) : DocLoader<Schema>
     {
-        val schema = this.campaignSchema(context)
-        if (schema != null)
-            return effValue(schema)
+        val schema = campaignSchema(context)
+        return if (schema != null)
+            effValue(schema)
         else
-            return effError(SchemaIsNull("campaign"))
+            effError(SchemaIsNull("campaign"))
     }
 
 
@@ -311,20 +362,20 @@ object TomeDoc
      */
     fun gameSchema(context : Context) : Schema?
     {
-        if (this.gameSchema == null)
+        if (cachedGameSchema == null)
         {
             val schemaLoader = loadLuloSchema("game", context)
             when (schemaLoader)
             {
                 is Val -> {
-                    this.gameSchema = schemaLoader.value
+                    cachedGameSchema = schemaLoader.value
                     ApplicationLog.event(SchemaLoaded("game"))
                 }
                 is Err -> ApplicationLog.error(schemaLoader.error)
             }
         }
 
-        return this.gameSchema
+        return cachedGameSchema
     }
 
 
@@ -333,11 +384,11 @@ object TomeDoc
      */
     fun gameSchemaLoader(context : Context) : DocLoader<Schema>
     {
-        val schema = this.gameSchema(context)
-        if (schema != null)
-            return effValue(schema)
+        val schema = gameSchema(context)
+        return if (schema != null)
+            effValue(schema)
         else
-            return effError(SchemaIsNull("game"))
+            effError(SchemaIsNull("game"))
     }
 
 
@@ -349,20 +400,20 @@ object TomeDoc
      */
     fun engineSchema(context : Context) : Schema?
     {
-        if (this.engineSchema == null)
+        if (cachedEngineSchema == null)
         {
             val schemaLoader = loadLuloSchema("engine", context)
             when (schemaLoader)
             {
                 is Val -> {
-                    this.engineSchema = schemaLoader.value
+                    cachedEngineSchema = schemaLoader.value
                     ApplicationLog.event(SchemaLoaded("engine"))
                 }
                 is Err -> ApplicationLog.error(schemaLoader.error)
             }
         }
 
-        return this.engineSchema
+        return cachedEngineSchema
     }
 
 
@@ -371,11 +422,11 @@ object TomeDoc
      */
     fun engineSchemaLoader(context : Context) : DocLoader<Schema>
     {
-        val schema = this.engineSchema(context)
-        if (schema != null)
-            return effValue(schema)
+        val schema = engineSchema(context)
+        return if (schema != null)
+            effValue(schema)
         else
-            return effError(SchemaIsNull("engine"))
+            effError(SchemaIsNull("engine"))
     }
 
 
@@ -388,20 +439,20 @@ object TomeDoc
      */
     fun themeSchema(context : Context) : Schema?
     {
-        if (this.themeSchema == null)
+        if (cachedThemeSchema == null)
         {
             val schemaLoader = loadLuloSchema("theme", context)
             when (schemaLoader)
             {
                 is Val -> {
-                    this.themeSchema = schemaLoader.value
+                    cachedThemeSchema = schemaLoader.value
                     ApplicationLog.event(SchemaLoaded("theme"))
                 }
                 is Err -> ApplicationLog.error(schemaLoader.error)
             }
         }
 
-        return this.themeSchema
+        return cachedThemeSchema
     }
 
 
@@ -410,12 +461,51 @@ object TomeDoc
      */
     fun themeSchemaLoader(context : Context) : DocLoader<Schema>
     {
-        val schema = this.themeSchema(context)
-        if (schema != null)
-            return effValue(schema)
+        val schema = themeSchema(context)
+        return if (schema != null)
+            effValue(schema)
         else
-            return effError(SchemaIsNull("theme"))
+            effError(SchemaIsNull("theme"))
     }
+
+
+    // Schemas > Book
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Get the Book specification (Lulo). If it is null, try to load it.
+     */
+    fun bookSchema(context : Context) : Schema?
+    {
+        if (cachedBookSchema == null)
+        {
+            val schemaLoader = loadLuloSchema("game", context)
+            when (schemaLoader)
+            {
+                is Val -> {
+                    cachedBookSchema = schemaLoader.value
+                    ApplicationLog.event(SchemaLoaded("game"))
+                }
+                is Err -> ApplicationLog.error(schemaLoader.error)
+            }
+        }
+
+        return cachedBookSchema
+    }
+
+
+    /**
+     * get the specification in the loader context.
+     */
+    fun bookSchemaLoader(context : Context) : DocLoader<Schema>
+    {
+        val schema = bookSchema(context)
+        return if (schema != null)
+            effValue(schema)
+        else
+            effError(SchemaIsNull("game"))
+    }
+
 
 }
 

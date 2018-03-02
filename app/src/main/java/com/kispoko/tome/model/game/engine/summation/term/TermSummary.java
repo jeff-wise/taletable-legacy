@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.game.engine.definition.summation.term;
+package com.kispoko.tome.rts.entity.engine.definition.summation.term;
 
 
 import com.kispoko.tome.util.tuple.Tuple2;

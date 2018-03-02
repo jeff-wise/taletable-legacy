@@ -8,16 +8,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.id.button
-import com.kispoko.tome.R.string.name
-import com.kispoko.tome.activity.sheet.dialog.ListEditorViewBuilder
 import com.kispoko.tome.app.AppSettings
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
@@ -30,13 +25,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.theme.ThemeManager
-import effect.Err
-import effect.Val
-
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 
 
 /**

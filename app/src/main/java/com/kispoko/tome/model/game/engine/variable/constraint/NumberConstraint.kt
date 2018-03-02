@@ -3,6 +3,7 @@ package com.kispoko.tome.model.game.engine.variable.constraint
 
 
 import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEntityError
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.lib.Factory
@@ -11,8 +12,8 @@ import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.reference.NumberReference
-import com.kispoko.tome.model.game.engine.reference.NumberReferenceLiteral
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.sheet.*
 import effect.apply
 import effect.effError
 import effect.effValue
@@ -51,7 +52,7 @@ sealed class NumberConstraint : ToDocument, SumType, Serializable
     // API
     // -----------------------------------------------------------------------------------------
 
-    abstract fun constrainedValue(value : Double, sheetContext : SheetContext) : AppEff<Double>
+    abstract fun constrainedValue(value : Double, entityId : EntityId) : AppEff<Double>
 
 }
 
@@ -120,9 +121,9 @@ data class NumberConstraintRange(val min : NumberReference,
     // API
     // -----------------------------------------------------------------------------------------
 
-    override fun constrainedValue(value : Double, sheetContext : SheetContext) : AppEff<Double> =
-        SheetData.number(sheetContext, this.min) ap { maybeMin ->
-        SheetData.number(sheetContext, this.max) ap { maybeMax ->
+    override fun constrainedValue(value : Double, entityId : EntityId) : AppEff<Double> =
+        SheetData.number(this.min, entityId) ap { maybeMin ->
+        SheetData.number(this.max, entityId) ap { maybeMax ->
         note<AppError,Double>(maybeMin, AppStateError(NumberReferenceDoesNotHaveValue(this.min))) ap { min ->
         note<AppError,Double>(maybeMax, AppStateError(NumberReferenceDoesNotHaveValue(this.max))) ap { max ->
             when {

@@ -7,14 +7,13 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
-import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 
@@ -52,7 +51,7 @@ sealed class DiceRollVariableValue : ToDocument, SumType, Serializable
     abstract fun value() : DiceRoll
 
 
-    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+    abstract fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>>
 
 }
 
@@ -88,7 +87,7 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll) : DiceRollVaria
     override fun value() : DiceRoll = this.diceRoll
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 

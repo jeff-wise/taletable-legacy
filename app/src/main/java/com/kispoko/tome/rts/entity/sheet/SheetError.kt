@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.sheet
+package com.kispoko.tome.rts.entity.sheet
 
 
 import com.kispoko.tome.app.ApplicationError
@@ -8,8 +8,6 @@ import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetCellType
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumnType
-import com.kispoko.tome.model.theme.ColorId
-import com.kispoko.tome.model.theme.ThemeId
 import java.util.*
 
 

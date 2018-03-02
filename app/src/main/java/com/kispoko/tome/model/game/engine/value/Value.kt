@@ -14,7 +14,7 @@ import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.reference.TextReference
 import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.variable.Variable
-import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
+import com.kispoko.tome.rts.entity.engine.ValueIsOfUnexpectedType
 import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*

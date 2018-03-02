@@ -13,8 +13,10 @@ import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.variable
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -105,15 +107,13 @@ data class Message(override val id : UUID,
     // TO STRING
     // -----------------------------------------------------------------------------------------
 
-    fun toString(sheetContext : SheetContext) : String
+    fun toString(entityId : EntityId) : String
     {
         if (this.variables().variables.isEmpty())
             return this.template().value
 
         val variableStrings = this.variables().variables.mapM { varId ->
-            SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.variableWithId(varId) }
-                    .apply { it.valueString(sheetContext) }
+            variable(varId, entityId).apply { it.valueString(entityId) }
         }
 
         return when (variableStrings)

@@ -18,7 +18,7 @@ import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

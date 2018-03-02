@@ -1,8 +1,7 @@
 
-package com.kispoko.tome.rts.sheet
+package com.kispoko.tome.rts.entity.engine
 
 
-import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
@@ -12,12 +11,15 @@ import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.sheet.*
 import effect.*
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import org.apache.commons.collections4.trie.PatriciaTrie
 import java.util.*
+
 
 
 /**
@@ -37,8 +39,8 @@ data class RelationListener(val tag : VariableTag, val variableId : VariableId)
  *
  * Game data for a sheet.
  */
-class SheetState(val sheetContext : SheetContext,
-                 mechanics : List<Mechanic>) : State, MechanicStateMachine
+class EngineState(val entityId : EntityId,
+                  mechanics : List<Mechanic>) : State, MechanicStateMachine
 {
 
     // -----------------------------------------------------------------------------------------
@@ -151,7 +153,7 @@ class SheetState(val sheetContext : SheetContext,
         //     when the dependency variable is updated it can update this variable as well.
         // -------------------------------------------------------------------------------------
 
-        for (variableRef in variable.dependencies(this.sheetContext))
+        for (variableRef in variable.dependencies(this.entityId))
         {
             when (variableRef)
             {
@@ -193,13 +195,13 @@ class SheetState(val sheetContext : SheetContext,
         // (5.5) Call variable on add to state
         // -------------------------------------------------------------------------------------
 
-        variable.onAddToState(sheetContext, parentVariable)
+        variable.onAddToState(this.entityId, parentVariable)
 
 
         // (6) Add companion variables to the state
         // -------------------------------------------------------------------------------------
 
-        val companionVariables = variable.companionVariables(sheetContext)
+        val companionVariables = variable.companionVariables(this.entityId)
         when (companionVariables)
         {
             is Val -> companionVariables.value.forEach { this.addVariable(it, variable)
@@ -268,7 +270,7 @@ class SheetState(val sheetContext : SheetContext,
         // (5) Unindex dependencies
         // -------------------------------------------------------------------------------------
 
-        for (variableRef in variable.dependencies(this.sheetContext))
+        for (variableRef in variable.dependencies(this.entityId))
         {
             when (variableRef)
             {
@@ -346,7 +348,7 @@ class SheetState(val sheetContext : SheetContext,
 
         val mechanicAddedEvent =
                 MechanicAdded(mechanic.mechanicId(),
-                              mechanic.variables().map { it.variableId() }.toSet() )
+                        mechanic.variables().map { it.variableId() }.toSet())
         val event = AppStateEvent(mechanicAddedEvent)
 
         ApplicationLog.event(event)
@@ -366,13 +368,13 @@ class SheetState(val sheetContext : SheetContext,
             is MechanicType.Auto -> {
                 mechanic.variables().forEach { this.removeVariable(it.variableId()) }
                 val event = MechanicRemoved(mechanic.mechanicId(),
-                        mechanic.variables().map { it.variableId() }.toSet() )
+                        mechanic.variables().map { it.variableId() }.toSet())
                 ApplicationLog.event(AppStateEvent(event))
             }
             is MechanicType.OptionSelected -> {
                 mechanic.variables().forEach { this.removeVariable(it.variableId()) }
                 val event = MechanicRemoved(mechanic.mechanicId(),
-                        mechanic.variables().map { it.variableId() }.toSet() )
+                        mechanic.variables().map { it.variableId() }.toSet())
                 ApplicationLog.event(AppStateEvent(event))
             }
             else -> {
@@ -410,7 +412,7 @@ class SheetState(val sheetContext : SheetContext,
 //            }
 //        }
 
-        val companionVariables = variable.companionVariables(sheetContext)
+        val companionVariables = variable.companionVariables(this.entityId)
         when (companionVariables)
         {
             is Val -> companionVariables.value.forEach { this.addVariable(it, variable)
@@ -495,14 +497,14 @@ class SheetState(val sheetContext : SheetContext,
 
     fun updateVariable(variableId : VariableId,
                        engineValue : EngineValue,
-                       sheetContext : SheetContext)
+                       entityId : EntityId)
     {
         when (engineValue)
         {
             is EngineValueBoolean ->
             {
-                this.booleanVariableWithId(variableId) apDo { booleanVariable ->
-                    booleanVariable.updateValue(engineValue.value, sheetContext.sheetId)
+                this.booleanVariable(variableId) apDo { booleanVariable ->
+                    booleanVariable.updateValue(engineValue.value, entityId)
 
                     // calling this in Variable.kt to ensure onUpdate is called afterwards
                     //this.onVariableUpdate(booleanVariable)
@@ -522,14 +524,14 @@ class SheetState(val sheetContext : SheetContext,
             }
             is EngineValueNumber ->
             {
-                this.numberVariableWithId(variableId) apDo { numberVariable ->
-                    numberVariable.updateValue(engineValue.value, sheetContext)
+                this.numberVariable(variableId) apDo { numberVariable ->
+                    numberVariable.updateValue(engineValue.value, entityId)
                 }
             }
             is EngineValueText ->
             {
-                this.textVariableWithId(variableId) apDo { textVar ->
-                    textVar.updateValue(engineValue.value, sheetContext)
+                this.textVariable(variableId) apDo { textVar ->
+                    textVar.updateValue(engineValue.value, entityId)
                 }
             }
         }
@@ -594,7 +596,7 @@ class SheetState(val sheetContext : SheetContext,
                     val listeners = listenerTagsByRelation[relation]!!
                     listeners.forEach { listener ->
                         val parentWithTag = variable.relatedParents().any { parentVarId ->
-                            val parentVar = this.variableWithId(parentVarId)
+                            val parentVar = this.variable(parentVarId)
                             when (parentVar) {
                                 is Val -> parentVar.value.tags().contains(listener.tag)
                                 is Err -> false
@@ -602,7 +604,7 @@ class SheetState(val sheetContext : SheetContext,
                         }
                         if (parentWithTag)
                         {
-                            this.variableWithId(listener.variableId) apDo { listenerVar ->
+                            this.variable(listener.variableId) apDo { listenerVar ->
                                 if (listenerVar.lastUpdateId != updateId)
                                 {
                                     listenerVar.onUpdate()
@@ -658,15 +660,24 @@ class SheetState(val sheetContext : SheetContext,
     // Variable
     // -----------------------------------------------------------------------------------------
 
-    fun variableWithId(variableId : VariableId) : AppEff<Variable> =
+    fun variable(variableId : VariableId) : AppEff<Variable> =
             note(this.variableById[variableId],
-                 AppStateError(VariableWithIdDoesNotExist(sheetContext.sheetId, variableId)))
+                 AppStateError(VariableWithIdDoesNotExist(entityId, variableId)))
 
 
-    fun variablesWithTag(variableTag : VariableTag) : AppEff<Set<Variable>> =
-            note(this.variablesByTag.get(variableTag),
-                 AppStateError(VariableWithTagDoesNotExist(sheetContext.sheetId, variableTag)))
+    fun variable(variableReference : VariableReference,
+                 context : Maybe<VariableNamespace> = Nothing()) : AppEff<Variable>
+    {
+        fun firstVariable(variableSet : Set<Variable>) : AppEff<Variable> =
+                note(variableSet.firstOrNull(),
+                        AppStateError(VariableDoesNotExist(entityId, variableReference)))
 
+        return this.variables(variableReference, context).apply(::firstVariable)
+    }
+
+
+    // Variables
+    // -----------------------------------------------------------------------------------------
 
     fun variables() : Collection<Variable> = this.variableById.values
 
@@ -675,13 +686,13 @@ class SheetState(val sheetContext : SheetContext,
                   context : Maybe<VariableNamespace> = Nothing()) : AppEff<Set<Variable>> =
         when (variableReference)
         {
-            is VariableId      -> effApply(::setOf, this.variableWithId(variableReference))
+            is VariableId      -> effApply(::setOf, this.variable(variableReference))
             is VariableTag     -> this.variablesWithTag(variableReference)
             is VariableContext -> {
                 when (context) {
                     is Just -> {
                         val contextId = VariableId(context.value, VariableName(variableReference.value))
-                        effApply(::setOf, this.variableWithId(contextId))
+                        effApply(::setOf, this.variable(contextId))
                     }
                     else    -> effError<AppError,Set<Variable>>(AppStateError(NoContext(variableReference)))
                 }
@@ -690,11 +701,11 @@ class SheetState(val sheetContext : SheetContext,
             is RelatedVariable  -> {
                 val variableId = VariableId(variableReference.name.value)
                 val relation = variableReference.relation
-                this.variableWithId(variableId)
-                        .apply { effValue<AppError,Maybe<VariableId>>(it.relatedVariableId(relation)) }
-                        .apply { note<AppError,VariableId>(it.toNullable(), AppStateError(VariableDoesNotHaveRelation(variableId,relation))) }
-                        .apply { this.variableWithId(it) }
-                        .apply { effValue<AppError,Set<Variable>>(setOf(it)) }
+                this.variable(variableId)
+                    .apply { effValue<AppError,Maybe<VariableId>>(it.relatedVariableId(relation)) }
+                    .apply { note<AppError,VariableId>(it.toNullable(), AppStateError(VariableDoesNotHaveRelation(variableId, relation))) }
+                    .apply { this.variable(it) }
+                    .apply { effValue<AppError,Set<Variable>>(setOf(it)) }
             }
             is RelatedVariableSet -> {
                 val relation = variableReference.relation
@@ -705,7 +716,7 @@ class SheetState(val sheetContext : SheetContext,
                         val relatedVarId = it.relatedVariableId(relation)
                         when (relatedVarId) {
                              is Just -> {
-                                 val relatedVar = this.variableWithId(relatedVarId.value)
+                                 val relatedVar = this.variable(relatedVarId.value)
                                  when (relatedVar) {
                                      is Val -> relatedVariableSet.add(relatedVar.value)
                              }
@@ -720,57 +731,32 @@ class SheetState(val sheetContext : SheetContext,
         }
 
 
-    fun variable(variableReference : VariableReference,
-                 context : Maybe<VariableNamespace> = Nothing()) : AppEff<Variable>
-    {
-        fun firstVariable(variableSet : Set<Variable>) : AppEff<Variable> =
-                note(variableSet.firstOrNull(),
-                        AppStateError(VariableDoesNotExist(sheetContext.sheetId, variableReference)))
+    fun variablesWithTag(variableTag : VariableTag) : AppEff<Set<Variable>> =
+        note(this.variablesByTag.get(variableTag),
+             AppStateError(VariableWithTagDoesNotExist(entityId, variableTag)))
 
-        return this.variables(variableReference, context).apply(::firstVariable)
-    }
+
 
 
     // Variable > Boolean
     // -----------------------------------------------------------------------------------------
 
     fun booleanVariable(variableReference : VariableReference) : AppEff<BooleanVariable> =
-        this.variable(variableReference)
-            .apply({it.booleanVariable(sheetContext.sheetId)})
-
-
-    fun booleanVariableWithId(variableId : VariableId) : AppEff<BooleanVariable>
-    {
-        fun boolVariableEff(variable : Variable) : AppEff<BooleanVariable> = when (variable)
-        {
-            is BooleanVariable -> effValue(variable)
-            else               -> effError(AppStateError(
-                                       VariableIsOfUnexpectedType(sheetContext.sheetId,
-                                                                  variableId,
-                                                                  VariableType.TEXT,
-                                                                  variable.type())))
-        }
-
-        return variableWithId(variableId)
-                  .apply(::boolVariableEff)
-    }
+        variable(variableReference).apply { it.booleanVariable(this.entityId) }
 
 
     // Variable > Dice Roll
     // -----------------------------------------------------------------------------------------
 
     fun diceRollVariable(variableReference : VariableReference) : AppEff<DiceRollVariable> =
-        this.variable(variableReference)
-            .apply({it.diceRollVariable(sheetContext.sheetId)})
+        variable(variableReference).apply { it.diceRollVariable(this.entityId) }
 
 
     // Variable > Number
     // -----------------------------------------------------------------------------------------
 
-    fun numberVariable(variableReference : VariableReference,
-                       context : Maybe<VariableNamespace> = Nothing()) : AppEff<NumberVariable> =
-        this.variable(variableReference, context)
-                .apply({it.numberVariable(sheetContext.sheetId)})
+    fun numberVariable(variableReference : VariableReference) : AppEff<NumberVariable> =
+        variable(variableReference).apply { it.numberVariable(this.entityId) }
 
 
     fun numberVariables(variableReference : VariableReference,
@@ -788,71 +774,18 @@ class SheetState(val sheetContext : SheetContext,
     }
 
 
-    fun numberVariableWithId(variableId : VariableId) : AppEff<NumberVariable>
-    {
-        fun numVariableEff(variable : Variable) : AppEff<NumberVariable> = when (variable)
-        {
-            is NumberVariable -> effValue(variable)
-            else              -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheetContext.sheetId,
-                                                               variableId,
-                                                               VariableType.TEXT,
-                                                               variable.type())))
-        }
-
-        return variableWithId(variableId)
-                  .apply(::numVariableEff)
-    }
-
-
     // Variable > Text
     // -----------------------------------------------------------------------------------------
 
     fun textVariable(variableReference : VariableReference) : AppEff<TextVariable> =
-            this.variable(variableReference)
-                .apply({it.textVariable(sheetContext.sheetId)})
-
-
-    fun textVariableWithId(variableId : VariableId) : AppEff<TextVariable>
-    {
-        fun textVariableEff(variable : Variable) : AppEff<TextVariable> = when (variable)
-        {
-            is TextVariable -> effValue(variable)
-            else            -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheetContext.sheetId,
-                                                               variableId,
-                                                               VariableType.TEXT,
-                                                               variable.type())))
-        }
-
-        return variableWithId(variableId)
-                  .apply(::textVariableEff)
-    }
+        variable(variableReference).apply { it.textVariable(this.entityId) }
 
 
     // Variable > Text List
     // -----------------------------------------------------------------------------------------
 
     fun textListVariable(variableReference : VariableReference) : AppEff<TextListVariable> =
-            this.variable(variableReference)
-                .apply({it.textListVariable(sheetContext.sheetId)})
-
-
-    fun textListVariableWithId(variableId : VariableId) : AppEff<TextListVariable>
-    {
-        fun textVariableEff(variable : Variable) : AppEff<TextListVariable> = when (variable)
-        {
-            is TextListVariable -> effValue(variable)
-            else                -> effError(AppStateError(
-                                        VariableIsOfUnexpectedType(sheetContext.sheetId,
-                                                                   variableId,
-                                                                   VariableType.TEXT,
-                                                                   variable.type())))
-        }
-
-        return variableWithId(variableId)
-                  .apply(::textVariableEff)
-    }
+        variable(variableReference).apply { it.textListVariable(this.entityId) }
 
 }
 

@@ -24,7 +24,7 @@ import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val

@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -15,7 +14,6 @@ import android.widget.TextView
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.name
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.dice.*
@@ -24,9 +22,9 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import java.io.Serializable
 
 

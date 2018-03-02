@@ -11,11 +11,11 @@ import com.kispoko.tome.app.AppOfficialError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
 import com.kispoko.tome.official.*
-import com.kispoko.tome.rts.campaign.CampaignManager
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUI
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.campaign.CampaignManager
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUI
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.Err
 import effect.Val
 import effect.effError
@@ -110,6 +110,28 @@ object OfficialManager
     // -----------------------------------------------------------------------------------------
 
     suspend fun loadGame(officialGame : OfficialGame,
+                         context : Context) = run(CommonPool,
+    {
+
+        val gameLoader = assetInputStream(context, officialGame.filePath)
+                            .apply { TomeDoc.loadGame(it, officialGame.gameId.value, context) }
+        when (gameLoader)
+        {
+            is Val ->
+            {
+                val game = gameLoader.value
+                GameManager.addGameToSession(game, false)
+                ApplicationLog.event(OfficialGameLoaded(game.gameName().value))
+            }
+            is Err -> ApplicationLog.error(gameLoader.error)
+        }
+    })
+
+
+    // Load > Book
+    // -----------------------------------------------------------------------------------------
+
+    suspend fun loadBook(officialGame : OfficialGame,
                          context : Context) = run(CommonPool,
     {
 

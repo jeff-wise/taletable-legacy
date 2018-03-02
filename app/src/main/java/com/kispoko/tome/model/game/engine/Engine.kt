@@ -29,9 +29,10 @@ import com.kispoko.tome.model.game.engine.reference.TextReference
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.*
-import com.kispoko.tome.rts.game.engine.*
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.engine.*
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -205,12 +206,12 @@ data class Engine(override val id : UUID,
                  AppEngineError(ValueSetDoesNotExist(valueSetId)))
 
 
-    fun valueSet(valueSetIdReference : TextReference, sheetContext : SheetContext) : AppEff<ValueSet>
+    fun valueSet(valueSetIdReference : TextReference, entityId : EntityId) : AppEff<ValueSet>
     {
         val error : AppError = AppEngineError(TextReferenceIsNull(valueSetIdReference))
 
-        return SheetData.text(sheetContext, valueSetIdReference) ap { mValueSetId ->
-               note(mValueSetId.toNullable(), error)             ap { valueSetId ->
+        return SheetData.text(valueSetIdReference, entityId) ap { mValueSetId ->
+               note(mValueSetId.toNullable(), error)         ap { valueSetId ->
                this.valueSet(ValueSetId(valueSetId))
                } }
     }
@@ -226,92 +227,52 @@ data class Engine(override val id : UUID,
         }
 
 
-//    fun removeValueSet(valueSetId : ValueSetId) : Boolean
-//    {
-//        val newValueSets : MutableSet<ValueSet> = mutableSetOf()
-//
-//        this.valueSets().forEach {
-//            if (it.valueSetId() != valueSetId)
-//                newValueSets.add(it)
-//        }
-//
-//        val removedSet = newValueSets.size != this.valueSets().size
-//
-//        this.valueSets.set.clear()
-//
-//        newValueSets.forEach {
-//            this.valueSets.set.add(it)
-//        }
-//
-//        return removedSet
-//    }
-
-
-//    fun updateValueSet(updatedValueSet : ValueSet)
-//    {
-//        Log.d("***ENGINE", "called update value set")
-//        val removed = this.removeValueSet(updatedValueSet.valueSetId())
-//        if (removed) {
-//            this.valueSets.set.add(updatedValueSet)
-//            Log.d("***ENGINE", "updated value set")
-//            Log.d("***ENGINE", updatedValueSet.toString())
-//        }
-//
-//    }
-
-//
-//    fun addValueSet(newValueSet : ValueSet)
-//    {
-//        this.valueSets.set.add(newValueSet)
-//    }
-
-
     // Engine Data > Values
     // -----------------------------------------------------------------------------------------
 
 
-    fun value(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<Value>
+    fun value(valueReference : ValueReference, entityId : EntityId) : AppEff<Value>
     {
         val valueSetIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueSetId))
         val valueIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueId))
 
-        return SheetData.text(sheetContext, valueReference.valueSetId) ap { mValueSetId ->
+        return SheetData.text(valueReference.valueSetId, entityId) ap { mValueSetId ->
                note(mValueSetId.toNullable(), valueSetIdError)         ap { valueSetId ->
-               SheetData.text(sheetContext, valueReference.valueId)    ap { mValueId ->
+               SheetData.text(valueReference.valueId, entityId)    ap { mValueId ->
                note(mValueId.toNullable(), valueIdError)               ap { valueId ->
                this.valueSet(ValueSetId(valueSetId))                   ap { valueSet ->
-               valueSet.value(ValueId(valueId), sheetContext.gameId)
+               valueSet.value(ValueId(valueId), entityId)
                } } } } }
 
     }
 
 
-    fun numberValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueNumber>
+    fun numberValue(valueReference : ValueReference, entityId : EntityId) : AppEff<ValueNumber>
     {
         val valueSetIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueSetId))
         val valueIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueId))
 
-        return SheetData.text(sheetContext, valueReference.valueSetId) ap { mValueSetId ->
+        return SheetData.text(valueReference.valueSetId, entityId) ap { mValueSetId ->
                note(mValueSetId.toNullable(), valueSetIdError)         ap { valueSetId ->
-               SheetData.text(sheetContext, valueReference.valueId)    ap { mValueId ->
+               SheetData.text(valueReference.valueId, entityId)    ap { mValueId ->
                note(mValueId.toNullable(), valueIdError)               ap { valueId ->
                this.valueSet(ValueSetId(valueSetId))                   ap { valueSet ->
-               valueSet.numberValue(ValueId(valueId), sheetContext)
+               valueSet.numberValue(ValueId(valueId), entityId)
                } } } } }
     }
 
 
-    fun textValue(valueReference : ValueReference, sheetContext : SheetContext) : AppEff<ValueText>
+    fun textValue(valueReference : ValueReference, entityId : EntityId) : AppEff<ValueText>
     {
         val valueSetIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueSetId))
         val valueIdError : AppError = AppEngineError(TextReferenceIsNull(valueReference.valueId))
 
-        return SheetData.text(sheetContext, valueReference.valueSetId) ap { mValueSetId ->
+        return SheetData.text(valueReference.valueSetId, entityId) ap { mValueSetId ->
                note(mValueSetId.toNullable(), valueSetIdError)         ap { valueSetId ->
-               SheetData.text(sheetContext, valueReference.valueId)    ap { mValueId ->
+               SheetData.text(valueReference.valueId, entityId)    ap { mValueId ->
                note(mValueId.toNullable(), valueIdError)               ap { valueId ->
                this.valueSet(ValueSetId(valueSetId))                   ap { valueSet ->
-               valueSet.textValue(ValueId(valueId), sheetContext)
+               valueSet.textValue(ValueId(valueId), entityId)
                } } } } }
     }
 
@@ -356,7 +317,7 @@ data class Engine(override val id : UUID,
     fun mechanics() : List<Mechanic> = this.mechanics
 
 
-    fun mechanicWithId(mechanicId : MechanicId) : AppEff<Mechanic> =
+    fun mechanic(mechanicId : MechanicId) : AppEff<Mechanic> =
             note(this.mechanicById[mechanicId],
                  AppEngineError(MechanicDoesNotExist(mechanicId)))
 
@@ -371,8 +332,10 @@ data class Engine(override val id : UUID,
     fun mechanicCategories() : List<MechanicCategory> = this.mechanicCategories
 
 
-    fun mechanicCategoryWithId(categoryId : MechanicCategoryId) : MechanicCategory? =
-            this.mechanicCategoryById[categoryId]
+    fun mechanicCategory(categoryId : MechanicCategoryId) : AppEff<MechanicCategory> =
+            note(this.mechanicCategoryById[categoryId],
+                 AppEngineError(MechanicCategoryDoesNotExist(categoryId)))
+
 
 
     // Engine Data > Summations
@@ -381,9 +344,9 @@ data class Engine(override val id : UUID,
     fun summations() : List<Summation> = this.summations
 
 
-    fun summation(summationid : SummationId) : AppEff<Summation> =
-            note(this.summationById[summationid],
-                    AppEngineError(SummationDoesNotExist(summationid)))
+    fun summation(summationId : SummationId) : AppEff<Summation> =
+            note(this.summationById[summationId],
+                    AppEngineError(SummationDoesNotExist(summationId)))
 
 
     // Engine Data > Procedures
@@ -392,7 +355,7 @@ data class Engine(override val id : UUID,
     fun procedures() : List<Procedure> = this.procedures
 
 
-    fun procedureWithId(procedureId : ProcedureId) : AppEff<Procedure> =
+    fun procedure(procedureId : ProcedureId) : AppEff<Procedure> =
             note(this.procedureById[procedureId],
                     AppEngineError(ProcedureDoesNotExist(procedureId)))
 

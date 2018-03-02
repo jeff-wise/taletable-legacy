@@ -18,8 +18,10 @@ import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.numberVariable
+import com.kispoko.tome.rts.entity.sheet.*
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -61,16 +63,16 @@ sealed class NumberVariableValue : ToDocument, SumType, Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
+    open fun dependencies(entityId : EntityId) : Set<VariableReference> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
     // Value
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
+    abstract fun value(entityId : EntityId) : AppEff<Maybe<Double>>
 
-    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+    abstract fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>>
 
 }
 
@@ -107,11 +109,11 @@ data class NumberVariableLiteralValue(val value : Double)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
+    override fun value(entityId : EntityId) : AppEff<Maybe<Double>> =
             effValue(Just(this.value))
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 
@@ -176,10 +178,10 @@ class NumberVariableUnknownLiteralValue() : NumberVariableValue(), SQLSerializab
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> = effValue(Nothing())
+    override fun value(entityId : EntityId) : AppEff<Maybe<Double>> = effValue(Nothing())
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 
@@ -234,21 +236,20 @@ data class NumberVariableVariableValue(val variableId : VariableId)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) = setOf(variableId)
+    override fun dependencies(entityId : EntityId) = setOf(variableId)
 
 
     // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
-        SheetManager.sheetState(sheetContext.sheetId)
-                .apply { it.numberVariableWithId(variableId) }
-                .apply { it.variableValue().value(sheetContext) }
+    override fun value(entityId : EntityId) : AppEff<Maybe<Double>> =
+        numberVariable(variableId, entityId)
+            .apply { it.variableValue().value(entityId) }
 
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 
@@ -296,7 +297,7 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) = invocation.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId) = invocation.dependencies(entityId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -310,8 +311,8 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
-        effApply(::Just, this.invocation.numberValue(sheetContext))
+    override fun value(entityId : EntityId) : AppEff<Maybe<Double>> =
+        effApply(::Just, this.invocation.numberValue(entityId))
 
 
     override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
@@ -468,7 +469,7 @@ data class NumberVariableSummationValue(val summationId : SummationId)
     override fun columnValue() = PrimValue(this)
 
 
-    override fun case() = "summation"
+    override fun case() = "summationWithId"
 
 
     override val sumModelObject = this

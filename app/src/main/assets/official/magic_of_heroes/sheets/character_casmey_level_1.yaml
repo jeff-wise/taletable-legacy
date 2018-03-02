@@ -14261,7 +14261,7 @@ sections:
                       - theme_id: light
                         color_id: dark_grey_16
                     font_style: medium
-                    size: 17
+                    size: 18
                   true_format:
                     color_theme:
                       theme_color_ids:
@@ -14472,7 +14472,7 @@ sections:
                       - theme_id: light
                         color_id: green_90
                     font_style: medium
-                    size: 17
+                    size: 18
                   true_text: 'Yes'
                   false_text: 'No'
             rows:

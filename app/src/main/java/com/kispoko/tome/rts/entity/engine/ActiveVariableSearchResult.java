@@ -1,8 +1,8 @@
 
-package com.kispoko.tome.rts.game.engine;
+package com.kispoko.tome.rts.entity.engine;
 
 
-import com.kispoko.tome.rts.game.engine.search.EngineSearchResult;
+import com.kispoko.tome.rts.entity.engine.search.EngineSearchResult;
 
 
 

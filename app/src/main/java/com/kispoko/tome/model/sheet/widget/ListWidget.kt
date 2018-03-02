@@ -30,12 +30,11 @@ import com.kispoko.tome.lib.ui.CustomTypefaceSpan
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
-import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.style.TextFormat
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

@@ -14,8 +14,11 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.textValue
+import com.kispoko.tome.rts.entity.value
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -51,17 +54,17 @@ sealed class TextVariableValue : ToDocument, SumType, Serializable
     // Dependencies
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
+    open fun dependencies(entityId : EntityId) : Set<VariableReference> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
     // Value
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(sheetContext : SheetContext) : AppEff<Maybe<String>>
+    abstract fun value(entityId : EntityId) : AppEff<Maybe<String>>
 
 
-    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+    abstract fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>>
 
 }
 
@@ -97,11 +100,11 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue(), S
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> =
+    override fun value(entityId : EntityId) : AppEff<Maybe<String>> =
             effValue(Just(this.value))
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
         effValue(setOf())
 
 
@@ -166,10 +169,10 @@ class TextVariableUnknownLiteralValue() : TextVariableValue(), SQLSerializable
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> = effValue(Nothing())
+    override fun value(entityId : EntityId) : AppEff<Maybe<String>> = effValue(Nothing())
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
         effValue(setOf())
 
 
@@ -222,16 +225,14 @@ data class TextVariableValueValue(val valueReference : ValueReference)
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> =
-        GameManager.engine(sheetContext.gameId)
-                   .apply { it.textValue(this.valueReference, sheetContext) }
-                   .apply { effValue<AppError,Maybe<String>>(Just(it.value())) }
+    override fun value(entityId : EntityId) : AppEff<Maybe<String>> =
+        textValue(this.valueReference, entityId)
+          .apply { effValue<AppError,Maybe<String>>(Just(it.value())) }
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-        GameManager.engine(sheetContext.gameId)
-                   .apply { it.value(this.valueReference, sheetContext) }
-                   .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+        value(this.valueReference, entityId)
+          .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -282,10 +283,10 @@ data class TextVariableValueUnknownValue(val valueSetId : ValueSetId)
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> = effValue(Nothing())
+    override fun value(entityId : EntityId) : AppEff<Maybe<String>> = effValue(Nothing())
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
         effValue(setOf())
 
 
@@ -337,13 +338,14 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = this.invocation.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId) : Set<VariableReference> =
+            this.invocation.dependencies(entityId)
 
 
-    override fun value(sheetContext : SheetContext) = TODO("Not Implemented")
+    override fun value(entityId : EntityId) = TODO("Not Implemented")
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 

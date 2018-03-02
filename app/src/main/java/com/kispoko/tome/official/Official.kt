@@ -3,6 +3,7 @@ package com.kispoko.tome.official
 
 
 import com.kispoko.tome.ApplicationAssets
+import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
@@ -62,6 +63,7 @@ data class OfficialGame(val gameId : GameId)
 
     val filePath = officialDirectoryPath + "/" + gameId.value +
                         "/" + gameId.value +  ".yaml"
+
 
 }
 

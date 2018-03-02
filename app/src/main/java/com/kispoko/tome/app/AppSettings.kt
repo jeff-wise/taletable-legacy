@@ -13,9 +13,9 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.Theme
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.theme.AppThemeNotSupported
-import com.kispoko.tome.rts.theme.ThemeDoesNotHaveColor
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.AppThemeNotSupported
+import com.kispoko.tome.rts.entity.theme.ThemeDoesNotHaveColor
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType

@@ -19,10 +19,12 @@ import com.kispoko.tome.model.game.engine.EngineValueText
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.game.engine.interpreter.UnexpectedProgramResultType
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.engine.interpreter.UnexpectedProgramResultType
+import com.kispoko.tome.rts.entity.program
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetData
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -116,7 +118,7 @@ data class Invocation(override val id : UUID,
     /**
      * The set of variables that the program depends on.
      */
-    fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
+    fun dependencies(entityId : EntityId) : Set<VariableReference> = setOf()
 //    {
 //        val deps = mutableSetOf<VariableReference>()
 //
@@ -154,7 +156,7 @@ data class Invocation(override val id : UUID,
     // PROGRAM PARAMETER VALUES
     // -----------------------------------------------------------------------------------------
 
-    private fun programParameterValues(sheetContext : SheetContext) : ProgramParameterValues
+    private fun programParameterValues(entityId : EntityId) : ProgramParameterValues
     {
         val parameterValueMap : MutableMap<String,EngineValue> = mutableMapOf()
 
@@ -162,7 +164,7 @@ data class Invocation(override val id : UUID,
             val name = it.key
             val dataReference = it.value
 
-            SheetData.referenceEngineValue(dataReference,sheetContext) apDo { mEngineValue ->
+            SheetData.referenceEngineValue(dataReference,entityId) apDo { mEngineValue ->
                 when (mEngineValue) {
                     is Just -> parameterValueMap.put(name, mEngineValue.value)
                 }
@@ -178,15 +180,14 @@ data class Invocation(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<EngineValue> =
-            GameManager.engine(sheetContext.gameId) ap { engine  ->
-            engine.program(this.programId)          ap { program ->
-            program.value(this.programParameterValues(sheetContext), sheetContext)
-            } }
+    fun value(entityId : EntityId) : AppEff<EngineValue> =
+        program(this.programId, entityId)          ap { it ->
+            it.value(this.programParameterValues(entityId), entityId)
+        }
 
 
-    fun numberValue(sheetContext : SheetContext) : AppEff<Double> =
-        this.value(sheetContext) ap { engineValue ->
+    fun numberValue(entityId : EntityId) : AppEff<Double> =
+        this.value(entityId) ap { engineValue ->
             when (engineValue)
             {
                 is EngineValueNumber -> effValue(engineValue.value)
@@ -199,16 +200,16 @@ data class Invocation(override val id : UUID,
         }
 
 
-    fun textValue(sheetContext : SheetContext) : AppEff<String> =
-        this.value(sheetContext) ap { engineValue ->
+    fun textValue(entityId : EntityId) : AppEff<String> =
+        this.value(entityId) ap { engineValue ->
             when (engineValue)
             {
                 is EngineValueText -> effValue(engineValue.value)
                 else                 ->
                     effError<AppError,String>(
                             AppEvalError(UnexpectedProgramResultType(this.programId(),
-                                                                      engineValue.type(),
-                                                                      EngineValueType.Number)))
+                                                                     engineValue.type(),
+                                                                     EngineValueType.Number)))
             }
         }
 

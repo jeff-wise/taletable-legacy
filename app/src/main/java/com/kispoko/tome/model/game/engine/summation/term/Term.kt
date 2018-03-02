@@ -16,7 +16,9 @@ import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.numberVariable
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import effect.Err
@@ -67,14 +69,14 @@ sealed class SummationTerm(open val termName : Maybe<TermName>)
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    abstract fun dependencies(sheetContext : SheetContext): Set<VariableReference>
+    abstract fun dependencies(entityId : EntityId): Set<VariableReference>
 
 
-    abstract fun value(sheetContext : SheetContext,
+    abstract fun value(entityId : EntityId,
                        context : Maybe<VariableNamespace> = Nothing()) : Maybe<Double>
 
 
-    abstract fun summary(sheetContext : SheetContext) : TermSummary?
+    abstract fun summary(entityId : EntityId) : TermSummary?
 
 }
 
@@ -135,13 +137,14 @@ data class SummationTermNumber(override val id : UUID,
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = this.numberReference().dependencies()
+    override fun dependencies(entityId : EntityId): Set<VariableReference> =
+            this.numberReference().dependencies()
 
 
-    override fun value(sheetContext : SheetContext,
+    override fun value(entityId : EntityId,
                        context : Maybe<VariableNamespace>) : Maybe<Double>
     {
-        val numbers = SheetData.numbers(sheetContext, this.numberReference(), context)
+        val numbers = SheetData.numbers(this.numberReference(), entityId, context)
 
         when (numbers)
         {
@@ -153,9 +156,9 @@ data class SummationTermNumber(override val id : UUID,
     }
 
 
-    override fun summary(sheetContext : SheetContext) : TermSummary?
+    override fun summary(entityId : EntityId) : TermSummary?
     {
-        val components = this.numberReference().components(sheetContext)
+        val components = this.numberReference().components(entityId)
 
         if (components.isNotEmpty())
         {
@@ -168,7 +171,7 @@ data class SummationTermNumber(override val id : UUID,
             {
                 is Just ->
                 {
-                    val value = SheetData.number(sheetContext, this.numberReference())
+                    val value = SheetData.number(this.numberReference(), entityId)
                     when (value)
                     {
                         is effect.Val -> {
@@ -302,7 +305,7 @@ data class SummationTermLinearCombination(
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    fun relatedValueVariable(variable : Variable, sheetContext : SheetContext) : AppEff<NumberVariable>
+    fun relatedValueVariable(variable : Variable, entityId : EntityId) : AppEff<NumberVariable>
     {
         return when (this.valueRelation)
         {
@@ -310,11 +313,8 @@ data class SummationTermLinearCombination(
             {
                 val valueVariableId = variable.relatedVariableId(this.valueRelation.value)
                 when (valueVariableId) {
-                    is Just -> {
-                        SheetManager.sheetState(sheetContext.sheetId)
-                                    .apply { it.numberVariableWithId(valueVariableId.value)}
-                    }
-                    else -> effError<AppError,NumberVariable>(AppStateError(
+                    is Just -> numberVariable(valueVariableId.value)}
+                    else    -> effError<AppError,NumberVariable>(AppStateError(
                                     VariableDoesNotHaveRelation(variable.variableId(), this.valueRelation.value)))
                 }
             }

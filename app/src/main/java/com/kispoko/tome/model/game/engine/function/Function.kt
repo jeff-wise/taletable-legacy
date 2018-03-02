@@ -14,7 +14,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.*
-import com.kispoko.tome.rts.game.engine.interpreter.FunctionNotDefinedForParameters
+import com.kispoko.tome.rts.entity.engine.interpreter.FunctionNotDefinedForParameters
 import effect.*
 import maybe.*
 import lulo.document.*

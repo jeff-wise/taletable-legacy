@@ -22,9 +22,9 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 
 
@@ -58,7 +58,7 @@ class SummationDialogFragment : DialogFragment()
             val dialog = SummationDialogFragment()
 
             val args = Bundle()
-            args.putSerializable("summation", summation)
+            args.putSerializable("summationWithId", summation)
             args.putString("summation_label", summationLabel)
             args.putSerializable("sheet_context", sheetContext)
             dialog.arguments = args
@@ -77,7 +77,7 @@ class SummationDialogFragment : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.summation        = arguments.getSerializable("summation") as Summation
+        this.summation        = arguments.getSerializable("summationWithId") as Summation
         this.summmationLabel  = arguments.getString("summation_label")
         this.sheetContext     = arguments.getSerializable("sheet_context") as SheetContext
 

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.value
 
 
+import com.kispoko.tome.R.string.engine
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.AppError
@@ -15,10 +16,12 @@ import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.game.engine.ValueSetDoesNotContainValue
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.engine.ValueSetDoesNotContainValue
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.valueSet
 import effect.*
 import effect.Val
 import maybe.*
@@ -107,16 +110,16 @@ sealed class ValueSet(open val valueSetId : ValueSetId,
     // Lookup
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(valueId : ValueId, gameId : GameId) : AppEff<Value>
+    abstract fun value(valueId : ValueId, entityId : EntityId) : AppEff<Value>
 
 
-    abstract fun numberValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueNumber>
+    abstract fun numberValue(valueId : ValueId, entityId : EntityId) : AppEff<ValueNumber>
 
 
-    abstract fun textValue(valueId : ValueId, sheetContext: SheetContext) : AppEff<ValueText>
+    abstract fun textValue(valueId : ValueId, entityId : EntityId) : AppEff<ValueText>
 
 
-    abstract fun values(gameId : GameId) : AppEff<Set<Value>>
+    abstract fun values(entityId : EntityId) : AppEff<Set<Value>>
 
 }
 
@@ -230,21 +233,21 @@ data class ValueSetBase(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    override fun value(valueId : ValueId, gameId : GameId) : AppEff<Value> =
+    override fun value(valueId : ValueId, entityId : EntityId) : AppEff<Value> =
             note(this.valuesById[valueId],
                  AppEngineError(ValueSetDoesNotContainValue(this.valueSetId(), valueId)))
 
 
     override fun numberValue(valueId : ValueId,
-                             sheetContext : SheetContext) : AppEff<ValueNumber> =
-            this.value(valueId, sheetContext.gameId).apply { it.numberValue() }
+                             entityId : EntityId) : AppEff<ValueNumber> =
+            this.value(valueId, entityId).apply { it.numberValue() }
 
 
-    override fun textValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueText> =
-        this.value(valueId, sheetContext.gameId).apply { it.textValue() }
+    override fun textValue(valueId : ValueId, entityId : EntityId) : AppEff<ValueText> =
+        this.value(valueId, entityId).apply { it.textValue() }
 
 
-    override fun values(gameId : GameId) : AppEff<Set<Value>> =
+    override fun values(entityId : EntityId) : AppEff<Set<Value>> =
             effValue(this.values.toSet())
 
 
@@ -458,18 +461,16 @@ data class ValueSetCompound(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    override fun value(valueId : ValueId, gameId : GameId) : AppEff<Value>
+    override fun value(valueId : ValueId, entityId : EntityId) : AppEff<Value>
     {
-        val valueSets = GameManager.engine(gameId) ap { engine ->
-                            this.valueSetIds().toList().mapM { engine.valueSet(it) }
-                        }
+        val valueSets = this.valueSetIds().toList().mapM { valueSet(it, entityId) }
 
         when (valueSets)
         {
             is Val ->
             {
                 for (valueSet in valueSets.value) {
-                    val value = valueSet.value(valueId, gameId)
+                    val value = valueSet.value(valueId, entityId)
                     when (value) {
                         is Val -> return value
                     }
@@ -483,26 +484,23 @@ data class ValueSetCompound(override val id : UUID,
 
 
     override fun numberValue(valueId : ValueId,
-                             sheetContext : SheetContext) : AppEff<ValueNumber> =
-        this.value(valueId, sheetContext.gameId).apply { it.numberValue() }
+                             entityId : EntityId) : AppEff<ValueNumber> =
+        this.value(valueId, entityId).apply { it.numberValue() }
 
 
-    override fun textValue(valueId : ValueId, sheetContext : SheetContext) : AppEff<ValueText> =
-        this.value(valueId, sheetContext.gameId).apply { it.textValue() }
+    override fun textValue(valueId : ValueId, entityId : EntityId) : AppEff<ValueText> =
+        this.value(valueId, entityId).apply { it.textValue() }
 
 
-    override fun values(gameId : GameId) : AppEff<Set<Value>>
+    override fun values(entityId : EntityId) : AppEff<Set<Value>>
     {
-        fun valueSets(engine : Engine) : AppEff<List<ValueSet>> =
-            this.valueSetIds().toList().mapM { engine.valueSet(it) }
+        val valueSets = this.valueSetIds().toList().mapM { valueSet(it, entityId) }
 
         fun values(valueSets : List<ValueSet>) : AppEff<Set<Value>> =
-                valueSets.mapM { it.values(gameId) }
+                valueSets.mapM { it.values(entityId) }
                          .apply { effValue<AppError,Set<Value>>(it.flatten().toSet()) }
 
-        return GameManager.engine(gameId)
-                          .apply(::valueSets)
-                          .apply(::values)
+        return valueSets.apply { values(it) }
     }
 
 

@@ -10,9 +10,9 @@ import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUI
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUI
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 

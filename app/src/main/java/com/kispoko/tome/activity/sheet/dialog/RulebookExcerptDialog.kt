@@ -22,10 +22,9 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 
 
@@ -120,16 +119,16 @@ class RulebookExcerptDialog : DialogFragment()
 
             var view : View? = null
 
-            GameManager.rulebook(sheetUIContext.gameId, rulebookId) apDo { rulebook ->
-
-                val excerpt = rulebook.excerpt(rulebookReference)
-                val refPath = rulebook.referencePath(rulebookReference)
-
-                if (excerpt != null && refPath != null) {
-                    val viewBuilder = ExcerptViewBuilder(excerpt, refPath, sheetUIContext)
-                    view = viewBuilder.view()
-                }
-            }
+//            GameManager.rulebook(sheetUIContext.gameId, rulebookId) apDo { rulebook ->
+//
+//                val excerpt = rulebook.excerpt(rulebookReference)
+//                val refPath = rulebook.referencePath(rulebookReference)
+//
+//                if (excerpt != null && refPath != null) {
+//                    val viewBuilder = ExcerptViewBuilder(excerpt, refPath, sheetUIContext)
+//                    view = viewBuilder.view()
+//                }
+//            }
 
             if (view != null)
                 return view
@@ -151,12 +150,12 @@ class RulebookExcerptDialog : DialogFragment()
             val sheetUIContext  = SheetUIContext(sheetContext, context)
             val rulebookId = rulebookReference.rulebookId()
 
-            GameManager.rulebook(sheetUIContext.gameId, rulebookId) apDo { rulebook ->
-                val mdView = view?.findViewById(R.id.markdown_view) as MarkdownView
-                rulebook.excerpt(rulebookReference)?.let {
-                    mdView.loadMarkdown(it.body)
-                }
-            }
+//            GameManager.rulebook(sheetUIContext.gameId, rulebookId) apDo { rulebook ->
+//                val mdView = view?.findViewById(R.id.markdown_view) as MarkdownView
+//                rulebook.excerpt(rulebookReference)?.let {
+//                    mdView.loadMarkdown(it.body)
+//                }
+//            }
         }
     }
 

@@ -27,7 +27,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val

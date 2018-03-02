@@ -15,8 +15,9 @@ import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.game.engine.interpreter.ResultBindingDoesNotExist
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.engine.interpreter.ResultBindingDoesNotExist
+import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -156,12 +157,12 @@ data class Program(override val id : UUID,
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    fun dependencies(entityId : EntityId) : Set<VariableReference>
     {
         val deps = mutableSetOf<VariableReference>()
 
         this.statements().forEach {
-            deps.addAll(it.dependencies(sheetContext))
+            deps.addAll(it.dependencies(entityId))
         }
 
         return deps
@@ -173,7 +174,7 @@ data class Program(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun value(parameters : ProgramParameterValues,
-              sheetContext : SheetContext) : AppEff<EngineValue>
+              entityId : EntityId) : AppEff<EngineValue>
     {
         val bindings : MutableMap<String,EngineValue> = mutableMapOf()
 
@@ -182,7 +183,7 @@ data class Program(override val id : UUID,
             val value = statement.value(parameters,
                                         bindings,
                                         this.programId(),
-                                        sheetContext)
+                                        entityId)
             when (value)
             {
                 is Val ->

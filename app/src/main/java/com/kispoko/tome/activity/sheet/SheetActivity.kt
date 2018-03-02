@@ -37,7 +37,8 @@ import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.engine.OnVariableChangeListener
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import com.kispoko.tome.util.initializeState
@@ -503,8 +504,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
                     sheet.sheetId(),
                     VariableId("name"),
                     OnVariableChangeListener(
-                        { this.updateToolbar(it, sheetContext)},
-                        {})
+                            { this.updateToolbar(it, sheetContext) },
+                            {})
                     )
         }
 

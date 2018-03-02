@@ -52,13 +52,12 @@ types:
       presence: required
       description: >
         The game's authors.
-    - name: rulebooks
+    - name: book_ids
       type:
         type: custom_coll_type
-        custom_coll_type: rulebook
+        custom_coll_type: book_id
       presence: optional
-      description: >
-        The name of the game.
+      description: The game book ids.
     - name: engine
       type:
         type: custom_type

@@ -11,12 +11,12 @@ import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.Invocation
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
-import lulo.schema.Prim
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
@@ -42,8 +42,7 @@ sealed class BooleanVariableValue : ToDocument, SumType, Serializable
             {
                 "boolean_literal"    -> BooleanVariableLiteralValue.fromDocument(doc)
                 "program_invocation" -> BooleanVariableProgramValue.fromDocument(doc)
-                else                 -> effError<ValueError,BooleanVariableValue>(
-                                            UnknownCase(doc.case(), doc.path))
+                else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -52,13 +51,13 @@ sealed class BooleanVariableValue : ToDocument, SumType, Serializable
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = setOf()
+    open fun dependencies(entityId : EntityId) : Set<VariableReference> = setOf()
 
 
     abstract fun value() : AppEff<Boolean>
 
 
-    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+    abstract fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>>
 
 }
 
@@ -98,7 +97,7 @@ data class BooleanVariableLiteralValue(var value : Boolean)
     override fun value() : AppEff<Boolean> = effValue(this.value)
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 
@@ -153,7 +152,8 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference> = this.invocation.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId) : Set<VariableReference> =
+            this.invocation.dependencies(entityId)
 
 
     override fun value(): AppEff<Boolean> {
@@ -161,7 +161,7 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
     }
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 

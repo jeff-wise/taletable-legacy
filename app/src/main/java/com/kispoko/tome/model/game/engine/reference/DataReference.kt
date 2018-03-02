@@ -2,12 +2,11 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
-import android.util.Log
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.apply
 import effect.effApply
 import effect.effError

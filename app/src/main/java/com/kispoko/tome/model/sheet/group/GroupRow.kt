@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -16,7 +15,6 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
@@ -28,9 +26,9 @@ import com.kispoko.tome.lib.orm.sql.asSQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Widget
-import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetComponent
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

@@ -3,17 +3,16 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.util.Log
-import com.kispoko.tome.R.string.variable
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.UpdateTarget
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.UpdateTarget
 import effect.Err
 import effect.Val
 import maybe.Just

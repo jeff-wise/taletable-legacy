@@ -9,11 +9,9 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.*
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.id.button
 import com.kispoko.tome.activity.sheet.procedure.NumberUpdateRequest
 import com.kispoko.tome.activity.sheet.procedure.NumberUpdater
 import com.kispoko.tome.lib.ui.Font
@@ -27,9 +25,9 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 
 
 

@@ -32,10 +32,8 @@ import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.Util
-import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val
 
@@ -85,13 +83,13 @@ class RulebookActivity : AppCompatActivity()
         // > Toolbar
         val rulebookId = this.rulebookId
         val gameId = this.gameId
-        if (gameId != null && rulebookId != null) {
-            val rulebook = GameManager.rulebook(gameId, rulebookId)
-            when (rulebook) {
-                is Val -> this.configureToolbar(rulebook.value.title().value)
-                is Err -> ApplicationLog.error(rulebook.error)
-            }
-        }
+//        if (gameId != null && rulebookId != null) {
+//            val rulebook = BookManager.gameBookWithId(gameId, rulebookId)
+//            when (rulebook) {
+//                is Val -> this.configureToolbar(rulebook.value.title().value)
+//                is Err -> ApplicationLog.error(rulebook.error)
+//            }
+//        }
 
         // > Theme
         val theme = ThemeManager.theme(this.appSettings.themeId())
@@ -122,16 +120,16 @@ class RulebookActivity : AppCompatActivity()
 
         val rulebookId = this.rulebookId
         val gameId = this.gameId
-        if (gameId != null && rulebookId != null) {
-            val rulebook = GameManager.rulebook(gameId, rulebookId)
-            when (rulebook) {
-                is Val -> {
-                    val viewBuilder = BookViewBuilder(this.appSettings.themeId, rulebook.value, this)
-                    contentView.addView(viewBuilder.view())
-                }
-                is Err -> ApplicationLog.error(rulebook.error)
-            }
-        }
+//        if (gameId != null && rulebookId != null) {
+//            val rulebook = GameManager.rulebook(gameId, rulebookId)
+//            when (rulebook) {
+//                is Val -> {
+//                    val viewBuilder = BookViewBuilder(this.appSettings.themeId, rulebook.value, this)
+//                    contentView.addView(viewBuilder.view())
+//                }
+//                is Err -> ApplicationLog.error(rulebook.error)
+//            }
+//        }
     }
 
 
@@ -395,7 +393,7 @@ class BookViewBuilder(val themeId : ThemeId,
         text.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         text.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        text.markdownText       = rulebook.introduction().value
+//        text.markdownText       = rulebook.introduction().value
         text.stylesheet         = StyleSheet(context).lightTheme
 
         return layout.linearLayout(context)

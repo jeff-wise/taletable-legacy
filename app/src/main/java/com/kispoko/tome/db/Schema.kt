@@ -48,7 +48,7 @@ import com.kispoko.tome.model.sheet.widget.table.cell.TextCellFormat
 import com.kispoko.tome.model.sheet.widget.table.column.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.user.UserName
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 
 
 
@@ -91,6 +91,117 @@ typealias DB_AuthorValue =
               MaybePrimValue<AuthorOrganization>,
               MaybePrimValue<UserName>>
 
+
+// BOOK
+// ---------------------------------------------------------------------------------------------
+
+val bookTable =
+    Table6("book",
+           "title",
+           "authors",
+           "abstract",
+           "introduction",
+           "conclusion",
+           "chapters")
+
+typealias DB_BookValue =
+    RowValue6<PrimValue<BookTitle>,
+              CollValue<Author>,
+              PrimValue<BookAbstract>,
+              MaybeProdValue<BookContent>,
+              MaybeProdValue<BookContent>,
+              CollValue<BookChapter>>
+
+// BOOK FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val bookFormatTable =
+    Table3("book_format",
+           "element_format",
+           "chapter_index_format",
+           "chapter_button_format")
+
+typealias DB_BookFormatValue =
+    RowValue3<ProdValue<ElementFormat>,
+              ProdValue<ElementFormat>,
+              ProdValue<ChapterButtonFormat>>
+
+
+// BOOK CONTENT
+// ---------------------------------------------------------------------------------------------
+
+val bookContentTable =
+    Table1("book_content",
+           "groups")
+
+typealias DB_BookContentValue =
+    RowValue1<CollValue<Group>>
+
+
+// BOOK CHAPTER
+// ---------------------------------------------------------------------------------------------
+
+val bookChapterTable =
+    Table3("book_chapter",
+           "chapter_id",
+           "title",
+           "sections")
+
+typealias DB_BookChapterValue =
+    RowValue3<PrimValue<BookChapterId>,
+              PrimValue<BookChapterTitle>,
+              CollValue<BookSection>>
+
+
+// BOOK SECTION
+// ---------------------------------------------------------------------------------------------
+
+val bookSectionTable =
+    Table4("book_section",
+           "section_id",
+           "title",
+           "body",
+           "subsections")
+
+typealias DB_BookSectionValue =
+    RowValue4<PrimValue<BookSectionId>,
+              PrimValue<BookSectionTitle>,
+              PrimValue<BookSectionBody>,
+              CollValue<BookSubsection>>
+
+
+// BOOK SUBSECTION
+// ---------------------------------------------------------------------------------------------
+
+val bookSubsectionTable =
+    Table3("book_subsection",
+           "subsection_id",
+           "title",
+           "body")
+
+typealias DB_BookSubsectionValue =
+    RowValue3<PrimValue<BookSubsectionId>,
+              PrimValue<BookSubsectionTitle>,
+              PrimValue<BookSubsectionBody>>
+
+
+// BOOK REFERENCE
+// ---------------------------------------------------------------------------------------------
+
+val bookReferenceTable =
+    Table4("book_reference",
+           "book_id",
+           "chapter_id",
+           "section_id",
+           "subsection_id")
+
+typealias DB_BookReferenceValue =
+    RowValue4<PrimValue<BookId>,
+              PrimValue<BookChapterId>,
+              MaybePrimValue<BookSectionId>,
+              MaybePrimValue<BookSubsectionId>>
+
+
 // BORDER
 // ---------------------------------------------------------------------------------------------
 
@@ -121,6 +232,23 @@ typealias DB_CampaignValue =
               PrimValue<CampaignName>,
               PrimValue<CampaignSummary>,
               PrimValue<GameId>>
+
+
+// CHAPTER BUTTON FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val chapterButtonFormatTable =
+    Table4("chapter_button_format",
+           "element_format",
+           "index_format",
+           "title_format",
+           "summary_format")
+
+typealias DB_ChapterButtonFormatValue =
+    RowValue4<ProdValue<ElementFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
 
 
 // DICE ROLL
@@ -274,7 +402,7 @@ val gameTable =
            "summary",
            "authors",
            "engine",
-           "rulebooks")
+           "book_ids")
 
 typealias DB_GameValue =
     RowValue6<PrimValue<GameId>,
@@ -282,7 +410,7 @@ typealias DB_GameValue =
               PrimValue<GameSummary>,
               CollValue<Author>,
               ProdValue<Engine>,
-              CollValue<Book>>
+              PrimValue<GameBookIds>>
 
 
 // GROUP
@@ -574,88 +702,6 @@ typealias DB_RollModifierValue =
               MaybePrimValue<RollModifierName>>
 
 
-// RULEBOOK
-// ---------------------------------------------------------------------------------------------
-
-val rulebookTable =
-    Table5("rulebook",
-           "title",
-           "authors",
-           "abstract",
-           "introduction",
-           "chapters")
-
-typealias DB_RulebookValue =
-    RowValue5<PrimValue<BookTitle>,
-              CollValue<Author>,
-              PrimValue<BookAbstract>,
-              PrimValue<BookIntroduction>,
-              CollValue<BookChapter>>
-
-
-// RULEBOOK CHAPTER
-// ---------------------------------------------------------------------------------------------
-
-val rulebookChapterTable =
-    Table3("rulebook_chapter",
-           "chapter_id",
-           "title",
-           "sections")
-
-typealias DB_RulebookChapterValue =
-    RowValue3<PrimValue<BookChapterId>,
-              PrimValue<BookChapterTitle>,
-              CollValue<BookSection>>
-
-
-// RULEBOOK SECTION
-// ---------------------------------------------------------------------------------------------
-
-val rulebookSectionTable =
-    Table4("rulebook_section",
-           "section_id",
-           "title",
-           "body",
-           "subsections")
-
-typealias DB_RulebookSectionValue =
-    RowValue4<PrimValue<BookSectionId>,
-              PrimValue<BookSectionTitle>,
-              PrimValue<BookSectionBody>,
-              CollValue<BookSubsection>>
-
-
-// RULEBOOK SUBSECTION
-// ---------------------------------------------------------------------------------------------
-
-val rulebookSubsectionTable =
-    Table3("rulebook_subsection",
-           "subsection_id",
-           "title",
-           "body")
-
-typealias DB_RulebookSubsectionValue =
-    RowValue3<PrimValue<BookSubsectionId>,
-              PrimValue<BookSubsectionTitle>,
-              PrimValue<BookSubsectionBody>>
-
-
-// RULEBOOK REFERENCE
-// ---------------------------------------------------------------------------------------------
-
-val rulebookReferenceTable =
-    Table4("rulebook_reference",
-           "rulebook_id",
-           "chapter_id",
-           "section_id",
-           "subsection_id")
-
-typealias DB_RulebookReferenceValue =
-    RowValue4<PrimValue<BookId>,
-              PrimValue<BookChapterId>,
-              MaybePrimValue<BookSectionId>,
-              MaybePrimValue<BookSubsectionId>>
-
 
 // SECTION
 // ---------------------------------------------------------------------------------------------
@@ -766,7 +812,7 @@ typealias DB_StatementValue =
 // ---------------------------------------------------------------------------------------------
 
 val summationTable =
-    Table3("summation",
+    Table3("summationWithId",
            "summation_id",
            "summation_name",
            "terms")

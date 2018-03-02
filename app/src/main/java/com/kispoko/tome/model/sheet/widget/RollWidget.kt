@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.description
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.db.DB_WidgetRollFormatValue
@@ -32,9 +31,9 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.Width
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*

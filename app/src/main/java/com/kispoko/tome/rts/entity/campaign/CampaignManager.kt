@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.campaign
+package com.kispoko.tome.rts.entity.campaign
 
 
 import com.kispoko.tome.app.AppCampaignError

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -10,7 +11,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityRequest
 import com.kispoko.tome.activity.sheet.procedure.RunProcedureActivity
 import com.kispoko.tome.activity.sheet.dialog.ProcedureDialog
@@ -33,10 +33,12 @@ import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.IconType
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.Width
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.UpdateTargetActionWidget
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.UpdateTargetActionWidget
 import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*
@@ -283,7 +285,8 @@ data class ActionWidgetDescription(val value : String) : ToDocument, SQLSerializ
 
 
 class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
-                              val sheetUIContext : SheetUIContext)
+                              val entityId : EntityId,
+                              val context : Context)
 {
 
     // STATE
@@ -293,8 +296,6 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
     var buttonIconView : ImageView? = null
     var descriptionTextView : TextView? = null
 
-    val sheetContext : SheetContext = SheetContext(sheetUIContext)
-
     var isActive : Boolean = true
 
 
@@ -303,7 +304,7 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
 
     fun view() : View
     {
-        val layout = WidgetView.layout(actionWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(actionWidget.widgetFormat(), entityId, context)
 
         val viewId = Util.generateViewId()
         actionWidget.layoutViewId = viewId
@@ -321,7 +322,7 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
     {
         val layout = this.inlineLeftButtonViewLayout()
 
-        this.isActive = actionWidget.isActive(sheetContext)
+        this.isActive = actionWidget.isActive(entityId)
 
         // Button
         val buttonLayout = this.inlineLeftButtonButtonViewLayout()
@@ -376,35 +377,35 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         layout.onClick      = View.OnClickListener {
             if (this.isActive)
             {
-                actionWidget.procedure(sheetContext) apDo { procedure ->
+                actionWidget.procedure(entityId) apDo { procedure ->
 
-                    val parameters = procedure.parameters(sheetContext)
+                    val parameters = procedure.parameters(entityId)
 
                     // If no parameters, use dialog
                     if (parameters.isEmpty()) {
                         val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
-                                UpdateTargetActionWidget(actionWidget.id),
-                                SheetContext(sheetUIContext))
-                        val activity = sheetUIContext.context as AppCompatActivity
+                                                                 UpdateTargetActionWidget(actionWidget.id),
+                                                                 entityId)
+                        val activity = context as AppCompatActivity
                         dialog.show(activity.supportFragmentManager, "")
                     }
                     // Otherwise, use the activity
                     else {
-                        val activity = sheetUIContext.context as AppCompatActivity
+                        val activity = context as AppCompatActivity
                         val intent = Intent(activity, RunProcedureActivity::class.java)
                         intent.putExtra("procedure_id", actionWidget.procedureId())
-                        intent.putExtra("sheet_context", sheetContext)
+                        intent.putExtra("entity_id", entityId)
                         activity.startActivityForResult(intent, SheetActivityRequest.PROCEDURE_INVOCATION)
                     }
                 }
             }
             else
             {
-                actionWidget.setActive(sheetContext)
+                actionWidget.setActive(entityId)
             }
         }
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -436,8 +437,8 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
             }
         }
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
         layout.corners          = format.elementFormat().corners()
 
@@ -446,7 +447,7 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
 
         layout.paddingSpacing   = format.elementFormat().padding()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -473,9 +474,9 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
             icon.image = R.drawable.icon_refresh
         }
 
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        icon.color          = colorOrBlack(format.colorTheme(), entityId)
 
-        return icon.imageView(sheetUIContext.context)
+        return icon.imageView(context)
     }
 
 
@@ -493,15 +494,15 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
 
         result.font           = Font.typeface(format.font(),
                                             format.fontStyle(),
-                                            sheetUIContext.context)
+                                            context)
 
         result.sizeSp         = format.sizeSp()
 
-        result.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        result.color          = colorOrBlack(format.colorTheme(), entityId)
 
         result.visibility     = View.GONE
 
-        return result.textView(sheetUIContext.context)
+        return result.textView(context)
     }
 
 
@@ -530,21 +531,19 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
 
         description.font        = Font.typeface(format.font(),
                                                 format.fontStyle(),
-                                                sheetUIContext.context)
+                                                context)
 
         description.sizeSp          = format.sizeSp()
 
-        description.color           = SheetManager.color(sheetUIContext.sheetId,
-                                                         format.colorTheme())
-        description.backgroundColor = SheetManager.color(
-                                                sheetUIContext.sheetId,
-                                                format.elementFormat().backgroundColorTheme())
+        description.color           = colorOrBlack(format.colorTheme(), entityId)
+        description.backgroundColor = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                                   entityId)
 
         description.corners         = format.elementFormat().corners()
 
         description.paddingSpacing  = format.elementFormat().padding()
 
-        return description.textView(sheetUIContext.context)
+        return description.textView(context)
     }
 
 }

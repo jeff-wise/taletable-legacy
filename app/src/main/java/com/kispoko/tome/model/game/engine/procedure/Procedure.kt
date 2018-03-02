@@ -3,7 +3,6 @@ package com.kispoko.tome.model.game.engine.procedure
 
 
 import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.db.DB_ProcedureValue
 import com.kispoko.tome.db.procedureTable
 import com.kispoko.tome.lib.Factory
@@ -15,14 +14,15 @@ import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
 import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
-import com.kispoko.tome.rts.game.engine.ProcedureDoesNotHaveUpdates
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.program
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.updateVariable
 import effect.*
 import maybe.*
 import lulo.document.*
@@ -176,21 +176,19 @@ data class Procedure(override val id : UUID,
 //        }
 
 
-    private fun programs(sheetContext : SheetContext) : AppEff<List<Program>> =
-        this.procedureUpdates.mapM { SheetManager.program(it.programId(), sheetContext) }
+    private fun programs(entityId : EntityId) : AppEff<List<Program>> =
+        this.procedureUpdates.mapM { program(it.programId(), entityId) }
 
     // -----------------------------------------------------------------------------------------
     // RUN
     // -----------------------------------------------------------------------------------------
 
-    fun run(sheetContext : SheetContext) =
+    fun run(entityId : EntityId) =
         this.procedureUpdates().forEach { (variableIds, programId) ->
-            SheetManager.program(programId, sheetContext)                 apDo { program ->
-            program.value(ProgramParameterValues(mapOf()), sheetContext) apDo { engineValue ->
-            SheetManager.sheetState(sheetContext.sheetId)                 apDo { state ->
+            program(programId, entityId)                             apDo { program ->
+            program.value(ProgramParameterValues(mapOf()), entityId) apDo { engineValue ->
                 variableIds.forEach {
-                    state.updateVariable(it, engineValue, sheetContext)
-                }
+                    updateVariable(it, engineValue, entityId)
             } } }
       }
 
@@ -199,11 +197,11 @@ data class Procedure(override val id : UUID,
     // PARAMETERS
     // -----------------------------------------------------------------------------------------
 
-    fun parameters(sheetContext : SheetContext) : Map<ProgramId,List<ProgramParameter>>
+    fun parameters(entityId : EntityId) : Map<ProgramId,List<ProgramParameter>>
     {
         val parameters : MutableMap<ProgramId,List<ProgramParameter>> = mutableMapOf()
 
-        val programs = this.programs(sheetContext)
+        val programs = this.programs(entityId)
         when (programs) {
             is Val -> {
                 programs.value.forEach {

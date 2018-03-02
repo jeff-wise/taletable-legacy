@@ -2,8 +2,8 @@
 package com.kispoko.tome.model.book
 
 
-import com.kispoko.tome.db.DB_RulebookSectionValue
-import com.kispoko.tome.db.rulebookSectionTable
+import com.kispoko.tome.db.DB_BookSectionValue
+import com.kispoko.tome.db.bookSectionTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue4
@@ -129,11 +129,11 @@ data class BookSection(override val id : UUID,
     override val prodTypeObject = this
 
 
-    override fun rowValue() : DB_RulebookSectionValue =
-        RowValue4(rulebookSectionTable, PrimValue(this.sectionId),
-                                        PrimValue(this.title),
-                                        PrimValue(this.body),
-                                        CollValue(this.subsections))
+    override fun rowValue() : DB_BookSectionValue =
+        RowValue4(bookSectionTable, PrimValue(this.sectionId),
+                                    PrimValue(this.title),
+                                    PrimValue(this.body),
+                                    CollValue(this.subsections))
 
 }
 

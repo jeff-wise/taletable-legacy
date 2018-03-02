@@ -8,7 +8,7 @@ import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
 import com.kispoko.tome.model.game.engine.EngineValueDiceRoll
 import com.kispoko.tome.model.game.engine.EngineValueNumber
-import com.kispoko.tome.rts.game.engine.interpreter.PlatformFunctionDoesNotExist
+import com.kispoko.tome.rts.entity.engine.interpreter.PlatformFunctionDoesNotExist
 import effect.effError
 import effect.effValue
 import java.io.Serializable

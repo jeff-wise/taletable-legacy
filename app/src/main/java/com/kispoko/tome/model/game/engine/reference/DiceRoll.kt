@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
-import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
@@ -13,8 +12,11 @@ import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.summation
+import com.kispoko.tome.rts.entity.variables
 import effect.*
 import lulo.document.SchemaDoc
 import lulo.document.ToDocument
@@ -51,14 +53,14 @@ sealed class DiceRollReference : ToDocument, SumType, Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf()
+    open fun dependencies(entityId : EntityId): Set<VariableReference> = setOf()
 
 
     // -----------------------------------------------------------------------------------------
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    abstract fun components(sheetContext : SheetContext) : List<TermComponent>
+    abstract fun components(entityId : EntityId) : List<TermComponent>
 
 }
 
@@ -92,7 +94,7 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    override fun components(sheetContext : SheetContext) : List<TermComponent> = listOf()
+    override fun components(entityId : EntityId) : List<TermComponent> = listOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -141,18 +143,17 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    override fun components(sheetContext : SheetContext) : List<TermComponent>
+    override fun components(entityId : EntityId) : List<TermComponent>
     {
         // TODO ensure just die roll variables
-        val variables = SheetManager.sheetState(sheetContext.sheetId)
-                                    .apply { it.variables(this.variableReference) }
+        val variables = variables(this.variableReference, entityId)
 
         when (variables)
         {
             is effect.Val ->
             {
                 return variables.value.mapNotNull {
-                    val valueString = it.valueString(sheetContext)
+                    val valueString = it.valueString(entityId)
                     when (valueString)
                     {
                         is effect.Val -> TermComponent(it.label().value, valueString.value)
@@ -187,7 +188,7 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf(variableReference)
+    override fun dependencies(entityId : EntityId) = setOf(variableReference)
 
 
     // -----------------------------------------------------------------------------------------
@@ -230,7 +231,7 @@ data class DiceRollReferenceSummation(val summationId : SummationId)
     // COMPONENTS
     // -----------------------------------------------------------------------------------------
 
-    override fun components(sheetContext : SheetContext) : List<TermComponent>
+    override fun components(entityId : EntityId) : List<TermComponent>
     {
         // TODO ensure just die roll variables
 //        val variables = SheetManager.sheetState(sheetContext.sheetId)
@@ -276,12 +277,12 @@ data class DiceRollReferenceSummation(val summationId : SummationId)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    override fun dependencies(entityId : EntityId) : Set<VariableReference>
     {
-        val summation = SheetManager.summation(this.summationId, sheetContext)
+        val summation = summation(this.summationId, entityId)
         return when (summation) {
             is Val -> {
-                summation.value.dependencies(sheetContext)
+                summation.value.dependencies(entityId)
             }
             is Err -> {
                 ApplicationLog.error(summation.error)

@@ -15,8 +15,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.cr
-import com.kispoko.tome.R.string.name
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder
@@ -28,7 +26,7 @@ import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.official.HeroesGenericNPCSheetSummary
 import com.kispoko.tome.rts.official.OfficialManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 
 
 

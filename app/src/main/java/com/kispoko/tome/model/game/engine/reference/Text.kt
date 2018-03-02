@@ -11,7 +11,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.apply
 import effect.effApply
 import effect.effError

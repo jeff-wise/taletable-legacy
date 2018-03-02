@@ -27,8 +27,8 @@ import com.kispoko.tome.model.game.engine.value.ValueSet
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val

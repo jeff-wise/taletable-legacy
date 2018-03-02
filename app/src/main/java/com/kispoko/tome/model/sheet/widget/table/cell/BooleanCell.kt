@@ -24,9 +24,9 @@ import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.ShowFalseIcon
 import com.kispoko.tome.model.sheet.widget.table.column.ShowTrueIcon
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
 import effect.*
 import effect.Val
 import lulo.document.*

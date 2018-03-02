@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.theme
+package com.kispoko.tome.rts.entity.theme
 
 
 import com.kispoko.tome.app.ApplicationError
@@ -23,11 +23,10 @@ sealed class ThemeError : ApplicationError
  * some object in that sheet does not have a color mapping for theme 'xyz', so we will probably
  * have to pick an arbitrary color for it.
  */
-class ThemeNotSupported(val sheetId : SheetId, val themeId : ThemeId) : ThemeError()
+class ThemeNotSupported(val themeId : ThemeId) : ThemeError()
 {
     override fun debugMessage(): String = """
             Theme Not Supported
-                Sheet Id: $sheetId
                 Theme Id: $themeId
             """
 
@@ -72,3 +71,4 @@ class ThemeDoesNotHaveColor(val themeId : ThemeId, val colorId : ColorId) : Them
 
     override fun logMessage(): String = userMessage()
 }
+

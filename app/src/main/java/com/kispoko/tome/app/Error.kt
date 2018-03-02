@@ -3,14 +3,15 @@ package com.kispoko.tome.app
 
 
 import com.kispoko.tome.official.OfficialError
-import com.kispoko.tome.rts.campaign.CampaignError
-import com.kispoko.tome.rts.game.GameError
-import com.kispoko.tome.rts.game.engine.EngineError
-import com.kispoko.tome.rts.game.engine.interpreter.EvalError
+import com.kispoko.tome.rts.entity.EntityError
+import com.kispoko.tome.rts.entity.campaign.CampaignError
+import com.kispoko.tome.rts.entity.game.GameError
+import com.kispoko.tome.rts.entity.engine.EngineError
+import com.kispoko.tome.rts.entity.engine.interpreter.EvalError
 
-import com.kispoko.tome.rts.sheet.SheetError
-import com.kispoko.tome.rts.sheet.StateError
-import com.kispoko.tome.rts.theme.ThemeError
+import com.kispoko.tome.rts.entity.sheet.SheetError
+import com.kispoko.tome.rts.entity.sheet.StateError
+import com.kispoko.tome.rts.entity.theme.ThemeError
 
 
 /**
@@ -38,6 +39,14 @@ class AppVoidError() : AppError()
     override fun debugMessage(): String = "void"
 
     override fun logMessage(): String = "void"
+}
+
+
+class AppEntityError(val error : EntityError) : AppError()
+{
+    override fun debugMessage(): String = error.debugMessage()
+
+    override fun logMessage(): String = error.userMessage()
 }
 
 

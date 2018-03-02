@@ -26,10 +26,10 @@ import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.cell.*
-import com.kispoko.tome.rts.sheet.CellVariableUndefined
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.CellVariableUndefined
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
 import effect.Val

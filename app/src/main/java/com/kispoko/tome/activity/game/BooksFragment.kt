@@ -26,8 +26,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.Err
 import effect.Val
 
@@ -127,10 +127,10 @@ class GameInfoViewBuilder(val game : Game,
 
         scrollView.addView(listLayout)
 
-        game.rulebooks().forEach {
-            Log.d("***BOOKS FRAGMENT", "adding rulebook")
-            listLayout.addView(bookButtonView(it))
-        }
+//        game.rulebooks().forEach {
+//            Log.d("***BOOKS FRAGMENT", "adding rulebook")
+//            listLayout.addView(bookButtonView(it))
+//        }
 
         return scrollView
     }

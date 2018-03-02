@@ -30,10 +30,10 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import effect.Err
 import effect.Val
 
@@ -125,7 +125,7 @@ class MechanicOptionDialog : DialogFragment()
             val sheetUIContext  = SheetUIContext(sheetContext, context)
 
             val mechanic = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.mechanicWithId(mechanicId) }
+                                      .apply { it.mechanic(mechanicId) }
 
             return when (mechanic) {
                 is Val -> {

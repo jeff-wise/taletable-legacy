@@ -9,7 +9,8 @@ import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.apply
 import effect.effError
 import effect.effValue
@@ -49,10 +50,10 @@ sealed class TextListVariableValue : ToDocument, SumType, Serializable
     // Value
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(sheetContext : SheetContext) : AppEff<List<String>>
+    abstract fun value(entityId : EntityId) : AppEff<List<String>>
 
 
-    abstract fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>>
+    abstract fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>>
 
 }
 
@@ -90,11 +91,11 @@ data class TextListVariableLiteralValue(val value : List<String>)
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<List<String>> =
+    override fun value(entityId : EntityId) : AppEff<List<String>> =
             effValue(this.value)
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
         effValue(setOf())
 
 

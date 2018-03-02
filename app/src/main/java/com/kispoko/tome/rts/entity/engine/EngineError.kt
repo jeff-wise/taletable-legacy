@@ -1,9 +1,10 @@
 
-package com.kispoko.tome.rts.game.engine
+package com.kispoko.tome.rts.entity.engine
 
 
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.engine.function.FunctionId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.ProgramId
@@ -99,6 +100,18 @@ class MechanicDoesNotExist(val mechanicId : MechanicId) : EngineError()
             """
             Engine Error: Mechanic Does Not Exist
                 Mechanic Id: $mechanicId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class MechanicCategoryDoesNotExist(val mechanicCategoryId : MechanicCategoryId) : EngineError()
+{
+    override fun debugMessage(): String =
+            """
+            Engine Error: Mechanic Category Does Not Exist
+                Mechanic Category Id: $mechanicCategoryId
             """
 
     override fun logMessage(): String = userMessage()

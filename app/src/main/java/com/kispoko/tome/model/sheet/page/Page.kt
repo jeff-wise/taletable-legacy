@@ -16,9 +16,9 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.ElementFormat
-import com.kispoko.tome.rts.sheet.SheetComponent
-import com.kispoko.tome.rts.sheet.SheetUIContext
-import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetComponent
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

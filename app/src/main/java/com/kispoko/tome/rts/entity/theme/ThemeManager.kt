@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.theme
+package com.kispoko.tome.rts.entity.theme
 
 
 import android.content.Context

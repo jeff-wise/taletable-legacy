@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
-import com.kispoko.tome.R.string.*
 import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -19,7 +18,10 @@ import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
 import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.onVariableUpdate
+import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.variable
 import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*
@@ -110,14 +112,13 @@ sealed class Variable : ProdType, ToDocument, Serializable
 
     fun setRelation(relation : VariableRelation,
                     variableId : VariableId,
-                    sheetContext : SheetContext)
+                    entityId : EntityId)
     {
         this.relationToVariableId.put(relation, variableId)
 
-        SheetManager.sheetState(sheetContext.sheetId) apDo {
-        it.variableWithId(variableId)                 apDo {
+        variable(variableId, entityId) apDo {
             it.addRelatedParent(this.variableId())
-        } }
+        }
 
         ApplicationLog.event(AppStateEvent(VariableRelationAdded(variableId, relation)))
     }
@@ -130,55 +131,55 @@ sealed class Variable : ProdType, ToDocument, Serializable
     abstract fun relation() : Maybe<VariableRelation>
 
 
-    fun booleanVariable(sheetId : SheetId) : AppEff<BooleanVariable> = when (this)
+    fun booleanVariable(entityId : EntityId) : AppEff<BooleanVariable> = when (this)
     {
         is BooleanVariable -> effValue(this)
         else               -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheetId,
+                                    VariableIsOfUnexpectedType(entityId,
                                                                this.variableId(),
                                                                VariableType.BOOLEAN,
                                                                this.type())))
     }
 
 
-    fun diceRollVariable(sheetId : SheetId) : AppEff<DiceRollVariable> = when (this)
+    fun diceRollVariable(entityId : EntityId) : AppEff<DiceRollVariable> = when (this)
     {
         is DiceRollVariable -> effValue(this)
         else                -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheetId,
+                                    VariableIsOfUnexpectedType(entityId,
                                                                this.variableId(),
                                                                VariableType.DICE_ROLL,
                                                                this.type())))
     }
 
 
-    fun numberVariable(sheetId : SheetId) : AppEff<NumberVariable> = when (this)
+    fun numberVariable(entityId : EntityId) : AppEff<NumberVariable> = when (this)
     {
         is NumberVariable -> effValue(this)
         else              -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheetId,
+                                    VariableIsOfUnexpectedType(entityId,
                                                                this.variableId(),
                                                                VariableType.NUMBER,
                                                                this.type())))
     }
 
 
-    fun textVariable(sheetId : SheetId) : AppEff<TextVariable> = when (this)
+    fun textVariable(entityId : EntityId) : AppEff<TextVariable> = when (this)
     {
         is TextVariable -> effValue(this)
         else            -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheetId,
+                                    VariableIsOfUnexpectedType(entityId,
                                                                this.variableId(),
                                                                VariableType.TEXT,
                                                                this.type())))
     }
 
 
-    fun textListVariable(sheetId : SheetId) : AppEff<TextListVariable> = when (this)
+    fun textListVariable(entityId : EntityId) : AppEff<TextListVariable> = when (this)
     {
         is TextListVariable -> effValue(this)
         else                -> effError(AppStateError(
-                                    VariableIsOfUnexpectedType(sheetId,
+                                    VariableIsOfUnexpectedType(entityId,
                                                                this.variableId(),
                                                                VariableType.TEXT_LIST,
                                                                this.type())))
@@ -205,13 +206,13 @@ sealed class Variable : ProdType, ToDocument, Serializable
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    abstract fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    abstract fun dependencies(entityId : EntityId) : Set<VariableReference>
 
 
     abstract fun type() : VariableType
 
 
-    abstract fun companionVariables(sheetontext : SheetContext) : AppEff<Set<Variable>>
+    abstract fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>>
 
 
     /**
@@ -229,7 +230,7 @@ sealed class Variable : ProdType, ToDocument, Serializable
     }
 
 
-    abstract fun onAddToState(sheetContext : SheetContext, parentVariable : Variable? = null)
+    abstract fun onAddToState(entityId : EntityId, parentVariable : Variable? = null)
 
 
 
@@ -247,15 +248,17 @@ sealed class Variable : ProdType, ToDocument, Serializable
     // VALUE STRING
     // -----------------------------------------------------------------------------------------
 
-    open fun valueString(sheetContext : SheetContext) : AppEff<String> = when (this)
-    {
-        is BooleanVariable      -> this.value() ap { effValue<AppError,String>(it.toString()) }
-        is DiceRollVariable     -> effValue(this.value().toString())
-        is NumberVariable       -> this.valueString(sheetContext)
-        is NumberListVariable   -> this.valueString(sheetContext)
-        is TextVariable         -> this.valueString(sheetContext)
-        is TextListVariable     -> this.valueString(sheetContext)
-    }
+    abstract fun valueString(entityId : EntityId) : AppEff<String>
+
+//    open fun valueString(entityId : EntityId) : AppEff<String> = when (this)
+//    {
+//        is BooleanVariable      -> this.value() ap { effValue<AppError,String>(it.toString()) }
+//        is DiceRollVariable     -> effValue(this.value().toString())
+//        is NumberVariable       -> this.valueString(sheetContext)
+//        is NumberListVariable   -> this.valueString(sheetContext)
+//        is TextVariable         -> this.valueString(sheetContext)
+//        is TextListVariable     -> this.valueString(sheetContext)
+//    }
 
 }
 
@@ -410,23 +413,27 @@ data class BooleanVariable(override val id : UUID,
     override fun type(): VariableType = VariableType.BOOLEAN
 
 
-    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId) = this.variableValue().dependencies(entityId)
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-            this.variableValue().companionVariables(sheetContext)
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(entityId)
 
 
-    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    override fun onAddToState(entityId : EntityId, parentVariable : Variable?)
     {
         val rel = this.relation()
         when (rel)
         {
             is Just -> {
-                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), entityId)
             }
         }
     }
+
+
+    override fun valueString(entityId : EntityId) : AppEff<String> =
+        this.value().apply { effValue<AppError,String>(it.toString()) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -448,13 +455,13 @@ data class BooleanVariable(override val id : UUID,
     }
 
 
-    fun updateValue(value : Boolean, sheetId : SheetId)
+    fun updateValue(value : Boolean, entityId : EntityId)
     {
         when (this.variableValue())
         {
             is BooleanVariableLiteralValue -> {
                 this.variableValue = BooleanVariableLiteralValue(value)
-                SheetManager.sheetState(sheetId) apDo { it.onVariableUpdate(this) }
+                onVariableUpdate(this, entityId)
                 this.onUpdate()
             }
         }
@@ -597,18 +604,22 @@ data class DiceRollVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) =
+    override fun dependencies(entityId : EntityId) =
             this.variableValue.dependencies()
 
 
     override fun type(): VariableType = VariableType.DICE_ROLL
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-            this.variableValue().companionVariables(sheetContext)
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(entityId)
 
 
-    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?) { }
+    override fun onAddToState(entityId : EntityId, parentVariable : Variable?) { }
+
+
+    override fun valueString(entityId : EntityId) : AppEff<String> =
+            effValue(this.value().toString())
 
 
     // -----------------------------------------------------------------------------------------
@@ -793,24 +804,24 @@ data class NumberVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference> =
-            this.variableValue.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId) : Set<VariableReference> =
+            this.variableValue.dependencies(entityId)
 
 
     override fun type(): VariableType = VariableType.NUMBER
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-            this.variableValue().companionVariables(sheetContext)
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(entityId)
 
 
-    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    override fun onAddToState(entityId : EntityId, parentVariable : Variable?)
     {
         val rel = this.relation()
         when (rel)
         {
             is Just -> {
-                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), entityId)
             }
         }
     }
@@ -833,15 +844,15 @@ data class NumberVariable(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>> =
-            this.variableValue().value(sheetContext)
+    fun value(entityId : EntityId) : AppEff<Maybe<Double>> =
+            this.variableValue().value(entityId)
 
 
     /**
      * The string representation of the widget's current value. This method returns 0 when the
      * value is null for some reason.
      */
-    override fun valueString(sheetContext : SheetContext) : AppEff<String>
+    override fun valueString(entityId : EntityId) : AppEff<String>
     {
         fun maybeString(mDouble : Maybe<Double>) : AppEff<String> =
             when (mDouble) {
@@ -849,13 +860,13 @@ data class NumberVariable(override val id : UUID,
                 else    -> effValue("")
             }
 
-        return this.value(sheetContext).apply(::maybeString)
+        return this.value(entityId).apply(::maybeString)
     }
 
 
-    fun valueOrZero(sheetContext : SheetContext) : Double
+    fun valueOrZero(entityId : EntityId) : Double
     {
-        val valueEff = this.value(sheetContext)
+        val valueEff = this.value(entityId)
         when (valueEff) {
             is effect.Val -> {
                 val maybeValue = valueEff.value
@@ -869,8 +880,8 @@ data class NumberVariable(override val id : UUID,
     }
 
 
-    fun valueOrError(sheetContext : SheetContext) : AppEff<Double> =
-        this.value(sheetContext) ap {
+    fun valueOrError(entityId : EntityId) : AppEff<Double> =
+        this.value(entityId) ap {
             when (it) {
                 is Just -> effValue(it.value)
                 else    -> effError<AppError,Double>(AppStateError(VariableDoesNotHaveValue(this.variableId)))
@@ -878,7 +889,7 @@ data class NumberVariable(override val id : UUID,
         }
 
 
-    fun updateValue(value : Double, sheetContext : SheetContext)
+    fun updateValue(value : Double, entityId : EntityId)
     {
         when (this.variableValue())
         {
@@ -889,16 +900,16 @@ data class NumberVariable(override val id : UUID,
                 {
                     is Just ->
                     {
-                        constraint.value.constrainedValue(value, sheetContext) apDo {
+                        constraint.value.constrainedValue(value, entityId) apDo {
                             this.variableValue = NumberVariableLiteralValue(it)
-                            SheetManager.onVariableUpdate(sheetContext.sheetId, this)
+                            onVariableUpdate(this, entityId)
                             this.onUpdate()
                         }
                     }
                     is Nothing ->
                     {
                         this.variableValue = NumberVariableLiteralValue(value)
-                        SheetManager.onVariableUpdate(sheetContext.sheetId, this)
+                        onVariableUpdate(this, entityId)
                         this.onUpdate()
                     }
                 }
@@ -1045,6 +1056,10 @@ data class NumberListVariable(override val id : UUID,
     fun valueSetId() : Maybe<ValueSetId> = this.valueSetId
 
 
+    override fun valueString(entityId : EntityId) : AppEff<String> =
+        this.value(entityId).apply { effValue<AppError,String>(it.toString()) }
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -1069,23 +1084,23 @@ data class NumberListVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
+    override fun dependencies(entityId : EntityId) = this.variableValue().dependencies()
 
 
     override fun type(): VariableType = VariableType.TEXT
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-            this.variableValue().companionVariables(sheetContext)
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(entityId)
 
 
-    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    override fun onAddToState(entityId : EntityId, parentVariable : Variable?)
     {
         val rel = this.relation()
         when (rel)
         {
             is Just -> {
-                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), entityId)
             }
         }
     }
@@ -1108,8 +1123,8 @@ data class NumberListVariable(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<List<Double>> =
-            this.variableValue().value(sheetContext)
+    fun value(entityId : EntityId) : AppEff<List<Double>> =
+            this.variableValue().value(entityId)
 
 
     fun updateLiteralValue(value : List<Double>, sheetId : SheetId)
@@ -1262,23 +1277,24 @@ data class TextVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId) =
+            this.variableValue().dependencies(entityId)
 
 
     override fun type() : VariableType = VariableType.TEXT
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-            this.variableValue().companionVariables(sheetContext)
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(entityId)
 
 
-    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    override fun onAddToState(entityId : EntityId, parentVariable : Variable?)
     {
         val rel = this.relation()
         when (rel)
         {
             is Just -> {
-                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), entityId)
             }
         }
     }
@@ -1301,11 +1317,11 @@ data class TextVariable(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<Maybe<String>> =
-            this.variableValue().value(sheetContext)
+    fun value(entityId : EntityId) : AppEff<Maybe<String>> =
+            this.variableValue().value(entityId)
 
 
-    override fun valueString(sheetContext : SheetContext) : AppEff<String>
+    override fun valueString(entityId : EntityId) : AppEff<String>
     {
         fun maybeString(mString : Maybe<String>) : AppEff<String> =
             when (mString) {
@@ -1313,7 +1329,7 @@ data class TextVariable(override val id : UUID,
                 else    -> effValue("")
             }
 
-        return this.value(sheetContext).apply(::maybeString)
+        return this.value(entityId).apply(::maybeString)
     }
 
 
@@ -1325,7 +1341,7 @@ data class TextVariable(override val id : UUID,
 //    }
 
 
-    fun updateValue(value : String, sheetContext : SheetContext)
+    fun updateValue(value : String, entityId : EntityId)
     {
         val currentVariableValue = this.variableValue()
         when (currentVariableValue)
@@ -1333,7 +1349,7 @@ data class TextVariable(override val id : UUID,
             is TextVariableLiteralValue ->
             {
                 this.variableValue = TextVariableLiteralValue(value)
-                SheetManager.onVariableUpdate(sheetContext.sheetId, this)
+                onVariableUpdate(this, entityId)
                 this.onUpdate()
             }
             is TextVariableValueValue -> {
@@ -1341,7 +1357,7 @@ data class TextVariable(override val id : UUID,
                 val newValueReference = ValueReference(valueSetId, TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
 //                this.updateRelations(sheetContext)
-                SheetManager.onVariableUpdate(sheetContext.sheetId, this)
+                onVariableUpdate(this, entityId)
                 this.onUpdate()
             }
             is TextVariableValueUnknownValue -> {
@@ -1349,25 +1365,25 @@ data class TextVariable(override val id : UUID,
                 val newValueReference = ValueReference(TextReferenceLiteral(valueSetId.value),
                                                        TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
-                SheetManager.onVariableUpdate(sheetContext.sheetId, this)
+                onVariableUpdate(this, entityId)
                 this.onUpdate()
             }
         }
     }
 
 
-    private fun updateRelations(sheetContext : SheetContext)
+    private fun updateRelations(entityId : EntityId)
     {
         when (this.variableValue)
         {
             is TextVariableValueValue ->
             {
-                this.variableValue.companionVariables(sheetContext) apDo {
+                this.variableValue.companionVariables(entityId) apDo {
                     it.forEach { variable ->
                         val relation = variable.relation()
                         when (relation) {
                             is Just -> {
-                                this.setRelation(relation.value, variable.variableId(), sheetContext)
+                                this.setRelation(relation.value, variable.variableId(), entityId)
                             }
                         }
                     }
@@ -1524,26 +1540,30 @@ data class TextListVariable(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) = this.variableValue().dependencies()
+    override fun dependencies(entityId : EntityId) = this.variableValue().dependencies()
 
 
     override fun type(): VariableType = VariableType.TEXT
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-            this.variableValue().companionVariables(sheetContext)
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(entityId)
 
 
-    override fun onAddToState(sheetContext : SheetContext, parentVariable : Variable?)
+    override fun onAddToState(entityId : EntityId, parentVariable : Variable?)
     {
         val rel = this.relation()
         when (rel)
         {
             is Just -> {
-                parentVariable?.setRelation(rel.value, this.variableId(), sheetContext)
+                parentVariable?.setRelation(rel.value, this.variableId(), entityId)
             }
         }
     }
+
+
+    override fun valueString(entityId : EntityId): AppEff<String> =
+        this.value(entityId).apply { effValue<AppError,String>(it.toString()) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1563,8 +1583,8 @@ data class TextListVariable(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : AppEff<List<String>> =
-            this.variableValue().value(sheetContext)
+    fun value(entityId : EntityId) : AppEff<List<String>> =
+            this.variableValue().value(entityId)
 
 
     fun updateLiteralValue(value : List<String>, sheetId : SheetId)

@@ -24,10 +24,10 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -295,7 +295,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         // Header
         GameManager.engine(sheetUIContext.gameId) apDo {
-            val category = it.mechanicCategoryWithId(mechanicWidget.categoryId())
+            val category = it.mechanicCategory(mechanicWidget.categoryId())
             if (category != null) {
                 val headerString = category.labelString() + " Mechanics"
                 layout.addView(this.headerView(headerString))

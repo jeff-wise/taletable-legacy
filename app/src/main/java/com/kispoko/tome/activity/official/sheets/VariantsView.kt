@@ -12,7 +12,6 @@ import com.google.android.flexbox.AlignContent
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.dialog.AdderDialogFragment
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.*
@@ -20,7 +19,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 
 
 

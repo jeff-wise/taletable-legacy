@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.dice
 
 
-import android.util.Log
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -14,8 +13,8 @@ import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.reference.DiceRollReference
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

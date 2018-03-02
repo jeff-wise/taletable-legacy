@@ -23,18 +23,15 @@ import com.kispoko.tome.R
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.SimpleDividerItemDecoration
-import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
-import maybe.Just
 import effect.Val
 
 

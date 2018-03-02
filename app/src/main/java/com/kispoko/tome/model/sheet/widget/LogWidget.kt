@@ -5,7 +5,6 @@ package com.kispoko.tome.model.sheet.widget
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.tome.R.string.style
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -21,8 +20,8 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType

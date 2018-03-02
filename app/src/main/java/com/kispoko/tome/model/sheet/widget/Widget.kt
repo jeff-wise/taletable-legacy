@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
@@ -28,20 +27,18 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
-import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Width
 import com.kispoko.tome.model.sheet.widget.table.*
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import effect.Val
@@ -124,26 +121,7 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
     abstract fun widgetFormat() : WidgetFormat
 
 
-    abstract fun view(sheetUIContext : SheetUIContext) : View
-
-
-//    open fun variables(sheetContext : SheetContext) : Set<Variable> = setOf()
-
-
-    // -----------------------------------------------------------------------------------------
-    // INTERNAL
-    // -----------------------------------------------------------------------------------------
-
-    protected fun addVariableToState(sheetId : SheetId, variable : Variable)
-    {
-        val stateEff = SheetManager.sheetState(sheetId)
-
-        when (stateEff)
-        {
-            is Val -> stateEff.value.addVariable(variable)
-            is Err -> ApplicationLog.error(stateEff.error)
-        }
-    }
+    abstract fun view(entityId : EntityId, context : Context) : View
 
 }
 
@@ -151,17 +129,19 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
 object WidgetView
 {
 
-    fun layout(widgetFormat : WidgetFormat, sheetUIContext: SheetUIContext) : LinearLayout
+    fun layout(widgetFormat : WidgetFormat,
+               entityId : EntityId,
+               context : Context) : LinearLayout
     {
-        val layout = this.widgetLayout(widgetFormat, sheetUIContext)
+        val layout = this.widgetLayout(widgetFormat, entityId, context)
 
-        val contentLayout = this.contentLayout(widgetFormat, sheetUIContext)
+        val contentLayout = this.contentLayout(widgetFormat, context)
 
         layout.addView(contentLayout)
 
         val rightBorder = widgetFormat.elementFormat().border().right()
         when (rightBorder) {
-            is Just -> layout.addView(this.verticalBorderView(rightBorder.value, sheetUIContext))
+            is Just -> layout.addView(this.verticalBorderView(rightBorder.value, entityId, context))
         }
 
         return layout
@@ -169,7 +149,7 @@ object WidgetView
 
 
     private fun contentLayout(widgetFormat : WidgetFormat,
-                              sheetUIContext : SheetUIContext) : LinearLayout
+                              context : Context) : LinearLayout
     {
         val layout          = LinearLayoutBuilder()
 
@@ -183,12 +163,13 @@ object WidgetView
 
         layout.paddingSpacing   = widgetFormat.elementFormat().padding()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
     private fun widgetLayout(widgetFormat : WidgetFormat,
-                             sheetUIContext: SheetUIContext) : LinearLayout
+                             entityId : EntityId,
+                             context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -223,20 +204,20 @@ object WidgetView
 
         layout.marginSpacing    = widgetFormat.elementFormat().margins()
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     widgetFormat.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(widgetFormat.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
         layout.corners          = widgetFormat.elementFormat().corners()
 
-
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
     fun widgetTouchLayout(widgetFormat : WidgetFormat,
-                                  sheetUIContext: SheetUIContext) : LinearLayout
+                          entityId : EntityId,
+                          context : Context) : LinearLayout
     {
-        val layout = WidgetTouchView(sheetUIContext.context)
+        val layout = WidgetTouchView(context)
 
         layout.orientation = LinearLayout.VERTICAL
 
@@ -272,8 +253,7 @@ object WidgetView
 
         bgDrawable.setCornerRadii(radii)
 
-        val bgColor = SheetManager.color(sheetUIContext.sheetId,
-                                         widgetFormat.elementFormat().backgroundColorTheme())
+        val bgColor = colorOrBlack(widgetFormat.elementFormat().backgroundColorTheme(), entityId)
 
         bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
@@ -283,17 +263,18 @@ object WidgetView
     }
 
 
-    private fun verticalBorderView(format : BorderEdge, sheetUIContext : SheetUIContext) : LinearLayout
+    private fun verticalBorderView(format : BorderEdge,
+                                   entityId : EntityId,
+                                   context : Context) : LinearLayout
     {
         val divider = LinearLayoutBuilder()
 
         divider.widthDp             = format.thickness().value
         divider.height              = LinearLayout.LayoutParams.MATCH_PARENT
 
-        divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
-                                                         format.colorTheme())
+        divider.backgroundColor     = colorOrBlack(format.colorTheme(), entityId)
 
-        return divider.linearLayout(sheetUIContext.context)
+        return divider.linearLayout(context)
     }
 
 
@@ -392,7 +373,6 @@ data class ActionWidget(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var viewBuilder : ActionWidgetViewBuilder? = null
     var layoutViewId : Int? = null
 
 
@@ -480,8 +460,8 @@ data class ActionWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext : SheetUIContext) : View {
-        val viewBuilder = ActionWidgetViewBuilder(this, sheetUIContext)
+    override fun view(entityId : EntityId, context : Context) : View {
+        val viewBuilder = ActionWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
 
@@ -508,24 +488,22 @@ data class ActionWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = sheetUIContext.context as SheetActivity
+        val sheetActivity = context as SheetActivity
         val rootView = sheetActivity.rootSheetView()
-        val sheetContext = SheetContext(sheetUIContext)
 
         val activeVariableId = this.activeVariableId()
         when (activeVariableId)
         {
             is Just ->
             {
-                val variable = SheetManager.sheetState(sheetContext.sheetId)
-                                 .apply { it.booleanVariableWithId(activeVariableId.value) }
+                val variable = booleanVariable(activeVariableId.value, entityId)
                 when (variable) {
                     is Val -> {
                         variable.value.setOnUpdateListener {
                             rootView?.let {
-                                this.updateView(it, sheetUIContext)
+                                this.updateView(it, entityId, context)
                             }
                         }
                     }
@@ -536,39 +514,29 @@ data class ActionWidget(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
-    // VIEW
-    // -----------------------------------------------------------------------------------------
-
-    private fun viewBuilder(sheetUIContext : SheetUIContext) =
-        this.viewBuilder ?: ActionWidgetViewBuilder(this, sheetUIContext)
-
-
-    // -----------------------------------------------------------------------------------------
     // PROCEDURE
     // -----------------------------------------------------------------------------------------
 
-    fun procedure(sheetContext : SheetContext) : AppEff<Procedure> =
-            SheetManager.procedure(this.procedureId, sheetContext)
+    fun procedure(entityId : EntityId) : AppEff<Procedure> =
+            SheetManager.procedure(this.procedureId, entityId)
 
 
     // -----------------------------------------------------------------------------------------
     // ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun isActive(sheetContext : SheetContext) : Boolean
+    fun isActive(entityId : EntityId) : Boolean
     {
         val variableId = this.activeVariableId()
         return when (variableId)
         {
             is Just ->
             {
-                val variableValue = SheetManager.sheetState(sheetContext.sheetId)
-                                .apply { it.booleanVariableWithId(variableId.value) }
-                                .apply { it.value() }
+                val variableValue = booleanVariable(variableId.value, entityId)
+                                      .apply { it.value() }
                 when (variableValue)
                 {
-                    is Val ->
-                    {
+                    is Val -> {
                         variableValue.value
                     }
                     is Err -> {
@@ -585,18 +553,17 @@ data class ActionWidget(override val id : UUID,
     }
 
 
-    fun setActive(sheetContext : SheetContext)
+    fun setActive(entityId : EntityId)
     {
         val variableId = this.activeVariableId()
         when (variableId)
         {
             is Just ->
             {
-                val variable = SheetManager.sheetState(sheetContext.sheetId)
-                                 .apply { it.booleanVariableWithId(variableId.value) }
+                val variable = booleanVariable(variableId.value, entityId)
                 when (variable)
                 {
-                    is Val -> variable.value.updateValue(true, sheetContext.sheetId)
+                    is Val -> variable.value.updateValue(true, entityId)
                     is Err -> ApplicationLog.error(variable.error)
                 }
             }
@@ -609,24 +576,25 @@ data class ActionWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(actionWidgetUpdate : WidgetUpdateActionWidget,
-               sheetUIContext : SheetUIContext,
-               rootView : View) =
+               rootView : View,
+               entityId : EntityId,
+               context : Context) =
         when (actionWidgetUpdate)
         {
             is ActionWidgetUpdate ->
             {
-                this.updateView(rootView, sheetUIContext)
+                this.updateView(rootView, entityId, context)
             }
         }
 
 
-    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
             val layout = rootView.findViewById(layoutViewId) as LinearLayout?
             layout?.removeAllViews()
-            layout?.addView(viewBuilder(sheetUIContext).inlineLeftButtonView())
+            layout?.addView(ActionWidgetViewBuilder(entityId, context).inlineLeftButtonView())
         }
     }
 
@@ -716,9 +684,9 @@ data class BooleanWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext : SheetUIContext) : View
+    override fun view(entityId : EntityId, context : Context) : View
     {
-        val viewBuilder = BooleanWidgetViewBuilder(this, sheetUIContext)
+        val viewBuilder = BooleanWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
 
@@ -744,7 +712,7 @@ data class BooleanWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
     }
 
@@ -753,10 +721,9 @@ data class BooleanWidget(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun variables(sheetContext : SheetContext) : AppEff<Set<BooleanVariable>> =
-            SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.variables(this.valueVariablesReference) }
-                    .apply { effValue<AppError,Set<BooleanVariable>>(filterBooleanVariables(it)) }
+    fun variables(entityId : EntityId) : AppEff<Set<BooleanVariable>> =
+        variables(this.valueVariablesReference, entityId)
+          .apply { effValue<AppError,Set<BooleanVariable>>(filterBooleanVariables(it)) }
 
 
     private fun filterBooleanVariables(variableSet : Set<Variable>) : Set<BooleanVariable>
@@ -800,16 +767,16 @@ data class BooleanWidget(override val id : UUID,
 //    }
 
 
-    fun variableValue(sheetContext : SheetContext) : AppEff<Boolean> =
-            this.variables(sheetContext)
-                .apply { if (it.isNotEmpty()) {
-                            it.mapM { it.value() }
-                         }
-                         else {
-                            effValue(setOf())
-                         }
-                }
-                .apply { effValue<AppError,Boolean>(it.all { it }) }
+    fun variableValue(entityId : EntityId) : AppEff<Boolean> =
+        this.variables(entityId)
+            .apply { if (it.isNotEmpty()) {
+                        it.mapM { it.value() }
+                     }
+                     else {
+                        effValue(setOf())
+                     }
+            }
+            .apply { effValue<AppError,Boolean>(it.all { it }) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -817,32 +784,33 @@ data class BooleanWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(booleanWidgetUpdate : WidgetUpdateBooleanWidget,
-               sheetUIContext : SheetUIContext,
-               rootView : View) =
+               rootView : View,
+               entityId: EntityId,
+               context : Context) =
         when (booleanWidgetUpdate)
         {
             is BooleanWidgetUpdateToggle ->
             {
-                this.toggleValues(SheetContext(sheetUIContext))
-                this.updateView(rootView, sheetUIContext)
+                this.toggleValues(entityId)
+                this.updateView(rootView, entityId, context)
             }
         }
 
 
-    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val viewId = this.layoutId
         if (viewId != null) {
             val layout = rootView.findViewById(viewId) as LinearLayout?
             if (layout != null)
-                BooleanWidgetViewBuilder(this, sheetUIContext).updateView(layout)
+                BooleanWidgetViewBuilder(this, entityId, context).updateView(layout)
         }
     }
 
 
-    fun toggleValues(sheetContext : SheetContext)
+    fun toggleValues(entityId : EntityId)
     {
-        val booleanVariables = this.variables(sheetContext)
+        val booleanVariables = this.variables(entityId)
         when (booleanVariables) {
             is Val -> {
                 booleanVariables.value.forEach {
@@ -971,10 +939,10 @@ data class ExpanderWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
         this.groups().forEach {
-            it.onSheetComponentActive(sheetUIContext)
+            it.onSheetComponentActive(entityId, context)
         }
     }
 
@@ -1100,7 +1068,6 @@ data class ListWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     var layoutViewId : Int? = null
-    var viewBuilder : ListWidgetViewBuilder? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -1178,8 +1145,11 @@ data class ListWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext : SheetUIContext) : View =
-            this.viewBuilder(sheetUIContext).view()
+    override fun view(entityId : EntityId, context : Context) : View
+    {
+        val viewBuilder = ListWidgetViewBuilder(this, entityId, context)
+        return viewBuilder.view()
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1203,7 +1173,7 @@ data class ListWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
+    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
     }
 
 
@@ -1211,23 +1181,13 @@ data class ListWidget(override val id : UUID,
     // VALUES
     // -----------------------------------------------------------------------------------------
 
-    fun variable(sheetContext : SheetContext) : AppEff<TextListVariable> =
-        SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.textListVariableWithId(this.valuesVariableId()) }
+    fun variable(entityId : EntityId) : AppEff<TextListVariable> =
+        textListVariable(this.valuesVariableId(), entityId)
 
 
-    fun value(sheetContext : SheetContext) : AppEff<List<String>> =
-        SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.textListVariableWithId(this.valuesVariableId()) }
-                    .apply { it.value(sheetContext) }
-
-
-    // -----------------------------------------------------------------------------------------
-    // VIEW
-    // -----------------------------------------------------------------------------------------
-
-    private fun viewBuilder(sheetUIContext : SheetUIContext) =
-        this.viewBuilder ?: ListWidgetViewBuilder(this, sheetUIContext)
+    fun value(entityId : EntityId) : AppEff<List<String>> =
+        textListVariable(this.valuesVariableId(), entityId)
+          .apply { it.value(entityId) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1235,37 +1195,36 @@ data class ListWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(listWidgetUpdate : WidgetUpdateListWidget,
-               sheetUIContext : SheetUIContext,
-               rootView : View) =
+               rootView : View,
+               entityId : EntityId,
+               context : Context) =
         when (listWidgetUpdate)
         {
             is ListWidgetUpdateSetCurrentValue ->
             {
-                this.updateCurrentValue(listWidgetUpdate.newCurrentValue,
-                                        SheetContext(sheetUIContext))
-                this.updateView(rootView, sheetUIContext)
+                this.updateCurrentValue(listWidgetUpdate.newCurrentValue, entityId)
+                this.updateView(rootView, entityId, context)
             }
         }
 
 
-    private fun updateCurrentValue(newCurrentValue : List<String>, sheetContext : SheetContext)
+    private fun updateCurrentValue(newCurrentValue : List<String>, entityId : EntityId)
     {
-        val currentValueVariable = this.variable(sheetContext)
+        val currentValueVariable = this.variable(entityId)
         when (currentValueVariable) {
-            is Val -> currentValueVariable.value.updateLiteralValue(newCurrentValue,
-                                                                    sheetContext.sheetId)
+            is Val -> currentValueVariable.value.updateLiteralValue(newCurrentValue, entityId)
             is Err -> ApplicationLog.error(currentValueVariable.error)
         }
     }
 
 
-    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
             val layout = rootView.findViewById(layoutViewId) as LinearLayout?
             layout?.removeAllViews()
-            layout?.addView(viewBuilder(sheetUIContext).inlineView())
+            layout?.addView(ListWidgetViewBuilder(this, entityId, context).inlineView())
         }
     }
 
@@ -1346,8 +1305,8 @@ data class LogWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext : SheetUIContext) : View {
-        val viewBuilder = LogViewBuilder(this, sheetUIContext)
+    override fun view(entityId : EntityId, context : Context) : View {
+        val viewBuilder = LogViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
 
@@ -1372,7 +1331,7 @@ data class LogWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {
+    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
     }
 
 }
@@ -1458,9 +1417,9 @@ data class MechanicWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext: SheetUIContext) : View
+    override fun view(entityId : EntityId, context : Context) : View
     {
-        val viewBuilder = MechanicWidgetViewBuilder(this, sheetUIContext)
+        val viewBuilder = MechanicWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
 
@@ -1486,14 +1445,12 @@ data class MechanicWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = sheetUIContext.context as SheetActivity
+        val sheetActivity = context as SheetActivity
         val rootView = sheetActivity.rootSheetView()
-        val sheetContext = SheetContext(sheetUIContext)
 
-        val mechanics = GameManager.engine(sheetUIContext.gameId)
-                            .apply { effValue<AppError,Set<Mechanic>>(it.mechanicsInCategory(this.categoryId())) }
+        val mechanics = mechanicsInCategory(this.categoryId(), entityId)
 
         when (mechanics) {
             is Val -> {
@@ -1503,7 +1460,7 @@ data class MechanicWidget(override val id : UUID,
                             mechanic.variables().forEach { optVar ->
                                 optVar.setOnUpdateListener {
                                     rootView?.let {
-                                        this.updateView(it, sheetUIContext)
+                                        this.updateView(it, entityId, context)
                                     }
                                 }
                             }
@@ -1521,14 +1478,14 @@ data class MechanicWidget(override val id : UUID,
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
-    fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val viewId = this.viewId
         if (viewId != null)
         {
             val layout = rootView.findViewById(viewId) as LinearLayout?
             if (layout != null) {
-                MechanicWidgetViewBuilder(this, sheetUIContext).updateView(layout)
+                MechanicWidgetViewBuilder(this, entityId, context).updateView(layout)
             }
         }
     }
@@ -1638,8 +1595,8 @@ data class NumberWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext: SheetUIContext): View =
-            NumberWidgetView.view(this, this.format(), sheetUIContext)
+    override fun view(entityId: EntityId, context : Context): View =
+            NumberWidgetView.view(this, this.format(), entityId, context)
 
 
     // -----------------------------------------------------------------------------------------
@@ -1665,18 +1622,17 @@ data class NumberWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
         val sheetActivity = sheetUIContext.context as SheetActivity
         val rootView = sheetActivity.rootSheetView()
         val sheetContext = SheetContext(sheetUIContext)
 
 
-        this.valueVariable(sheetContext) apDo { currentValueVar ->
-            //Log.d("****WIDGET", "${currentValueVar.label().value} value var deps: ${currentValueVar.dependencies(sheetContext)}")
+        this.valueVariable(entityId) apDo { currentValueVar ->
             currentValueVar.setOnUpdateListener {
                 rootView?.let {
-                    this.updateView(it, sheetUIContext)
+                    this.updateView(it, entityId, context)
                 }
             }
         }
@@ -1687,19 +1643,18 @@ data class NumberWidget(override val id : UUID,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    fun valueVariable(sheetContext : SheetContext) : AppEff<NumberVariable> =
-        SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.numberVariableWithId(this.valueVariableId()) }
+    fun valueVariable(entityId : EntityId) : AppEff<NumberVariable> =
+        numberVariable(this.valueVariableId(), entityId)
 
 
     /**
      * The string representation of the widget's current value. This method returns 0 when the
      * value is null for some reason.
      */
-    fun valueString(sheetContext : SheetContext) : String
+    fun valueString(entityId : EntityId) : String
     {
-        val numberString  = this.valueVariable(sheetContext)
-                             .apply { it.valueString(sheetContext) }
+        val numberString  = this.valueVariable(entityId)
+                             .apply { it.valueString(entityId) }
 
         when (numberString)
         {
@@ -1721,10 +1676,10 @@ data class NumberWidget(override val id : UUID,
      * The string representation of the widget's current value. This method returns 0 when the
      * value is null for some reason.
      */
-    fun value(sheetContext : SheetContext) : Double
+    fun value(entityId : EntityId) : Double
     {
-        val num  = this.valueVariable(sheetContext)
-                       .apply { it.value(sheetContext) }
+        val num  = this.valueVariable(entityId)
+                       .apply { it.value(entityId) }
 
         when (num)
         {
@@ -1745,13 +1700,13 @@ data class NumberWidget(override val id : UUID,
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
-    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val viewId = this.textViewId
         if (viewId != null)
         {
             val textView = rootView.findViewById(viewId) as TextView?
-            textView?.text = this.valueString(SheetContext(sheetUIContext))
+            textView?.text = this.valueString(entityId)
         }
     }
 
@@ -2009,9 +1964,10 @@ data class PointsWidget(override val id : UUID,
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
-    override fun view(sheetUIContext : SheetUIContext) : View
+
+    override fun view(entityId : EntityId, context : Context) : View
     {
-        val viewBuilder = PointsWidgetViewBuilder(this, sheetUIContext)
+        val viewBuilder = PointsWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
 
@@ -2020,16 +1976,14 @@ data class PointsWidget(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun currentValueVariable(sheetContext : SheetContext) : AppEff<NumberVariable> =
-            SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.numberVariableWithId(this.currentValueVariableId()) }
+    fun currentValueVariable(entityId: EntityId) : AppEff<NumberVariable> =
+        numberVariable(this.currentValueVariableId(), entityId)
 
 
-    fun limitValue(sheetContext : SheetContext) : Double?
+    fun limitValue(entityId : EntityId) : Double?
     {
-        val mDouble = SheetManager.sheetState(sheetContext.sheetId)
-                            .apply { it.numberVariableWithId(this.limitValueVariableId()) }
-                            .apply { it.value(sheetContext) }
+        val mDouble = numberVariable(this.limitValueVariableId(), entityId)
+                       .apply { it.value(entityId) }
 
         when (mDouble)
         {
@@ -2049,11 +2003,10 @@ data class PointsWidget(override val id : UUID,
     }
 
 
-    fun limitValueString(sheetContext : SheetContext) : String?
+    fun limitValueString(entityId : EntityId) : String?
     {
-        val valueString = SheetManager.sheetState(sheetContext.sheetId)
-                            .apply { it.variableWithId(this.limitValueVariableId()) }
-                            .apply { it.valueString(sheetContext) }
+        val valueString = variable(this.limitValueVariableId(), entityId)
+                            .apply { it.valueString(entityId) }
 
         when (valueString) {
             is Val -> return valueString.value
@@ -2064,11 +2017,10 @@ data class PointsWidget(override val id : UUID,
     }
 
 
-    fun currentValue(sheetContext : SheetContext) : Double?
+    fun currentValue(entityId : EntityId) : Double?
     {
-        val mDouble = SheetManager.sheetState(sheetContext.sheetId)
-                            .apply { it.numberVariableWithId(this.currentValueVariableId()) }
-                            .ap { it.value(sheetContext) }
+        val mDouble = numberVariable(this.currentValueVariableId(), entityId)
+                       .apply { it.value(entityId) }
 
         when (mDouble)
         {
@@ -2087,11 +2039,10 @@ data class PointsWidget(override val id : UUID,
     }
 
 
-    fun currentValueString(sheetContext : SheetContext) : String?
+    fun currentValueString(entityId : EntityId) : String?
     {
-        val valueString = SheetManager.sheetState(sheetContext.sheetId)
-                            .apply { it.variableWithId(this.currentValueVariableId()) }
-                            .ap { it.valueString(sheetContext) }
+        val valueString = variable(this.currentValueVariableId(), entityId)
+                            .ap { it.valueString(entityId) }
 
         when (valueString) {
             is Val -> return valueString.value
@@ -2107,39 +2058,37 @@ data class PointsWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(pointsWidgetUpdate : WidgetUpdatePointsWidget,
-               sheetUIContext : SheetUIContext,
-               rootView : View) =
+               rootView : View,
+               entityId : EntityId,
+               context : Context) =
         when (pointsWidgetUpdate)
         {
             is PointsWidgetUpdateSetCurrentValue ->
             {
-                this.updateCurrentValue(pointsWidgetUpdate.newCurrentValue,
-                                        SheetContext(sheetUIContext))
-                this.updateView(rootView, sheetUIContext)
+                this.updateCurrentValue(pointsWidgetUpdate.newCurrentValue, entityId)
+                this.updateView(rootView, entityId, context)
             }
         }
 
 
-    private fun updateCurrentValue(newCurrentValue : Double, sheetContext : SheetContext)
+    private fun updateCurrentValue(newCurrentValue : Double, entityId : EntityId)
     {
-        val currentValueVariable = this.currentValueVariable(sheetContext)
+        val currentValueVariable = this.currentValueVariable(entityId)
         when (currentValueVariable) {
-            is Val -> currentValueVariable.value.updateValue(newCurrentValue, sheetContext)
+            is Val -> currentValueVariable.value.updateValue(newCurrentValue, entityId)
             is Err -> ApplicationLog.error(currentValueVariable.error)
         }
     }
 
 
-    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
             val layout = rootView.findViewById(layoutViewId) as LinearLayout?
             if (layout != null) {
-                PointsWidgetViewBuilder(this, sheetUIContext).updateView(layout)
+                PointsWidgetViewBuilder(this, entityId, context).updateView(layout)
             }
-//            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
-//            layout?.addView(PointsWidgetViewBuilder(this, sheetUIContext).view())
         }
     }
 
@@ -2167,16 +2116,15 @@ data class PointsWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = sheetUIContext.context as SheetActivity
+        val sheetActivity = context as SheetActivity
         val rootView = sheetActivity.rootSheetView()
-        val sheetContext = SheetContext(sheetUIContext)
 
-        this.currentValueVariable(sheetContext) apDo { currentValueVar ->
+        this.currentValueVariable(entityId) apDo { currentValueVar ->
             currentValueVar.setOnUpdateListener {
                 rootView?.let {
-                    this.updateView(it, sheetUIContext)
+                    this.updateView(it, entityId, context)
                 }
             }
         }
@@ -2269,9 +2217,9 @@ data class QuoteWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext: SheetUIContext) : View
+    override fun view(entityId : EntityId, context : Context) : View
     {
-        val viewBuilder = QuoteWidgetViewBuilder(this, sheetUIContext)
+        val viewBuilder = QuoteWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
 
@@ -2280,21 +2228,19 @@ data class QuoteWidget(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun quoteVariable(sheetContext : SheetContext) : AppEff<TextVariable> =
-            SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.textVariableWithId(this.quoteVariableId()) }
+    fun quoteVariable(entityId : EntityId) : AppEff<TextVariable> =
+        textVariable(this.quoteVariableId(), entityId)
 
 
-    fun source(sheetContext : SheetContext) : Maybe<String>
+    fun source(entityId : EntityId) : Maybe<String>
     {
         val sourceVarId = this.sourceVariableId()
         when (sourceVarId)
         {
             is Just ->
             {
-                val sourceString = SheetManager.sheetState(sheetContext.sheetId)
-                                    .apply { it.textVariableWithId(sourceVarId.value) }
-                                    .apply { it.valueString(sheetContext)  }
+                val sourceString = textVariable(sourceVarId.value, entityId)
+                                     .apply { it.valueString(entityId)  }
                 when (sourceString)
                 {
                     is Val -> return Just(sourceString.value)
@@ -2308,10 +2254,10 @@ data class QuoteWidget(override val id : UUID,
     }
 
 
-    fun quote(sheetContext : SheetContext) : String
+    fun quote(entityId : EntityId) : String
     {
-        val quoteString = this.quoteVariable(sheetContext)
-                              .apply { it.valueString(sheetContext) }
+        val quoteString = this.quoteVariable(entityId)
+                              .apply { it.valueString(entityId) }
 
         when (quoteString)
         {
@@ -2345,7 +2291,7 @@ data class QuoteWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) { }
+    override fun onSheetComponentActive(entityId : EntityId, context : Context) { }
 
 }
 
@@ -2493,24 +2439,21 @@ data class RollWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = sheetUIContext.context as SheetActivity
+        val sheetActivity = context as SheetActivity
         val rootView = sheetActivity.rootSheetView()
-        val sheetContext = SheetContext(sheetUIContext)
-
 
         val deps : MutableSet<VariableReference> = mutableSetOf()
         this.rollGroup().rollReferences().forEach {
-            deps.addAll(it.dependencies(sheetContext))
+            deps.addAll(it.dependencies(entityId))
         }
 
         deps.forEach { varRef ->
-            SheetManager.sheetState(sheetUIContext.sheetId) apDo { state ->
-            state.variable(varRef)                          apDo { variable ->
+            variable(varRef, entityId) apDo { variable ->
                variable.setOnUpdateListener {
                    rootView?.let {
-                       this.updateView(it, sheetUIContext)
+                       this.updateView(it, entityId, context)
                    }
                }
             } }
@@ -2523,14 +2466,14 @@ data class RollWidget(override val id : UUID,
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
-    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val layoutId = this.layoutId
         if (layoutId != null)
         {
             val layout = rootView.findViewById(layoutId) as LinearLayout?
             if (layout != null) {
-                RollWidgetViewBuilder(this, sheetUIContext).updateContentView(layout)
+                RollWidgetViewBuilder(this, entityId, context).updateContentView(layout)
             }
         }
     }
@@ -2622,17 +2565,16 @@ data class StoryWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext : SheetUIContext) : View
+    override fun view(entityId : EntityId, context : Context) : View
     {
-        val viewBuilder = StoryWidgetViewBuilder(this, sheetUIContext)
+        val viewBuilder = StoryWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
 
 
-    fun variables(sheetContext : SheetContext) : Set<Variable> =
+    fun variables(entityId : EntityId) : Set<Variable> =
         this.variableParts().mapNotNull { part ->
-            val variable = SheetManager.sheetState(sheetContext.sheetId)
-                                       .apply { it.variableWithId(part.variableId()) }
+            val variable = variable(part.variableId(), entityId)
             when (variable) {
                 is Val -> variable.value
                 is Err -> {
@@ -2678,22 +2620,24 @@ data class StoryWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(storyWidgetUpdate : WidgetUpdateStoryWidget,
-               sheetUIContext : SheetUIContext,
-               rootView : View)
+               rootView : View,
+               entityId : EntityId,
+               context : Context)
     {
         when (storyWidgetUpdate)
         {
             is StoryWidgetUpdateNumberPart ->
-                this.updateNumberPart(storyWidgetUpdate, sheetUIContext, rootView)
+                this.updateNumberPart(storyWidgetUpdate, rootView, entityId, context)
             is StoryWidgetUpdateTextValuePart ->
-                this.updateTextValuePart(storyWidgetUpdate, sheetUIContext, rootView)
+                this.updateTextValuePart(storyWidgetUpdate, rootView, entityId, context)
         }
     }
 
 
     private fun updateNumberPart(partUpdate : StoryWidgetUpdateNumberPart,
-                                 sheetUIContext : SheetUIContext,
-                                 rootView : View)
+                                 rootView : View,
+                                 entityId : EntityId,
+                                 context : Context)
     {
         val part = this.story()[partUpdate.partIndex]
         when (part)
@@ -2705,7 +2649,7 @@ data class StoryWidget(override val id : UUID,
                 when (variable) {
                     is NumberVariable ->
                     {
-                        variable.updateValue(partUpdate.newNumber, SheetContext(sheetUIContext))
+                        variable.updateValue(partUpdate.newNumber, entityId)
                     }
                 }
 
@@ -2731,22 +2675,22 @@ data class StoryWidget(override val id : UUID,
 
 
     private fun updateTextValuePart(partUpdate : StoryWidgetUpdateTextValuePart,
-                                    sheetUIContext : SheetUIContext,
-                                    rootView : View)
+                                    rootView : View,
+                                    entityId : EntityId,
+                                    context : Context)
     {
-        val sheetContext = SheetContext(sheetUIContext)
         val part = this.story()[partUpdate.partIndex]
         when (part)
         {
             is StoryPartVariable ->
             {
                 // Update Value
-                val variable = part.variable(sheetContext)
+                val variable = part.variable(entityId)
                 var newValue : String? = null
                 when (variable) {
                     is TextVariable -> {
-                        variable.updateValue(partUpdate.newValueId.value, sheetContext)
-                        val updatedValue = variable.value(sheetContext)
+                        variable.updateValue(partUpdate.newValueId.value, entityId)
+                        val updatedValue = variable.value(entityId)
                         when (updatedValue) {
                             is Val -> newValue = maybeValue("", updatedValue.value)
                         }
@@ -2778,33 +2722,29 @@ data class StoryWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = sheetUIContext.context as SheetActivity
+        val sheetActivity = context as SheetActivity
         val rootView = sheetActivity.rootSheetView()
-        val sheetContext = SheetContext(sheetUIContext)
 
 
-        this.variables(sheetContext).forEach {
-            Log.d("****WIDGET", "set listener: ${it.variableId()}")
+        this.variables(entityId).forEach {
             it.setOnUpdateListener {
-                Log.d("***WIDGET", "story widget variable part updated")
                 rootView?.let {
-                    this.updateView(it, sheetUIContext)
+                    this.updateView(it, entityId, context)
                 }
             }
         }
     }
 
 
-    private fun updateView(rootView : View, sheetUIContext : SheetUIContext)
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val viewId = this.viewId
         if (viewId != null) {
             val layout = rootView.findViewById(viewId) as LinearLayout?
-            Log.d("***WIDGET", "story widget update view")
             if (layout != null)
-                StoryWidgetViewBuilder(this, sheetUIContext).updateView(layout)
+                StoryWidgetViewBuilder(this, entityId, context).updateView(layout)
         }
     }
 
@@ -3092,28 +3032,29 @@ data class TableWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(tableWidgetUpdate : WidgetUpdateTableWidget,
-               sheetUIContext : SheetUIContext,
-               rootView : View) =
+               rootView : View,
+               entityId : EntityId,
+               context : Context) =
         when (tableWidgetUpdate)
         {
             is TableWidgetUpdateSetNumberCell ->
             {
                 this.updateNumberCellView(tableWidgetUpdate, rootView)
-                this.updateNumberCellValue(tableWidgetUpdate, SheetContext(sheetUIContext))
+                this.updateNumberCellValue(tableWidgetUpdate, entityId)
             }
             is TableWidgetUpdateSetTextCellValue ->
             {
                 this.updateTextCellValueValue(tableWidgetUpdate,
-                                              SheetContext(sheetUIContext),
-                                              rootView)
+                                              rootView,
+                                              entityId)
             }
             is TableWidgetUpdateInsertRowBefore ->
             {
-                this.addRow(tableWidgetUpdate.selectedRow, rootView, sheetUIContext)
+                this.addRow(tableWidgetUpdate.selectedRow, rootView, entityId, context)
             }
             is TableWidgetUpdateInsertRowAfter ->
             {
-                this.addRow(tableWidgetUpdate.selectedRow + 1, rootView, sheetUIContext)
+                this.addRow(tableWidgetUpdate.selectedRow + 1, rootView, entityId, context)
             }
         }
 
@@ -3130,16 +3071,16 @@ data class TableWidget(override val id : UUID,
 
 
     private fun updateNumberCellValue(numberCellUpdate : TableWidgetUpdateSetNumberCell,
-                                      sheetContext : SheetContext)
+                                      entityId : EntityId)
     {
         val numberCell = this.numberCellById[numberCellUpdate.cellId]
-        numberCell?.updateValue(numberCellUpdate.newNumber, sheetContext)
+        numberCell?.updateValue(numberCellUpdate.newNumber, entityId)
     }
 
 
     private fun updateTextCellValueValue(cellUpdate : TableWidgetUpdateSetTextCellValue,
-                                         sheetContext : SheetContext,
-                                         rootView : View)
+                                         rootView : View,
+                                         entityId : EntityId)
     {
         val cell = this.textCellById[cellUpdate.cellId]
 
@@ -3151,8 +3092,8 @@ data class TableWidget(override val id : UUID,
             is Val ->
             {
                 val textVariable = variable.value
-                textVariable.updateValue(cellUpdate.newValueId.value, sheetContext)
-                val updatedValue = textVariable.value(sheetContext)
+                textVariable.updateValue(cellUpdate.newValueId.value, entityId)
+                val updatedValue = textVariable.value(entityId)
                 when (updatedValue) {
                     is Val -> newValue = maybeValue("", updatedValue.value)
                 }
@@ -3168,7 +3109,7 @@ data class TableWidget(override val id : UUID,
     }
 
 
-    private fun addRow(rowIndex : Int, rootView : View, sheetUIContext : SheetUIContext)
+    private fun addRow(rowIndex : Int, rootView : View, entityId : EntityId, context : Context)
     {
         val tableLayoutId = this.tableLayoutId
 
@@ -3180,11 +3121,11 @@ data class TableWidget(override val id : UUID,
                 val newTableRow = this.defaultTableRow()
                 this.rows.add(rowIndex, newTableRow)
 
-                this.updateTableVariables(rowIndex + 1 , SheetContext(sheetUIContext))
+                this.updateTableVariables(rowIndex + 1 , entityId)
 
-                this.addRowToState(rowIndex, sheetUIContext)
+                this.addRowToState(rowIndex, entityId, context)
                 // need to update all variables
-                val rowView = newTableRow.view(this, rowIndex, sheetUIContext)
+                val rowView = newTableRow.view(this, rowIndex, entityId, context)
                 tableLayout.addView(rowView, rowIndex + 1)
 
                 val selectedRowIndex = this.selectedRow
@@ -3220,7 +3161,7 @@ data class TableWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
         this.rows().forEachIndexed { rowIndex, _ ->
             this.addRowToState(rowIndex, sheetUIContext)
@@ -3232,8 +3173,8 @@ data class TableWidget(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    override fun view(sheetUIContext: SheetUIContext) : View =
-            TableWidgetView.view(this, this.format(), sheetUIContext)
+    override fun view(entityId : EntityId, context : Context) : View =
+            TableWidgetView.view(this, this.format(), entityId, context)
 
 
     // -----------------------------------------------------------------------------------------
@@ -3243,8 +3184,8 @@ data class TableWidget(override val id : UUID,
     private fun addBooleanCellVariable(booleanCell : TableWidgetBooleanCell,
                                        rowIndex : Int,
                                        cellIndex : Int,
-//                                       namespace : VariableNamespace?,
-                                       sheetUIContext : SheetUIContext) : Variable
+                                       entityId : EntityId,
+                                       context : Context) : Variable
     {
         val column = this.columns()[cellIndex]
         val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex)
@@ -3255,9 +3196,9 @@ data class TableWidget(override val id : UUID,
                                        column.variableRelation(),
                                        booleanCell.variableValue())
         variable.setOnUpdateListener {
-            booleanCell.updateView(sheetUIContext)
+            booleanCell.updateView(entityId, context)
         }
-        SheetManager.addVariable(sheetUIContext.sheetId, variable)
+        addVariable(variable, entityId)
         booleanCell.variableId = variableId
 
         return variable
@@ -3270,8 +3211,8 @@ data class TableWidget(override val id : UUID,
     private fun addNumberCellVariable(numberCell : TableWidgetNumberCell,
                                       rowIndex : Int,
                                       cellIndex : Int,
-//                                      namespace : VariableNamespace?,
-                                      sheetUIContext : SheetUIContext) : Variable
+                                      entityId : EntityId,
+                                      context : Context) : Variable
     {
         val column = this.columns()[cellIndex]
         val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex) //, namespace)
@@ -3282,9 +3223,9 @@ data class TableWidget(override val id : UUID,
                                       column.variableRelation(),
                                       numberCell.variableValue())
         variable.setOnUpdateListener {
-            numberCell.updateView(sheetUIContext)
+            numberCell.updateView(entityId, context)
         }
-        SheetManager.addVariable(sheetUIContext.sheetId, variable)
+        addVariable(variable, entityId)
         numberCell.variableId = variableId
 
         return variable
@@ -3294,8 +3235,8 @@ data class TableWidget(override val id : UUID,
     private fun addTextCellVariable(textCell : TableWidgetTextCell,
                                     rowIndex : Int,
                                     cellIndex : Int,
-//                                    namespace : VariableNamespace?,
-                                    sheetUIContext : SheetUIContext) : Variable
+                                    entityId : EntityId,
+                                    context : Context) : Variable
     {
         val column = this.columns()[cellIndex] as TableWidgetTextColumn
         val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex) //, namespace)
@@ -3309,9 +3250,9 @@ data class TableWidget(override val id : UUID,
         variable.addTags(column.tags().toSet())
 
         variable.setOnUpdateListener {
-            textCell.updateView(sheetUIContext)
+            textCell.updateView(entityId, context)
         }
-        SheetManager.addVariable(sheetUIContext.sheetId, variable)
+        addVariable(variable, entityId)
         textCell.variableId = variableId
 
         return variable
@@ -3348,36 +3289,11 @@ data class TableWidget(override val id : UUID,
     }
 
 
-    private fun addRowToState(rowIndex : Int, sheetUIContext : SheetUIContext)
+    private fun addRowToState(rowIndex : Int, entityId, context)
     {
         if (rowIndex >= 0 && rowIndex < this.rows().size)
         {
             val row = this.rows()[rowIndex]
-
-//            var namespace : VariableNamespace? = null
-//            val nsCol = this.namespaceColumn
-//            if (nsCol != null)
-//            {
-//                val cell = row.cells()[nsCol]
-//                when (cell) {
-//                    is TableWidgetTextCell -> {
-//                        val valueStringEff = cell.variableValue().value(SheetContext(sheetUIContext))
-//                        when (valueStringEff) {
-//                            is Val -> {
-//                                val valueString = valueStringEff.value
-//                                when (valueString) {
-//                                    is Just ->
-//                                    {
-//                                        val nsString = valueString.value.toLowerCase().replace(" ", "_")
-//                                        namespace = VariableNamespace(nsString)
-//                                    }
-//                                }
-//                            }
-//                            is Err -> ApplicationLog.error(valueStringEff.error)
-//                        }
-//                    }
-//                }
-//            }
 
             val rowVariables : MutableList<Variable> = mutableListOf()
 
@@ -3385,20 +3301,19 @@ data class TableWidget(override val id : UUID,
                 when (cell) {
                     is TableWidgetBooleanCell ->
                     {
-//                        val booleanVar = addBooleanCellVariable(cell, rowIndex, cellIndex, namespace, sheetUIContext)
-                        val booleanVar = addBooleanCellVariable(cell, rowIndex, cellIndex, sheetUIContext)
+                        val booleanVar = addBooleanCellVariable(cell, rowIndex, cellIndex, entityId, context)
                         rowVariables.add(booleanVar)
                     }
                     is TableWidgetNumberCell ->
                     {
                         this.numberCellById.put(cell.id, cell)
-                        val numberVar = addNumberCellVariable(cell, rowIndex, cellIndex, sheetUIContext)
+                        val numberVar = addNumberCellVariable(cell, rowIndex, cellIndex, entityId, context)
                         rowVariables.add(numberVar)
                     }
                     is TableWidgetTextCell ->
                     {
                         this.textCellById.put(cell.id, cell)
-                        val textVar = addTextCellVariable(cell, rowIndex, cellIndex, sheetUIContext)
+                        val textVar = addTextCellVariable(cell, rowIndex, cellIndex, entityId, context)
                         rowVariables.add(textVar)
                     }
                 }
@@ -3409,30 +3324,7 @@ data class TableWidget(override val id : UUID,
                     val relation = jVar.relation()
                     when (relation) {
                         is Just -> {
-                            iVar.setRelation(relation.value, jVar.variableId(), SheetContext(sheetUIContext))
-
-
-//                            when (jVar) {
-//                                is NumberVariable -> {
-//                                    val numberVarValue = jVar.variableValue
-//                                    when (numberVarValue) {
-//                                        is NumberVariableValueValue -> {
-//                                            val varValue = GameManager.engine(sheetUIContext.gameId) ap {
-//                                                it.value(numberVarValue.valueReference, SheetContext(sheetUIContext))
-//                                            }
-//
-//                                            when (varValue) {
-//                                                is Val -> {
-//                                                    varValue.value.variables().forEach {
-//                                                        if (it.relation())
-//                                                    }
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//
-//                            }
+                            iVar.setRelation(relation.value, jVar.variableId(), entityId)
                         }
                     }
                 }
@@ -3441,7 +3333,7 @@ data class TableWidget(override val id : UUID,
     }
 
 
-    private fun updateTableVariables(fromIndex : Int, sheetContext : SheetContext)
+    private fun updateTableVariables(fromIndex : Int, entityId : EntityId)
     {
         for (rowIndex in (this.rows().size - 1) downTo fromIndex)
         {
@@ -3452,28 +3344,27 @@ data class TableWidget(override val id : UUID,
                     is TableWidgetBooleanCell ->
                     {
                         val newVarId = cellVariableId(column.variablePrefixString(), rowIndex) //, null)
-                        cell.valueVariable(sheetContext)              apDo { boolVar ->
-                        SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
-                            sheetState.updateVariableId(boolVar.variableId(), newVarId)
-                        } }
+
+                        cell.valueVariable(entityId)              apDo { boolVar ->
+                            updateVariableId(boolVar.variableId(), newVarId, entityId)
+                        }
+
                         cell.variableId = newVarId
                     }
                     is TableWidgetNumberCell ->
                     {
-                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex) //, null)
-                        cell.valueVariable(sheetContext)              apDo { numVar ->
-                        SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
-                            sheetState.updateVariableId(numVar.variableId(), newVarId)
-                        } }
+                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex)
+                        cell.valueVariable(entityId) apDo { numVar ->
+                            updateVariableId(numVar.variableId(), newVarId, entityId)
+                        }
                         cell.variableId = newVarId
                     }
                     is TableWidgetTextCell ->
                     {
-                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex) //, null)
-                        cell.valueVariable(sheetContext)              apDo { textVar ->
-                        SheetManager.sheetState(sheetContext.sheetId) apDo { sheetState ->
-                            sheetState.updateVariableId(textVar.variableId(), newVarId)
-                        } }
+                        val newVarId = cellVariableId(column.variablePrefixString(), rowIndex)
+                        cell.valueVariable(entityId) apDo { textVar ->
+                            updateVariableId(textVar.variableId(), newVarId, entityId)
+                        }
                         cell.variableId = newVarId
                     }
                 }
@@ -3576,19 +3467,19 @@ data class TextWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetUIContext : SheetUIContext) : View =
-        TextWidgetView.view(this, this.format(), sheetUIContext)
+    override fun view(entityId : EntityId, context : Context) : View =
+        TextWidgetView.view(this, this.format(), entityId, context)
 
 
     fun update(textWidgetUpdate : WidgetUpdateTextWidget,
-               sheetContext : SheetContext,
-               rootView : View) =
+               rootView : View,
+               entityId : EntityId) =
         when (textWidgetUpdate)
         {
             is TextWidgetUpdateSetText ->
             {
-                this.updateTextValue(textWidgetUpdate.newText, sheetContext)
-                this.updateTextView(this.valueString(sheetContext), rootView)
+                this.updateTextValue(textWidgetUpdate.newText, entityId)
+                this.updateTextView(this.valueString(entityId), rootView)
             }
         }
 
@@ -3603,11 +3494,11 @@ data class TextWidget(override val id : UUID,
     }
 
 
-    fun updateTextValue(newText : String, sheetContext : SheetContext)
+    fun updateTextValue(newText : String, entityId : EntityId)
     {
-        val textVariable = this.valueVariable(sheetContext)
+        val textVariable = this.valueVariable(entityId)
         when (textVariable) {
-            is Val -> textVariable.value.updateValue(newText, sheetContext)
+            is Val -> textVariable.value.updateValue(newText, entityId)
             is Err -> ApplicationLog.error(textVariable.error)
         }
     }
@@ -3617,9 +3508,8 @@ data class TextWidget(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun valueVariable(sheetContext : SheetContext) : AppEff<TextVariable> =
-        SheetManager.sheetState(sheetContext.sheetId)
-                    .apply { it.textVariableWithId(this.valueVariableId()) }
+    fun valueVariable(entityId : EntityId) : AppEff<TextVariable> =
+        textVariable(this.valueVariableId(), entityId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -3644,7 +3534,7 @@ data class TextWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
     //     SheetManager.addVariable(sheetContext.sheetId, this.valueVariableId())
     }
@@ -3657,10 +3547,10 @@ data class TextWidget(override val id : UUID,
     /**
      * The string representation of the widget's current value.
      */
-    fun valueString(sheetContext : SheetContext) : String
+    fun valueString(entityId : EntityId) : String
     {
-        val str = this.valueVariable(sheetContext)
-                      .apply { it.valueString(sheetContext) }
+        val str = this.valueVariable(entityId)
+                      .apply { it.valueString(entityId) }
 
         when (str)
         {

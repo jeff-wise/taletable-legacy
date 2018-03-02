@@ -3,10 +3,11 @@ package com.kispoko.tome.model.theme
 
 
 import android.graphics.Color
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppThemeError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue10
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue9
 import com.kispoko.tome.lib.orm.schema.PrimValue
@@ -15,10 +16,9 @@ import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import effect.apply
-import effect.effApply
-import effect.effError
-import effect.effValue
+import com.kispoko.tome.rts.entity.theme.ThemeDoesNotHaveColor
+import com.kispoko.tome.rts.entity.theme.ThemeNotSupported
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -121,6 +121,10 @@ data class Theme(override val id : UUID,
         is ColorId.Transparent -> Color.TRANSPARENT
         is ColorId.Theme       -> this.colorById[colorId]
     }
+
+
+    fun colorOrError(colorId : ColorId) : AppEff<Int> =
+            note(color(colorId), AppThemeError(ThemeDoesNotHaveColor(this.themeId, colorId)))
 
 }
 
@@ -542,6 +546,11 @@ data class ColorTheme(val themeColorIds : Set<ThemeColorId>)
     // -----------------------------------------------------------------------------------------
 
     fun themeColorId(themeId : ThemeId) : ColorId? = this.colorIdByThemeId[themeId]
+
+
+    fun themeColorIdOrError(themeId : ThemeId) : AppEff<ColorId> =
+            note(this.colorIdByThemeId[themeId],
+                 AppThemeError(ThemeNotSupported(themeId)))
 
 
     // -----------------------------------------------------------------------------------------

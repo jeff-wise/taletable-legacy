@@ -3,7 +3,6 @@ package com.kispoko.tome.activity.nav
 
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -13,21 +12,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
-import com.kispoko.tome.R
-import com.kispoko.tome.activity.game.GameActivity
-import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.Game
-import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 
 
 

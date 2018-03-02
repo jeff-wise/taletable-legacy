@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.summation
 
 
-import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.ApplicationLog
@@ -20,9 +19,10 @@ import com.kispoko.tome.model.game.engine.dice.*
 import com.kispoko.tome.model.game.engine.summation.term.*
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.game.engine.SummationIsNotDiceRoll
-import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetData
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.engine.SummationIsNotDiceRoll
+import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.sheet.SheetData
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -128,9 +128,9 @@ data class Summation(override val id : UUID,
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    fun dependencies(sheetContext : SheetContext) : Set<VariableReference> =
+    fun dependencies(entityId : EntityId) : Set<VariableReference> =
         this.terms.fold(setOf(), {
-            accSet, term -> accSet.plus(term.dependencies(sheetContext))
+            accSet, term -> accSet.plus(term.dependencies(entityId))
         })
 
 
@@ -138,19 +138,19 @@ data class Summation(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : Double =
-            this.terms().map({it.value(sheetContext)}).filterJust().sum()
+    fun value(entityId : EntityId) : Double =
+            this.terms().map({it.value(entityId)}).filterJust().sum()
 
 
     // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun summary(sheetContext : SheetContext) : List<TermSummary> =
-            this.terms().mapNotNull { it.summary(sheetContext) }
+    fun summary(entityId : EntityId) : List<TermSummary> =
+            this.terms().mapNotNull { it.summary(entityId) }
 
 
-    fun diceRoll(sheetContext : SheetContext,
+    fun diceRoll(entityId : EntityId,
                  context : Maybe<VariableNamespace> = Nothing()) : AppEff<DiceRoll>
     {
         val quantities : MutableList<DiceQuantity> = mutableListOf()
@@ -163,7 +163,7 @@ data class Summation(override val id : UUID,
                 // Add dice quantity
                 is SummationTermDiceRoll ->
                 {
-                    val diceRoll = SheetData.diceRoll(sheetContext, term.diceRollReference())
+                    val diceRoll = SheetData.diceRoll(term.diceRollReference(), entityId)
                     when (diceRoll) {
                         is effect.Val -> {
                             quantities.addAll(diceRoll.value.quantities())
@@ -175,7 +175,7 @@ data class Summation(override val id : UUID,
                 // Add dice modifier
                 is SummationTermNumber ->
                 {
-                    val maybeModValue = SheetData.number(sheetContext, term.numberReference(), context)
+                    val maybeModValue = SheetData.number(term.numberReference(), entityId, context)
                     when (maybeModValue)
                     {
                         is effect.Val -> {
@@ -193,7 +193,7 @@ data class Summation(override val id : UUID,
                 }
                 is SummationTermConditional ->
                 {
-                    val maybeModValue = term.value(sheetContext, context)
+                    val maybeModValue = term.value(entityId, context)
                     when (maybeModValue)
                     {
                         is Just -> {

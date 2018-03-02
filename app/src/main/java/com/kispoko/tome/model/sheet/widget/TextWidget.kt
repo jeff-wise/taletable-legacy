@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -19,9 +18,8 @@ import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

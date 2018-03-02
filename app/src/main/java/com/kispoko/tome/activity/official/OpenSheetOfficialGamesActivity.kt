@@ -29,7 +29,7 @@ import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.GameManifest
 import com.kispoko.tome.official.GameSummary
 import com.kispoko.tome.rts.official.OfficialManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val

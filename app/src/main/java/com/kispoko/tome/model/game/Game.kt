@@ -10,12 +10,15 @@ import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
+import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.model.game.engine.variable.VariableTag
+import com.kispoko.tome.model.game.engine.variable.VariableTagSet
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -23,6 +26,7 @@ import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
@@ -37,7 +41,7 @@ data class Game(override val id : UUID,
                 val gameSummary : GameSummary,
                 val authors : MutableList<Author>,
                 val engine : Engine,
-                val rulebooks : List<Book>)
+                val bookIds : List<BookId>)
                  : ToDocument, ProdType, Serializable
 {
 
@@ -45,9 +49,9 @@ data class Game(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private val rulebookById : MutableMap<BookId, Book> =
-                        rulebooks.associateBy { it.rulebookId() }
-                                as MutableMap<BookId, Book>
+//    private val rulebookById : MutableMap<BookId, Book> =
+//                        rulebooks.associateBy { it.rulebookId() }
+//                                as MutableMap<BookId, Book>
 
 
     // -----------------------------------------------------------------------------------------
@@ -59,19 +63,19 @@ data class Game(override val id : UUID,
                 gameSummary : GameSummary,
                 authors : List<Author>,
                 engine : Engine,
-                rulebooks : List<Book>)
+                bookIds : List<BookId>)
         : this(UUID.randomUUID(),
                gameId,
                gameName,
                gameSummary,
                authors.toMutableList(),
                engine,
-               rulebooks)
+               bookIds)
 
 
     companion object : Factory<Game>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<Game> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Game> = when (doc)
         {
             is DocDict ->
             {
@@ -88,10 +92,10 @@ data class Game(override val id : UUID,
                              doc.list("authors") ap { it.map { Author.fromDocument(it) } },
                              // Engine
                              doc.at("engine") apply { Engine.fromDocument(it) },
-                             // Rulebook
-                             split(doc.maybeList("rulebooks"),
+                             // Book Ids
+                             split(doc.maybeList("book_ids"),
                                    effValue(listOf()),
-                                   { it.map { Book.fromDocument(it) } } )
+                                   { it.map { BookId.fromDocument(it) } } )
                              )
                 }
             }
@@ -109,6 +113,7 @@ data class Game(override val id : UUID,
         "game_name" to this.gameName.toDocument(),
         "game_summary" to this.gameSummary.toDocument(),
         "authors" to DocList(this.authors.map { it.toDocument() }),
+        "book_ids" to DocList(this.bookIds.map { it.toDocument() }),
         "engine" to this.engine().toDocument()
     ))
 
@@ -132,7 +137,7 @@ data class Game(override val id : UUID,
     fun engine() : Engine = this.engine
 
 
-    fun rulebooks() : List<Book> = this.rulebooks
+    fun bookIds() : List<BookId> = this.bookIds
 
 
     // -----------------------------------------------------------------------------------------
@@ -151,14 +156,14 @@ data class Game(override val id : UUID,
                              PrimValue(this.gameSummary),
                              CollValue(this.authors),
                              ProdValue(this.engine),
-                             CollValue(this.rulebooks))
+                             PrimValue(GameBookIds(this.bookIds)))
 
 
     // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun rulebookWithId(rulebookId : BookId) : Book? = this.rulebookById[rulebookId]
+//    fun rulebookWithId(rulebookId : BookId) : Book? = this.rulebookById[rulebookId]
 
 }
 
@@ -195,6 +200,22 @@ data class GameId(val value : String) : ToDocument, SQLSerializable, Serializabl
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Game Book Ids
+ */
+data class GameBookIds(val bookIds : List<BookId>) : SQLSerializable, Serializable
+{
+    // TODO find way to not need this auxilary data type
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
 
 }
 

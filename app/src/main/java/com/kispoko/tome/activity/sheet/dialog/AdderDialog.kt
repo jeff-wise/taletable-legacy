@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -21,14 +20,13 @@ import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.dice.RollModifier
 import com.kispoko.tome.model.game.engine.dice.RollSummary
-import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import java.io.Serializable
 

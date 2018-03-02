@@ -25,8 +25,8 @@ import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.theme.ThemeManager
+import com.kispoko.tome.rts.entity.game.GameManager
+import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import effect.Val

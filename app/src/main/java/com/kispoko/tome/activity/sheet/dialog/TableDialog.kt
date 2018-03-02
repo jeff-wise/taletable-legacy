@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.*
 import android.widget.LinearLayout
-import br.tiagohm.markdownview.MarkdownView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
@@ -22,8 +21,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 
 

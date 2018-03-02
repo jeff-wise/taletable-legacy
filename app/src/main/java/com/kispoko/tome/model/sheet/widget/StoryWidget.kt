@@ -28,7 +28,7 @@ import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

@@ -14,7 +14,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.page.Page
 import com.kispoko.tome.model.sheet.style.IconType
-import com.kispoko.tome.rts.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import effect.apply
 import effect.effError
 import effect.effValue

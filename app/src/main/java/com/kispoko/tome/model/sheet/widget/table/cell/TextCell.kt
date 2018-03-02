@@ -10,9 +10,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.summation
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
@@ -23,12 +21,11 @@ import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*

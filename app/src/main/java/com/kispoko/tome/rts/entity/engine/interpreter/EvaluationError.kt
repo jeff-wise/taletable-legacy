@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.game.engine.interpreter
+package com.kispoko.tome.rts.entity.engine.interpreter
 
 
 import com.kispoko.tome.app.ApplicationError

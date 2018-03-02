@@ -7095,8 +7095,9 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: wisdom_modifier
-rulebooks:
-- rulebook_id: core_rules
+book_ids:
+- core_rules
+rulebook_id: core_rules
   title: 'Core Rules'
   authors:
   - name: Jeff Wise

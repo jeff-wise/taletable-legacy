@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.cell
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
@@ -26,7 +25,7 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.sheet.*
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
