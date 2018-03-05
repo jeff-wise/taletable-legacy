@@ -23,9 +23,8 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.UpdateTargetPointsWidget
 import com.kispoko.tome.util.Util
 import effect.*
@@ -604,14 +603,13 @@ data class PointsWidgetBarFormat(override val id : UUID,
 
 
 class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
-                              val sheetUIContext : SheetUIContext)
+                              val entityId : EntityId,
+                              val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
-
-    val sheetContext = SheetContext(sheetUIContext)
 
 
     // -----------------------------------------------------------------------------------------
@@ -620,7 +618,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
     fun view() : View
     {
-        val layout = WidgetView.layout(pointsWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(pointsWidget.widgetFormat(), entityId, context)
 
         val layoutViewId = Util.generateViewId()
         pointsWidget.layoutViewId = layoutViewId
@@ -665,7 +663,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
                 contentLayout.setOnClickListener {
                     val currentValueVariable =
-                            pointsWidget.currentValueVariable(SheetContext(sheetUIContext))
+                            pointsWidget.currentValueVariable(entityId)
 
                     when (currentValueVariable)
                     {
@@ -674,7 +672,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                             openNumberVariableEditorDialog(currentValueVariable.value,
                                                            NumericEditorType.Adder,
                                                            UpdateTargetPointsWidget(pointsWidget.id),
-                                                           sheetUIContext)
+                                                           entityId,
+                                                           context)
                         }
                         is Err -> ApplicationLog.error(currentValueVariable.error)
                     }
@@ -692,10 +691,10 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
     fun infoView() : View
     {
-        var layout : ViewGroup = this.infoViewLayout(sheetUIContext)
+        var layout : ViewGroup = this.infoViewLayout()
 
-        val currentPointsString = pointsWidget.currentValueString(SheetContext(sheetUIContext))
-        val limitPointsString = pointsWidget.limitValueString(SheetContext(sheetUIContext))
+        val currentPointsString = pointsWidget.currentValueString(entityId)
+        val limitPointsString = pointsWidget.limitValueString(entityId)
 
         when (pointsWidget.format().infoStyle())
         {
@@ -703,16 +702,14 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             {
                 if (currentPointsString != null) {
                     layout.addView(this.currentPointsView(currentPointsString,
-                                                          pointsWidget.format().currentTextFormat(),
-                                                          sheetUIContext))
+                                                          pointsWidget.format().currentTextFormat()))
                 }
 
                 val label = pointsWidget.label()
                 when (label) {
                     is Just -> {
                         val labelView = this.labelView(label.value.value,
-                                                  pointsWidget.format().labelTextFormat(),
-                                                  sheetUIContext)
+                                                       pointsWidget.format().labelTextFormat())
                         val layoutParams = labelView.layoutParams as RelativeLayout.LayoutParams
                         layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.points_bar_current)
                         labelView.layoutParams = layoutParams
@@ -723,8 +720,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                 if (limitPointsString != null) {
                     val limitPointsView = this.limitPointsView(
                                                         limitPointsString,
-                                                        pointsWidget.format().limitTextFormat(),
-                                                        sheetUIContext)
+                                                        pointsWidget.format().limitTextFormat())
                     val layoutParams = limitPointsView.layoutParams as RelativeLayout.LayoutParams
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END)
                     limitPointsView.layoutParams = layoutParams
@@ -740,19 +736,17 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
                 if (currentPointsString != null) {
                     infoContentLayout.addView(this.currentPointsView(currentPointsString,
-                                                          pointsWidget.format().currentTextFormat(),
-                                                          sheetUIContext))
+                                                          pointsWidget.format().currentTextFormat()))
                 }
 
-                val slashView = this.slashTextView(pointsWidget.format().limitTextFormat(), sheetUIContext)
+                val slashView = this.slashTextView(pointsWidget.format().limitTextFormat())
                 infoContentLayout.addView(slashView)
 
 
                 if (limitPointsString != null) {
                     val limitPointsView = this.limitPointsView(
                                                         limitPointsString,
-                                                        pointsWidget.format().limitTextFormat(),
-                                                        sheetUIContext)
+                                                        pointsWidget.format().limitTextFormat())
                     val layoutParams = limitPointsView.layoutParams as RelativeLayout.LayoutParams
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END)
                     limitPointsView.layoutParams = layoutParams
@@ -763,8 +757,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                 when (label) {
                     is Just -> {
                         val labelView = this.labelView(label.value.value,
-                                                  pointsWidget.format().labelTextFormat(),
-                                                  sheetUIContext)
+                                                       pointsWidget.format().labelTextFormat())
                         val layoutParams = labelView.layoutParams as RelativeLayout.LayoutParams
                         layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.points_bar_current)
                         labelView.layoutParams = layoutParams
@@ -786,19 +779,17 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
                 if (currentPointsString != null) {
                     val currView = this.currentPointsLinearView(currentPointsString,
-                                                          pointsWidget.format().currentTextFormat(),
-                                                          sheetUIContext)
+                                                          pointsWidget.format().currentTextFormat())
                     layout.addView(currView)
                 }
 
-                val slashView = this.slashTextView(pointsWidget.format().limitTextFormat(), sheetUIContext)
+                val slashView = this.slashTextView(pointsWidget.format().limitTextFormat())
                 layout.addView(slashView)
 
                 if (limitPointsString != null) {
                     val limitPointsView = this.limitPointsLinearView(
                                                         limitPointsString,
-                                                        pointsWidget.format().limitTextFormat(),
-                                                        sheetUIContext)
+                                                        pointsWidget.format().limitTextFormat())
                     layout.addView(limitPointsView)
                 }
 
@@ -806,8 +797,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                 when (label) {
                     is Just -> {
                         val labelView = this.labelLinearView(label.value.value,
-                                                  pointsWidget.format().labelTextFormat(),
-                                                  sheetUIContext)
+                                                  pointsWidget.format().labelTextFormat())
                         layout.addView(labelView)
                     }
                 }
@@ -819,7 +809,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     }
 
 
-    private fun infoViewLayout(sheetUIContext : SheetUIContext) : RelativeLayout
+    private fun infoViewLayout() : RelativeLayout
     {
         val layout              = RelativeLayoutBuilder()
 
@@ -833,7 +823,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         layout.gravity          = Gravity.TOP
 
-        return layout.relativeLayout(sheetUIContext.context)
+        return layout.relativeLayout(context)
     }
 
 
@@ -842,7 +832,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         val layout              = LinearLayoutBuilder()
 
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -906,13 +896,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                 borderView.widthDp          = rightBorder.value.thickness().value
                 borderView.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
-                borderView.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, rightBorder.value.colorTheme())
+                borderView.backgroundColor  = colorOrBlack(rightBorder.value.colorTheme(), entityId)
 
                 layout.child(borderView)
             }
         }
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -923,10 +913,9 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
     fun barView() : View
     {
-        val layout = this.standardViewLayout(pointsWidget.format().barFormat().barHeight().value,
-                                             sheetUIContext.context)
+        val layout = this.standardViewLayout(pointsWidget.format().barFormat().barHeight().value)
 
-        layout.addView(this.standardBarView(pointsWidget, sheetUIContext))
+        layout.addView(this.standardBarView(pointsWidget))
 //
 //        val currentPointsString = pointsWidget.currentValueString(SheetContext(sheetUIContext))
 //        layout.addView(this.currentPointsView(currentPointsString ?: "",
@@ -942,7 +931,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     }
 
 
-    private fun standardViewLayout(barHeight : Int, context : Context) : LinearLayout
+    private fun standardViewLayout(barHeight : Int) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -954,8 +943,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     }
 
 
-    private fun standardBarView(pointsWidget : PointsWidget,
-                                sheetUIContext : SheetUIContext) : LinearLayout
+    private fun standardBarView(pointsWidget : PointsWidget) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -964,8 +952,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         val current         = LinearLayoutBuilder()
         val limit           = LinearLayoutBuilder()
 
-        val limitValue      = pointsWidget.limitValue(SheetContext(sheetUIContext))
-        var currentValue    = pointsWidget.currentValue(SheetContext(sheetUIContext))
+        val limitValue      = pointsWidget.limitValue(entityId)
+        var currentValue    = pointsWidget.currentValue(entityId)
 
 
         var currentWeight   = 1f
@@ -1000,8 +988,9 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         current.height              = LinearLayout.LayoutParams.MATCH_PARENT
         current.weight              = currentWeight
 
-        current.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
-                                            pointsWidget.format().barFormat().currentFormat().colorTheme())
+        current.backgroundColor     = colorOrBlack(
+                                        pointsWidget.format().barFormat().currentFormat().colorTheme(),
+                                        entityId)
 
         // (3 B) Limit
         // -------------------------------------------------------------------------------------
@@ -1010,10 +999,11 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         limit.height                = LinearLayout.LayoutParams.MATCH_PARENT
         limit.weight                = limitWeight
 
-        limit.backgroundColor       = SheetManager.color(sheetUIContext.sheetId,
-                                                         pointsWidget.format().barFormat().limitFormat().colorTheme())
+        limit.backgroundColor       = colorOrBlack(
+                                          pointsWidget.format().barFormat().limitFormat().colorTheme(),
+                                          entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -1021,8 +1011,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     {
         val layout          = this.counterBarViewLayout()
 
-        val limitValue      = pointsWidget.limitValue(SheetContext(sheetUIContext))?.toInt()
-        var currentValue    = pointsWidget.currentValue(SheetContext(sheetUIContext))?.toInt()
+        val limitValue      = pointsWidget.limitValue(entityId)?.toInt()
+        var currentValue    = pointsWidget.currentValue(entityId)?.toInt()
 
         if (limitValue != null && currentValue != null && limitValue > 0)
         {
@@ -1052,7 +1042,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         layout.paddingSpacing   = pointsWidget.format().barFormat().elementFormat().padding()
         layout.marginSpacing   = pointsWidget.format().barFormat().elementFormat().margins()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -1073,8 +1063,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             else            -> layout.height = LinearLayout.LayoutParams.WRAP_CONTENT
         }
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
         layout.corners          = format.elementFormat().corners()
 
@@ -1108,7 +1098,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
                 textView.text         = activeText.value.value
 
-                pointsWidget.format().barFormat().currentFormat().styleTextViewBuilder(textView, sheetUIContext)
+                pointsWidget.format().barFormat().currentFormat()
+                            .styleTextViewBuilder(textView, entityId, context)
 
                 layout.child(textView)
             }
@@ -1116,18 +1107,18 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
 
         layout.onClick = View.OnClickListener {
-            pointsWidget.currentValueVariable(sheetContext) apDo { valueVariable ->
-            valueVariable.valueOrError(sheetContext)        apDo { value ->
+            pointsWidget.currentValueVariable(entityId) apDo { valueVariable ->
+            valueVariable.valueOrError(entityId)        apDo { value ->
                 if (value.toInt() != index) {
-                    valueVariable.updateValue(index.toDouble(), sheetContext)
+                    valueVariable.updateValue(index.toDouble(), entityId)
                 }
                 else {
-                    valueVariable.updateValue((index - 1).toDouble(), sheetContext)
+                    valueVariable.updateValue((index - 1).toDouble(), entityId)
                 }
             } }
         }
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -1151,8 +1142,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             else            -> layout.height = LinearLayout.LayoutParams.WRAP_CONTENT
         }
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
         layout.corners          = format.elementFormat().corners()
 
@@ -1172,8 +1163,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
                 icon.image          = activeIcon.value.drawableResId()
 
-                icon.color          = SheetManager.color(sheetUIContext.sheetId,
-                                                         format.iconFormat().colorTheme())
+                icon.color          = colorOrBlack(format.iconFormat().colorTheme(), entityId)
 
                 layout.child(icon)
             }
@@ -1189,23 +1179,24 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
                 textView.text         = inactiveText.value.value
 
-                pointsWidget.format().barFormat().limitFormat().styleTextViewBuilder(textView, sheetUIContext)
+                pointsWidget.format().barFormat().limitFormat()
+                            .styleTextViewBuilder(textView, entityId, context)
 
                 layout.child(textView)
             }
         }
 
         layout.onClick = View.OnClickListener {
-            pointsWidget.currentValueVariable(sheetContext) apDo { valueVariable ->
-            valueVariable.valueOrError(sheetContext)        apDo { value ->
+            pointsWidget.currentValueVariable(entityId) apDo { valueVariable ->
+            valueVariable.valueOrError(entityId)        apDo { value ->
                 if (value.toInt() != index) {
-                    valueVariable.updateValue(index.toDouble(), sheetContext)
+                    valueVariable.updateValue(index.toDouble(), entityId)
                 }
             } }
         }
 
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -1214,8 +1205,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     // -----------------------------------------------------------------------------------------
 
     private fun currentPointsView(currentString : String,
-                                  textFormat : TextFormat,
-                                  sheetUIContext : SheetUIContext) : TextView
+                                  textFormat : TextFormat) : TextView
     {
         val current                 = TextViewBuilder()
 
@@ -1228,14 +1218,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         current.text                = currentString
 
-        current.color               = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.colorTheme())
+        current.color               = colorOrBlack(textFormat.colorTheme(), entityId)
 
         current.sizeSp              = textFormat.sizeSp()
 
         current.font                = Font.typeface(textFormat.font(),
                                                     textFormat.fontStyle(),
-                                                    sheetUIContext.context)
+                                                    context)
 
         current.paddingSpacing      = textFormat.elementFormat().padding()
         current.marginSpacing       = textFormat.elementFormat().margins()
@@ -1248,14 +1237,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 //        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 //        current.addRule(RelativeLayout.ALIGN_BASELINE)
 
-        return current.textView(sheetUIContext.context)
+        return current.textView(context)
     }
 
 
 
     private fun limitPointsView(limitString : String,
-                                textFormat : TextFormat,
-                                sheetUIContext : SheetUIContext) : TextView
+                                textFormat : TextFormat) : TextView
     {
         val limit                   = TextViewBuilder()
 
@@ -1268,14 +1256,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         limit.text                  = limitString
 
-        limit.color                 = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.colorTheme())
+        limit.color                 = colorOrBlack(textFormat.colorTheme(), entityId)
 
         limit.sizeSp                = textFormat.sizeSp()
 
         limit.font                  = Font.typeface(textFormat.font(),
                                                     textFormat.fontStyle(),
-                                                    sheetUIContext.context)
+                                                    context)
 
         limit.paddingSpacing        = textFormat.elementFormat().padding()
         limit.marginSpacing         = textFormat.elementFormat().margins()
@@ -1285,14 +1272,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 //        limit.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
 //        limit.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
-        return limit.textView(sheetUIContext.context)
+        return limit.textView(context)
     }
 
 
 
     private fun labelView(labelString : String,
-                          textFormat : TextFormat,
-                          sheetUIContext : SheetUIContext) : TextView
+                          textFormat : TextFormat) : TextView
     {
         val label                   = TextViewBuilder()
 
@@ -1305,14 +1291,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         label.text                  = labelString
 
-        label.color                 = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.colorTheme())
+        label.color                 = colorOrBlack(textFormat.colorTheme(), entityId)
 
         label.sizeSp                = textFormat.sizeSp()
 
         label.font                  = Font.typeface(textFormat.font(),
                                                     textFormat.fontStyle(),
-                                                    sheetUIContext.context)
+                                                    context)
 
         label.paddingSpacing        = textFormat.elementFormat().padding()
         label.marginSpacing         = textFormat.elementFormat().margins()
@@ -1322,7 +1307,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
 //        label.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
-        return label.textView(sheetUIContext.context)
+        return label.textView(context)
     }
 
 
@@ -1332,8 +1317,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     // -----------------------------------------------------------------------------------------
 
     private fun currentPointsLinearView(currentString : String,
-                                        textFormat : TextFormat,
-                                        sheetUIContext : SheetUIContext) : TextView
+                                        textFormat : TextFormat) : TextView
     {
         val current                 = TextViewBuilder()
 
@@ -1345,14 +1329,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         current.text                = currentString
 
-        current.color               = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.colorTheme())
+        current.color               = colorOrBlack(textFormat.colorTheme(), entityId)
 
         current.sizeSp              = textFormat.sizeSp()
 
         current.font                = Font.typeface(textFormat.font(),
                                                     textFormat.fontStyle(),
-                                                    sheetUIContext.context)
+                                                    context)
 
         current.paddingSpacing      = textFormat.elementFormat().padding()
         current.marginSpacing       = textFormat.elementFormat().margins()
@@ -1366,14 +1349,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 //        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 //        current.addRule(RelativeLayout.ALIGN_BASELINE)
 
-        return current.textView(sheetUIContext.context)
+        return current.textView(context)
     }
 
 
 
     private fun limitPointsLinearView(limitString : String,
-                                      textFormat : TextFormat,
-                                      sheetUIContext : SheetUIContext) : TextView
+                                      textFormat : TextFormat) : TextView
     {
         val limit                   = TextViewBuilder()
 
@@ -1386,14 +1368,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         limit.text                  = limitString
 
-        limit.color                 = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.colorTheme())
+        limit.color                 = colorOrBlack(textFormat.colorTheme(), entityId)
 
         limit.sizeSp                = textFormat.sizeSp()
 
         limit.font                  = Font.typeface(textFormat.font(),
                                                     textFormat.fontStyle(),
-                                                    sheetUIContext.context)
+                                                    context)
 
         limit.paddingSpacing        = textFormat.elementFormat().padding()
         limit.marginSpacing         = textFormat.elementFormat().margins()
@@ -1402,14 +1383,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 //                                    textFormat.elementFormat().verticalAlignment().gravityConstant()
 
 
-        return limit.textView(sheetUIContext.context)
+        return limit.textView(context)
     }
 
 
 
     private fun labelLinearView(labelString : String,
-                                textFormat : TextFormat,
-                                sheetUIContext : SheetUIContext) : TextView
+                                textFormat : TextFormat) : TextView
     {
         val label                   = TextViewBuilder()
 
@@ -1422,14 +1402,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         label.text                  = labelString
 
-        label.color                 = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.colorTheme())
+        label.color                 = colorOrBlack(textFormat.colorTheme(), entityId)
 
         label.sizeSp                = textFormat.sizeSp()
 
         label.font                  = Font.typeface(textFormat.font(),
                                                     textFormat.fontStyle(),
-                                                    sheetUIContext.context)
+                                                    context)
 
 
         label.paddingSpacing        = textFormat.elementFormat().padding()
@@ -1444,13 +1423,12 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 //        label.gravity       = textFormat.elementFormat().alignment().gravityConstant() or
 //                                textFormat.elementFormat().verticalAlignment().gravityConstant()
 
-        return label.textView(sheetUIContext.context)
+        return label.textView(context)
     }
 
 
 
-    private fun slashTextView(textFormat : TextFormat,
-                              sheetUIContext : SheetUIContext) : TextView
+    private fun slashTextView(textFormat : TextFormat) : TextView
     {
         val current                 = TextViewBuilder()
 
@@ -1463,14 +1441,13 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         current.text                = "/"
 
-        current.color               = SheetManager.color(sheetUIContext.sheetId,
-                                                         textFormat.colorTheme())
+        current.color               = colorOrBlack(textFormat.colorTheme(), entityId)
 
         current.sizeSp              = textFormat.sizeSp()
 
         current.font                = Font.typeface(textFormat.font(),
                                                     textFormat.fontStyle(),
-                                                    sheetUIContext.context)
+                                                    context)
 
         current.paddingSpacing      = textFormat.elementFormat().padding()
         current.marginSpacing       = textFormat.elementFormat().margins()
@@ -1484,7 +1461,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
 //        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
-        return current.textView(sheetUIContext.context)
+        return current.textView(context)
     }
 
 }

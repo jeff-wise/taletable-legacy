@@ -13,7 +13,7 @@ import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.reference.DiceRollReference
-import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.util.Util
 import effect.*
@@ -708,9 +708,9 @@ data class DiceRollGroup(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
 
-    fun diceRolls(sheetContext : SheetContext) : List<DiceRoll>
+    fun diceRolls(entityId : EntityId) : List<DiceRoll>
     {
-        val rollsEff = this.rollReferences.mapM { SheetData.diceRoll(sheetContext, it) }
+        val rollsEff = this.rollReferences.mapM { SheetData.diceRoll(it, entityId) }
 
         return when (rollsEff)
         {

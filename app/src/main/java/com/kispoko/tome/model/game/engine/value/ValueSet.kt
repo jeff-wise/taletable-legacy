@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.value
 
 
-import com.kispoko.tome.R.string.engine
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.app.AppError
@@ -14,13 +13,8 @@ import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.engine.ValueSetDoesNotContainValue
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
 import com.kispoko.tome.rts.entity.valueSet
 import effect.*
 import effect.Val
@@ -504,16 +498,10 @@ data class ValueSetCompound(override val id : UUID,
     }
 
 
-    fun valueSets(sheetUIContext: SheetUIContext) : AppEff<Set<ValueSet>>
-    {
-        fun valueSets(engine : Engine) : AppEff<Set<ValueSet>> =
-            this.valueSetIds().toList()
-                .mapM  { engine.valueSet(it) }
-                .apply { effValue<AppError,Set<ValueSet>>(it.toSet()) }
-
-        return GameManager.engine(sheetUIContext.gameId)
-                          .apply(::valueSets)
-    }
+    fun valueSets(entityId : EntityId) : AppEff<Set<ValueSet>> =
+        this.valueSetIds().toList()
+            .mapM  { valueSet(it, entityId) }
+            .apply { effValue<AppError,Set<ValueSet>>(it.toSet()) }
 
 
 }

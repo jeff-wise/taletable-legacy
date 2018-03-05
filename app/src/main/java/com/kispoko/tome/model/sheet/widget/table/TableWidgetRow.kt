@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.MotionEvent
@@ -25,6 +26,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -133,7 +136,7 @@ data class TableWidgetRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {
+    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
         TODO("not implemented")
     }
 
@@ -144,39 +147,38 @@ data class TableWidgetRow(override val id : UUID,
 
     fun openEditor(tableWidget : TableWidget,
                    rowIndex : Int,
-                   sheetUIContext : SheetUIContext)
+                   entityId : EntityId,
+                   context : Context)
     {
-        val sheetActivity = sheetUIContext.context as SheetActivity
+        val sheetActivity = context as SheetActivity
         val updateTarget = UpdateTargetInsertTableRow(tableWidget)
         tableWidget.selectedRow = rowIndex
 //        this.addHighlight(sheetUIContext)
 //        sheetActivity.showTableEditor(this, updateTarget, SheetContext(sheetUIContext))
 
-        val dialog = TableDialog.newInstance(updateTarget, SheetContext(sheetUIContext))
+        val dialog = TableDialog.newInstance(updateTarget, entityId)
         dialog.show(sheetActivity.supportFragmentManager, "")
     }
 
 
-    fun onEditorClose(sheetUIContext : SheetUIContext)
+    fun onEditorClose(entityId : EntityId, context : Context)
     {
-        //Log.d("***TABLEWIDGETROW", "on editor close")
-        this.removeHighlight(sheetUIContext)
+        this.removeHighlight(entityId, context)
     }
 
 
-    fun addHighlight(sheetUIContext : SheetUIContext)
+    fun addHighlight(entityId : EntityId, context : Context)
     {
         val viewId = this.viewId
         if (viewId != null)
         {
-            val activity = sheetUIContext.context as SheetActivity
+            val activity = context as SheetActivity
 
             val tableRow = activity.findViewById(viewId) as TableRow?
 
             val bgDrawable = GradientDrawable()
 
-            val color = SheetManager.color(sheetUIContext.sheetId,
-                                           this.format().textFormat().elementFormat().backgroundColorTheme())
+            val color = colorOrBlack(this.format().textFormat().elementFormat().backgroundColorTheme(), entityId)
 
             bgDrawable.setColor(this.backgroundColor ?: color)
 
@@ -184,7 +186,7 @@ data class TableWidgetRow(override val id : UUID,
             val strokeColorTheme = ColorTheme(setOf(
                     ThemeColorId(ThemeId.Dark, ColorId.Theme("light_red_5")),
                     ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-            val strokeColor = SheetManager.color(sheetUIContext.sheetId, strokeColorTheme)
+            val strokeColor = colorOrBlack(strokeColorTheme, entityId)
             bgDrawable.setStroke(1, strokeColor)
 
             tableRow?.background = bgDrawable
@@ -192,19 +194,18 @@ data class TableWidgetRow(override val id : UUID,
     }
 
 
-    fun removeHighlight(sheetUIContext : SheetUIContext)
+    fun removeHighlight(entityId : EntityId, context : Context)
     {
         val viewId = this.viewId
         if (viewId != null)
         {
-            val activity = sheetUIContext.context as SheetActivity
+            val activity = context as SheetActivity
 
             val tableRow = activity.findViewById(viewId) as TableRow?
 
             val bgDrawable = GradientDrawable()
 
-            val color = SheetManager.color(sheetUIContext.sheetId,
-                                           this.format().textFormat().elementFormat().backgroundColorTheme())
+            val color = colorOrBlack(this.format().textFormat().elementFormat().backgroundColorTheme(), entityId)
 
             bgDrawable.setColor(this.backgroundColor ?: color)
             bgDrawable.setStroke(0, Color.WHITE)
@@ -220,9 +221,10 @@ data class TableWidgetRow(override val id : UUID,
 
     fun view(tableWidget : TableWidget,
              rowIndex : Int,
-             sheetUIContext : SheetUIContext) : TableRow
+             entityId : EntityId,
+             context : Context) : TableRow
     {
-        val tableRow = TableRowWidgetView(this, tableWidget, rowIndex, sheetUIContext)
+        val tableRow = TableRowWidgetView(this, tableWidget, rowIndex, entityId, context)
 
         val layoutParams = TableLayout.LayoutParams()
         layoutParams.width  = TableLayout.LayoutParams.MATCH_PARENT
@@ -246,8 +248,9 @@ data class TableWidgetRow(override val id : UUID,
                             padding.rightPx(),
                             padding.bottomPx())
 
-        val bgColor = SheetManager.color(sheetUIContext.sheetId,
-                                         tableWidget.format().rowFormat().textFormat().elementFormat().backgroundColorTheme())
+        val bgColor = colorOrBlack(
+                          tableWidget.format().rowFormat().textFormat().elementFormat().backgroundColorTheme(),
+                          entityId)
         tableRow.setBackgroundColor(bgColor)
         this.backgroundColor = bgColor
 
@@ -326,7 +329,8 @@ data class TableWidgetRow(override val id : UUID,
                         is TableWidgetBooleanColumn ->
                             tableRow.addView(tableWidgetCell.view(this.format(),
                                                                    column,
-                                    sheetUIContext))
+                                                                   entityId,
+                                                                   context))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.BOOLEAN,
                                                                    column.type()))
@@ -342,7 +346,8 @@ data class TableWidgetRow(override val id : UUID,
                                                                    column,
                                                                    rowIndex,
                                                                    tableWidget,
-                                                                   sheetUIContext))
+                                                                   entityId,
+                                                                   context))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.NUMBER,
                                                                    column.type()))
@@ -358,7 +363,8 @@ data class TableWidgetRow(override val id : UUID,
                                                                    column,
                                                                    rowIndex,
                                                                    tableWidget,
-                                                                   sheetUIContext))
+                                                                   entityId,
+                                                                   context))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.TEXT,
                                                                    column.type()))
@@ -376,7 +382,8 @@ data class TableWidgetRow(override val id : UUID,
 class TableRowWidgetView(val tableWidgetRow : TableWidgetRow,
                          val tableWidget : TableWidget,
                          val rowIndex : Int,
-                         val sheetUIContext : SheetUIContext) : TableRow(sheetUIContext.context)
+                         val entityId : EntityId,
+                         context : Context) : TableRow(context)
 {
 
 
@@ -395,7 +402,7 @@ class TableRowWidgetView(val tableWidgetRow : TableWidgetRow,
                 {
                     clickTime = System.currentTimeMillis()
                     SheetActivityGlobal.setLongPressRunnable(Runnable {
-                        tableWidgetRow.openEditor(tableWidget, rowIndex, sheetUIContext)
+                        tableWidgetRow.openEditor(tableWidget, rowIndex, entityId, context)
                     })
                     //Log.d("***TABLEROW", "action down")
                 }

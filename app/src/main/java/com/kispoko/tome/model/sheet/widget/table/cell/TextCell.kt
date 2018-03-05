@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
@@ -25,6 +26,8 @@ import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -128,22 +131,22 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
                           val column : TableWidgetTextColumn,
                           val rowIndex : Int,
                           val tableWidget : TableWidget,
-                          val sheetUIContext : SheetUIContext)
+                          val entityId : EntityId,
+                          val context : Context)
 {
 
-    val sheetContext = SheetContext(sheetUIContext)
-    val sheetActivity = sheetUIContext.context as SheetActivity
-
+    val sheetActivity = context as SheetActivity
 
     private fun openEditorDialog()
     {
-        val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
+        val valueVariable = cell.valueVariable(entityId)
         when (valueVariable)
         {
             is effect.Val -> openTextVariableEditorDialog(
                                         valueVariable.value,
                                         UpdateTargetTextCell(tableWidget.id, cell.id),
-                                        sheetUIContext)
+                                        entityId,
+                                        context)
             is Err -> ApplicationLog.error(valueVariable.error)
         }
     }
@@ -153,7 +156,8 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
     fun view() : View
     {
         val layout = TableWidgetCellView.layout(column.format().columnFormat(),
-                                                sheetUIContext)
+                                                entityId,
+                                                context)
 
         layout.addView(this.valueView())
 
@@ -227,7 +231,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         val valueStyle          = this.cell.format().resolveTextFormat(column.format())
         layout.gravity          = Gravity.CENTER_VERTICAL or valueStyle.elementFormat().alignment().gravityConstant()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -260,11 +264,11 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
 
         val valueStyle      = this.cell.format().resolveTextFormat(column.format())
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, valueStyle.colorTheme())
+        icon.color          = colorOrBlack(valueStyle.colorTheme(), entityId)
 
         icon.margin.rightDp = 5f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -283,19 +287,19 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
         val valueStyle      = this.cell.format().resolveTextFormat(column.format())
-        valueStyle.styleTextViewBuilder(value, sheetUIContext)
+        valueStyle.styleTextViewBuilder(value, entityId, context)
 
 //        value.layoutGravity = valueStyle.alignment().gravityConstant()
 
         // > VALUE
-        val cellValue = cell.valueString(SheetContext(sheetUIContext))
+        val cellValue = cell.valueString(entityId)
         when (cellValue)
         {
             is effect.Val -> value.text = cellValue.value
             is Err -> ApplicationLog.error(cellValue.error)
         }
 
-        return value.textView(sheetUIContext.context)
+        return value.textView(context)
     }
 
 
@@ -453,8 +457,8 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
 //                // If the string is short, edit in DIALOG
 //                if (this.value().length() < 145)
 //                {
-//                    TextEditorDialogFragment textDialog =
-//                            TextEditorDialogFragment.forTextCell(this);
+//                    TextEditorDialog textDialog =
+//                            TextEditorDialog.forTextCell(this);
 //                    textDialog.show(activity.getSupportFragmentManager(), "");
 //                }
 //                // ...otherwise, edit in ACTIVITY

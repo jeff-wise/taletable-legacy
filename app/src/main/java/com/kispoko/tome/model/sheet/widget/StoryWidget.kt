@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
@@ -45,9 +46,13 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.variable
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
+import java.text.Format
 
 
 /**
@@ -57,7 +62,6 @@ data class StoryWidgetFormat(override val id : UUID,
                              val widgetFormat : WidgetFormat,
                              val lineHeight : Maybe<LineHeight>,
                              val lineSpacing : Maybe<LineSpacing>,
-                             val hlSkew : Maybe<HighlightSkew>,
                              val textFormat : TextFormat)
                               : ToDocument, ProdType, Serializable
 {
@@ -69,13 +73,11 @@ data class StoryWidgetFormat(override val id : UUID,
     constructor(widgetFormat : WidgetFormat,
                 lineHeight : Maybe<LineHeight>,
                 lineSpacing : Maybe<LineSpacing>,
-                hlSkew : Maybe<HighlightSkew>,
                 textFormat : TextFormat)
         : this(UUID.randomUUID(),
                widgetFormat,
                lineHeight,
                lineSpacing,
-               hlSkew,
                textFormat)
 
 
@@ -85,7 +87,6 @@ data class StoryWidgetFormat(override val id : UUID,
         private fun defaultWidgetFormat()   = WidgetFormat.default()
         private fun defaultLineHeight()     = Nothing<LineHeight>()
         private fun defaultLineSpacing()    = Nothing<LineSpacing>()
-        private fun defaultHlSkew()         = Nothing<HighlightSkew>()
         private fun defaultTextFormat()     = TextFormat.default()
 
 
@@ -106,10 +107,6 @@ data class StoryWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("line_spacing"),
                             effValue<ValueError,Maybe<LineSpacing>>(defaultLineSpacing()),
                             { apply(::Just, LineSpacing.fromDocument(it)) }),
-                      // Highlight Skew
-                      split(doc.maybeAt("bg_skew"),
-                            effValue<ValueError,Maybe<HighlightSkew>>(defaultHlSkew()),
-                            { apply(::Just, HighlightSkew.fromDocument(it)) }),
                       // Text Format
                       split(doc.maybeAt("text_format"),
                             effValue(defaultTextFormat()),
@@ -123,7 +120,6 @@ data class StoryWidgetFormat(override val id : UUID,
         fun default() = StoryWidgetFormat(defaultWidgetFormat(),
                                           defaultLineHeight(),
                                           defaultLineSpacing(),
-                                          defaultHlSkew(),
                                           defaultTextFormat())
 
     }
@@ -151,9 +147,6 @@ data class StoryWidgetFormat(override val id : UUID,
     fun lineHeight() : Maybe<LineHeight> = this.lineHeight
 
 
-    fun hlSkew() : Maybe<HighlightSkew> = this.hlSkew
-
-
     fun textFormat() : TextFormat = this.textFormat
 
 
@@ -178,7 +171,7 @@ data class StoryWidgetFormat(override val id : UUID,
 
 
 @Suppress("UNCHECKED_CAST")
-sealed class StoryPart : ToDocument, ProdType, Serializable
+sealed class StoryPart(open val format : StoryPartFormat) : ToDocument, ProdType, Serializable
 {
 
     companion object : Factory<StoryPart>
@@ -200,10 +193,10 @@ sealed class StoryPart : ToDocument, ProdType, Serializable
     // APi
     // -----------------------------------------------------------------------------------------
 
-    open fun variable(sheetContext : SheetContext) : Variable? = when (this)
+    open fun partVariable(entityId : EntityId) : Variable? = when (this)
     {
         is StoryPartVariable -> {
-            val variable = this.valueVariable(sheetContext)
+            val variable = this.valueVariable(entityId)
             when (variable) {
                 is effect.Val -> variable.value
                 is Err -> {
@@ -222,20 +215,107 @@ sealed class StoryPart : ToDocument, ProdType, Serializable
 
 
 /**
- * Story Part Span
+ * Story Part Format
  */
-data class StoryPartSpan(override val id : UUID,
-                         val textFormat : TextFormat,
-                         val text : StoryPartText) : StoryPart(), Serializable
+data class StoryPartFormat(override val id : UUID,
+                           val highlightSkew : HighlightSkew,
+                           val highlightCornerRadius : HighlightCornerRadius)
+                            : ProdType, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(textFormat : TextFormat,
+    constructor(highlightSkew : HighlightSkew,
+                highlightCornerRadius : HighlightCornerRadius)
+        : this(UUID.randomUUID(),
+               highlightSkew,
+               highlightCornerRadius)
+
+
+    companion object : Factory<StoryPartFormat>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<StoryPartFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::StoryPartFormat,
+                      // Highlight Skew
+                      split(doc.maybeAt("highlight_skew"),
+                            effValue(HighlightSkew.default()),
+                            { HighlightSkew.fromDocument(it) }),
+                      // Highlight Corner Radius
+                      split(doc.maybeAt("highlight_corner_radius"),
+                            effValue(HighlightCornerRadius.default()),
+                            { HighlightCornerRadius.fromDocument(it) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = StoryPartFormat(HighlightSkew.default(),
+                                        HighlightCornerRadius.default())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "highlight_skew" to this.highlightSkew.toDocument(),
+        "highlight_corner_radius" to this.highlightCornerRadius.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun highlightSkew() : HighlightSkew = this.highlightSkew
+
+
+    fun highlightCornerRadius() : HighlightCornerRadius = this.highlightCornerRadius
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject : ProdType = this
+
+
+    override fun rowValue() : DB_WidgetStoryPartFormatValue =
+        RowValue2(widgetStoryPartFormatTable,
+                  PrimValue(this.highlightSkew),
+                  PrimValue(this.highlightCornerRadius))
+
+}
+
+
+/**
+ * Story Part Span
+ */
+data class StoryPartSpan(override val id : UUID,
+                         override val format : StoryPartFormat,
+                         val textFormat : TextFormat,
+                         val text : StoryPartText) : StoryPart(format), Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(format : StoryPartFormat,
+                textFormat : TextFormat,
                 text : StoryPartText)
         : this(UUID.randomUUID(),
+               format,
                textFormat,
                text)
 
@@ -247,6 +327,10 @@ data class StoryPartSpan(override val id : UUID,
             is DocDict ->
             {
                 apply(::StoryPartSpan,
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(StoryPartFormat.default()),
+                            { StoryPartFormat.fromDocument(it) }),
                       // Text Format
                       split(doc.maybeAt("text_format"),
                             effValue(TextFormat.default()),
@@ -265,6 +349,7 @@ data class StoryPartSpan(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "format" to this.format.toDocument(),
         "text_format" to this.textFormat.toDocument(),
         "text" to this.text().toDocument()
     ))
@@ -273,6 +358,9 @@ data class StoryPartSpan(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+    fun format() : StoryPartFormat = this.format
+
 
     fun text() : StoryPartText = this.text
 
@@ -301,7 +389,8 @@ data class StoryPartSpan(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetStoryPartSpanValue =
-        RowValue2(widgetStoryPartSpanTable,
+        RowValue3(widgetStoryPartSpanTable,
+                  ProdValue(this.format),
                   ProdValue(this.textFormat),
                   PrimValue(this.text))
 
@@ -312,10 +401,11 @@ data class StoryPartSpan(override val id : UUID,
  * Story Part Variable
  */
 data class StoryPartVariable(override val id : UUID,
+                             override val format : StoryPartFormat,
                              val textFormat : TextFormat,
                              val variableId : VariableId,
                              val numericEditorType : NumericEditorType)
-                              : StoryPart(), Serializable
+                              : StoryPart(format), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -329,10 +419,12 @@ data class StoryPartVariable(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(textFormat : TextFormat,
+    constructor(format : StoryPartFormat,
+                textFormat : TextFormat,
                 variableId : VariableId,
                 numericEditorType : NumericEditorType)
         : this(UUID.randomUUID(),
+               format,
                textFormat,
                variableId,
                numericEditorType)
@@ -345,6 +437,10 @@ data class StoryPartVariable(override val id : UUID,
             is DocDict ->
             {
                 apply(::StoryPartVariable,
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(StoryPartFormat.default()),
+                            { StoryPartFormat.fromDocument(it) }),
                       // Text Format
                       split(doc.maybeAt("text_format"),
                              effValue(TextFormat.default()),
@@ -367,6 +463,7 @@ data class StoryPartVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "format" to this.format.toDocument(),
         "text_format" to this.textFormat.toDocument(),
         "variable_id" to this.variableId.toDocument(),
         "numeric_editor_type" to this.numericEditorType().toDocument()
@@ -377,23 +474,24 @@ data class StoryPartVariable(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun format() : StoryPartFormat = this.format
+
+
     fun textFormat() : TextFormat = this.textFormat
 
 
     fun variableId() : VariableId = this.variableId
 
 
-    fun valueVariable(sheetContext : SheetContext) : AppEff<Variable> =
-        SheetManager.sheetState(sheetContext.sheetId)
-                .apply { it.variableWithId(this.variableId()) }
-
+    fun valueVariable(entityId : EntityId) : AppEff<Variable> =
+            variable(this.variableId(), entityId)
 
     fun numericEditorType() : NumericEditorType = this.numericEditorType
 
 
-    fun valueString(sheetContext : SheetContext) : String
+    fun valueString(entityId : EntityId) : String
     {
-        val str = this.variable(sheetContext)?.valueString(sheetContext)
+        val str = this.partVariable(entityId)?.valueString(entityId)
         when (str)
         {
             is effect.Val -> return str.value
@@ -424,7 +522,8 @@ data class StoryPartVariable(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetStoryPartVariableValue =
-        RowValue3(widgetStoryPartVariableTable,
+        RowValue4(widgetStoryPartVariableTable,
+                  ProdValue(this.format),
                   ProdValue(this.textFormat),
                   PrimValue(this.variableId),
                   PrimValue(this.numericEditorType))
@@ -436,15 +535,18 @@ data class StoryPartVariable(override val id : UUID,
  * Story Part Icon
  */
 data class StoryPartIcon(override val id : UUID,
+                         override val format : StoryPartFormat,
                          val icon : Icon)
-                          : StoryPart(), Serializable
+                          : StoryPart(format), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(icon : Icon) : this(UUID.randomUUID(), icon)
+    constructor(format : StoryPartFormat,
+                icon : Icon)
+                 : this(UUID.randomUUID(), format, icon)
 
 
     companion object : Factory<StoryPartIcon>
@@ -452,6 +554,10 @@ data class StoryPartIcon(override val id : UUID,
         override fun fromDocument(doc : SchemaDoc) : ValueParser<StoryPartIcon> = when (doc)
         {
             is DocDict -> apply(::StoryPartIcon,
+                                // Format
+                                split(doc.maybeAt("format"),
+                                      effValue(StoryPartFormat.default()),
+                                      { StoryPartFormat.fromDocument(it) }),
                                 // Icon
                                 doc.at("icon") ap { Icon.fromDocument(it) }
                                 )
@@ -465,6 +571,7 @@ data class StoryPartIcon(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "format" to this.icon().toDocument(),
         "icon" to this.icon().toDocument()
     ))
 
@@ -472,6 +579,9 @@ data class StoryPartIcon(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+    fun format() : StoryPartFormat = this.format
+
 
     fun icon() : Icon = this.icon
 
@@ -494,7 +604,8 @@ data class StoryPartIcon(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetStoryPartIconValue =
-        RowValue1(widgetStoryPartIconTable,
+        RowValue2(widgetStoryPartIconTable,
+                  ProdValue(this.format),
                   ProdValue(this.icon))
 
 }
@@ -504,24 +615,27 @@ data class StoryPartIcon(override val id : UUID,
  * Story Part Roll
  */
 data class StoryPartAction(override val id : UUID,
+                           override val format : StoryPartFormat,
                            val text : StoryPartText,
                            val action : Action,
                            val textFormat : TextFormat,
                            val iconFormat : IconFormat,
                            val showProcedureDialog : ShowProcedureDialog)
-                            : StoryPart(), Serializable
+                            : StoryPart(format), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(text : StoryPartText,
+    constructor(format : StoryPartFormat,
+                text : StoryPartText,
                 action : Action,
                 textFormat : TextFormat,
                 iconFormat : IconFormat,
                 showProcedureDialog : ShowProcedureDialog)
         : this(UUID.randomUUID(),
+               format,
                text,
                action,
                textFormat,
@@ -536,6 +650,10 @@ data class StoryPartAction(override val id : UUID,
             is DocDict ->
             {
                 apply(::StoryPartAction,
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(StoryPartFormat.default()),
+                            { StoryPartFormat.fromDocument(it) }),
                       // Text
                       doc.at("text") ap { StoryPartText.fromDocument(it) },
                       // Action
@@ -564,6 +682,7 @@ data class StoryPartAction(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "format" to this.format.toDocument(),
         "text" to this.text.toDocument(),
         "action" to this.action().toDocument(),
         "text_format" to this.textFormat.toDocument(),
@@ -575,6 +694,9 @@ data class StoryPartAction(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
+
+
+    fun format() : StoryPartFormat = this.format
 
 
     fun text() : StoryPartText = this.text
@@ -613,7 +735,8 @@ data class StoryPartAction(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetStoryPartActionValue =
-        RowValue5(widgetStoryPartActionTable,
+        RowValue6(widgetStoryPartActionTable,
+                  ProdValue(this.format),
                   PrimValue(this.text),
                   ProdValue(this.action),
                   ProdValue(this.textFormat),
@@ -789,7 +912,45 @@ data class HighlightSkew(val value : Float) : ToDocument, SQLSerializable, Seria
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
 
-        fun default() = LineSpacing(0.75f)
+        fun default() = HighlightSkew(0.75f)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLReal({this.value.toDouble()})
+
+}
+
+
+/**
+ * Highlight Corner Radius
+ */
+data class HighlightCornerRadius(val value : Int) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<HighlightCornerRadius>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<HighlightCornerRadius> = when (doc)
+        {
+            is DocNumber -> effValue(HighlightCornerRadius(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+
+        fun default() = HighlightCornerRadius(12)
     }
 
 
@@ -810,12 +971,14 @@ data class HighlightSkew(val value : Float) : ToDocument, SQLSerializable, Seria
 
 
 
-class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext : SheetUIContext)
+class StoryWidgetViewBuilder(val storyWidget : StoryWidget,
+                             val entityId : EntityId,
+                             val context : Context)
 {
 
     fun view() : View
     {
-        val layout = WidgetView.layout(storyWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(storyWidget.widgetFormat(), entityId, context)
 
         val viewId = Util.generateViewId()
         storyWidget.viewId  = viewId
@@ -866,17 +1029,14 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
 
         contentLayout.removeAllViews()
 
-        val spanView = storySpannableView(storyWidget, sheetUIContext)
+        val spanView = storySpannableView(storyWidget, entityId, context)
         contentLayout.addView(spanView)
     }
 
 
-    fun storyFlexView(storyWidget : StoryWidget,
-                      sheetUIContext : SheetUIContext) : FlexboxLayout
+    fun storyFlexView(storyWidget : StoryWidget) : FlexboxLayout
     {
-        val layout = this.storyViewLayout(storyWidget.format(), sheetUIContext)
-
-        val sheetContext = SheetContext(sheetUIContext)
+        val layout = this.storyViewLayout(storyWidget.format())
 
         val storyParts = storyWidget.story()
 
@@ -886,13 +1046,12 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
                 is StoryPartSpan ->
                 {
                     words(storyPart.textString()).forEach {
-                        layout.addView(this.wordView(it, storyWidget.format(),
-                                                     storyPart, sheetUIContext))
+                        layout.addView(this.wordView(it, storyWidget.format(), storyPart))
                     }
                 }
                 is StoryPartVariable ->
                 {
-                    val valueVariableEff = storyPart.valueVariable(sheetContext)
+                    val valueVariableEff = storyPart.valueVariable(entityId)
                     // TODO move this logic in variable
                     val text = when (valueVariableEff)
                     {
@@ -902,10 +1061,10 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
                             when (valueVar)
                             {
                                 is NumberVariable -> {
-                                    val number = valueVar.valueOrZero(sheetContext)
+                                    val number = valueVar.valueOrZero(entityId)
                                     storyPart.textFormat().numberFormat().formattedString(number)
                                 }
-                                else -> storyPart.valueString(SheetContext(sheetUIContext))
+                                else -> storyPart.valueString(entityId)
                             }
                         }
                         is Err -> {
@@ -920,13 +1079,12 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
                                                              storyWidget.format(),
                                                              storyPart,
                                                              partIndex,
-                                                             storyWidget.id,
-                                                             sheetUIContext))
+                                                             storyWidget.id))
                     }
                 }
                 is StoryPartIcon ->
                 {
-                    layout.addView(this.iconView(storyPart, sheetUIContext))
+                    layout.addView(this.iconView(storyPart))
                 }
             }
         }
@@ -935,7 +1093,7 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
     }
 
 
-    fun storyViewLayout(format : StoryWidgetFormat, sheetUIContext : SheetUIContext) : FlexboxLayout
+    fun storyViewLayout(format : StoryWidgetFormat) : FlexboxLayout
     {
         val layout = FlexboxLayoutBuilder()
 
@@ -961,15 +1119,14 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
             is VerticalAlignment.Middle -> layout.itemAlignment = AlignItems.CENTER
         }
 
-        return layout.flexboxLayout(sheetUIContext.context)
+        return layout.flexboxLayout(context)
 
     }
 
 
     fun wordView(word : String,
                  format : StoryWidgetFormat,
-                 storyPartSpan : StoryPartSpan,
-                 sheetUIContext: SheetUIContext) : View
+                 storyPartSpan : StoryPartSpan) : View
     {
         val text = TextViewBuilder()
 
@@ -988,9 +1145,9 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
         text.paddingSpacing = padding
         text.marginSpacing  = storyPartSpan.textFormat().elementFormat().margins()
 
-        storyPartSpan.textFormat().styleTextViewBuilder(text, sheetUIContext)
+        storyPartSpan.textFormat().styleTextViewBuilder(text, entityId, context)
 
-        return text.textView(sheetUIContext.context)
+        return text.textView(context)
     }
 
 
@@ -998,8 +1155,7 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
                          format : StoryWidgetFormat,
                          storyPart : StoryPartVariable,
                          partIndex : Int,
-                         widgetId : UUID,
-                         sheetUIContext : SheetUIContext) : View
+                         widgetId : UUID) : View
     {
         val text = TextViewBuilder()
 
@@ -1023,30 +1179,28 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
         text.paddingSpacing = wordFormat.elementFormat().padding()
         text.marginSpacing  = wordFormat.elementFormat().margins()
 
-        text.backgroundColor = SheetManager.color(
-                                sheetUIContext.sheetId,
-                                wordFormat.elementFormat().backgroundColorTheme())
+        text.backgroundColor = colorOrBlack(wordFormat.elementFormat().backgroundColorTheme(), entityId)
 
         text.corners        = wordFormat.elementFormat().corners()
 
-        storyPart.textFormat().styleTextViewBuilder(text, sheetUIContext)
+        storyPart.textFormat().styleTextViewBuilder(text, entityId, context)
 
         text.onClick        = View.OnClickListener {
-            val variable = storyPart.variable(SheetContext(sheetUIContext))
+            val variable = storyPart.partVariable(entityId)
             if (variable != null) {
                 openVariableEditorDialog(variable,
                         storyPart.numericEditorType(),
                         UpdateTargetStoryWidgetPart(widgetId, partIndex),
-                        sheetUIContext)
+                        entityId,
+                        context)
             }
         }
 
-        return text.textView(sheetUIContext.context)
+        return text.textView(context)
     }
 
 
-    fun iconView(storyPart : StoryPartIcon,
-                 sheetUIContext : SheetUIContext) : View
+    fun iconView(storyPart : StoryPartIcon) : View
     {
         val icon            = ImageViewBuilder()
 
@@ -1061,17 +1215,17 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget, val sheetUIContext :
 
         icon.iconSize       = iconFormat.size()
 
-        icon.color          = SheetManager.color(sheetUIContext.sheetId,
-                                                 iconFormat.colorTheme())
+        icon.color          = colorOrBlack(iconFormat.colorTheme(), entityId)
 
-        return icon.imageView(sheetUIContext.context)
+        return icon.imageView(context)
     }
 
 }
 
 
 fun storySpannableView(storyWidget : StoryWidget,
-                       sheetUIContext : SheetUIContext) : TextView
+                       entityId : EntityId,
+                       context : Context) : TextView
 {
     val story           = TextViewBuilder()
 
@@ -1083,8 +1237,8 @@ fun storySpannableView(storyWidget : StoryWidget,
                                                  storyWidget.id,
                                                  storyWidget.format().lineHeight(),
                                                  storyWidget.format().lineSpacing(),
-                                                 storyWidget.format().hlSkew.toNullable(),
-                                                 sheetUIContext)
+                                                 entityId,
+                                                 context)
 
     //story.lineSpacingAdd    = 1f
     //story.lineSpacingMult   = 1.4f
@@ -1108,16 +1262,16 @@ fun storySpannableView(storyWidget : StoryWidget,
 
     story.movementMethod    = LinkMovementMethod.getInstance()
 
-    val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
-            sheetUIContext.context as SheetActivity,
-            storyWidget,
-            SheetContext(sheetUIContext))
-    story.onTouch   = View.OnTouchListener { _, event ->
-        gestureDetector.onTouchEvent(event)
-        false
-    }
+//    val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
+//            context as SheetActivity,
+//            storyWidget,
+//            SheetContext(sheetUIContext))
+//    story.onTouch   = View.OnTouchListener { _, event ->
+//        gestureDetector.onTouchEvent(event)
+//        false
+//    }
 
-    return story.textView(sheetUIContext.context)
+    return story.textView(context)
 }
 
 
@@ -1134,13 +1288,12 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                                    storyWidgetId : UUID,
                                    lineHeight : Maybe<LineHeight>,
                                    lineSpacing : Maybe<LineSpacing>,
-                                   hlSkew : HighlightSkew?,
-                                   sheetUIContext : SheetUIContext) : SpannableStringBuilder
+                                   entityId : EntityId,
+                                   context : Context)
+                                    : SpannableStringBuilder
 {
 
     val builder = SpannableStringBuilder()
-
-    val sheetContext = SheetContext(sheetUIContext)
 
     val phrases : MutableList<Phrase> = mutableListOf()
 
@@ -1161,7 +1314,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
             }
             is StoryPartVariable ->
             {
-                val valueVariableEff = storyPart.valueVariable(sheetContext)
+                val valueVariableEff = storyPart.valueVariable(entityId)
                 // TODO move this logic in variable
                 var text = when (valueVariableEff)
                 {
@@ -1171,10 +1324,10 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                         when (valueVar)
                         {
                             is NumberVariable -> {
-                                val number = valueVar.valueOrZero(sheetContext)
+                                val number = valueVar.valueOrZero(entityId)
                                 storyPart.textFormat().numberFormat().formattedString(number)
                             }
-                            else -> storyPart.valueString(SheetContext(sheetUIContext))
+                            else -> storyPart.valueString(entityId)
                         }
                     }
                     is Err -> {
@@ -1220,7 +1373,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
         {
             is StoryPartSpan ->
             {
-                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, hlSkew, sheetUIContext).forEach {
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, storyPart.format(), entityId, context).forEach {
                     builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
             }
@@ -1231,13 +1384,14 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                 {
                     override fun onClick(view : View?)
                     {
-                        val variable = storyPart.variable(SheetContext(sheetUIContext))
+                        val variable = storyPart.partVariable(entityId)
                         if (variable != null) {
                             openVariableEditorDialog(
                                     variable,
                                     storyPart.numericEditorType(),
                                     UpdateTargetStoryWidgetPart(storyWidgetId, partIndex),
-                                    sheetUIContext)
+                                    entityId,
+                                    context)
                         }
 
                     }
@@ -1249,14 +1403,14 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
 
                 builder.setSpan(clickSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
 
-                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, hlSkew, sheetUIContext).forEach {
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, storyPart.format(), entityId, context).forEach {
                     builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
             }
             is StoryPartIcon ->
             {
                 val vectorDrawable =
-                        VectorDrawableCompat.create(sheetUIContext.context.resources,
+                        VectorDrawableCompat.create(context.resources,
                                                     storyPart.icon().iconType().drawableResId(), null)
 
                 vectorDrawable?.setBounds(
@@ -1265,8 +1419,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                         Util.dpToPixel(storyPart.icon().iconFormat().size().width.toFloat()),
                         Util.dpToPixel(storyPart.icon().iconFormat().size().height.toFloat()))
 
-                val color = SheetManager.color(sheetUIContext.sheetId,
-                                               storyPart.icon().iconFormat().colorTheme())
+                val color = colorOrBlack(storyPart.icon().iconFormat().colorTheme(), entityId)
                 vectorDrawable?.colorFilter = PorterDuffColorFilter(color,
                                                                     PorterDuff.Mode.SRC_IN)
 
@@ -1276,7 +1429,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
             is StoryPartAction ->
             {
                 val vectorDrawable =
-                        VectorDrawableCompat.create(sheetUIContext.context.resources,
+                        VectorDrawableCompat.create(context.resources,
                                                     R.drawable.icon_dice_roll_filled,
                                                     null)
 
@@ -1294,7 +1447,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                 val imageSpan = CenteredImageSpan(vectorDrawable)
 
                 // TODO android tip mutate
-                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, hlSkew, sheetUIContext,
+                formatSpans(storyPart.textFormat(), lineHeight, lineSpacing, storyPart.format(), entityId, context,
                             vectorDrawable?.mutate(), storyPart.iconFormat()).forEach {
                     builder.setSpan(it, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 }
@@ -1308,13 +1461,13 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                 {
                     is Just ->
                     {
-                        val sheetActivity = sheetUIContext.context as SheetActivity
+                        val sheetActivity = context as SheetActivity
                         val clickSpan = object : ClickableSpan() {
                             override fun onClick(view: View?) {
-                                val dialog = DiceRollDialog.newInstance(
-                                                            rollGroup.value,
-                                                            SheetContext(sheetUIContext))
-                                dialog.show(sheetActivity.supportFragmentManager, "")
+//                                val dialog = DiceRollDialog.newInstance(
+//                                                            rollGroup.value,
+//                                                            entityId)
+//                                dialog.show(sheetActivity.supportFragmentManager, "")
                             }
 
                             override fun updateDrawState(ds: TextPaint?) {
@@ -1336,27 +1489,27 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
 private fun formatSpans(textStyle : TextFormat,
                         lineHeight : Maybe<LineHeight>,
                         lineSpacing : Maybe<LineSpacing>,
-                        hlSkew : HighlightSkew?,
-                        sheetUIContext : SheetUIContext,
+                        partFormat : StoryPartFormat,
+                        entityId : EntityId,
+                        context : Context,
                         drawable : Drawable? = null,
                         iconFormat : IconFormat? = null) : List<Any>
 {
-    val sizePx = Util.spToPx(textStyle.sizeSp(), sheetUIContext.context)
+    val sizePx = Util.spToPx(textStyle.sizeSp(), context)
     val sizeSpan = AbsoluteSizeSpan(sizePx)
 
-    val typeface = Font.typeface(textStyle.font(), textStyle.fontStyle(), sheetUIContext.context)
+    val typeface = Font.typeface(textStyle.font(), textStyle.fontStyle(), context)
 
     val typefaceSpan = CustomTypefaceSpan(typeface)
 
-    var color = SheetManager.color(sheetUIContext.sheetId, textStyle.colorTheme())
+    var color = colorOrBlack(textStyle.colorTheme(), entityId)
     val colorSpan = ForegroundColorSpan(color)
 
-    var bgColor = SheetManager.color(sheetUIContext.sheetId,
-                                     textStyle.elementFormat().backgroundColorTheme())
+    var bgColor = colorOrBlack(textStyle.elementFormat().backgroundColorTheme(), entityId)
     val bgColorSpan = BackgroundColorSpan(bgColor)
 
     val iconColor : Int? = iconFormat?.let {
-        SheetManager.color(sheetUIContext.sheetId, it.colorTheme())
+        colorOrBlack( it.colorTheme(), entityId)
     }
 
 
@@ -1367,12 +1520,12 @@ private fun formatSpans(textStyle : TextFormat,
     return when (lineHeight) {
         is Just -> when (lineSpacing) {
             is Just -> {
-                val lineSpacingPx = Util.spToPx(lineSpacing.value.value, sheetUIContext.context)
-                val lineHeightPx = Util.spToPx(lineHeight.value.value, sheetUIContext.context)
+                val lineSpacingPx = Util.spToPx(lineSpacing.value.value, context)
+                val lineHeightPx = Util.spToPx(lineHeight.value.value, context)
                 val bgSpan = RoundedBackgroundHeightSpan(lineHeightPx,
                                                          lineSpacingPx,
-                                                         hlSkew?.value,
-                                                         null,
+                                                         partFormat.highlightSkew().value,
+                                                         partFormat.highlightCornerRadius().value,
                                                          color,
                                                          bgColor,
                                                          drawable,

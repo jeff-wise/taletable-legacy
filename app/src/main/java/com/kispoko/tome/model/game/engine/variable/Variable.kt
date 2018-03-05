@@ -443,15 +443,13 @@ data class BooleanVariable(override val id : UUID,
     fun value() : AppEff<Boolean> = this.variableValue().value()
 
 
-    fun toggleValue(sheetId : SheetId)
-    {
+    fun toggleValue(entityId : EntityId) {
         this.value() apDo {
             if (it)
-                this.updateValue(false, sheetId)
+                this.updateValue(false, entityId)
             else
-                this.updateValue(true, sheetId)
+                this.updateValue(true, entityId)
         }
-
     }
 
 
@@ -1127,14 +1125,14 @@ data class NumberListVariable(override val id : UUID,
             this.variableValue().value(entityId)
 
 
-    fun updateLiteralValue(value : List<Double>, sheetId : SheetId)
+    fun updateLiteralValue(value : List<Double>, entityId : EntityId)
     {
         when (this.variableValue())
         {
             is NumberListVariableLiteralValue ->
             {
                 this.variableValue = NumberListVariableLiteralValue(value)
-                SheetManager.onVariableUpdate(sheetId, this)
+                onVariableUpdate(this, entityId)
             }
         }
     }
@@ -1356,7 +1354,6 @@ data class TextVariable(override val id : UUID,
                 val valueSetId = currentVariableValue.valueReference.valueSetId
                 val newValueReference = ValueReference(valueSetId, TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
-//                this.updateRelations(sheetContext)
                 onVariableUpdate(this, entityId)
                 this.onUpdate()
             }
@@ -1587,14 +1584,14 @@ data class TextListVariable(override val id : UUID,
             this.variableValue().value(entityId)
 
 
-    fun updateLiteralValue(value : List<String>, sheetId : SheetId)
+    fun updateLiteralValue(value : List<String>, entityId : EntityId)
     {
         when (this.variableValue())
         {
             is TextListVariableLiteralValue ->
             {
                 this.variableValue = TextListVariableLiteralValue(value)
-                SheetManager.onVariableUpdate(sheetId, this)
+                onVariableUpdate(this, entityId)
             }
         }
     }

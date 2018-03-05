@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet.group
 
 
 import android.content.Context
+import android.content.Entity
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
@@ -26,9 +27,9 @@ import com.kispoko.tome.lib.orm.sql.asSQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Widget
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.SheetComponent
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -141,9 +142,9 @@ data class GroupRow(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        this.widgets.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.widgets.forEach { it.onSheetComponentActive(entityId, context) }
     }
 
 
@@ -151,22 +152,22 @@ data class GroupRow(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(sheetUIContext : SheetUIContext) : View
+    fun view(entityId : EntityId, context : Context) : View
     {
-        val layout = this.viewLayout(sheetUIContext)
+        val layout = this.viewLayout(entityId, context)
 
         // Top Border
         val topBorder = this.format().border().apply { it.top() }
         when (topBorder) {
-            is Just -> layout.addView(this.dividerView(topBorder.value, sheetUIContext))
+            is Just -> layout.addView(this.dividerView(topBorder.value, entityId, context))
         }
 
         // > Widgets
-        layout.addView(widgetsView(sheetUIContext))
+        layout.addView(widgetsView(entityId, context))
 
         val bottomBorder = this.format().border().apply { it.bottom() }
         when (bottomBorder) {
-            is Just -> layout.addView(dividerView(bottomBorder.value, sheetUIContext))
+            is Just -> layout.addView(dividerView(bottomBorder.value, entityId, context))
         }
 
         return layout
@@ -174,9 +175,9 @@ data class GroupRow(override val id : UUID,
 
 
 
-    private fun viewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+    private fun viewLayout(entityId : EntityId, context : Context) : LinearLayout
     {
-        val layout = GroupRowTouchView(sheetUIContext.context)
+        val layout = GroupRowTouchView(context)
         val elementFormat = this.format().elementFormat()
 
 
@@ -210,8 +211,7 @@ data class GroupRow(override val id : UUID,
 
         bgDrawable.setCornerRadii(radii)
 
-        val bgColor = SheetManager.color(sheetUIContext.sheetId,
-                                         elementFormat.backgroundColorTheme())
+        val bgColor = colorOrBlack(elementFormat.backgroundColorTheme(), entityId)
 
         bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
@@ -221,9 +221,9 @@ data class GroupRow(override val id : UUID,
     }
 
 
-    private fun widgetsView(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun widgetsView(entityId : EntityId, context : Context) : LinearLayout
     {
-        val layout = this.widgetsViewLayout(sheetUIContext.context)
+        val layout = this.widgetsViewLayout(context)
 
         if (this.format().hasColumns().value)
         {
@@ -231,17 +231,17 @@ data class GroupRow(override val id : UUID,
             val largestColIndex = colIndiceSet.max()
 
             if (largestColIndex == 1) {
-                this.widgets().forEach { layout.addView(it.view(sheetUIContext)) }
+                this.widgets().forEach { layout.addView(it.view(entityId, context)) }
             }
             else {
                 val colToLayout : MutableMap<Int,LinearLayout> = mutableMapOf()
                 colIndiceSet.forEach {
-                    colToLayout.put(it, this.widgetsColumnLayout(sheetUIContext.context))
+                    colToLayout.put(it, this.widgetsColumnLayout(context))
                 }
 
                 this.widgets().forEach {
                     val layout = colToLayout[it.widgetFormat().column()]
-                    layout?.addView(it.view(sheetUIContext))
+                    layout?.addView(it.view(entityId, context))
                 }
 
                 colToLayout.keys.sorted().forEach {
@@ -251,7 +251,7 @@ data class GroupRow(override val id : UUID,
         }
         else
         {
-            this.widgets().forEach { layout.addView(it.view(sheetUIContext)) }
+            this.widgets().forEach { layout.addView(it.view(entityId, context)) }
         }
 
         return layout
@@ -288,17 +288,18 @@ data class GroupRow(override val id : UUID,
     }
 
 
-    private fun dividerView(format : BorderEdge, sheetUIContext : SheetUIContext) : LinearLayout
+    private fun dividerView(format : BorderEdge,
+                            entityId : EntityId,
+                            context : Context) : LinearLayout
     {
         val divider = LinearLayoutBuilder()
 
         divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
         divider.heightDp            = format.thickness().value
 
-        divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId,
-                                                         format.colorTheme())
+        divider.backgroundColor     = colorOrBlack(format.colorTheme(), entityId)
 
-        return divider.linearLayout(sheetUIContext.context)
+        return divider.linearLayout(context)
     }
 
 

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -26,10 +27,8 @@ import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.cell.*
+import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.CellVariableUndefined
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
 import effect.Val
@@ -87,7 +86,8 @@ sealed class TableWidgetCell : ToDocument, ProdType, Serializable
 
     abstract fun type() : TableWidgetCellType
 
-    abstract fun updateView(sheetUIContext : SheetUIContext)
+
+    abstract fun updateView(entityId : EntityId, context : Context)
 
 }
 
@@ -197,7 +197,7 @@ data class TableWidgetBooleanCell(override val id : UUID,
     override fun type() : TableWidgetCellType = TableWidgetCellType.BOOLEAN
 
 
-    override fun updateView(sheetUIContext : SheetUIContext) {
+    override fun updateView(entityId : EntityId, context : Context) {
     }
 
 
@@ -205,15 +205,12 @@ data class TableWidgetBooleanCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueVariable(sheetContext : SheetContext) : AppEff<BooleanVariable> =
-        this.variableId()                             ap { variableId ->
-        SheetManager.sheetState(sheetContext.sheetId) ap { state ->
-        state.booleanVariableWithId(variableId)
-            } }
+    fun valueVariable(entityId : EntityId) : AppEff<BooleanVariable> =
+        this.variableId().apply { booleanVariable(it, entityId) }
 
 
-    fun value(sheetContext : SheetContext) : AppEff<Boolean> =
-        this.valueVariable(sheetContext) ap { it.value() }
+    fun value(entityId : EntityId) : AppEff<Boolean> =
+        this.valueVariable(entityId) ap { it.value() }
 
 
     // -----------------------------------------------------------------------------------------
@@ -222,8 +219,9 @@ data class TableWidgetBooleanCell(override val id : UUID,
 
     fun view(rowFormat : TableWidgetRowFormat,
              column : TableWidgetBooleanColumn,
-             sheetUIContext: SheetUIContext) : View
-        = BooleanCellView.view(this, rowFormat, column, this.format(), sheetUIContext)
+             entityId : EntityId,
+             context : Context) : View
+        = BooleanCellView.view(this, rowFormat, column, this.format(), entityId, context)
 
 }
 
@@ -366,11 +364,12 @@ data class TableWidgetNumberCell(override val id : UUID,
     override fun type() : TableWidgetCellType = TableWidgetCellType.NUMBER
 
 
-    override fun updateView(sheetUIContext : SheetUIContext) {
+    override fun updateView(entityId : EntityId, context : Context)
+    {
         this.viewId?.let {
-            val activity = sheetUIContext.context as AppCompatActivity
+            val activity = context as AppCompatActivity
             val valueTextView = activity.findViewById(it) as TextView?
-            val maybeValue = this.value(SheetContext(sheetUIContext))
+            val maybeValue = this.value(entityId)
             when (maybeValue)
             {
                 is Val -> {
@@ -414,26 +413,23 @@ data class TableWidgetNumberCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueVariable(sheetContext : SheetContext) : AppEff<NumberVariable> =
-        this.variableId()                             ap { variableId ->
-        SheetManager.sheetState(sheetContext.sheetId) ap { state ->
-        state.numberVariableWithId(variableId)
-            } }
+    fun valueVariable(entityId : EntityId) : AppEff<NumberVariable> =
+        this.variableId().apply { numberVariable(it, entityId) }
 
 
-    fun valueString(sheetContext : SheetContext) : AppEff<String> =
-         this.valueVariable(sheetContext) ap { it.valueString(sheetContext) }
+    fun valueString(entityId : EntityId) : AppEff<String> =
+         this.valueVariable(entityId) ap { it.valueString(entityId) }
 
 
-    fun value(sheetContext : SheetContext) : AppEff<Double> =
-            this.valueVariable(sheetContext)
-                .apply { it.value(sheetContext) }
+    fun value(entityId : EntityId) : AppEff<Double> =
+            this.valueVariable(entityId)
+                .apply { it.value(entityId) }
                 .apply { effValue<AppError,Double>(maybeValue(0.0, it)) }
 
 
-    fun updateValue(newValue : Double, sheetContext : SheetContext) =
-        this.valueVariable(sheetContext) apDo {
-            it.updateValue(newValue, sheetContext) }
+    fun updateValue(newValue : Double, entityId : EntityId) =
+        this.valueVariable(entityId) apDo {
+            it.updateValue(newValue, entityId) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -444,14 +440,16 @@ data class TableWidgetNumberCell(override val id : UUID,
              column : TableWidgetNumberColumn,
              rowIndex : Int,
              tableWidget : TableWidget,
-             sheetUIContext : SheetUIContext) : View
+             entityId : EntityId,
+             context : Context) : View
     {
         val viewBuilder = NumberCellViewBuilder(this,
                                                 row,
                                                 column,
                                                 rowIndex,
                                                 tableWidget,
-                                                sheetUIContext)
+                                                entityId,
+                                                context)
         this.column = column
         return viewBuilder.view()
     }
@@ -553,11 +551,8 @@ data class TableWidgetTextCell(override val id : UUID,
             note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
 
 
-    fun valueVariable(sheetContext : SheetContext) : AppEff<TextVariable> =
-        this.variableId()                             ap { variableId ->
-        SheetManager.sheetState(sheetContext.sheetId) ap { state ->
-        state.textVariableWithId(variableId)
-    } }
+    fun valueVariable(entityId : EntityId) : AppEff<TextVariable> =
+        this.variableId().apply { textVariable(it, entityId) }
 
 
     fun action() : Maybe<Action> = this.action
@@ -578,7 +573,7 @@ data class TableWidgetTextCell(override val id : UUID,
     override fun type() : TableWidgetCellType = TableWidgetCellType.TEXT
 
 
-    override fun updateView(sheetUIContext : SheetUIContext) {
+    override fun updateView(entityId : EntityId, context : Context) {
     }
 
 
@@ -603,8 +598,8 @@ data class TableWidgetTextCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun valueString(sheetContext : SheetContext) : AppEff<String> =
-            this.valueVariable(sheetContext) ap { it.valueString(sheetContext) }
+    fun valueString(entityId : EntityId) : AppEff<String> =
+            this.valueVariable(entityId) ap { it.valueString(entityId) }
 //
 //    fun valueString(sheetContext : SheetContext) : Maybe<String> =
 //        this.valueVariable(sheetContext) ap { variable ->
@@ -628,14 +623,16 @@ data class TableWidgetTextCell(override val id : UUID,
              column : TableWidgetTextColumn,
              rowIndex : Int,
              tableWidget : TableWidget,
-             sheetUIContext: SheetUIContext) : View
+             entityId : EntityId,
+             context : Context) : View
     {
         val viewBuilder = TextCellViewBuilder(this,
                                               rowFormat,
                                               column,
                                               rowIndex,
                                               tableWidget,
-                                              sheetUIContext)
+                                              entityId,
+                                              context)
         return viewBuilder.view()
     }
 
@@ -770,7 +767,8 @@ object TableWidgetCellView
 {
 
     fun layout(columnFormat : ColumnFormat,
-               sheetUIContext : SheetUIContext) : LinearLayout
+               entityId : EntityId,
+               context : Context) : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -793,8 +791,8 @@ object TableWidgetCellView
 //        }
 
         //if (cellFormat.backgroundColorTheme.isDefault()) {
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                    columnFormat.textFormat().elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(columnFormat.textFormat().elementFormat().backgroundColorTheme(),
+                                        entityId)
 //        } else {
 //            layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
 //                                        cellFormat.backgroundColorTheme())
@@ -802,7 +800,7 @@ object TableWidgetCellView
 
         // layout.backgroundResource   = tableRowFormat.cellHeight().resourceId(Corners.None)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 

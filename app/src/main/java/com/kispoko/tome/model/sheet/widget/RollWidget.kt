@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
@@ -13,7 +14,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.dialog.DiceRollDialog
 import com.kispoko.tome.db.DB_WidgetRollFormatValue
 import com.kispoko.tome.db.widgetRollFormatTable
 import com.kispoko.tome.lib.Factory
@@ -31,9 +31,8 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.Width
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*
@@ -421,7 +420,8 @@ sealed class RollTextLocation : ToDocument, SQLSerializable, Serializable
 
 
 class RollWidgetViewBuilder(val rollWidget : RollWidget,
-                            val sheetUIContext : SheetUIContext)
+                            val entityId : EntityId,
+                            val context : Context)
 {
 
     // STATE
@@ -429,7 +429,7 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
     var isRoll : Boolean = false
 
-    val diceRolls = rollWidget.rollGroup().diceRolls(SheetContext(sheetUIContext))
+    val diceRolls = rollWidget.rollGroup().diceRolls(entityId)
 
     var buttonLayout : LinearLayout? = null
     var buttonIconView : ImageView? = null
@@ -455,14 +455,12 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             buttonRollTextView?.visibility = View.VISIBLE
 
 
-            val bgColor = SheetManager.color(sheetUIContext.sheetId,
-                                             format.elementFormat().backgroundColorTheme())
+            val bgColor = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
             bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
             bgDrawable.setCornerRadii(format.elementFormat().corners().radiiArray())
 
-            buttonRollTextView?.setTextColor(SheetManager.color(sheetUIContext.sheetId,
-                                                                 format.colorTheme()))
+            buttonRollTextView?.setTextColor(colorOrBlack(format.colorTheme(), entityId))
 
             buttonRollTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
 
@@ -497,14 +495,12 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
                 buttonResultTextView?.text = diceRoll.roll().toString()
             }
 
-            val bgColor = SheetManager.color(sheetUIContext.sheetId,
-                    format.elementFormat().backgroundColorTheme())
+            val bgColor = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
             bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
             bgDrawable.setCornerRadii(format.elementFormat().corners().radiiArray())
 
-            buttonResultTextView?.setTextColor(SheetManager.color(sheetUIContext.sheetId,
-                                                format.colorTheme()))
+            buttonResultTextView?.setTextColor(colorOrBlack(format.colorTheme(), entityId))
 
             buttonResultTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
 
@@ -533,14 +529,12 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             rollWidget.format().descriptionFormat()
         }
 
-        val bgColor = SheetManager.color(sheetUIContext.sheetId,
-                    format.elementFormat().backgroundColorTheme())
+        val bgColor = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
         bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
 
         bgDrawable.setCornerRadii(format.elementFormat().corners().radiiArray())
 
-        descriptionTextView?.setTextColor(SheetManager.color(sheetUIContext.sheetId,
-                                                             format.colorTheme()))
+        descriptionTextView?.setTextColor(colorOrBlack(format.colorTheme(), entityId))
 
         descriptionTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
 
@@ -577,7 +571,7 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
     fun view() : View
     {
-        val layout = WidgetView.layout(rollWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(rollWidget.widgetFormat(), entityId, context)
 
         val viewId = Util.generateViewId()
         layout.id = viewId
@@ -617,13 +611,13 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             }
             is RollWidgetViewType.InlineLeftButtonUseDialog ->
             {
-                layout.setOnClickListener {
-                    val activity = sheetUIContext.context as SheetActivity
-                    val dialog = DiceRollDialog.newInstance(rollWidget.rollGroup(),
-                                                            SheetContext(sheetUIContext),
-                                                            1)
-                    dialog.show(activity.supportFragmentManager, "")
-                }
+//                layout.setOnClickListener {
+//                    val activity = context as SheetActivity
+//                    val dialog = DiceRollDialog.newInstance(rollWidget.rollGroup(),
+//                                                            entityId,
+//                                                            1)
+//                    dialog.show(activity.supportFragmentManager, "")
+//                }
 
                 contentLayout.addView(this.inlineLeftButtonView())
             }
@@ -700,7 +694,7 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         layout.orientation  = LinearLayout.HORIZONTAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -736,8 +730,8 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         }
 
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
         layout.corners          = format.elementFormat().corners()
 
@@ -746,22 +740,22 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         layout.paddingSpacing   = format.elementFormat().padding()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
     private fun inlineLeftButtonButtonIconView() : ImageView
     {
-        val icon        = ImageViewBuilder()
-        val format      = rollWidget.format().buttonFormat()
+        val icon            = ImageViewBuilder()
+        val format          = rollWidget.format().buttonFormat()
 
         icon.iconSize       = format.iconFormat().size()
 
         icon.image          = R.drawable.icon_dice_roll_filled
 
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        icon.color          = colorOrBlack(format.colorTheme(), entityId)
 
-        return icon.imageView(sheetUIContext.context)
+        return icon.imageView(context)
     }
 
 
@@ -788,15 +782,15 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         result.font           = Font.typeface(format.font(),
                                             format.fontStyle(),
-                                            sheetUIContext.context)
+                                            context)
 
         result.sizeSp         = format.sizeSp()
 
-        result.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        result.color          = colorOrBlack(format.colorTheme(), entityId)
 
         result.visibility     = View.GONE
 
-        return result.textView(sheetUIContext.context)
+        return result.textView(context)
     }
 
 
@@ -819,16 +813,16 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         roll.font           = Font.typeface(format.font(),
                                             format.fontStyle(),
-                                            sheetUIContext.context)
+                                            context)
 
         roll.sizeSp         = format.sizeSp()
 
-        roll.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        roll.color          = colorOrBlack(format.colorTheme(), entityId)
 
         roll.paddingSpacing = format.elementFormat().padding()
         roll.marginSpacing  = format.elementFormat().margins()
 
-        return roll.textView(sheetUIContext.context)
+        return roll.textView(context)
     }
 
 
@@ -847,10 +841,10 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             rollWidget.format().descriptionFormat()
         }
 
-        description.width       = LinearLayout.LayoutParams.WRAP_CONTENT
-        description.height      = LinearLayout.LayoutParams.MATCH_PARENT
+        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT
+        description.height          = LinearLayout.LayoutParams.MATCH_PARENT
 
-        description.gravity    = format.elementFormat().verticalAlignment().gravityConstant() or
+        description.gravity         = format.elementFormat().verticalAlignment().gravityConstant() or
                 format.elementFormat().alignment().gravityConstant()
 
         val descriptionString = rollWidget.description()
@@ -858,23 +852,21 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             is Just -> description.text = descriptionString.value.value
         }
 
-        description.font        = Font.typeface(format.font(),
-                                                format.fontStyle(),
-                                                sheetUIContext.context)
+        description.font            = Font.typeface(format.font(),
+                                                    format.fontStyle(),
+                                                    context)
 
         description.sizeSp          = format.sizeSp()
 
-        description.color           = SheetManager.color(sheetUIContext.sheetId,
-                                                         format.colorTheme())
-        description.backgroundColor = SheetManager.color(
-                                                sheetUIContext.sheetId,
-                                                format.elementFormat().backgroundColorTheme())
+        description.color           = colorOrBlack(format.colorTheme(), entityId)
+        description.backgroundColor = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                                   entityId)
 
         description.corners         = format.elementFormat().corners()
 
         description.paddingSpacing  = format.elementFormat().padding()
 
-        return description.textView(sheetUIContext.context)
+        return description.textView(context)
     }
 
 

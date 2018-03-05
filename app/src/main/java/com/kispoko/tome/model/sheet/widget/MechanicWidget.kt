@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -24,10 +25,11 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.sheet.style.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.activeMechanicsInCategory
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.game.GameManager
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.mechanicCategory
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -259,7 +261,8 @@ sealed class MechanicWidgetViewType : ToDocument, SQLSerializable, Serializable
 
 
 class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
-                                val sheetUIContext : SheetUIContext)
+                                val entityId : EntityId,
+                                val context : Context)
 {
 
 
@@ -269,7 +272,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
     fun view() : View
     {
-        val layout = WidgetView.layout(this.mechanicWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(this.mechanicWidget.widgetFormat(), entityId, context)
 
         val viewId = Util.generateViewId()
         layout.id = viewId
@@ -294,30 +297,28 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         val layout              = this.mainViewLayout()
 
         // Header
-        GameManager.engine(sheetUIContext.gameId) apDo {
-            val category = it.mechanicCategory(mechanicWidget.categoryId())
-            if (category != null) {
-                val headerString = category.labelString() + " Mechanics"
-                layout.addView(this.headerView(headerString))
-            }
+        mechanicCategory(mechanicWidget.categoryId(), entityId) apDo { category ->
+            val headerString = category.labelString() + " Mechanics"
+            layout.addView(this.headerView(headerString))
         }
 
         // Mechanic List
         val categoryId = mechanicWidget.categoryId()
-        SheetManager.sheetState(sheetUIContext.sheetId) apDo {
-        it.activeMechanicsInCategory(categoryId).forEach {
-            when (it.mechanicType()) {
-                is MechanicType.Auto -> {
-                    layout.addView(this.mechanicView(it))
-                }
-                is MechanicType.OptionSelected -> {
-                    layout.addView(this.mechanicView(it))
-                }
-                is MechanicType.Option -> {
-                    layout.addView(this.optionMechanicView(it))
+        activeMechanicsInCategory(categoryId, entityId) apDo {
+            it.forEach {
+                when (it.mechanicType()) {
+                    is MechanicType.Auto -> {
+                        layout.addView(this.mechanicView(it))
+                    }
+                    is MechanicType.OptionSelected -> {
+                        layout.addView(this.mechanicView(it))
+                    }
+                    is MechanicType.Option -> {
+                        layout.addView(this.optionMechanicView(it))
+                    }
                 }
             }
-        } }
+        }
 //        GameManager.engine(sheetUIContext.gameId) apDo {
 //            val mechanics = it.acti(mechanicWidget.categoryId())
 //            mechanics.forEach {
@@ -338,7 +339,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         layout.orientation          = LinearLayout.VERTICAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -355,9 +356,9 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         header.text             = headerString
 
         mechanicWidget.format().headerFormat()
-                      .styleTextViewBuilder(header, sheetUIContext)
+                      .styleTextViewBuilder(header, entityId, context)
 
-        return header.textView(sheetUIContext.context)
+        return header.textView(context)
     }
 
 
@@ -390,15 +391,14 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.backgroundColorTheme(), entityId)
 
         layout.corners          = format.corners()
 
         layout.marginSpacing    = format.margins()
         layout.paddingSpacing   = format.padding()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -412,9 +412,9 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         annotation.text         = annotationString
 
-        format.styleTextViewBuilder(annotation, sheetUIContext)
+        format.styleTextViewBuilder(annotation, entityId, context)
 
-        return annotation.textView(sheetUIContext.context)
+        return annotation.textView(context)
     }
 
 
@@ -445,7 +445,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -459,9 +459,9 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         header.text             = headerString
 
         mechanicWidget.format().mechanicHeaderFormat()
-                      .styleTextViewBuilder(header, sheetUIContext)
+                      .styleTextViewBuilder(header, entityId, context)
 
-        return header.textView(sheetUIContext.context)
+        return header.textView(context)
     }
 
 
@@ -484,7 +484,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         layout.gravity      = Gravity.CENTER
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, elementFormat.backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(elementFormat.backgroundColorTheme(), entityId)
 
         layout.padding.topDp     = 3f
         layout.padding.bottomDp     = 3f
@@ -505,9 +505,9 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         icon.image          = R.drawable.icon_replace
 
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, textFormat.colorTheme())
+        icon.color          = colorOrBlack(textFormat.colorTheme(), entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -521,9 +521,9 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         header.text             = summaryString
 
         mechanicWidget.format().mechanicSummaryFormat()
-                      .styleTextViewBuilder(header, sheetUIContext)
+                      .styleTextViewBuilder(header, entityId, context)
 
-        return header.textView(sheetUIContext.context)
+        return header.textView(context)
     }
 
 
@@ -538,9 +538,9 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         layout.addView(this.optionMechanicLabelView(mechanic.summaryString()))
 
         layout.setOnClickListener {
-            val activity = sheetUIContext.context as AppCompatActivity
-            val dialog = MechanicOptionDialog.newInstance(mechanic.mechanicId(),
-                                                          SheetContext(sheetUIContext))
+            val activity = context as AppCompatActivity
+            val dialog  = MechanicOptionDialog.newInstance(mechanic.mechanicId(),
+                                                           entityId)
             dialog.show(activity.supportFragmentManager, "")
 
         }
@@ -560,15 +560,14 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.backgroundColorTheme(), entityId)
 
         layout.corners          = format.corners()
 
         layout.marginSpacing    = format.margins()
         layout.paddingSpacing   = format.padding()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -582,9 +581,9 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         header.text             = headerString
 
         mechanicWidget.format().optionLabelFormat()
-                      .styleTextViewBuilder(header, sheetUIContext)
+                      .styleTextViewBuilder(header, entityId, context)
 
-        return header.textView(sheetUIContext.context)
+        return header.textView(context)
     }
 
 

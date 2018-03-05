@@ -26,6 +26,12 @@ types:
       presence: required
       description: >
         The id of the campaign.
+    - name: engine
+      type: 
+        type: custom_type
+        custom_type: engine
+      presence: required
+      description: The engine.
     - name: campaign_name
       type: 
         type: prim_type

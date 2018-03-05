@@ -13,14 +13,11 @@ import com.kispoko.tome.lib.orm.sql.SQLReal
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.summation.SummationId
-import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
-import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.game.GameManager
-import com.kispoko.tome.rts.entity.numberVariable
 import com.kispoko.tome.rts.entity.sheet.*
 import effect.*
 import lulo.document.*
@@ -260,7 +257,7 @@ data class NumberVariableVariableValue(val variableId : VariableId)
     override fun columnValue() = PrimValue(this)
 
 
-    override fun case() = "variable"
+    override fun case() = "partVariable"
 
 
     override val sumModelObject = this
@@ -315,7 +312,7 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
         effApply(::Just, this.invocation.numberValue(entityId))
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 
@@ -363,24 +360,14 @@ data class NumberVariableValueValue(val valueReference : ValueReference)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
-    {
-        fun numberValue(engine : Engine) : AppEff<ValueNumber> =
-            engine.numberValue(valueReference, sheetContext)
-
-        fun doubleValue(numberValue : ValueNumber) : AppEff<Maybe<Double>> =
-            effValue(Just(numberValue.value()))
-
-        return GameManager.engine(sheetContext.gameId)
-                          .apply(::numberValue)
-                          .apply(::doubleValue)
-    }
+    override fun value(entityId : EntityId) : AppEff<Maybe<Double>> =
+        numberValue(valueReference, entityId)
+          .apply { effValue<AppError,Maybe<Double>>(Just(it.value())) }
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
-        GameManager.engine(sheetContext.gameId)
-                .apply { it.value(this.valueReference, sheetContext) }
-                .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+        value(this.valueReference, entityId)
+          .apply { effValue<AppError,Set<Variable>>(it.variables().toSet()) }
 
 
     // -----------------------------------------------------------------------------------------
@@ -430,14 +417,10 @@ data class NumberVariableSummationValue(val summationId : SummationId)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext) : Set<VariableReference>
+    override fun dependencies(entityId : EntityId) : Set<VariableReference>
     {
-//        val deps = GameManager.engine(sheetContext.gameId)
-//                         .apply { it.summation(summationId) }
-//                         .apply { effValue<AppError,Set<VariableReference>>(it.dependencies()) }
-
-        val deps = SheetManager.summation(summationId, sheetContext)
-                         .apply { effValue<AppError,Set<VariableReference>>(it.dependencies(sheetContext)) }
+        val deps = summation(summationId, entityId)
+                       .apply { effValue<AppError,Set<VariableReference>>(it.dependencies(entityId)) }
 
         when (deps) {
             is effect.Val -> return deps.value
@@ -452,13 +435,13 @@ data class NumberVariableSummationValue(val summationId : SummationId)
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : AppEff<Maybe<Double>>
-            = SheetManager.summation(summationId, sheetContext)
-                    .apply { effValue<AppError,Double>(it.value(sheetContext)) }
-                    .apply { effValue<AppError,Maybe<Double>>(Just(it)) }
+    override fun value(entityId : EntityId) : AppEff<Maybe<Double>> =
+        summation(summationId, entityId)
+          .apply { effValue<AppError,Double>(it.value(entityId)) }
+          .apply { effValue<AppError,Maybe<Double>>(Just(it)) }
 
 
-    override fun companionVariables(sheetContext : SheetContext) : AppEff<Set<Variable>> =
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
             effValue(setOf())
 
 

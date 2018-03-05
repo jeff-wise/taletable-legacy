@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -28,6 +29,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -131,12 +134,13 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
                             val column : TableWidgetNumberColumn,
                             val rowIndex : Int,
                             val tableWidget : TableWidget,
-                            val sheetUIContext : SheetUIContext)
+                            val entityId : EntityId,
+                            val context : Context)
 {
 
     fun openEditorDialog()
     {
-        val valueVariable = cell.valueVariable(SheetContext(sheetUIContext))
+        val valueVariable = cell.valueVariable(entityId)
         when (valueVariable)
         {
             is effect.Val ->
@@ -145,7 +149,8 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
                 openNumberVariableEditorDialog(valueVariable.value,
                                                editorType,
                                                UpdateTargetNumberCell(tableWidget.id, cell.id),
-                                               sheetUIContext)
+                                               entityId,
+                                               context)
             }
             is Err -> ApplicationLog.error(valueVariable.error)
         }
@@ -156,7 +161,8 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
     fun view() : View
     {
         val layout = TableWidgetCellView.layout(column.format().columnFormat(),
-                                                sheetUIContext)
+                                                entityId,
+                                                context)
 
         layout.addView(this.valueView())
 
@@ -216,7 +222,7 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
 //        layout.gravity              = Gravity.CENTER_VERTICAL or
 //                                        valueStyle.alignment().gravityConstant()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -247,9 +253,9 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        icon.color          = colorOrBlack(colorTheme, entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -268,12 +274,12 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
 
         // > STYLE
         val valueStyle = this.cell.format().resolveTextFormat(this.column.format())
-        valueStyle.styleTextViewBuilder(value, sheetUIContext)
+        valueStyle.styleTextViewBuilder(value, entityId, context)
 
         //value.layoutGravity = valueStyle.alignment().gravityConstant()
 
         // > VALUE
-        val maybeValue = cell.value(SheetContext(sheetUIContext))
+        val maybeValue = cell.value(entityId)
         when (maybeValue)
         {
             is effect.Val -> {
@@ -289,7 +295,7 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
             }
         }
 
-        return value.textView(sheetUIContext.context)
+        return value.textView(context)
     }
 
 

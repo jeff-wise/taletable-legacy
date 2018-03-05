@@ -21,7 +21,6 @@ import com.kispoko.tome.model.game.engine.variable.VariableNamespace
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.engine.SummationIsNotDiceRoll
-import com.kispoko.tome.rts.entity.sheet.SheetContext
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import effect.*
 import lulo.document.*

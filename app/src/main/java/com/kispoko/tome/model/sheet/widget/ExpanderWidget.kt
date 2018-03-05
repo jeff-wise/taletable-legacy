@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -20,8 +21,8 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFormat
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -229,7 +230,8 @@ data class ExpanderWidgetLabel(val value : String) : ToDocument, SQLSerializable
 
 
 class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
-                                val sheetUIContext : SheetUIContext)
+                                val entityId : EntityId,
+                                val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -250,7 +252,7 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
 
     fun view() : View
     {
-        val layout = WidgetView.layout(expanderWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(expanderWidget.widgetFormat(), entityId, context)
 
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
         contentLayout.orientation       = LinearLayout.VERTICAL
@@ -271,8 +273,6 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
                 this.isOpen = false
                 contentLayout.removeAllViews()
                 contentLayout.addView(this.headerView())
-
-//                this.iconView?.setImageDrawable(ContextCompat.getDrawable(sheetUIContext.context, R.drawable.icon_chevron_right))
             }
             // OPEN
             else
@@ -282,10 +282,8 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
                 contentLayout.removeAllViews()
                 contentLayout.addView(this.headerView())
                 expanderWidget.groups().forEach {
-                    contentLayout.addView(it.view(sheetUIContext))
+                    contentLayout.addView(it.view(entityId, context))
                 }
-
-//                this.iconView?.setImageDrawable(ContextCompat.getDrawable(sheetUIContext.context, R.drawable.icon_chevron_down))
             }
         }
 
@@ -337,9 +335,10 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
 //        layout.corners          = format.elementFormat().corners()
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, format.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -355,14 +354,15 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
         layout.width = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, format.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
         layout.corners      = format.elementFormat().corners()
 
         layout.paddingSpacing      = format.elementFormat().padding()
         layout.marginSpacing      = format.elementFormat().margins()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -383,10 +383,10 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
         else
             icon.image      = R.drawable.icon_chevron_right
 
-        icon.color          = SheetManager.color(sheetUIContext.sheetId, format.iconFormat().colorTheme())
+        icon.color          = colorOrBlack(format.iconFormat().colorTheme(), entityId)
 
 
-        return icon.imageView(sheetUIContext.context)
+        return icon.imageView(context)
 
 
 
@@ -407,14 +407,14 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
 
         title.text          = expanderWidget.label().value
 
-        format.styleTextViewBuilder(title, sheetUIContext)
+        format.styleTextViewBuilder(title, entityId, context)
 
-        title.color           = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        title.color           = colorOrBlack(format.colorTheme(), entityId)
 
         title.marginSpacing = format.elementFormat().margins()
         title.paddingSpacing = format.elementFormat().padding()
 
-        return title.textView(sheetUIContext.context)
+        return title.textView(context)
     }
 
 
@@ -427,7 +427,7 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 }

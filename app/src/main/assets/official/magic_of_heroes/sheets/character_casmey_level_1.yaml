@@ -1939,7 +1939,6 @@ sections:
             format:
               line_spacing: 8
               line_height: 36
-              bg_skew: 0.68
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -1949,6 +1948,8 @@ sections:
             story:
             - type: story_part_span
               story_part_span:
+                format:
+                  highlight_skew: 0.68
                 text: 'In some lands they call me Cass. In others, they call me "Hey! Someone
                        stop her! She''s getting away!". I''m a '
                 text_format:
@@ -1961,13 +1962,15 @@ sections:
                   size: 17.5
             - type: story_part_variable
               story_part_variable:
+                format:
+                  highlight_skew: 0.68
                 variable_id: race
                 text_format:
                   element_format:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue
+                        color_id: light_blue_90
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -1977,6 +1980,8 @@ sections:
                   size: 17.5
             - type: story_part_span
               story_part_span:
+                format:
+                  highlight_skew: 0.68
                 text: ' born in the mess they call the City of Second Chances. Since I was a little girl, I performed alongside my
                         father in the Endless Carnival. But on my 16th birthday, my life fell apart. I became a '
                 text_format:
@@ -1989,13 +1994,15 @@ sections:
                   size: 17.5
             - type: story_part_variable
               story_part_variable:
+                format:
+                  highlight_skew: 0.68
                 variable_id: class
                 text_format:
                   element_format:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue
+                        color_id: light_blue_90
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2005,6 +2012,8 @@ sections:
                   size: 17.5
             - type: story_part_span
               story_part_span:
+                format:
+                  highlight_skew: 0.68
                 text: ' pirate on a sleek schooner called The Shark''s Fin. Through rough seas and
                         low tides I earned a formidable reputation for only a '
                 text_format:
@@ -2017,6 +2026,8 @@ sections:
                   size: 17.5
             - type: story_part_variable
               story_part_variable:
+                format:
+                  highlight_skew: 0.68
                 numeric_editor_type: simple
                 variable_id: age
                 text_format:
@@ -2024,7 +2035,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue
+                        color_id: light_blue_90
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2034,6 +2045,8 @@ sections:
                   size: 17.5
             - type: story_part_span
               story_part_span:
+                format:
+                  highlight_skew: 0.68
                 text: ' year old girl. I am often recognized for my '
                 text_format:
                   color_theme:
@@ -2045,13 +2058,15 @@ sections:
                   size: 17.5
             - type: story_part_variable
               story_part_variable:
+                format:
+                  highlight_skew: 0.68
                 variable_id: eye_color
                 text_format:
                   element_format:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue
+                        color_id: light_blue_90
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2061,6 +2076,8 @@ sections:
                   size: 17.5
             - type: story_part_span
               story_part_span:
+                format:
+                  highlight_skew: 0.68
                 text: ' eyes and curly '
                 text_format:
                   color_theme:
@@ -2072,13 +2089,15 @@ sections:
                   size: 17.5
             - type: story_part_variable
               story_part_variable:
+                format:
+                  highlight_skew: 0.68
                 variable_id: hair_color
                 text_format:
                   element_format:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue
+                        color_id: light_blue_90
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2088,6 +2107,8 @@ sections:
                   size: 17.5
             - type: story_part_span
               story_part_span:
+                format:
+                  highlight_skew: 0.68
                 text: ' hair, as well as for a few posters that may or may not say '
                 text_format:
                   color_theme:
@@ -2099,6 +2120,8 @@ sections:
                   size: 17.5
             - type: story_part_span
               story_part_span:
+                format:
+                  highlight_skew: 0.68
                 text: 'WANTED.'
                 text_format:
                   color_theme:

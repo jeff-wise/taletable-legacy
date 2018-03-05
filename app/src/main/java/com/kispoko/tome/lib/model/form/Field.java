@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.form.TextFieldDialogFragment;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
@@ -277,17 +276,17 @@ public class Field implements Serializable
         layout.addView(fieldDataView(context));
 
 
-        final Field thisField = this;
-        layout.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                TextFieldDialogFragment dialog =
-                        TextFieldDialogFragment.newInstance(modelId, thisField);
-                dialog.show(context.getSupportFragmentManager(), "");
-            }
-        });
+//        final Field thisField = this;
+//        layout.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                TextFieldDialogFragment dialog =
+//                        TextFieldDialogFragment.newInstance(modelId, thisField);
+//                dialog.show(context.getSupportFragmentManager(), "");
+//            }
+//        });
 
 
         return layout;

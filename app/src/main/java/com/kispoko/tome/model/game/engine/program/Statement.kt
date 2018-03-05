@@ -245,7 +245,7 @@ data class Statement(override val id : UUID,
             function(this.functionId(), entityId) ap { function ->
             paramsEff                             ap { params ->
                 function.value(params)
-            } } }
+            } }
         }
     }
 

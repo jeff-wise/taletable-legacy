@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.section
 
 
+import android.content.Context
 import com.kispoko.tome.db.DB_SectionValue
 import com.kispoko.tome.db.sectionTable
 import com.kispoko.tome.lib.Factory
@@ -14,7 +15,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.page.Page
 import com.kispoko.tome.model.sheet.style.IconType
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
 import effect.apply
 import effect.effError
 import effect.effValue
@@ -117,9 +118,11 @@ data class Section(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(sheetUIContext : SheetUIContext)
+    fun onActive(entityId : EntityId, context : Context)
     {
-        this.pages.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.pages.forEach {
+            it.onSheetComponentActive(entityId, context)
+        }
     }
 
 }

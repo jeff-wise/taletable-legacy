@@ -2,22 +2,18 @@
 package com.kispoko.tome.model.campaign
 
 
-import com.kispoko.tome.R.string.*
 import com.kispoko.tome.db.DB_CampaignValue
-import com.kispoko.tome.db.DB_SheetValue
 import com.kispoko.tome.db.campaignTable
-import com.kispoko.tome.db.sheetTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue4
-import com.kispoko.tome.lib.orm.RowValue6
-import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.Engine
 import effect.apply
 import effect.effError
 import effect.effValue
@@ -34,6 +30,7 @@ import java.util.*
  */
 data class Campaign(override val id : UUID,
                     val campaignId : CampaignId,
+                    val engine : Engine,
                     val campaignName : CampaignName,
                     val campaignSummary : CampaignSummary,
                     val gameId : GameId)
@@ -45,11 +42,13 @@ data class Campaign(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(campaignId : CampaignId,
+                engine : Engine,
                 campaignName : CampaignName,
                 campaignSummary : CampaignSummary,
                 gameId : GameId)
         : this(UUID.randomUUID(),
                campaignId,
+               engine,
                campaignName,
                campaignSummary,
                gameId)
@@ -64,6 +63,8 @@ data class Campaign(override val id : UUID,
                 apply(::Campaign,
                       // Campaign Id
                       doc.at("id") ap { CampaignId.fromDocument(it) },
+                      // Engine
+                      doc.at("engine") ap { Engine.fromDocument(it) },
                       // Campaign Name
                       doc.at("campaign_name") ap { CampaignName.fromDocument(it) },
                       // Campaign Summary
@@ -82,6 +83,9 @@ data class Campaign(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun campaignId() : CampaignId = this.campaignId
+
+
+    fun engine() : Engine = this.engine
 
 
     fun campaignName() : String = this.campaignName.value
@@ -104,7 +108,8 @@ data class Campaign(override val id : UUID,
 
 
     override fun rowValue() : DB_CampaignValue =
-        RowValue4(campaignTable, PrimValue(campaignId),
+        RowValue5(campaignTable, PrimValue(campaignId),
+                                 ProdValue(this.engine),
                                  PrimValue(campaignName),
                                  PrimValue(campaignSummary),
                                  PrimValue(gameId))

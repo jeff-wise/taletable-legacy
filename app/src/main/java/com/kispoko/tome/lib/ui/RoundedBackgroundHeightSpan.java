@@ -55,8 +55,8 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
 
     public RoundedBackgroundHeightSpan(int lineHeight,
                                        int lineSpacing,
-                                       Float bgSkew,
-                                       Integer cornerRadius,
+                                       float bgSkew,
+                                       int cornerRadius,
                                        int textColor,
                                        int backgroundColor,
                                        Drawable drawable,
@@ -71,17 +71,13 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
         this.lineHeight = lineHeight;
         this.lineSpacing = lineSpacing;
 
-        if (bgSkew != null)
-            this.bgSkew = bgSkew;
-        else
-            this.bgSkew = 0.75f;
+        this.bgSkew = bgSkew;
+        this.cornerRadius = cornerRadius;
 
         this.drawable = drawable;
         this.iconSize = iconSize;
         this.iconColor = iconColor;
 
-        if (cornerRadius != null)
-            this.cornerRadius = cornerRadius;
     }
 
 

@@ -22,7 +22,8 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*
-import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.addVariable
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -238,13 +239,13 @@ data class Sheet(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(sheetUIContext : SheetUIContext)
+    fun onActive(entityId : EntityId, context : Context)
     {
         this.variables().forEach {
-            SheetManager.addVariable(sheetUIContext.sheetId, it)
+            addVariable(it, entityId)
         }
 
-        this.sections.forEach { it.onActive(sheetUIContext) }
+        this.sections.forEach { it.onActive(entityId, context) }
     }
 
 
@@ -252,53 +253,53 @@ data class Sheet(override val id : UUID,
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
-    fun update(widgetUpdate : WidgetUpdate,
-               sheetContext : SheetContext,
-               rootView : View,
-               context : Context) =
-        when (widgetUpdate)
-        {
-            is WidgetUpdateActionWidget ->
-            {
-                val actionWidget = this.actionWidgetById[widgetUpdate.widgetId]
-                actionWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
-            }
-            is WidgetUpdateBooleanWidget ->
-            {
-                val booleanWidget = this.booleanWidgetById[widgetUpdate.widgetId]
-                booleanWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
-            }
-            is WidgetUpdateNumberWidget ->
-            {
+//    fun update(widgetUpdate : WidgetUpdate,
+//               sheetContext : SheetContext,
+//               rootView : View,
+//               context : Context) =
+//        when (widgetUpdate)
+//        {
+//            is WidgetUpdateActionWidget ->
+//            {
+//                val actionWidget = this.actionWidgetById[widgetUpdate.widgetId]
+//                actionWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+//            }
+//            is WidgetUpdateBooleanWidget ->
+//            {
+//                val booleanWidget = this.booleanWidgetById[widgetUpdate.widgetId]
+//                booleanWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+//            }
+//            is WidgetUpdateNumberWidget ->
+//            {
+////                val listWidget = this.listWidgetById[widgetUpdate.widgetId]
+////                listWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+//            }
+//            is WidgetUpdateListWidget ->
+//            {
 //                val listWidget = this.listWidgetById[widgetUpdate.widgetId]
 //                listWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
-            }
-            is WidgetUpdateListWidget ->
-            {
-                val listWidget = this.listWidgetById[widgetUpdate.widgetId]
-                listWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
-            }
-            is WidgetUpdatePointsWidget ->
-            {
-                val pointsWidget = this.pointsWidgetById[widgetUpdate.widgetId]
-                pointsWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
-            }
-            is WidgetUpdateStoryWidget ->
-            {
-                val storyWidget = this.storyWidgetById[widgetUpdate.widgetId]
-                storyWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
-            }
-            is WidgetUpdateTableWidget ->
-            {
-                val tableWidget = this.tableWidgetById[widgetUpdate.widgetId]
-                tableWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
-            }
-            is WidgetUpdateTextWidget ->
-            {
-                val textWidget = this.textWidgetById[widgetUpdate.widgetId]
-                textWidget?.update(widgetUpdate, sheetContext, rootView)
-            }
-        }
+//            }
+//            is WidgetUpdatePointsWidget ->
+//            {
+//                val pointsWidget = this.pointsWidgetById[widgetUpdate.widgetId]
+//                pointsWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+//            }
+//            is WidgetUpdateStoryWidget ->
+//            {
+//                val storyWidget = this.storyWidgetById[widgetUpdate.widgetId]
+//                storyWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+//            }
+//            is WidgetUpdateTableWidget ->
+//            {
+//                val tableWidget = this.tableWidgetById[widgetUpdate.widgetId]
+//                tableWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+//            }
+//            is WidgetUpdateTextWidget ->
+//            {
+//                val textWidget = this.textWidgetById[widgetUpdate.widgetId]
+//                textWidget?.update(widgetUpdate, sheetContext, rootView)
+//            }
+//        }
 
 
 }

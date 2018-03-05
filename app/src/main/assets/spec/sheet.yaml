@@ -1924,12 +1924,38 @@ types:
       description: story part action
 - type: product_type
   product_type:
+    name: story_part_format
+    label: Story Part Format
+    description: >
+      Story Part Span
+    group: 'Widget: Story'
+    fields:
+    - name: highlight_skew
+      type: 
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: Higlight skew.
+    - name: highlight_corner_radius
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: Highlight skew.
+- type: product_type
+  product_type:
     name: story_part_span
     label: Story Part Span
     description: >
       Story Part Span
     group: 'Widget: Story'
     fields:
+    - name: format
+      type: 
+        type: custom_type
+        custom_type: story_part_format
+      presence: optional
+      description: Part format.
     - name: text
       type: 
         type: prim_type
@@ -1952,6 +1978,12 @@ types:
       Story Part Variable
     group: 'Widget: Story'
     fields:
+    - name: format
+      type: 
+        type: custom_type
+        custom_type: story_part_format
+      presence: optional
+      description: Part format.
     - name: text_format
       type: 
         type: custom_type
@@ -1981,6 +2013,12 @@ types:
       Story Part Icon
     group: 'Widget: Story'
     fields:
+    - name: format
+      type: 
+        type: custom_type
+        custom_type: story_part_format
+      presence: optional
+      description: Part format.
     - name: icon
       type: 
         type: custom_type
@@ -1995,6 +2033,12 @@ types:
       Story Part Action
     group: 'Widget: Story'
     fields:
+    - name: format
+      type: 
+        type: custom_type
+        custom_type: story_part_format
+      presence: optional
+      description: Part format.
     - name: text
       type: 
         type: prim_type
@@ -2057,12 +2101,6 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
-    - name: bg_skew
-      type:
-        type: prim_type
-        prim_type: number
-      presence: optional
-      description: Background skew.
     - name: text_format
       type:
         type: custom_type

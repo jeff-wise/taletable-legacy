@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.reference
 
 
-import com.kispoko.tome.R.string.variables
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
@@ -14,8 +13,6 @@ import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.numberVariables
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -208,7 +205,7 @@ data class NumberReferenceVariable(val variableReference : VariableReference)
     override fun columnValue() = PrimValue(this)
 
 
-    override fun case() = "variable"
+    override fun case() = "partVariable"
 
 
     override val sumModelObject = this

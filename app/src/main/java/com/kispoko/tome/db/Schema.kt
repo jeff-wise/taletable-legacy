@@ -97,20 +97,22 @@ typealias DB_AuthorValue =
 
 val bookTable =
     Table6("book",
-           "title",
-           "authors",
-           "abstract",
+           "book_id",
+           "engine",
+           "variables",
            "introduction",
            "conclusion",
            "chapters")
 
+
 typealias DB_BookValue =
-    RowValue6<PrimValue<BookTitle>,
-              CollValue<Author>,
-              PrimValue<BookAbstract>,
+    RowValue6<PrimValue<BookId>,
+              ProdValue<Engine>,
+              CollValue<Variable>,
               MaybeProdValue<BookContent>,
               MaybeProdValue<BookContent>,
               CollValue<BookChapter>>
+
 
 // BOOK FORMAT
 // ---------------------------------------------------------------------------------------------
@@ -125,6 +127,22 @@ typealias DB_BookFormatValue =
     RowValue3<ProdValue<ElementFormat>,
               ProdValue<ElementFormat>,
               ProdValue<ChapterButtonFormat>>
+
+// BOOK INFO
+// ---------------------------------------------------------------------------------------------
+
+val bookInfoTable =
+    Table3("book_info",
+           "title",
+           "authors",
+           "abstract")
+
+
+typealias DB_BookInfoValue =
+    RowValue3<PrimValue<BookTitle>,
+              CollValue<Author>,
+              PrimValue<BookAbstract>>
+
 
 
 // BOOK CONTENT
@@ -221,14 +239,16 @@ typealias DB_BorderValue =
 // CAMPAIGN
 // ---------------------------------------------------------------------------------------------
 
-val campaignTable = Table4("campaign",
+val campaignTable = Table5("campaign",
                            "campaign_id",
+                           "engine",
                            "name",
                            "summary",
                            "game_id")
 
 typealias DB_CampaignValue =
-    RowValue4<PrimValue<CampaignId>,
+    RowValue5<PrimValue<CampaignId>,
+              ProdValue<Engine>,
               PrimValue<CampaignName>,
               PrimValue<CampaignSummary>,
               PrimValue<GameId>>
@@ -721,32 +741,32 @@ typealias DB_SectionValue =
 // SESSION
 // ---------------------------------------------------------------------------------------------
 
-val sessionTable =
-    Table4("session",
-           "name",
-           "time_last_active",
-           "active_sheet_id",
-           "sheet_records")
-
-typealias DB_SessionValue =
-    RowValue4<PrimValue<SessionName>,
-              PrimValue<SessionLastActiveTime>,
-              MaybePrimValue<SheetId>,
-              CollValue<SessionSheetRecord>>
-
+//val sheetSessionTable =
+//    Table4("sheet_session",
+//           "name",
+//           "time_last_active",
+//           "active_sheet_id",
+//           "sheet_records")
+//
+//typealias DB_SheetSessionValue =
+//    RowValue4<PrimValue<SessionName>,
+//              PrimValue<SessionLastActiveTime>,
+//              MaybePrimValue<SheetId>,
+//              CollValue<SheetSessionRecord>>
+//
 
 // SESSION SHEET RECORD
 // ---------------------------------------------------------------------------------------------
-val sessionSheetRecordTable =
-    Table3("session_sheet_record",
-           "sheet_id",
-           "session_index",
-           "time_last_active")
-
-typealias DB_SessionSheetRecordValue =
-    RowValue3<PrimValue<SheetId>,
-              PrimValue<SessionRecordIndex>,
-              PrimValue<SheetLastActiveTime>>
+//val sessionSheetRecordTable =
+//    Table3("session_sheet_record",
+//           "sheet_id",
+//           "session_index",
+//           "time_last_active")
+//
+//typealias DB_SessionSheetRecordValue =
+//    RowValue3<PrimValue<SheetId>,
+//              PrimValue<SessionRecordIndex>,
+//              PrimValue<SheetLastActiveTime>>
 
 
 // SETTINGS
@@ -1509,16 +1529,33 @@ typealias DB_WidgetStoryFormatValue =
               ProdValue<TextFormat>>
 
 
+// WIDGET: STORY > PART > FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetStoryPartFormatTable =
+    Table2("widget_story_part_format",
+           "highlight_skew",
+           "highlight_corner_radius")
+
+
+typealias DB_WidgetStoryPartFormatValue =
+    RowValue2<PrimValue<HighlightSkew>,
+              PrimValue<HighlightCornerRadius>>
+
+
 // WIDGET: STORY > PART: SPAN
 // ---------------------------------------------------------------------------------------------
 
 val widgetStoryPartSpanTable =
-    Table2("widget_story_part_span",
+    Table3("widget_story_part_span",
+            "format",
             "text_format",
             "text")
 
+
 typealias DB_WidgetStoryPartSpanValue =
-    RowValue2<ProdValue<TextFormat>,
+    RowValue3<ProdValue<StoryPartFormat>,
+              ProdValue<TextFormat>,
               PrimValue<StoryPartText>>
 
 
@@ -1526,13 +1563,15 @@ typealias DB_WidgetStoryPartSpanValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetStoryPartVariableTable =
-    Table3("widget_story_part_variable",
+    Table4("widget_story_part_variable",
+           "format",
            "text_format",
            "variable_id",
            "numeric_editor_type")
 
 typealias DB_WidgetStoryPartVariableValue =
-    RowValue3<ProdValue<TextFormat>,
+    RowValue4<ProdValue<StoryPartFormat>,
+              ProdValue<TextFormat>,
               PrimValue<VariableId>,
               PrimValue<NumericEditorType>>
 
@@ -1541,26 +1580,31 @@ typealias DB_WidgetStoryPartVariableValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetStoryPartIconTable =
-    Table1("widget_story_part_icon",
+    Table2("widget_story_part_icon",
+           "format",
            "icon")
 
 typealias DB_WidgetStoryPartIconValue =
-    RowValue1<ProdValue<Icon>>
+    RowValue2<ProdValue<StoryPartFormat>,
+              ProdValue<Icon>>
 
 
 // WIDGET: STORY > PART: ACTION
 // ---------------------------------------------------------------------------------------------
 
 val widgetStoryPartActionTable =
-    Table5("widget_story_part_action",
+    Table6("widget_story_part_action",
+           "format",
            "text",
            "action",
            "text_format",
            "icon_format",
            "show_procedure_dialog")
 
+
 typealias DB_WidgetStoryPartActionValue =
-    RowValue5<PrimValue<StoryPartText>,
+    RowValue6<ProdValue<StoryPartFormat>,
+              PrimValue<StoryPartText>,
               ProdValue<Action>,
               ProdValue<TextFormat>,
               ProdValue<IconFormat>,

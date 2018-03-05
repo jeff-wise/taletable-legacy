@@ -118,7 +118,7 @@ data class BooleanReferenceVariable(val variableReference : VariableReference)
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = this.variableReference.toDocument()
-                                    .withCase("variable")
+                                    .withCase("partVariable")
 
 
     // -----------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ data class BooleanReferenceVariable(val variableReference : VariableReference)
     override fun columnValue() = PrimValue(this)
 
 
-    override fun case() = "variable"
+    override fun case() = "partVariable"
 
 
     override val sumModelObject = this

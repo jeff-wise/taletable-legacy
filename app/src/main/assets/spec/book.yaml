@@ -1,0 +1,284 @@
+
+---
+
+version: '0.7'
+metadata:
+  name: Book
+  authors:
+  - name: 'Jeff Wise'
+description:
+  overview: |+
+    Book
+root_type: game
+types:
+- type: product_type
+  product_type:
+    name: book
+    label: Book
+    description: A book.
+    group: 'Book'
+    fields:
+    - name: book_id
+      type:
+        type: custom_type
+        custom_type: book_id
+      presence: required
+      description: The id of the book.
+    - name: book_info
+      type:
+        type: custom_type
+        custom_type: book_inf
+      presence: required
+      description: The book information.
+    - name: variables
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable
+      presence: required
+      description: >
+        The game's authors.
+    - name: engine
+      type:
+        type: custom_type
+        custom_type: engine
+      presence: required
+      description: The engine.
+    - name: introduction
+      type:
+        type: custom_coll_type
+        custom_coll_type: group 
+      presence: optional
+      description: A brief description of the game rules.
+    - name: conclusion
+      type:
+        type: custom_coll_type
+        custom_coll_type: group 
+      presence: optional
+      description: A brief description of the game rules.
+    - name: chapters
+      type: 
+        type: custom_coll_type
+        custom_coll_type: book_chapter
+      presence: required
+      description: The chapters
+- type: primitive_type
+  primitive_type: 
+    name: book_id
+    label: Book Identifier
+    description: >
+      The unique book identifier.
+    group: Book
+    base_type: 
+      type: prim_type
+      prim_type: string
+- type: product_type
+  product_type:
+    name: book_info
+    label: Book Info
+    description: Book info. 
+    group: 'Book'
+    fields:
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The title of the game book.
+    - name: authors
+      type: 
+        type: custom_coll_type
+        custom_coll_type: author
+      presence: required
+      description: >
+        The game's authors.
+    - name: abstract
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: A brief description of the game rules.
+- type: product_type
+  product_type:
+    name: book_content
+    label: Book content
+    description: Book content
+    group: 'Book'
+    fields:
+    - name: groups
+      type:
+        type: custom_coll_type
+        custom_coll_type: group
+      presence: required
+      description: The chapter id.
+- type: product_type
+  product_type:
+    name: book_format
+    label: Book Format
+    description: Book format
+    group: 'Book'
+    fields:
+    - name: element_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The element format.
+    - name: chapter_index_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The element format.
+    - name: chapter_button_format
+      type:
+        type: custom_type
+        custom_type: chapter_button_format
+      presence: optional
+      description: The element format.
+- type: product_type
+  product_type:
+    name: chapter_button_format
+    label: Chapter Button Format
+    description: Chapter Button format
+    group: 'Book'
+    fields:
+    - name: element_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The element format.
+    - name: index_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The index format.
+    - name: title_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The title format.
+    - name: summary_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The summary format.
+- type: product_type
+  product_type:
+    name: book_chapter
+    label: Game book Chapter
+    description: Chapter
+    group: 'book'
+    fields:
+    - name: id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter title.
+    - name: sections
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_section
+      presence: required
+      description: The chapters
+- type: product_type
+  product_type:
+    name: book_section
+    label: Game book Chapter Section
+    description: Chapter
+    group: 'book'
+    type: product
+    fields:
+    - name: id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The section id.
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The section title.
+    - name: body
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The section body.
+    - name: subsections
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_subsection
+      presence: optional
+      description: The sub sections.
+- type: product_type
+  product_type:
+    name: book_subsection
+    label: Game book Chapter SubSection
+    description: Chapter
+    group: 'book'
+    type: product
+    fields:
+    - name: id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection id.
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection title.
+    - name: body
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection body.
+- type: product_type
+  product_type:
+    name: book_reference
+    label: Book Reference
+    description: Chapter
+    group: 'book'
+    type: product
+    fields:
+    - name: book_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+    - name: chapter_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+    - name: section_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The section id.
+    - name: subsection_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The subsection id.
+constraints:

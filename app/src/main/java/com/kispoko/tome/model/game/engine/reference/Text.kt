@@ -11,7 +11,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
 import effect.apply
 import effect.effApply
 import effect.effError
@@ -52,7 +52,7 @@ sealed class TextReference : ToDocument, SumType, Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    open fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf()
+    open fun dependencies(entityId : EntityId): Set<VariableReference> = setOf()
 }
 
 
@@ -176,7 +176,7 @@ data class TextReferenceVariable(val variableReference : VariableReference)
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = setOf(variableReference)
+    override fun dependencies(entityId : EntityId) = setOf(variableReference)
 
 
     // -----------------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ data class TextReferenceVariable(val variableReference : VariableReference)
     override fun columnValue() = PrimValue(this)
 
 
-    override fun case() = "variable"
+    override fun case() = "partVariable"
 
 
     override val sumModelObject = this
@@ -230,8 +230,8 @@ data class TextReferenceProgram(val invocation : Invocation) : TextReference()
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> =
-            this.invocation.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId) : Set<VariableReference> =
+            this.invocation.dependencies(entityId)
 
 
     // -----------------------------------------------------------------------------------------

@@ -25,7 +25,6 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
-import com.kispoko.tome.rts.entity.sheet.SheetContext
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -43,7 +42,7 @@ class NavigationActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var sheetContext : SheetContext? = null
+//    private var sheetContext : SheetContext? = null
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Dark)
 
@@ -64,8 +63,8 @@ class NavigationActivity : AppCompatActivity()
         // (2) Read Parameters
         // -------------------------------------------------------------------------------------
 
-        if (this.intent.hasExtra("sheet_context"))
-            this.sheetContext = this.intent.getSerializableExtra("sheet_context") as SheetContext
+//        if (this.intent.hasExtra("sheet_context"))
+//            this.sheetContext = this.intent.getSerializableExtra("sheet_context") as SheetContext
 
         // (3) Initialize Views
         // -------------------------------------------------------------------------------------

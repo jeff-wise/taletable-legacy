@@ -1,10 +1,9 @@
 
 package com.kispoko.tome.router
 
+
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-
-
 
 
 
@@ -16,16 +15,15 @@ import io.reactivex.subjects.PublishSubject
 object Router
 {
 
-    private val bus = PublishSubject.create<Any>().toSerialized()
+    val bus = PublishSubject.create<Any>().toSerialized()
 
 
-
-    fun send(message : Message) {
+    fun send(message : Any) {
         bus.onNext(message)
     }
 
 
-    fun <T> listen(eventType : Class<T>): Observable<T> = bus.ofType(eventType)
+    fun <T> listen(eventType : Class<T>) : Observable<T> = bus.ofType(eventType)
 
 
 

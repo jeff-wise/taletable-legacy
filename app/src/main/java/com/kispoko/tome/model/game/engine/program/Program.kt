@@ -17,7 +17,6 @@ import com.kispoko.tome.model.game.engine.reference.DataReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.engine.interpreter.ResultBindingDoesNotExist
-import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType

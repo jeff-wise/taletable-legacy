@@ -8,7 +8,6 @@ import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.sheet.SheetContext
 import effect.effApply
 import effect.effError
 import effect.effValue

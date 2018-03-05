@@ -18,7 +18,7 @@ import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
-import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -98,9 +98,11 @@ sealed class TableWidgetColumn(open val columnName : ColumnName,
 
     abstract fun type() : TableWidgetColumnType
 
+
     abstract fun columnFormat() : ColumnFormat
 
-    abstract fun defaultValueString(sheetContext : SheetContext) : String
+
+    abstract fun defaultValueString(entityId : EntityId) : String
 
 }
 
@@ -203,7 +205,7 @@ data class TableWidgetBooleanColumn(
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
 
 
-    override fun defaultValueString(sheetContext : SheetContext) =
+    override fun defaultValueString(entityId : EntityId) =
             this.defaultValue().toString()
 
 
@@ -360,9 +362,9 @@ data class TableWidgetNumberColumn(
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
 
 
-    override fun defaultValueString(sheetContext : SheetContext) : String
+    override fun defaultValueString(entityId : EntityId) : String
     {
-        val maybeValue = this.defaultValue().value(sheetContext)
+        val maybeValue = this.defaultValue().value(entityId)
         when (maybeValue)
         {
             is effect.Val ->
@@ -538,9 +540,9 @@ data class TableWidgetTextColumn(
     override fun columnFormat(): ColumnFormat = this.format().columnFormat()
 
 
-    override fun defaultValueString(sheetContext : SheetContext) : String
+    override fun defaultValueString(entityId : EntityId) : String
     {
-        val maybeValue = this.defaultValue().value(sheetContext)
+        val maybeValue = this.defaultValue().value(entityId)
         when (maybeValue)
         {
             is effect.Val -> {

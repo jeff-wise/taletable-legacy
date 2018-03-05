@@ -26,7 +26,7 @@ import java.util.*
  * Book Reference
  */
 data class BookReference(override val id : UUID,
-                         val rulebookId : BookId,
+                         val bookId : BookId,
                          val chapterId : BookChapterId,
                          val sectionId : Maybe<BookSectionId>,
                          val subsectionId : Maybe<BookSubsectionId>)
@@ -92,7 +92,7 @@ data class BookReference(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun rulebookId() : BookId = this.rulebookId
+    fun rulebookId() : BookId = this.bookId
 
 
     fun chapterId() : BookChapterId = this.chapterId
@@ -116,7 +116,7 @@ data class BookReference(override val id : UUID,
 
     override fun rowValue() : DB_BookReferenceValue =
         RowValue4(bookReferenceTable,
-                  PrimValue(this.rulebookId),
+                  PrimValue(this.bookId),
                   PrimValue(this.chapterId),
                   MaybePrimValue(this.sectionId),
                   MaybePrimValue(this.subsectionId))

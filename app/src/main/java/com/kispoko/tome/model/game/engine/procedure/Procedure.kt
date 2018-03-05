@@ -20,8 +20,6 @@ import com.kispoko.tome.model.game.engine.variable.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.program
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.rts.entity.updateVariable
 import effect.*
 import maybe.*

@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.v4.content.ContextCompat
@@ -27,8 +28,8 @@ import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.widget.table.*
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -321,11 +322,12 @@ object TableWidgetView
 
     fun view(tableWidget : TableWidget,
              format : TableWidgetFormat,
-             sheetUIContext : SheetUIContext) : View
+             entityId : EntityId,
+             context : Context) : View
     {
-        val layout = WidgetView.widgetTouchLayout(format.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.widgetTouchLayout(format.widgetFormat(), entityId, context)
 
-        val tableLayout = this.tableLayout(format, sheetUIContext)
+        val tableLayout = this.tableLayout(format, entityId, context)
         val tableLayoutId = Util.generateViewId()
         tableLayout.id = tableLayoutId
         tableWidget.tableLayoutId = tableLayoutId
@@ -334,12 +336,14 @@ object TableWidgetView
 
         tableLayout.addView(this.headerRowView(tableWidget.columns(),
                                                tableWidget.format(),
-                                               sheetUIContext))
+                                               entityId,
+                                               context))
 
         tableWidget.rows().forEachIndexed { rowIndex, tableWidgetRow ->
             tableLayout.addView(tableWidgetRow.view(tableWidget,
                                                     rowIndex,
-                                                    sheetUIContext))
+                                                    entityId,
+                                                    context))
         }
 
         return layout
@@ -347,7 +351,8 @@ object TableWidgetView
 
 
     private fun tableLayout(format : TableWidgetFormat,
-                            sheetUIContext : SheetUIContext) : TableLayout
+                            entityId : EntityId,
+                            context : Context) : TableLayout
     {
         val layout = TableLayoutBuilder()
 
@@ -356,9 +361,9 @@ object TableWidgetView
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.shrinkAllColumns     = true
 
-        layout.backgroundColor      = SheetManager.color(
-                                            sheetUIContext.sheetId,
-                                            format.widgetFormat().elementFormat().backgroundColorTheme())
+        layout.backgroundColor      = colorOrBlack(
+                                            format.widgetFormat().elementFormat().backgroundColorTheme(),
+                                            entityId)
 
         // Divider
         // -------------------------------------------------------------------------------------
@@ -368,11 +373,10 @@ object TableWidgetView
         {
             is Just ->
             {
-                val dividerDrawable = ContextCompat.getDrawable(sheetUIContext.context,
+                val dividerDrawable = ContextCompat.getDrawable(context,
                                                                 R.drawable.table_row_divider)
 
-                val dividerColor = SheetManager.color(sheetUIContext.sheetId,
-                                                      bottomBorder.value.colorTheme())
+                val dividerColor = colorOrBlack(bottomBorder.value.colorTheme(), entityId)
 
                 dividerDrawable.colorFilter =
                         PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
@@ -392,13 +396,14 @@ object TableWidgetView
 //        }
 
 
-        return layout.tableLayout(sheetUIContext.context)
+        return layout.tableLayout(context)
     }
 
 
     private fun headerRowView(columns : List<TableWidgetColumn>,
                               format : TableWidgetFormat,
-                              sheetUIContext: SheetUIContext) : TableRow
+                              entityId : EntityId,
+                              context : Context) : TableRow
     {
         val tableRow = TableRowBuilder()
 
@@ -409,27 +414,31 @@ object TableWidgetView
         tableRow.paddingSpacing = format.headerFormat().textFormat().elementFormat().padding()
         tableRow.marginSpacing  = format.headerFormat().textFormat().elementFormat().margins()
 
-        tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
-                                        format.headerFormat().textFormat().elementFormat().backgroundColorTheme())
+        tableRow.backgroundColor    = colorOrBlack(
+                                        format.headerFormat().textFormat().elementFormat().backgroundColorTheme(),
+                                        entityId)
 
         columns.forEach { column ->
 
             val cellView = this.headerCellView(format.headerFormat(),
                                                column,
-                                               sheetUIContext)
+                                               entityId,
+                                               context)
             tableRow.rows.add(cellView)
         }
 
-        return tableRow.tableRow(sheetUIContext.context)
+        return tableRow.tableRow(context)
     }
 
 
     private fun headerCellView(rowFormat : TableWidgetRowFormat,
                                column : TableWidgetColumn,
-                               sheetUIContext: SheetUIContext) : LinearLayout
+                               entityId : EntityId,
+                               context : Context) : LinearLayout
     {
         val layout = TableWidgetCellView.layout(column.columnFormat(),
-                                                sheetUIContext)
+                                                entityId,
+                                                context)
 
         val textView = TextViewBuilder()
 
@@ -439,9 +448,9 @@ object TableWidgetView
 
         textView.text           = column.nameString()
 
-        rowFormat.textFormat().styleTextViewBuilder(textView, sheetUIContext)
+        rowFormat.textFormat().styleTextViewBuilder(textView, entityId, context)
 
-        layout.addView(textView.textView(sheetUIContext.context))
+        layout.addView(textView.textView(context))
 
         return layout
     }

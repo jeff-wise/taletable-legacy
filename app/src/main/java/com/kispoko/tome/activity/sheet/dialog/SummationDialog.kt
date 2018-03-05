@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -22,9 +23,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.util.Util
 
 
@@ -32,7 +32,7 @@ import com.kispoko.tome.util.Util
 /**
  * Summation Dialog Fragment
  */
-class SummationDialogFragment : DialogFragment()
+class SummationDialog : DialogFragment()
 {
 
 
@@ -40,9 +40,9 @@ class SummationDialogFragment : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var summation        : Summation? = null
-    private var summmationLabel  : String? = null
-    private var sheetContext     : SheetContext? = null
+    private var summation       : Summation? = null
+    private var summmationLabel : String? = null
+    private var entityId        : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -53,14 +53,14 @@ class SummationDialogFragment : DialogFragment()
     {
         fun newInstance(summation : Summation,
                         summationLabel : String,
-                        sheetContext: SheetContext) : SummationDialogFragment
+                        entityId : EntityId) : SummationDialog
         {
-            val dialog = SummationDialogFragment()
+            val dialog = SummationDialog()
 
             val args = Bundle()
             args.putSerializable("summationWithId", summation)
             args.putString("summation_label", summationLabel)
-            args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
             return dialog
@@ -77,9 +77,9 @@ class SummationDialogFragment : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.summation        = arguments.getSerializable("summationWithId") as Summation
-        this.summmationLabel  = arguments.getString("summation_label")
-        this.sheetContext     = arguments.getSerializable("sheet_context") as SheetContext
+        this.summation       = arguments.getSerializable("summationWithId") as Summation
+        this.summmationLabel = arguments.getString("summation_label")
+        this.entityId        = arguments.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -87,23 +87,17 @@ class SummationDialogFragment : DialogFragment()
 
         val dialog = Dialog(activity)
 
-        val sheetContext = this.sheetContext
-        if (sheetContext != null)
-        {
-            val sheetUIContext = SheetUIContext(sheetContext, context)
+        val dialogLayout = this.dialogLayout()
 
-            val dialogLayout = this.dialogLayout(sheetUIContext)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(dialogLayout)
 
-            dialog.setContentView(dialogLayout)
+        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-            val width  = context.resources.getDimension(R.dimen.action_dialog_width)
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
-
-            dialog.window.setLayout(width.toInt(), height)
-        }
+        dialog.window.setLayout(width.toInt(), height)
 
         return dialog
     }
@@ -113,23 +107,17 @@ class SummationDialogFragment : DialogFragment()
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val sheetContext = this.sheetContext
-        return if (sheetContext != null)
-        {
-            val sheetUIContext  = SheetUIContext(sheetContext, context)
+        val summation      = this.summation
+        val summationLabel = this.summmationLabel
+        val entityId       = this.entityId
 
-            val summation      = this.summation
-            val summationLabel = this.summmationLabel
-
-            if (summation != null && summationLabel != null) {
-                val viewBuilder = SummationViewBuilder(summation,
-                                                       summationLabel,
-                                                       sheetUIContext,
-                                                       this)
-                viewBuilder.view()
-            }
-            else
-                super.onCreateView(inflater, container, savedInstanceState)
+        return if (summation != null && summationLabel != null && entityId != null) {
+            val viewBuilder = SummationViewBuilder(summation,
+                                                   summationLabel,
+                                                   this,
+                                                   entityId,
+                                                   context)
+            viewBuilder.view()
         }
         else
         {
@@ -142,7 +130,7 @@ class SummationDialogFragment : DialogFragment()
     // DIALOG LAYOUT
     // -----------------------------------------------------------------------------------------
 
-    fun dialogLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    fun dialogLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -158,21 +146,21 @@ class SummationDialogFragment : DialogFragment()
 
 class SummationViewBuilder(val summation : Summation,
                            val summationLabel : String,
-                           val sheetUIContext : SheetUIContext,
-                           val dialog : DialogFragment)
+                           val dialog : DialogFragment,
+                           val entityId : EntityId,
+                           val context : Context)
 {
 
-    // -----------------------------------------------------------------------------------------yy
+    // -----------------------------------------------------------------------------------------
     // PROPERTIES
-    // -----------------------------------------------------------------------------------------yy
+    // -----------------------------------------------------------------------------------------
 
-    val sheetContext = SheetContext(sheetUIContext)
-    val activity = sheetUIContext.context as AppCompatActivity
+    val activity = context as AppCompatActivity
 
 
-    // -----------------------------------------------------------------------------------------yy
+    // -----------------------------------------------------------------------------------------
     // VIEWS
-    // -----------------------------------------------------------------------------------------yy
+    // -----------------------------------------------------------------------------------------
 
     fun view() : View
     {
@@ -205,11 +193,11 @@ class SummationViewBuilder(val summation : Summation,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -228,7 +216,7 @@ class SummationViewBuilder(val summation : Summation,
         mainLayout.addView(this.nameView())
 
         // Total
-        val total = summation.value(sheetContext)
+        val total = summation.value(entityId)
         mainLayout.addView(this.totalView(Util.doubleString(total)))
 
         layout.addView(mainLayout)
@@ -256,7 +244,7 @@ class SummationViewBuilder(val summation : Summation,
 
         layout.corners          = Corners(2.0, 2.0, 0.0, 0.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -277,24 +265,24 @@ class SummationViewBuilder(val summation : Summation,
 
         layout.backgroundColor  = Color.WHITE
 
-        return layout.relativeLayout(sheetUIContext.context)
+        return layout.relativeLayout(context)
     }
 
 
-    private fun headerBottomBorderView() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 1
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
+//    private fun headerBottomBorderView() : LinearLayout
+//    {
+//        val layout              = LinearLayoutBuilder()
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.heightDp         = 1
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+//        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
 
 
     private fun nameView() : TextView
@@ -312,16 +300,16 @@ class SummationViewBuilder(val summation : Summation,
 
         name.font           = Font.typeface(TextFont.default(),
                                             TextFontStyle.Bold,
-                                            sheetUIContext.context)
+                                            context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        name.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        name.color          = colorOrBlack(colorTheme, entityId)
 
         name.sizeSp         = 18f
 
-        return name.textView(sheetUIContext.context)
+        return name.textView(context)
     }
 
 
@@ -374,7 +362,7 @@ class SummationViewBuilder(val summation : Summation,
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color                  = colorOrBlack(iconColorTheme, entityId)
 
 //        icon.margin.rightDp         = 7f
 
@@ -388,18 +376,18 @@ class SummationViewBuilder(val summation : Summation,
 
         total.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Bold,
-                                                sheetUIContext.context)
+                                                context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-        total.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        total.color             = colorOrBlack(colorTheme, entityId)
 
 
 
         total.sizeSp            = 22f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -411,7 +399,7 @@ class SummationViewBuilder(val summation : Summation,
         val layout = this.summationScrollView()
 
         // Components
-        val termSummaries = summation.summary(sheetContext)
+        val termSummaries = summation.summary(entityId)
         layout.addView(this.componentsView(termSummaries))
 
         return layout
@@ -427,7 +415,7 @@ class SummationViewBuilder(val summation : Summation,
 
 //        scrollView.fadingEnabled = false
 
-        return scrollView.scrollView(sheetUIContext.context)
+        return scrollView.scrollView(context)
     }
 
 
@@ -451,7 +439,7 @@ class SummationViewBuilder(val summation : Summation,
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -496,7 +484,7 @@ class SummationViewBuilder(val summation : Summation,
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
 //        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -515,16 +503,16 @@ class SummationViewBuilder(val summation : Summation,
 
         header.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Bold,
-                                                    sheetUIContext.context)
+                                                    context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
-        header.color                = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        header.color                = colorOrBlack(colorTheme, entityId)
 
         header.sizeSp               = 15f
 
-        return header.textView(sheetUIContext.context)
+        return header.textView(context)
     }
 
 
@@ -583,15 +571,14 @@ class SummationViewBuilder(val summation : Summation,
 
         name.font                       = Font.typeface(TextFont.default(),
                                                         TextFontStyle.Regular,
-                                                        sheetUIContext.context)
+                                                        context)
 
         name.sizeSp                     = 16f
 
         val nameColorTheme = ColorTheme(setOf(
                                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
                                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        name.color                      = SheetManager.color(sheetUIContext.sheetId,
-                                                             nameColorTheme)
+        name.color                      = colorOrBlack(nameColorTheme, entityId)
 
         // (3 B) Value
         // -------------------------------------------------------------------------------------
@@ -607,17 +594,16 @@ class SummationViewBuilder(val summation : Summation,
 
         value.font                      = Font.typeface(TextFont.default(),
                                                         TextFontStyle.Medium,
-                                                        sheetUIContext.context)
+                                                        context)
 
         value.sizeSp                    = 17f
 
         val valueColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_17")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
-        value.color                     = SheetManager.color(sheetUIContext.sheetId,
-                                                             valueColorTheme)
+        value.color                     = colorOrBlack(valueColorTheme, entityId)
 
-        return layout.relativeLayout(sheetUIContext.context)
+        return layout.relativeLayout(context)
     }
 
 
@@ -631,9 +617,9 @@ class SummationViewBuilder(val summation : Summation,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
-        divider.backgroundColor     = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        divider.backgroundColor     = colorOrBlack(colorTheme, entityId)
 
-        return divider.linearLayout(sheetUIContext.context)
+        return divider.linearLayout(context)
     }
 
 

@@ -3,7 +3,6 @@ package com.kispoko.tome.official
 
 
 import com.kispoko.tome.ApplicationAssets
-import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
@@ -15,11 +14,11 @@ import com.kispoko.tome.model.sheet.SheetId
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Official Sheet
+ * Official Sheet Id
  */
-data class OfficialSheet(val sheetId : SheetId,
-                         val campaignId : CampaignId,
-                         val gameId : GameId)
+data class OfficialSheetId(val sheetId : SheetId,
+                           val campaignId : CampaignId,
+                           val gameId : GameId)
 {
 
     val filePath = officialDirectoryPath +
@@ -27,7 +26,7 @@ data class OfficialSheet(val sheetId : SheetId,
                      "/sheets/" + sheetId.value + ".yaml"
 
 
-    fun officialCampaign() = OfficialCampaign(this.campaignId, this.gameId)
+    fun officialCampaignId() = OfficialCampaignId(this.campaignId, this.gameId)
 
 }
 
@@ -39,7 +38,7 @@ data class OfficialSheet(val sheetId : SheetId,
 /**
  * Official Campaign
  */
-data class OfficialCampaign(val campaignId : CampaignId, val gameId : GameId)
+data class OfficialCampaignId(val campaignId : CampaignId, val gameId : GameId)
 {
 
     val filePath = officialDirectoryPath +
@@ -47,7 +46,7 @@ data class OfficialCampaign(val campaignId : CampaignId, val gameId : GameId)
             "/campaigns/" + campaignId.value + ".yaml"
 
 
-    fun officialGame() = OfficialGame(this.gameId)
+    fun officialGameId() = OfficialGameId(this.gameId)
 }
 
 
@@ -58,7 +57,7 @@ data class OfficialCampaign(val campaignId : CampaignId, val gameId : GameId)
 /**
  * Official Game
  */
-data class OfficialGame(val gameId : GameId)
+data class OfficialGameId(val gameId : GameId)
 {
 
     val filePath = officialDirectoryPath + "/" + gameId.value +
@@ -110,82 +109,4 @@ sealed class OfficialTheme
 
 val officialDirectoryPath = "official"
 
-
-
-//
-//class OfficialIndex(val sheets: List<OfficialSheet>,
-//                    val campaigns : List<OfficialCampaign>,
-//                    val games : List<OfficialGame>,
-//                    val themes : List<OfficialTheme>)
-//{
-//
-//    val sheetById : Map<SheetId,OfficialSheet> = sheets.associateBy { it.sheetId }
-//
-//    val campaignById : Map<CampaignId,OfficialCampaign> = campaigns.associateBy { it.campaignId }
-//
-//    val gameById : Map<GameId,OfficialGame> = games.associateBy { it.gameId }
-//
-//
-//    companion object
-//    {
-//        fun load(context : Context) : OfficialIndex?
-//        {
-//            val manifestFilePath = ApplicationAssets.officialDirectoryPath + "/manifest.yaml"
-//
-//            val officialIndexParser = parseYaml(context.assets.open(manifestFilePath),
-//                                                this::fromYaml)
-//
-//            when (officialIndexParser)
-//            {
-//                is Val -> return officialIndexParser.value
-//            }
-////
-////            val parse = YamlString.parse(context.assets.open(manifestFilePath))
-////            when (parse)
-////            {
-////                is YamlParseValue ->
-////                {
-////                    val yamlParse = fromYaml(parse.value)
-////                    when (yamlParse)
-////                    {
-////                        is Val ->
-////                        is Err -> {
-////                            Log.d("***OFFICIAL", yamlParse.toString())
-////                            return null
-////                        }
-////                    }
-////                }
-////                is YamlParseError -> pa
-////            }
-//
-//            return null
-//        }
-//
-//
-//        fun fromYaml(yamlValue : YamlValue) : YamlParser<OfficialIndex> = when (yamlValue)
-//        {
-//            is YamlDict ->
-//            {
-//                apply(::OfficialIndex,
-//                      // Sheets
-//                      yamlValue.array("sheets") ap {
-//                          it.mapApply { OfficialSheet.fromYaml(it) }},
-//                      // Campaigns
-//                      yamlValue.array("campaigns") ap {
-//                          it.mapApply { OfficialCampaign.fromYaml(it) }},
-//                      // Games
-//                      yamlValue.array("games") ap {
-//                          it.mapApply { OfficialGame.fromYaml(it) }},
-//                      // Themes
-//                      yamlValue.array("themes") ap {
-//                          it.mapApply { OfficialTheme.fromYaml(it) }}
-//                     )
-//            }
-//            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
-//        }
-//
-//    }
-//}
-//
-//
 

@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
@@ -25,6 +24,8 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -319,19 +320,21 @@ object NumberWidgetView
 
     fun view(numberWidget : NumberWidget,
              format : NumberWidgetFormat,
-             sheetUIContext: SheetUIContext) : View
+             entityId : EntityId,
+             context : Context) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(format.widgetFormat(), entityId, context)
 
         layout.setOnClickListener {
-            val valueVariable = numberWidget.valueVariable(SheetContext(sheetUIContext))
+            val valueVariable = numberWidget.valueVariable(entityId)
             when (valueVariable)
             {
                 is effect.Val ->
                 {
                     openNumberVariableEditorDialog(valueVariable.value,
                                                    UpdateTargetNumberWidget(numberWidget.id),
-                                                   sheetUIContext)
+                                                   entityId,
+                                                   context)
                 }
                 is Err -> ApplicationLog.error(valueVariable.error)
             }
@@ -339,19 +342,18 @@ object NumberWidgetView
 
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 
-        contentLayout.addView(this.mainView(numberWidget, format, sheetUIContext))
+        contentLayout.addView(this.mainView(numberWidget, format, entityId, context))
 
         val rulebookReference = numberWidget.rulebookReference()
         when (rulebookReference) {
             is Just -> {
-                layout.setOnLongClickListener {
-                    Log.d("***NUMBER WIDGET", "setting rules ref listener")
-                    val sheetActivity = sheetUIContext.context as SheetActivity
-                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
-                                                                   SheetContext(sheetUIContext))
-                    dialog.show(sheetActivity.supportFragmentManager, "")
-                    true
-                }
+//                layout.setOnLongClickListener {
+//                    val sheetActivity = context as SheetActivity
+//                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
+//                                                                   entityId)
+//                    dialog.show(sheetActivity.supportFragmentManager, "")
+//                    true
+//                }
             }
         }
 
@@ -373,9 +375,10 @@ object NumberWidgetView
      */
     private fun mainView(numberWidget : NumberWidget,
                          format : NumberWidgetFormat,
-                         sheetUIContext: SheetUIContext) : LinearLayout
+                         entityId : EntityId,
+                         context : Context) : LinearLayout
     {
-        val layout = this.mainLayout(format, sheetUIContext.context)
+        val layout = this.mainLayout(format, context)
 
         // > Outside Top/Left Label View
 //        if (format.outsideLabelString() != null) {
@@ -386,7 +389,7 @@ object NumberWidgetView
 //        }
 
         // > Value
-        layout.addView(this.valueMainView(numberWidget, format, sheetUIContext))
+        layout.addView(this.valueMainView(numberWidget, format, entityId, context))
 
         // > Outside Bottom/Right Label View
 //        if (format.outsideLabelString() != null) {
@@ -425,9 +428,10 @@ object NumberWidgetView
      */
     private fun valueMainView(numberWidget : NumberWidget,
                               format : NumberWidgetFormat,
-                              sheetUIContext: SheetUIContext) : LinearLayout
+                              entityId : EntityId,
+                              context : Context) : LinearLayout
     {
-        val layout = this.valueMainViewLayout(format, sheetUIContext)
+        val layout = this.valueMainViewLayout(format, entityId, context)
 
         val insideLabel = numberWidget.insideLabel()
 
@@ -436,19 +440,19 @@ object NumberWidgetView
             is Just -> {
                 val position = format.insideLabelFormat().elementFormat().position()
                 if (position.isTop() || position.isLeft()) {
-                    layout.addView(this.insideLabelView(format, insideLabel.value.value, sheetUIContext))
+                    layout.addView(this.insideLabelView(format, insideLabel.value.value, entityId, context))
                 }
             }
         }
 
-        layout.addView(this.valueView(numberWidget, format, sheetUIContext))
+        layout.addView(this.valueView(numberWidget, format, entityId, context))
 
         // > Inside Bottom/Right Label View
         when (insideLabel) {
             is Just -> {
                 val position = format.insideLabelFormat().elementFormat().position()
                 if (position.isBottom() || position.isRight()) {
-                    layout.addView(this.insideLabelView(format, insideLabel.value.value, sheetUIContext))
+                    layout.addView(this.insideLabelView(format, insideLabel.value.value, entityId, context))
                 }
             }
         }
@@ -458,7 +462,8 @@ object NumberWidgetView
 
 
     private fun valueMainViewLayout(format : NumberWidgetFormat,
-                                    sheetUIContext: SheetUIContext) : LinearLayout
+                                    entityId : EntityId,
+                                    context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -494,9 +499,8 @@ object NumberWidgetView
 //                 this.data().format().background() != BackgroundColor.NONE)
 //        {
 
-        layout.backgroundColor      = SheetManager.color(
-                                                sheetUIContext.sheetId,
-                                                format.valueFormat().elementFormat().backgroundColorTheme())
+        layout.backgroundColor      = colorOrBlack(
+                                          format.valueFormat().elementFormat().backgroundColorTheme(), entityId)
 
 //        layout.backgroundResource   = format.valueFormat().height()
 //                                            .resourceId(format.widgetFormat().corners())
@@ -527,16 +531,17 @@ object NumberWidgetView
 //                 this.data().format().background() != BackgroundColor.NONE)
 //        {
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
 
     private fun valueView(numberWidget : NumberWidget,
                           format : NumberWidgetFormat,
-                          sheetUIContext: SheetUIContext) : LinearLayout
+                          entityId : EntityId,
+                          context : Context) : LinearLayout
     {
-        val layout = this.valueViewLayout(format, sheetUIContext.context)
+        val layout = this.valueViewLayout(format, context)
 
         // > Prefix
 //        val prefixString = format.valuePrefixString()
@@ -547,7 +552,7 @@ object NumberWidgetView
 //                    sheetUIContext))
 
         // > Value
-        layout.addView(this.valueTextView(numberWidget, format, sheetUIContext))
+        layout.addView(this.valueTextView(numberWidget, format, entityId, context))
 
         // > Base Value
 //        if (this.baseValueVariableName() != null)
@@ -592,11 +597,10 @@ object NumberWidgetView
 
     private fun valueTextView(numberWidget : NumberWidget,
                               format : NumberWidgetFormat,
-                              sheetUIContext : SheetUIContext) : TextView
+                              entityId : EntityId,
+                              context : Context) : TextView
     {
         val value = TextViewBuilder()
-
-        val sheetContext = SheetContext(sheetUIContext)
 
         numberWidget.textViewId = Util.generateViewId()
         value.id                = numberWidget.textViewId
@@ -649,51 +653,51 @@ object NumberWidgetView
 //        var valueString = ""
 //        valueString = numberWidget.valueString(sheetContext)
 
-        val valueDouble = numberWidget.value(sheetContext)
+        val valueDouble = numberWidget.value(entityId)
         val valueString = format.valueFormat().numberFormat().formattedString(valueDouble)
 
         value.text = valueString
 
-        format.valueFormat().styleTextViewBuilder(value, sheetUIContext)
+        format.valueFormat().styleTextViewBuilder(value, entityId, context)
 
-        return value.textView(sheetUIContext.context)
+        return value.textView(context)
     }
 
-
-    private fun valueFixView(fixString : String,
-                             style : TextFormat,
-                             valueFormat : TextFormat,
-                             sheetUIContext: SheetUIContext) : TextView
-    {
-        val prefix              = TextViewBuilder()
-
-        prefix.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        prefix.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        prefix.layoutGravity    = valueFormat.elementFormat().alignment().gravityConstant() or
-                                        Gravity.CENTER_VERTICAL
-        prefix.gravity          = valueFormat.elementFormat().alignment().gravityConstant()
-
-        prefix.text             = fixString
-
-        style.styleTextViewBuilder(prefix, sheetUIContext)
-
-        return prefix.textView(sheetUIContext.context)
-    }
-
-
-    private fun baseValueView(format : NumberWidgetFormat, sheetUIContext: SheetUIContext) : LinearLayout
-    {
-        val layout = this.baseValueViewLayout(sheetUIContext.context)
-
-        // > Separator
-        layout.addView(baseValueSeparatorView(format, sheetUIContext))
-
-        // > Value
-        layout.addView(baseValueTextView(sheetUIContext.context))
-
-        return layout;
-    }
+//
+//    private fun valueFixView(fixString : String,
+//                             style : TextFormat,
+//                             valueFormat : TextFormat,
+//                             sheetUIContext: SheetUIContext) : TextView
+//    {
+//        val prefix              = TextViewBuilder()
+//
+//        prefix.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+//        prefix.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        prefix.layoutGravity    = valueFormat.elementFormat().alignment().gravityConstant() or
+//                                        Gravity.CENTER_VERTICAL
+//        prefix.gravity          = valueFormat.elementFormat().alignment().gravityConstant()
+//
+//        prefix.text             = fixString
+//
+//        style.styleTextViewBuilder(prefix, sheetUIContext)
+//
+//        return prefix.textView(sheetUIContext.context)
+//    }
+//
+//
+//    private fun baseValueView(format : NumberWidgetFormat, sheetUIContext: SheetUIContext) : LinearLayout
+//    {
+//        val layout = this.baseValueViewLayout(sheetUIContext.context)
+//
+//        // > Separator
+//        layout.addView(baseValueSeparatorView(format, sheetUIContext))
+//
+//        // > Value
+//        layout.addView(baseValueTextView(sheetUIContext.context))
+//
+//        return layout;
+//    }
 
 
     private fun baseValueViewLayout(context : Context) : LinearLayout
@@ -712,67 +716,68 @@ object NumberWidgetView
     }
 
 
-    private fun baseValueSeparatorView(format : NumberWidgetFormat,
-                                       sheetUIContext: SheetUIContext) : TextView
-    {
-        val separator = TextViewBuilder()
-
-        separator.width         = LinearLayout.LayoutParams.WRAP_CONTENT
-        separator.height        = LinearLayout.LayoutParams.WRAP_CONTENT
-
-    //    separator.text          = format.valueSeparatorString()
-
-//        format.valueSeparatorFormat()?.style()?.styleTextViewBuilder(separator, sheetUIContext)
+//    private fun baseValueSeparatorView(format : NumberWidgetFormat,
+//                                       sheetUIContext: SheetUIContext) : TextView
+//    {
+//        val separator = TextViewBuilder()
 //
-//        separator.marginSpacing = format.valueSeparatorFormat()?.margins()
-
-        return separator.textView(sheetUIContext.context)
-    }
-
-
-    private fun baseValueTextView(context : Context) : TextView
-    {
-        val value = TextViewBuilder()
-
-        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
-        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        // value.text          = this.baseValue().toString()
-
-        // this.format().baseValueStyle().styleTextViewBuilder(value, context)
-
-        // value.marginSpacing = format.baseValueMargins()
-
-        return value.textView(context)
-    }
-
-
-    private fun outsideLabelView(format : NumberWidgetFormat,
-                                 sheetUIContext: SheetUIContext) : TextView
-    {
-        val label = TextViewBuilder()
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.layoutGravity     = format.outsideLabelFormat().elementFormat().alignment().gravityConstant() or
-                                    Gravity.CENTER_VERTICAL
-
-        //label.text              = format.outsideLabelString()
-
-        format.outsideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
-
-        label.marginSpacing     = format.outsideLabelFormat().elementFormat().margins()
-
-        return label.textView(sheetUIContext.context)
-    }
+//        separator.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+//        separator.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//    //    separator.text          = format.valueSeparatorString()
+//
+////        format.valueSeparatorFormat()?.style()?.styleTextViewBuilder(separator, sheetUIContext)
+////
+////        separator.marginSpacing = format.valueSeparatorFormat()?.margins()
+//
+//        return separator.textView(sheetUIContext.context)
+//    }
+//
+//
+//    private fun baseValueTextView(context : Context) : TextView
+//    {
+//        val value = TextViewBuilder()
+//
+//        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+//        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        // value.text          = this.baseValue().toString()
+//
+//        // this.format().baseValueStyle().styleTextViewBuilder(value, context)
+//
+//        // value.marginSpacing = format.baseValueMargins()
+//
+//        return value.textView(context)
+//    }
+//
+//
+//    private fun outsideLabelView(format : NumberWidgetFormat,
+//                                 sheetUIContext: SheetUIContext) : TextView
+//    {
+//        val label = TextViewBuilder()
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        label.layoutGravity     = format.outsideLabelFormat().elementFormat().alignment().gravityConstant() or
+//                                    Gravity.CENTER_VERTICAL
+//
+//        //label.text              = format.outsideLabelString()
+//
+//        format.outsideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
+//
+//        label.marginSpacing     = format.outsideLabelFormat().elementFormat().margins()
+//
+//        return label.textView(sheetUIContext.context)
+//    }
 
 
     private fun insideLabelView(format : NumberWidgetFormat,
                                 labelString : String,
-                                sheetUIContext: SheetUIContext) : TextView
+                                entityId : EntityId,
+                                context : Context) : TextView
     {
-        val label   = TextViewBuilder()
+        val label               = TextViewBuilder()
 
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -782,11 +787,11 @@ object NumberWidgetView
         label.layoutGravity     = format.insideLabelFormat().elementFormat().alignment().gravityConstant() or
                                       Gravity.CENTER_VERTICAL;
 
-        format.insideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
+        format.insideLabelFormat().styleTextViewBuilder(label, entityId, context)
 
         label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
 
-        return label.textView(sheetUIContext.context)
+        return label.textView(context)
     }
 
 
@@ -872,8 +877,8 @@ object NumberWidgetView
 //                else if (this.valueVariable().label() != null)
 //                    summationLabel = this.valueVariable().label();
 //
-//                SummationDialogFragment summationDialog =
-//                                    SummationDialogFragment.newInstance(summation, summationLabel);
+//                SummationDialog summationDialog =
+//                                    SummationDialog.newInstance(summation, summationLabel);
 //                summationDialog.show(sheetActivity.getSupportFragmentManager(), "");
 //                break;
 //        }

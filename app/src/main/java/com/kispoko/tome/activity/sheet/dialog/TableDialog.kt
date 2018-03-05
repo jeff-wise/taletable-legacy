@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -21,6 +22,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 
@@ -37,7 +40,7 @@ class TableDialog : DialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var updateTarget : UpdateTarget? = null
-    private var sheetContext : SheetContext? = null
+    private var entityId     : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -47,13 +50,13 @@ class TableDialog : DialogFragment()
     companion object
     {
         fun newInstance(updateTarget : UpdateTarget,
-                        sheetContext : SheetContext) : TableDialog
+                        entityId : EntityId) : TableDialog
         {
             val dialog = TableDialog()
 
             val args = Bundle()
             args.putSerializable("update_target", updateTarget)
-            args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
             return dialog
@@ -71,7 +74,7 @@ class TableDialog : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
-        this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
+        this.entityId     = arguments.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -102,11 +105,10 @@ class TableDialog : DialogFragment()
 
 
         val updateTarget = this.updateTarget
-        val sheetContext = this.sheetContext
-        if (updateTarget != null && sheetContext != null)
+        val entityId = this.entityId
+        if (updateTarget != null && entityId != null)
         {
-            val sheetUIContext = SheetUIContext(sheetContext, context)
-            val viewBuilder = TableDialogViewBuilder(updateTarget, sheetUIContext, this)
+            val viewBuilder = TableDialogViewBuilder(updateTarget, this, entityId, context)
             return viewBuilder.view()
         }
 
@@ -133,8 +135,9 @@ class TableDialog : DialogFragment()
 
 
 class TableDialogViewBuilder(val updateTarget : UpdateTarget,
-                             val sheetUIContext : SheetUIContext,
-                             val dialog : DialogFragment)
+                             val dialog : DialogFragment,
+                             val entityId : EntityId,
+                             val context : Context)
 {
 
 
@@ -166,11 +169,11 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
         layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -197,7 +200,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.corners          = Corners(3.0, 3.0, 0.0, 0.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -236,16 +239,16 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         title.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Bold,
-                                                sheetUIContext.context)
+                                                context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
-        title.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        title.color             = colorOrBlack(colorTheme, entityId)
 
         title.sizeSp            = 18f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -259,9 +262,9 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -282,9 +285,9 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                         val tableUpdate = TableWidgetUpdateInsertRowBefore(
                                                             updateTarget.tableWidget.id,
                                                             selectedRow)
-                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
-                                                 tableUpdate,
-                                                 this.sheetUIContext.sheetUI())
+//                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
+//                                                 tableUpdate,
+//                                                 this.sheetUIContext.sheetUI())
                         dialog.dismiss()
                     }
                 }
@@ -307,9 +310,9 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                         val tableUpdate = TableWidgetUpdateInsertRowAfter(
                                                             updateTarget.tableWidget.id,
                                                             selectedRow)
-                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
-                                                 tableUpdate,
-                                                 this.sheetUIContext.sheetUI())
+//                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
+//                                                 tableUpdate,
+//                                                 this.sheetUIContext.sheetUI())
                         dialog.dismiss()
                     }
                 }
@@ -352,7 +355,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.backgroundColor      = Color.WHITE
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -404,7 +407,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        icon.color             = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color             = colorOrBlack(iconColorTheme, entityId)
 
         icon.margin.rightDp     = 12f
 
@@ -418,15 +421,15 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         label.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
-                                                sheetUIContext.context)
+                                                context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        label.color             = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+        label.color             = colorOrBlack(labelColorTheme, entityId)
 
         label.sizeSp            = 19f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 }

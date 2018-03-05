@@ -2,6 +2,7 @@
 package com.kispoko.tome.activity.sheet.procedure
 
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -40,10 +41,12 @@ import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.IconSize
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
+import com.kispoko.tome.model.sheet.widget.HighlightSkew
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.color
+import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.procedure
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
@@ -66,11 +69,11 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
     // -----------------------------------------------------------------------------------------
 
     private var procedureId   : ProcedureId? = null
-    private var sheetContext  : SheetContext? = null
+    private var entityId : EntityId? = null
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Light)
 
-    private var procedure : Procedure? = null
+    private var entityProcedure : Procedure? = null
 
     private var procedureUI : ComplexProcedureUI? = null
 
@@ -94,17 +97,17 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
         if (this.intent.hasExtra("procedure_id"))
             this.procedureId = this.intent.getSerializableExtra("procedure_id") as ProcedureId
 
-        if (this.intent.hasExtra("sheet_context"))
-            this.sheetContext = this.intent.getSerializableExtra("sheet_context") as SheetContext
+        if (this.intent.hasExtra("entity_id"))
+            this.entityId = this.intent.getSerializableExtra("entity_id") as EntityId
 
         // Load Procedure
         val procedureId = this.procedureId
-        val sheetContext = this.sheetContext
-        if (procedureId != null && sheetContext != null) {
-            val procedure = SheetManager.procedure(procedureId, sheetContext)
-            when (procedure) {
-                is Val -> this.procedure = procedure.value
-                is Err -> ApplicationLog.error(procedure.error)
+        val entityId = this.entityId
+        if (procedureId != null && entityId != null) {
+            val _procedure = procedure(procedureId, entityId)
+            when (_procedure) {
+                is Val -> this.entityProcedure = _procedure.value
+                is Err -> ApplicationLog.error(_procedure.error)
             }
         }
 
@@ -165,12 +168,12 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
     {
         val fabView = this.findViewById(R.id.run_procedure_button)
         fabView.setOnClickListener {
-            val procedure = this.procedure
+            val entityProcedure = this.entityProcedure
             val procedureUI = this.procedureUI
-            val sheetContext = this.sheetContext
-            if (procedure != null && procedureUI != null && sheetContext != null)
+            val entityId = this.entityId
+            if (entityProcedure != null && procedureUI != null && entityId != null)
             {
-                val invocation = ProcedureInvocation(procedure.procedureId(),
+                val invocation = ProcedureInvocation(entityProcedure.procedureId(),
                                                      procedureUI.parameterValuesByProgram())
                 val resultData = Intent()
                 resultData.putExtra("procedure_invocation", invocation)
@@ -184,14 +187,13 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
     private fun initializeViews()
     {
-        val procedure = this.procedure
-        val sheetContext = this.sheetContext
-        if (procedure != null && sheetContext != null)
+        val entityProcedure = this.entityProcedure
+        val entityId = this.entityId
+        if (entityProcedure != null && entityId != null)
         {
             val contentLayout = findViewById(R.id.content) as LinearLayout
-            val sheetUIContext = SheetUIContext(sheetContext, this)
 
-            val procedureUI = ComplexProcedureUI(procedure, sheetUIContext)
+            val procedureUI = ComplexProcedureUI(entityProcedure, entityId, this)
             contentLayout.addView(procedureUI.view())
             this.procedureUI = procedureUI
 
@@ -270,16 +272,15 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
 
 class ComplexProcedureUI(val procedure : Procedure,
-                         val sheetUIContext : SheetUIContext)
+                         val entityId : EntityId,
+                         val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    val sheetContext = SheetContext(sheetUIContext)
-
-    val parametersByProgram = procedure.parameters(sheetContext)
+    val parametersByProgram = procedure.parameters(entityId)
 
     val parameterValuesByProgram : MutableMap<ProgramId,Map<String,EngineValue>> = mutableMapOf()
 
@@ -367,7 +368,7 @@ class ComplexProcedureUI(val procedure : Procedure,
         layout.margin.rightDp   = 6f
         layout.margin.topDp     = 6f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -391,16 +392,16 @@ class ComplexProcedureUI(val procedure : Procedure,
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Medium,
-                                                sheetUIContext.context)
+                                                context)
 
         name.sizeSp             = 23f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-        name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        name.color              = colorOrBlack(colorTheme, entityId)
 
-        return name.textView(sheetUIContext.context)
+        return name.textView(context)
 
     }
 
@@ -424,23 +425,22 @@ class ComplexProcedureUI(val procedure : Procedure,
         val descriptionTemplate = procedure.description()
         when (descriptionTemplate) {
             is Just -> {
-                val sheetContext = SheetContext(sheetUIContext)
-                description.text = descriptionTemplate.value.toString(sheetContext)
+                description.text = descriptionTemplate.value.toString(entityId)
             }
         }
 
         description.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
-                                                sheetUIContext.context)
+                                                       TextFontStyle.Medium,
+                                                       context)
 
         description.sizeSp             = 18f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
-        description.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        description.color              = colorOrBlack(colorTheme, entityId)
 
-        return description.textView(sheetUIContext.context)
+        return description.textView(context)
 
     }
 
@@ -474,13 +474,13 @@ class ComplexProcedureUI(val procedure : Procedure,
                             {
                                 is EngineValueNumber ->
                                 {
-                                    val activity = sheetUIContext.context as RunProcedureActivity
+                                    val activity = context as RunProcedureActivity
                                     val updateRequest = NumberUpdateRequest(index.toString(),
                                                                             parameterValue.value,
                                                                             parameter.constraint)
                                     val adderDialog = SimpleAdderDialog.newInstance(parameter.label().value,
                                                                                     updateRequest,
-                                                                                    sheetContext)
+                                                                                    entityId)
                                     adderDialog.show(activity.supportFragmentManager, "")
                                 }
                             }
@@ -519,7 +519,7 @@ class ComplexProcedureUI(val procedure : Procedure,
             layout.corners          = Corners(0.0, 0.0, 3.0, 3.0)
         }
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -556,9 +556,9 @@ class ComplexProcedureUI(val procedure : Procedure,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        icon.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        icon.color                  = colorOrBlack(colorTheme, entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -571,21 +571,21 @@ class ComplexProcedureUI(val procedure : Procedure,
 
         param.padding.leftDp        = 8f
 
-        param.textSpan              = this.parameterSpannableString(parameter.inputMessage().toString(sheetContext),
+        param.textSpan              = this.parameterSpannableString(parameter.inputMessage().toString(entityId),
                                                                     parameter.defaultValueString())
 
         param.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Medium,
-                                                    sheetUIContext.context)
+                                                    context)
 
         param.sizeSp                = 18f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
-        param.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        param.color                 = colorOrBlack(colorTheme, entityId)
 
-        return param.textView(sheetUIContext.context)
+        return param.textView(context)
     }
 
 
@@ -647,14 +647,14 @@ class ComplexProcedureUI(val procedure : Procedure,
 //
 //        drawable?.colorFilter = PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
 
-        val lineSpacingPx = Util.spToPx(4f, sheetUIContext.context)
-        val lineHeightPx = Util.spToPx(26f, sheetUIContext.context)
-        SheetManager.color(sheetUIContext.sheetId, paramBgColorTheme)?.let { bgColor ->
+        val lineSpacingPx = Util.spToPx(4f, context)
+        val lineHeightPx = Util.spToPx(26f, context)
+        color(paramBgColorTheme, entityId) apDo { bgColor ->
 
 //            val bgSpan = BackgroundColorSpan(bgColor)
             val bgSpan = RoundedBackgroundHeightSpan(lineHeightPx,
                                                      lineSpacingPx,
-                                                     null,
+                                                     HighlightSkew.default().value,
                                                      12,
                                                      Color.WHITE,
                                                      bgColor,
@@ -666,7 +666,7 @@ class ComplexProcedureUI(val procedure : Procedure,
 //            builder.setSpan(colorSpan, currentIndex, nextIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
         }
 
-        val sizeSpan = AbsoluteSizeSpan(Util.spToPx(20f, sheetUIContext.context))
+        val sizeSpan = AbsoluteSizeSpan(Util.spToPx(20f, context))
         builder.setSpan(sizeSpan, currentIndex, nextIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
 
         currentIndex = nextIndex
@@ -721,16 +721,16 @@ class ComplexProcedureUI(val procedure : Procedure,
 
         uses.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
-                                                sheetUIContext.context)
+                                                context)
 
         uses.sizeSp             = 16f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-        uses.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        uses.color              = colorOrBlack(colorTheme, entityId)
 
-        return uses.textView(sheetUIContext.context)
+        return uses.textView(context)
 
     }
 

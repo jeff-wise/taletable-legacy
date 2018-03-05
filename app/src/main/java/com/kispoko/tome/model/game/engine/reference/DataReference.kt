@@ -6,7 +6,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.SumType
 import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import com.kispoko.tome.rts.entity.sheet.SheetContext
+import com.kispoko.tome.rts.entity.EntityId
 import effect.apply
 import effect.effApply
 import effect.effError
@@ -50,7 +50,7 @@ sealed class DataReference : ToDocument, SumType, Serializable
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    abstract fun dependencies(sheetContext : SheetContext): Set<VariableReference>
+    abstract fun dependencies(entityId : EntityId): Set<VariableReference>
 
 }
 
@@ -83,7 +83,8 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = this.reference.dependencies()
+    override fun dependencies(entityId : EntityId): Set<VariableReference> =
+            this.reference.dependencies()
 
 
     // -----------------------------------------------------------------------------------------
@@ -150,8 +151,8 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference>
-            = this.reference.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId): Set<VariableReference>
+            = this.reference.dependencies(entityId)
 
 }
 
@@ -185,7 +186,7 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> = this.reference.dependencies()
+    override fun dependencies(entityId : EntityId): Set<VariableReference> = this.reference.dependencies()
 
 
     // -----------------------------------------------------------------------------------------
@@ -232,8 +233,8 @@ data class DataReferenceText(val reference : TextReference) : DataReference()
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(sheetContext : SheetContext): Set<VariableReference> =
-            this.reference.dependencies(sheetContext)
+    override fun dependencies(entityId : EntityId): Set<VariableReference> =
+            this.reference.dependencies(entityId)
 
 
     // -----------------------------------------------------------------------------------------

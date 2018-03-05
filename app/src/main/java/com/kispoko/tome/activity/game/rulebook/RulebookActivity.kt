@@ -66,7 +66,7 @@ class RulebookActivity : AppCompatActivity()
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
 
-        setContentView(R.layout.activity_rulebook)
+        setContentView(R.layout.activity_book)
 
         // (2) Read Parameters
         // -------------------------------------------------------------------------------------

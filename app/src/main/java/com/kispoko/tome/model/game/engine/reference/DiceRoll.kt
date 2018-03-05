@@ -13,8 +13,6 @@ import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.summation.term.TermComponent
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.rts.entity.summation
 import com.kispoko.tome.rts.entity.variables
 import effect.*
@@ -178,7 +176,7 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
     override fun columnValue() = PrimValue(this)
 
 
-    override fun case() = "variable"
+    override fun case() = "partVariable"
 
 
     override val sumModelObject = this
@@ -267,7 +265,7 @@ data class DiceRollReferenceSummation(val summationId : SummationId)
     override fun columnValue() = PrimValue(this)
 
 
-    override fun case() = "variable"
+    override fun case() = "partVariable"
 
 
     override val sumModelObject = this

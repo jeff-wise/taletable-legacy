@@ -31,7 +31,6 @@ import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.engine.*
-import com.kispoko.tome.rts.entity.sheet.SheetContext
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.util.Util
 import effect.*

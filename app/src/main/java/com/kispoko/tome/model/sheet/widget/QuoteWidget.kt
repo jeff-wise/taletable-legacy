@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -21,9 +22,8 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.IconFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -240,15 +240,13 @@ data class QuoteWidgetFormat(override val id : UUID,
 
 
 class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
-                             val sheetUIContext : SheetUIContext)
+                             val entityId : EntityId,
+                             val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
-
-    val sheetContext = SheetContext(sheetUIContext)
-
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
@@ -256,7 +254,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
     fun view() : View
     {
-        val layout = WidgetView.layout(this.quoteWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(this.quoteWidget.widgetFormat(), entityId, context)
 
         layout.addView(this.mainView())
 
@@ -273,7 +271,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
         layout.addView(this.quoteView())
 
         // > Source View
-        val maybeSource = quoteWidget.source(sheetContext)
+        val maybeSource = quoteWidget.source(entityId)
         when (maybeSource) {
             is Just -> this.addSourceView(maybeSource.value, layout)
         }
@@ -306,10 +304,10 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     widgetFormat.elementFormat().backgroundColorTheme())
+        layout.backgroundColor  = colorOrBlack(widgetFormat.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -320,13 +318,13 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
         quote.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         quote.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        quote.text          = this.quoteWidget.quote(sheetContext)
+        quote.text          = this.quoteWidget.quote(entityId)
 
         quote.gravity       = quoteWidget.format().quoteFormat().elementFormat().alignment().gravityConstant()
 
-        quoteWidget.format().quoteFormat().styleTextViewBuilder(quote, sheetUIContext)
+        quoteWidget.format().quoteFormat().styleTextViewBuilder(quote, entityId, context)
 
-        return quote.textView(sheetUIContext.context)
+        return quote.textView(context)
     }
 
 
@@ -367,8 +365,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         icon.image                  = R.drawable.ic_quote
 
-        icon.color                  = SheetManager.color(sheetUIContext.sheetId,
-                                                         format.iconFormat().colorTheme())
+        icon.color                  = colorOrBlack(format.iconFormat().colorTheme(), entityId)
 
         // (3 B) Source
         // -------------------------------------------------------------------------------------
@@ -378,10 +375,10 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         source.text                 = sourceText
 
-        format.sourceFormat().styleTextViewBuilder(source, sheetUIContext)
+        format.sourceFormat().styleTextViewBuilder(source, entityId, context)
 
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -420,8 +417,7 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         icon.image              = R.drawable.ic_quote_medium
 
-        icon.color              = SheetManager.color(sheetUIContext.sheetId,
-                                                     format.iconFormat().colorTheme())
+        icon.color              = colorOrBlack(format.iconFormat().colorTheme(), entityId)
 
         // (3 B) Source
         // -------------------------------------------------------------------------------------
@@ -433,16 +429,15 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         source.gravity          = Gravity.CENTER
 
-        format.sourceFormat().styleTextViewBuilder(source, sheetUIContext)
+        format.sourceFormat().styleTextViewBuilder(source, entityId, context)
 
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
     private fun sourceNoIconView(sourceText : String,
-                                 format : QuoteWidgetFormat,
-                                 sheetUIContext: SheetUIContext) : TextView
+                                 format : QuoteWidgetFormat) : TextView
     {
         val source = TextViewBuilder()
 
@@ -455,9 +450,9 @@ class QuoteWidgetViewBuilder(val quoteWidget : QuoteWidget,
 
         source.margin.topDp     = 7f
 
-        format.sourceFormat().styleTextViewBuilder(source, sheetUIContext)
+        format.sourceFormat().styleTextViewBuilder(source, entityId, context)
 
-        return source.textView(sheetUIContext.context)
+        return source.textView(context)
     }
 
 

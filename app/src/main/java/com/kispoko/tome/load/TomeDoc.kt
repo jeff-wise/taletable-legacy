@@ -5,12 +5,6 @@ package com.kispoko.tome.load
 import android.content.Context
 import com.kispoko.tome.ApplicationAssets
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.load.TomeDoc.cachedBookSchema
-import com.kispoko.tome.load.TomeDoc.cachedCampaignSchema
-import com.kispoko.tome.load.TomeDoc.cachedEngineSchema
-import com.kispoko.tome.load.TomeDoc.cachedGameSchema
-import com.kispoko.tome.load.TomeDoc.cachedSheetSchema
-import com.kispoko.tome.load.TomeDoc.cachedThemeSchema
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.game.Game
@@ -79,10 +73,10 @@ object TomeDoc
         fun sheetFromDocument(specDoc : SchemaDoc) : DocLoader<Sheet>
         {
             val sheetParse = Sheet.fromDocument(specDoc)
-            when (sheetParse)
+            return when (sheetParse)
             {
-                is Val -> return effValue(sheetParse.value)
-                is Err -> return effError(ValueParseError(sheetName,
+                is Val -> effValue(sheetParse.value)
+                is Err -> effError(ValueParseError(sheetName,
                                                           sheetParse.error))
             }
         }
@@ -112,10 +106,11 @@ object TomeDoc
 
         fun templateDocument(templateString : String,
                              campaignSpec : Schema,
+                             engineSpec : Schema,
                              gameSpec : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = campaignSpec.parseDocument(templateString,
-                                                      listOf(gameSpec))
+                                                      listOf(gameSpec, engineSpec))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -140,6 +135,7 @@ object TomeDoc
         return templateFileString
                .applyWith(::templateDocument,
                           campaignSchemaLoader(context),
+                          engineSchemaLoader(context),
                           gameSchemaLoader(context))
                .apply(::campaignFromDocument)
     }
@@ -158,9 +154,10 @@ object TomeDoc
 
         fun templateDocument(templateString : String,
                              gameSchema : Schema,
-                             engineSchema : Schema) : DocLoader<SchemaDoc>
+                             engineSchema : Schema,
+                             bookSchema : Schema) : DocLoader<SchemaDoc>
         {
-            val docParse = gameSchema.parseDocument(templateString, listOf(engineSchema))
+            val docParse = gameSchema.parseDocument(templateString, listOf(engineSchema, bookSchema))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -185,7 +182,8 @@ object TomeDoc
         return templateFileString
                .applyWith(::templateDocument,
                           gameSchemaLoader(context),
-                          engineSchemaLoader(context))
+                          engineSchemaLoader(context),
+                          bookSchemaLoader(context))
                .apply(::gameFromDocument)
     }
 
@@ -479,12 +477,12 @@ object TomeDoc
     {
         if (cachedBookSchema == null)
         {
-            val schemaLoader = loadLuloSchema("game", context)
+            val schemaLoader = loadLuloSchema("book", context)
             when (schemaLoader)
             {
                 is Val -> {
                     cachedBookSchema = schemaLoader.value
-                    ApplicationLog.event(SchemaLoaded("game"))
+                    ApplicationLog.event(SchemaLoaded("book"))
                 }
                 is Err -> ApplicationLog.error(schemaLoader.error)
             }
@@ -503,7 +501,7 @@ object TomeDoc
         return if (schema != null)
             effValue(schema)
         else
-            effError(SchemaIsNull("game"))
+            effError(SchemaIsNull("book"))
     }
 
 

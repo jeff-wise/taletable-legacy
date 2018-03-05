@@ -2,13 +2,12 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.dialog.RulebookExcerptDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
@@ -19,6 +18,7 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -158,14 +158,14 @@ object TextWidgetView
 
     fun view(textWidget : TextWidget,
              format : TextWidgetFormat,
-             sheetUIContext : SheetUIContext) : View
+             entityId : EntityId,
+             context : Context) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(format.widgetFormat(), entityId, context)
 
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 
-        contentLayout.addView(this.mainView(textWidget, format, sheetUIContext))
-
+        contentLayout.addView(this.mainView(textWidget, format, entityId, context))
 
         return layout
     }
@@ -186,9 +186,10 @@ object TextWidgetView
      */
     private fun mainView(textWidget : TextWidget,
                          format : TextWidgetFormat,
-                         sheetUIContext: SheetUIContext) : LinearLayout
+                         entityId : EntityId,
+                         context : Context) : LinearLayout
     {
-        val layout = this.mainLayout(textWidget, sheetUIContext)
+        val layout = this.mainLayout(textWidget, context)
 
         // > Outside Top/Left Label View
 //        if (format.outsideLabel() != null) {
@@ -199,7 +200,7 @@ object TextWidgetView
 //        }
 
         // > Value
-        layout.addView(this.valueMainView(textWidget, format, sheetUIContext))
+        layout.addView(this.valueMainView(textWidget, format, entityId, context))
 
         // > Outside Bottom/Right Label View
 //        if (format.outsideLabel() != null) {
@@ -213,7 +214,7 @@ object TextWidgetView
         // -------------------------------------------------------------------------------------
 
         layout.setOnClickListener {
-            val valueVar = textWidget.valueVariable(SheetContext(sheetUIContext))
+            val valueVar = textWidget.valueVariable(entityId)
             when (valueVar) {
                 is effect.Val ->
                 {
@@ -223,7 +224,8 @@ object TextWidgetView
                         val widgetReference = WidgetReference(textWidget.id, textWidgetViewId)
                         openTextVariableEditorDialog(valueVar.value,
                                                      UpdateTargetTextWidget(textWidget.id),
-                                                     sheetUIContext)
+                                                     entityId,
+                                                     context)
                     }
                 }
                 is Err -> ApplicationLog.error(valueVar.error)
@@ -233,13 +235,13 @@ object TextWidgetView
         val rulebookReference = textWidget.rulebookReference()
         when (rulebookReference) {
             is Just -> {
-                layout.setOnLongClickListener {
-                    val sheetActivity = sheetUIContext.context as SheetActivity
-                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
-                                                                   SheetContext(sheetUIContext))
-                    dialog.show(sheetActivity.supportFragmentManager, "")
-                    true
-                }
+//                layout.setOnLongClickListener {
+//                    val sheetActivity = context as SheetActivity
+//                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
+//                                                                   entityId)
+//                    dialog.show(sheetActivity.supportFragmentManager, "")
+//                    true
+//                }
             }
         }
 
@@ -248,7 +250,7 @@ object TextWidgetView
 
 
     private fun mainLayout(textWidget : TextWidget,
-                           sheetUIContext : SheetUIContext) : LinearLayout
+                           context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -264,7 +266,7 @@ object TextWidgetView
         // layout.marginSpacing        = textWidget.widgetFormat().elementFormat().margins()
 
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -273,9 +275,10 @@ object TextWidgetView
      */
     private fun valueMainView(textWidget : TextWidget,
                               format : TextWidgetFormat,
-                              sheetUIContext: SheetUIContext) : LinearLayout
+                              entityId : EntityId,
+                              context : Context) : LinearLayout
     {
-        val layout = this.valueMainViewLayout(format, sheetUIContext)
+        val layout = this.valueMainViewLayout(format, entityId, context)
 
         // > Inside Top/Left Label View
 //        if (format.insideLabel() != null && textWidget.description() == null) {
@@ -285,7 +288,7 @@ object TextWidgetView
 //            }
 //        }
 
-        layout.addView(valueTextView(textWidget, format, sheetUIContext))
+        layout.addView(valueTextView(textWidget, format, entityId, context))
 
         // > Inside Bottom/Right Label View
 //        if (format.insideLabel() != null && textWidget.description() == null) {
@@ -300,7 +303,8 @@ object TextWidgetView
 
 
     private fun valueMainViewLayout(format : TextWidgetFormat,
-                                    sheetUIContext: SheetUIContext) : LinearLayout
+                                    entityId : EntityId,
+                                    context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -347,13 +351,14 @@ object TextWidgetView
 //                 this.data().format().background() != BackgroundColor.NONE)
 //        {
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
     private fun valueTextView(textWidget : TextWidget,
                               format : TextWidgetFormat,
-                              sheetUIContext: SheetUIContext) : TextView
+                              entityId : EntityId,
+                              context : Context) : TextView
     {
         val value = TextViewBuilder()
 
@@ -367,50 +372,50 @@ object TextWidgetView
                                 Gravity.CENTER_VERTICAL
         value.gravity       = format.valueFormat().elementFormat().alignment().gravityConstant()
 
-        value.text      = textWidget.valueString(SheetContext(sheetUIContext))
+        value.text          = textWidget.valueString(entityId)
 
-        format.valueFormat().styleTextViewBuilder(value, sheetUIContext)
+        format.valueFormat().styleTextViewBuilder(value, entityId, context)
 
-        return value.textView(sheetUIContext.context)
+        return value.textView(context)
     }
 
 
-    private fun outsideLabelView(format : TextWidgetFormat,
-                                 sheetUIContext: SheetUIContext) : TextView
-    {
-        val label = TextViewBuilder()
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.layoutGravity     = format.outsideLabelFormat().elementFormat().alignment().gravityConstant()
-
-        //label.text              = format.outsideLabel()
-
-        format.outsideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
-
-        label.marginSpacing     = format.outsideLabelFormat().elementFormat().margins()
-
-        return label.textView(sheetUIContext.context)
-    }
-
-
-    private fun insideLabelView(format : TextWidgetFormat,
-                                sheetUIContext: SheetUIContext) : TextView
-    {
-        val label               = TextViewBuilder()
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        //label.text              = format.insideLabel()
-
-        format.insideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
-
-        label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
-
-        return label.textView(sheetUIContext.context)
-    }
+//    private fun outsideLabelView(format : TextWidgetFormat,
+//                                 sheetUIContext: SheetUIContext) : TextView
+//    {
+//        val label = TextViewBuilder()
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+//
+//        label.layoutGravity     = format.outsideLabelFormat().elementFormat().alignment().gravityConstant()
+//
+//        //label.text              = format.outsideLabel()
+//
+//        format.outsideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
+//
+//        label.marginSpacing     = format.outsideLabelFormat().elementFormat().margins()
+//
+//        return label.textView(sheetUIContext.context)
+//    }
+//
+//
+//    private fun insideLabelView(format : TextWidgetFormat,
+//                                sheetUIContext: SheetUIContext) : TextView
+//    {
+//        val label               = TextViewBuilder()
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        //label.text              = format.insideLabel()
+//
+//        format.insideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
+//
+//        label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
+//
+//        return label.textView(sheetUIContext.context)
+//    }
 
 
 }
@@ -437,8 +442,8 @@ object TextWidgetView
 //                // If the string is short, edit in DIALOG
 //                if (this.value().length() < 145)
 //                {
-//                    TextEditorDialogFragment textDialog =
-//                            TextEditorDialogFragment.forTextWidget(this);
+//                    TextEditorDialog textDialog =
+//                            TextEditorDialog.forTextWidget(this);
 //                    textDialog.show(sheetActivity.getSupportFragmentManager(), "");
 //                }
 //                // ...otherwise, edit in ACTIVITY

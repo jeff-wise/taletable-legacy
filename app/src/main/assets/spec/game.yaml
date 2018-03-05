@@ -54,8 +54,8 @@ types:
         The game's authors.
     - name: book_ids
       type:
-        type: custom_coll_type
-        custom_coll_type: book_id
+        type: prim_coll_type
+        prim_coll_type: string
       presence: optional
       description: The game book ids.
     - name: engine

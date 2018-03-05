@@ -21,7 +21,6 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.book.BookReference
@@ -31,6 +30,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
 import effect.Err
 import maybe.Just
@@ -51,7 +52,7 @@ class ValueChooserDialogFragment : DialogFragment()
     private var valueSet      : ValueSet? = null
     private var selectedValue : Value? = null
     private var updateTarget  : UpdateTarget? = null
-    private var sheetContext  : SheetContext? = null
+    private var entityId      : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -63,7 +64,7 @@ class ValueChooserDialogFragment : DialogFragment()
         fun newInstance(valueSet : ValueSet,
                         selectedValue : Value?,
                         updateTarget : UpdateTarget,
-                        sheetContext: SheetContext) : ValueChooserDialogFragment
+                        entityId : EntityId) : ValueChooserDialogFragment
         {
             val dialog = ValueChooserDialogFragment()
 
@@ -71,7 +72,7 @@ class ValueChooserDialogFragment : DialogFragment()
             args.putSerializable("value_set", valueSet)
             args.putSerializable("selected_value", selectedValue)
             args.putSerializable("update_target", updateTarget)
-            args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
             return dialog
@@ -91,7 +92,7 @@ class ValueChooserDialogFragment : DialogFragment()
         this.valueSet      = arguments.getSerializable("value_set") as ValueSet
         this.selectedValue = arguments.getSerializable("selected_value") as Value?
         this.updateTarget  = arguments.getSerializable("update_target") as UpdateTarget
-        this.sheetContext  = arguments.getSerializable("sheet_context") as SheetContext
+        this.entityId      = arguments.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -99,21 +100,17 @@ class ValueChooserDialogFragment : DialogFragment()
 
         val dialog = Dialog(activity)
 
-        val sheetContext = this.sheetContext
-        if (sheetContext != null)
-        {
-            val dialogLayout = this.dialogLayout()
+        val dialogLayout = this.dialogLayout()
 
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            dialog.setContentView(dialogLayout)
+        dialog.setContentView(dialogLayout)
 
-            val width  = context.resources.getDimension(R.dimen.action_dialog_width)
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-            dialog.window.setLayout(width.toInt(), height)
-        }
+        dialog.window.setLayout(width.toInt(), height)
 
         return dialog
     }
@@ -123,29 +120,28 @@ class ValueChooserDialogFragment : DialogFragment()
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val sheetContext = this.sheetContext
-        if (sheetContext != null)
+        val entityId = this.entityId
+        return if (entityId != null)
         {
-            val sheetUIContext = SheetUIContext(sheetContext, context)
-
             val valueSet      = this.valueSet
             val selectedValue = this.selectedValue
             val updateTarget  = this.updateTarget
 
             if (valueSet != null && updateTarget != null) {
-                return ValueChooserView.view(valueSet,
-                                             selectedValue,
-                                             updateTarget,
-                                             sheetUIContext,
-                                             this)
+                ValueChooserView.view(valueSet,
+                                      selectedValue,
+                                      updateTarget,
+                                      this,
+                                      entityId,
+                                      context)
             }
             else {
-                return super.onCreateView(inflater, container, savedInstanceState)
+                super.onCreateView(inflater, container, savedInstanceState)
             }
         }
         else
         {
-            return super.onCreateView(inflater, container, savedInstanceState)
+            super.onCreateView(inflater, container, savedInstanceState)
         }
     }
 
@@ -176,24 +172,29 @@ object ValueChooserView
     fun view(valueSet : ValueSet,
              selectedValue : Value?,
              updateTarget : UpdateTarget,
-             sheetUIContext : SheetUIContext,
-             dialog : DialogFragment) : View
+             dialog : DialogFragment,
+             entityId : EntityId,
+             context : Context) : View
     {
-        val layout = viewLayout(sheetUIContext)
+        val layout = viewLayout(entityId, context)
 
         // (1) Views
         // -------------------------------------------------------------------
         val chooserView     = chooserView(valueSet,
                                           selectedValue,
                                           updateTarget,
-                                          sheetUIContext,
-                                          dialog)
-        val optionsMenuView = optionsMenuView(sheetUIContext.context)
+                                          dialog,
+                                          entityId,
+                                          context)
+        val optionsMenuView = optionsMenuView(context)
 
-        val title = "${sheetUIContext.context.getString(R.string.choose)} ${valueSet.labelSingular().value}"
+        val title = "${context.getString(R.string.choose)} ${valueSet.labelSingular().value}"
 
-        val headerView      = headerView(title, chooserView,
-                                        optionsMenuView, sheetUIContext)
+        val headerView      = headerView(title,
+                                         chooserView,
+                                         optionsMenuView,
+                                         entityId,
+                                         context)
 
         // (2) Initialize
         // -------------------------------------------------------------------
@@ -217,7 +218,7 @@ object ValueChooserView
     }
 
 
-    private fun viewLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun viewLayout(entityId : EntityId, context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -225,16 +226,14 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    //    layout.backgroundResource   = R.drawable.bg_dialog
-
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -244,23 +243,24 @@ object ValueChooserView
     fun headerView(title : String,
                    chooserView : View,
                    menuView : View,
-                   sheetUIContext: SheetUIContext) : LinearLayout
+                   entityId : EntityId,
+                   context : Context) : LinearLayout
     {
-        val layout = headerViewLayout(sheetUIContext)
+        val layout = headerViewLayout(entityId, context)
 
-        val mainLayout = this.headerMainViewLayout(sheetUIContext)
-        val titleView = headerTitleTextView(title, sheetUIContext)
+        val mainLayout = this.headerMainViewLayout(entityId, context)
+        val titleView = headerTitleTextView(title, entityId, context)
         mainLayout.addView(titleView)
 
         layout.addView(mainLayout)
 
-        layout.addView(this.headerBottomBorderView(sheetUIContext))
+        layout.addView(this.headerBottomBorderView(entityId, context))
 
         return layout
     }
 
 
-    private fun headerViewLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun headerViewLayout(entityId : EntityId, context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -277,11 +277,11 @@ object ValueChooserView
 
         layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
-    private fun headerBottomBorderView(sheetUIContext : SheetUIContext) : LinearLayout
+    private fun headerBottomBorderView(entityId : EntityId, context : Context) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -291,13 +291,13 @@ object ValueChooserView
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
-    private fun headerMainViewLayout(sheetUIContext: SheetUIContext) : RelativeLayout
+    private fun headerMainViewLayout(entityId : EntityId, context : Context) : RelativeLayout
     {
         val layout = RelativeLayoutBuilder()
 
@@ -309,102 +309,103 @@ object ValueChooserView
         layout.padding.topDp        = 14f
         layout.padding.bottomDp     = 14f
 
-        return layout.relativeLayout(sheetUIContext.context)
+        return layout.relativeLayout(context)
     }
 
 
     private fun headerTitleTextView(titleString : String,
-                                    sheetUIContext: SheetUIContext) : TextView
+                                    entityId : EntityId,
+                                    context : Context) : TextView
     {
-        val title             = TextViewBuilder()
+        val title               = TextViewBuilder()
 
-        title.width           = LinearLayout.LayoutParams.WRAP_CONTENT
-        title.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.text          = titleString
+        title.text              = titleString
 
-        title.font          = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Bold,
-                                            sheetUIContext.context)
+        title.font              = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Bold,
+                                                context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
-        title.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        title.color           = colorOrBlack(colorTheme, entityId)
 
         title.sizeSp          = 17f
 
         title.margin.leftDp   = 0.5f
 
-        return title.textView(sheetUIContext.context)
+        return title.textView(context)
     }
 
-
-    private fun headerIconView(sheetUIContext : SheetUIContext) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout  = LinearLayoutBuilder()
-        val icon    = ImageViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.layoutType   = LayoutType.RELATIVE
-        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.corners      = Corners(3.0, 3.0, 3.0, 3.0)
-
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
-        layout.padding.leftDp   = 17f
-        layout.padding.rightDp  = 17f
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-
-        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
-        layout.addRule(RelativeLayout.CENTER_VERTICAL)
-
-//        layout.onClick = View.OnClickListener {
-//            when (updateTarget) {
-//                is UpdateTargetListWidget -> {
-//                    val valueStrings = this.adapter?.selectedValues?.map { it.value }
-//                    val update = ListWidgetUpdateSetCurrentValue(
-//                                    updateTarget.listWidgetId,
-//                                    valueStrings ?: listOf())
-//                    SheetManager.updateSheet(sheetUIContext.sheetId,
-//                            update,
-//                            sheetUIContext.sheetUI())
-//                    dialog.dismiss()
-//                }
-//            }
-//        }
-
-
-        layout.child(icon)
-
-        // (3) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp        = 22
-        icon.heightDp       = 22
-
-        icon.image          = R.drawable.icon_check
-
-//        val colorTheme = ColorTheme(setOf(
+//
+//    private fun headerIconView(sheetUIContext : SheetUIContext) : LinearLayout
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
+//
+//        val layout  = LinearLayoutBuilder()
+//        val icon    = ImageViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.layoutType   = LayoutType.RELATIVE
+//        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+//        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.corners      = Corners(3.0, 3.0, 3.0, 3.0)
+//
+//        layout.padding.topDp    = 8f
+//        layout.padding.bottomDp = 8f
+//        layout.padding.leftDp   = 17f
+//        layout.padding.rightDp  = 17f
+//
+//        val bgColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
-        //icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-        icon.color          = Color.WHITE
-
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+//        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+//
+//        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+//        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+//
+////        layout.onClick = View.OnClickListener {
+////            when (updateTarget) {
+////                is UpdateTargetListWidget -> {
+////                    val valueStrings = this.adapter?.selectedValues?.map { it.value }
+////                    val update = ListWidgetUpdateSetCurrentValue(
+////                                    updateTarget.listWidgetId,
+////                                    valueStrings ?: listOf())
+////                    SheetManager.updateSheet(sheetUIContext.sheetId,
+////                            update,
+////                            sheetUIContext.sheetUI())
+////                    dialog.dismiss()
+////                }
+////            }
+////        }
+//
+//
+//        layout.child(icon)
+//
+//        // (3) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        icon.widthDp        = 22
+//        icon.heightDp       = 22
+//
+//        icon.image          = R.drawable.icon_check
+//
+////        val colorTheme = ColorTheme(setOf(
+////                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+////                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+//        //icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+//        icon.color          = Color.WHITE
+//
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
 
 //
 //    private fun headerIconView(sheetUIContext: SheetUIContext) : ImageView
@@ -435,25 +436,26 @@ object ValueChooserView
     fun chooserView(valueSet : ValueSet,
                     selectedValue : Value?,
                     updateTarget : UpdateTarget,
-                    sheetUIContext : SheetUIContext,
-                    dialog : DialogFragment) : RecyclerView
+                    dialog : DialogFragment,
+                    entityId : EntityId,
+                    context : Context) : RecyclerView
     {
         val recyclerView            = RecyclerViewBuilder()
 
         recyclerView.width          = LinearLayout.LayoutParams.MATCH_PARENT
         recyclerView.height         = R.dimen.dialog_choose_value_list_height
 
-        recyclerView.layoutManager  = LinearLayoutManager(sheetUIContext.context)
+        recyclerView.layoutManager  = LinearLayoutManager(context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        recyclerView.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        recyclerView.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         val dividerColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        val dividerColor = SheetManager.color(sheetUIContext.sheetId, dividerColorTheme)
+//        val dividerColor = SheetManager.color(sheetUIContext.sheetId, dividerColorTheme)
         // recyclerView.divider = SimpleDividerItemDecoration(sheetUIContext.context, dividerColor)
 
         when (valueSet)
@@ -463,43 +465,46 @@ object ValueChooserView
                 recyclerView.adapter = BaseValueSetRecyclerViewAdapter(valueSet.sortedValues(),
                                                                        selectedValue,
                                                                        updateTarget,
-                                                                       sheetUIContext,
-                                                                       dialog)
+                                                                       dialog,
+                                                                       entityId,
+                                                                       context)
             }
             is ValueSetCompound ->
             {
-                val valueSets = valueSet.valueSets(sheetUIContext)
+                val valueSets = valueSet.valueSets(entityId)
                 when (valueSets)
                 {
                     is Val ->
                     {
-                        val items = valueSetIndexList(valueSets.value, sheetUIContext)
+                        val items = valueSetIndexList(valueSets.value, entityId, context)
                         //Log.d("***VALUECHOOSER", items.toString())
                         recyclerView.adapter =
                                 CompoundValueSetRecyclerViewAdapter(items,
                                         selectedValue,
                                         updateTarget,
-                                        sheetUIContext,
-                                        dialog)
+                                        dialog,
+                                        entityId,
+                                        context)
                     }
                     is Err -> ApplicationLog.error(valueSets.error)
                 }
             }
         }
 
-        return recyclerView.recyclerView(sheetUIContext.context)
+        return recyclerView.recyclerView(context)
     }
 
 
     private fun valueSetIndexList(valueSets : Set<ValueSet>,
-                                  sheetUIContext : SheetUIContext) : List<Any>
+                                  entityId : EntityId,
+                                  context : Context) : List<Any>
     {
         fun valueSetItems(valueSet : ValueSet) : List<Any>
         {
-            val values = valueSet.values(sheetUIContext.gameId)
-            when (values) {
-                is Val -> return listOf(valueSet.label()).plus(values.value)
-                is Err -> return listOf(valueSet.label())
+            val values = valueSet.values(entityId)
+            return when (values) {
+                is Val -> listOf(valueSet.label()).plus(values.value)
+                is Err -> listOf(valueSet.label())
             }
         }
 
@@ -512,24 +517,24 @@ object ValueChooserView
     // VALUE VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun valueView(sheetUIContext : SheetUIContext) : LinearLayout
+    fun valueView(entityId : EntityId, context : Context) : LinearLayout
     {
-        val layout = this.valueViewLayout(sheetUIContext)
+        val layout = this.valueViewLayout(entityId, context)
 
         // Header
-        layout.addView(this.valueHeaderView(sheetUIContext))
+        layout.addView(this.valueHeaderView(entityId, context))
 
         // Summary
-        layout.addView(this.valueSummaryView(sheetUIContext))
+        layout.addView(this.valueSummaryView(entityId, context))
 
         // Reference Link
-        layout.addView(this.referenceView(sheetUIContext))
+//        layout.addView(this.referenceView(entityId, context))
 
         return layout
     }
 
 
-    private fun valueViewLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun valueViewLayout(entityId : EntityId, context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -556,11 +561,11 @@ object ValueChooserView
 //        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
         layout.backgroundColor      = Color.WHITE
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
-    private fun valueHeaderView(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun valueHeaderView(entityId : EntityId, context : Context) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -593,7 +598,7 @@ object ValueChooserView
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
-        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color                  = colorOrBlack(iconColorTheme, entityId)
 
         icon.margin.rightDp         = 4f
         icon.margin.topDp         = 1f
@@ -610,15 +615,15 @@ object ValueChooserView
 
         name.font                   = Font.typeface(TextFont.Cabin,
                                                     TextFontStyle.Medium,
-                                                    sheetUIContext.context)
+                                                    context)
 
         name.sizeSp                 = 18f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
-    private fun valueSummaryView(sheetUIContext: SheetUIContext) : TextView
+    private fun valueSummaryView(entityId : EntityId, context : Context) : TextView
     {
         val summary             = TextViewBuilder()
 
@@ -629,115 +634,115 @@ object ValueChooserView
 
         summary.font            = Font.typeface(TextFont.Cabin,
                                                 TextFontStyle.Regular,
-                                                sheetUIContext.context)
+                                                context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-        summary.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        summary.color           = colorOrBlack(colorTheme, entityId)
 
         summary.sizeSp          = 15f
 
         summary.margin.leftDp   = 0.5f
 
-        return summary.textView(sheetUIContext.context)
+        return summary.textView(context)
     }
 
 
-    private fun referenceView(sheetUIContext : SheetUIContext) : LinearLayout
+//    private fun referenceView(entityId : EntityId, context : Context) : LinearLayout
+//
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
+//
+//        val layout = LinearLayoutBuilder()
+//        val icon   = ImageViewBuilder()
+//        val label  = TextViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.id               = R.id.choose_value_item_reference
+//
+//        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.gravity          = Gravity.CENTER_VERTICAL
+//
+//        layout.margin.topDp     = 8f
+//        layout.margin.leftDp    = 2f
+//
+//        layout.visibility       = View.GONE
+//
+//        layout.child(icon)
+//              .child(label)
+//
+//        // (3 A) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        icon.widthDp            = 20
+//        icon.heightDp           = 20
+//
+//        icon.image              = R.drawable.icon_open_book
+//
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+//        icon.color           = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+//
+//        icon.margin.rightDp     = 10f
+//        icon.padding.topDp      = 1f
+//
+//        // (3 B) Label
+//        // -------------------------------------------------------------------------------------
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        label.textId            = R.string.read_about_in_rulebook
+//
+//        label.font              = Font.typeface(TextFont.Cabin,
+//                                                TextFontStyle.Regular,
+//                                                sheetUIContext.context)
+//
+//        val labelColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+//        label.color             = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
+//
+//        label.sizeSp            = 16f
+//
+//        return layout.linearLayout(sheetUIContext.context)
+//    }
 
+
+    fun valueSetNameView(entityId : EntityId, context : Context) : TextView
     {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
+        val name                = TextViewBuilder()
 
-        val layout = LinearLayoutBuilder()
-        val icon   = ImageViewBuilder()
-        val label  = TextViewBuilder()
+        name.id                 = R.id.choose_value_header
 
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
+        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.id               = R.id.choose_value_item_reference
-
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.gravity          = Gravity.CENTER_VERTICAL
-
-        layout.margin.topDp     = 8f
-        layout.margin.leftDp    = 2f
-
-        layout.visibility       = View.GONE
-
-        layout.child(icon)
-              .child(label)
-
-        // (3 A) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp            = 20
-        icon.heightDp           = 20
-
-        icon.image              = R.drawable.icon_open_book
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        icon.color           = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
-
-        icon.margin.rightDp     = 10f
-        icon.padding.topDp      = 1f
-
-        // (3 B) Label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.textId            = R.string.read_about_in_rulebook
-
-        label.font              = Font.typeface(TextFont.Cabin,
-                                                TextFontStyle.Regular,
-                                                sheetUIContext.context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        label.color             = SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
-
-        label.sizeSp            = 16f
-
-        return layout.linearLayout(sheetUIContext.context)
-    }
-
-
-    fun valueSetNameView(sheetUIContext : SheetUIContext) : TextView
-    {
-        val name            = TextViewBuilder()
-
-        name.id             = R.id.choose_value_header
-
-        name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
-        name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        name.font           = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Bold,
-                                            sheetUIContext.context)
+        name.font               = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Bold,
+                                                context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-        name.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        name.color              = colorOrBlack(colorTheme, entityId)
 
-        name.sizeSp         = 13f
+        name.sizeSp             = 13f
 
-        name.margin.leftDp  = 10f
-        name.margin.rightDp = 10f
+        name.margin.leftDp      = 10f
+        name.margin.rightDp     = 10f
 
-        name.margin.topDp   = 8f
-        name.margin.bottomDp = 8f
+        name.margin.topDp       = 8f
+        name.margin.bottomDp    = 8f
 
-        return name.textView(sheetUIContext.context)
+        return name.textView(context)
     }
 
 
@@ -890,8 +895,9 @@ object ValueChooserView
 class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                                       val selectedValue : Value?,
                                       val updateTarget : UpdateTarget,
-                                      val sheetUIContext: SheetUIContext,
-                                      val dialog : DialogFragment)
+                                      val dialog : DialogFragment,
+                                      val entityId : EntityId,
+                                      val context : Context)
                 : RecyclerView.Adapter<ValueViewHolder>()
 {
 
@@ -901,8 +907,8 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
 
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : ValueViewHolder
     {
-        val itemView = ValueChooserView.valueView(sheetUIContext)
-        return ValueViewHolder(itemView, sheetUIContext)
+        val itemView = ValueChooserView.valueView(entityId, context)
+        return ValueViewHolder(itemView, entityId, context)
     }
 
 
@@ -939,26 +945,26 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                                         updateTarget.partIndex,
                                         value.valueId()
                                         )
-                            SheetManager.updateSheet(sheetUIContext.sheetId,
-                                                     textValuePartUpdate,
-                                                     sheetUIContext.sheetUI())
+//                            SheetManager.updateSheet(sheetUIContext.sheetId,
+//                                                     textValuePartUpdate,
+//                                                     sheetUIContext.sheetUI())
                             dialog.dismiss()
                         }
                         is UpdateTargetTextCell -> {
                             val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
                                                                            updateTarget.cellId,
                                                                            value.valueId())
-                            SheetManager.updateSheet(sheetUIContext.sheetId,
-                                                     update,
-                                                     sheetUIContext.sheetUI())
+//                            SheetManager.updateSheet(sheetUIContext.sheetId,
+//                                                     update,
+//                                                     sheetUIContext.sheetUI())
                             dialog.dismiss()
                         }
                         is UpdateTargetTextWidget -> {
                             val update = TextWidgetUpdateSetText(updateTarget.textWidgetId,
                                                                  value.valueId().value)
-                            SheetManager.updateSheet(sheetUIContext.sheetId,
-                                                     update,
-                                                     sheetUIContext.sheetUI())
+//                            SheetManager.updateSheet(sheetUIContext.sheetId,
+//                                                     update,
+//                                                     sheetUIContext.sheetUI())
                             dialog.dismiss()
                         }
                     }
@@ -985,8 +991,9 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
 class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                                           val selectedValue : Value?,
                                           val updateTarget : UpdateTarget,
-                                          val sheetUIContext : SheetUIContext,
-                                          val dialog : DialogFragment)
+                                          val dialog : DialogFragment,
+                                          val entityId : EntityId,
+                                          val context : Context)
         : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 
@@ -1020,14 +1027,14 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
         {
             HEADER ->
             {
-                val headerView = ValueChooserView.valueSetNameView(sheetUIContext)
+                val headerView = ValueChooserView.valueSetNameView(entityId, context)
                 HeaderViewHolder(headerView)
             }
             // VALUE
             else ->
             {
-                val valueView = ValueChooserView.valueView(sheetUIContext)
-                ValueViewHolder(valueView, sheetUIContext)
+                val valueView = ValueChooserView.valueView(entityId, context)
+                ValueViewHolder(valueView, entityId, context)
             }
         }
 
@@ -1064,18 +1071,18 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                                                 updateTarget.partIndex,
                                                 item.valueId()
                                         )
-                                SheetManager.updateSheet(sheetUIContext.sheetId,
-                                        textValuePartUpdate,
-                                        sheetUIContext.sheetUI())
+//                                SheetManager.updateSheet(sheetUIContext.sheetId,
+//                                        textValuePartUpdate,
+//                                        sheetUIContext.sheetUI())
                                 dialog.dismiss()
                             }
                             is UpdateTargetTextCell -> {
                                 val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
                                         updateTarget.cellId,
                                         item.valueId())
-                                SheetManager.updateSheet(sheetUIContext.sheetId,
-                                                         update,
-                                                         sheetUIContext.sheetUI())
+//                                SheetManager.updateSheet(sheetUIContext.sheetId,
+//                                                         update,
+//                                                         sheetUIContext.sheetUI())
                                 dialog.dismiss()
                             }
                         }
@@ -1107,7 +1114,7 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
 /**
  * The View Holder caches a view for each item.
  */
-class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
+class ValueViewHolder(itemView : View, val entityId : EntityId, val context : Context)
                 : RecyclerView.ViewHolder(itemView)
 {
 
@@ -1125,23 +1132,23 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
     val normalColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_11"))))
-    val greyColor = SheetManager.color(sheetUIContext.sheetId, normalColorTheme)
+    val greyColor = colorOrBlack(normalColorTheme, entityId)
 
 
     val hlColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_8")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
-    val greenColor = SheetManager.color(sheetUIContext.sheetId, hlColorTheme)
+    val greenColor = colorOrBlack(hlColorTheme, entityId)
 
     val hlSummaryColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_8")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("green_70"))))
-    val greenSummaryColor = SheetManager.color(sheetUIContext.sheetId, hlSummaryColorTheme)
+    val greenSummaryColor = colorOrBlack(hlSummaryColorTheme, entityId)
 
     val selectedBgColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("green_30"))))
-    val selectedBgColor      = SheetManager.color(sheetUIContext.sheetId, selectedBgColorTheme)
+    val selectedBgColor      = colorOrBlack(selectedBgColorTheme, entityId)
 
     // -----------------------------------------------------------------------------------------
     // INIT
@@ -1153,7 +1160,7 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
         this.valueView   = itemView.findViewById(R.id.choose_value_item_value) as TextView
         this.summaryView = itemView.findViewById(R.id.choose_value_item_summary) as TextView
         this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
-        this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
+//        this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
     }
 
 
@@ -1220,13 +1227,13 @@ class ValueViewHolder(itemView : View, val sheetUIContext: SheetUIContext)
 
     fun setRulebookReference(rulebookReference : BookReference)
     {
-        this.layout?.setOnLongClickListener {
-            val sheetActivity = sheetUIContext.context as SheetActivity
-            val dialog = RulebookExcerptDialog.newInstance(rulebookReference,
-                                                           SheetContext(sheetUIContext))
-            dialog.show(sheetActivity.supportFragmentManager, "")
-            true
-        }
+//        this.layout?.setOnLongClickListener {
+//            val sheetActivity = context as SheetActivity
+//            val dialog = RulebookExcerptDialog.newInstance(rulebookReference,
+//                                                           entityId)
+//            dialog.show(sheetActivity.supportFragmentManager, "")
+//            true
+//        }
     }
 
 }
@@ -1272,18 +1279,19 @@ class HeaderViewHolder(val headerView : View) : RecyclerView.ViewHolder(headerVi
 
 
 
-class ValueDividerItemDecoration(sheetUIContext: SheetUIContext) : RecyclerView.ItemDecoration()
+data class ValueDividerItemDecoration(val entityId : EntityId,
+                                      val context : Context) : RecyclerView.ItemDecoration()
 {
 
     val dividerDrawable : Drawable =
-            ContextCompat.getDrawable(sheetUIContext.context, R.drawable.divider_choose_value)
+            ContextCompat.getDrawable(context, R.drawable.divider_choose_value)
 
     init {
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        val color = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        val color = colorOrBlack(colorTheme, entityId)
         dividerDrawable.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
     }
 

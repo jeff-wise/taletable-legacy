@@ -25,10 +25,8 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 
 
 /**
@@ -45,7 +43,7 @@ class SimpleAdderDialog : DialogFragment()
     private var title               : String? = null
     private var numberUpdateRequest : NumberUpdateRequest? = null
     private var numberUpdater       : NumberUpdater? = null
-    private var sheetContext        : SheetContext? = null
+    private var entityId            : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -56,14 +54,14 @@ class SimpleAdderDialog : DialogFragment()
     {
         fun newInstance(title : String,
                         numberUpdateRequest : NumberUpdateRequest,
-                        sheetContext : SheetContext) : SimpleAdderDialog
+                        entityId : EntityId) : SimpleAdderDialog
         {
             val dialog = SimpleAdderDialog()
 
             val args = Bundle()
             args.putString("title", title)
             args.putSerializable("number_update_request", numberUpdateRequest)
-            args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("entity_id", entityId)
 
             dialog.arguments = args
 
@@ -83,7 +81,7 @@ class SimpleAdderDialog : DialogFragment()
 
         this.title               = arguments.getString("title")
         this.numberUpdateRequest = arguments.getSerializable("number_update_request") as NumberUpdateRequest
-        this.sheetContext        = arguments.getSerializable("sheet_context") as SheetContext
+        this.entityId            = arguments.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -111,22 +109,17 @@ class SimpleAdderDialog : DialogFragment()
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val sheetContext = this.sheetContext
-        if (sheetContext != null)
-        {
-            val sheetUIContext  = SheetUIContext(sheetContext, context)
-            val title           = this.title
-            val updateRequest   = this.numberUpdateRequest
+        val entityId = this.entityId
+        val title           = this.title
+        val updateRequest   = this.numberUpdateRequest
 
-            return if (title != null && updateRequest != null)
-            {
-                val viewBuilder = SimpleAdderViewBuilder(sheetUIContext,
-                                                         updateRequest,
-                                                         title)
-                viewBuilder.view()
-            }
-            else
-                super.onCreateView(inflater, container, savedInstanceState)
+        return if (entityId != null && title != null && updateRequest != null)
+        {
+            val viewBuilder = SimpleAdderViewBuilder(updateRequest,
+                                                     title,
+                                                     entityId,
+                                                     context)
+            viewBuilder.view()
         }
         else
         {
@@ -165,16 +158,15 @@ class SimpleAdderDialog : DialogFragment()
 }
 
 
-class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
-                             val numberUpdateRequest : NumberUpdateRequest,
-                             val title : String)
+class SimpleAdderViewBuilder(val numberUpdateRequest : NumberUpdateRequest,
+                             val title : String,
+                             val entityId : EntityId,
+                             val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
-
-    val sheetContext = SheetContext(sheetUIContext)
 
     var currentValue : Int = numberUpdateRequest.currentValue.toInt()
 
@@ -230,11 +222,11 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
         layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -258,18 +250,18 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Bold,
-                                                sheetUIContext.context)
+                                                context)
 
         name.sizeSp             = 16f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        name.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        name.color              = colorOrBlack(colorTheme, entityId)
 
         name.corners            = Corners(3.0, 3.0, 0.0, 0.0)
 
-        return name.textView(sheetUIContext.context)
+        return name.textView(context)
     }
 
 
@@ -314,7 +306,7 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
         layout.padding.leftDp   = 0.5f
         layout.padding.rightDp  = 0.5f
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -336,25 +328,25 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
 
         value.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Bold,
-                                                sheetUIContext.context)
+                                                context)
 
         value.sizeSp            = 30f
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
-        value.backgroundColor   = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        value.backgroundColor   = colorOrBlack(bgColorTheme, entityId)
 //        value.backgroundColor   = Color.WHITE
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        value.color              = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        value.color              = colorOrBlack(colorTheme, entityId)
 //        value.color              = Color.WHITE
 
 //        value.corners           = Corners(2.0, 2.0, 2.0, 2.0)
 
-        return value.textView(sheetUIContext.context)
+        return value.textView(context)
     }
 
 
@@ -375,14 +367,14 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
 
         button.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Medium,
-                                                    sheetUIContext.context)
+                                                    context)
 
         button.sizeSp               = 30f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_80"))))
-        button.color                = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        button.color                = colorOrBlack(colorTheme, entityId)
 
         button.backgroundColor      = Color.WHITE
 
@@ -390,7 +382,7 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
             this.increment()
         }
 
-        return button.textView(sheetUIContext.context)
+        return button.textView(context)
     }
 
 
@@ -411,14 +403,14 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
 
         button.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Medium,
-                                                    sheetUIContext.context)
+                                                    context)
 
         button.sizeSp               = 30f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_80"))))
-        button.color                = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        button.color                = colorOrBlack(colorTheme, entityId)
 
         button.backgroundColor      = Color.WHITE
 
@@ -426,7 +418,7 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
             this.decrement()
         }
 
-        return button.textView(sheetUIContext.context)
+        return button.textView(context)
     }
 
 
@@ -469,9 +461,9 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
+        icon.color                  = colorOrBlack(iconColorTheme, entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -495,7 +487,7 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("green_80"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
+        layout.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
         //layout.backgroundColor      = Color.WHITE
 
         layout.margin.leftDp       = 0.5f
@@ -519,7 +511,7 @@ class SimpleAdderViewBuilder(val sheetUIContext : SheetUIContext,
 //        icon.color                  = SheetManager.color(sheetUIContext.sheetId, iconColorTheme)
         icon.color                  = Color.WHITE
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 }

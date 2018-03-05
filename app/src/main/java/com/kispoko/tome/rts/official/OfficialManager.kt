@@ -10,19 +10,18 @@ import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppOfficialError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
+import com.kispoko.tome.model.campaign.Campaign
+import com.kispoko.tome.model.game.Game
+import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.official.*
 import com.kispoko.tome.rts.entity.campaign.CampaignManager
 import com.kispoko.tome.rts.entity.game.GameManager
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUI
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.Err
 import effect.Val
 import effect.effError
 import effect.effValue
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.run
 import java.io.IOException
 import java.io.InputStream
@@ -55,23 +54,19 @@ object OfficialManager
     // Load > Sheet
     // -----------------------------------------------------------------------------------------
 
-    suspend fun loadSheet(officialSheet : OfficialSheet,
-                          sheetUI : SheetUI) = run(CommonPool,
+    suspend fun loadSheet(officialSheetId : OfficialSheetId,
+                          onLoad : (Sheet) -> Unit,
+                          context : Context) = run(CommonPool,
     {
-        val context = sheetUI.context()
-
-        this.loadCampaign(officialSheet.officialCampaign(), context)
-
-        val sheetLoader = assetInputStream(context, officialSheet.filePath)
-                            .apply { TomeDoc.loadSheet(it, officialSheet.sheetId.value, context) }
+        val sheetLoader = assetInputStream(context, officialSheetId.filePath)
+                            .apply { TomeDoc.loadSheet(it, officialSheetId.sheetId.value, context) }
         when (sheetLoader)
         {
             is Val ->
             {
                 val sheet = sheetLoader.value
-                // Needs to run in UI thread (renders the sheet)
-                launch(UI) { SheetManager.addSheetToCurrentSession(sheet, sheetUI, false) }
                 ApplicationLog.event(OfficialSheetLoaded(sheet.sheetId().value))
+                onLoad(sheet)
             }
             is Err -> ApplicationLog.error(sheetLoader.error)
         }
@@ -81,15 +76,13 @@ object OfficialManager
     // Load > Campaign
     // -----------------------------------------------------------------------------------------
 
-    suspend fun loadCampaign(officialCampaign : OfficialCampaign,
+    suspend fun loadCampaign(officialCampaignId : OfficialCampaignId,
+                             onLoad : (Campaign) -> Unit,
                              context : Context) = run(CommonPool,
     {
-
-        this.loadGame(officialCampaign.officialGame(), context)
-
-        val campaignLoader = assetInputStream(context, officialCampaign.filePath) apply {
+        val campaignLoader = assetInputStream(context, officialCampaignId.filePath) apply {
                                 TomeDoc.loadCampaign(it,
-                                                     officialCampaign.campaignId.value,
+                                                     officialCampaignId.campaignId.value,
                                                      context)
                              }
 
@@ -99,7 +92,7 @@ object OfficialManager
             {
                 val campaign = campaignLoader.value
                 ApplicationLog.event(OfficialCampaignLoaded(campaign.campaignName()))
-                CampaignManager.addCampaignToSession(campaign, false)
+                onLoad(campaign)
             }
             is Err -> ApplicationLog.error(campaignLoader.error)
         }
@@ -109,19 +102,20 @@ object OfficialManager
     // Load > Game
     // -----------------------------------------------------------------------------------------
 
-    suspend fun loadGame(officialGame : OfficialGame,
+    suspend fun loadGame(officialGameId : OfficialGameId,
+                         onLoad : (Game) -> Unit,
                          context : Context) = run(CommonPool,
     {
 
-        val gameLoader = assetInputStream(context, officialGame.filePath)
-                            .apply { TomeDoc.loadGame(it, officialGame.gameId.value, context) }
+        val gameLoader = assetInputStream(context, officialGameId.filePath)
+                            .apply { TomeDoc.loadGame(it, officialGameId.gameId.value, context) }
         when (gameLoader)
         {
             is Val ->
             {
                 val game = gameLoader.value
-                GameManager.addGameToSession(game, false)
                 ApplicationLog.event(OfficialGameLoaded(game.gameName().value))
+                onLoad(game)
             }
             is Err -> ApplicationLog.error(gameLoader.error)
         }
@@ -131,23 +125,23 @@ object OfficialManager
     // Load > Book
     // -----------------------------------------------------------------------------------------
 
-    suspend fun loadBook(officialGame : OfficialGame,
-                         context : Context) = run(CommonPool,
-    {
-
-        val gameLoader = assetInputStream(context, officialGame.filePath)
-                            .apply { TomeDoc.loadGame(it, officialGame.gameId.value, context) }
-        when (gameLoader)
-        {
-            is Val ->
-            {
-                val game = gameLoader.value
-                GameManager.addGameToSession(game, false)
-                ApplicationLog.event(OfficialGameLoaded(game.gameName().value))
-            }
-            is Err -> ApplicationLog.error(gameLoader.error)
-        }
-    })
+//    suspend fun loadBook(officialGame : OfficialGame,
+//                         context : Context) = run(CommonPool,
+//    {
+//
+//        val gameLoader = assetInputStream(context, officialGame.filePath)
+//                            .apply { TomeDoc.loadGame(it, officialGame.gameId.value, context) }
+//        when (gameLoader)
+//        {
+//            is Val ->
+//            {
+//                val game = gameLoader.value
+//                GameManager.addGameToSession(game, false)
+//                ApplicationLog.event(OfficialGameLoaded(game.gameName().value))
+//            }
+//            is Err -> ApplicationLog.error(gameLoader.error)
+//        }
+//    })
 
 
     // Load > Theme

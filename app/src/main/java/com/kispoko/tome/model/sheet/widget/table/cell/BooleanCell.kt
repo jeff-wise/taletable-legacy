@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -24,9 +25,7 @@ import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.ShowFalseIcon
 import com.kispoko.tome.model.sheet.widget.table.column.ShowTrueIcon
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
 import effect.*
 import effect.Val
 import lulo.document.*
@@ -203,21 +202,23 @@ object BooleanCellView
              rowFormat : TableWidgetRowFormat,
              column : TableWidgetBooleanColumn,
              cellFormat : BooleanCellFormat,
-             sheetUIContext : SheetUIContext) : View
+             entityId : EntityId,
+             context : Context) : View
     {
 
         val layout = TableWidgetCellView.layout(column.format().columnFormat(),
-                                                sheetUIContext)
+                                                entityId,
+                                                context)
 
         // Text View
         // -------------------------------------------------------------------------------------
 
-        val cellValue = cell.value(SheetContext(sheetUIContext))
+        val cellValue = cell.value(entityId)
         when (cellValue)
         {
             is Val ->
             {
-                this.addValueViews(layout, cellValue.value, cell, column, sheetUIContext)
+                this.addValueViews(layout, cellValue.value, cell, column, entityId, context)
 
             }
             is Err -> ApplicationLog.error(cellValue.error)
@@ -235,7 +236,8 @@ object BooleanCellView
                               value : Boolean,
                               cell : TableWidgetBooleanCell,
                               column : TableWidgetBooleanColumn,
-                              sheetUIContext : SheetUIContext)
+                              entityId : EntityId,
+                              context : Context)
     {
         // Value Text View
         // -------------------------------------------------------------------------------------
@@ -243,7 +245,8 @@ object BooleanCellView
         val valueView = this.valueTextView(value,
                                            column,
                                            cell.format(),
-                                           sheetUIContext)
+                                           entityId,
+                                           context)
         layout.addView(valueView)
 
         // On Click Listener
@@ -251,12 +254,10 @@ object BooleanCellView
 
         layout.setOnClickListener {
 
-            val sheetContext = SheetContext(sheetUIContext)
-
-            val cellValue = cell.value(sheetContext)
+            val cellValue = cell.value(entityId)
             when (cellValue)
             {
-                is Val -> toggleCellValue(cellValue.value, cell, column, valueView, sheetUIContext)
+                is Val -> toggleCellValue(cellValue.value, cell, column, valueView, entityId, context)
                 is Err -> ApplicationLog.error(cellValue.error)
             }
         }
@@ -267,68 +268,68 @@ object BooleanCellView
                                 cell : TableWidgetBooleanCell,
                                 column : TableWidgetBooleanColumn,
                                 valueView : TextView,
-                                sheetUIContext : SheetUIContext)
+                                entityId : EntityId,
+                                context : Context)
     {
         val cellFormat = cell.format()
-        val sheetContext = SheetContext(sheetUIContext)
 
         val trueFormat  = cellFormat.resolveTrueFormat(column.format())
         val falseFormat = cellFormat.resolveFalseFormat(column.format())
 
         if (value)
         {
-            cell.valueVariable(sheetContext) apDo { it.updateValue(false, sheetContext.sheetId) }
+            cell.valueVariable(entityId) apDo { it.updateValue(false, entityId) }
 
             valueView.text = column.format().falseTextString()
 
-            falseFormat.styleTextView(valueView, sheetUIContext)
+            falseFormat.styleTextView(valueView, entityId, context)
         }
         else
         {
-            cell.valueVariable(sheetContext) apDo { it.updateValue(true, sheetContext.sheetId) }
+            cell.valueVariable(entityId) apDo { it.updateValue(true, entityId) }
 
             valueView.text = column.format().trueTextString()
-            trueFormat.styleTextView(valueView, sheetUIContext)
+            trueFormat.styleTextView(valueView, entityId, context)
         }
 
     }
 
 
-    private fun valueIconView(cellValue : Boolean,
-                              columnFormat : BooleanColumnFormat,
-                              cellFormat : BooleanCellFormat,
-                              sheetUIContext: SheetUIContext) : ImageView
-    {
-        val icon = ImageViewBuilder()
-
-        // > LAYOUT
-        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT
-        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        // > IMAGE
-        if (cellValue)
-            icon.image      = R.drawable.ic_boolean_cell_true
-        else
-            icon.image      = R.drawable.ic_boolean_cell_false
-
-        // > MARGINS
-        icon.margin.rightDp = 4f
-
-        // > COLOR
-        val trueStyle   = cellFormat.resolveTrueFormat(columnFormat)
-        val falseStyle  = cellFormat.resolveFalseFormat(columnFormat)
-        //val normalStyle = cellFormat.resolveTextStyle(columnFormat)
-        if (cellValue)
-            icon.color      = SheetManager.color(sheetUIContext.sheetId, trueStyle.colorTheme())
-        else
-            icon.color      = SheetManager.color(sheetUIContext.sheetId, falseStyle.colorTheme())
+//    private fun valueIconView(cellValue : Boolean,
+//                              columnFormat : BooleanColumnFormat,
+//                              cellFormat : BooleanCellFormat,
+//                              sheetUIContext: SheetUIContext) : ImageView
+//    {
+//        val icon = ImageViewBuilder()
+//
+//        // > LAYOUT
+//        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT
+//        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        // > IMAGE
+//        if (cellValue)
+//            icon.image      = R.drawable.ic_boolean_cell_true
 //        else
-//        {
-//            icon.color      = SheetManager.color(sheetUIContext.sheetId, normalStyle.colorTheme())
-//        }
-
-        return icon.imageView(sheetUIContext.context)
-    }
+//            icon.image      = R.drawable.ic_boolean_cell_false
+//
+//        // > MARGINS
+//        icon.margin.rightDp = 4f
+//
+//        // > COLOR
+//        val trueStyle   = cellFormat.resolveTrueFormat(columnFormat)
+//        val falseStyle  = cellFormat.resolveFalseFormat(columnFormat)
+//        //val normalStyle = cellFormat.resolveTextStyle(columnFormat)
+//        if (cellValue)
+//            icon.color      = SheetManager.color(sheetUIContext.sheetId, trueStyle.colorTheme())
+//        else
+//            icon.color      = SheetManager.color(sheetUIContext.sheetId, falseStyle.colorTheme())
+////        else
+////        {
+////            icon.color      = SheetManager.color(sheetUIContext.sheetId, normalStyle.colorTheme())
+////        }
+//
+//        return icon.imageView(sheetUIContext.context)
+//    }
 
 
     // TODO remove cell format param
@@ -336,7 +337,8 @@ object BooleanCellView
     private fun valueTextView(cellValue : Boolean,
                               column : TableWidgetBooleanColumn,
                               cellFormat : BooleanCellFormat,
-                              sheetUIContext: SheetUIContext) : TextView
+                              entityId : EntityId,
+                              context : Context) : TextView
     {
         val value = TextViewBuilder()
 
@@ -356,13 +358,13 @@ object BooleanCellView
         val falseStyle    = cellFormat.resolveFalseFormat(column.format())
 
         if (cellValue)
-            trueStyle.styleTextViewBuilder(value, sheetUIContext)
+            trueStyle.styleTextViewBuilder(value, entityId, context)
         else
-            falseStyle.styleTextViewBuilder(value, sheetUIContext)
+            falseStyle.styleTextViewBuilder(value, entityId, context)
 //        else
 //            defaultStyle.styleTextViewBuilder(value, sheetUIContext)
 
-        return value.textView(sheetUIContext.context)
+        return value.textView(context)
     }
 
 

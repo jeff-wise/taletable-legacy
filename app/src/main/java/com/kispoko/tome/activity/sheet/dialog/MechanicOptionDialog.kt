@@ -3,6 +3,8 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.app.Dialog
+import android.content.Context
+import android.content.Entity
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -30,10 +32,10 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.entity.game.GameManager
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.entityEngineState
+import com.kispoko.tome.rts.entity.mechanic
 import effect.Err
 import effect.Val
 
@@ -49,8 +51,8 @@ class MechanicOptionDialog : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var mechanicId    : MechanicId? = null
-    private var sheetContext  : SheetContext? = null
+    private var mechanicId : MechanicId? = null
+    private var entityId   : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -60,13 +62,13 @@ class MechanicOptionDialog : DialogFragment()
     companion object
     {
         fun newInstance(mechanicId : MechanicId,
-                        sheetContext : SheetContext) : MechanicOptionDialog
+                        entityId : EntityId) : MechanicOptionDialog
         {
             val dialog = MechanicOptionDialog()
 
             val args = Bundle()
             args.putSerializable("mechanic_id", mechanicId)
-            args.putSerializable("sheet_context", sheetContext)
+            args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
             return dialog
@@ -83,31 +85,25 @@ class MechanicOptionDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.mechanicId   = arguments.getSerializable("mechanic_id") as MechanicId
-        this.sheetContext = arguments.getSerializable("sheet_context") as SheetContext
+        this.mechanicId = arguments.getSerializable("mechanic_id") as MechanicId
+        this.entityId   = arguments.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
 
         val dialog = Dialog(activity)
 
-        val sheetContext = this.sheetContext
-        if (sheetContext != null)
-        {
-            val sheetUIContext = SheetUIContext(sheetContext, context)
+        val dialogLayout = this.dialogLayout()
 
-            val dialogLayout = this.dialogLayout()
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(dialogLayout)
 
-            dialog.setContentView(dialogLayout)
+        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-            val width  = context.resources.getDimension(R.dimen.action_dialog_width)
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
-
-            dialog.window.setLayout(width.toInt(), height)
-        }
+        dialog.window.setLayout(width.toInt(), height)
 
         return dialog
     }
@@ -118,20 +114,18 @@ class MechanicOptionDialog : DialogFragment()
                               savedInstanceState : Bundle?) : View?
     {
         val mechanicId = this.mechanicId
-        val sheetContext = this.sheetContext
+        val entityId = this.entityId
 
-        if (sheetContext != null && mechanicId != null)
+        if (entityId != null && mechanicId != null)
         {
-            val sheetUIContext  = SheetUIContext(sheetContext, context)
-
-            val mechanic = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.mechanic(mechanicId) }
+            val mechanic = mechanic(mechanicId, entityId)
 
             return when (mechanic) {
                 is Val -> {
                     val viewBuilder = MechanicOptionsViewBuilder(mechanic.value,
-                                                                 sheetUIContext,
-                                                                 this)
+                                                                 this,
+                                                                 entityId,
+                                                                 context)
                     viewBuilder.view()
                 }
                 is Err -> {
@@ -167,8 +161,9 @@ class MechanicOptionDialog : DialogFragment()
 
 
 class MechanicOptionsViewBuilder(val mechanic : Mechanic,
-                                 val sheetUIContext : SheetUIContext,
-                                 val dialog : DialogFragment)
+                                 val dialog : DialogFragment,
+                                 val entityId : EntityId,
+                                 val context : Context)
 {
 
 
@@ -203,11 +198,11 @@ class MechanicOptionsViewBuilder(val mechanic : Mechanic,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -241,7 +236,7 @@ class MechanicOptionsViewBuilder(val mechanic : Mechanic,
 
         layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -270,7 +265,7 @@ class MechanicOptionsViewBuilder(val mechanic : Mechanic,
 
 //        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
-        return layout.relativeLayout(sheetUIContext.context)
+        return layout.relativeLayout(context)
     }
 
 
@@ -289,19 +284,19 @@ class MechanicOptionsViewBuilder(val mechanic : Mechanic,
 
         title.font          = Font.typeface(TextFont.default(),
                                             TextFontStyle.Bold,
-                                            sheetUIContext.context)
+                                            context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        title.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        title.color           = colorOrBlack(colorTheme, entityId)
 
         title.sizeSp          = 18f
 
         title.margin.leftDp   = 0.5f
 
 
-        return title.textView(sheetUIContext.context)
+        return title.textView(context)
     }
 
 
@@ -315,9 +310,9 @@ class MechanicOptionsViewBuilder(val mechanic : Mechanic,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -328,40 +323,41 @@ class MechanicOptionsViewBuilder(val mechanic : Mechanic,
         recyclerView.width          = LinearLayout.LayoutParams.MATCH_PARENT
         recyclerView.height         = R.dimen.dialog_choose_value_list_height
 
-        recyclerView.layoutManager  = LinearLayoutManager(sheetUIContext.context)
+        recyclerView.layoutManager  = LinearLayoutManager(context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        recyclerView.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        recyclerView.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
 
         val adapter = MechanicOptionsRecyclerViewAdapter(mechanic,
-                                                         sheetUIContext,
-                                                         dialog)
+                                                         dialog,
+                                                         entityId,
+                                                         context)
         recyclerView.adapter = adapter
 
 
-        return recyclerView.recyclerView(sheetUIContext.context)
+        return recyclerView.recyclerView(context)
     }
 
 }
 
 
 
-private fun mechanicOptionView(sheetUIContext : SheetUIContext) : View
+private fun mechanicOptionView(entityId : EntityId, context : Context) : View
 {
-    val layout  = mechanicOptionViewLayout(sheetUIContext)
+    val layout  = mechanicOptionViewLayout(entityId, context)
 
-    layout.addView(mechanicOptionTitleView(sheetUIContext))
+    layout.addView(mechanicOptionTitleView(entityId, context))
 
-    layout.addView(mechanicOptionSummaryView(sheetUIContext))
+    layout.addView(mechanicOptionSummaryView(entityId, context))
 
     return layout
 }
 
 
-private fun mechanicOptionViewLayout(sheetUIContext : SheetUIContext) : LinearLayout
+private fun mechanicOptionViewLayout(entityId : EntityId, context : Context) : LinearLayout
 {
     val layout          = LinearLayoutBuilder()
 
@@ -388,11 +384,11 @@ private fun mechanicOptionViewLayout(sheetUIContext : SheetUIContext) : LinearLa
     layout.padding.leftDp   = 6f
     layout.padding.rightDp  = 6f
 
-    return layout.linearLayout(sheetUIContext.context)
+    return layout.linearLayout(context)
 }
 
 
-private fun mechanicOptionTitleView(sheetUIContext : SheetUIContext) : TextView
+private fun mechanicOptionTitleView(entityId : EntityId, context : Context) : TextView
 {
     val title               = TextViewBuilder()
 
@@ -403,20 +399,20 @@ private fun mechanicOptionTitleView(sheetUIContext : SheetUIContext) : TextView
 
     title.font              = Font.typeface(TextFont.default(),
                                             TextFontStyle.Medium,
-                                            sheetUIContext.context)
+                                            context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-    title.color             = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+    title.color             = colorOrBlack(colorTheme, entityId)
 
     title.sizeSp            = 18f
 
-    return title.textView(sheetUIContext.context)
+    return title.textView(context)
 }
 
 
-private fun mechanicOptionSummaryView(sheetUIContext : SheetUIContext) : TextView
+private fun mechanicOptionSummaryView(entityId : EntityId, context : Context) : TextView
 {
     val summary             = TextViewBuilder()
 
@@ -427,22 +423,23 @@ private fun mechanicOptionSummaryView(sheetUIContext : SheetUIContext) : TextVie
 
     summary.font            = Font.typeface(TextFont.default(),
                                             TextFontStyle.Regular,
-                                            sheetUIContext.context)
+                                            context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-    summary.color           = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+    summary.color           = colorOrBlack(colorTheme, entityId)
 
     summary.sizeSp          = 16f
 
-    return summary.textView(sheetUIContext.context)
+    return summary.textView(context)
 }
 
 
 class MechanicOptionsRecyclerViewAdapter(val mechanic : Mechanic,
-                                         val sheetUIContext: SheetUIContext,
-                                         val dialog : DialogFragment)
+                                         val dialog : DialogFragment,
+                                         val entityId : EntityId,
+                                         val context : Context)
                                           : RecyclerView.Adapter<MechanicOptionViewHolder>()
 {
 
@@ -465,8 +462,8 @@ class MechanicOptionsRecyclerViewAdapter(val mechanic : Mechanic,
 
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : MechanicOptionViewHolder
     {
-        val itemView = mechanicOptionView(sheetUIContext)
-        return MechanicOptionViewHolder(itemView, sheetUIContext)
+        val itemView = mechanicOptionView(entityId, context)
+        return MechanicOptionViewHolder(itemView)
     }
 
 
@@ -479,11 +476,11 @@ class MechanicOptionsRecyclerViewAdapter(val mechanic : Mechanic,
         viewHolder.setSummaryText(variable.description().value)
 
         viewHolder.setOnClick(View.OnClickListener {
-            SheetManager.sheetState(sheetUIContext.sheetId) apDo { sheetState ->
+            entityEngineState(entityId) apDo { sheetState ->
                 sheetState.removeMechanic(mechanic)
                 sheetState.updateVariable(variable.variableId(),
                                           EngineValueBoolean(true),
-                                          SheetContext(sheetUIContext))
+                                          entityId)
             }
             dialog.dismiss()
         })
@@ -503,7 +500,7 @@ class MechanicOptionsRecyclerViewAdapter(val mechanic : Mechanic,
 /**
  * The View Holder caches a view for each item.
  */
-class MechanicOptionViewHolder(itemView : View, val sheetUIContext : SheetUIContext)
+class MechanicOptionViewHolder(itemView : View)
                 : RecyclerView.ViewHolder(itemView)
 {
 

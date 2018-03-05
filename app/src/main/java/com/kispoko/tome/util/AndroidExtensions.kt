@@ -10,7 +10,6 @@ import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.rts.entity.sheet.SheetUI
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import kotlinx.coroutines.experimental.android.UI
@@ -75,11 +74,11 @@ fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle
 }
 
 
-fun AppCompatActivity.initializeState()
-{
-    val activity = this as SheetUI
-    launch(UI) {
-        ThemeManager.loadOfficialThemes(activity.context())
-        SheetManager.startSession(activity)
-    }
-}
+//fun AppCompatActivity.initializeState()
+//{
+//    val activity = this as SheetUI
+//    launch(UI) {
+//        ThemeManager.loadOfficialThemes(activity.context())
+//        SheetManager.startSession(activity)
+//    }
+//}

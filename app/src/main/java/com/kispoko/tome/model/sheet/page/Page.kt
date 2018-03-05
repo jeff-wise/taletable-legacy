@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.page
 
 
+import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
 import com.kispoko.tome.db.*
@@ -16,9 +17,9 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.ElementFormat
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.SheetComponent
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -135,26 +136,26 @@ data class Page(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetUIContext : SheetUIContext)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        this.groups.forEach { it.onSheetComponentActive(sheetUIContext) }
+        this.groups.forEach { it.onSheetComponentActive(entityId, context) }
     }
 
 
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(sheetUIContext: SheetUIContext) : View
+    fun view(entityId : EntityId, context : Context) : View
     {
-        val layout = this.viewLayout(sheetUIContext)
+        val layout = this.viewLayout(entityId, context)
 
-        this.groups.forEach { layout.addView(it.view(sheetUIContext)) }
+        this.groups.forEach { layout.addView(it.view(entityId, context)) }
 
         return layout
     }
 
 
-    private fun viewLayout(sheetUIContext: SheetUIContext) : LinearLayout
+    private fun viewLayout(entityId : EntityId, context : Context) : LinearLayout
     {
         val layout = LinearLayoutBuilder()
 
@@ -165,12 +166,12 @@ data class Page(override val id : UUID,
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
-                                                     this.format().elementFormat().backgroundColorTheme())
+        val bgColorTheme = this.format().elementFormat().backgroundColorTheme()
+        layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         layout.paddingSpacing   = this.format().elementFormat().padding()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 }

@@ -20,7 +20,6 @@ import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.entity.campaign.CampaignManager
 import com.kispoko.tome.rts.entity.game.GameManager
-import com.kispoko.tome.rts.entity.sheet.SheetManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.Err
 import effect.Val
@@ -96,32 +95,32 @@ class SheetNavigationFragment : Fragment()
         val layout = this.viewLayout(themeId, context)
 
         // Recycler View
-        val sheetItems = SheetManager.openSheets().map {
-            val sheetContext = SheetManager.sheetContext(it)
-
-            val campaign = sheetContext ap { CampaignManager.campaignWithId(it.campaignId) }
-            val game = sheetContext ap { GameManager.gameWithId(it.gameId) }
+//        val sheetItems = SheetManager.openSheets().map {
+//            val sheetContext = SheetManager.sheetContext(it)
 //
-            var campaignName : String? = null
-            var gameName : String? = null
+//            val campaign = sheetContext ap { CampaignManager.campaignWithId(it.campaignId) }
+//            val game = sheetContext ap { GameManager.gameWithId(it.gameId) }
+////
+//            var campaignName : String? = null
+//            var gameName : String? = null
+//
+//            when (campaign) {
+//                is Val -> campaignName = campaign.value.campaignName()
+//                is Err -> ApplicationLog.error(campaign.error)
+//            }
+//
+//            when (game) {
+//                is Val -> gameName = game.value.gameName().value
+//                is Err -> ApplicationLog.error(game.error)
+//            }
+//
+//            SheetItem(it.settings().sheetName(),
+//                      it.settings().sheetSummary(),
+//                      campaignName,
+//                      gameName)
+//        }
 
-            when (campaign) {
-                is Val -> campaignName = campaign.value.campaignName()
-                is Err -> ApplicationLog.error(campaign.error)
-            }
-
-            when (game) {
-                is Val -> gameName = game.value.gameName().value
-                is Err -> ApplicationLog.error(game.error)
-            }
-
-            SheetItem(it.settings().sheetName(),
-                      it.settings().sheetSummary(),
-                      campaignName,
-                      gameName)
-        }
-
-        layout.addView(this.sheetRecyclerView(sheetItems, themeId, context))
+//        layout.addView(this.sheetRecyclerView(sheetItems, themeId, context))
 
         return layout
     }

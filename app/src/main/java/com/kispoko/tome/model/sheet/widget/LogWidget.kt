@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -20,8 +21,8 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -595,13 +596,14 @@ data class LogEntryFormat(override val id : UUID,
 
 
 class LogViewBuilder(val logWidget : LogWidget,
-                     val sheetUIContext : SheetUIContext)
+                     val entityId : EntityId,
+                     val context : Context)
 {
 
 
     fun view() : View
     {
-        val layout = WidgetView.layout(logWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(logWidget.widgetFormat(), entityId, context)
 
         layout.addView(entriesView())
 
@@ -630,7 +632,7 @@ class LogViewBuilder(val logWidget : LogWidget,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -672,16 +674,15 @@ class LogViewBuilder(val logWidget : LogWidget,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.backgroundColor      = SheetManager.color(
-                                                sheetUIContext.sheetId,
-                                                format.elementFormat().backgroundColorTheme())
+        layout.backgroundColor      = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                                   entityId)
 
         layout.marginSpacing        = format.elementFormat().margins()
         layout.paddingSpacing       = format.elementFormat().padding()
 
         layout.corners              = format.elementFormat().corners()
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -695,15 +696,15 @@ class LogViewBuilder(val logWidget : LogWidget,
 
         title.text              = entryTitle.value
 
-        title.color             = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        title.color             = colorOrBlack(format.colorTheme(), entityId)
 
         title.font              = Font.typeface(format.font(),
                                                 format.fontStyle(),
-                                                sheetUIContext.context)
+                                                context)
 
         title.sizeSp            = format.sizeSp()
 
-        return title.textView(sheetUIContext.context)
+        return title.textView(context)
     }
 
 
@@ -717,15 +718,15 @@ class LogViewBuilder(val logWidget : LogWidget,
 
         author.text              = entryAuthor.value
 
-        author.color             = SheetManager.color(sheetUIContext.sheetId, style.colorTheme())
+        author.color             = colorOrBlack(style.colorTheme(), entityId)
 
         author.font              = Font.typeface(style.font(),
-                                                style.fontStyle(),
-                                                sheetUIContext.context)
+                                                 style.fontStyle(),
+                                                 context)
 
         author.sizeSp            = style.sizeSp()
 
-        return author.textView(sheetUIContext.context)
+        return author.textView(context)
     }
 
 
@@ -739,15 +740,15 @@ class LogViewBuilder(val logWidget : LogWidget,
 
         summary.text            = entrySummary.value
 
-        summary.color           = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        summary.color           = colorOrBlack(format.colorTheme(), entityId)
 
         summary.font            = Font.typeface(format.font(),
                                                 format.fontStyle(),
-                                                sheetUIContext.context)
+                                                context)
 
         summary.sizeSp          = format.sizeSp()
 
-        return summary.textView(sheetUIContext.context)
+        return summary.textView(context)
     }
 
 }

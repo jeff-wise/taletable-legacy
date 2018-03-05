@@ -13,6 +13,8 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.Author
+import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
@@ -34,9 +36,9 @@ import java.util.*
  */
 data class Book(override val id : UUID,
                 val bookId: BookId,
-                val title : BookTitle,
-                val authors : List<Author>,
-                val abstract : BookAbstract,
+                val bookInfo : BookInfo,
+                val engine : Engine,
+                val variables : List<Variable>,
                 val introduction : Maybe<BookContent>,
                 val conclusion : Maybe<BookContent>,
                 val chapters : MutableList<BookChapter>)
@@ -56,18 +58,18 @@ data class Book(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(rulebookId : BookId,
-                title : BookTitle,
-                authors : List<Author>,
-                abstract : BookAbstract,
+    constructor(bookId : BookId,
+                bookInfo : BookInfo,
+                engine : Engine,
+                variables : List<Variable>,
                 introduction : Maybe<BookContent>,
                 conclusion : Maybe<BookContent>,
                 chapters : List<BookChapter>)
         : this(UUID.randomUUID(),
-               rulebookId,
-               title,
-               authors,
-               abstract,
+               bookId,
+               bookInfo,
+               engine,
+               variables,
                introduction,
                conclusion,
                chapters.toMutableList())
@@ -80,14 +82,14 @@ data class Book(override val id : UUID,
             is DocDict ->
             {
                 apply(::Book,
-                      // Rulebook Id
-                      doc.at("rulebook_id") apply { BookId.fromDocument(it) },
-                      // Title
-                      doc.at("title") apply { BookTitle.fromDocument(it) },
-                      // Title
-                      doc.list("authors") apply { it.map { Author.fromDocument(it) } },
-                      // Abstract
-                      doc.at("abstract") apply { BookAbstract.fromDocument(it) },
+                      // Book Id
+                      doc.at("book_id") apply { BookId.fromDocument(it) },
+                      // Book Info
+                      doc.at("book_info") apply { BookInfo.fromDocument(it) },
+                      // Engine
+                      doc.at("engine") apply { Engine.fromDocument(it) },
+                      // Variables
+                      doc.list("variables") apply { it.map { Variable.fromDocument(it) } },
                       // Introduction
                       split(doc.maybeAt("introduction"),
                             effValue<ValueError,Maybe<BookContent>>(Nothing()),
@@ -111,9 +113,9 @@ data class Book(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "rulebook_id" to this.rulebookId().toDocument(),
-        "title" to this.title().toDocument(),
-        "abstract" to this.abstract().toDocument(),
+        "book_id" to this.bookId.toDocument(),
+        "book_info" to this.bookInfo.toDocument(),
+        "engine" to this.engine.toDocument(),
         "chapters" to DocList(this.chapters().map { it.toDocument() })
     ))
 
@@ -122,16 +124,16 @@ data class Book(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun rulebookId() : BookId = this.bookId
+    fun bookId() : BookId = this.bookId
 
 
-    fun title() : BookTitle = this.title
+    fun bookInfo() : BookInfo = this.bookInfo
 
 
-    fun authors() : List<Author> = this.authors
+    fun engine() : Engine = this.engine
 
 
-    fun abstract() : BookAbstract = this.abstract
+    fun variables() : List<Variable> = this.variables
 
 
     fun introduction() : Maybe<BookContent> = this.introduction
@@ -146,119 +148,119 @@ data class Book(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
-
-    fun subsection(rulebookReference : BookReference) : BookSubsection?
-    {
-        val chapter = this.chapterById[rulebookReference.chapterId()]
-
-        // TODO use as maybe refactoring example
-        if (chapter != null)
-        {
-            val sectionId = rulebookReference.sectionId()
-            when (sectionId)
-            {
-                is Just ->
-                {
-                    val section = chapter.sectionWithId(sectionId.value)
-                    if (section != null)
-                    {
-                        val subsectionId = rulebookReference.subsectionId()
-                        when (subsectionId)
-                        {
-                            is Just ->
-                            {
-                                val subsection = section.subsectionWithId(subsectionId.value)
-                                if (subsection != null)
-                                    return subsection
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return null
-    }
-
-
-    fun excerpt(rulebookReference : BookReference) : RulebookExcerpt?
-    {
-        val chapter = this.chapterById[rulebookReference.chapterId()]
-
-        // TODO use as maybe refactoring example
-        if (chapter != null)
-        {
-            val sectionId = rulebookReference.sectionId()
-            when (sectionId)
-            {
-                is Just ->
-                {
-                    val section = chapter.sectionWithId(sectionId.value)
-                    if (section != null)
-                    {
-                        val subsectionId = rulebookReference.subsectionId()
-                        when (subsectionId)
-                        {
-                            is Just ->
-                            {
-                                val subsection = section.subsectionWithId(subsectionId.value)
-                                if (subsection != null)
-                                    return RulebookExcerpt(subsection.titleString(), subsection.body().value)
-                            }
-                            is Nothing -> return RulebookExcerpt(section.title().value, section.body().value)
-                        }
-                    }
-                }
-            }
-        }
-
-        return null
-    }
-
-
-    fun referencePath(rulebookReference : BookReference) : RulebookReferencePath?
-    {
-        val chapter = this.chapterById[rulebookReference.chapterId()]
-
-        if (chapter != null)
-        {
-            val sectionId = rulebookReference.sectionId()
-            when (sectionId)
-            {
-                is Just ->
-                {
-                    val section = chapter.sectionWithId(sectionId.value)
-                    if (section != null)
-                    {
-                        val subsectionId = rulebookReference.subsectionId()
-                        when (subsectionId)
-                        {
-                            is Just ->
-                            {
-                                val subsection = section.subsectionWithId(subsectionId.value)
-                                if (subsection != null)
-                                    return RulebookReferencePath(this.title(),
-                                            chapter.title(),
-                                            Just(section.title()),
-                                            Just(subsection.title()))
-                            }
-                            else ->{
-                                return RulebookReferencePath(this.title(),
-                                        chapter.title(),
-                                        Just(section.title()),
-                                        Nothing())
-                            }
-                        }
-                    }
-                }
-                else -> {
-                    return RulebookReferencePath(this.title(), chapter.title(), Nothing(), Nothing())
-                }
-            }
-        }
-
-        return null
-    }
+//
+//    fun subsection(rulebookReference : BookReference) : BookSubsection?
+//    {
+//        val chapter = this.chapterById[rulebookReference.chapterId()]
+//
+//        // TODO use as maybe refactoring example
+//        if (chapter != null)
+//        {
+//            val sectionId = rulebookReference.sectionId()
+//            when (sectionId)
+//            {
+//                is Just ->
+//                {
+//                    val section = chapter.sectionWithId(sectionId.value)
+//                    if (section != null)
+//                    {
+//                        val subsectionId = rulebookReference.subsectionId()
+//                        when (subsectionId)
+//                        {
+//                            is Just ->
+//                            {
+//                                val subsection = section.subsectionWithId(subsectionId.value)
+//                                if (subsection != null)
+//                                    return subsection
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return null
+//    }
+//
+//
+//    fun excerpt(rulebookReference : BookReference) : RulebookExcerpt?
+//    {
+//        val chapter = this.chapterById[rulebookReference.chapterId()]
+//
+//        // TODO use as maybe refactoring example
+//        if (chapter != null)
+//        {
+//            val sectionId = rulebookReference.sectionId()
+//            when (sectionId)
+//            {
+//                is Just ->
+//                {
+//                    val section = chapter.sectionWithId(sectionId.value)
+//                    if (section != null)
+//                    {
+//                        val subsectionId = rulebookReference.subsectionId()
+//                        when (subsectionId)
+//                        {
+//                            is Just ->
+//                            {
+//                                val subsection = section.subsectionWithId(subsectionId.value)
+//                                if (subsection != null)
+//                                    return RulebookExcerpt(subsection.titleString(), subsection.body().value)
+//                            }
+//                            is Nothing -> return RulebookExcerpt(section.title().value, section.body().value)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return null
+//    }
+//
+//
+//    fun referencePath(rulebookReference : BookReference) : RulebookReferencePath?
+//    {
+//        val chapter = this.chapterById[rulebookReference.chapterId()]
+//
+//        if (chapter != null)
+//        {
+//            val sectionId = rulebookReference.sectionId()
+//            when (sectionId)
+//            {
+//                is Just ->
+//                {
+//                    val section = chapter.sectionWithId(sectionId.value)
+//                    if (section != null)
+//                    {
+//                        val subsectionId = rulebookReference.subsectionId()
+//                        when (subsectionId)
+//                        {
+//                            is Just ->
+//                            {
+//                                val subsection = section.subsectionWithId(subsectionId.value)
+//                                if (subsection != null)
+//                                    return RulebookReferencePath(this.title(),
+//                                            chapter.title(),
+//                                            Just(section.title()),
+//                                            Just(subsection.title()))
+//                            }
+//                            else ->{
+//                                return RulebookReferencePath(this.title(),
+//                                        chapter.title(),
+//                                        Just(section.title()),
+//                                        Nothing())
+//                            }
+//                        }
+//                    }
+//                }
+//                else -> {
+//                    return RulebookReferencePath(this.title(), chapter.title(), Nothing(), Nothing())
+//                }
+//            }
+//        }
+//
+//        return null
+//    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -273,9 +275,9 @@ data class Book(override val id : UUID,
 
     override fun rowValue() : DB_BookValue =
         RowValue6(bookTable,
-                  PrimValue(this.title),
-                  CollValue(this.authors),
-                  PrimValue(this.abstract),
+                  PrimValue(this.bookId),
+                  ProdValue(this.engine),
+                  CollValue(this.variables),
                   MaybeProdValue(this.introduction),
                   MaybeProdValue(this.conclusion),
                   CollValue(this.chapters))
@@ -317,6 +319,93 @@ data class BookId(val value : String) : ToDocument, SQLSerializable, Serializabl
     override fun asSQLValue() : SQLValue = SQLText({ this.value })
 
 }
+
+
+/**
+ * Book Info
+ */
+data class BookInfo(override val id : UUID,
+                    val title : BookTitle,
+                    val authors : List<Author>,
+                    val abstract : BookAbstract)
+                     : ToDocument, ProdType, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(title : BookTitle,
+                authors : List<Author>,
+                abstract : BookAbstract)
+        : this(UUID.randomUUID(),
+               title,
+               authors,
+               abstract)
+
+
+    companion object : Factory<BookInfo>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookInfo> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::BookInfo,
+                      // Title
+                      doc.at("title") apply { BookTitle.fromDocument(it) },
+                      // Authors
+                      doc.list("authors") apply { it.map { Author.fromDocument(it) } },
+                      // Abstract
+                      doc.at("abstract") apply { BookAbstract.fromDocument(it) }
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "title" to this.title().toDocument(),
+        "abstract" to this.abstract().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun title() : BookTitle = this.title
+
+
+    fun authors() : List<Author> = this.authors
+
+
+    fun abstract() : BookAbstract = this.abstract
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_BookInfoValue =
+        RowValue3(bookInfoTable,
+                  PrimValue(this.title),
+                  CollValue(this.authors),
+                  PrimValue(this.abstract))
+
+}
+
+
 
 
 /**

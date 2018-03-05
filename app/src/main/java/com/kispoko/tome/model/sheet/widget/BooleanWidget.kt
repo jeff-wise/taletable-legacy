@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -24,6 +25,8 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Icon
 import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -322,13 +325,14 @@ sealed class BooleanWidgetViewType : ToDocument, SQLSerializable, Serializable
 
 
 class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
-                               val sheetUIContext : SheetUIContext)
+                               val entityId : EntityId,
+                               val context : Context)
 {
 
 
     fun view() : View
     {
-        val layout = WidgetView.layout(booleanWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(booleanWidget.widgetFormat(), entityId, context)
 
         val layoutId = Util.generateViewId()
         layout.id = layoutId
@@ -349,8 +353,8 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
         contentLayout.addView(simpleView)
 
         layout.setOnClickListener {
-            val sheetUI = sheetUIContext.context as SheetUI
-            SheetManager.updateSheet(sheetUIContext.sheetId, BooleanWidgetUpdateToggle(booleanWidget.id) , sheetUI)
+            val sheetUI = context as SheetUI
+//            SheetManager.updateSheet(sheetUIContext.sheetId, BooleanWidgetUpdateToggle(booleanWidget.id) , sheetUI)
         }
 
     }
@@ -360,7 +364,7 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
     {
         val layout      = this.simpleViewLayout()
 
-        booleanWidget.variableValue(SheetContext(sheetUIContext)) apDo { currentValue ->
+        booleanWidget.variableValue(entityId) apDo { currentValue ->
 
             val format = booleanWidget.format()
 
@@ -396,7 +400,7 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
 
         layout.gravity      = Gravity.CENTER_VERTICAL
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 
@@ -429,13 +433,13 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
 
         text.font           = Font.typeface(format.font(),
                                             format.fontStyle(),
-                                            sheetUIContext.context)
+                                            context)
 
         text.sizeSp         = format.sizeSp()
 
-        text.color          = SheetManager.color(sheetUIContext.sheetId, format.colorTheme())
+        text.color          = colorOrBlack(format.colorTheme(), entityId)
 
-        return text.textView(sheetUIContext.context)
+        return text.textView(context)
     }
 
 
@@ -468,9 +472,9 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
 
         icon.image              = _icon.iconType().drawableResId()
 
-        icon.color              = SheetManager.color(sheetUIContext.sheetId, iconFormat.colorTheme())
+        icon.color              = colorOrBlack(iconFormat.colorTheme(), entityId)
 
-        return layout.linearLayout(sheetUIContext.context)
+        return layout.linearLayout(context)
     }
 
 

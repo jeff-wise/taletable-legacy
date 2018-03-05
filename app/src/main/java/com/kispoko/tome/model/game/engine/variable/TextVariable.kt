@@ -15,8 +15,6 @@ import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.game.GameManager
-import com.kispoko.tome.rts.entity.sheet.SheetContext
 import com.kispoko.tome.rts.entity.textValue
 import com.kispoko.tome.rts.entity.value
 import effect.*

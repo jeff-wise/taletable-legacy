@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
@@ -12,6 +13,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.engine
 import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
@@ -33,8 +35,11 @@ import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.value
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -257,12 +262,13 @@ data class ListWidgetDescription(val value : String) : ToDocument, SQLSerializab
 
 
 class ListWidgetViewBuilder(val listWidget : ListWidget,
-                            val sheetUIContext : SheetUIContext)
+                            val entityId : EntityId,
+                            val context : Context)
 {
 
     fun view() : View
     {
-        val layout = WidgetView.layout(listWidget.widgetFormat(), sheetUIContext)
+        val layout = WidgetView.layout(listWidget.widgetFormat(), entityId, context)
 
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 
@@ -285,8 +291,7 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
         paragraph.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
         val description = listWidget.description()
-        val sheetContext = SheetContext(sheetUIContext)
-        val valueSetId = listWidget.variable(sheetContext).apply {
+        val valueSetId = listWidget.variable(entityId).apply {
                             note<AppError,ValueSetId>(it.valueSetId().toNullable(),
                                                       AppStateError(VariableDoesNotHaveValueSet(it.variableId())))
                          }
@@ -294,14 +299,13 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
             is Just -> {
                 when (valueSetId) {
                     is Val -> {
-                        val values = GameManager.engine(sheetUIContext.gameId) ap { engine ->
-                                     listWidget.value(sheetContext)            ap { valueIds ->
+                        val values = listWidget.value(entityId) ap { valueIds ->
                                             valueIds.mapM { valueId ->
                                                 val valueRef = ValueReference(TextReferenceLiteral(valueSetId.value.value),
                                                                               TextReferenceLiteral(valueId))
-                                                engine.value(valueRef, sheetContext)
+                                                value(valueRef, entityId)
                                             }
-                                     }}
+                                     }
                         when (values) {
                             is Val -> {
                                 val valueStrings = values.value.map { it.valueString() }
@@ -316,19 +320,20 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
 
         paragraph.onClick       = View.OnClickListener {
 
-            val textListVariable =  listWidget.variable(SheetContext(sheetUIContext))
+            val textListVariable =  listWidget.variable(entityId)
             when (textListVariable) {
                 is Val -> {
                     openVariableEditorDialog(textListVariable.value,
                                              null,
                                              UpdateTargetListWidget(listWidget.id),
-                                             sheetUIContext)
+                                             entityId,
+                                             context)
                 }
             }
 
         }
 
-        return paragraph.textView(sheetUIContext.context)
+        return paragraph.textView(context)
     }
 
 
@@ -407,18 +412,17 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
 
     private fun formatSpans(textFormat : TextFormat) : List<Any>
     {
-        val sizePx = Util.spToPx(textFormat.sizeSp(), sheetUIContext.context)
+        val sizePx = Util.spToPx(textFormat.sizeSp(), context)
         val sizeSpan = AbsoluteSizeSpan(sizePx)
 
-        val typeface = Font.typeface(textFormat.font(), textFormat.fontStyle(), sheetUIContext.context)
+        val typeface = Font.typeface(textFormat.font(), textFormat.fontStyle(), context)
 
         val typefaceSpan = CustomTypefaceSpan(typeface)
 
-        var color = SheetManager.color(sheetUIContext.sheetId, textFormat.colorTheme())
+        var color = colorOrBlack(textFormat.colorTheme(), entityId)
         val colorSpan = ForegroundColorSpan(color)
 
-        var bgColor = SheetManager.color(sheetUIContext.sheetId,
-                                         textFormat.elementFormat().backgroundColorTheme())
+        var bgColor = colorOrBlack(textFormat.elementFormat().backgroundColorTheme(), entityId)
         val bgColorSpan = BackgroundColorSpan(bgColor)
 
         return listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)

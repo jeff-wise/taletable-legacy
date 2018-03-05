@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.GroupRowActivity;
 import com.kispoko.tome.model.sheet.group.GroupRow;
 
 import java.util.List;
@@ -141,14 +140,14 @@ public class GroupRowListRecyclerViewAdapter
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(context, GroupRowActivity.class);
-
-                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("group_row", groupRow);
-                    bundle.putString("group_name", groupName);
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, GroupRowActivity.class);
+//
+//                    Bundle bundle = new Bundle();
+////                    bundle.putSerializable("group_row", groupRow);
+//                    bundle.putString("group_name", groupName);
+//                    intent.putExtras(bundle);
+//
+//                    context.startActivity(intent);
                 }
             });
         }

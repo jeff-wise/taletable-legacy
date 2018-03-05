@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import android.content.Context
 import android.util.Log
 import android.util.TypedValue
 import android.widget.TextView
@@ -15,8 +16,8 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -221,13 +222,15 @@ data class TextFormat(override val id : UUID,
     /**
      * Set the TextViewBuilder style options according the values in the TextFormat.
      */
-    fun styleTextViewBuilder(textViewBuilder : TextViewBuilder, sheetUIContext: SheetUIContext)
+    fun styleTextViewBuilder(textViewBuilder : TextViewBuilder,
+                             entityId : EntityId,
+                             context : Context)
     {
-        textViewBuilder.color   = SheetManager.color(sheetUIContext.sheetId, this.colorTheme())
+        textViewBuilder.color   = colorOrBlack(this.colorTheme(), entityId)
         textViewBuilder.sizeSp  = this.sizeSp()
         textViewBuilder.font    = Font.typeface(this.font(),
                                                 this.fontStyle(),
-                                                sheetUIContext.context)
+                                                context)
     }
 
 
@@ -235,14 +238,14 @@ data class TextFormat(override val id : UUID,
      * format a text view with this style.
      * @param textview the text view.
      */
-    fun styleTextView(textView : TextView, sheetUIContext : SheetUIContext)
+    fun styleTextView(textView : TextView, entityId : EntityId, context : Context)
     {
-        textView.setTextColor(SheetManager.color(sheetUIContext.sheetId, this.colorTheme()))
+        textView.setTextColor(colorOrBlack(this.colorTheme(), entityId))
         Log.d("***TEXT", "size: " + this.sizeSp().toString())
         //textView.textSize = Util.spToPx(this.sizeSp(), sheetUIContext.context).toFloat()
 
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, this.sizeSp())
-        textView.typeface = Font.typeface(this.font(), this.fontStyle(), sheetUIContext.context)
+        textView.typeface = Font.typeface(this.font(), this.fontStyle(), context)
     }
 
 

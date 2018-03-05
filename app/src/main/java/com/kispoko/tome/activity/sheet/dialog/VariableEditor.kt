@@ -2,17 +2,17 @@
 package com.kispoko.tome.activity.sheet.dialog
 
 
-import android.util.Log
+import android.content.Context
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
-import com.kispoko.tome.rts.entity.game.GameManager
-import com.kispoko.tome.rts.entity.sheet.SheetContext
-import com.kispoko.tome.rts.entity.sheet.SheetManager
-import com.kispoko.tome.rts.entity.sheet.SheetUIContext
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.sheet.UpdateTarget
+import com.kispoko.tome.rts.entity.summation
+import com.kispoko.tome.rts.entity.value
+import com.kispoko.tome.rts.entity.valueSet
 import effect.Err
 import effect.Val
 import maybe.Just
@@ -25,30 +25,35 @@ import maybe.Just
 fun openVariableEditorDialog(variable : Variable,
                              numericEditorType : NumericEditorType?,
                              updateTarget : UpdateTarget,
-                             sheetUIContext : SheetUIContext)
+                             entityId : EntityId,
+                             context : Context)
 {
 
     when (variable)
     {
         is TextVariable   -> openTextVariableEditorDialog(variable,
                                                           updateTarget,
-                                                          sheetUIContext)
+                                                          entityId,
+                                                          context)
         is NumberVariable ->
         {
             if (numericEditorType != null) {
                 openNumberVariableEditorDialog(variable,
                                                numericEditorType,
                                                updateTarget,
-                                               sheetUIContext)
+                                               entityId,
+                                               context)
             } else {
                 openNumberVariableEditorDialog(variable,
                                                updateTarget,
-                                               sheetUIContext)
+                                               entityId,
+                                               context)
             }
         }
         is TextListVariable   -> openTextListVariableEditorDialog(variable,
                                                                   updateTarget,
-                                                                  sheetUIContext)
+                                                                  entityId,
+                                                                  context)
     }
 
 }
@@ -59,15 +64,20 @@ fun openVariableEditorDialog(variable : Variable,
  */
 fun openVariableEditorDialog(variable : Variable,
                              updateTarget : UpdateTarget,
-                             sheetUIContext : SheetUIContext)
+                             entityId : EntityId,
+                             context : Context)
 {
 
     when (variable)
     {
         is TextVariable   -> openTextVariableEditorDialog(variable,
                                                           updateTarget,
-                                                          sheetUIContext)
-        is NumberVariable -> openNumberVariableEditorDialog(variable, updateTarget, sheetUIContext)
+                                                          entityId,
+                                                          context)
+        is NumberVariable -> openNumberVariableEditorDialog(variable,
+                                                            updateTarget,
+                                                            entityId,
+                                                            context)
     }
 
 }
@@ -75,22 +85,24 @@ fun openVariableEditorDialog(variable : Variable,
 
 fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                                    updateTarget : UpdateTarget,
-                                   sheetUIContext : SheetUIContext) =
+                                   entityId : EntityId,
+                                   context : Context) =
     openNumberVariableEditorDialog(numberVariable,
                                    NumericEditorType.Adder,
                                    updateTarget,
-                                   sheetUIContext)
+                                   entityId,
+                                   context)
 
 
 fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                                    editorType : NumericEditorType,
                                    updateTarget : UpdateTarget,
-                                   sheetUIContext : SheetUIContext)
+                                   entityId : EntityId,
+                                   context : Context)
 {
     val variableValue = numberVariable.variableValue()
-    val sheetContext = SheetContext(sheetUIContext)
 
-    val sheetActivity = sheetUIContext.context as SheetActivity
+    val sheetActivity = context as SheetActivity
 
     when (variableValue)
     {
@@ -106,8 +118,8 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                                                 numberVariable.label().value,
                                                 updateTarget,
                                                 numberVariable.variableId())
-                    val adderDialog = AdderDialogFragment.newInstance(adderState,
-                                                                      SheetContext(sheetUIContext))
+                    val adderDialog = AdderDialog.newInstance(adderState, entityId)
+
                     adderDialog.show(sheetActivity.supportFragmentManager, "")
                 }
                 is NumericEditorType.Simple ->
@@ -115,25 +127,23 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                 {
                     val simpleDialog = NumberEditorDialog.newInstance(variableValue.value,
                                                                       numberVariable.label().value,
-                                                                      updateTarget,
-                                                                      SheetContext(sheetUIContext))
+                                                                      numberVariable.variableId(),
+                                                                      entityId)
                     simpleDialog.show(sheetActivity.supportFragmentManager, "")
                 }
             }
         }
         is NumberVariableSummationValue ->
         {
-//            val summation = GameManager.engine(sheetUIContext.gameId)
-//                                       .apply{ it.summation(variableValue.summationId) }
-            val summation = SheetManager.summation(variableValue.summationId, sheetContext)
+            val summation = summation(variableValue.summationId, entityId)
             when (summation)
             {
                 is Val ->
                 {
-                    val dialog = SummationDialogFragment.newInstance(
+                    val dialog = SummationDialog.newInstance(
                                             summation.value,
                                             numberVariable.label().value,
-                                            SheetContext(sheetUIContext))
+                                            entityId)
                     dialog.show(sheetActivity.supportFragmentManager, "")
                 }
                 is Err -> ApplicationLog.error(summation.error)
@@ -146,10 +156,10 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
 
 fun openTextVariableEditorDialog(textVariable : TextVariable,
                                  updateTarget : UpdateTarget,
-                                 sheetUIContext : SheetUIContext)
+                                 entityId : EntityId,
+                                 context : Context)
 {
     val variableValue = textVariable.variableValue()
-    val sheetContext = SheetContext(sheetUIContext)
 
     when (variableValue)
     {
@@ -158,12 +168,11 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val title = textVariable.label().value
             val text  = variableValue.value
 
-            val sheetActivity = sheetUIContext.context as SheetActivity
-            val dialog = TextEditorDialogFragment.newInstance(title,
-                                                              text,
-                                                              updateTarget,
-                                                              SheetContext(sheetUIContext),
-                                                              textVariable.variableId())
+            val sheetActivity = context as SheetActivity
+            val dialog = TextEditorDialog.newInstance(title,
+                                                      text,
+                                                      textVariable.variableId(),
+                                                      entityId)
             dialog.show(sheetActivity.supportFragmentManager, "")
         }
         is TextVariableValueValue ->
@@ -171,10 +180,8 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val valueReference = variableValue.valueReference
             val valueSetId     = valueReference.valueSetId
 
-            val valueSet = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.valueSet(valueSetId, sheetContext) }
-            val value    = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.value(valueReference, sheetContext) }
+            val valueSet = valueSet(valueSetId, entityId)
+            val value    = value(valueReference, entityId)
 
             when (valueSet)
             {
@@ -184,13 +191,13 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                     {
                         is Val ->
                         {
-                            val sheetActivity = sheetUIContext.context as SheetActivity
+                            val sheetActivity = context as SheetActivity
                             val chooseDialog =
                                     ValueChooserDialogFragment.newInstance(
                                                     valueSet.value,
                                                     value.value,
                                                     updateTarget,
-                                                    SheetContext(sheetUIContext))
+                                                    entityId)
                             chooseDialog.show(sheetActivity.supportFragmentManager, "")
                         }
                         is Err -> ApplicationLog.error(value.error)
@@ -200,20 +207,19 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             }
         }
         is TextVariableValueUnknownValue -> {
-            val valueSet = GameManager.engine(sheetUIContext.gameId)
-                                      .apply { it.valueSet(variableValue.valueSetId) }
+            val valueSet = valueSet(variableValue.valueSetId, entityId)
 
             when (valueSet)
             {
                 is Val ->
                 {
-                    val sheetActivity = sheetUIContext.context as SheetActivity
+                    val sheetActivity = context as SheetActivity
                     val chooseDialog =
                             ValueChooserDialogFragment.newInstance(
                                             valueSet.value,
                                             null,
                                             updateTarget,
-                                            SheetContext(sheetUIContext))
+                                            entityId)
                     chooseDialog.show(sheetActivity.supportFragmentManager, "")
                 }
                 is Err -> ApplicationLog.error(valueSet.error)
@@ -227,34 +233,28 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
 
 fun openTextListVariableEditorDialog(textListVariable : TextListVariable,
                                      updateTarget : UpdateTarget,
-                                     sheetUIContext : SheetUIContext)
+                                     entityId : EntityId,
+                                     context : Context)
 {
     val variableValue = textListVariable.variableValue()
-
-    Log.d("***VAR EDITOR", "open list editor")
 
     when (variableValue)
     {
         is TextListVariableLiteralValue ->
         {
-            val sheetActivity = sheetUIContext.context as SheetActivity
-            val sheetContext = SheetContext(sheetUIContext)
+            val sheetActivity = context as SheetActivity
 
             val valueSetId = textListVariable.valueSetId
-            val values = textListVariable.value(sheetContext)
-
-            Log.d("***VAR EDITOR", "list literal")
+            val values = textListVariable.value(entityId)
 
             when (valueSetId) {
                 is Just -> {
-                    Log.d("***VAR EDITOR", "has value set id")
                     when (values) {
                         is Val -> {
-                            Log.d("***VAR EDITOR", "open dialog")
                             val dialog = ListEditorDialog.newInstance(valueSetId.value,
                                                                       values.value.map { ValueId(it) },
                                                                       updateTarget,
-                                                                      sheetContext)
+                                                                      entityId)
                             dialog.show(sheetActivity.supportFragmentManager, "")
                         }
                     }

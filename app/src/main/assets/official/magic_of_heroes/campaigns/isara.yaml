@@ -2,3 +2,11 @@ id: isara
 campaign_name: Isara
 campaign_summary: 'Isara'
 game_id: magic_of_heroes
+engine:
+  value_sets:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+  procedures:
