@@ -122,6 +122,14 @@ data class Theme(override val id : UUID,
         is ColorId.Theme       -> this.colorById[colorId]
     }
 
+    fun colorOrBlack(colorId : ColorId) : Int = when (colorId)
+    {
+        is ColorId.Black       -> Color.BLACK
+        is ColorId.White       -> Color.WHITE
+        is ColorId.Transparent -> Color.TRANSPARENT
+        is ColorId.Theme       -> colorById[colorId] ?: Color.BLACK
+    }
+
 
     fun colorOrError(colorId : ColorId) : AppEff<Int> =
             note(color(colorId), AppThemeError(ThemeDoesNotHaveColor(this.themeId, colorId)))

@@ -9,7 +9,7 @@ metadata:
 description:
   overview: |+
     Book
-root_type: game
+root_type: book
 types:
 - type: product_type
   product_type:
@@ -27,8 +27,14 @@ types:
     - name: book_info
       type:
         type: custom_type
-        custom_type: book_inf
+        custom_type: book_info
       presence: required
+      description: The book information.
+    - name: book_settings
+      type:
+        type: custom_type
+        custom_type: book_settings
+      presence: optional
       description: The book information.
     - name: variables
       type: 
@@ -97,6 +103,19 @@ types:
         prim_type: string
       presence: required
       description: A brief description of the game rules.
+- type: product_type
+  product_type:
+    name: book_settings
+    label: Book Settings
+    description: Book Settings. 
+    group: 'Book'
+    fields:
+    - name: theme_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The book color theme.
 - type: product_type
   product_type:
     name: book_content
@@ -245,8 +264,8 @@ types:
       description: The subsection title.
     - name: body
       type:
-        type: prim_type
-        prim_type: string
+        type: custom_type
+        custom_type: book_content
       presence: required
       description: The subsection body.
 - type: product_type

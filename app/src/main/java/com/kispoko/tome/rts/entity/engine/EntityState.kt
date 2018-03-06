@@ -82,6 +82,19 @@ class EntityState(val entityId : EntityId,
 
     init
     {
+        this.indexMechanics(mechanics)
+    }
+
+
+    fun setMechanics(mechanics : List<Mechanic>)
+    {
+//        this.mechanics = mechanics
+        this.indexMechanics(mechanics)
+    }
+
+
+    private fun indexMechanics(mechanics : List<Mechanic>)
+    {
         // Index Mechanics
         for (mechanic in mechanics)
         {

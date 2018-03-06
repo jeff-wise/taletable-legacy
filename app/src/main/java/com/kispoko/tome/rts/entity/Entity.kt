@@ -4,6 +4,7 @@ package com.kispoko.tome.rts.entity
 
 import android.graphics.Color
 import com.kispoko.tome.app.*
+import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
@@ -103,6 +104,18 @@ fun game(gameId : GameId) : Maybe<Game>
 }
 
 
+fun book(bookId : BookId) : Maybe<Book>
+{
+    val entityState = stateById.get(EntityBookId(bookId))
+    return when (entityState) {
+        is EntityBookRecord -> {
+            Just(entityState.book)
+        }
+        else -> Nothing()
+    }
+}
+
+
 // Add
 // ---------------------------------------------------------------------------------------------
 
@@ -136,7 +149,39 @@ fun addGame(game : Game)
 }
 
 
-// Engine
+fun addBook(book : Book)
+{
+    val entityId = EntityBookId(book.bookId())
+    val engineState = EntityState(entityId, listOf())
+    val bookRecord = EntityBookRecord(book, engineState, Just(book.settings().themeId()))
+
+    stateById.put(entityId, bookRecord)
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// INITIALIZE
+// ---------------------------------------------------------------------------------------------
+
+fun initialize(entityId : EntityId) = when (entityId)
+{
+    is EntitySheetId -> initializeSheet(entityId.sheetId)
+    else -> { }
+}
+
+
+fun initializeSheet(sheetId : SheetId)
+{
+    val entityId = EntitySheetId(sheetId)
+    entityEngineState(entityId) apDo { entityState ->
+    mechanics(entityId)         apDo { mechanicSet ->
+        entityState.setMechanics(mechanicSet.toList())
+    } }
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// ENGINE
 // ---------------------------------------------------------------------------------------------
 
 /**
@@ -211,6 +256,24 @@ fun mechanic(mechanicId : MechanicId, entityId : EntityId) : AppEff<Mechanic>
             return effError(AppEntityError(EntityDoesNotHaveMechanic(entityId, mechanicId)))
         }
         is Err -> return engines as AppEff<Mechanic>
+    }
+}
+
+
+fun mechanics(entityId : EntityId) : AppEff<Set<Mechanic>>
+{
+    val engines = entityEngines(entityId)
+    val _mechanics : MutableSet<Mechanic> = mutableSetOf()
+
+    return when (engines)
+    {
+        is Val -> {
+            engines.value.forEach {
+                _mechanics.addAll(it.mechanics())
+            }
+            return effValue(_mechanics)
+        }
+        is Err -> return engines as AppEff<Set<Mechanic>>
     }
 }
 
@@ -633,6 +696,12 @@ data class EntityCampaignRecord(val campaign : Campaign,
 
 
 data class EntityGameRecord(val game : Game,
+                            override val engineState : EntityState,
+                            override val themeId : Maybe<ThemeId>)
+                             : EntityRecord(engineState, themeId)
+
+
+data class EntityBookRecord(val book : Book,
                             override val engineState : EntityState,
                             override val themeId : Maybe<ThemeId>)
                              : EntityRecord(engineState, themeId)

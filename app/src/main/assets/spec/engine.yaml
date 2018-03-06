@@ -2603,10 +2603,10 @@ types:
       presence: required
       description: >
         The text value.
-    - name: rulebook_reference
+    - name: book_reference
       type: 
         type: custom_type
-        custom_type: rulebook_reference
+        custom_type: book_reference
       presence: optional
       description: >
         A reference to a description of the value in the rulebook.
@@ -2646,10 +2646,10 @@ types:
       presence: required
       description: >
         The number value.
-    - name: rulebook_reference
+    - name: book_reference
       type: 
         type: custom_type
-        custom_type: rulebook_reference
+        custom_type: book_reference
       presence: optional
       description: >
         A reference to a description of the value in the rulebook.

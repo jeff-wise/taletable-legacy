@@ -65,3 +65,12 @@ data class OfficialThemeLoaded(val themeName : String) : DocLoadEvent()
 
     override fun logMessage(): String = debugMessage()
 }
+
+
+data class OfficialBookLoaded(val bookName : String) : DocLoadEvent()
+{
+    override fun debugMessage() : String = """Official Book Loaded:
+            |    Name: $bookName""".trimMargin()
+
+    override fun logMessage(): String = debugMessage()
+}

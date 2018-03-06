@@ -2200,8 +2200,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: level_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -2232,8 +2232,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 22
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -3585,8 +3585,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: background_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -3618,8 +3618,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 19
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -4085,8 +4085,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: armor_class_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -4118,8 +4118,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 22
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -4629,8 +4629,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: conditions_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -4812,8 +4812,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: state_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -4845,8 +4845,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 19
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -6948,8 +6948,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: number_of_attacks_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -6981,8 +6981,8 @@ sections:
                     color_id: light_blue
                 font_style: bold
                 size: 22
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14612,8 +14612,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: copper_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14645,8 +14645,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14681,8 +14681,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: silver_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14714,8 +14714,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14750,8 +14750,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: gold_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14783,8 +14783,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14825,8 +14825,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: electrum_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14858,8 +14858,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14894,8 +14894,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: platinum_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -14927,8 +14927,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -15260,8 +15260,8 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: total_weight_label
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge
@@ -15293,8 +15293,8 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 20
-            rulebook_reference:
-              rulebook_id: core_rules
+            book_reference:
+              book_id: core_rules
               chapter_id: running_a_game
               section_id: creatures
               subsection_id: challenge

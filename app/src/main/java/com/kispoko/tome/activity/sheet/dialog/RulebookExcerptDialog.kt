@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import br.tiagohm.markdownview.MarkdownView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.game.rulebook.StyleSheet
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.book.RulebookExcerpt
 import com.kispoko.tome.model.book.BookReference

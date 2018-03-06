@@ -1007,8 +1007,8 @@ engine:
           description: 'Humans are diverse compared to other races, but tend to be under 6 feet tall
                         and 200 lbs. They rarely live past a century.'
           value: Human
-          rulebook_reference:
-            rulebook_id: core_rules
+          book_reference:
+            book_id: core_rules
             chapter_id: races
             section_id: humans
           variables:

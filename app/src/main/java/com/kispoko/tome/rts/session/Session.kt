@@ -3,22 +3,13 @@ package com.kispoko.tome.rts.session
 
 
 import android.content.Context
-import android.util.Log
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.campaign.Campaign
-import com.kispoko.tome.model.game.Game
-import com.kispoko.tome.model.sheet.Sheet
-import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.official.OfficialCampaignId
-import com.kispoko.tome.official.OfficialGameId
-import com.kispoko.tome.official.OfficialSheetId
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet as entitySheet
-import com.kispoko.tome.rts.official.OfficialManager
 import effect.effError
 import effect.effValue
 import kotlinx.coroutines.experimental.CommonPool
@@ -32,6 +23,7 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
+
 
 
 // ---------------------------------------------------------------------------------------------
@@ -106,6 +98,10 @@ data class Session(val sessionId : SessionId,
                 when (entityId) {
                     is Just -> loadedEntityIds.add(entityId.value)
                 }
+            }
+
+            loadedEntityIds.forEach {
+                initialize(it)
             }
 
             return Session(sessionId, loadedEntityIds)

@@ -5,19 +5,17 @@ package com.kispoko.tome.rts.entity
 import android.content.Context
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.app.assetInputStream
-import com.kispoko.tome.load.OfficialCampaignLoaded
-import com.kispoko.tome.load.OfficialGameLoaded
-import com.kispoko.tome.load.OfficialSheetLoaded
-import com.kispoko.tome.load.TomeDoc
+import com.kispoko.tome.load.*
+import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
 import effect.Err
 import effect.Val
-import effect.effValue
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
+
 
 
 // ---------------------------------------------------------------------------------------------
@@ -34,6 +32,7 @@ suspend fun loadEntity(entityLoader : EntityLoader,
             is OfficialSheetLoader    -> loadOfficialSheet(entityLoader, context)
             is OfficialCampaignLoader -> loadOfficialCampaign(entityLoader, context)
             is OfficialGameLoader     -> loadOfficialGame(entityLoader, context)
+            is OfficialBookLoader     -> loadOfficialBook(entityLoader, context)
         }
     }
 }
@@ -131,6 +130,37 @@ fun loadOfficialGame(officialGameLoader : OfficialGameLoader,
     }
 }
 
+
+// LOAD > Official > Book
+// --------------------------------------------------------------------------------------------
+
+fun loadOfficialBook(officialBookLoader : OfficialBookLoader,
+                     context : Context)
+                      : Maybe<EntityId>
+{
+    val bookLoader = assetInputStream(context, officialBookLoader.filePath())
+                       .apply { TomeDoc.loadBook(it, officialBookLoader.bookId.value, context) }
+    return when (bookLoader)
+    {
+        is Val ->
+        {
+            val book = bookLoader.value
+
+            addBook(book)
+
+            // Log event
+            ApplicationLog.event(OfficialBookLoaded(book.bookId().value))
+
+            Just(EntityBookId(book.bookId()))
+        }
+        is Err -> {
+            ApplicationLog.error(bookLoader.error)
+            Nothing()
+        }
+    }
+}
+
+
 // ---------------------------------------------------------------------------------------------
 // DEFINITIONS
 // ---------------------------------------------------------------------------------------------
@@ -177,5 +207,17 @@ data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
     override fun filePath() : String =
         "official/" + gameId.value +
         "/" + gameId.value +  ".yaml"
+
+}
+
+
+data class OfficialBookLoader(val bookId : BookId,
+                              val gameId : GameId)
+                               : EntityLoaderOfficial()
+{
+
+    override fun filePath() : String =
+        "official/" + gameId.value +
+        "/books/" + bookId.value +  ".yaml"
 
 }

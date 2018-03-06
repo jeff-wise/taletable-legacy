@@ -56,7 +56,7 @@ data class BookReference(override val id : UUID,
             {
                 apply(::BookReference,
                       // Rulebook Id
-                      doc.at("rulebook_id") apply { BookId.fromDocument(it) },
+                      doc.at("book_id") apply { BookId.fromDocument(it) },
                       // Chapter Id
                       doc.at("chapter_id") apply { BookChapterId.fromDocument(it) },
                       // Section Id

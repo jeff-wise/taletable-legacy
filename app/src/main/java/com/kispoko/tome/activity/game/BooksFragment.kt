@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.kispoko.tome.activity.game.rulebook.RulebookActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.Game
@@ -200,11 +199,11 @@ class GameInfoViewBuilder(val game : Game,
         layout.backgroundColor  = Color.WHITE
 
         layout.onClick          = View.OnClickListener {
-            val activity = context as AppCompatActivity
-            val intent = Intent(activity, RulebookActivity::class.java)
-            intent.putExtra("game_id", game.gameId)
-            intent.putExtra("rulebook_id", rulebook.bookId)
-            activity.startActivity(intent)
+//            val activity = context as AppCompatActivity
+//            val intent = Intent(activity, RulebookActivity::class.java)
+//            intent.putExtra("game_id", game.gameId)
+//            intent.putExtra("rulebook_id", rulebook.bookId)
+//            activity.startActivity(intent)
         }
 
         layout.child(title)
@@ -216,7 +215,7 @@ class GameInfoViewBuilder(val game : Game,
         title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.text              = rulebook.title().value
+//        title.text              = rulebook.title().value
 
         val titleColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -235,7 +234,7 @@ class GameInfoViewBuilder(val game : Game,
         summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
         summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        summary.text            = rulebook.abstract().value
+//        summary.text            = rulebook.abstract().value
 
         val summaryColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),

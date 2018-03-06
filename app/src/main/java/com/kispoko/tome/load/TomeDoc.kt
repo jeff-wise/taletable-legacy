@@ -59,10 +59,11 @@ object TomeDoc
                              campaignSchema : Schema,
                              gameSchema : Schema,
                              engineSchema : Schema,
+                             bookSchema : Schema,
                              themeSchema : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = sheetSchema.parseDocument(templateString,
-                                                   listOf(campaignSchema, gameSchema, engineSchema, themeSchema))
+                                                   listOf(campaignSchema, gameSchema, engineSchema, bookSchema, themeSchema))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -82,14 +83,15 @@ object TomeDoc
         }
 
         // DO...
-        val schemaDoc = templateFileString   ap { fileString ->
+        val schemaDoc = templateFileString ap { fileString ->
                         sheetSchemaLoader(context) ap { sheetSchema ->
                         campaignSchemaLoader(context) ap { campaignSchema ->
                         gameSchemaLoader(context) ap { gameSchema ->
                         engineSchemaLoader(context) ap { engineSchema ->
+                        bookSchemaLoader(context) ap { bookSchema ->
                         themeSchemaLoader(context) ap { themeSchema ->
-                           templateDocument(fileString, sheetSchema, campaignSchema, gameSchema, engineSchema, themeSchema)
-                        } } } } }  }
+                           templateDocument(fileString, sheetSchema, campaignSchema, gameSchema, engineSchema, bookSchema, themeSchema)
+                        } } } } }  } }
         return schemaDoc.apply { sheetFromDocument(it) }
     }
 
@@ -242,10 +244,12 @@ object TomeDoc
 
         fun templateDocument(templateString : String,
                              bookSchema : Schema,
+                             engineSchema : Schema,
+                             gameSchema : Schema,
                              sheetSchema : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = bookSchema.parseDocument(templateString,
-                                                   listOf(sheetSchema))
+                                                   listOf(sheetSchema, engineSchema, gameSchema))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -267,6 +271,8 @@ object TomeDoc
         return templateFileString
                .applyWith(::templateDocument,
                           bookSchemaLoader(context),
+                          engineSchemaLoader(context),
+                          gameSchemaLoader(context),
                           sheetSchemaLoader(context))
                .apply(::bookFromDocument)
     }

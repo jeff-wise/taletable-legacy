@@ -5,20 +5,16 @@ package com.kispoko.tome.activity.load
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppSettings
+import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.official.OfficialSheetId
 import com.kispoko.tome.router.Router
-import com.kispoko.tome.rts.entity.OfficialCampaignLoader
-import com.kispoko.tome.rts.entity.OfficialGameLoader
-import com.kispoko.tome.rts.entity.OfficialSheetLoader
-import com.kispoko.tome.rts.entity.game
+import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.rts.session.MessageSessionLoaded
 import com.kispoko.tome.rts.session.SessionId
@@ -82,8 +78,10 @@ class LoadActivity : AppCompatActivity()
 
             val gameLoader = OfficialGameLoader(GameId("magic_of_heroes"))
 
+            val coreRulebookLoader = OfficialBookLoader(BookId("core_rules"),
+                                                        GameId("magic_of_heroes"))
 
-            val loaders = listOf(sheetLoader, campaignLoader, gameLoader)
+            val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
 
             newSession(loaders, SessionId("test"), context)
         }

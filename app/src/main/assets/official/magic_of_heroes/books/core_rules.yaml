@@ -1,34 +1,134 @@
-id: core_rules
-title: 'Magic of Heroes: Core Rules'
-authors:
-- name: Jeff Wise
-abstract: |-
-  The Core rules for the Magic of Heroes. Includes information for both players and
-  dungeon masters such as rules for races, classes, spells, monsters, and adventuring.
-introduction: |+
-  The Magic of Heroes is a tabletop role-playing game designed for epic fantasy settings where
-  worlds are defined by the laws of magic systems, and kingdoms and societies are governed by the
-  consequences and the cause and effects of those beings, humanoid or mounstrous, which wield
-  and control access to magical power.
-
-  The power of magic permeates the nature of every being.
-  Montrous creatures roam distant lands and demonic creatures filled with hatred for the life that
-  blooms in the sun lurk in the depths of the world's shadows.
-
-  Civiliations grow under the uplifting
-  power of magic used for good and peace while other kingdoms drown in a tide of monsters
-  augmented by the magic of otherworldly evil or putrid necromancy.
-
-  The balance of good and evil and life and death perserveres, a pendulum that swings slowy back
-  and forth as the ages of civilizations and the eons of time come and go.
-
-  From time to time, the balance falters. A group of heroes forms, almost by accident, bumping into
-  each other at an intersection of paths that started in wildly different places.
-
-  The story begins,
-  and the heroes learn about the magic of the world, the magic inside themselves, and perhaps,
-  a little about the magical and wondrous nature of life. But eventually, the peril emerges, and
-  it becomes apparent that only the magic of heroes can save the world.
+book_id: core_rules
+book_info:
+  title: 'Core Rules'
+  authors:
+  - name: Jeff Wise
+  abstract: |-
+    The Core rules for the Magic of Heroes. Includes information for both players and
+    dungeon masters such as rules for races, classes, spells, monsters, and adventuring.
+settings:
+  theme_id: light
+engine:
+  value_sets:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+  procedures:
+variables:
+- type: variable_text
+  variable_text:
+    id: humans_introduction
+    label: Humans Introduction
+    description: Humans introduction
+    value:
+      type: text_literal
+      text_literal: >-
+        It’s hard to make generalizations about humans, but your human character has these traits.
+- type: variable_text
+  variable_text:
+    id: humans_ability_score_increase_header
+    label: Humans Ability Score Increase Header
+    description: Humans ability score increase header
+    value:
+      type: text_literal
+      text_literal: 'Ability Score Increase'
+- type: variable_text
+  variable_text:
+    id: humans_ability_score_increase_content
+    label: Humans Ability Score Increase Content
+    description: Humans ability score increase content.
+    value:
+      type: text_literal
+      text_literal: 'Your ability scores each increase by 1.'
+- type: variable_text
+  variable_text:
+    id: humans_age_header
+    label: Humans Age Header
+    description: Humans age header
+    value:
+      type: text_literal
+      text_literal: 'Age'
+- type: variable_text
+  variable_text:
+    id: humans_age_content
+    label: Humans Age Content
+    description: Humans age content.
+    value:
+      type: text_literal
+      text_literal: 'Humans reach adulthood in their late teens and live less than a century.'
+- type: variable_text
+  variable_text:
+    id: humans_alignment_header
+    label: Humans Alignment Header
+    description: Humans alignment header
+    value:
+      type: text_literal
+      text_literal: 'Alignment'
+- type: variable_text
+  variable_text:
+    id: humans_alignment_content
+    label: Humans Alignment Content
+    description: Humans alignment content
+    value:
+      type: text_literal
+      text_literal: 'Humans tend toward no particular alignment. The best and the
+                     worst are found among them.'
+- type: variable_text
+  variable_text:
+    id: humans_size_header
+    label: Humans Size Header
+    description: Humans size header
+    value:
+      type: text_literal
+      text_literal: 'Size'
+- type: variable_text
+  variable_text:
+    id: humans_size_content
+    label: Humans Size Content
+    description: Humans size content
+    value:
+      type: text_literal
+      text_literal: >-
+        Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall.
+        Regardless of your position in that range, your size is Medium.
+- type: variable_text
+  variable_text:
+    id: humans_speed_header
+    label: Humans Speed Header
+    description: Humans speed header
+    value:
+      type: text_literal
+      text_literal: 'Speed'
+- type: variable_text
+  variable_text:
+    id: humans_speed_content
+    label: Humans Speed Content
+    description: Humans speed content
+    value:
+      type: text_literal
+      text_literal: 'Your base walking speed is 30 feet.'
+- type: variable_text
+  variable_text:
+    id: humans_languages_header
+    label: Humans Languages Header
+    description: Humans languages header
+    value:
+      type: text_literal
+      text_literal: 'Languages'
+- type: variable_text
+  variable_text:
+    id: humans_languages_header
+    label: Humans Languages Header
+    description: Humans languages header
+    value:
+      type: text_literal
+      text_literal: >-
+        You can speak, read, and write Common and one extra language of your choice. Humans
+        typically learn the languages of other peoples they deal with, including obscure dialects.
+        They are fond of sprinkling their speech with words borrowed from other tongues: Orc
+        curses, Elvish musical expressions, Dwarvish military phrases, and so on.
 chapters:
 - id: creating_pcs
   title: 'Creating Player Characters'
@@ -41,356 +141,406 @@ chapters:
   sections:
   - id: humans
     title: 'Humans'
-    body: |+
-      It’s hard to make generalizations about humans, but your human character has these traits.
-
-      ### Ability Score Increase
-
-      Your ability scores each increase by 1.
-
-      ### Age
-
-      Humans reach adulthood in their late teens and live less than a century.
-
-      ### Alignment
-
-      Humans tend toward no particular alignment. The best and the worst are found among them.
-
-      ### Size
-
-      Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.
-
-      ### Speed
-
-      Your base walking speed is 30 feet.
-
-      ### Languages
-
-      You can speak, read, and write Common and one extra language of your choice. Humans typically learn the languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish military phrases, and so on.
+    body:
+      groups:
+      - rows:
+        - format:
+            element_format:
+              margins:
+                bottom: 8
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_introduction
+              format:
+                value_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  size: 18
+                  font_style: regular
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_introduction
+        - format:
+            element_format:
+              margins:
+                bottom: 8
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_ability_score_increase_header
+              format:
+                value_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_16
+                  size: 18
+                  font_style: semi_bold
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_ability_score_increase_header
+        - format:
+            element_format:
+              margins:
+                bottom: 8
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_ability_score_increase_content
+              format:
+                value_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  size: 18
+                  font_style: regular
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_ability_score_increase_content
 - id: classes
   title: 'Classes'
   sections:
   - id: classes
     title: 'Classes'
-    body: 'Classe'
+    body:
+      groups:
 - id: creating_pcs
   title: 'Creating Player Characters'
   sections:
   - id: backgrounds
     title: 'Backgrounds'
-    body: 'Backgrounds'
+    body:
+      groups:
 - id: equipment
   title: 'Equipment'
   sections:
-  - id: gear
-    title: 'Gear'
-    body: 'Gear'
-    subsections:
-    - id: acid
-      title: Acid
-      body: >
-        As an action, you can splash the contents of this vial onto a creature within 5 feet of
-        you or throw the vial up to 20 feet, shattering it on impact. In either case, make a
-        ranged attack against a creature or object, treating the acid as an improvised weapon.
-        On a hit, the target takes 2d6 acid damage.
-    - id: alchemists_fire
-      title: Alchemist's Fire
-      body: >
-        This sticky, adhesive fluid ignites when exposed to air. As an action, you can throw
-        this flask up to 20 feet, shattering it on impact. Make a ranged attack against a
-        creature or object, treating the alchemist's fire as an improvised weapon. On a hit,
-        the target takes 1d4 fire damage at the start of each of its turns. A creature can end
-        this damage by using its action to make a DC 10 Dexterity check to extinguish the flames.
-    - id: antitoxin
-      title: Antitoxin
-      body: >
-        A creature that drinks this vial of liquid gains advantage on saving throws against
-        poison for 1 hour. It confers no benefit to undead or constructs.
-    - id: arcane_focus
-      title: Arcane Focus
-      body: >
-        An arcane focus is a special item--an orb, a crystal, a rod, a specially constructed
-        staff, a wand-like length of wood, or some similar item--designed to channel the power
-        of arcane spells. A sorcerer, warlock, or wizard can use such an item as a
-        spellcasting focus.
-    - id: ball_bearings
-      title: Ball Bearings
-      body: >
-        As an action, you can spill these tiny metal balls from their pouch to cover a level,
-        square area that is 10 feet on a side. A creature moving across the covered area must
-        succeed on a DC 10 Dexterity saving throw or fall prone. A creature moving through the
-        area at half speed doesn't need to make the saveSheet.
-    - id: block_and_tackle
-      title: Block and Tackle
-      body: >
-        A set of pulleys with a cable threaded through them and a hook to attach to objects,
-        a block and tackle allows you to hoist up to four times the weight you can normally lift.
-    - id: book
-      title: Book
-      body: >
-        A book might contain poetry, historical accounts, information pertaining to a particular
-        field of lore, diagrams and notes on gnomish contraptions, or just about anything else
-        that can be represented using text or pictures. A book of spells is
-        a spellbook (described later in this section).
-    - id: caltrops
-      title: Caltrops
-      body: >
-        As an action, you can spread a bag of caltrops to cover a square area that is 5 feet on
-        a side. Any creature that enters the area must succeed on a DC 15 Dexterity saving throw
-        or stop moving this turn and take 1 piercing damage. Taking this damage reduces the
-        creature's walking speed by 10 feet until the creature regains at least 1 hit point.
-        A creature moving through the area at half speed doesn't need to make the saveSheet.
-    - id: candle
-      title: Candle
-      body: >
-        For 1 hour, a candle sheds bright light in a 5-foot radius and dim light for an
-        additional 5 feet.
-    - id: case_crossbow_bolt
-      title: Case, Crossbow Bolt
-      body: >
-        This wooden case can hold up to twenty crossbow bolts.
-    - id: case_map_or_scroll
-      title: Case, Map or Scroll
-      body: >
-        This cylindrical leather case can hold up to ten rolled-up sheets of paper or five
-        rolled-up sheets of parchment.
-    - id: chain
-      title: Chain
-      body: >
-        A chain has 10 hit points. It can be burst with a successful DC 20 Strength check.
-    - id: climbers_kit
-      title: Climber's Kit
-      body: >
-        A climber's kit includes special pitons, boot tips, gloves, and a harness. You can use
-        the climber's kit as an action to anchor yourself; when you do, you can't fall more
-        than 25 feet from the point where you anchored yourself, and you can't climb more than
-        25 feet away from that point without undoing the anchor.
-    - id: component_pouch
-      title: Component Pouch
-      body: >
-        A component pouch is a small, watertight leather belt pouch that has compartments to
-        hold all the material components and other special items you need to cast your spells,
-        except for those components that have a specific cost (as indicated in a spell's
-        description).
-    - id: crowbar
-      title: Crowbar
-      body: >
-        Using a crowbar grants advantage to Strength checks where the crowbar's leverage
-        can be applied.
-    - id: druidic_focus
-      title: Druidic Focus
-      body: >
-        A druidic focus might be a sprig of mistletoe or holly, a wand or scepter made of
-        yew or another special wood, a staff drawn whole out of a living tree, or a totem
-        object incorporating feathers, fur, bones, and teeth from sacred animals. A druid
-        can use such an object as a spellcasting focus.
-    - id: fishing_tackle
-      title: Fishing Tackle
-      body: >
-        This kit includes a wooden rod, silken line, corkwood bobbers, steel hooks, lead sinkers,
-        velvet lures, and narrow netting.
-    - id: healers_kit
-      title: Healer's Kit
-      body: >
-        This kit is a leather pouch containing bandages, salves, and splints. The kit has ten
-        uses. As an action, you can expend one use of the kit to stabilize a creature that has
-        0 hit points, without needing to make a Wisdom (Medicine) check.
-    - id: holy_symbol
-      title: Holy Symbol
-      body: >
-        A holy symbol is a representation of a god or pantheon. It might be an amulet depicting
-        a symbol representing a deity, the same symbol carefully engraved or inlaid as an emblem
-        on a shield, or a tiny box holding a fragment of a sacred relic. A cleric or paladin can
-        use a holy symbol as a spellcasting focus. To use the symbol in this way, the caster must
-        hold it in hand, wear it visibly, or bear it on a shield.
-    - id: holy_water
-      title: Holy Water
-      body: >
-        As an action, you can splash the contents of this flask onto a creature within 5 feet of
-        you or throw it up to 20 feet, shattering it on impact. In either case, make a ranged
-        attack against a target creature, treating the holy water as an improvised weapon. If
-        the target is a fiend or undead, it takes 2d6 radiant damage.
-        A cleric or paladin may create holy water by performing a special ritual. The ritual
-        takes 1 hour to perform, uses 25 gp worth of powdered silver, and requires the caster
-        to expend a 1st-level spell slot.
-    - id: hunting_trap
-      title: Hunting Trap
-      body: >
-        When you use your action to set it, this trap forms a saw-toothed steel ring that snaps
-        shut when a creature steps on a pressure plate in the center. The trap is affixed by a
-        heavy chain to an immobile object, such as a tree or a spike driven into the ground. A
-        creature that steps on the plate must succeed on a DC 13 Dexterity saving throw or take
-        1d4 piercing damage and stop moving. Thereafter, until the creature breaks free of the
-        trap, its movement is limited by the length of the chain (typically 3 feet long). A
-        creature can use its action to make a DC 13 Strength check, freeing itself or another
-        creature within its reach on a success. Each failed check deals 1 piercing damage to
-        the trapped creature.
-    - id: lamp
-      title: Lamp
-      body: >
-        A lamp casts bright light in a 15-foot radius and dim light for an additional 30 feet.
-        Once lit, it burns for 6 hours on a flask (1 pint) of oil.
-    - id: lantern_bullseye
-      title: Lantern, Bullseye
-      body: >
-        A bullseye lantern casts bright light in a 60-foot cone and dim light for an additional
-        60 feet. Once lit, it burns for 6 hours on a flask (1 pint) of oil.
-    - id: lantern_hooded
-      title: Lantern, Hooded
-      body: >
-        A hooded lantern casts bright light in a 30-foot radius and dim light for an additional
-        30 feet. Once lit, it burns for 6 hours on a flask (1 pint) of oil. As an action, you can
-        lower the hood, reducing the light to dim light in a 5-foot radius.
-    - id: lock
-      title: Lock
-      body: >
-        A key is provided with the lock. Without the key, a creature proficient with thieves'
-        tools can pick this lock with a successful DC 15 Dexterity check. Your GM may decide that
-        better locks are available for higher prices.
-    - id: magnifying_glass
-      title: Magnifying Glass
-      body: >
-        This lens allows a closer look at small objects. It is also useful as a substitute for
-        flint and steel when starting fires. Lighting a fire with a magnifying glass requires
-        light as bright as sunlight to focus, tinder to ignite, and about 5 minutes for the fire
-        to ignite. A magnifying glass grants advantage on any ability check made to appraise or
-        inspect an item that is small or highly detailed.
-    - id: manacles
-      title: Manacles
-      body: >
-        These metal restraints can bind a Small or Medium creature. Escaping the manacles
-        requires a successful DC 20 Dexterity check. Breaking them requires a successful DC 20
-        Strength check. Each set of manacles comes with one key. Without the key, a creature
-        proficient with thieves' tools can pick the manacles' lock with a successful DC 15
-        Dexterity check. Manacles have 15 hit points.
-    - id: mess_kit
-      title: Mess Kit
-      body: >
-        This tin box contains a cup and simple cutlery. The box clamps together, and one side can
-        be used as a cooking pan and the other as a plate or shallow bowl.
-    - id: oil
-      title: Oil
-      body: >
-        Oil usually comes in a clay flask that holds 1 pint. As an action, you can splash the oil
-        in this flask onto a creature within 5 feet of you or throw it up to 20 feet, shattering
-        it on impact. Make a ranged attack against a target creature or object, treating the oil
-        as an improvised weapon. On a hit, the target is covered in oil. If the target takes any
-        fire damage before the oil dries (after 1 minute), the target takes an additional 5 fire
-        damage from the burning oil. You can also pour a flask of oil on the ground to cover a
-        5-foot-square area, provided that the surface is level. If lit, the oil burns for 2
-        rounds and deals 5 fire damage to any creature that enters the area or ends its turn in
-        the area. A creature can take this damage only once per turn.
-    - id: poison_basic
-      title: Poison, Basic
-      body: >
-         You can use the poison in this vial to coat one slashing or piercing weapon or up to
-         three pieces of ammunition. Applying the poison takes an action. A creature hit by the
-         poisoned weapon or ammunition must make a DC 10 Constitution saving throw or take
-         1d4 poison damage. Once applied, the poison retains potency for 1 minute before drying.
-    - id: potion_of_healing
-      title: Potion of Healing
-      body: >
-        A character who drinks the magical red fluid in this vial regains 2d4 + 2 hit points.
-        Drinking or administering a potion takes an action.
-    - id: pouch
-      title: Pouch
-      body: >
-        A cloth or leather pouch can hold up to 20 sling bullets or 50 blowgun needles, among
-        other things. A compartmentalized pouch for holding spell components is called a
-        component pouch (described earlier in this section).
-    - id: quiver
-      title: Quiver
-      body: >
-        A quiver can hold up to 20 arrows.
-    - id: ram_portable
-      title: Ram, Portable
-      body: >
-        You can use a portable ram to break down doors. When doing so, you gain a +4 bonus on
-        the Strength check. One other character can help you use the ram, giving you advantage
-        on this check.
-    - id: rations
-      title: Rations
-      body: >
-        Rations consist of dry foods suitable for extended travel, including jerky, dried fruit,
-        hardtack, and nuts.
-    - id: rope
-      title: Rope
-      body: >
-        Rope, whether made of hemp or silk, has 2 hit points and can be burst with a DC 17
-        Strength check.
-    - id: scale_merchants
-      title: Scale, Merchant's
-      body: >
-         A scale includes a small balance, pans, and a suitable assortment of weights up to 2
-         pounds. With it, you can measure the exact weight of small objects, such as raw precious
-         metals or trade goods, to help determine their worth.
-    - id: spellbook
-      title: Spellbook
-      body: >
-        Essential for wizards, a spellbook is a leather-bound tome with 100 blank vellum pages
-        suitable for recording spells.
-    - id: spyglass
-      title: Spyglass
-      body: >
-        Objects viewed through a spyglass are magnified to twice their size. Tent. A simple and
-        portable canvas shelter, a tent sleeps two.
-    - id: tinderbox
-      title: Tinderbox
-      body: >
-        This small container holds flint, fire steel, and tinder (usually dry cloth soaked in
-        light oil) used to kindle a fire. Using it to light a torch--or anything else with
-        abundant, exposed fuel--takes an action. Lighting any other fire takes 1 minute.
-    - id: torch
-      title: Torch
-      body: >
-        A torch burns for 1 hour, providing bright light in a 20-foot radius and dim light for an
-        additional 20 feet. If you make a melee attack with a burning torch and hit, it deals 1
-        fire damage.
+#  - id: gear
+#    title: 'Gear'
+#    body: 'Gear'
+#    subsections:
+#    - id: acid
+#      title: Acid
+#      body: >
+#        As an action, you can splash the contents of this vial onto a creature within 5 feet of
+#        you or throw the vial up to 20 feet, shattering it on impact. In either case, make a
+#        ranged attack against a creature or object, treating the acid as an improvised weapon.
+#        On a hit, the target takes 2d6 acid damage.
+#    - id: alchemists_fire
+#      title: Alchemist's Fire
+#      body: >
+#        This sticky, adhesive fluid ignites when exposed to air. As an action, you can throw
+#        this flask up to 20 feet, shattering it on impact. Make a ranged attack against a
+#        creature or object, treating the alchemist's fire as an improvised weapon. On a hit,
+#        the target takes 1d4 fire damage at the start of each of its turns. A creature can end
+#        this damage by using its action to make a DC 10 Dexterity check to extinguish the flames.
+#    - id: antitoxin
+#      title: Antitoxin
+#      body: >
+#        A creature that drinks this vial of liquid gains advantage on saving throws against
+#        poison for 1 hour. It confers no benefit to undead or constructs.
+#    - id: arcane_focus
+#      title: Arcane Focus
+#      body: >
+#        An arcane focus is a special item--an orb, a crystal, a rod, a specially constructed
+#        staff, a wand-like length of wood, or some similar item--designed to channel the power
+#        of arcane spells. A sorcerer, warlock, or wizard can use such an item as a
+#        spellcasting focus.
+#    - id: ball_bearings
+#      title: Ball Bearings
+#      body: >
+#        As an action, you can spill these tiny metal balls from their pouch to cover a level,
+#        square area that is 10 feet on a side. A creature moving across the covered area must
+#        succeed on a DC 10 Dexterity saving throw or fall prone. A creature moving through the
+#        area at half speed doesn't need to make the saveSheet.
+#    - id: block_and_tackle
+#      title: Block and Tackle
+#      body: >
+#        A set of pulleys with a cable threaded through them and a hook to attach to objects,
+#        a block and tackle allows you to hoist up to four times the weight you can normally lift.
+#    - id: book
+#      title: Book
+#      body: >
+#        A book might contain poetry, historical accounts, information pertaining to a particular
+#        field of lore, diagrams and notes on gnomish contraptions, or just about anything else
+#        that can be represented using text or pictures. A book of spells is
+#        a spellbook (described later in this section).
+#    - id: caltrops
+#      title: Caltrops
+#      body: >
+#        As an action, you can spread a bag of caltrops to cover a square area that is 5 feet on
+#        a side. Any creature that enters the area must succeed on a DC 15 Dexterity saving throw
+#        or stop moving this turn and take 1 piercing damage. Taking this damage reduces the
+#        creature's walking speed by 10 feet until the creature regains at least 1 hit point.
+#        A creature moving through the area at half speed doesn't need to make the saveSheet.
+#    - id: candle
+#      title: Candle
+#      body: >
+#        For 1 hour, a candle sheds bright light in a 5-foot radius and dim light for an
+#        additional 5 feet.
+#    - id: case_crossbow_bolt
+#      title: Case, Crossbow Bolt
+#      body: >
+#        This wooden case can hold up to twenty crossbow bolts.
+#    - id: case_map_or_scroll
+#      title: Case, Map or Scroll
+#      body: >
+#        This cylindrical leather case can hold up to ten rolled-up sheets of paper or five
+#        rolled-up sheets of parchment.
+#    - id: chain
+#      title: Chain
+#      body: >
+#        A chain has 10 hit points. It can be burst with a successful DC 20 Strength check.
+#    - id: climbers_kit
+#      title: Climber's Kit
+#      body: >
+#        A climber's kit includes special pitons, boot tips, gloves, and a harness. You can use
+#        the climber's kit as an action to anchor yourself; when you do, you can't fall more
+#        than 25 feet from the point where you anchored yourself, and you can't climb more than
+#        25 feet away from that point without undoing the anchor.
+#    - id: component_pouch
+#      title: Component Pouch
+#      body: >
+#        A component pouch is a small, watertight leather belt pouch that has compartments to
+#        hold all the material components and other special items you need to cast your spells,
+#        except for those components that have a specific cost (as indicated in a spell's
+#        description).
+#    - id: crowbar
+#      title: Crowbar
+#      body: >
+#        Using a crowbar grants advantage to Strength checks where the crowbar's leverage
+#        can be applied.
+#    - id: druidic_focus
+#      title: Druidic Focus
+#      body: >
+#        A druidic focus might be a sprig of mistletoe or holly, a wand or scepter made of
+#        yew or another special wood, a staff drawn whole out of a living tree, or a totem
+#        object incorporating feathers, fur, bones, and teeth from sacred animals. A druid
+#        can use such an object as a spellcasting focus.
+#    - id: fishing_tackle
+#      title: Fishing Tackle
+#      body: >
+#        This kit includes a wooden rod, silken line, corkwood bobbers, steel hooks, lead sinkers,
+#        velvet lures, and narrow netting.
+#    - id: healers_kit
+#      title: Healer's Kit
+#      body: >
+#        This kit is a leather pouch containing bandages, salves, and splints. The kit has ten
+#        uses. As an action, you can expend one use of the kit to stabilize a creature that has
+#        0 hit points, without needing to make a Wisdom (Medicine) check.
+#    - id: holy_symbol
+#      title: Holy Symbol
+#      body: >
+#        A holy symbol is a representation of a god or pantheon. It might be an amulet depicting
+#        a symbol representing a deity, the same symbol carefully engraved or inlaid as an emblem
+#        on a shield, or a tiny box holding a fragment of a sacred relic. A cleric or paladin can
+#        use a holy symbol as a spellcasting focus. To use the symbol in this way, the caster must
+#        hold it in hand, wear it visibly, or bear it on a shield.
+#    - id: holy_water
+#      title: Holy Water
+#      body: >
+#        As an action, you can splash the contents of this flask onto a creature within 5 feet of
+#        you or throw it up to 20 feet, shattering it on impact. In either case, make a ranged
+#        attack against a target creature, treating the holy water as an improvised weapon. If
+#        the target is a fiend or undead, it takes 2d6 radiant damage.
+#        A cleric or paladin may create holy water by performing a special ritual. The ritual
+#        takes 1 hour to perform, uses 25 gp worth of powdered silver, and requires the caster
+#        to expend a 1st-level spell slot.
+#    - id: hunting_trap
+#      title: Hunting Trap
+#      body: >
+#        When you use your action to set it, this trap forms a saw-toothed steel ring that snaps
+#        shut when a creature steps on a pressure plate in the center. The trap is affixed by a
+#        heavy chain to an immobile object, such as a tree or a spike driven into the ground. A
+#        creature that steps on the plate must succeed on a DC 13 Dexterity saving throw or take
+#        1d4 piercing damage and stop moving. Thereafter, until the creature breaks free of the
+#        trap, its movement is limited by the length of the chain (typically 3 feet long). A
+#        creature can use its action to make a DC 13 Strength check, freeing itself or another
+#        creature within its reach on a success. Each failed check deals 1 piercing damage to
+#        the trapped creature.
+#    - id: lamp
+#      title: Lamp
+#      body: >
+#        A lamp casts bright light in a 15-foot radius and dim light for an additional 30 feet.
+#        Once lit, it burns for 6 hours on a flask (1 pint) of oil.
+#    - id: lantern_bullseye
+#      title: Lantern, Bullseye
+#      body: >
+#        A bullseye lantern casts bright light in a 60-foot cone and dim light for an additional
+#        60 feet. Once lit, it burns for 6 hours on a flask (1 pint) of oil.
+#    - id: lantern_hooded
+#      title: Lantern, Hooded
+#      body: >
+#        A hooded lantern casts bright light in a 30-foot radius and dim light for an additional
+#        30 feet. Once lit, it burns for 6 hours on a flask (1 pint) of oil. As an action, you can
+#        lower the hood, reducing the light to dim light in a 5-foot radius.
+#    - id: lock
+#      title: Lock
+#      body: >
+#        A key is provided with the lock. Without the key, a creature proficient with thieves'
+#        tools can pick this lock with a successful DC 15 Dexterity check. Your GM may decide that
+#        better locks are available for higher prices.
+#    - id: magnifying_glass
+#      title: Magnifying Glass
+#      body: >
+#        This lens allows a closer look at small objects. It is also useful as a substitute for
+#        flint and steel when starting fires. Lighting a fire with a magnifying glass requires
+#        light as bright as sunlight to focus, tinder to ignite, and about 5 minutes for the fire
+#        to ignite. A magnifying glass grants advantage on any ability check made to appraise or
+#        inspect an item that is small or highly detailed.
+#    - id: manacles
+#      title: Manacles
+#      body: >
+#        These metal restraints can bind a Small or Medium creature. Escaping the manacles
+#        requires a successful DC 20 Dexterity check. Breaking them requires a successful DC 20
+#        Strength check. Each set of manacles comes with one key. Without the key, a creature
+#        proficient with thieves' tools can pick the manacles' lock with a successful DC 15
+#        Dexterity check. Manacles have 15 hit points.
+#    - id: mess_kit
+#      title: Mess Kit
+#      body: >
+#        This tin box contains a cup and simple cutlery. The box clamps together, and one side can
+#        be used as a cooking pan and the other as a plate or shallow bowl.
+#    - id: oil
+#      title: Oil
+#      body: >
+#        Oil usually comes in a clay flask that holds 1 pint. As an action, you can splash the oil
+#        in this flask onto a creature within 5 feet of you or throw it up to 20 feet, shattering
+#        it on impact. Make a ranged attack against a target creature or object, treating the oil
+#        as an improvised weapon. On a hit, the target is covered in oil. If the target takes any
+#        fire damage before the oil dries (after 1 minute), the target takes an additional 5 fire
+#        damage from the burning oil. You can also pour a flask of oil on the ground to cover a
+#        5-foot-square area, provided that the surface is level. If lit, the oil burns for 2
+#        rounds and deals 5 fire damage to any creature that enters the area or ends its turn in
+#        the area. A creature can take this damage only once per turn.
+#    - id: poison_basic
+#      title: Poison, Basic
+#      body: >
+#         You can use the poison in this vial to coat one slashing or piercing weapon or up to
+#         three pieces of ammunition. Applying the poison takes an action. A creature hit by the
+#         poisoned weapon or ammunition must make a DC 10 Constitution saving throw or take
+#         1d4 poison damage. Once applied, the poison retains potency for 1 minute before drying.
+#    - id: potion_of_healing
+#      title: Potion of Healing
+#      body: >
+#        A character who drinks the magical red fluid in this vial regains 2d4 + 2 hit points.
+#        Drinking or administering a potion takes an action.
+#    - id: pouch
+#      title: Pouch
+#      body: >
+#        A cloth or leather pouch can hold up to 20 sling bullets or 50 blowgun needles, among
+#        other things. A compartmentalized pouch for holding spell components is called a
+#        component pouch (described earlier in this section).
+#    - id: quiver
+#      title: Quiver
+#      body: >
+#        A quiver can hold up to 20 arrows.
+#    - id: ram_portable
+#      title: Ram, Portable
+#      body: >
+#        You can use a portable ram to break down doors. When doing so, you gain a +4 bonus on
+#        the Strength check. One other character can help you use the ram, giving you advantage
+#        on this check.
+#    - id: rations
+#      title: Rations
+#      body: >
+#        Rations consist of dry foods suitable for extended travel, including jerky, dried fruit,
+#        hardtack, and nuts.
+#    - id: rope
+#      title: Rope
+#      body: >
+#        Rope, whether made of hemp or silk, has 2 hit points and can be burst with a DC 17
+#        Strength check.
+#    - id: scale_merchants
+#      title: Scale, Merchant's
+#      body: >
+#         A scale includes a small balance, pans, and a suitable assortment of weights up to 2
+#         pounds. With it, you can measure the exact weight of small objects, such as raw precious
+#         metals or trade goods, to help determine their worth.
+#    - id: spellbook
+#      title: Spellbook
+#      body: >
+#        Essential for wizards, a spellbook is a leather-bound tome with 100 blank vellum pages
+#        suitable for recording spells.
+#    - id: spyglass
+#      title: Spyglass
+#      body: >
+#        Objects viewed through a spyglass are magnified to twice their size. Tent. A simple and
+#        portable canvas shelter, a tent sleeps two.
+#    - id: tinderbox
+#      title: Tinderbox
+#      body: >
+#        This small container holds flint, fire steel, and tinder (usually dry cloth soaked in
+#        light oil) used to kindle a fire. Using it to light a torch--or anything else with
+#        abundant, exposed fuel--takes an action. Lighting any other fire takes 1 minute.
+#    - id: torch
+#      title: Torch
+#      body: >
+#        A torch burns for 1 hour, providing bright light in a 20-foot radius and dim light for an
+#        additional 20 feet. If you make a melee attack with a burning torch and hit, it deals 1
+#        fire damage.
 - id: abilities
   title: 'Abilities'
   sections:
   - id: skills
     title: 'Skills'
-    body: 'Skills'
+    body:
+      groups:
 - id: encounters
   title: 'Encounters'
   sections:
   - id: combat
     title: 'Combat'
-    body: 'Combat'
+    body:
+      groups:
 - id: adventuring
   title: 'Adventuring'
   sections:
   - id: resting
     title: 'Resting'
-    body: 'Resting'
+    body:
+      groups:
 - id: spells
   title: 'Spells'
   sections:
   - id: wizard_spells
     title: 'Wizard Spells'
-    body: 'Wizard Spells'
+    body:
+      groups:
 - id: running_a_game
   title: 'Running a Game'
   sections:
   - id: creatures
     title: 'Creatures'
-    body: 'Creatures'
-    subsections:
-    - id: challenge
-      title: Challenge
-      body: |+
-        A monster’s **challenge rating** tells you how great a threat the monster is. An appropriately equipped and well-rested party of four adventurers should be able to defeat a monster that has a challenge rating equal to its level without suffering any deaths. For example, a party of four 3rd-level characters should find a monster with a challenge rating of 3 to be a worthy challenge, but not a deadly one.
-
-        Monsters that are significantly weaker than 1st-level characters have a challenge rating lower than 1. Monsters with a challenge rating of 0 are insignificant except in large numbers; those with no effective attacks are worth no experience points, while those that have attacks are worth 10 XP each.
-
-        Some monsters present a greater challenge than even a typical 20th-level party can handle. These monsters have a challenge rating of 21 or higher and are specifically designed to test player skill.
-
-        ### Experience Points
-
-        The number of experience points (XP) a monster is worth is based on its challenge rating. Typically, XP is awarded for defeating the monster, although the GM may also award XP for neutralizing the threat posed by the monster in some other manner.
-
-        Unless something tells you otherwise, a monster summoned by a spell or other magical ability is worth the XP noted in its stat block.
+    body:
+      groups:
+#    subsections:
+#    - id: challenge
+#      title: Challenge
+#      body: |+
+#        A monster’s **challenge rating** tells you how great a threat the monster is. An appropriately equipped and well-rested party of four adventurers should be able to defeat a monster that has a challenge rating equal to its level without suffering any deaths. For example, a party of four 3rd-level characters should find a monster with a challenge rating of 3 to be a worthy challenge, but not a deadly one.
+#
+#        Monsters that are significantly weaker than 1st-level characters have a challenge rating lower than 1. Monsters with a challenge rating of 0 are insignificant except in large numbers; those with no effective attacks are worth no experience points, while those that have attacks are worth 10 XP each.
+#
+#        Some monsters present a greater challenge than even a typical 20th-level party can handle. These monsters have a challenge rating of 21 or higher and are specifically designed to test player skill.
+#
+#        ### Experience Points
+#
+#        The number of experience points (XP) a monster is worth is based on its challenge rating. Typically, XP is awarded for defeating the monster, although the GM may also award XP for neutralizing the threat posed by the monster in some other manner.
+#
+#        Unless something tells you otherwise, a monster summoned by a spell or other magical ability is worth the XP noted in its stat block.
 
 
 

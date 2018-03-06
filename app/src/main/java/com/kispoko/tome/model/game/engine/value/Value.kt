@@ -33,7 +33,7 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 sealed class Value(open val valueId : ValueId,
                    open val description : ValueDescription,
-                   open val rulebookReference : Maybe<BookReference>,
+                   open val bookReference : Maybe<BookReference>,
                    open val variables : List<Variable>,
                    open val valueSetId : ValueSetId)
                     : ToDocument, ProdType, Serializable
@@ -76,7 +76,7 @@ sealed class Value(open val valueId : ValueId,
     fun description() : ValueDescription = this.description
 
 
-    fun rulebookReference() : Maybe<BookReference> = this.rulebookReference
+    fun bookReference() : Maybe<BookReference> = this.bookReference
 
 
     fun variables() : List<Variable> = this.variables
@@ -135,11 +135,11 @@ sealed class Value(open val valueId : ValueId,
 data class ValueNumber(override val id : UUID,
                        override val valueId : ValueId,
                        override val description : ValueDescription,
-                       override val rulebookReference : Maybe<BookReference>,
+                       override val bookReference: Maybe<BookReference>,
                        override val variables : List<Variable>,
                        override val valueSetId : ValueSetId,
                        val value : NumberValue)
-                        : Value(valueId, description, rulebookReference, variables, valueSetId)
+                        : Value(valueId, description, bookReference, variables, valueSetId)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -148,14 +148,14 @@ data class ValueNumber(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : ValueDescription,
-                rulebookReference : Maybe<BookReference>,
+                bookReference : Maybe<BookReference>,
                 variables : List<Variable>,
                 valueSetId : ValueSetId,
                 value : NumberValue)
         : this(UUID.randomUUID(),
                valueId,
                description,
-               rulebookReference,
+               bookReference,
                variables,
                valueSetId,
                value)
@@ -174,7 +174,7 @@ data class ValueNumber(override val id : UUID,
                       // Description
                       doc.at("description") ap { ValueDescription.fromDocument(it) },
                       // Rulebook Reference
-                      split(doc.maybeAt("rulebook_reference"),
+                      split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
                             { apply(::Just, BookReference.fromDocument(it)) }),
                       // Variables
@@ -202,8 +202,8 @@ data class ValueNumber(override val id : UUID,
         "value" to this.value.toDocument(),
         "description" to this.description.toDocument()
     ))
-    .maybeMerge(this.rulebookReference().apply {
-        Just(Pair("rulebook_reference", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.bookReference().apply {
+        Just(Pair("book_reference", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -237,7 +237,7 @@ data class ValueNumber(override val id : UUID,
         RowValue5(valueNumberTable,
                   PrimValue(this.valueId),
                   PrimValue(this.description),
-                  MaybeProdValue(this.rulebookReference),
+                  MaybeProdValue(this.bookReference),
                   CollValue(this.variables),
                   PrimValue(this.value))
 
@@ -261,11 +261,11 @@ data class ValueNumber(override val id : UUID,
 data class ValueText(override val id : UUID,
                      override val valueId : ValueId,
                      override val description : ValueDescription,
-                     override val rulebookReference : Maybe<BookReference>,
+                     override val bookReference: Maybe<BookReference>,
                      override val variables : MutableList<Variable>,
                      override val valueSetId : ValueSetId,
                      val value : TextValue)
-                      : Value(valueId, description, rulebookReference, variables, valueSetId)
+                      : Value(valueId, description, bookReference, variables, valueSetId)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -274,14 +274,14 @@ data class ValueText(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : ValueDescription,
-                rulebookReference : Maybe<BookReference>,
+                bookReference : Maybe<BookReference>,
                 variables : List<Variable>,
                 valueSetId : ValueSetId,
                 value : TextValue)
         : this(UUID.randomUUID(),
                valueId,
                description,
-               rulebookReference,
+               bookReference,
                variables.toMutableList(),
                valueSetId,
                value)
@@ -299,8 +299,8 @@ data class ValueText(override val id : UUID,
                       doc.at("value_id") ap { ValueId.fromDocument(it) },
                       // Description
                       doc.at("description") ap { ValueDescription.fromDocument(it) },
-                      // Rulebook Reference
-                      split(doc.maybeAt("rulebook_reference"),
+                      // Book Reference
+                      split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
                             { effApply(::Just, BookReference.fromDocument(it)) }),
                       // Variables
@@ -328,8 +328,8 @@ data class ValueText(override val id : UUID,
         "value" to this.value.toDocument(),
         "description" to this.description.toDocument()
     ))
-    .maybeMerge(this.rulebookReference().apply {
-        Just(Pair("rulebook_reference", it.toDocument() as SchemaDoc)) })
+    .maybeMerge(this.bookReference().apply {
+        Just(Pair("book_reference", it.toDocument() as SchemaDoc)) })
 
 
     // -----------------------------------------------------------------------------------------
@@ -372,7 +372,7 @@ data class ValueText(override val id : UUID,
         RowValue5(valueTextTable,
                   PrimValue(this.valueId),
                   PrimValue(this.description),
-                  MaybeProdValue(this.rulebookReference),
+                  MaybeProdValue(this.bookReference),
                   CollValue(this.variables),
                   PrimValue(this.value))
 

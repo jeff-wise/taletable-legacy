@@ -903,9 +903,9 @@ class ListEditorBaseValueSetRecyclerViewAdapter(
             }
         }
 
-        val rulebookRef = value.rulebookReference()
-        when (rulebookRef) {
-            is Just<*> ->
+        val bookReference = value.bookReference()
+        when (bookReference) {
+            is Just ->
             {
 //                viewHolder.setReferenceView(View.OnClickListener {
 //                    val sheetActivity = sheetUIContext.context as SheetActivity

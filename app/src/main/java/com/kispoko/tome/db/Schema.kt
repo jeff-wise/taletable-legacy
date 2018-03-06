@@ -96,8 +96,10 @@ typealias DB_AuthorValue =
 // ---------------------------------------------------------------------------------------------
 
 val bookTable =
-    Table6("book",
+    Table8("book",
            "book_id",
+           "info",
+           "settings",
            "engine",
            "variables",
            "introduction",
@@ -106,7 +108,9 @@ val bookTable =
 
 
 typealias DB_BookValue =
-    RowValue6<PrimValue<BookId>,
+    RowValue8<PrimValue<BookId>,
+              ProdValue<BookInfo>,
+              ProdValue<BookSettings>,
               ProdValue<Engine>,
               CollValue<Variable>,
               MaybeProdValue<BookContent>,
@@ -143,6 +147,16 @@ typealias DB_BookInfoValue =
               CollValue<Author>,
               PrimValue<BookAbstract>>
 
+// BOOK SETTINGS
+// ---------------------------------------------------------------------------------------------
+
+val bookSettingsTable =
+    Table1("book_settings",
+           "theme_id")
+
+
+typealias DB_BookSettingsValue =
+    RowValue1<PrimValue<ThemeId>>
 
 
 // BOOK CONTENT
@@ -184,7 +198,7 @@ val bookSectionTable =
 typealias DB_BookSectionValue =
     RowValue4<PrimValue<BookSectionId>,
               PrimValue<BookSectionTitle>,
-              PrimValue<BookSectionBody>,
+              ProdValue<BookContent>,
               CollValue<BookSubsection>>
 
 
@@ -200,7 +214,7 @@ val bookSubsectionTable =
 typealias DB_BookSubsectionValue =
     RowValue3<PrimValue<BookSubsectionId>,
               PrimValue<BookSubsectionTitle>,
-              PrimValue<BookSubsectionBody>>
+              ProdValue<BookContent>>
 
 
 // BOOK REFERENCE

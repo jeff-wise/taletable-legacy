@@ -9,6 +9,7 @@ import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
+import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -30,7 +31,7 @@ import java.util.*
 data class BookSection(override val id : UUID,
                        val sectionId : BookSectionId,
                        val title : BookSectionTitle,
-                       val body : BookSectionBody,
+                       val body : BookContent,
                        val subsections : MutableList<BookSubsection>)
                             : ToDocument, ProdType, java.io.Serializable
 {
@@ -50,7 +51,7 @@ data class BookSection(override val id : UUID,
 
     constructor(sectionId : BookSectionId,
                 title : BookSectionTitle,
-                body : BookSectionBody,
+                body : BookContent,
                 subsections : List<BookSubsection>)
         : this(UUID.randomUUID(),
                sectionId,
@@ -71,7 +72,7 @@ data class BookSection(override val id : UUID,
                       // Title
                       doc.at("title") apply { BookSectionTitle.fromDocument(it) },
                       // Body
-                      doc.at("body") apply { BookSectionBody.fromDocument(it) },
+                      doc.at("body") apply { BookContent.fromDocument(it) },
                       // Subsections
                       split(doc.maybeList("subsections"),
                             effValue(listOf()),
@@ -105,7 +106,7 @@ data class BookSection(override val id : UUID,
     fun title() : BookSectionTitle = this.title
 
 
-    fun body() : BookSectionBody = this.body
+    fun body() : BookContent = this.body
 
 
     fun subsections() : List<BookSubsection> = this.subsections
@@ -132,7 +133,7 @@ data class BookSection(override val id : UUID,
     override fun rowValue() : DB_BookSectionValue =
         RowValue4(bookSectionTable, PrimValue(this.sectionId),
                                     PrimValue(this.title),
-                                    PrimValue(this.body),
+                                    ProdValue(this.body),
                                     CollValue(this.subsections))
 
 }

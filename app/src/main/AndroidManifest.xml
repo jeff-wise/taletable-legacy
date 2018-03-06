@@ -30,8 +30,8 @@
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.sheet.state.SheetStateActivity"
-            android:label="Sheet State"
+            android:name=".activity.entity.book.BookActivity"
+            android:label="Book"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.kispoko.tome.activity.engine.valueset.BaseValueSetActivity"

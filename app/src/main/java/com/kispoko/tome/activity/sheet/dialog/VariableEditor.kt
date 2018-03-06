@@ -196,7 +196,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                                     ValueChooserDialogFragment.newInstance(
                                                     valueSet.value,
                                                     value.value,
-                                                    updateTarget,
+                                                    textVariable.variableId(),
                                                     entityId)
                             chooseDialog.show(sheetActivity.supportFragmentManager, "")
                         }
@@ -218,7 +218,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                             ValueChooserDialogFragment.newInstance(
                                             valueSet.value,
                                             null,
-                                            updateTarget,
+                                            textVariable.variableId(),
                                             entityId)
                     chooseDialog.show(sheetActivity.supportFragmentManager, "")
                 }
