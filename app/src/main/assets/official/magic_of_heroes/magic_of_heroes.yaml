@@ -4418,9 +4418,9 @@ engine:
           type: number_literal
           number_literal: 2
   - id: elf_ability_score_bonuses
-    label: Elf Ability Score Bonuses
+    label: Ability Score Bonuses
     description: 'The ability score bonuses that Elves acquire at first level.'
-    summary: '+2 DEX'
+    summary: '+2 Dexterity'
     category_id: race_elf
     requirements:
     - name: 'is_race_elf'
@@ -4435,6 +4435,26 @@ engine:
         value:
           type: number_literal
           number_literal: 2
+  - id: elf_languages
+    label: Languages
+    description: >-
+      You can speak, read, and write Common and Elvish. Elvish is fluid, with subtle intonations
+      and intricate grammar. Elven literature is rich and varied, and their songs and poems are
+      famous among other races. Many bards learn their language so they can add Elvish ballads
+      to their repertoires.
+    summary: 'You can speak, read, and write Common and Elvish.'
+    category_id: race_elf
+    requirements:
+    - name: 'is_race_elf'
+    variables:
+  - id: elf_speed
+    label: Speed
+    description: 'Your base walking speed is 30 feet.'
+    summary: 'Your base walking speed is 30 feet.'
+    category_id: race_elf
+    requirements:
+    - name: 'is_race_elf'
+    variables:
   - id: gnome_ability_score_bonuses
     label: Gnome Ability Score Bonuses
     description: 'The ability score bonuses that Gnomes acquire at first level.'
@@ -4803,9 +4823,11 @@ engine:
           number_literal: 2
   - id: fighter_second_wind
     label: 'Second Wind'
-    description: 'You gain a +2 bonus to attack rolls you make with ranged weapons.'
-    summary: 'You have a limited well of stamina that you can draw on to protect yourself from harm.
+    description: 'You have a limited well of stamina that you can draw on to protect yourself from harm.
               On your turn, you can use a bonus action to regain hit points equal to 1d10 + your
+              fighter level. Once you use this feature, you must finish a short or long rest before
+              you can use it again.'
+    summary: 'On your turn, you can use a bonus action to regain hit points equal to 1d10 + your
               fighter level. Once you use this feature, you must finish a short or long rest before
               you can use it again.'
     category_id: class_fighter
@@ -4876,17 +4898,25 @@ engine:
           type: number_literal
           number_literal: 2
   mechanic_categories:
+  - id: race_elf
+    label: 'Elf'
+    tags:
+    - race
+    description: Mechanics for elves.
   - id: race_human
     label: 'Human'
+    tags:
+    - race
     description: Mechanics for humans.
-  - id: class
-    label: Class
-    description: Mechanics for a specific class.
   - id: class_fighter
     label: Fighter
+    tags:
+    - class
     description: Mechanics for a the Fighter class.
   - id: background_swashbuckler
     label: Swashbuckler
+    tags:
+    - background
     description: Swashbuckler background mechanics.
   - id: weapon
     label: Weapon

@@ -12,6 +12,7 @@ import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.rts.entity.sheet.SheetUI
 import com.kispoko.tome.rts.entity.theme.ThemeManager
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
@@ -73,6 +74,13 @@ fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle
 
 }
 
+
+//private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
+
+//val AppCompatActivity.messageListenerDisposable : CompositeDisposable //  = CompositeDisposable()
+
+
+//private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
 //fun AppCompatActivity.initializeState()
 //{

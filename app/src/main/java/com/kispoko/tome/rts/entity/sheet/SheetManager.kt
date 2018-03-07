@@ -215,7 +215,7 @@ import com.kispoko.tome.rts.entity.EntityId
 //
 //                when (sheetUpdate)
 //                {
-//                    is WidgetUpdate ->
+//                    is SheetUpdateWidget ->
 //                    {
 //                        val rootView = sheetUI.rootSheetView()
 //                        val context = sheetUI.context()

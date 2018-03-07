@@ -4,7 +4,7 @@ package com.kispoko.tome.rts.entity
 
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.engine.function.FunctionId
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.ProgramId
@@ -63,7 +63,7 @@ class EntityDoesNotHaveMechanic(val entityId : EntityId,
 
 
 class EntityDoesNotHaveMechanicCategory(val entityId : EntityId,
-                                        val mechanicCategoryId : MechanicCategoryId) : EntityError()
+                                        val mechanicCategoryId : MechanicCategoryReference) : EntityError()
 {
     override fun debugMessage(): String =
             """
@@ -152,6 +152,22 @@ class EntityDoesNotHaveTheme(val entityId : EntityId) : EntityError()
             """
             Entity Error: Entity Does Not Have A Theme
                 Entity Id: $entityId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+class EntityIsUnexpectedType(val entityId : EntityId,
+                             val expectedType : EntityType,
+                             val actualType : EntityType) : EntityError()
+{
+    override fun debugMessage(): String =
+            """
+            Entity Error: Entity Is Unexpected Type
+                Entity Id: $entityId
+                Expected Type: $expectedType
+                Actual Type: $actualType
             """
 
     override fun logMessage(): String = userMessage()

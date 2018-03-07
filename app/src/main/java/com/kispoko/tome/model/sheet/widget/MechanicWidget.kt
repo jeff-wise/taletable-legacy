@@ -23,12 +23,12 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
 import com.kispoko.tome.model.game.engine.mechanic.MechanicType
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.activeMechanicsInCategory
 import com.kispoko.tome.rts.entity.colorOrBlack
-import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.mechanicCategory
 import com.kispoko.tome.util.Util
 import effect.*
@@ -265,6 +265,26 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
                                 val context : Context)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    val mechanicsByCategoryId : MutableMap<MechanicCategoryId,MutableSet<Mechanic>> = mutableMapOf()
+
+    init {
+        activeMechanicsInCategory(mechanicWidget.categoryReference(), entityId) apDo { mechanics ->
+            mechanics.forEach { mechanic ->
+                val categoryId = mechanic.categoryId
+
+                if (!mechanicsByCategoryId.containsKey(categoryId))
+                    mechanicsByCategoryId.put(categoryId, mutableSetOf())
+
+                val mechanicsSet = mechanicsByCategoryId[categoryId]!!
+                mechanicsSet.add(mechanic)
+            }
+        }
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
@@ -288,34 +308,56 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     {
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
         contentLayout.removeAllViews()
-        contentLayout.addView(this.mainView())
+        contentLayout.addView(this.categoryListView())
     }
 
 
-    private fun mainView() : LinearLayout
+    private fun categoryListView() : LinearLayout
     {
-        val layout              = this.mainViewLayout()
+        val layout = this.categoryListViewLayout()
+
+        this.mechanicsByCategoryId.keys.forEach { categoryId ->
+            layout.addView(this.categoryView(categoryId))
+        }
+
+        return layout
+    }
+
+
+    private fun categoryListViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun categoryView(categoryId : MechanicCategoryId) : LinearLayout
+    {
+        val layout              = this.categoryViewLayout()
 
         // Header
-        mechanicCategory(mechanicWidget.categoryId(), entityId) apDo { category ->
+        mechanicCategory(categoryId, entityId) apDo { category ->
             val headerString = category.labelString() + " Mechanics"
             layout.addView(this.headerView(headerString))
         }
 
         // Mechanic List
-        val categoryId = mechanicWidget.categoryId()
-        activeMechanicsInCategory(categoryId, entityId) apDo {
-            it.forEach {
-                when (it.mechanicType()) {
-                    is MechanicType.Auto -> {
-                        layout.addView(this.mechanicView(it))
-                    }
-                    is MechanicType.OptionSelected -> {
-                        layout.addView(this.mechanicView(it))
-                    }
-                    is MechanicType.Option -> {
-                        layout.addView(this.optionMechanicView(it))
-                    }
+        this.mechanicsByCategoryId[categoryId]?.forEach {
+            when (it.mechanicType()) {
+                is MechanicType.Auto -> {
+                    layout.addView(this.mechanicView(it))
+                }
+                is MechanicType.OptionSelected -> {
+                    layout.addView(this.mechanicView(it))
+                }
+                is MechanicType.Option -> {
+                    layout.addView(this.optionMechanicView(it))
                 }
             }
         }
@@ -330,7 +372,7 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     }
 
 
-    private fun mainViewLayout() : LinearLayout
+    private fun categoryViewLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 

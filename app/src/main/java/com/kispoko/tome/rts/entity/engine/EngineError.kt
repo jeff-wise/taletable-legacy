@@ -4,7 +4,7 @@ package com.kispoko.tome.rts.entity.engine
 
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.game.engine.function.FunctionId
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.program.ProgramId
@@ -106,7 +106,7 @@ class MechanicDoesNotExist(val mechanicId : MechanicId) : EngineError()
 }
 
 
-class MechanicCategoryDoesNotExist(val mechanicCategoryId : MechanicCategoryId) : EngineError()
+class MechanicCategoryDoesNotExist(val mechanicCategoryId : MechanicCategoryReference) : EngineError()
 {
     override fun debugMessage(): String =
             """

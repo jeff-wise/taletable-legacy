@@ -32,17 +32,17 @@ import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
-import com.kispoko.tome.rts.entity.engine.OnVariableChangeListener
+import com.kispoko.tome.rts.entity.OnVariableChangeListener
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.rts.entity.theme.ThemeManager
-import com.kispoko.tome.rts.session.session
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import maybe.Just
 import effect.Val
-
+import io.reactivex.disposables.CompositeDisposable
 
 
 object SheetActivityGlobal
@@ -103,6 +103,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     private var toolbarView : FrameLayout? = null
     private var activeTableRow : TableWidgetRow? = null
 
+    private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
@@ -126,7 +127,12 @@ class SheetActivity : AppCompatActivity(), SheetUI
         if (savedInstanceState != null)
             this.sheetId = savedInstanceState.getSerializable("sheet_id") as SheetId
 
-        // (3) Configure UI
+        // (3) Initialize Listeners
+        // -------------------------------------------------------------------------------------
+
+        this.initializeListeners()
+
+        // (4) Configure UI
         // -------------------------------------------------------------------------------------
 
         this.configureToolbar("")
@@ -135,7 +141,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         this.initializeBottomNavigation()
 
-        // (4) Initialize
+        // (5) Initialize Sheet
         // -------------------------------------------------------------------------------------
 
         val sheetId = this.sheetId
@@ -145,40 +151,22 @@ class SheetActivity : AppCompatActivity(), SheetUI
             when (sessonSheet) {
                 // Render sheet.
                 is Just -> {
-                    Log.d("***SHEET ACTIVITY", "call set sheet active")
                     this.setSheetActive(sessonSheet.value)
                 }
                 // Session does not have sheet, so nothing we can do here.
                 // This may happen if process dies while this activity was activity, restarts,
                 // and session is empty (needs to be reloaded).
                 else -> {
-                    Log.d("***SHEET ACTIVITY", "session does not have sheet")
                     returnToLoad()
                 }
             }
         }
         else
         {
-            Log.d("***SHEET ACTIVITY", "sheet id is null")
             returnToLoad()
         }
-
-        // on create
-        // if sheet is in session then load that sheet
-        //   if on destory save instance state sheet id,
-        //    so when on create again and session still exists (app not killed) just reloads sheet
-        // if session does not have sheet, then something wrong
-        // open load activity (or whatever default is)
-
-        //}
     }
 
-
-//    override fun onCreateOptionsMenu(menu : Menu) : Boolean
-//    {
-//        menuInflater.inflate(R.menu.empty, menu)
-//        return true
-//    }
 
 
     override fun onSaveInstanceState(outState : Bundle?)
@@ -189,17 +177,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         super.onSaveInstanceState(outState)
     }
-
-//     void onSaveInstanceState(Bundle savedInstanceState) {
-//        // Save the user's current game state
-//        savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
-//        savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);
-//
-//
-//        // Always call the superclass so it can save the view hierarchy state
-//        super.onSaveInstanceState(savedInstanceState);
-//    }
-
 
 
     override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?)
@@ -217,6 +194,14 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        this.messageListenerDisposable.clear()
+    }
+
+
+
     private fun returnToLoad()
     {
         val intent = Intent(this, LoadActivity::class.java)
@@ -225,8 +210,30 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
+
     // UI
     // -----------------------------------------------------------------------------------------
+
+    private fun initializeListeners()
+    {
+        val disposable = Router.listen(MessageSheetUpdate::class.java)
+                                .subscribe(this::onSheetUpdate)
+        this.messageListenerDisposable.add(disposable)
+    }
+
+
+    private fun onSheetUpdate(message : MessageSheetUpdate)
+    {
+        val sheetId = this.sheetId
+        val viewPager = this.viewPager
+        if (sheetId != null && viewPager != null)
+        {
+            sheetOrError(sheetId) apDo {
+                it.update(message.update, viewPager, this)
+            }
+        }
+    }
+
 
     private fun initializeViews()
     {
@@ -430,8 +437,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
         // -------------------------------------------------------------------------------------
 
         val updateToolbarOnNameChange = OnVariableChangeListener(
-                                            { updateToolbar(it, sheet.sheetId()) },
-                                            {})
+                { updateToolbar(it, sheet.sheetId()) },
+                {})
         addOnVariableChangeListener(VariableId("name"),
                                     updateToolbarOnNameChange,
                                     entityId)

@@ -1385,12 +1385,33 @@ types:
       presence: required
       description: >
         The variables that are active when the mechanic is active.
+- type: sum_type
+  sum_type:
+    name: mechanic_category_reference
+    label: Mechanic Category Reference
+    description: A reference to a mechanic category.
+    group: Variable
+    cases: 
+    - type: mechanic_category_id
+      description: A mc id.
+    - type: mechanic_category_tag 
+      description: A mc tag
 - type: primitive_type
   primitive_type:
     name: mechanic_category_id
     label: Mechanic Category Identifier
     description: >
       The unique mechanic identifier.
+    group: Mechanic
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: mechanic_category_tag
+    label: Mechanic Category Tag
+    description: >
+      The unique mechanic tag.
     group: Mechanic
     base_type:
       type: prim_type
@@ -1422,6 +1443,12 @@ types:
         type: prim_type
         prim_type: string
       presence: required
+    - name: tags
+      type:
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: tags
     - name: description
       type:
         type: prim_type

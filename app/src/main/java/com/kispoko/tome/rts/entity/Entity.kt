@@ -16,7 +16,7 @@ import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
@@ -32,8 +32,6 @@ import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.entity.engine.EntityState
-import com.kispoko.tome.rts.entity.engine.OnVariableChangeListener
 import com.kispoko.tome.rts.entity.engine.TextReferenceIsNull
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.rts.entity.theme.ThemeManager
@@ -65,7 +63,12 @@ fun entityState(entityId : EntityId) : AppEff<EntityRecord> =
     else
         effError(AppEntityError(EntityDoesNotExist(entityId)))
 
-// Get
+
+// ---------------------------------------------------------------------------------------------
+// GET
+// ---------------------------------------------------------------------------------------------
+
+// GET > Sheet
 // ---------------------------------------------------------------------------------------------
 
 fun sheet(sheetId : SheetId) : Maybe<Sheet>
@@ -79,6 +82,32 @@ fun sheet(sheetId : SheetId) : Maybe<Sheet>
     }
 }
 
+
+fun sheetOrError(sheetId : SheetId) : AppEff<Sheet> =
+        sheetOrError(EntitySheetId(sheetId))
+
+
+fun sheetOrError(entityId : EntityId) : AppEff<Sheet>
+{
+    val record = stateById.get(entityId)
+    return if (record != null) {
+        when (record) {
+            is EntitySheetRecord -> effValue(record.sheet)
+            else                 ->
+                effError<AppError,Sheet>(AppEntityError(EntityIsUnexpectedType(entityId,
+                                                        EntityTypeSheet,
+                                                        record.entityType)))
+        }
+    }
+    else
+    {
+        effError(AppEntityError(EntityDoesNotExist(entityId)))
+    }
+}
+
+
+// GET > Campaign
+// ---------------------------------------------------------------------------------------------
 
 fun campaign(campaignId : CampaignId) : Maybe<Campaign>
 {
@@ -278,7 +307,7 @@ fun mechanics(entityId : EntityId) : AppEff<Set<Mechanic>>
 }
 
 
-fun mechanicsInCategory(mechanicCategoryId: MechanicCategoryId,
+fun mechanicsInCategory(mechanicCategoryId: MechanicCategoryReference,
                         entityId : EntityId) : AppEff<Set<Mechanic>>
 {
     val mechanics : MutableSet<Mechanic> = mutableSetOf()
@@ -299,7 +328,7 @@ fun mechanicsInCategory(mechanicCategoryId: MechanicCategoryId,
 // Engine > Mechanic Category
 // ---------------------------------------------------------------------------------------------
 
-fun mechanicCategory(mechanicCategoryId : MechanicCategoryId,
+fun mechanicCategory(mechanicCategoryId : MechanicCategoryReference,
                      entityId : EntityId) : AppEff<MechanicCategory>
 {
     val engines = entityEngines(entityId)
@@ -601,7 +630,7 @@ fun textListVariable(variableReference : VariableReference,
 // STATE > Mechanics
 // ---------------------------------------------------------------------------------------------
 
-fun activeMechanicsInCategory(categoryId : MechanicCategoryId,
+fun activeMechanicsInCategory(categoryId : MechanicCategoryReference,
                               entityId : EntityId) : AppEff<Set<Mechanic>> =
     entityEngineState(entityId)
             .apply { effValue<AppError,Set<Mechanic>>(it.activeMechanicsInCategory(categoryId)) }
@@ -675,11 +704,45 @@ data class EntityThemeId(val themeId : ThemeId) : EntityId()
 data class EntityBookId(val bookId : BookId) : EntityId()
 
 
+// Entity Type
+// ---------------------------------------------------------------------------------------------
+
+sealed class EntityType
+
+object EntityTypeSheet : EntityType()
+{
+    override fun toString() = "Sheet"
+}
+
+object EntityTypeCampaign : EntityType()
+{
+    override fun toString() = "Campaign"
+}
+
+object EntityTypeGame : EntityType()
+{
+    override fun toString() = "Game"
+}
+
+object EntityTypeTheme : EntityType()
+{
+    override fun toString() = "Theme"
+}
+
+object EntityTypeBook : EntityType()
+{
+    override fun toString() = "Book"
+}
+
+
 // Entity State
 // ---------------------------------------------------------------------------------------------
 
 sealed class EntityRecord(open val engineState : EntityState,
                           open val themeId : Maybe<ThemeId>)
+{
+    abstract val entityType : EntityType
+}
 
 
 
@@ -687,24 +750,36 @@ data class EntitySheetRecord(val sheet : Sheet,
                              override val engineState : EntityState,
                              override val themeId : Maybe<ThemeId>)
                               : EntityRecord(engineState, themeId)
+{
+    override val entityType = EntityTypeSheet
+}
 
 
 data class EntityCampaignRecord(val campaign : Campaign,
                                 override val engineState : EntityState,
                                 override val themeId : Maybe<ThemeId>)
                                  : EntityRecord(engineState, themeId)
+{
+    override val entityType = EntityTypeCampaign
+}
 
 
 data class EntityGameRecord(val game : Game,
                             override val engineState : EntityState,
                             override val themeId : Maybe<ThemeId>)
                              : EntityRecord(engineState, themeId)
+{
+    override val entityType = EntityTypeGame
+}
 
 
 data class EntityBookRecord(val book : Book,
                             override val engineState : EntityState,
                             override val themeId : Maybe<ThemeId>)
                              : EntityRecord(engineState, themeId)
+{
+    override val entityType = EntityTypeBook
+}
 
 
 

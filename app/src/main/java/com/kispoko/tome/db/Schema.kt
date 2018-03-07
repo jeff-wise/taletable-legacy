@@ -48,8 +48,6 @@ import com.kispoko.tome.model.sheet.widget.table.cell.TextCellFormat
 import com.kispoko.tome.model.sheet.widget.table.column.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.user.UserName
-import com.kispoko.tome.rts.entity.sheet.*
-
 
 
 //*********************************************************************************************//
@@ -1282,12 +1280,12 @@ val widgetMechanicTable =
     Table3("widget_mechanic",
            "widget_id",
            "format",
-           "entries")
+           "category_reference")
 
 typealias DB_WidgetMechanicValue =
     RowValue3<PrimValue<WidgetId>,
               ProdValue<MechanicWidgetFormat>,
-              PrimValue<MechanicCategoryId>>
+              PrimValue<MechanicCategoryReference>>
 
 
 // WIDGET: MECHANIC > FORMAT

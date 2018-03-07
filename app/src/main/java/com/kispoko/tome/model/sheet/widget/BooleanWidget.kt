@@ -25,9 +25,13 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.Icon
 import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
-import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.sheet.BooleanWidgetUpdateToggle
+import com.kispoko.tome.rts.entity.sheet.MessageSheetUpdate
+import com.kispoko.tome.rts.entity.sheet.SheetUpdateWidget
+import com.kispoko.tome.rts.entity.sheetOrError
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -353,8 +357,7 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
         contentLayout.addView(simpleView)
 
         layout.setOnClickListener {
-            val sheetUI = context as SheetUI
-//            SheetManager.updateSheet(sheetUIContext.sheetId, BooleanWidgetUpdateToggle(booleanWidget.id) , sheetUI)
+            Router.send(MessageSheetUpdate(BooleanWidgetUpdateToggle(booleanWidget.id)))
         }
 
     }

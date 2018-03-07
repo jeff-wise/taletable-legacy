@@ -246,10 +246,11 @@ object TomeDoc
                              bookSchema : Schema,
                              engineSchema : Schema,
                              gameSchema : Schema,
+                             themeSchema : Schema,
                              sheetSchema : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = bookSchema.parseDocument(templateString,
-                                                   listOf(sheetSchema, engineSchema, gameSchema))
+                                                   listOf(sheetSchema, themeSchema, engineSchema, gameSchema))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -273,6 +274,7 @@ object TomeDoc
                           bookSchemaLoader(context),
                           engineSchemaLoader(context),
                           gameSchemaLoader(context),
+                          themeSchemaLoader(context),
                           sheetSchemaLoader(context))
                .apply(::bookFromDocument)
     }

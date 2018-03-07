@@ -3,7 +3,7 @@ package com.kispoko.tome.rts.entity.book
 
 
 import com.kispoko.tome.model.book.Book
-import com.kispoko.tome.rts.entity.engine.EntityState
+import com.kispoko.tome.rts.entity.EntityState
 
 
 /**

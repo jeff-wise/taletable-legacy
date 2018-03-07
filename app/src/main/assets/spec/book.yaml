@@ -232,8 +232,8 @@ types:
       description: The section title.
     - name: body
       type:
-        type: prim_type
-        prim_type: string
+        type: custom_type
+        custom_type: book_content
       presence: required
       description: The section body.
     - name: subsections

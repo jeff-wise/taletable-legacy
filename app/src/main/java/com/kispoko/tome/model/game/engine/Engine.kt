@@ -19,7 +19,7 @@ import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
@@ -67,12 +67,12 @@ data class Engine(override val id : UUID,
 
 
     private val mechanicsByCategoryId
-                : MutableMap<MechanicCategoryId,MutableSet<Mechanic>> = mutableMapOf()
+                : MutableMap<MechanicCategoryReference,MutableSet<Mechanic>> = mutableMapOf()
 
 
-    private val mechanicCategoryById : MutableMap<MechanicCategoryId,MechanicCategory> =
+    private val mechanicCategoryById : MutableMap<MechanicCategoryReference,MechanicCategory> =
                                     mechanicCategories.associateBy { it.categoryId() }
-                                            as MutableMap<MechanicCategoryId,MechanicCategory>
+                                            as MutableMap<MechanicCategoryReference,MechanicCategory>
 
     private val mechanicById : MutableMap<MechanicId,Mechanic> =
                                         mechanics.associateBy { it.mechanicId() }
@@ -321,7 +321,7 @@ data class Engine(override val id : UUID,
                  AppEngineError(MechanicDoesNotExist(mechanicId)))
 
 
-    fun mechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic> =
+    fun mechanicsInCategory(categoryId : MechanicCategoryReference) : Set<Mechanic> =
         this.mechanicsByCategoryId[categoryId] ?: setOf()
 
 
@@ -331,7 +331,7 @@ data class Engine(override val id : UUID,
     fun mechanicCategories() : List<MechanicCategory> = this.mechanicCategories
 
 
-    fun mechanicCategory(categoryId : MechanicCategoryId) : AppEff<MechanicCategory> =
+    fun mechanicCategory(categoryId : MechanicCategoryReference) : AppEff<MechanicCategory> =
             note(this.mechanicCategoryById[categoryId],
                  AppEngineError(MechanicCategoryDoesNotExist(categoryId)))
 

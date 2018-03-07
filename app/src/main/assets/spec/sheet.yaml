@@ -1179,10 +1179,10 @@ types:
         custom_type: mechanic_widget_format
       presence: optional
       description: The widget format.
-    - name: category_id
+    - name: category_reference
       type:
         type: custom_type
-        custom_type: mechanic_category_id
+        custom_type: mechanic_category_reference
       presence: required
       description: >
         The mechanic category.

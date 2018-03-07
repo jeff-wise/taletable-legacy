@@ -135,7 +135,8 @@ chapters:
   sections:
   - id: backgrounds
     title: 'Backgrounds'
-    body: 'Backgrounds'
+    body:
+      groups:
 - id: races
   title: 'Races'
   sections:

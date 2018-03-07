@@ -15327,7 +15327,9 @@ sections:
         - type: widget_mechanic
           widget_mechanic:
             id: race_mechanics
-            category_id: race_human
+            category_reference:
+              type: mechanic_category_tag
+              mechanic_category_tag: race
             format:
               widget_format:
                 element_format:
@@ -15353,7 +15355,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue_90
               mechanic_summary_format:
-                size: 17
+                size: 16
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -15396,7 +15398,9 @@ sections:
         - type: widget_mechanic
           widget_mechanic:
             id: background_mechanics
-            category_id: background_swashbuckler
+            category_reference:
+              type: mechanic_category_tag
+              mechanic_category_tag: background
             format:
               widget_format:
                 element_format:
@@ -15422,7 +15426,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue_90
               mechanic_summary_format:
-                size: 17
+                size: 16
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -15465,7 +15469,9 @@ sections:
         - type: widget_mechanic
           widget_mechanic:
             id: class_mechanics
-            category_id: class_fighter
+            category_reference:
+              type: mechanic_category_tag
+              mechanic_category_tag: class
             format:
               widget_format:
                 element_format:
@@ -15515,7 +15521,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue_90
               mechanic_summary_format:
-                size: 17
+                size: 16
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark

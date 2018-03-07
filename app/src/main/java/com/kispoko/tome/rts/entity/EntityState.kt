@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rts.entity.engine
+package com.kispoko.tome.rts.entity
 
 
 import com.kispoko.tome.app.*
@@ -7,11 +7,8 @@ import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.EngineValueText
-import com.kispoko.tome.model.game.engine.mechanic.Mechanic
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
-import com.kispoko.tome.model.game.engine.mechanic.MechanicType
+import com.kispoko.tome.model.game.engine.mechanic.*
 import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.sheet.*
 import effect.*
 import maybe.Just
@@ -53,6 +50,8 @@ class EntityState(val entityId : EntityId,
     private val variableById : MutableMap<VariableId,Variable> = mutableMapOf()
     private val variablesByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
 
+    private val companionVariableIdsByVariableId : MutableMap<VariableId,MutableSet<VariableId>> = mutableMapOf()
+
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
     private val listenerTagsByRelation : MutableMap<VariableRelation,MutableSet<RelationListener>> = mutableMapOf()
@@ -66,7 +65,9 @@ class EntityState(val entityId : EntityId,
     private val mechanicsByReqVariableId : MutableMap<VariableId,MutableSet<MechanicState>> =
             mutableMapOf()
 
-    private val activeMechanicsByCateogryId : MutableMap<MechanicCategoryId,MutableSet<Mechanic>> = mutableMapOf()
+    private val activeMechanicsByCateogryId : MutableMap<MechanicCategoryReference,MutableSet<Mechanic>> = mutableMapOf()
+
+    private val activeMechanicsByCateogryTag : MutableMap<MechanicCategoryTag,MutableSet<Mechanic>> = mutableMapOf()
 
 
     // Search Indexes
@@ -217,7 +218,16 @@ class EntityState(val entityId : EntityId,
         val companionVariables = variable.companionVariables(this.entityId)
         when (companionVariables)
         {
-            is Val -> companionVariables.value.forEach { this.addVariable(it, variable)
+            is Val -> {
+
+                val companionVariableIds : MutableSet<VariableId> = mutableSetOf()
+
+                companionVariables.value.forEach {
+                    this.addVariable(it, variable)
+                    companionVariableIds.add(it.variableId())
+                }
+
+                companionVariableIdsByVariableId.put(variableId, companionVariableIds)
             }
             is Err -> ApplicationLog.error(companionVariables.error)
         }
@@ -372,6 +382,23 @@ class EntityState(val entityId : EntityId,
 
         val activeMechanics = this.activeMechanicsByCateogryId[categoryId]
         activeMechanics?.add(mechanic)
+
+        // look up category, get tags, index mechanic by each tag.
+        // Index by category tag
+        val _mechanicCategory = mechanicCategory(mechanic.categoryId(), entityId)
+        when (_mechanicCategory) {
+            is Val -> {
+                _mechanicCategory.value.tags().forEach { tag ->
+                    if (!this.activeMechanicsByCateogryTag.containsKey(tag))
+                        this.activeMechanicsByCateogryTag.put(tag, mutableSetOf())
+
+                    val activeMechanicSet = this.activeMechanicsByCateogryTag[tag]
+                    activeMechanicSet?.add(mechanic)
+
+                }
+            }
+        }
+
     }
 
 
@@ -397,19 +424,47 @@ class EntityState(val entityId : EntityId,
         }
 
 
+        // Unindex mechanic by category id
         val categoryId = mechanic.categoryId()
         if (this.activeMechanicsByCateogryId.containsKey(categoryId)) {
             val activeMechanics = this.activeMechanicsByCateogryId[categoryId]
             activeMechanics?.remove(mechanic)
         }
+
+        // Unindex mechanic by category tag
+        val _mechanicCategory = mechanicCategory(mechanic.categoryId(), entityId)
+        when (_mechanicCategory) {
+            is Val -> {
+                _mechanicCategory.value.tags().forEach { tag ->
+                    if (this.activeMechanicsByCateogryTag.containsKey(tag))
+                    {
+                        val activeMechanicSet = this.activeMechanicsByCateogryTag[tag]
+                        activeMechanicSet?.remove(mechanic)
+                    }
+                }
+            }
+        }
     }
 
 
-    override fun activeMechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic> =
-        if (this.activeMechanicsByCateogryId.containsKey(categoryId))
-            this.activeMechanicsByCateogryId[categoryId]!!
-        else
-            setOf()
+    override fun activeMechanicsInCategory(categoryReference: MechanicCategoryReference) : Set<Mechanic> =
+        when (categoryReference)
+        {
+            is MechanicCategoryId ->
+            {
+                if (this.activeMechanicsByCateogryId.containsKey(categoryReference))
+                    this.activeMechanicsByCateogryId[categoryReference]!!
+                else
+                    setOf()
+            }
+            is MechanicCategoryTag ->
+            {
+                if (this.activeMechanicsByCateogryTag.containsKey(categoryReference))
+                    this.activeMechanicsByCateogryTag[categoryReference]!!
+                else
+                    setOf()
+            }
+        }
 
 
     fun onVariableUpdate(variable : Variable)
@@ -424,6 +479,16 @@ class EntityState(val entityId : EntityId,
 //                }
 //            }
 //        }
+
+        // Remove previous companion variables
+        val variableId = variable.variableId()
+
+        if (companionVariableIdsByVariableId.containsKey(variableId))
+        {
+            companionVariableIdsByVariableId[variable.variableId()]?.forEach {
+                removeVariable(it)
+            }
+        }
 
         val companionVariables = variable.companionVariables(this.entityId)
         when (companionVariables)
@@ -476,6 +541,18 @@ class EntityState(val entityId : EntityId,
                 }
             }
         }
+
+        // (3) Update any mechanics
+        // -------------------------------------------------------------------------------------
+
+        when (variable)
+        {
+            is BooleanVariable ->
+                mechanicsByReqVariableId[variableId]?.forEach {
+                    it.updateOnVariableRemoved(variable.variableId(), this)
+                }
+        }
+
 
         // (3) Update listeners of variable relation
         // -------------------------------------------------------------------------------------
@@ -800,6 +877,28 @@ class EntityState(val entityId : EntityId,
     fun textListVariable(variableReference : VariableReference) : AppEff<TextListVariable> =
         variable(variableReference).apply { it.textListVariable(this.entityId) }
 
+
+
+    // -----------------------------------------------------------------------------------------
+    // LISTEN
+    // -----------------------------------------------------------------------------------------
+
+    val onChangeListenerByVariableId : MutableMap<VariableId, OnVariableChangeListener> = mutableMapOf()
+
+    // TODO optimize this with indexes
+    val triggersRelatedVariableSet : MutableSet<RelatedVariableSet> = mutableSetOf()
+
+
+    fun listen(variableReference : VariableReference,
+               listener : OnVariableChangeListener) = when (variableReference)
+    {
+        is RelatedVariableSet -> {
+            this.triggersRelatedVariableSet.add(variableReference)
+        }
+        else -> { }
+    }
+
+
 }
 
 
@@ -808,13 +907,15 @@ interface MechanicStateMachine
     fun addMechanic(mechanic : Mechanic)
     fun removeMechanic(mechanic : Mechanic)
 
-    fun activeMechanicsInCategory(categoryId : MechanicCategoryId) : Set<Mechanic>
+    fun activeMechanicsInCategory(categoryId : MechanicCategoryReference) : Set<Mechanic>
 }
 
 
 data class MechanicState(val state : MutableMap<VariableId,Boolean>,
                          val mechanic : Mechanic)
 {
+
+    // if variable doesn't exist set to false
 
     var isActive : Boolean = false
 
@@ -850,6 +951,22 @@ data class MechanicState(val state : MutableMap<VariableId,Boolean>,
             }
         }
     }
+
+
+    fun updateOnVariableRemoved(variableId : VariableId,
+                                mechanicStateMachine : MechanicStateMachine)
+    {
+        if (state.containsKey(variableId))
+        {
+            state[variableId] = false
+
+            if (!this.isReady() && this.isActive) {
+                this.isActive = false
+                mechanicStateMachine.removeMechanic(mechanic)
+            }
+        }
+    }
+
 
 
     private fun isReady() = this.state.values.all { it }

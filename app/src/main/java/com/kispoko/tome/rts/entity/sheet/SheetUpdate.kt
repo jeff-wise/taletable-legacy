@@ -6,7 +6,6 @@ import com.kispoko.tome.app.ApplicationEvent
 import com.kispoko.tome.model.game.engine.value.ValueId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.TableWidget
-import com.kispoko.tome.model.sheet.widget.Widget
 import java.io.Serializable
 import java.util.*
 
@@ -39,49 +38,63 @@ data class WidgetReference(val widgetId : UUID, val widgetViewId : Int)
 
 
 
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE
+// ---------------------------------------------------------------------------------------------
+
 sealed class SheetUpdate
 
 
-// Widget Update
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update
+// ---------------------------------------------------------------------------------------------
 
-data class WidgetUpdateEvent(val widget : Widget, val sheetId : SheetId)
+sealed class SheetUpdateWidget(open val widgetId : UUID) : SheetUpdate()
 
 
-sealed class WidgetUpdate(open val widgetId : UUID) : SheetUpdate()
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update > Action Widget
+// ---------------------------------------------------------------------------------------------
 
-
-// Action Widget
-
-sealed class WidgetUpdateActionWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+sealed class WidgetUpdateActionWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 data class ActionWidgetUpdate(override val widgetId : UUID) : WidgetUpdateActionWidget(widgetId)
 
-// Boolean Widget
 
-sealed class WidgetUpdateBooleanWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update > Boolean Widget
+// ---------------------------------------------------------------------------------------------
+
+sealed class WidgetUpdateBooleanWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 data class BooleanWidgetUpdateToggle(override val widgetId : UUID) : WidgetUpdateBooleanWidget(widgetId)
 
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update > List Widget
+// ---------------------------------------------------------------------------------------------
 
-// List Widget Update
-
-sealed class WidgetUpdateListWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+sealed class WidgetUpdateListWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 data class ListWidgetUpdateSetCurrentValue(
         override val widgetId : UUID,
         val newCurrentValue : List<String>) : WidgetUpdateListWidget(widgetId)
 
 
-// Number Widget
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update > Number Widget
+// ---------------------------------------------------------------------------------------------
 
-sealed class WidgetUpdateNumberWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+sealed class WidgetUpdateNumberWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 data class NumberWidgetUpdateValue(override val widgetId : UUID,
                                    val newValue : Double) : WidgetUpdateNumberWidget(widgetId)
 
 
-// Points Widget Update
-sealed class WidgetUpdatePointsWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update > Points Widget
+// ---------------------------------------------------------------------------------------------
+
+sealed class WidgetUpdatePointsWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 
 data class PointsWidgetUpdateSetCurrentValue(
@@ -89,9 +102,11 @@ data class PointsWidgetUpdateSetCurrentValue(
                     val newCurrentValue : Double) : WidgetUpdatePointsWidget(widgetId)
 
 
-// Story Widget Update
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update > Story Widget
+// ---------------------------------------------------------------------------------------------
 
-sealed class WidgetUpdateStoryWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+sealed class WidgetUpdateStoryWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 
 data class StoryWidgetUpdateNumberPart(override val widgetId : UUID,
@@ -103,9 +118,11 @@ data class StoryWidgetUpdateTextValuePart(override val widgetId : UUID,
                                           val newValueId : ValueId) : WidgetUpdateStoryWidget(widgetId)
 
 
-// Table Widget Update
+// ---------------------------------------------------------------------------------------------
+// SHEET UPDATE > Widget Update > Table Widget
+// ---------------------------------------------------------------------------------------------
 
-sealed class WidgetUpdateTableWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+sealed class WidgetUpdateTableWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 data class TableWidgetUpdateSetNumberCell(override val widgetId : UUID,
                                           val cellId : UUID,
@@ -124,10 +141,11 @@ data class TableWidgetUpdateInsertRowAfter(
                             val selectedRow : Int) : WidgetUpdateTableWidget(widgetId)
 
 
+// ---------------------------------------------------------------------------------------------
+// WIDGET UPDATE > Text Widget
+// ---------------------------------------------------------------------------------------------
 
-// Text Widget Update
-
-sealed class WidgetUpdateTextWidget(override val widgetId : UUID) : WidgetUpdate(widgetId)
+sealed class WidgetUpdateTextWidget(override val widgetId : UUID) : SheetUpdateWidget(widgetId)
 
 data class TextWidgetUpdateSetText(override val widgetId : UUID,
                                    val newText : String) : WidgetUpdateTextWidget(widgetId)

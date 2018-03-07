@@ -27,8 +27,7 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
-import com.kispoko.tome.model.game.engine.mechanic.MechanicType
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.variable.*
@@ -714,6 +713,18 @@ data class BooleanWidget(override val id : UUID,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
+        val sheetActivity = context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+
+        this.variables(entityId) apDo {
+            it.forEach {
+                it.setOnUpdateListener {
+                    rootView?.let {
+                        this.updateView(it, entityId, context)
+                    }
+                }
+            }
+        }
     }
 
 
@@ -784,8 +795,8 @@ data class BooleanWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(booleanWidgetUpdate : WidgetUpdateBooleanWidget,
-               rootView : View,
                entityId: EntityId,
+               rootView : View,
                context : Context) =
         when (booleanWidgetUpdate)
         {
@@ -1343,7 +1354,7 @@ data class LogWidget(override val id : UUID,
 data class MechanicWidget(override val id : UUID,
                           private val widgetId : WidgetId,
                           private val format : MechanicWidgetFormat,
-                          private val categoryId : MechanicCategoryId) : Widget()
+                          private val categoryReference : MechanicCategoryReference) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1359,11 +1370,11 @@ data class MechanicWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : MechanicWidgetFormat,
-                categoryId : MechanicCategoryId)
+                categoryReference : MechanicCategoryReference)
         : this(UUID.randomUUID(),
                widgetId,
                format,
-               categoryId)
+               categoryReference)
 
 
     companion object : Factory<MechanicWidget>
@@ -1379,8 +1390,9 @@ data class MechanicWidget(override val id : UUID,
                      split(doc.maybeAt("format"),
                            effValue(MechanicWidgetFormat.default()),
                            { MechanicWidgetFormat.fromDocument(it) }),
-                     // Category Id
-                     doc.at("category_id") ap { MechanicCategoryId.fromDocument(it) }
+                     // Category Reference
+                     doc.at("category_reference") ap {
+                         MechanicCategoryReference.fromDocument(it) }
                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1395,7 +1407,7 @@ data class MechanicWidget(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
         "format" to this.format().toDocument(),
-        "category_id" to this.categoryId().toDocument()
+        "category_reference" to this.categoryReference.toDocument()
     ))
 
 
@@ -1405,9 +1417,11 @@ data class MechanicWidget(override val id : UUID,
 
     fun widgetId() : WidgetId = this.widgetId
 
+
     fun format() : MechanicWidgetFormat = this.format
 
-    fun categoryId() : MechanicCategoryId = this.categoryId
+
+    fun categoryReference() : MechanicCategoryReference = this.categoryReference
 
 
     // -----------------------------------------------------------------------------------------
@@ -1438,7 +1452,7 @@ data class MechanicWidget(override val id : UUID,
         RowValue3(widgetMechanicTable,
                   PrimValue(this.widgetId),
                   ProdValue(this.format),
-                  PrimValue(this.categoryId))
+                  PrimValue(this.categoryReference))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1450,27 +1464,27 @@ data class MechanicWidget(override val id : UUID,
         val sheetActivity = context as SheetActivity
         val rootView = sheetActivity.rootSheetView()
 
-        val mechanics = mechanicsInCategory(this.categoryId(), entityId)
-
-        when (mechanics) {
-            is Val -> {
-                mechanics.value.forEach { mechanic ->
-                    when (mechanic.mechanicType()) {
-                        is MechanicType.Option -> {
-                            mechanic.variables().forEach { optVar ->
-                                optVar.setOnUpdateListener {
-                                    rootView?.let {
-                                        this.updateView(it, entityId, context)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-            is Err -> ApplicationLog.error(mechanics.error)
-        }
+//        val mechanics = mechanicsInCategory(this.categoryId(), entityId)
+//
+//        when (mechanics) {
+//            is Val -> {
+//                mechanics.value.forEach { mechanic ->
+//                    when (mechanic.mechanicType()) {
+//                        is MechanicType.Option -> {
+//                            mechanic.variables().forEach { optVar ->
+//                                optVar.setOnUpdateListener {
+//                                    rootView?.let {
+//                                        this.updateView(it, entityId, context)
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
+//            is Err -> ApplicationLog.error(mechanics.error)
+//        }
     }
 
 
@@ -2926,15 +2940,6 @@ data class TableWidget(override val id : UUID,
                 }
             }
         }
-
-//        this.columns().forEachIndexed { index, column ->
-//            when (column) {
-//                is TableWidgetTextColumn -> {
-//                    if (column.definesNamespaceBoolean() && namespaceColumn == null)
-//                        namespaceColumn = index
-//                }
-//            }
-//        }
     }
 
 
