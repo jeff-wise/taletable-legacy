@@ -3,9 +3,11 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -13,7 +15,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.entity.engine.dice.DiceRollerActivity
 import com.kispoko.tome.db.DB_WidgetRollFormatValue
 import com.kispoko.tome.db.widgetRollFormatTable
 import com.kispoko.tome.lib.Factory
@@ -560,6 +562,24 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
     }
 
 
+    private fun update()
+    {
+        this.updateButtonView()
+        this.updateDescriptionView()
+    }
+
+
+    private fun openDiceRoller()
+    {
+        val activity = context as AppCompatActivity
+        val intent = Intent(activity, DiceRollerActivity::class.java)
+        intent.putExtra("dice_roll_group", rollWidget.rollGroup())
+        intent.putExtra("auto_rolls", 1)
+        intent.putExtra("entity_id", entityId)
+        activity.startActivity(intent)
+    }
+
+
 //    private fun diceRoll() : AppEff<DiceRoll> =
 //        GameManager.engine(sheetUIContext.gameId)
 //            .apply { it.summation(rollWidget.rollSummationId()) }
@@ -595,19 +615,19 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             {
                 contentLayout.addView(this.inlineLeftButtonView())
 
-                layout.setOnClickListener {
-                    this.updateButtonView()
-                    this.updateDescriptionView()
-                }
+//                layout.setOnClickListener {
+//                    this.updateButtonView()
+//                    this.updateDescriptionView()
+//                }
             }
             is RollWidgetViewType.InlineRightButton ->
             {
                 contentLayout.addView(this.inlineRightButtonView())
 
-                layout.setOnClickListener {
-                    this.updateButtonView()
-                    this.updateDescriptionView()
-                }
+//                layout.setOnClickListener {
+//                    this.updateButtonView()
+//                    this.updateDescriptionView()
+//                }
             }
             is RollWidgetViewType.InlineLeftButtonUseDialog ->
             {
@@ -632,6 +652,10 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         // Button
         val buttonLayout = this.inlineLeftButtonButtonViewLayout()
         this.buttonLayout = buttonLayout
+
+        buttonLayout.setOnClickListener {
+            this.openDiceRoller()
+        }
 
         // Button > Icon
         val buttonIconView = this.inlineLeftButtonButtonIconView()
@@ -658,6 +682,10 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         layout.addView(buttonLayout)
 
         val descriptionView = this.inlineLeftButtonDescriptionView()
+        descriptionView.setOnClickListener {
+            this.updateButtonView()
+            this.updateDescriptionView()
+        }
         this.descriptionTextView = descriptionView
         layout.addView(descriptionView)
 
@@ -753,7 +781,7 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         icon.image          = R.drawable.icon_dice_roll_filled
 
-        icon.color          = colorOrBlack(format.colorTheme(), entityId)
+        icon.color          = colorOrBlack(format.iconFormat().colorTheme(), entityId)
 
         return icon.imageView(context)
     }
@@ -875,12 +903,20 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         val layout = this.inlineLeftButtonViewLayout()
 
         val descriptionView = this.inlineLeftButtonDescriptionView()
+        descriptionView.setOnClickListener {
+
+            this.update()
+        }
         this.descriptionTextView = descriptionView
         layout.addView(descriptionView)
 
         // Button
         val buttonLayout = this.inlineLeftButtonButtonViewLayout()
         this.buttonLayout = buttonLayout
+
+        buttonLayout.setOnClickListener {
+            this.openDiceRoller()
+        }
 
         // Button > Icon
         val buttonIconView = this.inlineLeftButtonButtonIconView()

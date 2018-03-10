@@ -864,10 +864,36 @@ types:
         prim_type: string
       presence: required
       description: The template string.
-    - name: variable_ids
+    - name: parts
       type: 
-        type: prim_coll_type
-        prim_coll_type: string
+        type: custom_coll_type
+        custom_coll_type: message_part
+      presence: optional
+      description: The variable ids.
+    - name: text_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The variable ids.
+- type: product_type
+  product_type:
+    name: message_part
+    label: Message Part
+    description: A message.
+    group: Message
+    type: product
+    fields:
+    - name: key
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The template string.
+    - name: format
+      type: 
+        type: custom_type
+        custom_type: text_format
       presence: optional
       description: The variable ids.
 - type: primitive_type
@@ -928,6 +954,12 @@ types:
       presence: optional
       description: >
         The program's statements.
+    - name: result_message
+      type: 
+        type: custom_type
+        custom_type: message
+      presence: optional
+      description: A result message.
     - name: result_binding_name
       type: 
         type: custom_type
@@ -1445,8 +1477,8 @@ types:
       presence: required
     - name: tags
       type:
-        type: prim_coll_type
-        prim_coll_type: string
+        type: custom_coll_type
+        custom_coll_type: mechanic_category_tag
       presence: optional
       description: tags
     - name: description

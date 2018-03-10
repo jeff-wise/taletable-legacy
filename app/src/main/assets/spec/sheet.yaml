@@ -1283,10 +1283,10 @@ types:
         prim_type: string
       presence: optional
       description: The inside label.
-    - name: rulebook_reference
+    - name: book_reference
       type:
         type: custom_type
-        custom_type: rulebook_reference
+        custom_type: book_reference
       presence: optional
       description: A rulebook reference.
 - type: product_type
@@ -1624,16 +1624,10 @@ types:
         custom_type: text_format
       presence: optional
       description: Label Text Format
-    - name: info_style
-      type:
-        type: custom_type
-        custom_type: points_above_bar_style
-      presence: optional
-      description: Label Text Format
     - name: info_format
       type:
         type: custom_type
-        custom_type: text_format
+        custom_type: points_widget_info_format
       presence: optional
       description: Label Text Format
     - name: bar_format
@@ -1642,6 +1636,26 @@ types:
         custom_type: points_widget_bar_format
       presence: optional
       description: Bar Format
+- type: product_type
+  product_type:
+    name: points_widget_info_format
+    label: Points Widget Info Format
+    description: >
+      Points Widget formatting options.
+    group: 'Widget: Points'
+    fields:
+    - name: format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Points bar element format.
+    - name: style
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Points bar style
 - type: product_type
   product_type:
     name: points_widget_bar_format
@@ -2939,12 +2953,18 @@ types:
       presence: required
       description: >
         The text value variable id.
-    - name: rulebook_reference
+    - name: book_reference
       type: 
         type: custom_type
-        custom_type: rulebook_reference
+        custom_type: book_reference
       presence: optional
       description: A rulebook reference.
+    - name: primary_action_widget_id
+      type: 
+        type: custom_type
+        custom_type: widget_id
+      presence: optional
+      description: Primary action widget id.
 - type: product_type
   product_type:
     name: text_widget_format

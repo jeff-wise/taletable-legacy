@@ -2,9 +2,11 @@
 package com.kispoko.tome.model.game.engine.program
 
 
+import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppEvalError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -116,23 +118,22 @@ data class Invocation(override val id : UUID,
     /**
      * The set of variables that the program depends on.
      */
-    fun dependencies(entityId : EntityId) : Set<VariableReference> = setOf()
-//    {
-//        val deps = mutableSetOf<VariableReference>()
-//
-//        this.parameters().forEach {
-//            deps.addAll(it.dependencies(sheetContext))
-//        }
-//
-//        val programDeps = SheetManager.program(this.programId, sheetContext).apply {
-//                effValue<AppError,Set<VariableReference>>(it.dependencies(sheetContext)) }
-//        when (programDeps) {
-//            is Val -> deps.addAll(programDeps.value)
-//            is Err -> ApplicationLog.error(programDeps.error)
-//        }
-//
-//        return deps
-//    }
+    fun dependencies(entityId : EntityId) : Set<VariableReference>
+    {
+        val deps = mutableSetOf<VariableReference>()
+
+        this.parameters().parameterMap.values.forEach {
+            deps.addAll(it.dependencies(entityId))
+        }
+
+        program(this.programId, entityId) apDo {
+            deps.addAll(it.dependencies(entityId))
+        }
+
+//        Log.d("****INVOCATION", "deps: $deps")
+
+        return deps
+    }
 
 
 //    private fun programParameters(sheetContext : SheetContext) : AppEff<ProgramParameterValues> =

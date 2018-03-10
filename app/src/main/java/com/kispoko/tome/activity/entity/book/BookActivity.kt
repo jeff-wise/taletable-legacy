@@ -2,38 +2,27 @@
 package com.kispoko.tome.activity.entity.book
 
 
-import android.content.Context
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.lib.ui.Font
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.book.Book
-import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.book.BookReference
-import com.kispoko.tome.model.book.BookSubsection
-import com.kispoko.tome.model.sheet.style.TextFont
-import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.entity.EntityBookId
-import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.book
-import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import maybe.Just
+
 
 
 /**
@@ -90,7 +79,6 @@ class BookActivity : AppCompatActivity()
             }
         }
 
-        // Floating Action Button
         this.initializeView()
     }
 
@@ -115,6 +103,7 @@ class BookActivity : AppCompatActivity()
 
         if (currentBookReference != null && currentBook != null)
         {
+            Log.d("***BOOK ACTIVITY", "book ref: $currentBookReference")
             val maybeSectionId = currentBookReference.sectionId()
             when (maybeSectionId) {
                 is Just -> {

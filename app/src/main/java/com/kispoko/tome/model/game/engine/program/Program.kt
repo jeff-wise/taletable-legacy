@@ -2,6 +2,9 @@
 package com.kispoko.tome.model.game.engine.program
 
 
+import android.content.Context
+import android.text.SpannableStringBuilder
+import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppEvalError
 import com.kispoko.tome.db.*
@@ -14,6 +17,7 @@ import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueType
 import com.kispoko.tome.model.game.engine.reference.DataReference
+import com.kispoko.tome.model.game.engine.message.Message
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.engine.interpreter.ResultBindingDoesNotExist
@@ -40,7 +44,8 @@ data class Program(override val id : UUID,
                    val description : ProgramDescription,
                    val typeSignature : ProgramTypeSignature,
                    val statements : MutableList<Statement>,
-                   val resultBindingName : StatementBindingName)
+                   val resultBindingName : StatementBindingName,
+                   val resultMessage : Maybe<Message>)
                     : ToDocument, ProdType, Serializable
 {
 
@@ -53,14 +58,16 @@ data class Program(override val id : UUID,
                 description : ProgramDescription,
                 typeSignature : ProgramTypeSignature,
                 statements : List<Statement>,
-                resultBindingName : StatementBindingName)
+                resultBindingName : StatementBindingName,
+                resultMessage : Maybe<Message>)
         : this(UUID.randomUUID(),
                programId,
                label,
                description,
                typeSignature,
                statements.toMutableList(),
-               resultBindingName)
+               resultBindingName,
+               resultMessage)
 
 
     companion object : Factory<Program>
@@ -82,7 +89,13 @@ data class Program(override val id : UUID,
                       split(doc.maybeList("statements"),
                             effValue(listOf()),
                             { it.map { Statement.fromDocument(it) } }),
-                      doc.at("result_binding_name") ap { StatementBindingName.fromDocument(it) })
+                      // Result Binding Name
+                      doc.at("result_binding_name") ap { StatementBindingName.fromDocument(it) },
+                      // Result Message
+                      split(doc.maybeAt("result_message"),
+                            effValue<ValueError,Maybe<Message>>(Nothing()),
+                            { apply(::Just, Message.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -131,6 +144,9 @@ data class Program(override val id : UUID,
 
 
     fun resultBindingNameString() : String = this.resultBindingName.value
+
+
+    fun resultMessage() : Maybe<Message> = this.resultMessage
 
 
     // -----------------------------------------------------------------------------------------
@@ -199,6 +215,58 @@ data class Program(override val id : UUID,
         return note(bindings[this.resultBindingNameString()],
                     AppEvalError(ResultBindingDoesNotExist(this.resultBindingNameString(),
                                                            this.programId())))
+    }
+
+
+    fun result(parameters : ProgramParameterValues,
+               entityId : EntityId,
+               context : Context) : AppEff<ProgramResultSpannable>
+    {
+        val bindings : MutableMap<String,EngineValue> = mutableMapOf()
+
+        for (statement in this.statements())
+        {
+            val value = statement.value(parameters,
+                                        bindings,
+                                        this.programId(),
+                                        entityId)
+            when (value)
+            {
+                is Val ->
+                {
+                    val binding = value.value
+                    bindings.put(statement.bindingNameString(), binding)
+                }
+                is Err -> {
+                    return value as AppEff<ProgramResultSpannable>
+                }
+            }
+        }
+
+        var messageSpannable = SpannableStringBuilder("")
+
+
+        // Build messsage
+        when (this.resultMessage)
+        {
+            is Just ->
+            {
+                val message = this.resultMessage.value
+                val valueStrings = message.parts().mapNotNull { bindings[it.key()]?.toString() }
+                messageSpannable = message.templateSpannable(valueStrings, entityId, context)
+            }
+        }
+
+        val resultValue = bindings[this.resultBindingNameString()]
+        return if (resultValue != null)
+        {
+            effValue(ProgramResultSpannable(resultValue, messageSpannable))
+        }
+        else
+        {
+            effError(AppEvalError(ResultBindingDoesNotExist(this.resultBindingNameString(),
+                                                            this.programId())))
+        }
     }
 
 
@@ -498,4 +566,8 @@ data class ProgramParameterValue(val name : String, val value : EngineValue) : S
 }
 
 
+data class ProgramResult(val value : EngineValue, val message : String)
+
+
+data class ProgramResultSpannable(val value : EngineValue, val message : SpannableStringBuilder)
 

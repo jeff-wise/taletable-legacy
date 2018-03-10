@@ -3,7 +3,10 @@ package com.kispoko.tome.model.sheet
 
 
 import android.content.Context
+import android.util.Log
 import android.view.View
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppSheetError
 import com.kispoko.tome.db.DB_SheetValue
 import com.kispoko.tome.db.sheetTable
 import com.kispoko.tome.lib.Factory
@@ -58,6 +61,8 @@ data class Sheet(override val id : UUID,
     // Widgets
     // -----------------------------------------------------------------------------------------
 
+    private val widgetById : MutableMap<WidgetId,Widget> = mutableMapOf()
+
     private val actionWidgetById : MutableMap<UUID,ActionWidget> = mutableMapOf()
 
     private val booleanWidgetById : MutableMap<UUID,BooleanWidget> = mutableMapOf()
@@ -77,6 +82,7 @@ data class Sheet(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     init {
+
         this.forEachWidget {
             when (it) {
                 is ActionWidget  -> actionWidgetById.put(it.id, it)
@@ -87,6 +93,10 @@ data class Sheet(override val id : UUID,
                 is TableWidget   -> tableWidgetById.put(it.id, it)
                 is TextWidget    -> textWidgetById.put(it.id, it)
             }
+        }
+
+        this.forEachWidget {
+            this.widgetById.put(it.widgetId(), it)
         }
     }
 
@@ -252,6 +262,20 @@ data class Sheet(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    fun widget(widgetId : WidgetId) : AppEff<Widget>
+    {
+        val widgetOrNull = this.widgetById[widgetId]
+        return if (widgetOrNull != null)
+            effValue(widgetOrNull)
+        else
+            effError(AppSheetError(SheetDoesNotHaveWidget(widgetId)))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
@@ -290,23 +314,24 @@ data class Sheet(override val id : UUID,
             }
             is WidgetUpdateListWidget ->
             {
-//                val listWidget = this.listWidgetById[widgetUpdate.widgetId]
-//                listWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+                val listWidget = this.listWidgetById[widgetUpdate.widgetId]
+                listWidget?.update(widgetUpdate, entityId, rootView, context)
             }
             is WidgetUpdatePointsWidget ->
             {
-//                val pointsWidget = this.pointsWidgetById[widgetUpdate.widgetId]
-//                pointsWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+                val pointsWidget = this.pointsWidgetById[widgetUpdate.widgetId]
+                pointsWidget?.update(widgetUpdate, entityId, rootView, context)
             }
             is WidgetUpdateStoryWidget ->
             {
-//                val storyWidget = this.storyWidgetById[widgetUpdate.widgetId]
-//                storyWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+                val storyWidget = this.storyWidgetById[widgetUpdate.widgetId]
+                storyWidget?.update(widgetUpdate, entityId, rootView, context)
             }
             is WidgetUpdateTableWidget ->
             {
-//                val tableWidget = this.tableWidgetById[widgetUpdate.widgetId]
-//                tableWidget?.update(widgetUpdate, SheetUIContext(sheetContext, context), rootView)
+                Log.d("***SHEET", "update table widget")
+                val tableWidget = this.tableWidgetById[widgetUpdate.widgetId]
+                tableWidget?.update(widgetUpdate, entityId, rootView, context)
             }
             is WidgetUpdateTextWidget ->
             {

@@ -2,11 +2,15 @@ package com.kispoko.tome.activity.entity.book
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
+import com.kispoko.tome.R.string.name
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.ScrollViewBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookReference
@@ -58,6 +62,12 @@ class SectionUI(val book : Book,
     {
         val layout = this.viewLayout()
 
+        // Header
+        layout.addView(this.headerView())
+
+        // Content
+        layout.addView(this.contentView())
+
         return layout
     }
 
@@ -82,9 +92,11 @@ class SectionUI(val book : Book,
     {
         val layout = this.headerViewLayout()
 
-        layout.addView(chapterNameView())
+        layout.addView(this.chapterNameView())
 
-        layout.addView(sectionNameView())
+        layout.addView(this.sectionNameView())
+
+        layout.addView(this.bottomBorderView())
 
         return layout
     }
@@ -103,9 +115,6 @@ class SectionUI(val book : Book,
         layout.backgroundColor  = Color.WHITE
 
         layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
 
         return layout.linearLayout(context)
     }
@@ -131,6 +140,9 @@ class SectionUI(val book : Book,
 
         name.sizeSp             = 15f
 
+        name.padding.leftDp   = 8f
+        name.padding.rightDp  = 8f
+
         return name.textView(context)
     }
 
@@ -145,18 +157,89 @@ class SectionUI(val book : Book,
         name.text               = section.title().value
 
         name.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.Bold,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("red_90"))))
         name.color              = colorOrBlack(colorTheme, entityId)
 
-        name.sizeSp             = 20f
+        name.sizeSp             = 22f
+
+        name.padding.leftDp   = 8f
+        name.padding.rightDp  = 8f
 
         return name.textView(context)
     }
 
+
+    private fun bottomBorderView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
+
+        layout.margin.topDp     = 10f
+
+        return layout.linearLayout(context)
+    }
+
+
+    // VIEWS > Content
+    // -----------------------------------------------------------------------------------------
+
+    fun contentView() : ScrollView
+    {
+        val scrollView = this.contentScrollView()
+
+        scrollView.addView(this.contentGroupsView())
+
+        return scrollView
+    }
+
+
+    fun contentScrollView() : ScrollView
+    {
+        val scrollView = ScrollViewBuilder()
+
+        scrollView.width     = LinearLayout.LayoutParams.MATCH_PARENT
+        scrollView.height    = LinearLayout.LayoutParams.MATCH_PARENT
+
+        return scrollView.scrollView(context)
+    }
+
+
+    fun contentGroupsView() : LinearLayout
+    {
+        val layout = this.contentGroupsViewLayout()
+
+        section.body().groups().forEach {
+            Log.d("***SECTION UI", "adding group")
+            val groupView = it.view(entityId, context)
+            layout.addView(groupView)
+        }
+
+        return layout
+    }
+
+
+    fun contentGroupsViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
 
 }

@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -23,7 +24,6 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.router.MessageUpdateSummationNumberTerm
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
@@ -42,10 +42,10 @@ class NumberEditorDialog : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var currentValue : Double? = null
-    private var title        : String? = null
-    private var variableId   : VariableId? = null
-    private var entityId     : EntityId? = null
+    private var currentValue : Double?       = null
+    private var title        : String?       = null
+    private var updateTarget : UpdateTarget? = null
+    private var entityId     : EntityId?     = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ class NumberEditorDialog : DialogFragment()
     {
         fun newInstance(currentValue : Double,
                         title : String,
-                        variableId : VariableId,
+                        updateTarget: UpdateTarget,
                         entityId : EntityId) : NumberEditorDialog
         {
             val dialog = NumberEditorDialog()
@@ -64,7 +64,7 @@ class NumberEditorDialog : DialogFragment()
             val args = Bundle()
             args.putDouble("current_value", currentValue)
             args.putString("title", title)
-            args.putSerializable("variable_id", variableId)
+            args.putSerializable("update_target", updateTarget)
             args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
@@ -84,7 +84,7 @@ class NumberEditorDialog : DialogFragment()
 
         this.currentValue = arguments.getDouble("current_value")
         this.title        = arguments.getString("title")
-        this.variableId   = arguments.getSerializable("variable_id") as VariableId
+        this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
         this.entityId     = arguments.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
@@ -121,14 +121,14 @@ class NumberEditorDialog : DialogFragment()
                               savedInstanceState : Bundle?) : View?
     {
         val currentValue = this.currentValue
-        val variableId   = this.variableId
+        val updateTarget = this.updateTarget
         val entityId     = this.entityId
 
-        return if (currentValue != null && variableId != null && entityId != null)
+        return if (currentValue != null && updateTarget != null && entityId != null)
         {
             val viewBuilder = NumberEditorViewBuilder(currentValue,
                                                       this.title,
-                                                      variableId,
+                                                      updateTarget,
                                                       this,
                                                       entityId,
                                                       context)
@@ -159,14 +159,13 @@ class NumberEditorDialog : DialogFragment()
 }
 
 
-
 // ---------------------------------------------------------------------------------------------
 // NUMBER EDITOR VIEW BUILDER
 // ---------------------------------------------------------------------------------------------
 
 class NumberEditorViewBuilder(val currentValue : Double,
                               val title : String?,
-                              val variableId : VariableId,
+                              val updateTarget : UpdateTarget,
                               val dialog : DialogFragment,
                               val entityId : EntityId,
                               val context : Context)
@@ -223,7 +222,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
-        layout.padding.bottomDp = 5f
+//        layout.padding.bottomDp = 5f
 
         return layout.linearLayout(context)
     }
@@ -264,11 +263,11 @@ class NumberEditorViewBuilder(val currentValue : Double,
     {
         val name                = TextViewBuilder()
 
-        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.width              = LinearLayout.LayoutParams.MATCH_PARENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.margin.topDp       = 10f
-        name.margin.leftDp      = 12f
+        name.padding.leftDp      = 10f
+        name.padding.topDp      = 6f
 
         if (this.title != null) {
 //            name.text = sheetUIContext.context.getString(R.string.edit).toUpperCase() +
@@ -281,14 +280,16 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         name.color              = colorOrBlack(colorTheme, entityId)
+
+        name.backgroundColor    = Color.WHITE
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
-        name.sizeSp             = 11f
+        name.sizeSp             = 15f
 
         return name.textView(context)
     }
@@ -315,13 +316,17 @@ class NumberEditorViewBuilder(val currentValue : Double,
         val layout              = LinearLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 70
+        layout.heightDp         = 65
 
         layout.orientation      = LinearLayout.HORIZONTAL
         layout.gravity          = Gravity.CENTER_VERTICAL
 
         layout.padding.leftDp   = 10f
         layout.padding.rightDp  = 10f
+
+        layout.margin.bottomDp  = 2f
+
+        layout.backgroundColor  = Color.WHITE
 
         return layout.linearLayout(context)
     }
@@ -339,14 +344,14 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val valueColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         value.color             = colorOrBlack(valueColorTheme, entityId)
 
         value.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
-        value.sizeSp            = 32f
+        value.sizeSp            = 30f
 
         return value.textView(context)
     }
@@ -438,7 +443,9 @@ class NumberEditorViewBuilder(val currentValue : Double,
     }
 
 
-    private fun numberButtonView(label : String, onClick : View.OnClickListener) : TextView
+    private fun numberButtonView(label : String,
+                                 textSize : Float,
+                                 onClick : View.OnClickListener) : TextView
     {
         val number                  = TextViewBuilder()
 
@@ -453,19 +460,20 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         number.text                 = label
 
-        number.sizeSp               = 20f
+        number.sizeSp               = textSize
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         number.color                = colorOrBlack(textColorTheme, entityId)
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        number.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+//        number.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
+        number.backgroundColor      = Color.WHITE
 
-        //number.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+        number.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         number.onClick              = onClick
 
@@ -492,18 +500,18 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_green_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_80"))))
         layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
+        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 1f
 
 
         layout.onClick          = View.OnClickListener {
-//            when (this.updateTarget)
-//            {
+            when (this.updateTarget)
+            {
 //                is UpdateTargetNumberCell ->
 //                {
 //                    val numberCellUpdate =
@@ -525,17 +533,16 @@ class NumberEditorViewBuilder(val currentValue : Double,
 //                                             sheetUIContext.sheetUI())
 //                    dialog.dismiss()
 //                }
-//                is UpdateTargetStoryWidgetPart ->
-//                {
-//                    val numberPartUpdate =
-//                            StoryWidgetUpdateNumberPart(updateTarget.storyWidgetId,
-//                                                        updateTarget.partIndex,
-//                                                        this.valueString.toDouble())
-//                    SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                             numberPartUpdate,
-//                                             sheetUIContext.sheetUI())
-//                    dialog.dismiss()
-//                }
+                is UpdateTargetStoryWidgetPart ->
+                {
+                    val numberPartUpdate =
+                            StoryWidgetUpdateNumberPart(updateTarget.storyWidgetId,
+                                                        updateTarget.partIndex,
+                                                        this.valueString.toDouble())
+                    Log.d("***NUMBER EDITOR DIALOG", "number part update: $numberPartUpdate")
+                    Router.send(MessageSheetUpdate(numberPartUpdate))
+                    dialog.dismiss()
+                }
 //                is UpdateTargetSummationNumberTerm ->
 //                {
 //                    val message = MessageUpdateSummationNumberTerm(updateTarget.termId,
@@ -543,7 +550,7 @@ class NumberEditorViewBuilder(val currentValue : Double,
 //                    Router.send(message)
 //                    dialog.dismiss()
 //                }
-//            }
+            }
         }
 
         layout.child(icon)
@@ -578,9 +585,9 @@ class NumberEditorViewBuilder(val currentValue : Double,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.margin.bottomDp  = 5f
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
+        layout.margin.bottomDp  = 2f
+        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 1f
 
         return layout.linearLayout(context)
     }
@@ -594,25 +601,25 @@ class NumberEditorViewBuilder(val currentValue : Double,
         val oneOnClick = View.OnClickListener {
             this.appendToValue("1")
         }
-        layout.addView(this.numberButtonView("1", oneOnClick))
+        layout.addView(this.numberButtonView("1", 22f, oneOnClick))
 
         // 2
         val twoOnClick = View.OnClickListener {
             this.appendToValue("2")
         }
-        layout.addView(this.numberButtonView("2", twoOnClick))
+        layout.addView(this.numberButtonView("2", 22f, twoOnClick))
 
         // 3
         val threeOnClick = View.OnClickListener {
             this.appendToValue("3")
         }
-        layout.addView(this.numberButtonView("3", threeOnClick))
+        layout.addView(this.numberButtonView("3", 22f, threeOnClick))
 
         // 0
         val zeroOnClick = View.OnClickListener {
             this.appendToValue("0")
         }
-        layout.addView(this.numberButtonView("0", zeroOnClick))
+        layout.addView(this.numberButtonView("0", 22f, zeroOnClick))
 
         return layout
     }
@@ -626,25 +633,25 @@ class NumberEditorViewBuilder(val currentValue : Double,
         val fourOnClick = View.OnClickListener {
             this.appendToValue("4")
         }
-        layout.addView(this.numberButtonView("4", fourOnClick))
+        layout.addView(this.numberButtonView("4", 22f, fourOnClick))
 
         // 5
         val fiveOnClick = View.OnClickListener {
             this.appendToValue("5")
         }
-        layout.addView(this.numberButtonView("5", fiveOnClick))
+        layout.addView(this.numberButtonView("5", 22f, fiveOnClick))
 
         // 6
         val sixOnClick = View.OnClickListener {
             this.appendToValue("6")
         }
-        layout.addView(this.numberButtonView("6", sixOnClick))
+        layout.addView(this.numberButtonView("6", 22f, sixOnClick))
 
         // .
         val dotOnClick = View.OnClickListener {
             this.appendToValue(".")
         }
-        layout.addView(this.numberButtonView(".", dotOnClick))
+        layout.addView(this.numberButtonView(".", 32f, dotOnClick))
 
         return layout
     }
@@ -658,19 +665,19 @@ class NumberEditorViewBuilder(val currentValue : Double,
         val sevenOnClick = View.OnClickListener {
             this.appendToValue("7")
         }
-        layout.addView(this.numberButtonView("7", sevenOnClick))
+        layout.addView(this.numberButtonView("7", 22f, sevenOnClick))
 
         // 8
         val eightOnClick = View.OnClickListener {
             this.appendToValue("8")
         }
-        layout.addView(this.numberButtonView("8", eightOnClick))
+        layout.addView(this.numberButtonView("8", 22f, eightOnClick))
 
         // 9
         val nineOnClick = View.OnClickListener {
             this.appendToValue("9")
         }
-        layout.addView(this.numberButtonView("9", nineOnClick))
+        layout.addView(this.numberButtonView("9", 22f, nineOnClick))
 
         // Done
         layout.addView(this.doneButtonView())

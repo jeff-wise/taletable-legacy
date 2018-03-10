@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.value
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.app.ApplicationLog
@@ -27,6 +28,7 @@ import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.sheetOrError
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -319,45 +321,41 @@ object NumberWidgetView
 
 
     fun view(numberWidget : NumberWidget,
-             format : NumberWidgetFormat,
              entityId : EntityId,
              context : Context) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), entityId, context)
+        val layout = WidgetView.layout(numberWidget.format().widgetFormat(), entityId, context)
+
+        val layoutId = Util.generateViewId()
+        numberWidget.layoutId = layoutId
+        layout.id  = layoutId
+
 
         layout.setOnClickListener {
-            val valueVariable = numberWidget.valueVariable(entityId)
-            when (valueVariable)
-            {
-                is effect.Val ->
-                {
-                    openNumberVariableEditorDialog(valueVariable.value,
-                                                   UpdateTargetNumberWidget(numberWidget.id),
-                                                   entityId,
-                                                   context)
-                }
-                is Err -> ApplicationLog.error(valueVariable.error)
-            }
+            numberWidget.primaryAction(entityId, context)
         }
 
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
 
-        contentLayout.addView(this.mainView(numberWidget, format, entityId, context))
-
-        val rulebookReference = numberWidget.rulebookReference()
-        when (rulebookReference) {
-            is Just -> {
-//                layout.setOnLongClickListener {
-//                    val sheetActivity = context as SheetActivity
-//                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
-//                                                                   entityId)
-//                    dialog.show(sheetActivity.supportFragmentManager, "")
-//                    true
-//                }
-            }
+        layout.setOnLongClickListener {
+            numberWidget.secondaryAction(entityId, context)
+            true
         }
+
+        this.updateView(numberWidget, entityId, layout, context)
 
         return layout
+    }
+
+
+    fun updateView(numberWidget : NumberWidget,
+                   entityId : EntityId,
+                   layout : LinearLayout,
+                   context : Context)
+    {
+
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        contentLayout.removeAllViews()
+        contentLayout.addView(this.mainView(numberWidget, entityId, context))
     }
 
 
@@ -374,10 +372,12 @@ object NumberWidgetView
      *
      */
     private fun mainView(numberWidget : NumberWidget,
-                         format : NumberWidgetFormat,
                          entityId : EntityId,
                          context : Context) : LinearLayout
     {
+
+        val format = numberWidget.format()
+
         val layout = this.mainLayout(format, context)
 
         // > Outside Top/Left Label View
@@ -601,9 +601,6 @@ object NumberWidgetView
                               context : Context) : TextView
     {
         val value = TextViewBuilder()
-
-        numberWidget.textViewId = Util.generateViewId()
-        value.id                = numberWidget.textViewId
 
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT

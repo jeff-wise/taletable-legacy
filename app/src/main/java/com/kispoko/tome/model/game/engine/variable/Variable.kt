@@ -29,11 +29,13 @@ import maybe.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import maybe.Nothing
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
 
+typealias VariableOnUpdateListener = () -> Unit
 
 /**
  * Variable
@@ -46,7 +48,8 @@ sealed class Variable : ProdType, ToDocument, Serializable
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var onUpdateListener : () -> Unit = fun() : Unit {}
+
+    private var onUpdateListeners : MutableList<VariableOnUpdateListener> = mutableListOf()
 
 
     private val relationToVariableId : MutableMap<VariableRelation,VariableId> = mutableMapOf()
@@ -222,12 +225,17 @@ sealed class Variable : ProdType, ToDocument, Serializable
      */
     fun onUpdate()
     {
-        this.onUpdateListener()
+//        Log.d("****VARIABLE", "calling on update listener: ${this.variableId()}")
+        this.onUpdateListeners.forEach {
+            it()
+        }
     }
 
 
-    fun setOnUpdateListener(listener : () -> Unit) {
-        this.onUpdateListener = listener
+    fun addOnUpdateListener(listener : () -> Unit) {
+        this.onUpdateListeners.add(listener)
+//        Log.d("****VARIABLE", "setting on update listener for: ${this.variableId()}")
+//        this.onUpdateListener = listener
     }
 
 
@@ -895,10 +903,12 @@ data class NumberVariable(override val id : UUID,
             is NumberVariableLiteralValue ->
             {
                 val constraint = this.constraint
+                Log.d("***WIDGET", "updating number litera variable: $constraint")
                 when (constraint)
                 {
                     is Just ->
                     {
+                        Log.d("***WIDGET", "updating number litera variable yes constraint")
                         constraint.value.constrainedValue(value, entityId) apDo {
                             this.variableValue = NumberVariableLiteralValue(it)
                             onVariableUpdate(this, entityId)
@@ -907,6 +917,7 @@ data class NumberVariable(override val id : UUID,
                     }
                     is Nothing ->
                     {
+                        Log.d("***WIDGET", "updating number litera variable no constraint")
                         this.variableValue = NumberVariableLiteralValue(value)
                         onVariableUpdate(this, entityId)
                         this.onUpdate()

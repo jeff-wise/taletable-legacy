@@ -236,12 +236,58 @@ types:
         custom_type: book_content
       presence: required
       description: The section body.
+    - name: format
+      type:
+        type: custom_type
+        custom_type: book_section_format
+      presence: optional
+      description: The section body.
     - name: subsections
       type:
         type: custom_coll_type
         custom_coll_type: book_subsection
       presence: optional
       description: The sub sections.
+- type: product_type
+  product_type:
+    name: book_section_format
+    label: Book Section Format
+    description: Book section format.
+    group: 'book'
+    type: product
+    fields:
+    - name: page_header_format
+      type:
+        type: custom_type
+        custom_type: book_section_page_header_format
+      presence: optional
+      description: The section id.
+- type: product_type
+  product_type:
+    name: book_section_page_header_format
+    label: Book Section Page Header Format
+    description: Book section page header format.
+    group: 'book'
+    type: product
+    fields:
+    - name: element_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The element format.
+    - name: chapter_name_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The text format.
+    - name: section_name_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The text format.
 - type: product_type
   product_type:
     name: book_subsection

@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.content.Context
+import com.kispoko.tome.activity.entity.engine.summation.SummationDialog
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.value.ValueId
@@ -127,7 +128,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
                 {
                     val simpleDialog = NumberEditorDialog.newInstance(variableValue.value,
                                                                       numberVariable.label().value,
-                                                                      numberVariable.variableId(),
+                                                                      updateTarget,
                                                                       entityId)
                     simpleDialog.show(sheetActivity.supportFragmentManager, "")
                 }
@@ -196,7 +197,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                                     ValueChooserDialogFragment.newInstance(
                                                     valueSet.value,
                                                     value.value,
-                                                    textVariable.variableId(),
+                                                    updateTarget,
                                                     entityId)
                             chooseDialog.show(sheetActivity.supportFragmentManager, "")
                         }
@@ -218,7 +219,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                             ValueChooserDialogFragment.newInstance(
                                             valueSet.value,
                                             null,
-                                            textVariable.variableId(),
+                                            updateTarget,
                                             entityId)
                     chooseDialog.show(sheetActivity.supportFragmentManager, "")
                 }

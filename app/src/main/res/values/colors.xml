@@ -268,6 +268,7 @@
 
     <color name="light_theme_green">#1BC058</color>
     <color name="light_theme_light_blue">#1887C0</color>
+    <color name="light_theme_light_blue_90">#E61887C0</color>
     <color name="light_theme_light_grey_3">#F3F3F3</color>
     <color name="light_theme_light_grey_5">#EAEAEA</color>
     <color name="light_theme_dark_grey_4">#2A2A2A</color>

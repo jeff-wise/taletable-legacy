@@ -3,17 +3,23 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
+import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
+import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
@@ -121,6 +127,15 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
 
 
     abstract fun view(entityId : EntityId, context : Context) : View
+
+
+    abstract fun widgetId() : WidgetId
+
+
+    open fun primaryAction(entityId : EntityId, context : Context) { }
+
+
+    open fun secondaryAction(entityId : EntityId, context : Context) { }
 
 }
 
@@ -437,9 +452,6 @@ data class ActionWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : ActionWidgetFormat = this.format
 
 
@@ -463,6 +475,9 @@ data class ActionWidget(override val id : UUID,
         val viewBuilder = ActionWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -500,7 +515,8 @@ data class ActionWidget(override val id : UUID,
                 val variable = booleanVariable(activeVariableId.value, entityId)
                 when (variable) {
                     is Val -> {
-                        variable.value.setOnUpdateListener {
+                        variable.value.addOnUpdateListener {
+                            Log.d("****WIDGET", "action widget update")
                             rootView?.let {
                                 this.updateView(it, entityId, context)
                             }
@@ -667,9 +683,6 @@ data class BooleanWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : BooleanWidgetFormat = this.format
 
 
@@ -688,6 +701,9 @@ data class BooleanWidget(override val id : UUID,
         val viewBuilder = BooleanWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -718,7 +734,8 @@ data class BooleanWidget(override val id : UUID,
 
         this.variables(entityId) apDo {
             it.forEach {
-                it.setOnUpdateListener {
+                it.addOnUpdateListener {
+//                    Log.d("****WIDGET", "boolean update")
                     rootView?.let {
                         this.updateView(it, entityId, context)
                     }
@@ -903,9 +920,6 @@ data class ExpanderWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : ExpanderWidgetFormat = this.format
 
 
@@ -926,6 +940,9 @@ data class ExpanderWidget(override val id : UUID,
         val viewBuilder = ExpanderWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -1137,9 +1154,6 @@ data class ListWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : ListWidgetFormat = this.format
 
 
@@ -1161,6 +1175,9 @@ data class ListWidget(override val id : UUID,
         val viewBuilder = ListWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -1206,8 +1223,8 @@ data class ListWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(listWidgetUpdate : WidgetUpdateListWidget,
-               rootView : View,
                entityId : EntityId,
+               rootView : View,
                context : Context) =
         when (listWidgetUpdate)
         {
@@ -1302,9 +1319,9 @@ data class LogWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
 
     fun format() : LogWidgetFormat = this.format
+
 
     fun entries() : List<LogEntry> = this.entries
 
@@ -1320,6 +1337,9 @@ data class LogWidget(override val id : UUID,
         val viewBuilder = LogViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() = this.widgetId
 
 
     // PROD TYPE
@@ -1415,9 +1435,6 @@ data class MechanicWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : MechanicWidgetFormat = this.format
 
 
@@ -1436,6 +1453,9 @@ data class MechanicWidget(override val id : UUID,
         val viewBuilder = MechanicWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -1515,7 +1535,7 @@ data class NumberWidget(override val id : UUID,
                         val format : NumberWidgetFormat,
                         val valueVariableId : VariableId,
                         val insideLabel : Maybe<NumberWidgetLabel>,
-                        val rulebookReference : Maybe<BookReference>)
+                        val bookReference : Maybe<BookReference>)
                          : Widget()
 {
 
@@ -1523,7 +1543,7 @@ data class NumberWidget(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var textViewId : Int? = null
+    var layoutId : Int? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -1534,13 +1554,13 @@ data class NumberWidget(override val id : UUID,
                 format : NumberWidgetFormat,
                 valueVariableId : VariableId,
                 insideLabel : Maybe<NumberWidgetLabel>,
-                rulebookReference: Maybe<BookReference>)
+                bookReference: Maybe<BookReference>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
                valueVariableId,
                insideLabel,
-               rulebookReference)
+               bookReference)
 
 
     companion object : Factory<NumberWidget>
@@ -1563,7 +1583,7 @@ data class NumberWidget(override val id : UUID,
                             effValue<ValueError,Maybe<NumberWidgetLabel>>(Nothing()),
                             { apply(::Just, NumberWidgetLabel.fromDocument(it)) }),
                       // Rulebook Referenece
-                      split(doc.maybeAt("rulebook_reference"),
+                      split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
                             { apply(::Just, BookReference.fromDocument(it)) })
                       )
@@ -1587,9 +1607,6 @@ data class NumberWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : NumberWidgetFormat = this.format
 
 
@@ -1599,7 +1616,7 @@ data class NumberWidget(override val id : UUID,
     fun insideLabel() : Maybe<NumberWidgetLabel> = this.insideLabel
 
 
-    fun rulebookReference() : Maybe<BookReference> = this.rulebookReference
+    fun bookReference() : Maybe<BookReference> = this.bookReference
 
 
     // -----------------------------------------------------------------------------------------
@@ -1610,7 +1627,40 @@ data class NumberWidget(override val id : UUID,
 
 
     override fun view(entityId: EntityId, context : Context): View =
-            NumberWidgetView.view(this, this.format(), entityId, context)
+            NumberWidgetView.view(this, entityId, context)
+
+
+    override fun widgetId() = this.widgetId
+
+
+    override fun primaryAction(entityId : EntityId, context : Context)
+    {
+        val valueVariable = this.valueVariable(entityId)
+        when (valueVariable)
+        {
+            is Val ->
+            {
+                openNumberVariableEditorDialog(valueVariable.value,
+                                               UpdateTargetNumberWidget(this.id),
+                                               entityId,
+                                               context)
+            }
+            is Err -> ApplicationLog.error(valueVariable.error)
+        }
+    }
+
+
+    override fun secondaryAction(entityId : EntityId, context : Context)
+    {
+        when (this.bookReference) {
+            is Just -> {
+                val activity = context as AppCompatActivity
+                val intent = Intent(activity, BookActivity::class.java)
+                intent.putExtra("book_reference", bookReference.value)
+                activity.startActivity(intent)
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1629,7 +1679,7 @@ data class NumberWidget(override val id : UUID,
                   ProdValue(this.format),
                   PrimValue(this.valueVariableId),
                   MaybePrimValue(this.insideLabel),
-                  MaybeProdValue(this.rulebookReference))
+                  MaybeProdValue(this.bookReference))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1642,7 +1692,8 @@ data class NumberWidget(override val id : UUID,
         val rootView = sheetActivity.rootSheetView()
 
         this.valueVariable(entityId) apDo { currentValueVar ->
-            currentValueVar.setOnUpdateListener {
+            currentValueVar.addOnUpdateListener {
+//                Log.d("****WIDGET", "number widget update: ${currentValueVar.variableId()}")
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
@@ -1677,7 +1728,9 @@ data class NumberWidget(override val id : UUID,
                 else
                     numberString.value
             }
-            is Err -> ApplicationLog.error(numberString.error)
+            is Err -> {
+                ApplicationLog.error(numberString.error)
+            }
         }
 
         return "0"
@@ -1714,11 +1767,21 @@ data class NumberWidget(override val id : UUID,
 
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
-        val viewId = this.textViewId
-        if (viewId != null)
+        val layoutId = this.layoutId
+        if (layoutId != null)
         {
-            val textView = rootView.findViewById(viewId) as TextView?
-            textView?.text = this.valueString(entityId)
+//            val activity = context as AppCompatActivity
+            try {
+                val layout = rootView.findViewById(layoutId) as LinearLayout
+                NumberWidgetView.updateView(this, entityId, layout, context)
+            }
+            catch (e : TypeCastException) {
+
+            }
+
+//            val textView = rootView.findViewById(viewId) as TextView?
+//            val newText = this.valueString(entityId)
+//            textView?.text = newText
         }
     }
 
@@ -1959,13 +2022,14 @@ data class PointsWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
     fun format() : PointsWidgetFormat = this.format
+
 
     fun limitValueVariableId() : VariableId = this.limitValueVariableId
 
+
     fun currentValueVariableId() : VariableId = this.currentValueVariableId
+
 
     fun label() : Maybe<PointsWidgetLabel> = this.label
 
@@ -1982,6 +2046,9 @@ data class PointsWidget(override val id : UUID,
         val viewBuilder = PointsWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -2070,8 +2137,8 @@ data class PointsWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(pointsWidgetUpdate : WidgetUpdatePointsWidget,
-               rootView : View,
                entityId : EntityId,
+               rootView : View,
                context : Context) =
         when (pointsWidgetUpdate)
         {
@@ -2134,7 +2201,8 @@ data class PointsWidget(override val id : UUID,
         val rootView = sheetActivity.rootSheetView()
 
         this.currentValueVariable(entityId) apDo { currentValueVar ->
-            currentValueVar.setOnUpdateListener {
+            currentValueVar.addOnUpdateListener {
+//                Log.d("****WIDGET", "points widget update: ${currentValueVar.variableId()}")
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
@@ -2213,11 +2281,11 @@ data class QuoteWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
     fun format() : QuoteWidgetFormat = this.format
 
+
     fun quoteVariableId() : VariableId = this.quoteVariableId
+
 
     fun sourceVariableId() : Maybe<VariableId> = this.sourceVariableId
 
@@ -2234,6 +2302,9 @@ data class QuoteWidget(override val id : UUID,
         val viewBuilder = QuoteWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() : WidgetId = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -2400,9 +2471,6 @@ data class RollWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : RollWidgetFormat = this.format
 
 
@@ -2426,6 +2494,9 @@ data class RollWidget(override val id : UUID,
         val viewBuilder = RollWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() : WidgetId = this.widgetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -2463,7 +2534,8 @@ data class RollWidget(override val id : UUID,
 
         deps.forEach { varRef ->
             variable(varRef, entityId) apDo { variable ->
-               variable.setOnUpdateListener {
+               variable.addOnUpdateListener {
+//                   Log.d("****WIDGET", "roll widget update: ${variable.variableId()}")
                    rootView?.let {
                        updateView(it, entityId, context)
                    }
@@ -2563,9 +2635,6 @@ data class StoryWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : StoryWidgetFormat = this.format
 
 
@@ -2584,6 +2653,9 @@ data class StoryWidget(override val id : UUID,
         val viewBuilder = StoryWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
+
+
+    override fun widgetId() : WidgetId = this.widgetId
 
 
     fun variables(entityId : EntityId) : Set<Variable> =
@@ -2634,14 +2706,15 @@ data class StoryWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun update(storyWidgetUpdate : WidgetUpdateStoryWidget,
-               rootView : View,
                entityId : EntityId,
+               rootView : View,
                context : Context)
     {
         when (storyWidgetUpdate)
         {
-            is StoryWidgetUpdateNumberPart ->
+            is StoryWidgetUpdateNumberPart -> {
                 this.updateNumberPart(storyWidgetUpdate, rootView, entityId, context)
+            }
             is StoryWidgetUpdateTextValuePart ->
                 this.updateTextValuePart(storyWidgetUpdate, rootView, entityId, context)
         }
@@ -2663,26 +2736,12 @@ data class StoryWidget(override val id : UUID,
                 when (variable) {
                     is NumberVariable ->
                     {
+                        Log.d("***WIDGET", "updating number part: $partUpdate")
                         variable.updateValue(partUpdate.newNumber, entityId)
                     }
                 }
 
-                // Update View
-//                val layoutViewId = this.layoutViewId
-//                if (layoutViewId == null)
-//                {
-//                    val viewId = part.viewId
-//                    if (viewId != null) {
-//                        val textView = rootView.findViewById(viewId) as TextView
-//                        textView?.text = Util.doubleString(partUpdate.newNumber)
-//                    }
-//                }
-//                else
-//                {
-//                    val layout = rootView.findViewById(layoutViewId) as LinearLayout
-//                    layout.removeAllViews()
-//                    layout.addView(storySpannableView(this, sheetUIContext))
-//                }
+                this.updateView(rootView, entityId, context)
             }
         }
     }
@@ -2711,22 +2770,7 @@ data class StoryWidget(override val id : UUID,
                     }
                 }
 
-                // Update View
-//                val layoutViewId = this.layoutViewId
-//                if (layoutViewId == null)
-//                {
-//                    val viewId = part.viewId
-//                    if (viewId != null) {
-//                        val textView = rootView.findViewById(viewId) as TextView
-//                        textView?.text = newValue
-//                    }
-//                }
-//                else
-//                {
-//                    val layout = rootView.findViewById(layoutViewId) as LinearLayout
-//                    layout.removeAllViews()
-//                    layout.addView(storySpannableView(this, sheetUIContext))
-//                }
+                this.updateView(rootView, entityId, context)
             }
         }
     }
@@ -2743,7 +2787,8 @@ data class StoryWidget(override val id : UUID,
 
 
         this.variables(entityId).forEach {
-            it.setOnUpdateListener {
+            it.addOnUpdateListener {
+                Log.d("****WIDGET", "story widget update: ${it.variableId()}")
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
@@ -3010,9 +3055,6 @@ data class TableWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : TableWidgetFormat = this.format
 
 
@@ -3032,13 +3074,16 @@ data class TableWidget(override val id : UUID,
     override fun widgetFormat(): WidgetFormat = this.format().widgetFormat()
 
 
+    override fun widgetId() = this.widgetId
+
+
     // -----------------------------------------------------------------------------------------
     // UPDATE VIEW
     // -----------------------------------------------------------------------------------------
 
     fun update(tableWidgetUpdate : WidgetUpdateTableWidget,
-               rootView : View,
                entityId : EntityId,
+               rootView : View,
                context : Context) =
         when (tableWidgetUpdate)
         {
@@ -3088,6 +3133,8 @@ data class TableWidget(override val id : UUID,
                                          entityId : EntityId)
     {
         val cell = this.textCellById[cellUpdate.cellId]
+
+        Log.d("***WIDGET", "update text cell value")
 
         // Update Variable
         val variable = cell?.valueVariable(entityId)
@@ -3200,7 +3247,8 @@ data class TableWidget(override val id : UUID,
                                        listOf(),
                                        column.variableRelation(),
                                        booleanCell.variableValue())
-        variable.setOnUpdateListener {
+        variable.addOnUpdateListener {
+//            Log.d("****WIDGET", " boolean cell update: ${variable.variableId()}")
             booleanCell.updateView(entityId, context)
         }
         addVariable(variable, entityId)
@@ -3227,7 +3275,8 @@ data class TableWidget(override val id : UUID,
                                       listOf(),
                                       column.variableRelation(),
                                       numberCell.variableValue())
-        variable.setOnUpdateListener {
+        variable.addOnUpdateListener {
+//            Log.d("****WIDGET", " number cell update: ${variable.variableId()}")
             numberCell.updateView(entityId, context)
         }
         addVariable(variable, entityId)
@@ -3254,7 +3303,8 @@ data class TableWidget(override val id : UUID,
 
         variable.addTags(column.tags().toSet())
 
-        variable.setOnUpdateListener {
+        variable.addOnUpdateListener {
+//            Log.d("****WIDGET", " text cell update: ${variable.variableId()}")
             textCell.updateView(entityId, context)
         }
         addVariable(variable, entityId)
@@ -3387,14 +3437,17 @@ data class TextWidget(override val id : UUID,
                       val widgetId : WidgetId,
                       val format : TextWidgetFormat,
                       val valueVariableId : VariableId,
-                      val rulebookReference : Maybe<BookReference>) : Widget()
+                      val bookReference : Maybe<BookReference>,
+                      val primaryActionWidgetId : Maybe<WidgetId>,
+                      val secondaryActionWigdetId : Maybe<WidgetId>)
+                       : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var viewId : Int? = null
+    var layoutId : Int? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -3404,12 +3457,16 @@ data class TextWidget(override val id : UUID,
     constructor(widgetId: WidgetId,
                 format : TextWidgetFormat,
                 valueVariableId : VariableId,
-                rulebookReference : Maybe<BookReference>)
+                bookReference : Maybe<BookReference>,
+                primaryActionWidgetId : Maybe<WidgetId>,
+                secondaryActionWigdetId : Maybe<WidgetId>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
                valueVariableId,
-               rulebookReference)
+               bookReference,
+               primaryActionWidgetId,
+               secondaryActionWigdetId)
 
 
     companion object : Factory<TextWidget>
@@ -3427,10 +3484,18 @@ data class TextWidget(override val id : UUID,
                             { TextWidgetFormat.fromDocument(it) }),
                       // Value
                       doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
-                      // Rulebook Reference
-                      split(doc.maybeAt("rulebook_reference"),
+                      // Book Reference
+                      split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
-                            { apply(::Just, BookReference.fromDocument(it)) })
+                            { apply(::Just, BookReference.fromDocument(it)) }),
+                      // Primary Action Widget Id
+                      split(doc.maybeAt("primary_action_widget_id"),
+                            effValue<ValueError,Maybe<WidgetId>>(Nothing()),
+                            { apply(::Just, WidgetId.fromDocument(it)) }),
+                      // Secondary Action Widget Id
+                      split(doc.maybeAt("secondary_action_widget_id"),
+                            effValue<ValueError,Maybe<WidgetId>>(Nothing()),
+                            { apply(::Just, WidgetId.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -3453,16 +3518,19 @@ data class TextWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun widgetId() : WidgetId = this.widgetId
-
-
     fun format() : TextWidgetFormat = this.format
 
 
     fun valueVariableId() : VariableId = this.valueVariableId
 
 
-    fun rulebookReference() : Maybe<BookReference> = this.rulebookReference
+    fun rulebookReference() : Maybe<BookReference> = this.bookReference
+
+
+    fun primaryActionWidgetId() : Maybe<WidgetId> = this.primaryActionWidgetId
+
+
+    fun secondaryActionWidgetId() : Maybe<WidgetId> = this.secondaryActionWigdetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -3475,6 +3543,47 @@ data class TextWidget(override val id : UUID,
     override fun view(entityId : EntityId, context : Context) : View =
         TextWidgetView.view(this, this.format(), entityId, context)
 
+
+    override fun widgetId() : WidgetId = this.widgetId
+
+
+    override fun primaryAction(entityId : EntityId, context : Context)
+    {
+        val valueVar = this.valueVariable(entityId)
+        when (valueVar) {
+            is effect.Val ->
+            {
+                openTextVariableEditorDialog(valueVar.value,
+                                             UpdateTargetTextWidget(this.id),
+                                             entityId,
+                                             context)
+//                val viewId = this.viewId
+//                if (viewId != null)
+//                {
+//                    val widgetReference = WidgetReference(this.id, viewId)
+                //}
+            }
+            is Err -> ApplicationLog.error(valueVar.error)
+        }
+    }
+
+
+    override fun secondaryAction(entityId : EntityId, context : Context)
+    {
+        when (this.bookReference) {
+            is Just -> {
+                val activity = context as AppCompatActivity
+                val intent = Intent(activity, BookActivity::class.java)
+                intent.putExtra("book_reference", bookReference.value)
+                activity.startActivity(intent)
+            }
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
 
     fun update(textWidgetUpdate : WidgetUpdateTextWidget,
                rootView : View,
@@ -3491,11 +3600,11 @@ data class TextWidget(override val id : UUID,
 
     private fun updateTextView(newText : String, rootView : View)
     {
-        val viewId = this.viewId
-        if (viewId != null) {
-            val textView = rootView.findViewById(viewId) as TextView?
-            textView?.text = newText
-        }
+//        val viewId = this.viewId
+//        if (viewId != null) {
+//            val textView = rootView.findViewById(viewId) as TextView?
+//            textView?.text = newText
+//        }
     }
 
 
@@ -3532,7 +3641,7 @@ data class TextWidget(override val id : UUID,
                   PrimValue(this.widgetId),
                   ProdValue(this.format),
                   PrimValue(this.valueVariableId),
-                  MaybeProdValue(this.rulebookReference))
+                  MaybeProdValue(this.bookReference))
 
 
     // -----------------------------------------------------------------------------------------
@@ -3541,7 +3650,16 @@ data class TextWidget(override val id : UUID,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-    //     SheetManager.addVariable(sheetContext.sheetId, this.valueVariableId())
+        val sheetActivity = context as SheetActivity
+        val rootView = sheetActivity.rootSheetView()
+
+        this.valueVariable(entityId) apDo { currentValueVar ->
+            currentValueVar.addOnUpdateListener {
+                rootView?.let {
+                    this.updateView(it, entityId, context)
+                }
+            }
+        }
     }
 
 
@@ -3565,6 +3683,24 @@ data class TextWidget(override val id : UUID,
 
         return ""
     }
+
+
+
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
+    {
+        val layoutId = this.layoutId
+        if (layoutId != null)
+        {
+            //val activity = context as AppCompatActivity
+            val layout = rootView.findViewById(layoutId) as LinearLayout
+            TextWidgetView.updateView(this, entityId, layout, context)
+
+//            val textView = rootView.findViewById(viewId) as TextView?
+//            val newText = this.valueString(entityId)
+//            textView?.text = newText
+        }
+    }
+
 
 }
 

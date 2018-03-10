@@ -52,7 +52,7 @@ class VariableDoesNotExist(val entityId : EntityId,
 {
     override fun debugMessage(): String =
             """
-            Engine Error: Variable Not Found
+            Engine Error: Variable Does Not Exist
                 Entity Id: $entityId
                 Variable Reference: $variableReference
             """

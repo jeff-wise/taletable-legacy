@@ -8,8 +8,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -19,7 +17,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.sheetOrError
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -163,12 +161,76 @@ object TextWidgetView
     {
         val layout = WidgetView.layout(format.widgetFormat(), entityId, context)
 
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        val layoutId = Util.generateViewId()
+        textWidget.layoutId = layoutId
+        layout.id  = layoutId
 
-        contentLayout.addView(this.mainView(textWidget, format, entityId, context))
+        this.updateView(textWidget, entityId, layout, context)
+
+//        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+//
+//        contentLayout.addView(this.mainView(textWidget, format, entityId, context))
+
+        // On Click
+        // -------------------------------------------------------------------------------------
+
+        layout.setOnClickListener {
+            val primaryActionWidgetId = textWidget.primaryActionWidgetId
+            when (primaryActionWidgetId) {
+                is Just -> {
+                    sheetOrError(entityId)                 apDo {
+                    it.widget(primaryActionWidgetId.value) apDo {
+                    it.primaryAction(entityId, context)
+                    } }
+                }
+                else -> textWidget.primaryAction(entityId, context)
+            }
+        }
+
+        layout.setOnLongClickListener {
+            val secondaryActionWidgetId = textWidget.secondaryActionWidgetId()
+            when (secondaryActionWidgetId) {
+                is Just -> {
+                    sheetOrError(entityId)                 apDo {
+                    it.widget(secondaryActionWidgetId.value) apDo {
+                        it.secondaryAction(entityId, context)
+                    } }
+                }
+                else -> textWidget.secondaryAction(entityId, context)
+            }
+            true
+        }
+
+
+//        val rulebookReference = textWidget.rulebookReference()
+//        when (rulebookReference) {
+//            is Just -> {
+//                layout.setOnLongClickListener {
+//                    val sheetActivity = context as SheetActivity
+//                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
+//                                                                   entityId)
+//                    dialog.show(sheetActivity.supportFragmentManager, "")
+//                    true
+//                }
+//            }
+//        }
+
 
         return layout
     }
+
+
+    fun updateView(textWidget : TextWidget,
+                   entityId : EntityId,
+                   layout : LinearLayout,
+                   context : Context)
+    {
+
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        contentLayout.removeAllViews()
+        contentLayout.addView(this.mainView(textWidget, entityId, context))
+    }
+
 
 
 
@@ -185,11 +247,12 @@ object TextWidgetView
      *
      */
     private fun mainView(textWidget : TextWidget,
-                         format : TextWidgetFormat,
                          entityId : EntityId,
                          context : Context) : LinearLayout
     {
         val layout = this.mainLayout(textWidget, context)
+
+        val format = textWidget.format()
 
         // > Outside Top/Left Label View
 //        if (format.outsideLabel() != null) {
@@ -210,40 +273,6 @@ object TextWidgetView
 //            }
 //        }
 
-        // On Click
-        // -------------------------------------------------------------------------------------
-
-        layout.setOnClickListener {
-            val valueVar = textWidget.valueVariable(entityId)
-            when (valueVar) {
-                is effect.Val ->
-                {
-                    val textWidgetViewId = textWidget.viewId
-                    if (textWidgetViewId != null)
-                    {
-                        val widgetReference = WidgetReference(textWidget.id, textWidgetViewId)
-                        openTextVariableEditorDialog(valueVar.value,
-                                                     UpdateTargetTextWidget(textWidget.id),
-                                                     entityId,
-                                                     context)
-                    }
-                }
-                is Err -> ApplicationLog.error(valueVar.error)
-            }
-        }
-
-        val rulebookReference = textWidget.rulebookReference()
-        when (rulebookReference) {
-            is Just -> {
-//                layout.setOnLongClickListener {
-//                    val sheetActivity = context as SheetActivity
-//                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
-//                                                                   entityId)
-//                    dialog.show(sheetActivity.supportFragmentManager, "")
-//                    true
-//                }
-            }
-        }
 
         return layout
     }
@@ -362,8 +391,8 @@ object TextWidgetView
     {
         val value = TextViewBuilder()
 
-        textWidget.viewId   = Util.generateViewId()
-        value.id            = textWidget.viewId
+//        textWidget.viewId   = Util.generateViewId()
+//        value.id            = textWidget.viewId
 
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT

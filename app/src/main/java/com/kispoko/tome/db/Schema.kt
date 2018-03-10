@@ -14,6 +14,7 @@ import com.kispoko.tome.model.game.engine.dice.*
 import com.kispoko.tome.model.game.engine.function.*
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.mechanic.*
+import com.kispoko.tome.model.game.engine.message.*
 import com.kispoko.tome.model.game.engine.procedure.*
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.model.game.engine.reference.BooleanReference
@@ -198,6 +199,34 @@ typealias DB_BookSectionValue =
               PrimValue<BookSectionTitle>,
               ProdValue<BookContent>,
               CollValue<BookSubsection>>
+
+
+// BOOK SECTION > FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val bookSectionFormatTable =
+    Table1("book_section_format",
+           "page_header_format")
+
+
+typealias DB_BookSectionFormatValue =
+    RowValue1<ProdValue<BookSectionPageHeaderFormat>>
+
+
+// BOOK SECTION > FORMAT > PAGE HEADER FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val bookSectionPageHeaderFormatTable =
+    Table3("book_section_page_header_format",
+           "element_format",
+           "chapter_name_format",
+           "section_name_format")
+
+
+typealias DB_BookSectionPageHeaderFormatValue =
+    RowValue3<ProdValue<ElementFormat>,
+              ProdValue<TextFormat>,
+              ProdValue<TextFormat>>
 
 
 // BOOK SUBSECTION
@@ -578,14 +607,15 @@ typealias DB_MechanicCategoryValue =
 // ---------------------------------------------------------------------------------------------
 
 val messageTable =
-    Table2("message",
+    Table3("message",
            "template",
-           "variable_ids")
+           "parts",
+           "format")
 
 typealias DB_MessageValue =
-    RowValue2<PrimValue<MessageTemplate>,
-              PrimValue<MessageVariables>>
-
+    RowValue3<PrimValue<MessageTemplate>,
+              PrimValue<MessageParts>,
+              ProdValue<TextFormat>>
 
 // PAGE
 // ---------------------------------------------------------------------------------------------
@@ -1389,23 +1419,33 @@ typealias DB_WidgetPointsValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetPointsFormatTable =
-    Table7("widget_points_format",
+    Table6("widget_points_format",
            "widget_format",
            "limit_text_format",
            "current_text_format",
            "label_text_format",
-           "info_style",
            "info_format",
            "bar_format")
 
 typealias DB_WidgetPointsFormatValue =
-    RowValue7<ProdValue<WidgetFormat>,
+    RowValue6<ProdValue<WidgetFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
-              PrimValue<PointsInfoStyle>,
-              ProdValue<TextFormat>,
+              ProdValue<PointsWidgetInfoFormat>,
               ProdValue<PointsWidgetBarFormat>>
+
+// WIDGET: POINTS > INFO FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetPointsInfoFormatTable =
+    Table2("widget_points_info_format",
+           "style",
+           "format")
+
+typealias DB_WidgetPointsInfoFormatValue =
+    RowValue2<PrimValue<PointsInfoStyle>,
+              ProdValue<TextFormat>>
 
 
 // WIDGET: POINTS > BAR FORMAT

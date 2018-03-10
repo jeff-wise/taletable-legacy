@@ -157,9 +157,11 @@ object TomeDoc
         fun templateDocument(templateString : String,
                              gameSchema : Schema,
                              engineSchema : Schema,
+                             sheetSchema : Schema,
+                             themeSchema : Schema,
                              bookSchema : Schema) : DocLoader<SchemaDoc>
         {
-            val docParse = gameSchema.parseDocument(templateString, listOf(engineSchema, bookSchema))
+            val docParse = gameSchema.parseDocument(templateString, listOf(engineSchema, themeSchema, bookSchema, sheetSchema))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -185,6 +187,8 @@ object TomeDoc
                .applyWith(::templateDocument,
                           gameSchemaLoader(context),
                           engineSchemaLoader(context),
+                          sheetSchemaLoader(context),
+                          themeSchemaLoader(context),
                           bookSchemaLoader(context))
                .apply(::gameFromDocument)
     }

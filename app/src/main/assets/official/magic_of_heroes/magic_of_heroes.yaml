@@ -208,7 +208,7 @@ engine:
         value_text:
           value_id: bond_1
           description: Bond 1
-          value: Bond 1
+          value: 'I seek revenge on the man who killed my father.'
       - type: value_text
         value_text:
           value_id: bond_2
@@ -241,7 +241,7 @@ engine:
         value_text:
           value_id: flaw_1
           description: Flaw 1
-          value: Flaw 1
+          value: 'I tend to act before I think, and I think with my gut. Things get weird.'
       - type: value_text
         value_text:
           value_id: flaw_2
@@ -5767,8 +5767,8 @@ engine:
           default_value: 1
           input_message:
             template: "I spend &&& hit dice to heal myself. For each hit die spent, I gain 1d8 + $$$ hit points."
-            variable_ids:
-            - constitution_modifier
+            parts:
+            - key: constitution_modifier
       result: number
     statements:
     result_binding_name: result
@@ -5777,6 +5777,32 @@ engine:
     description: Add second wind hit points
     type_signature:
       result: number
+    result_message:
+      template: 'I heal $$$ hit points. I now have $$$ hit points.'
+      text_format:
+        color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: dark_grey_12
+        font_style: regular
+        size: 19
+      parts:
+      - key: hit_points_healed
+        format:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue
+          font_style: bold
+          size: 19
+      - key: new_hit_points
+        format:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue
+          font_style: bold
+          size: 19
     statements:
     - binding_name: roll_result
       function_id: dice_roll
@@ -5790,7 +5816,7 @@ engine:
               quantities:
               - sides: 10
                 quantity: 1
-    - binding_name: roll_sum
+    - binding_name: hit_points_healed
       function_id: sum
       parameter1:
         type: statement_binding_name
@@ -5804,7 +5830,12 @@ engine:
             variable_reference:
               type: variable_id
               variable_id: level
-      parameter3:
+    - binding_name: new_hit_points
+      function_id: sum
+      parameter1:
+        type: statement_binding_name
+        statement_binding_name: hit_points_healed
+      parameter2:
         type: data_reference
         data_reference:
           type: data_reference_number
@@ -5813,7 +5844,7 @@ engine:
             variable_reference:
               type: variable_id
               variable_id: current_hit_points
-    result_binding_name: roll_sum
+    result_binding_name: new_hit_points
   - program_id: inactivate_second_wind
     label: Inactivate Second Wind
     description: Inactivate Second Wind
@@ -5851,8 +5882,8 @@ engine:
     updates:
     description:
       template: 'I spend at least 8 hours sleeping or doing light activity for no more than 2 hours.'
-      variable_ids:
-      - 'level'
+      parts:
+      - key: 'level'
     action_label: 'Take Long Rest'
   - procedure_id: second_wind
     procedure_name: Second Wind
@@ -5865,8 +5896,8 @@ engine:
       program_id: inactivate_second_wind
     description:
       template: 'Summoning stamina and strength from deep within, I heal 1d10 + $$$ hit points.'
-      variable_ids:
-      - 'level'
+      parts:
+      - key: 'level'
     action_label: 'Use Second Wind'
   summations:
   - summation_id: strength
@@ -5993,18 +6024,19 @@ engine:
         value:
           type: variable_reference
           variable_reference:
-            type: variable_id
-            variable_id: initiative_bonus
+            type: variable_tag
+            variable_tag: initiative_bonus
   - summation_id: initiative_roll
     summation_name: Initiative Roll
     terms:
     - type: summation_term_number
       summation_term_number:
+        term_name: 'Dexterity'
         value:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: initiative
+            variable_id: dexterity_modifier
     - type: summation_term_dice_roll
       summation_term_dice_roll:
         value:

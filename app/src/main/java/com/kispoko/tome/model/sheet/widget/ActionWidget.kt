@@ -13,7 +13,7 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivityRequest
 import com.kispoko.tome.activity.sheet.procedure.RunProcedureActivity
-import com.kispoko.tome.activity.sheet.dialog.ProcedureDialog
+import com.kispoko.tome.activity.entity.engine.procedure.ProcedureDialog
 import com.kispoko.tome.db.DB_WidgetActionFormatValue
 import com.kispoko.tome.db.widgetActionFormatTable
 import com.kispoko.tome.lib.Factory
@@ -376,23 +376,21 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
             {
                 actionWidget.procedure(entityId) apDo { procedure ->
 
-                    val parameters = procedure.parameters(entityId)
-
-                    // If no parameters, use dialog
-                    if (parameters.isEmpty()) {
-                        val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
-                                                                 UpdateTargetActionWidget(actionWidget.id),
-                                                                 entityId)
-                        val activity = context as AppCompatActivity
-                        dialog.show(activity.supportFragmentManager, "")
-                    }
-                    // Otherwise, use the activity
-                    else {
+                    // If has parameters, use the activity
+                    if (procedure.hasParameters(entityId)) {
                         val activity = context as AppCompatActivity
                         val intent = Intent(activity, RunProcedureActivity::class.java)
                         intent.putExtra("procedure_id", actionWidget.procedureId())
                         intent.putExtra("entity_id", entityId)
                         activity.startActivityForResult(intent, SheetActivityRequest.PROCEDURE_INVOCATION)
+                    }
+                    // Otherwise, use the dialog
+                    else {
+                        val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
+                                UpdateTargetActionWidget(actionWidget.id),
+                                entityId)
+                        val activity = context as AppCompatActivity
+                        dialog.show(activity.supportFragmentManager, "")
                     }
                 }
             }

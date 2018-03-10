@@ -5,7 +5,6 @@ package com.kispoko.tome.model.game.engine.program
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
@@ -20,7 +19,7 @@ import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
 import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.EngineValueText
-import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.game.engine.message.Message
 import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
 import effect.apply
 import effect.effError

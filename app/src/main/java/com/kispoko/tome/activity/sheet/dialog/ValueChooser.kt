@@ -27,16 +27,13 @@ import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.book.BookAbstract
-import com.kispoko.tome.model.book.BookReference
-import com.kispoko.tome.model.game.engine.EngineValueText
 import com.kispoko.tome.model.game.engine.value.*
-import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.*
 import effect.Err
@@ -57,7 +54,7 @@ class ValueChooserDialogFragment : DialogFragment()
 
     private var valueSet      : ValueSet? = null
     private var selectedValue : Value? = null
-    private var variableId    : VariableId? = null
+    private var updateTarget  : UpdateTarget? = null
     private var entityId      : EntityId? = null
 
 
@@ -69,7 +66,7 @@ class ValueChooserDialogFragment : DialogFragment()
     {
         fun newInstance(valueSet : ValueSet,
                         selectedValue : Value?,
-                        variableId : VariableId,
+                        updateTarget : UpdateTarget,
                         entityId : EntityId) : ValueChooserDialogFragment
         {
             val dialog = ValueChooserDialogFragment()
@@ -77,7 +74,7 @@ class ValueChooserDialogFragment : DialogFragment()
             val args = Bundle()
             args.putSerializable("value_set", valueSet)
             args.putSerializable("selected_value", selectedValue)
-            args.putSerializable("variable_id", variableId)
+            args.putSerializable("update_target", updateTarget)
             args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
@@ -97,7 +94,7 @@ class ValueChooserDialogFragment : DialogFragment()
 
         this.valueSet      = arguments.getSerializable("value_set") as ValueSet
         this.selectedValue = arguments.getSerializable("selected_value") as Value?
-        this.variableId    = arguments.getSerializable("variable_id") as VariableId
+        this.updateTarget  = arguments.getSerializable("update_target") as UpdateTarget
         this.entityId      = arguments.getSerializable("entity_id") as EntityId
 
 
@@ -131,12 +128,12 @@ class ValueChooserDialogFragment : DialogFragment()
         {
             val valueSet      = this.valueSet
             val selectedValue = this.selectedValue
-            val variableId  = this.variableId
+            val updateTarget  = this.updateTarget
 
-            if (valueSet != null && variableId != null) {
+            if (valueSet != null && updateTarget != null) {
                 ValueChooserView.view(valueSet,
                                       selectedValue,
-                                      variableId,
+                                      updateTarget,
                                       this,
                                       entityId,
                                       context)
@@ -177,7 +174,7 @@ object ValueChooserView
 
     fun view(valueSet : ValueSet,
              selectedValue : Value?,
-             variableId : VariableId,
+             updateTarget : UpdateTarget,
              dialog : DialogFragment,
              entityId : EntityId,
              context : Context) : View
@@ -188,7 +185,7 @@ object ValueChooserView
         // -------------------------------------------------------------------
         val chooserView     = chooserView(valueSet,
                                           selectedValue,
-                                          variableId,
+                                          updateTarget,
                                           dialog,
                                           entityId,
                                           context)
@@ -338,7 +335,7 @@ object ValueChooserView
 
     fun chooserView(valueSet : ValueSet,
                     selectedValue : Value?,
-                    variableId : VariableId,
+                    updateTarget : UpdateTarget,
                     dialog : DialogFragment,
                     entityId : EntityId,
                     context : Context) : RecyclerView
@@ -367,7 +364,7 @@ object ValueChooserView
             {
                 recyclerView.adapter = BaseValueSetRecyclerViewAdapter(valueSet.sortedValues(),
                                                                        selectedValue,
-                                                                       variableId,
+                                                                       updateTarget,
                                                                        dialog,
                                                                        entityId,
                                                                        context)
@@ -384,7 +381,7 @@ object ValueChooserView
                         recyclerView.adapter =
                                 CompoundValueSetRecyclerViewAdapter(items,
                                         selectedValue,
-                                        variableId,
+                                        updateTarget,
                                         dialog,
                                         entityId,
                                         context)
@@ -587,7 +584,7 @@ object ValueChooserView
 
 class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                                       val selectedValue : Value?,
-                                      val variableId : VariableId,
+                                      val updateTarget : UpdateTarget,
                                       val dialog : DialogFragment,
                                       val entityId : EntityId,
                                       val context : Context)
@@ -639,8 +636,27 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                 }
 
                 viewHolder.setOnClick(View.OnClickListener {
-                    updateVariable(variableId, EngineValueText(value.valueId().value), entityId)
+                    when (updateTarget)
+                    {
+                        is UpdateTargetStoryWidgetPart ->
+                        {
+                            val storyPartUpdate = StoryWidgetUpdateTextValuePart(
+                                                        updateTarget.storyWidgetId,
+                                                        updateTarget.partIndex,
+                                                        value.valueId())
+                            Router.send(MessageSheetUpdate(storyPartUpdate))
+                        }
+                        is UpdateTargetTextCell ->
+                        {
+                            val textCellUpdate = TableWidgetUpdateSetTextCellValue(
+                                                            updateTarget.tableWidgetId,
+                                                            updateTarget.cellId,
+                                                            value.valueId())
+                            Router.send(MessageSheetUpdate(textCellUpdate))
+                        }
+                    }
                     dialog.dismiss()
+//                    updateVariable(variableId, EngineValueText(value.valueId().value), entityId)
                 })
             }
             is ValueNumber ->
@@ -663,7 +679,7 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
 
 class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                                           val selectedValue : Value?,
-                                          val variableId : VariableId,
+                                          val updateTarget : UpdateTarget,
                                           val dialog : DialogFragment,
                                           val entityId : EntityId,
                                           val context : Context)
@@ -732,7 +748,22 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                     valueViewHolder.setSummaryText(item.description().value)
 
                     viewHolder.setOnClick(View.OnClickListener {
-                        updateVariable(variableId, EngineValueText(item.valueId().value), entityId)
+
+                        Log.d("***VALUE CHOOSER", "update target: $updateTarget")
+
+                        when (updateTarget)
+                        {
+                            is UpdateTargetTextCell ->
+                            {
+                                val textCellUpdate = TableWidgetUpdateSetTextCellValue(
+                                                                updateTarget.tableWidgetId,
+                                                                updateTarget.cellId,
+                                                                item.valueId())
+                                Log.d("***VALUE CHOOSER", "send update: $textCellUpdate")
+                                Router.send(MessageSheetUpdate(textCellUpdate))
+                            }
+                        }
+//                        updateVariable(variableId, EngineValueText(item.valueId().value), entityId)
                         dialog.dismiss()
                     })
                 }

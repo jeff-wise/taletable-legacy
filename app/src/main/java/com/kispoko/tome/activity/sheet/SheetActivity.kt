@@ -20,6 +20,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.entity.engine.procedure.ProcedureUpdateDialog
 import com.kispoko.tome.activity.load.LoadActivity
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
 import com.kispoko.tome.app.ApplicationLog
@@ -216,22 +217,47 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun initializeListeners()
     {
-        val disposable = Router.listen(MessageSheetUpdate::class.java)
-                                .subscribe(this::onSheetUpdate)
+        val disposable = Router.listen(MessageSheet::class.java)
+                                .subscribe(this::onMessage)
         this.messageListenerDisposable.add(disposable)
     }
 
 
-    private fun onSheetUpdate(message : MessageSheetUpdate)
+    private fun onMessage(message : MessageSheet)
     {
         val sheetId = this.sheetId
         val viewPager = this.viewPager
-        if (sheetId != null && viewPager != null)
+
+        if (sheetId != null)
         {
-            sheetOrError(sheetId) apDo {
-                it.update(message.update, viewPager, this)
+            when (message)
+            {
+                is MessageSheetUpdate ->
+                {
+                    if (sheetId != null && viewPager != null) {
+                        sheetOrError(sheetId) apDo {
+                            it.update(message.update, viewPager, this)
+                        }
+                    }
+                }
+                is MessageSheetAction ->
+                {
+                    when (message)
+                    {
+                        is MessageSheetActionRunProcedure ->
+                        {
+                            val dialog = ProcedureUpdateDialog.newInstance(
+                                                        message.procedureInvocation,
+                                                        EntitySheetId(sheetId))
+                            dialog.show(supportFragmentManager, "")
+                        }
+                    }
+
+                }
             }
+
         }
+
     }
 
 

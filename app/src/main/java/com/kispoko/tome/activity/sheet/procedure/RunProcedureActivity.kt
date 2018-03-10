@@ -425,7 +425,7 @@ class ComplexProcedureUI(val procedure : Procedure,
         val descriptionTemplate = procedure.description()
         when (descriptionTemplate) {
             is Just -> {
-                description.text = descriptionTemplate.value.toString(entityId)
+                description.text = descriptionTemplate.value.stringFromVariables(entityId)
             }
         }
 
@@ -571,7 +571,7 @@ class ComplexProcedureUI(val procedure : Procedure,
 
         param.padding.leftDp        = 8f
 
-        param.textSpan              = this.parameterSpannableString(parameter.inputMessage().toString(entityId),
+        param.textSpan              = this.parameterSpannableString(parameter.inputMessage().stringFromVariables(entityId),
                                                                     parameter.defaultValueString())
 
         param.font                  = Font.typeface(TextFont.default(),

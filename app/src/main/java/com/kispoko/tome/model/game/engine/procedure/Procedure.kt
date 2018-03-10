@@ -2,12 +2,14 @@
 package com.kispoko.tome.model.game.engine.procedure
 
 
+import android.content.Context
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.db.DB_ProcedureValue
 import com.kispoko.tome.db.procedureTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue5
+import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
@@ -16,7 +18,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.*
 import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
-import com.kispoko.tome.model.game.engine.variable.Message
+import com.kispoko.tome.model.game.engine.message.Message
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.program
@@ -191,6 +193,56 @@ data class Procedure(override val id : UUID,
       }
 
 
+    fun run(results : List<ProcedureUpdateResult>, entityId : EntityId)
+    {
+        results.forEach { result ->
+            result.variableIds.forEach { variableId ->
+                updateVariable(variableId, result.programResult.value, entityId)
+            }
+        }
+
+
+//        this.procedureUpdates().forEach { (variableIds, programId) ->
+//            program(programId, entityId)                             apDo { program ->
+//            program.value(ProgramParameterValues(mapOf()), entityId) apDo { engineValue ->
+//                variableIds.forEach {
+//                    updateVariable(it, engineValue, entityId)
+//            } } }
+//      }
+    }
+
+
+    fun results(invocation : ProcedureInvocation,
+                entityId : EntityId,
+                context : Context) : List<ProcedureUpdateResult>
+    {
+        val results : MutableList<ProcedureUpdateResult> = mutableListOf()
+
+        this.procedureUpdates().forEach { (variableIds, programId) ->
+            val paramValues = programParameterValues(programId, invocation.parametersByProgram)
+
+            program(programId, entityId)                   apDo { program ->
+            program.result(paramValues, entityId, context) apDo { result ->
+                results.add(ProcedureUpdateResult(variableIds, result))
+            } }
+        }
+
+        return results
+    }
+
+
+    private fun programParameterValues(programId : ProgramId,
+                                       parameterValueMap : Map<ProgramId,ProgramParameterValues>)
+                                        : ProgramParameterValues =
+        if (parameterValueMap.containsKey(programId))
+            parameterValueMap[programId]!!
+        else
+            ProgramParameterValues(mapOf())
+
+
+
+
+
     // -----------------------------------------------------------------------------------------
     // PARAMETERS
     // -----------------------------------------------------------------------------------------
@@ -211,6 +263,21 @@ data class Procedure(override val id : UUID,
         return parameters
     }
 
+
+    fun hasParameters(entityId : EntityId) : Boolean
+    {
+        val programs = this.programs(entityId)
+        when (programs) {
+            is Val -> {
+                programs.value.forEach {
+                    if (it.typeSignature().parameters().isNotEmpty())
+                        return true
+                }
+            }
+        }
+
+        return false
+    }
 }
 
 
@@ -500,5 +567,10 @@ data class ProcedureStatistics(val usedCount : Int,
 data class ProcedureInvocation(val procedureId : ProcedureId,
                                val parametersByProgram : Map<ProgramId,ProgramParameterValues>)
                                 : Serializable
+
+
+data class ProcedureUpdateResult(val variableIds : List<VariableId>,
+                                 val programResult : ProgramResultSpannable)
+                                  : Serializable
 
 

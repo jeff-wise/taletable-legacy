@@ -27,6 +27,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.game.GameManager
@@ -382,9 +383,7 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
                     val update = ListWidgetUpdateSetCurrentValue(
                                     updateTarget.listWidgetId,
                                     valueStrings ?: listOf())
-//                    SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                            update,
-//                                            sheetUIContext.sheetUI())
+                    Router.send(MessageSheetUpdate(update))
                     dialog.dismiss()
                 }
             }

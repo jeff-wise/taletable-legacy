@@ -17,6 +17,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.dice.RollModifier
 import com.kispoko.tome.model.game.engine.dice.RollSummary
@@ -26,6 +27,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
@@ -373,51 +375,46 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         else if (currentRoll != null)
             finalValue = currentRoll.value.toDouble()
 
-//        when (this.adderState.updateTarget)
-//        {
-//            is UpdateTargetPointsWidget ->
-//            {
-//                val pointsWidgeUpdate =
-//                        PointsWidgetUpdateSetCurrentValue(
-//                                adderState.updateTarget.pointsWidgetId,
-//                                finalValue)
-//                SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                         pointsWidgeUpdate,
-//                                         sheetUIContext.sheetUI())
-//            }
-//            is UpdateTargetNumberWidget ->
-//            {
-////                val numberWidgetUpdate = NumberWidgetUpdateValue(adderState.updateTarget.numberWidgetId,
-////                                                                 finalValue)
-//
+        when (this.adderState.updateTarget)
+        {
+            is UpdateTargetPointsWidget ->
+            {
+                val pointsWidgeUpdate =
+                        PointsWidgetUpdateSetCurrentValue(
+                                adderState.updateTarget.pointsWidgetId,
+                                finalValue)
+                Router.send(MessageSheetUpdate(pointsWidgeUpdate))
+            }
+            is UpdateTargetNumberWidget ->
+            {
+                val numberWidgetUpdate = NumberWidgetUpdateValue(adderState.updateTarget.numberWidgetId,
+                                                                 finalValue)
+                Router.send(MessageSheetUpdate(numberWidgetUpdate))
+
 //                this.adderState.variableId?.let { varId ->
 //                    SheetManager.sheetState(sheetContext.sheetId) apDo {
 //                    it.updateVariable(varId, EngineValueNumber(finalValue), sheetContext)
 //                    }
 //                }
-//
-//            }
-//            is UpdateTargetNumberCell ->
-//            {
-//                val numberCellUpdate =
-//                        TableWidgetUpdateSetNumberCell(adderState.updateTarget.tableWidgetId,
-//                                                       adderState.updateTarget.cellId,
-//                                                       finalValue)
-//                SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                         numberCellUpdate,
-//                                         sheetUIContext.sheetUI())
-//            }
-//            is UpdateTargetStoryWidgetPart ->
-//            {
-//                val numberPartUpdate =
-//                        StoryWidgetUpdateNumberPart(adderState.updateTarget.storyWidgetId,
-//                                                    adderState.updateTarget.partIndex,
-//                                                    finalValue)
-//                SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                         numberPartUpdate,
-//                                         sheetUIContext.sheetUI())
-//            }
-//        }
+
+            }
+            is UpdateTargetNumberCell ->
+            {
+                val numberCellUpdate =
+                        TableWidgetUpdateSetNumberCell(adderState.updateTarget.tableWidgetId,
+                                                       adderState.updateTarget.cellId,
+                                                       finalValue)
+                Router.send(MessageSheetUpdate(numberCellUpdate))
+            }
+            is UpdateTargetStoryWidgetPart ->
+            {
+                val numberPartUpdate =
+                        StoryWidgetUpdateNumberPart(adderState.updateTarget.storyWidgetId,
+                                                    adderState.updateTarget.partIndex,
+                                                    finalValue)
+                Router.send(MessageSheetUpdate(numberPartUpdate))
+            }
+        }
 
         dialog.dismiss()
     }
@@ -456,10 +453,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
-        layout.padding.bottomDp = 10f
+        layout.padding.bottomDp = 4f
 
         return layout.linearLayout(context)
     }
@@ -781,14 +778,15 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
+        layout.backgroundColor  = Color.WHITE
 
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
 
-        layout.margin.leftDp    = 4f
-        layout.margin.rightDp   = 4f
+        layout.margin.leftDp    = 2f
+        layout.margin.rightDp   = 2f
         layout.margin.bottomDp  = 2f
 
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
@@ -1499,8 +1497,8 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp        = 18
-        icon.heightDp       = 18
+        icon.widthDp        = 19
+        icon.heightDp       = 19
 
         icon.image          = R.drawable.icon_check_bold
 
@@ -1527,10 +1525,12 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         label.color         = Color.WHITE
 
         label.font          = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Medium,
+                                            TextFontStyle.Bold,
                                             context)
 
-        label.sizeSp        = 18f
+        label.padding.bottomDp  = 1f
+
+        label.sizeSp        = 19f
 
         return layout.linearLayout(context)
     }
@@ -1638,7 +1638,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                                             TextFontStyle.Bold,
                                             context)
 
-        label.sizeSp        = 16.5f
+        label.sizeSp        = 18f
 
         return label.textView(context)
     }
@@ -1663,7 +1663,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                                             TextFontStyle.Regular,
                                             context)
 
-        label.sizeSp        = 12f
+        label.sizeSp        = 14f
 
         return label.textView(context)
     }

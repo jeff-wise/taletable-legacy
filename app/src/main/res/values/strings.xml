@@ -239,6 +239,11 @@
 
     <string name="dice_roller">Dice Roller</string>
 
+    <string name="clear">Clear</string>
+    <string name="stats">Stats</string>
+
+    <string name="reroll">Reroll</string>
+
     <string name="summation_editor">Summation Editor</string>
     <string name="summation">Summation</string>
     <string name="keypad">Keypad</string>

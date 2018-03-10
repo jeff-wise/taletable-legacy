@@ -2,6 +2,7 @@
 package com.kispoko.tome.rts.entity
 
 
+import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueBoolean
@@ -198,6 +199,18 @@ class EntityState(val entityId : EntityId,
             }
         }
 
+        // 4 (B) Also add parent as dependency
+        // -------------------------------------------------------------------------------------
+//
+//        if (parentVariable != null) {
+//            val parentVarId = parentVariable.variableId()
+//            if (listenersById.containsKey(parentVarId)))
+//                listenersById[parentVarId]!!.add(variable)
+//            else
+//                listenersById.put(variableRef, mutableSetOf(variable))
+//        }
+
+
         // (5) Update any mechanics which are dependent on this variable
         // -------------------------------------------------------------------------------------
 
@@ -232,7 +245,6 @@ class EntityState(val entityId : EntityId,
             is Err -> ApplicationLog.error(companionVariables.error)
         }
 
-
         // (7) Create history variable
         // -------------------------------------------------------------------------------------
 
@@ -265,12 +277,12 @@ class EntityState(val entityId : EntityId,
         // (1) Notify listeners (before they are removed)
         // -------------------------------------------------------------------------------------
 
-        this.onRemoveUpdateListeners(variable!!, UUID.randomUUID())
 
         // (2) Remove from Id index
         // -------------------------------------------------------------------------------------
 
         variableById.remove(variableId)
+
 
         // (3) Remove from serach index
         // -------------------------------------------------------------------------------------
@@ -289,6 +301,9 @@ class EntityState(val entityId : EntityId,
                 variableSet?.remove(variable)
             }
         }
+
+
+        this.onRemoveUpdateListeners(variable!!, UUID.randomUUID())
 
         // (5) Unindex dependencies
         // -------------------------------------------------------------------------------------
@@ -469,6 +484,7 @@ class EntityState(val entityId : EntityId,
 
     fun onVariableUpdate(variable : Variable)
     {
+
     //    ApplicationLog.event(AppStateEvent(VariableUpdated(variable.variableId())))
 
         // TODO redunant?
@@ -488,16 +504,41 @@ class EntityState(val entityId : EntityId,
             companionVariableIdsByVariableId[variable.variableId()]?.forEach {
                 removeVariable(it)
             }
+
+            companionVariableIdsByVariableId.put(variableId, mutableSetOf())
         }
+
+
+        // (6) Add companion variables to the state
+        // -------------------------------------------------------------------------------------
 
         val companionVariables = variable.companionVariables(this.entityId)
         when (companionVariables)
         {
-            is Val -> companionVariables.value.forEach { this.addVariable(it, variable)
+            is Val -> {
+
+                val companionVariableIds : MutableSet<VariableId> = mutableSetOf()
+
+                companionVariables.value.forEach {
+                    this.addVariable(it, variable)
+                    companionVariableIds.add(it.variableId())
+                }
+
+                companionVariableIdsByVariableId.put(variableId, companionVariableIds)
             }
             is Err -> ApplicationLog.error(companionVariables.error)
         }
 
+
+//
+//        val companionVariables = variable.companionVariables(this.entityId)
+//        when (companionVariables)
+//        {
+//            is Val -> companionVariables.value.forEach { this.addVariable(it, variable)
+//            }
+//            is Err -> ApplicationLog.error(companionVariables.error)
+//        }
+//
 
         this.updateListeners(variable, UUID.randomUUID())
     }
@@ -505,6 +546,7 @@ class EntityState(val entityId : EntityId,
 
     fun onRemoveUpdateListeners(variable : Variable, updateId : UUID)
     {
+
         // (1) Update listeners of variable id
         // -------------------------------------------------------------------------------------
 
@@ -645,6 +687,7 @@ class EntityState(val entityId : EntityId,
             {
                 if (listener.lastUpdateId != updateId)
                 {
+                    Log.d("****WIDGET", "updating variable: ${listener.variableId()}")
                     listener.onUpdate()
                     listener.lastUpdateId = updateId
                     this.updateListeners(listener, updateId)

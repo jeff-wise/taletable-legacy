@@ -22,6 +22,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
@@ -285,9 +286,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                         val tableUpdate = TableWidgetUpdateInsertRowBefore(
                                                             updateTarget.tableWidget.id,
                                                             selectedRow)
-//                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
-//                                                 tableUpdate,
-//                                                 this.sheetUIContext.sheetUI())
+                        Router.send(MessageSheetUpdate(tableUpdate))
                         dialog.dismiss()
                     }
                 }
@@ -310,9 +309,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                         val tableUpdate = TableWidgetUpdateInsertRowAfter(
                                                             updateTarget.tableWidget.id,
                                                             selectedRow)
-//                        SheetManager.updateSheet(this.sheetUIContext.sheetId,
-//                                                 tableUpdate,
-//                                                 this.sheetUIContext.sheetUI())
+                        Router.send(MessageSheetUpdate(tableUpdate))
                         dialog.dismiss()
                     }
                 }

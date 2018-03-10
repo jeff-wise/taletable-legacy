@@ -191,12 +191,12 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
     val activeValueColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
     val activeValueColor  = colorOrBlack(activeValueColorTheme, entityId)
 
     val inActiveValueColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_24"))))
     val inActiveValueColor  = colorOrBlack(inActiveValueColorTheme, entityId)
 
 
@@ -310,7 +310,6 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         name.width              = LinearLayout.LayoutParams.MATCH_PARENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.margin.topDp       = 4f
         name.margin.leftDp      = 3f
         name.margin.rightDp     = 3f
 
@@ -324,7 +323,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val colorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         name.color              = colorOrBlack(colorTheme, entityId)
 
         name.backgroundColor    = Color.WHITE
@@ -382,9 +381,9 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         //layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.leftDp        = 3f
-        layout.margin.rightDp       = 3f
-        layout.margin.bottomDp       = 4f
+        layout.margin.leftDp        = 2f
+        layout.margin.rightDp       = 2f
+        layout.margin.bottomDp      = 2f
 
         layout.corners          = Corners(0.0, 0.0, 2.0, 1.0)
 
@@ -492,7 +491,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
         layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-        layout.margin.rightDp   = 5f
+        layout.margin.rightDp   = 2f
         layout.padding.topDp    = 4f
 
         layout.child(icon)
@@ -571,7 +570,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         number.text                 = label
 
-        number.sizeSp               = 25f
+        number.sizeSp               = 26f
 
         number.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
@@ -579,7 +578,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_16")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         number.color                = colorOrBlack(textColorTheme, entityId)
 
 //        val bgColorTheme = ColorTheme(setOf(

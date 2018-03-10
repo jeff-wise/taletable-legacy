@@ -181,8 +181,12 @@ fun addGame(game : Game)
 fun addBook(book : Book)
 {
     val entityId = EntityBookId(book.bookId())
-    val engineState = EntityState(entityId, listOf())
-    val bookRecord = EntityBookRecord(book, engineState, Just(book.settings().themeId()))
+    val entityState = EntityState(entityId, listOf())
+    val bookRecord = EntityBookRecord(book, entityState, Just(book.settings().themeId()))
+
+    book.variables().forEach {
+        entityState.addVariable(it)
+    }
 
     stateById.put(entityId, bookRecord)
 }

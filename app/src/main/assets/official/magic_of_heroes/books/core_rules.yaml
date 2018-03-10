@@ -119,9 +119,9 @@ variables:
       text_literal: 'Languages'
 - type: variable_text
   variable_text:
-    id: humans_languages_header
-    label: Humans Languages Header
-    description: Humans languages header
+    id: humans_languages_content
+    label: Humans Languages Content
+    description: Humans languages Content
     value:
       type: text_literal
       text_literal: >-
@@ -147,30 +147,69 @@ chapters:
       - rows:
         - format:
             element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
               margins:
+                top: 8
                 bottom: 8
+                left: 6
+                right: 6
           widgets:
           - type: widget_text
             widget_text:
               id: humans_introduction
               format:
                 value_format:
+                  element_format:
+                    horizontal_alignment: left
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
                       color_id: light_grey_20
                     - theme_id: light
                       color_id: dark_grey_12
-                  size: 18
+                  size: 17
                   font_style: regular
                 widget_format:
                   element_format:
-                    horizontal_alignment: left
+                    padding:
+                      top: 10
+                      bottom: 10
+                      left: 6
+                      right: 6
               value_variable_id: humans_introduction
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 1
+              top_right_radius: 1
+              bottom_right_radius: 1
+              bottom_left_radius: 1
+            margins:
+              bottom: 8
+              left: 6
+              right: 6
+            padding:
+              left: 6
+              right: 6
+              top: 10
+              bottom: 10
+        rows:
         - format:
             element_format:
               margins:
-                bottom: 8
+                bottom: 4
           widgets:
           - type: widget_text
             widget_text:
@@ -182,21 +221,62 @@ chapters:
                     - theme_id: dark
                       color_id: light_grey_20
                     - theme_id: light
-                      color_id: dark_grey_16
-                  size: 18
-                  font_style: semi_bold
+                      color_id: dark_grey_8
+                  size: 19
+                  font_style: medium
                 widget_format:
                   element_format:
                     horizontal_alignment: left
               value_variable_id: humans_ability_score_increase_header
-        - format:
-            element_format:
-              margins:
-                bottom: 8
-          widgets:
+        - widgets:
           - type: widget_text
             widget_text:
               id: humans_ability_score_increase_content
+              format:
+                value_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  size: 17
+                  font_style: regular
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_ability_score_increase_content
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 1
+              top_right_radius: 1
+              bottom_right_radius: 1
+              bottom_left_radius: 1
+            margins:
+              bottom: 8
+              left: 6
+              right: 6
+            padding:
+              left: 6
+              right: 6
+              top: 10
+              bottom: 10
+        rows:
+        - format:
+            element_format:
+              margins:
+                bottom: 4
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_age_header
               format:
                 value_format:
                   color_theme:
@@ -204,13 +284,285 @@ chapters:
                     - theme_id: dark
                       color_id: light_grey_20
                     - theme_id: light
+                      color_id: dark_grey_8
+                  size: 19
+                  font_style: medium
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_age_header
+        - widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_age_content
+              format:
+                value_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
                       color_id: dark_grey_12
-                  size: 18
+                  size: 17
                   font_style: regular
                 widget_format:
                   element_format:
                     horizontal_alignment: left
-              value_variable_id: humans_ability_score_increase_content
+              value_variable_id: humans_age_content
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 1
+              top_right_radius: 1
+              bottom_right_radius: 1
+              bottom_left_radius: 1
+            margins:
+              bottom: 8
+              left: 6
+              right: 6
+            padding:
+              left: 6
+              right: 6
+              top: 10
+              bottom: 10
+        rows:
+        - format:
+            element_format:
+              margins:
+                bottom: 4
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_alignment_header
+              format:
+                value_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_8
+                  size: 19
+                  font_style: medium
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_alignment_header
+        - widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_alignment_content
+              format:
+                value_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  size: 17
+                  font_style: regular
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_alignment_content
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 1
+              top_right_radius: 1
+              bottom_right_radius: 1
+              bottom_left_radius: 1
+            margins:
+              bottom: 8
+              left: 6
+              right: 6
+            padding:
+              left: 6
+              right: 6
+              top: 10
+              bottom: 10
+        rows:
+        - format:
+            element_format:
+              margins:
+                bottom: 4
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_size_header
+              format:
+                value_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_8
+                  size: 19
+                  font_style: medium
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_size_header
+        - widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_size_content
+              format:
+                value_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  size: 17
+                  font_style: regular
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_size_content
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 1
+              top_right_radius: 1
+              bottom_right_radius: 1
+              bottom_left_radius: 1
+            margins:
+              bottom: 8
+              left: 6
+              right: 6
+            padding:
+              left: 6
+              right: 6
+              top: 10
+              bottom: 10
+        rows:
+        - format:
+            element_format:
+              margins:
+                bottom: 4
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_speed_header
+              format:
+                value_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_8
+                  size: 19
+                  font_style: medium
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_speed_header
+        - widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_speed_content
+              format:
+                value_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  size: 17
+                  font_style: regular
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_speed_content
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 1
+              top_right_radius: 1
+              bottom_right_radius: 1
+              bottom_left_radius: 1
+            margins:
+              bottom: 8
+              left: 6
+              right: 6
+            padding:
+              left: 6
+              right: 6
+              top: 10
+              bottom: 10
+        rows:
+        - format:
+            element_format:
+              margins:
+                bottom: 4
+          widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_languages_header
+              format:
+                value_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_8
+                  size: 19
+                  font_style: medium
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_languages_header
+        - widgets:
+          - type: widget_text
+            widget_text:
+              id: humans_languages_content
+              format:
+                value_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_20
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  size: 17
+                  font_style: regular
+                widget_format:
+                  element_format:
+                    horizontal_alignment: left
+              value_variable_id: humans_languages_content
 - id: classes
   title: 'Classes'
   sections:
