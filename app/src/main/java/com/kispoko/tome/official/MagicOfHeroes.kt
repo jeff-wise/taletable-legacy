@@ -41,7 +41,9 @@ data class HeroesCharacterSheetSummary(val name : String,
                                        val id : String,
                                        val summary : String,
                                        val description : String,
-                                       val variants : List<HeroesCharacterSheetVariant>)
+                                       val level : Int,
+                                       val race : String,
+                                       val _class : String)
 {
 
     companion object
@@ -60,10 +62,12 @@ data class HeroesCharacterSheetSummary(val name : String,
                           yamlValue.text("summary"),
                           // Description
                           yamlValue.text("description"),
-                          // Variant
-                          yamlValue.array("variants") ap {
-                              it.mapApply { HeroesCharacterSheetVariant.fromYaml(it) }}
-                    )
+                          // Level
+                          yamlValue.integer("level"),
+                          // Race
+                          yamlValue.text("race"),
+                          // Class
+                          yamlValue.text("class"))
                 }
                 else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
             }

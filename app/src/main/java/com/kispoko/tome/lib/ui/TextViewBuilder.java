@@ -12,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.MovementMethod;
 import android.util.TypedValue;
 import android.view.View;
@@ -58,6 +59,8 @@ public class TextViewBuilder implements ViewBuilder
     public Integer                  layoutGravity;
     public Integer                  visibility;
     public Integer                  elevation;
+
+    public Integer                  verticalFadeLength;
 
     public String                   text;
     public Spanned                  textHtml;
@@ -238,6 +241,19 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.ems != null)
             textView.setEms(this.ems);
+
+        // Fading Edge
+        // --------------------------------------------------------------------------------------
+
+//        if (this.ems != null)
+        if (this.verticalFadeLength != null)
+        {
+            textView.setFadingEdgeLength(this.verticalFadeLength);
+            textView.setVerticalFadingEdgeEnabled(true);
+//            textView.setLines(2);
+//            textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+//            textView.setSingleLine(false);
+        }
 
         // > Line Spacing
         // --------------------------------------------------------------------------------------

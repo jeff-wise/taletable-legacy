@@ -161,8 +161,13 @@
     <!-- MAGIC OF HEROES CHARACTER SHEETS FRAGMENT -->
     <item name="heroes_chars_item_layout" type="id"/>
     <item name="heroes_chars_item_name" type="id"/>
+    <item name="heroes_chars_item_level" type="id"/>
+    <item name="heroes_chars_item_class" type="id"/>
+    <item name="heroes_chars_item_race" type="id"/>
     <item name="heroes_chars_item_desc" type="id"/>
     <item name="heroes_chars_item_summary" type="id"/>
+    <item name="heroes_chars_item_open_button" type="id"/>
+    <item name="heroes_chars_item_info_button" type="id"/>
     <item name="heroes_chars_item_variants" type="id"/>
 
     <!-- MAGIC OF HEROES CREATURE SHEETS FRAGMENT -->

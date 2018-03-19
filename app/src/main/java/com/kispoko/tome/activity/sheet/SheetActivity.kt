@@ -21,7 +21,6 @@ import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.engine.procedure.ProcedureUpdateDialog
-import com.kispoko.tome.activity.load.LoadActivity
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
@@ -205,9 +204,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun returnToLoad()
     {
-        val intent = Intent(this, LoadActivity::class.java)
-        finish()
-        startActivity(intent)
+//        val intent = Intent(this, TestSessionActivity::class.java)
+//        finish()
+//        startActivity(intent)
     }
 
 

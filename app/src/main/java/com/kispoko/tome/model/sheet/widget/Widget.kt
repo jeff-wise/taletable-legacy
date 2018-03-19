@@ -32,6 +32,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.book.BookReference
+import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.game.engine.procedure.Procedure
@@ -1765,6 +1766,22 @@ data class NumberWidget(override val id : UUID,
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
+    fun update(update : WidgetUpdateNumberWidget,
+               entityId: EntityId,
+               rootView : View,
+               context : Context) =
+        when (update)
+        {
+            is NumberWidgetUpdateValue ->
+            {
+                val newValue = EngineValueNumber(update.newValue)
+                updateVariable(this.valueVariableId(), newValue, entityId)
+
+                this.updateView(rootView, entityId, context)
+            }
+        }
+
+
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val layoutId = this.layoutId
@@ -2059,6 +2076,9 @@ data class PointsWidget(override val id : UUID,
         numberVariable(this.currentValueVariableId(), entityId)
 
 
+    fun limitValueVariable(entityId: EntityId) : AppEff<NumberVariable> =
+            numberVariable(this.limitValueVariableId(), entityId)
+
     fun limitValue(entityId : EntityId) : Double?
     {
         val mDouble = numberVariable(this.limitValueVariableId(), entityId)
@@ -2202,7 +2222,14 @@ data class PointsWidget(override val id : UUID,
 
         this.currentValueVariable(entityId) apDo { currentValueVar ->
             currentValueVar.addOnUpdateListener {
-//                Log.d("****WIDGET", "points widget update: ${currentValueVar.variableId()}")
+                rootView?.let {
+                    this.updateView(it, entityId, context)
+                }
+            }
+        }
+
+        this.limitValueVariable(entityId) apDo { variable ->
+            variable.addOnUpdateListener {
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
@@ -3134,7 +3161,6 @@ data class TableWidget(override val id : UUID,
     {
         val cell = this.textCellById[cellUpdate.cellId]
 
-        Log.d("***WIDGET", "update text cell value")
 
         // Update Variable
         val variable = cell?.valueVariable(entityId)

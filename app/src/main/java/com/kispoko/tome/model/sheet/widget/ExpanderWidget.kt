@@ -13,7 +13,8 @@ import com.kispoko.tome.db.DB_WidgetExpanderFormatValue
 import com.kispoko.tome.db.widgetExpanderFormatTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue7
+import com.kispoko.tome.lib.orm.RowValue8
+import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -26,6 +27,8 @@ import com.kispoko.tome.rts.entity.colorOrBlack
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -37,6 +40,7 @@ import java.util.*
  */
 data class ExpanderWidgetFormat(override val id : UUID,
                                 val widgetFormat : WidgetFormat,
+                                val viewType : ExpanderWidgetViewType,
                                 val headerOpenFormat : TextFormat,
                                 val headerClosedFormat : TextFormat,
                                 val headerLabelOpenFormat : TextFormat,
@@ -52,6 +56,7 @@ data class ExpanderWidgetFormat(override val id : UUID,
 
 
     constructor(widgetFormat: WidgetFormat,
+                viewType : ExpanderWidgetViewType,
                 headerOpenFormat: TextFormat,
                 headerClosedFormat: TextFormat,
                 headerLabelOpenFormat: TextFormat,
@@ -60,6 +65,7 @@ data class ExpanderWidgetFormat(override val id : UUID,
                 headerIconClosedFormat : TextFormat)
         : this(UUID.randomUUID(),
                widgetFormat,
+               viewType,
                headerOpenFormat,
                headerClosedFormat,
                headerLabelOpenFormat,
@@ -71,13 +77,14 @@ data class ExpanderWidgetFormat(override val id : UUID,
     companion object : Factory<ExpanderWidgetFormat>
     {
 
-        private fun defaultWidgetFormat()           = WidgetFormat.default()
-        private fun defaultHeaderOpenFormat()       = TextFormat.default()
-        private fun defaultHeaderClosedFormat()     = TextFormat.default()
-        private fun defaultHeaderLabelOpenFormat()       = TextFormat.default()
-        private fun defaultHeaderLabelClosedFormat()     = TextFormat.default()
-        private fun defaultHeaderIconOpenFormat()   = TextFormat.default()
-        private fun defaultHeaderIconClosedFormat() = TextFormat.default()
+        private fun defaultWidgetFormat()               = WidgetFormat.default()
+        private fun defaultViewType()                   = ExpanderWidgetViewType.IconLeft
+        private fun defaultHeaderOpenFormat()           = TextFormat.default()
+        private fun defaultHeaderClosedFormat()         = TextFormat.default()
+        private fun defaultHeaderLabelOpenFormat()      = TextFormat.default()
+        private fun defaultHeaderLabelClosedFormat()    = TextFormat.default()
+        private fun defaultHeaderIconOpenFormat()       = TextFormat.default()
+        private fun defaultHeaderIconClosedFormat()     = TextFormat.default()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<ExpanderWidgetFormat> = when (doc)
@@ -89,6 +96,10 @@ data class ExpanderWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("widget_format"),
                             effValue(defaultWidgetFormat()),
                             { WidgetFormat.fromDocument(it) }),
+                      // View Type
+                      split(doc.maybeAt("view_type"),
+                            effValue<ValueError,ExpanderWidgetViewType>(defaultViewType()),
+                            { ExpanderWidgetViewType.fromDocument(it) }),
                       // Header Open
                       split(doc.maybeAt("header_open_format"),
                             effValue(defaultHeaderOpenFormat()),
@@ -119,12 +130,13 @@ data class ExpanderWidgetFormat(override val id : UUID,
 
 
         fun default() = ExpanderWidgetFormat(defaultWidgetFormat(),
-                                       defaultHeaderOpenFormat(),
-                                       defaultHeaderClosedFormat(),
-                                       defaultHeaderLabelOpenFormat(),
-                                       defaultHeaderLabelClosedFormat(),
-                                       defaultHeaderIconOpenFormat(),
-                                       defaultHeaderIconClosedFormat())
+                                             defaultViewType(),
+                                             defaultHeaderOpenFormat(),
+                                             defaultHeaderClosedFormat(),
+                                             defaultHeaderLabelOpenFormat(),
+                                             defaultHeaderLabelClosedFormat(),
+                                             defaultHeaderIconOpenFormat(),
+                                             defaultHeaderIconClosedFormat())
     }
 
 
@@ -134,6 +146,7 @@ data class ExpanderWidgetFormat(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "widget_format" to this.widgetFormat().toDocument(),
+        "view_type" to this.viewType.toDocument(),
         "header_open_format" to this.headerOpenFormat().toDocument(),
         "header_closed_format" to this.headerClosedFormat().toDocument(),
         "header_label_open_format" to this.headerLabelOpenFormat().toDocument(),
@@ -148,6 +161,9 @@ data class ExpanderWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat
+
+
+    fun viewType() : ExpanderWidgetViewType = this.viewType
 
 
     fun headerOpenFormat() : TextFormat = this.headerOpenFormat
@@ -179,14 +195,76 @@ data class ExpanderWidgetFormat(override val id : UUID,
 
 
     override fun rowValue() : DB_WidgetExpanderFormatValue =
-        RowValue7(widgetExpanderFormatTable,
+        RowValue8(widgetExpanderFormatTable,
                   ProdValue(this.widgetFormat),
+                  PrimValue(this.viewType),
                   ProdValue(this.headerOpenFormat),
                   ProdValue(this.headerClosedFormat),
                   ProdValue(this.headerLabelOpenFormat),
                   ProdValue(this.headerLabelClosedFormat),
                   ProdValue(this.headerIconOpenFormat),
                   ProdValue(this.headerIconClosedFormat))
+
+}
+
+
+/**
+ * Expander Widget View Type
+ */
+sealed class ExpanderWidgetViewType : ToDocument, SQLSerializable, Serializable
+{
+
+
+    object IconLeft : ExpanderWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "icon_left" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("icon_left")
+
+    }
+
+
+    object ButtonBottom : ExpanderWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "button_bottom" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("button_bottom")
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<ExpanderWidgetViewType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "icon_left"     -> effValue<ValueError,ExpanderWidgetViewType>(
+                                                    ExpanderWidgetViewType.IconLeft)
+                "button_bottom" -> effValue<ValueError,ExpanderWidgetViewType>(
+                                                       ExpanderWidgetViewType.ButtonBottom)
+                else            -> effError<ValueError,ExpanderWidgetViewType>(
+                                            UnexpectedValue("ExpanderWidgetViewType", doc.text, doc.path))
+            }
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
 
 }
 
@@ -244,6 +322,7 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
     var groupsLayout : LinearLayout? = null
 
     var iconView : ImageView? = null
+    var showMoreView : TextView? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -260,34 +339,32 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
         // Header
         contentLayout.addView(this.headerView())
 
-        // Groups
-//        val groupsLayout = this.groupsLayout()
-//        this.groupsLayout = groupsLayout
-//
-//        contentLayout.addView(groupsLayout)
-
-        contentLayout.setOnClickListener {
-            // CLOSE
-            if (this.isOpen)
-            {
-                this.isOpen = false
-                contentLayout.removeAllViews()
-                contentLayout.addView(this.headerView())
-            }
-            // OPEN
-            else
-            {
-                this.isOpen = true
-
-                contentLayout.removeAllViews()
-                contentLayout.addView(this.headerView())
-                expanderWidget.groups().forEach {
-                    contentLayout.addView(it.view(entityId, context))
-                }
-            }
-        }
+        contentLayout.setOnClickListener { onClick(contentLayout) }
 
         return layout
+    }
+
+
+    private fun onClick(contentLayout : LinearLayout)
+    {
+        // CLOSE
+        if (this.isOpen)
+        {
+            this.isOpen = false
+            contentLayout.removeAllViews()
+            contentLayout.addView(this.headerView())
+        }
+        // OPEN
+        else
+        {
+            this.isOpen = true
+
+            contentLayout.removeAllViews()
+            contentLayout.addView(this.headerView())
+            expanderWidget.groups().forEach {
+                contentLayout.addView(it.view(entityId, context))
+            }
+        }
     }
 
 
@@ -295,9 +372,47 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
     // HEADER
     // -----------------------------------------------------------------------------------------
 
-    private fun headerView() : LinearLayout
+    private fun headerView() : View = when (expanderWidget.format().viewType())
     {
-        val layout          = this.headerViewLayout()
+        is ExpanderWidgetViewType.IconLeft -> iconLeftHeaderView()
+        is ExpanderWidgetViewType.ButtonBottom -> this.buttonBottomHeaderView()
+    }
+
+
+    // HEADER > Common Views
+    // -----------------------------------------------------------------------------------------
+
+    private fun headerLabelView() : TextView
+    {
+        val title           = TextViewBuilder()
+
+        val format          = if (this.isOpen)
+                                  expanderWidget.format().headerLabelOpenFormat()
+                              else
+                                  expanderWidget.format().headerLabelClosedFormat()
+
+        title.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        title.text          = expanderWidget.label().value
+
+        format.styleTextViewBuilder(title, entityId, context)
+
+        title.color           = colorOrBlack(format.colorTheme(), entityId)
+
+        title.marginSpacing = format.elementFormat().margins()
+        title.paddingSpacing = format.elementFormat().padding()
+
+        return title.textView(context)
+    }
+
+
+    // HEADER > Left Icon
+    // -----------------------------------------------------------------------------------------
+
+    private fun iconLeftHeaderView() : LinearLayout
+    {
+        val layout          = this.iconLeftHeaderViewLayout()
 
         // Icon
         val iconLayout = this.headerIconLayoutView()
@@ -313,7 +428,7 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
     }
 
 
-    private fun headerViewLayout() : LinearLayout
+    private fun iconLeftHeaderViewLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -387,47 +502,76 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
 
 
         return icon.imageView(context)
-
-
-
     }
 
 
-    private fun headerLabelView() : TextView
+    // HEADER > Button Bottom
+    // -----------------------------------------------------------------------------------------
+
+    private fun buttonBottomHeaderView() : LinearLayout
     {
-        val title           = TextViewBuilder()
+        val layout          = this.buttonBottomHeaderViewLayout()
 
-        val format          = if (this.isOpen)
-                                  expanderWidget.format().headerLabelOpenFormat()
-                              else
-                                  expanderWidget.format().headerLabelClosedFormat()
+        // Label
+        layout.addView(this.headerLabelView())
 
-        title.width         = LinearLayout.LayoutParams.WRAP_CONTENT
-        title.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+        // Icon
+        val showMoreView = this.showMoreButtonView()
+        this.showMoreView = showMoreView
+        layout.addView(showMoreView)
 
-        title.text          = expanderWidget.label().value
-
-        format.styleTextViewBuilder(title, entityId, context)
-
-        title.color           = colorOrBlack(format.colorTheme(), entityId)
-
-        title.marginSpacing = format.elementFormat().margins()
-        title.paddingSpacing = format.elementFormat().padding()
-
-        return title.textView(context)
+        return layout
     }
 
 
-    private fun groupsLayout() : LinearLayout
+    private fun buttonBottomHeaderViewLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
+
+        val format = if (this.isOpen)
+            expanderWidget.format().headerOpenFormat()
+        else
+            expanderWidget.format().headerClosedFormat()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.VERTICAL
 
+        layout.paddingSpacing   = format.elementFormat().padding()
+        layout.marginSpacing    = format.elementFormat().margins()
+
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
+
         return layout.linearLayout(context)
+    }
+
+
+    private fun showMoreButtonView() : TextView
+    {
+        val title               = TextViewBuilder()
+
+        val format              = if (this.isOpen)
+                                    expanderWidget.format().headerIconOpenFormat()
+                                else
+                                    expanderWidget.format().headerIconClosedFormat()
+
+        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        title.textId            = R.string.show_more
+
+        format.styleTextViewBuilder(title, entityId, context)
+
+        title.color             = colorOrBlack(format.colorTheme(), entityId)
+
+        title.marginSpacing     = format.elementFormat().margins()
+        title.paddingSpacing    = format.elementFormat().padding()
+
+        return title.textView(context)
     }
 
 }

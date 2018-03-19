@@ -252,17 +252,17 @@ sealed class RollWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
-    object InlineLeftButtonUseDialog : RollWidgetViewType()
+    object InlineLeftButtonUseRoller : RollWidgetViewType()
     {
         // SQL SERIALIZABLE
         // -------------------------------------------------------------------------------------
 
-        override fun asSQLValue() : SQLValue = SQLText({ "inline_left_button_use_dialog" })
+        override fun asSQLValue() : SQLValue = SQLText({ "inline_left_button_use_roller" })
 
         // TO DOCUMENT
         // -------------------------------------------------------------------------------------
 
-        override fun toDocument() = DocText("inline_left_button_use_dialog")
+        override fun toDocument() = DocText("inline_left_button_use_roller")
 
     }
 
@@ -281,8 +281,8 @@ sealed class RollWidgetViewType : ToDocument, SQLSerializable, Serializable
                                                        RollWidgetViewType.InlineLeftButton)
                 "inline_right_button"           -> effValue<ValueError,RollWidgetViewType>(
                                                     RollWidgetViewType.InlineRightButton)
-                "inline_left_button_use_dialog" -> effValue<ValueError,RollWidgetViewType>(
-                                                       RollWidgetViewType.InlineLeftButtonUseDialog)
+                "inline_left_button_use_roller" -> effValue<ValueError,RollWidgetViewType>(
+                                                       RollWidgetViewType.InlineLeftButtonUseRoller)
                 else                 -> effError<ValueError,RollWidgetViewType>(
                                             UnexpectedValue("RollWidgetViewType", doc.text, doc.path))
             }
@@ -599,6 +599,15 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         updateContentView(layout)
 
+        when (rollWidget.format().viewType())
+        {
+            is RollWidgetViewType.InlineLeftButtonUseRoller -> {
+                layout.setOnClickListener {
+                    this.openDiceRoller()
+                }
+            }
+        }
+
         return layout
     }
 
@@ -629,7 +638,7 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 //                    this.updateDescriptionView()
 //                }
             }
-            is RollWidgetViewType.InlineLeftButtonUseDialog ->
+            is RollWidgetViewType.InlineLeftButtonUseRoller ->
             {
 //                layout.setOnClickListener {
 //                    val activity = context as SheetActivity
@@ -653,9 +662,6 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         val buttonLayout = this.inlineLeftButtonButtonViewLayout()
         this.buttonLayout = buttonLayout
 
-        buttonLayout.setOnClickListener {
-            this.openDiceRoller()
-        }
 
         // Button > Icon
         val buttonIconView = this.inlineLeftButtonButtonIconView()
@@ -682,12 +688,22 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         layout.addView(buttonLayout)
 
         val descriptionView = this.inlineLeftButtonDescriptionView()
-        descriptionView.setOnClickListener {
-            this.updateButtonView()
-            this.updateDescriptionView()
-        }
+
         this.descriptionTextView = descriptionView
         layout.addView(descriptionView)
+
+
+        if (rollWidget.format().viewType() != RollWidgetViewType.InlineLeftButtonUseRoller)
+        {
+            descriptionView.setOnClickListener {
+                this.updateButtonView()
+                this.updateDescriptionView()
+            }
+
+            buttonLayout.setOnClickListener {
+                this.openDiceRoller()
+            }
+        }
 
         return layout
     }
@@ -904,7 +920,6 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
 
         val descriptionView = this.inlineLeftButtonDescriptionView()
         descriptionView.setOnClickListener {
-
             this.update()
         }
         this.descriptionTextView = descriptionView

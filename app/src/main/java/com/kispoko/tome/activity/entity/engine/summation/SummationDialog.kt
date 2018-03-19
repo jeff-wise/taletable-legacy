@@ -15,9 +15,15 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.dialog.NumberEditorDialog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.engine.reference.NumberReferenceLiteral
+import com.kispoko.tome.model.game.engine.reference.NumberReferenceVariable
 import com.kispoko.tome.model.game.engine.summation.Summation
+import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
+import com.kispoko.tome.model.game.engine.summation.term.SummationTermNumber
 import com.kispoko.tome.model.game.engine.summation.term.TermSummary
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -25,6 +31,9 @@ import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.numberVariable
+import com.kispoko.tome.rts.entity.sheet.UpdateTargetVariable
+import com.kispoko.tome.rts.entity.variable
 import com.kispoko.tome.util.Util
 
 
@@ -535,7 +544,7 @@ class SummationViewBuilder(val summation : Summation,
 
         // Components
         termSummary.components.forEach {
-            layout.addView(this.componentItemView(it.name, it.value))
+            layout.addView(this.componentItemView(it.name, it.value, termSummary.term))
             //layout.addView(this.componentDividerView())
         }
 
@@ -598,7 +607,8 @@ class SummationViewBuilder(val summation : Summation,
 
 
     private fun componentItemView(nameString : String,
-                                  valueString : String) : RelativeLayout
+                                  valueString : String,
+                                  term : SummationTerm) : RelativeLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -631,6 +641,34 @@ class SummationViewBuilder(val summation : Summation,
 //                                                  TopRightCornerRadius(2f),
 //                                                  BottomRightCornerRadius(2f),
 //                                                  BottomLeftCornerRadius(2f))
+
+        when (term) {
+            is SummationTermNumber -> {
+                val termReference = term.numberReference()
+                when (termReference) {
+                    is NumberReferenceVariable -> {
+                        val variableReference = termReference.variableReference
+                        when (variableReference) {
+                            is VariableId -> {
+                                numberVariable(variableReference, entityId) apDo { variable ->
+
+                                    layout.onClick = View.OnClickListener {
+                                        val editDialog = NumberEditorDialog.newInstance(
+                                                            variable.valueOrZero(entityId),
+                                                            variable.label().value,
+                                                            UpdateTargetVariable(variableReference),
+                                                            entityId)
+                                        editDialog.show(activity.supportFragmentManager, "")
+                                        dialog.dismiss()
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         layout.backgroundColor          = Color.WHITE
 

@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.load
+package com.kispoko.tome.activity.test
 
 
 import android.content.Intent
@@ -28,7 +28,7 @@ import kotlinx.coroutines.experimental.launch
 /**
  * Load Activity
  */
-class LoadActivity : AppCompatActivity()
+class TestSessionActivity : AppCompatActivity()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -39,6 +39,9 @@ class LoadActivity : AppCompatActivity()
 
 
     private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
+
+
+    private val sheetId = SheetId("creature_brown_bear")
 
 
     // -----------------------------------------------------------------------------------------
@@ -69,16 +72,19 @@ class LoadActivity : AppCompatActivity()
         launch(UI) {
             ThemeManager.loadOfficialThemes(context)
 
-            val sheetLoader = OfficialSheetLoader(SheetId("character_casmey_level_1"),
+            val sheetLoader = OfficialSheetLoader("Casmey",
+                                                  sheetId,
                                                   CampaignId("isara"),
                                                   GameId("magic_of_heroes"))
 
-            val campaignLoader = OfficialCampaignLoader(CampaignId("isara"),
+            val campaignLoader = OfficialCampaignLoader("Isara",
+                                                        CampaignId("isara"),
                                                         GameId("magic_of_heroes"))
 
-            val gameLoader = OfficialGameLoader(GameId("magic_of_heroes"))
+            val gameLoader = OfficialGameLoader("Magic of Heroes", GameId("magic_of_heroes"))
 
-            val coreRulebookLoader = OfficialBookLoader(BookId("core_rules"),
+            val coreRulebookLoader = OfficialBookLoader("Core Rules",
+                                                        BookId("core_rules"),
                                                         GameId("magic_of_heroes"))
 
             val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
@@ -99,7 +105,7 @@ class LoadActivity : AppCompatActivity()
     private fun onSheetLoad(message : MessageSessionLoaded)
     {
         val intent = Intent(this, SheetActivity::class.java)
-        intent.putExtra("sheet_id", SheetId("character_casmey_level_1"))
+        intent.putExtra("sheet_id", sheetId)
         finish()
         startActivity(intent)
     }

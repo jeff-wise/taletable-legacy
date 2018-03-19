@@ -134,6 +134,17 @@ data class Theme(override val id : UUID,
     fun colorOrError(colorId : ColorId) : AppEff<Int> =
             note(color(colorId), AppThemeError(ThemeDoesNotHaveColor(this.themeId, colorId)))
 
+
+
+    fun colorOrBlack(colorTheme : ColorTheme) : Int
+    {
+        val colorId = colorTheme.themeColorId(this.themeId)
+        return if (colorId != null)
+            this.colorOrBlack(colorId)
+        else
+            Color.BLACK
+    }
+
 }
 
 
@@ -146,7 +157,7 @@ data class UIColors(override val id: UUID,
                     val tabTextSelectedColorId : ColorId,
                     val tabUnderlineColorId : ColorId,
                     val bottomBarBackgroundColorId : ColorId,
-                    val bottomBarNavColorId : ColorId) : ProdType
+                    val bottomBarNavColorId : ColorId) : ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------

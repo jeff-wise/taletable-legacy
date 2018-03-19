@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.OpenSheetOfficialGamesActivity
+import com.kispoko.tome.activity.official.OfficialGamesListActivity
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
@@ -32,8 +31,6 @@ import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.rts.entity.campaign.CampaignManager
-import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -114,7 +111,7 @@ class SheetNavigationActivity : AppCompatActivity()
 //            val intent = Intent(this, OpenSheetActivity::class.java)
 //            this.startActivity(intent)
 
-            val intent = Intent(this, OpenSheetOfficialGamesActivity::class.java)
+            val intent = Intent(this, OfficialGamesListActivity::class.java)
             this.startActivity(intent)
         }
     }

@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.official.sheets
+package com.kispoko.tome.activity.official.heroes
 
 
 import android.graphics.PorterDuff
@@ -23,14 +23,12 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesCharactersFragment
-import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesCreaturesFragment
-import com.kispoko.tome.activity.official.sheets.heroes.MagicOfHeroesGenericNPCsFragment
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -169,8 +167,7 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
     {
         val viewPager = this.findViewById(R.id.view_pager) as ViewPager
 
-        viewPager.adapter = OfficialSheetsPagerAdapter(supportFragmentManager,
-                                                       this.appSettings.themeId())
+        viewPager.adapter = OfficialSheetsPagerAdapter(supportFragmentManager, officialThemeLight)
 
         val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
@@ -250,7 +247,7 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
  * Sheets Pager Adapter
  */
 class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
-                                 val appThemeId : ThemeId)
+                                 val theme : Theme)
             : FragmentStatePagerAdapter(fragmentManager)
 {
 
@@ -268,12 +265,12 @@ class OfficialSheetsPagerAdapter(fragmentManager : FragmentManager,
     override fun getItem(position : Int) : Fragment =
         when (position)
         {
-            0    -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
-            1    -> MagicOfHeroesCreaturesFragment.newInstance(appThemeId)
-            2    -> MagicOfHeroesGenericNPCsFragment.newInstance(appThemeId)
-            3    -> MagicOfHeroesGenericNPCsFragment.newInstance(appThemeId)
-            4    -> MagicOfHeroesGenericNPCsFragment.newInstance(appThemeId)
-            else -> MagicOfHeroesCharactersFragment.newInstance(appThemeId)
+            0    -> MagicOfHeroesCharactersFragment.newInstance(theme)
+            1    -> MagicOfHeroesCreaturesFragment.newInstance(theme.themeId)
+            2    -> MagicOfHeroesGenericNPCsFragment.newInstance(theme.themeId())
+            3    -> MagicOfHeroesGenericNPCsFragment.newInstance(theme.themeId())
+            4    -> MagicOfHeroesGenericNPCsFragment.newInstance(theme.themeId())
+            else -> MagicOfHeroesCharactersFragment.newInstance(theme)
         }
 
 

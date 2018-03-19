@@ -15,7 +15,7 @@ import effect.Val
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
-
+import java.io.Serializable
 
 
 // ---------------------------------------------------------------------------------------------
@@ -165,22 +165,23 @@ fun loadOfficialBook(officialBookLoader : OfficialBookLoader,
 // DEFINITIONS
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityLoader
+sealed class EntityLoader(open val label : String) : Serializable
 
 
 // ---------------------------------------------------------------------------------------------
 // ENTITY LOADER > OFFICIAL
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityLoaderOfficial : EntityLoader()
+sealed class EntityLoaderOfficial(override val label : String) : EntityLoader(label)
 {
     abstract fun filePath() : String
 }
 
 
-data class OfficialSheetLoader(val sheetId : SheetId,
+data class OfficialSheetLoader(override val label : String,
+                               val sheetId : SheetId,
                                val campaignId : CampaignId,
-                               val gameId : GameId) : EntityLoaderOfficial()
+                               val gameId : GameId) : EntityLoaderOfficial(label)
 {
 
     override fun filePath() : String =
@@ -190,8 +191,9 @@ data class OfficialSheetLoader(val sheetId : SheetId,
 }
 
 
-data class OfficialCampaignLoader(val campaignId : CampaignId,
-                                  val gameId : GameId) : EntityLoaderOfficial()
+data class OfficialCampaignLoader(override val label : String,
+                                  val campaignId : CampaignId,
+                                  val gameId : GameId) : EntityLoaderOfficial(label)
 {
 
     override fun filePath() : String =
@@ -201,7 +203,8 @@ data class OfficialCampaignLoader(val campaignId : CampaignId,
 }
 
 
-data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
+data class OfficialGameLoader(override val label : String,
+                              val gameId : GameId) : EntityLoaderOfficial(label)
 {
 
     override fun filePath() : String =
@@ -211,9 +214,10 @@ data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
 }
 
 
-data class OfficialBookLoader(val bookId : BookId,
+data class OfficialBookLoader(override val label : String,
+                              val bookId : BookId,
                               val gameId : GameId)
-                               : EntityLoaderOfficial()
+                               : EntityLoaderOfficial(label)
 {
 
     override fun filePath() : String =

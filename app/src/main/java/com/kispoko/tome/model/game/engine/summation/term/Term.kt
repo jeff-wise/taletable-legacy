@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
-import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory

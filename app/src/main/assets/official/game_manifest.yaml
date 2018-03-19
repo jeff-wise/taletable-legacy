@@ -1,20 +1,27 @@
 summaries:
-- game_id: srd_5e
-  name: SRD 5e
-  description: 'The rules for the 5th edition Open Game License of the world''s most popular role-playing game.'
-  genre: 'Fantasy'
-  players: 12371
-  likes: 4338
 - game_id: magic_of_heroes
   name: The Magic of Heroes
   description: 'A traditional fantasy RPG based on the 5th Edition Open Game License ruleset.'
   genre: 'Fantasy'
   players: 570
   likes: 392
-- game_id: pathfinder
-  name: Pathfinder
+- game_id: 5e_srd
+  name: '5e SRD'
+  description: 'The rules for the 5th edition Open Game License of the world''s most popular role-playing game.'
+  genre: 'Fantasy'
+  players: 12371
+  likes: 4338
+- game_id: pathfinder_srd
+  name: Pathfinder SRD
   description:
     'A traditional fantasy RPG based on the 3rd Edition Open Game License ruleset.'
   genre: 'Fantasy'
   players: 1970
   likes: 1087
+- game_id: starfinder_srd
+  name: Starfinder SRD
+  description:
+    'Explore the magic and mysteries of the universe as part of a starship crew.'
+  genre: 'Sci-Fi'
+  players: 1104
+  likes: 959

@@ -19,28 +19,24 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.sheets.OpenSheetOfficialSheetsActivity
+import com.kispoko.tome.activity.official.heroes.OpenSheetOfficialSheetsActivity
 import com.kispoko.tome.app.AppSettings
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.official.GameManifest
 import com.kispoko.tome.official.GameSummary
 import com.kispoko.tome.rts.official.OfficialManager
-import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
-import effect.Err
-import effect.Val
 
 
 
 /**
- * Open Sheet Activity
+ * Official Games Activity
  */
-class OpenSheetOfficialGamesActivity : AppCompatActivity()
-{
+class OfficialGamesListActivity : AppCompatActivity() {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
@@ -53,31 +49,30 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
     // ACTIVITY
     // -----------------------------------------------------------------------------------------
 
-    override fun onCreate(savedInstanceState : Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
 
-        setContentView(R.layout.activity_open_sheet_official_games)
+        setContentView(R.layout.activity_official_games)
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.open_official_sheet))
+        this.configureToolbar(getString(R.string.choose_game))
 
-        val theme = ThemeManager.theme(this.appSettings.themeId())
-        when (theme) {
-            is Val -> this.applyTheme(theme.value.uiColors())
-            is Err -> ApplicationLog.error(theme.error)
-        }
+        this.applyTheme(officialThemeLight)
+//        when (theme) {
+//            is Val -> this.applyTheme(theme.value.uiColors())
+//            is Err -> ApplicationLog.error(theme.error)
+//        }
 
         val gameManifest = OfficialManager.gameManifest(this)
-        if (gameManifest != null)
-        {
+        if (gameManifest != null) {
             val contentLayout = this.findViewById(R.id.content) as LinearLayout
-            contentLayout.addView(this.view(gameManifest, this))
+            val gamesListUI = GamesListUI(gameManifest, officialThemeLight, this)
+            contentLayout.addView(gamesListUI.view())
         }
     }
 
@@ -87,7 +82,9 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
     // -----------------------------------------------------------------------------------------
 
 
-    private fun applyTheme(uiColors: UIColors) {
+    private fun applyTheme(theme: Theme) {
+        val uiColors = theme.uiColors()
+
         // STATUS BAR
         // -------------------------------------------------------------------------------------
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -96,7 +93,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = this.appSettings.color(uiColors.toolbarBackgroundColorId())
+            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
         }
 
         // TOOLBAR
@@ -104,10 +101,10 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         val toolbar = findViewById(R.id.toolbar) as Toolbar
 
         // Toolbar > Background
-        toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
+        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
 
         // Toolbar > Icons
-        var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
+        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
 
         val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
@@ -118,26 +115,41 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         // TITLE
         // -------------------------------------------------------------------------------------
         val titleView = this.findViewById(R.id.toolbar_title) as TextView
-        titleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
-
+        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
     }
+
+
+}
+
+
+
+class GamesListUI(val gameManifest: GameManifest,
+                  val theme : Theme,
+                  val context : Context)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // UI
+    // -----------------------------------------------------------------------------------------
+
+    val activity = context as AppCompatActivity
 
 
     // -----------------------------------------------------------------------------------------
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun view(gameManifest : GameManifest, context : Context) : ScrollView
+    fun view() : ScrollView
     {
-        val scrollView = this.scrollView(context)
+        val scrollView = this.scrollView()
 
-        scrollView.addView(this.gameListView(gameManifest, context))
+        scrollView.addView(this.gameListView())
 
         return scrollView
     }
 
 
-    private fun scrollView(context : Context) : ScrollView
+    private fun scrollView() : ScrollView
     {
         val scrollView = ScrollViewBuilder()
 
@@ -146,27 +158,27 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        scrollView.backgroundColor  = this.appSettings.color(colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+        scrollView.backgroundColor  = theme.colorOrBlack(colorTheme)
 
         return scrollView.scrollView(context)
 
     }
 
 
-    private fun gameListView(gameManifest : GameManifest, context : Context) : LinearLayout
+    private fun gameListView() : LinearLayout
     {
-        val layout          = this.gameListViewLayout(context)
+        val layout          = this.gameListViewLayout()
 
         gameManifest.gameSummaries.forEach {
-            layout.addView(this.gameView(it, context))
+            layout.addView(this.gameView(it))
         }
 
         return layout
     }
 
 
-    private fun gameListViewLayout(context : Context) : LinearLayout
+    private fun gameListViewLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -175,34 +187,34 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
+        layout.padding.leftDp   = 6f
+        layout.padding.rightDp  = 6f
 
         return layout.linearLayout(context)
     }
 
 
-    private fun gameView(gameSummary : GameSummary, context : Context) : LinearLayout
+    private fun gameView(gameSummary : GameSummary) : LinearLayout
     {
-        val layout          = this.gameViewLayout(gameSummary.gameId, context)
+        val layout          = this.gameViewLayout(gameSummary.gameId)
 
         // Name
-        layout.addView(this.gameHeaderView(gameSummary.name, context))
+        layout.addView(this.gameHeaderView(gameSummary.name))
 
         // Genre
-        layout.addView(this.gameGenreView(gameSummary.genre, context))
+//        layout.addView(this.gameGenreView(gameSummary.genre, context))
 
         // Description
-        layout.addView(this.gameDescriptionView(gameSummary.description, context))
+        layout.addView(this.gameDescriptionView(gameSummary.description))
 
         // Info
-        layout.addView(this.infoRowView(gameSummary.players, gameSummary.likes, context))
+        layout.addView(this.infoRowView(gameSummary))
 
         return layout
     }
 
 
-    private fun gameViewLayout(gameId : GameId, context : Context) : LinearLayout
+    private fun gameViewLayout(gameId : GameId) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -216,7 +228,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.topDp     = 8f
+        layout.margin.topDp     = 4f
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
@@ -225,7 +237,6 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
-        val activity = this
         layout.onClick          = View.OnClickListener {
             val intent = Intent(activity, OpenSheetOfficialSheetsActivity::class.java)
             intent.putExtra("game_id", gameId)
@@ -236,7 +247,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
     }
 
 
-    private fun gameHeaderView(headerString : String, context : Context) : TextView
+    private fun gameHeaderView(headerString : String) : TextView
     {
         val header          = TextViewBuilder()
 
@@ -248,19 +259,19 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-        header.color        = this.appSettings.color(colorTheme)
+        header.color        = theme.colorOrBlack(colorTheme)
 
         header.font         = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Medium,
+                                            TextFontStyle.Bold,
                                             context)
 
-        header.sizeSp       = 18f
+        header.sizeSp       = 19f
 
         return header.textView(context)
     }
 
 
-    private fun gameDescriptionView(descriptionString : String, context : Context) : TextView
+    private fun gameDescriptionView(descriptionString : String) : TextView
     {
         val description         = TextViewBuilder()
 
@@ -272,13 +283,13 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        description.color        = this.appSettings.color(colorTheme)
+        description.color        = theme.colorOrBlack(colorTheme)
 
         description.font         = Font.typeface(TextFont.default(),
                                                  TextFontStyle.Regular,
                                                  context)
 
-        description.sizeSp       = 15f
+        description.sizeSp       = 17f
 
         description.margin.topDp = 4f
 
@@ -286,7 +297,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
     }
 
 
-    private fun gameGenreView(genreString : String, context : Context) : TextView
+    private fun gameGenreView(genreString : String) : TextView
     {
         val genre           = TextViewBuilder()
 
@@ -297,38 +308,58 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        genre.color         = this.appSettings.color(colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        genre.color         = theme.colorOrBlack(colorTheme)
 
         genre.font          = Font.typeface(TextFont.default(),
                                             TextFontStyle.Regular,
                                             context)
 
-        genre.sizeSp        = 14f
+        genre.sizeSp        = 18f
 
-        genre.margin.topDp  = 4f
+//        genre.margin.topDp  = 4f
 
         return genre.textView(context)
     }
 
 
-    private fun infoRowView(players : Int,
-                            likes : Int,
-                            context : Context) : LinearLayout
+    private fun infoRowView(gameSummary: GameSummary) : LinearLayout
     {
-        val layout = this.infoRowViewLayout(context)
+        val layout = this.infoRowViewLayout()
+
+        val usersColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_70"))))
+
+        val likesColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("red_70"))))
+
+//        layout.addView(this.gameGenreView(gameSummary.genre))
+
+        val genre = gameSummary.genre
+        when (genre)
+        {
+            "Fantasy" -> {
+                layout.addView(this.infoView(R.drawable.icon_castle, genre, usersColorTheme))
+            }
+
+            "Sci-Fi" -> {
+                layout.addView(this.infoView(R.drawable.icon_planet, genre, usersColorTheme))
+            }
+        }
 
         // Players
-        layout.addView(this.infoView(R.drawable.icon_account, players.toString(), context))
+        layout.addView(this.infoView(R.drawable.icon_account, gameSummary.players.toString(), usersColorTheme))
 
         // Likes
-        layout.addView(this.infoView(R.drawable.icon_heart, likes.toString(), context))
+        layout.addView(this.infoView(R.drawable.icon_heart, gameSummary.likes.toString(), likesColorTheme))
 
         return layout
     }
 
 
-    private fun infoRowViewLayout(context : Context) : LinearLayout
+    private fun infoRowViewLayout() : LinearLayout
     {
         val layout          = LinearLayoutBuilder()
 
@@ -345,7 +376,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
     private fun infoView(iconId : Int,
                          descriptionString : String,
-                         context : Context) : LinearLayout
+                         colorTheme : ColorTheme) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -364,7 +395,7 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.margin.rightDp   = 10f
+        layout.margin.rightDp   = 15f
 
         layout.child(icon)
               .child(info)
@@ -372,17 +403,18 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 16
-        icon.heightDp           = 16
+        icon.widthDp            = 18
+        icon.heightDp           = 18
 
         icon.image              = iconId
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        icon.color              = this.appSettings.color(iconColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
+//        icon.color              = theme.colorOrBlack(colorTheme)
 
-        icon.margin.rightDp     = 5f
+        icon.margin.rightDp     = 4f
 
         // (3 B) Info
         // -------------------------------------------------------------------------------------
@@ -394,14 +426,16 @@ class OpenSheetOfficialGamesActivity : AppCompatActivity()
 
         val infoColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        info.color        = this.appSettings.color(infoColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        info.color        = theme.colorOrBlack(infoColorTheme)
+//        info.color        = theme.colorOrBlack(colorTheme)
+
 
         info.font         = Font.typeface(TextFont.default(),
                                           TextFontStyle.Regular,
                                           context)
 
-        info.sizeSp       = 15f
+        info.sizeSp       = 18f
 
         return layout.linearLayout(context)
     }

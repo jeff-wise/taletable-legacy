@@ -18,7 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.OpenSheetOfficialGamesActivity
+import com.kispoko.tome.activity.official.OfficialGamesListActivity
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
@@ -132,7 +132,7 @@ class OpenSheetActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         val onTemplateButtonClick = View.OnClickListener {
-            val intent = Intent(this, OpenSheetOfficialGamesActivity::class.java)
+            val intent = Intent(this, OfficialGamesListActivity::class.java)
             this.startActivity(intent)
         }
         val fromTemplateButtonView =

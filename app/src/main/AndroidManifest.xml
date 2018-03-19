@@ -12,13 +12,13 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activity.load.LoadActivity"
+            android:name=".activity.test.TestSessionActivity"
             android:label="Open Sheet"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
 
         <activity
@@ -114,11 +114,17 @@
             android:label="Navigate"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.official.OpenSheetOfficialGamesActivity"
+            android:name=".activity.official.OfficialGamesListActivity"
             android:label="Games"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
-            android:name=".activity.official.sheets.OpenSheetOfficialSheetsActivity"
+            android:name=".activity.official.heroes.OpenSheetOfficialSheetsActivity"
             android:label="Official Sheets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -128,10 +134,6 @@
         <activity
             android:name=".activity.nav.GameNavigationActivity"
             android:label="Games"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.game.rulebook.RulebookActivity"
-            android:label="Rulebook"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.sheet.procedure.RunProcedureActivity"

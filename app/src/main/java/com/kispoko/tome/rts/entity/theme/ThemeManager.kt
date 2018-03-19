@@ -5,6 +5,7 @@ package com.kispoko.tome.rts.entity.theme
 import android.content.Context
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.official.OfficialTheme
 import com.kispoko.tome.rts.official.OfficialManager
 import effect.*
@@ -67,9 +68,15 @@ object ThemeManager
      */
     //fun theme(themeId : ThemeId) : Theme? = this.themeById[themeId]
 
-    fun theme(themeId : ThemeId) : AppEff<Theme> =
+    fun theme(themeId : ThemeId) : AppEff<Theme> = when (themeId)
+    {
+        is ThemeId.Light -> effValue(officialThemeLight)
+        else -> {
             note(this.themeById[themeId],
-                 AppThemeError(ThemeDoesNotExist(themeId)))
+                    AppThemeError(ThemeDoesNotExist(themeId)))
+        }
+
+    }
 
 
     fun color(themeId : ThemeId, colorTheme: ColorTheme) : Int?

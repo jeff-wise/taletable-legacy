@@ -18,7 +18,8 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.game.engine.EngineValue
+import com.kispoko.tome.model.game.engine.EngineValueNumber
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -28,6 +29,7 @@ import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.updateVariable
 import com.kispoko.tome.util.Util
 
 
@@ -47,6 +49,7 @@ class NumberEditorDialog : DialogFragment()
     private var updateTarget : UpdateTarget? = null
     private var entityId     : EntityId?     = null
 
+    // TODO use update target to get these parameters
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -56,7 +59,7 @@ class NumberEditorDialog : DialogFragment()
     {
         fun newInstance(currentValue : Double,
                         title : String,
-                        updateTarget: UpdateTarget,
+                        updateTarget : UpdateTarget,
                         entityId : EntityId) : NumberEditorDialog
         {
             val dialog = NumberEditorDialog()
@@ -541,6 +544,12 @@ class NumberEditorViewBuilder(val currentValue : Double,
                                                         this.valueString.toDouble())
                     Log.d("***NUMBER EDITOR DIALOG", "number part update: $numberPartUpdate")
                     Router.send(MessageSheetUpdate(numberPartUpdate))
+                    dialog.dismiss()
+                }
+                is UpdateTargetVariable ->
+                {
+                    val newValue = EngineValueNumber(this.valueString.toDouble())
+                    updateVariable(updateTarget.variableId, newValue, entityId)
                     dialog.dismiss()
                 }
 //                is UpdateTargetSummationNumberTerm ->

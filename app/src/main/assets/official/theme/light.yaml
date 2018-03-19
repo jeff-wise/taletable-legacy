@@ -100,12 +100,16 @@ palette:
   color: '#9F9F9F'
 - color_id: cyan_4
   color: '#1887C0'
-- color_id: green
+- color_id: green_old
   color: '#1BC058'
+- color_id: green_old2
+  color: '#45BD71'
+- color_id: green
+  color: '#45BD72'
 - color_id: green_90
-  color: '#E61BC058'
+  color: '#E645BD72'
 - color_id: green_80
-  color: '#CD1BC058'
+  color: '#CD45BD72'
 - color_id: green_70
   color: '#B21BC058'
 - color_id: green_60

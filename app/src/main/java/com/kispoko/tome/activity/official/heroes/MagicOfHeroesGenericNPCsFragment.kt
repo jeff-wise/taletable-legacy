@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.official.sheets.heroes
+package com.kispoko.tome.activity.official.heroes
 
 
 import android.content.Context
@@ -15,22 +15,25 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.RecyclerViewBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.official.HeroesCreatureSheetSummary
+import com.kispoko.tome.official.HeroesGenericNPCSheetSummary
 import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 
 
 
 /**
- * The Magic Of Heroes Creatures Fragment
+ * The Magic of Heroes NPCs Fragment
  */
-class MagicOfHeroesCreaturesFragment : Fragment()
+class MagicOfHeroesGenericNPCsFragment : Fragment()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -46,9 +49,9 @@ class MagicOfHeroesCreaturesFragment : Fragment()
 
     companion object
     {
-        fun newInstance(themeId : ThemeId) : MagicOfHeroesCreaturesFragment
+        fun newInstance(themeId : ThemeId) : MagicOfHeroesGenericNPCsFragment
         {
-            val fragment = MagicOfHeroesCreaturesFragment()
+            val fragment = MagicOfHeroesGenericNPCsFragment()
 
             val args = Bundle()
             args.putSerializable("theme_id", themeId)
@@ -96,11 +99,11 @@ class MagicOfHeroesCreaturesFragment : Fragment()
         val layout = this.viewLayout(themeId, context)
 
         // Recycler View
-        val creatureManifest = OfficialManager.heroesCreatureSheetManifest(context)
-        if (creatureManifest != null)
+        val npcManifest = OfficialManager.heroesGenericNPCSheetManifest(context)
+        if (npcManifest != null)
         {
-            val summaries = creatureManifest.summaries
-            layout.addView(this.creatureSummaryRecyclerView(summaries, themeId, context))
+            val summaries = npcManifest.summaries
+            layout.addView(this.npcSummaryRecyclerView(summaries, themeId, context))
         }
 
         return layout
@@ -123,9 +126,9 @@ class MagicOfHeroesCreaturesFragment : Fragment()
     }
 
 
-    private fun creatureSummaryRecyclerView(summaries : List<HeroesCreatureSheetSummary>,
-                                            themeId : ThemeId,
-                                            context : Context) : RecyclerView
+    private fun npcSummaryRecyclerView(summaries : List<HeroesGenericNPCSheetSummary>,
+                                       themeId : ThemeId,
+                                       context : Context) : RecyclerView
     {
         val recyclerView                = RecyclerViewBuilder()
 
@@ -134,9 +137,9 @@ class MagicOfHeroesCreaturesFragment : Fragment()
 
         recyclerView.layoutManager      = LinearLayoutManager(context)
 
-        recyclerView.adapter            = CreatureSummaryRecyclerViewAdapter(summaries,
-                                                                             themeId,
-                                                                             context)
+        recyclerView.adapter            = NPCSummaryRecyclerViewAdapter(summaries,
+                                                                        themeId,
+                                                                        context)
 
         recyclerView.padding.leftDp     = 6f
         recyclerView.padding.rightDp    = 6f
@@ -148,34 +151,35 @@ class MagicOfHeroesCreaturesFragment : Fragment()
 }
 
 
+
 // -----------------------------------------------------------------------------------------
 // SHEET RECYCLER VIEW ADPATER
 // -----------------------------------------------------------------------------------------
 
-class CreatureSummaryRecyclerViewAdapter(val items : List<HeroesCreatureSheetSummary>,
-                                         val themeId : ThemeId,
-                                         val context : Context)
-        : RecyclerView.Adapter<CreatureSummaryViewHolder>()
+class NPCSummaryRecyclerViewAdapter(val items : List<HeroesGenericNPCSheetSummary>,
+                                    val themeId : ThemeId,
+                                    val context : Context)
+        : RecyclerView.Adapter<NPCSummaryViewHolder>()
 {
 
     // -------------------------------------------------------------------------------------
     // RECYCLER VIEW ADAPTER API
     // -------------------------------------------------------------------------------------
 
-    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : CreatureSummaryViewHolder
+    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : NPCSummaryViewHolder
     {
-        return CreatureSummaryViewHolder(CreatureSummaryView.view(themeId, parent.context))
+        return NPCSummaryViewHolder(GenericNPCSummaryView.view(themeId, parent.context))
     }
 
 
-    override fun onBindViewHolder(viewHolder : CreatureSummaryViewHolder, position : Int)
+    override fun onBindViewHolder(viewHolder : NPCSummaryViewHolder, position : Int)
     {
         val summary = this.items[position]
 
         viewHolder.setNameText(summary.name)
         viewHolder.setDescriptionText(summary.description)
         viewHolder.setSummaryText(summary.summary)
-        viewHolder.setCrText(summary.challengeRating.toString())
+        viewHolder.setChallengeText(summary.challengeRating.toString())
 
 //        val activity = context as OpenSheetOfficialSheetsActivity
 //        viewHolder.setOnClick(View.OnClickListener {
@@ -201,18 +205,18 @@ class CreatureSummaryRecyclerViewAdapter(val items : List<HeroesCreatureSheetSum
 /**
  * The View Holder caches a view for each item.
  */
-class CreatureSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
+class NPCSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var layoutView  : LinearLayout? = null
-    var nameView    : TextView?  = null
-    var descView    : TextView?  = null
-    var summaryView : TextView?  = null
-    var crView      : TextView?  = null
+    var layoutView : LinearLayout? = null
+    var nameView   : TextView?  = null
+    var descView   : TextView?  = null
+    var typeView   : TextView?  = null
+    var crView     : TextView?  = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -221,11 +225,11 @@ class CreatureSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
 
     init
     {
-        this.layoutView  = itemView.findViewById(R.id.heroes_creatures_item_layout) as LinearLayout
-        this.nameView    = itemView.findViewById(R.id.heroes_creatures_item_name) as TextView
-        this.descView    = itemView.findViewById(R.id.heroes_creatures_item_description) as TextView
-        this.summaryView = itemView.findViewById(R.id.heroes_creatures_item_summary) as TextView
-        this.crView      = itemView.findViewById(R.id.heroes_creatures_item_challenge) as TextView
+        this.layoutView = itemView.findViewById(R.id.heroes_generic_npc_item_layout) as LinearLayout
+        this.nameView   = itemView.findViewById(R.id.heroes_generic_npc_item_name) as TextView
+        this.descView   = itemView.findViewById(R.id.heroes_generic_npc_item_description) as TextView
+        this.typeView   = itemView.findViewById(R.id.heroes_generic_npc_item_summary) as TextView
+        this.crView     = itemView.findViewById(R.id.heroes_generic_npc_item_challenge) as TextView
     }
 
 
@@ -253,11 +257,11 @@ class CreatureSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
 
     fun setSummaryText(typeString : String)
     {
-        this.summaryView?.text = typeString
+        this.typeView?.text = typeString
     }
 
 
-    fun setCrText(crString : String)
+    fun setChallengeText(crString : String)
     {
         this.crView?.text = crString
     }
@@ -265,7 +269,7 @@ class CreatureSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
 }
 
 
-object CreatureSummaryView
+object GenericNPCSummaryView
 {
 
 
@@ -273,11 +277,11 @@ object CreatureSummaryView
     {
         val layout = this.viewLayout(themeId, context)
 
-        // Name
+        // Header
         layout.addView(this.headerView(themeId, context))
 
-        // Summary
-        layout.addView(this.summaryView(themeId, context))
+        // Name
+        layout.addView(this.nameView(themeId, context))
 
         // Description
         layout.addView(this.descriptionView(themeId, context))
@@ -294,7 +298,7 @@ object CreatureSummaryView
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.id               = R.id.heroes_creatures_item_layout
+        layout.id               = R.id.heroes_generic_npc_item_layout
 
         layout.orientation      = LinearLayout.VERTICAL
 
@@ -311,32 +315,13 @@ object CreatureSummaryView
     }
 
 
-    private fun dividerView(themeId : ThemeId, context : Context) : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 1
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
-
-        layout.margin.topDp     = 5f
-        layout.margin.bottomDp  = 5f
-
-        return layout.linearLayout(context)
-    }
-
-
     private fun headerView(themeId : ThemeId, context : Context) : LinearLayout
     {
         val layout          = this.headerViewLayout(themeId, context)
 
         layout.addView(this.challengeView(themeId, context))
 
-        layout.addView(this.nameView(themeId, context))
+        layout.addView(this.summaryView(themeId, context))
 
         return layout
     }
@@ -365,7 +350,7 @@ object CreatureSummaryView
     {
         val cr                  = TextViewBuilder()
 
-        cr.id                   = R.id.heroes_creatures_item_challenge
+        cr.id                   = R.id.heroes_generic_npc_item_challenge
 
         cr.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         cr.height               = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -396,13 +381,11 @@ object CreatureSummaryView
     }
 
 
-
-
     private fun nameView(themeId : ThemeId, context : Context) : TextView
     {
         val name                = TextViewBuilder()
 
-        name.id                 = R.id.heroes_creatures_item_name
+        name.id                 = R.id.heroes_generic_npc_item_name
 
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -410,13 +393,16 @@ object CreatureSummaryView
         name.padding.leftDp   = 8f
         name.padding.rightDp  = 8f
 
+        name.padding.topDp      = 3f
+        name.padding.bottomDp      = 3f
+
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Medium,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         name.color              = ThemeManager.color(themeId, colorTheme)
 
 
@@ -430,7 +416,7 @@ object CreatureSummaryView
     {
         val desc                = TextViewBuilder()
 
-        desc.id                 = R.id.heroes_creatures_item_description
+        desc.id                 = R.id.heroes_generic_npc_item_description
 
         desc.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         desc.height             = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -447,10 +433,10 @@ object CreatureSummaryView
 
         desc.sizeSp             = 15f
 
-        desc.padding.leftDp   = 8f
-        desc.padding.rightDp  = 8f
+        desc.padding.leftDp     = 8f
+        desc.padding.rightDp    = 8f
 
-        desc.margin.bottomDp  = 8f
+        desc.margin.bottomDp    = 8f
 
         return desc.textView(context)
     }
@@ -461,7 +447,7 @@ object CreatureSummaryView
     {
         val summary             = TextViewBuilder()
 
-        summary.id              = R.id.heroes_creatures_item_summary
+        summary.id              = R.id.heroes_generic_npc_item_summary
 
         summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
         summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -493,6 +479,5 @@ object CreatureSummaryView
 
         return summary.textView(context)
     }
-
 
 }

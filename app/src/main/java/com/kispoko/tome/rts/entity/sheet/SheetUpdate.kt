@@ -4,6 +4,7 @@ package com.kispoko.tome.rts.entity.sheet
 
 import com.kispoko.tome.app.ApplicationEvent
 import com.kispoko.tome.model.game.engine.value.ValueId
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import java.io.Serializable
@@ -182,6 +183,8 @@ data class UpdateTargetStoryWidgetPart(val storyWidgetId : UUID,
                                        val partIndex : Int) : UpdateTarget()
 
 data class UpdateTargetSummationNumberTerm(val termId : UUID) : UpdateTarget()
+
+data class UpdateTargetVariable(val variableId : VariableId) : UpdateTarget()
 
 
 

@@ -1180,8 +1180,9 @@ typealias DB_WidgetExpanderValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetExpanderFormatTable =
-    Table7("widget_expander_format",
+    Table8("widget_expander_format",
            "widget_format",
+           "view_type",
            "header_open_format",
            "header_closed_format",
            "header_label_open_format",
@@ -1191,7 +1192,8 @@ val widgetExpanderFormatTable =
 
 
 typealias DB_WidgetExpanderFormatValue =
-    RowValue7<ProdValue<WidgetFormat>,
+    RowValue8<ProdValue<WidgetFormat>,
+              PrimValue<ExpanderWidgetViewType>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
