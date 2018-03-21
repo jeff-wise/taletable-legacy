@@ -3,7 +3,7 @@ campaign_id: isara
 settings:
   theme_id: light
   sheet_name: 'Casmey Dalseya'
-  sheet_summary: 'Level 1 Human Rogue'
+  sheet_summary: 'Level 1 Human Fighter - A swashbuckling heroin with a quick wit and a quicker sword.'
 engine:
   value_sets:
   mechanics:
@@ -3195,7 +3195,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_80
+                        color_id: light_blue_90
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -3264,7 +3264,7 @@ sections:
               story_part_variable:
                 format:
                   highlight_skew: 0.68
-                  highlight_corner_radius: 25
+                  highlight_corner_radius: 18
                 variable_id: deity
                 format:
                   margins:
@@ -3274,7 +3274,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_80
+                        color_id: light_blue_90
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -4059,7 +4059,7 @@ sections:
                   - theme_id: light
                     color_id: dark_grey_18
                 font_style: bold
-                size: 14
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -4432,7 +4432,7 @@ sections:
               info_format:
                 style: limit_label_max_right
               bar_format:
-                bar_height: 13
+                bar_height: 10
                 bar_style: simple
                 limit_format:
                   color_theme:

@@ -135,14 +135,16 @@ typealias DB_BookFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val bookInfoTable =
-    Table3("book_info",
+    Table4("book_info",
            "title",
+           "summary",
            "authors",
            "abstract")
 
 
 typealias DB_BookInfoValue =
-    RowValue3<PrimValue<BookTitle>,
+    RowValue4<PrimValue<BookTitle>,
+              PrimValue<BookSummary>,
               CollValue<Author>,
               PrimValue<BookAbstract>>
 
@@ -1200,6 +1202,32 @@ typealias DB_WidgetExpanderFormatValue =
               ProdValue<TextFormat>,
               ProdValue<TextFormat>,
               ProdValue<TextFormat>>
+
+
+// WIDGET: IMAGE
+// ---------------------------------------------------------------------------------------------
+
+val widgetImageTable =
+    Table3("widget_image",
+           "widget_id",
+           "format",
+           "official_images")
+
+typealias DB_WidgetImageValue =
+    RowValue3<PrimValue<WidgetId>,
+              ProdValue<ImageWidgetFormat>,
+              PrimValue<OfficialImageIdList>>
+
+
+// WIDGET: IMAGE FORMAT
+// ---------------------------------------------------------------------------------------------
+
+val widgetImageFormatTable =
+    Table1("widget_image_format",
+           "widget_format")
+
+typealias DB_WidgetImageFormatValue =
+    RowValue1<ProdValue<WidgetFormat>>
 
 
 // WIDGET: LIST

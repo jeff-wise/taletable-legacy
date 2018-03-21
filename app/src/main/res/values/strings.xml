@@ -31,6 +31,9 @@
 
     <string name="rules_excerpt">Rules Excerpt</string>
 
+    <string name="session">Session</string>
+    <string name="go_to">Go To</string>
+
     <string name="choose_game">What game do you play?</string>
     <string name="open_official_sheet">Open Official Sheet</string>
 

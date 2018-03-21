@@ -1,6 +1,7 @@
 id: isara
-campaign_name: Isara
-campaign_summary: 'Isara'
+campaign_name: 'Isara'
+campaign_summary: 'Isara is a world governed by the laws of magic. Mythical beasts and world-shattering
+                   magical power are not lost in dusty tomes, but part of everyday life.'
 game_id: magic_of_heroes
 engine:
   value_sets:

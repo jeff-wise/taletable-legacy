@@ -3,6 +3,7 @@ package com.kispoko.tome.lib.ui;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,6 +41,8 @@ public class ImageViewBuilder implements ViewBuilder
     public Margins                  margin;
 
     public Integer                  image;
+
+    public Bitmap                   bitmap;
 
     public IconSize                 iconSize;
 
@@ -139,6 +142,13 @@ public class ImageViewBuilder implements ViewBuilder
                 this.padding.top(context),
                 this.padding.right(context),
                 this.padding.bottom(context));
+
+        // > Bitmap
+        // --------------------------------------------------------------------------------------
+
+        if (this.bitmap != null)
+            imageView.setImageBitmap(this.bitmap);
+
 
         // > Image
         // --------------------------------------------------------------------------------------

@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
-import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -21,8 +20,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.open
-import com.kispoko.tome.activity.entity.engine.procedure.ProcedureDialog
 import com.kispoko.tome.activity.session.LoadSessionDialog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.book.BookId
@@ -30,19 +27,17 @@ import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.model.sheet.widget.HighlightSkew
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.official.HeroesCharacterSheetSummary
+import com.kispoko.tome.official.games.HeroesCharacterSheetSummary
 import com.kispoko.tome.rts.entity.*
-import com.kispoko.tome.rts.entity.sheet.UpdateTargetActionWidget
 import com.kispoko.tome.rts.official.OfficialManager
-import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.rts.session.SessionId
 import com.kispoko.tome.util.Util
 
 
+
 /**
- * Amanace Character Sheet List Fragment
+ * Magic Of Heroes Official Characters
  */
 class MagicOfHeroesCharactersFragment : Fragment()
 {

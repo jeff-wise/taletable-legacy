@@ -37,19 +37,19 @@ object ThemeManager
     // OFFICIAL
     // -----------------------------------------------------------------------------------------
 
-    suspend fun loadOfficialThemes(context : Context)
-    {
-
-        // TODO review this logic/process. what if it fails? shouldn't ever fail though.
-        // TODO test that themes load correctly
-        if (!officialThemesLoaded)
-        {
-            OfficialManager.loadTheme(OfficialTheme.Dark, context)
-            OfficialManager.loadTheme(OfficialTheme.Light, context)
-
-            officialThemesLoaded = true
-        }
-    }
+//    suspend fun loadOfficialThemes(context : Context)
+//    {
+//
+//        // TODO review this logic/process. what if it fails? shouldn't ever fail though.
+//        // TODO test that themes load correctly
+//        if (!officialThemesLoaded)
+//        {
+//            OfficialManager.loadTheme(OfficialTheme.Dark, context)
+//            OfficialManager.loadTheme(OfficialTheme.Light, context)
+//
+//            officialThemesLoaded = true
+//        }
+//    }
 
 
     // -----------------------------------------------------------------------------------------

@@ -70,8 +70,6 @@ class TestSessionActivity : AppCompatActivity()
 
         val context = this
         launch(UI) {
-            ThemeManager.loadOfficialThemes(context)
-
             val sheetLoader = OfficialSheetLoader("Casmey",
                                                   sheetId,
                                                   CampaignId("isara"),

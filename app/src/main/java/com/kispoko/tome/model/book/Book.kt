@@ -19,6 +19,7 @@ import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.Entity
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -44,7 +45,7 @@ data class Book(override val id : UUID,
                 val introduction : Maybe<BookContent>,
                 val conclusion : Maybe<BookContent>,
                 val chapters : MutableList<BookChapter>)
-                     : ToDocument, ProdType, Serializable
+                 : ToDocument, Entity, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -155,6 +156,16 @@ data class Book(override val id : UUID,
 
 
     fun chapters() : List<BookChapter> = this.chapters
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENTITY
+    // -----------------------------------------------------------------------------------------
+
+    override fun name() = this.bookInfo.title.value
+
+
+    override fun summary() = this.bookInfo.summary.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -316,6 +327,7 @@ data class BookId(val value : String) : ToDocument, SQLSerializable, Serializabl
  */
 data class BookInfo(override val id : UUID,
                     val title : BookTitle,
+                    val summary : BookSummary,
                     val authors : List<Author>,
                     val abstract : BookAbstract)
                      : ToDocument, ProdType, Serializable
@@ -326,10 +338,12 @@ data class BookInfo(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(title : BookTitle,
+                summary : BookSummary,
                 authors : List<Author>,
                 abstract : BookAbstract)
         : this(UUID.randomUUID(),
                title,
+               summary,
                authors,
                abstract)
 
@@ -343,6 +357,8 @@ data class BookInfo(override val id : UUID,
                 apply(::BookInfo,
                       // Title
                       doc.at("title") apply { BookTitle.fromDocument(it) },
+                      // Summary
+                      doc.at("summary") apply { BookSummary.fromDocument(it) },
                       // Authors
                       doc.list("authors") apply { it.map { Author.fromDocument(it) } },
                       // Abstract
@@ -360,6 +376,7 @@ data class BookInfo(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "title" to this.title().toDocument(),
+        "summary" to this.summary().toDocument(),
         "abstract" to this.abstract().toDocument()
     ))
 
@@ -369,6 +386,9 @@ data class BookInfo(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun title() : BookTitle = this.title
+
+
+    fun summary() : BookSummary = this.summary
 
 
     fun authors() : List<Author> = this.authors
@@ -388,8 +408,9 @@ data class BookInfo(override val id : UUID,
 
 
     override fun rowValue() : DB_BookInfoValue =
-        RowValue3(bookInfoTable,
+        RowValue4(bookInfoTable,
                   PrimValue(this.title),
+                  PrimValue(this.summary),
                   CollValue(this.authors),
                   PrimValue(this.abstract))
 
@@ -414,6 +435,42 @@ data class BookTitle(val value : String) : ToDocument, SQLSerializable, Serializ
         {
             is DocText -> effValue(BookTitle(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
+ * Book Summary
+ */
+data class BookSummary(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookSummary>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookSummary> = when (doc)
+        {
+            is DocText -> effValue(BookSummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 

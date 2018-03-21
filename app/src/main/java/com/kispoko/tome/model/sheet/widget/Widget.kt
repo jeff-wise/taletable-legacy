@@ -86,7 +86,7 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
                                             // as ValueParser<Widget>
                     "widget_expander" -> ExpanderWidget.fromDocument(doc)
                                            //  as ValueParser<Widget>
-//                    "widget_image"    -> ImageWidget.fromDocument(doc)
+                    "widget_image"    -> ImageWidget.fromDocument(doc)
 //                                            as ValueParser<Widget>
                     "widget_list"     -> ListWidget.fromDocument(doc)
                                             as ValueParser<Widget>
@@ -212,7 +212,10 @@ object WidgetView
         val height = widgetFormat.elementFormat().height()
         when (height)
         {
-            is Height.Wrap  -> layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+            is Height.Wrap  -> {
+                layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+                layout.layoutGravity      = widgetFormat.elementFormat().verticalAlignment().gravityConstant()
+            }
             is Height.Fixed -> layout.heightDp = height.value.toInt()
         }
 
@@ -981,105 +984,111 @@ data class ExpanderWidget(override val id : UUID,
 /**
  * Image Widget
  */
-//data class ImageWidget(override val id : UUID,
-//                       val widgetId : Prim<WidgetId>,
-//                       val format : Prod<ImageWidgetFormat>) : Widget()
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.widgetId.name  = "widget_id"
-//        this.format.name    = "format"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : ImageWidgetFormat)
-//        : this(UUID.randomUUID(),
-//               Prim(widgetId),
-//               Prod(format))
-//
-//
-//    companion object : Factory<Widget>
-//    {
-//        override fun fromDocument(doc : SchemaDoc) : ValueParser<Widget> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                effApply(::ImageWidget,
-//                         // Widget Name
-//                         doc.at("id") ap { WidgetId.fromDocument(it) },
-//                         // Format
-//                         doc.at("format") ap { ImageWidgetFormat.fromDocument(it) }
-//                        )
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "id" to this.widgetId().toDocument(),
-//        "format" to this.format().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun widgetId() : WidgetId = this.widgetId.value
-//
-//    fun format() : ImageWidgetFormat = this.format.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // WIDGET
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
-//
-//    override fun view(sheetUIContext: SheetUIContext): View {
-//        TODO("not implemented")
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name : String = "widget_image"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<com.kispoko.tome.lib.functor.Val<*>> =
-//            listOf(this.widgetId,
-//                   this.format)
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // SHEET COMPONENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onSheetComponentActive(sheetUIContext: SheetUIContext) {
-//        TODO("not implemented")
-//    }
-//
-//}
+data class ImageWidget(override val id : UUID,
+                       val widgetId : WidgetId,
+                       val format : ImageWidgetFormat,
+                       val officialImageIds : MutableList<OfficialImageId>) : Widget()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : ImageWidgetFormat,
+                officialImageIds : MutableList<OfficialImageId>)
+        : this(UUID.randomUUID(),
+               widgetId,
+               format,
+               officialImageIds)
+
+
+    companion object : Factory<Widget>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Widget> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ImageWidget,
+                      // Widget Name
+                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(ImageWidgetFormat.default()),
+                            { ImageWidgetFormat.fromDocument(it) }),
+                      // Official Image Id
+                      split(doc.maybeList("official_images"),
+                            effValue(mutableListOf()),
+                            { it.mapMut { OfficialImageId.fromDocument(it) } })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.widgetId().toDocument(),
+        "format" to this.format().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : ImageWidgetFormat = this.format
+
+
+    fun officialImageIds() : List<OfficialImageId> = this.officialImageIds
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun widgetId() : WidgetId = this.widgetId
+
+
+    override fun view(entityId : EntityId, context : Context) : View
+    {
+        val viewBuilder = ImageWidgetUI(this, entityId, context)
+        return viewBuilder.view()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // PROD TYPE
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_WidgetImageValue =
+        RowValue3(widgetImageTable,
+                  PrimValue(this.widgetId),
+                  ProdValue(this.format),
+                  PrimValue(OfficialImageIdList(this.officialImageIds)))
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
+    }
+
+}
 
 
 /**

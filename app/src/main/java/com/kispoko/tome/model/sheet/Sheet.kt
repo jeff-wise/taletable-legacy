@@ -25,6 +25,7 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*
+import com.kispoko.tome.rts.entity.Entity
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.EntitySheetId
 import com.kispoko.tome.rts.entity.addVariable
@@ -48,7 +49,7 @@ data class Sheet(override val id : UUID,
                  private var engine : Engine,
                  private var variables : MutableList<Variable>,
                  private var settings : Settings)
-                  : ProdType, ToDocument, Serializable
+                  : Entity, ProdType, ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -183,6 +184,16 @@ data class Sheet(override val id : UUID,
 
 
     fun variables() : List<Variable> = this.variables
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENTITY
+    // -----------------------------------------------------------------------------------------
+
+    override fun name() : String = this.settings.sheetName()
+
+
+    override fun summary() : String = this.settings.sheetSummary()
 
 
     // -----------------------------------------------------------------------------------------

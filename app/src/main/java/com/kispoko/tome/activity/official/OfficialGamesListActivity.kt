@@ -19,7 +19,12 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.heroes.OpenSheetOfficialSheetsActivity
+import com.kispoko.tome.activity.official.fifth_ed_srd.FifthEdSRDCharactersFragment
+import com.kispoko.tome.activity.official.fifth_ed_srd.OpenFifthEdSRDSessionActivity
+import com.kispoko.tome.activity.official.heroes.OpenHeroesSessionActivity
+import com.kispoko.tome.activity.official.magic_carnival.OpenMagicCarnivalSessionActivity
+import com.kispoko.tome.activity.official.pathfinder_one_srd.OpenPathfinderOneSRDSessionActivity
+import com.kispoko.tome.activity.official.starfinder_srd.OpenStarfinderSRDSessionActivity
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.GameId
@@ -238,9 +243,34 @@ class GamesListUI(val gameManifest: GameManifest,
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.onClick          = View.OnClickListener {
-            val intent = Intent(activity, OpenSheetOfficialSheetsActivity::class.java)
-            intent.putExtra("game_id", gameId)
-            activity.startActivity(intent)
+            when (gameId.value)
+            {
+                "magic_of_heroes" -> {
+                    val intent = Intent(activity, OpenHeroesSessionActivity::class.java)
+                    intent.putExtra("game_id", gameId)
+                    activity.startActivity(intent)
+                }
+                "5e_srd" -> {
+                    val intent = Intent(activity, OpenFifthEdSRDSessionActivity::class.java)
+                    intent.putExtra("game_id", gameId)
+                    activity.startActivity(intent)
+                }
+                "pathfinder_srd" -> {
+                    val intent = Intent(activity, OpenPathfinderOneSRDSessionActivity::class.java)
+                    intent.putExtra("game_id", gameId)
+                    activity.startActivity(intent)
+                }
+                "starfinder_srd" -> {
+                    val intent = Intent(activity, OpenStarfinderSRDSessionActivity::class.java)
+                    intent.putExtra("game_id", gameId)
+                    activity.startActivity(intent)
+                }
+                "magic_carnival" -> {
+                    val intent = Intent(activity, OpenMagicCarnivalSessionActivity::class.java)
+                    intent.putExtra("game_id", gameId)
+                    activity.startActivity(intent)
+                }
+            }
         }
 
         return layout.linearLayout(context)
@@ -346,6 +376,9 @@ class GamesListUI(val gameManifest: GameManifest,
 
             "Sci-Fi" -> {
                 layout.addView(this.infoView(R.drawable.icon_planet, genre, usersColorTheme))
+            }
+            "Mixed-Bag" -> {
+                layout.addView(this.infoView(R.drawable.icon_magic_lamp, genre, usersColorTheme))
             }
         }
 

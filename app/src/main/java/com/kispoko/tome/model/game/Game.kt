@@ -19,6 +19,7 @@ import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.variable.VariableTag
 import com.kispoko.tome.model.game.engine.variable.VariableTagSet
+import com.kispoko.tome.rts.entity.Entity
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -42,7 +43,7 @@ data class Game(override val id : UUID,
                 val authors : MutableList<Author>,
                 val engine : Engine,
                 val bookIds : List<BookId>)
-                 : ToDocument, ProdType, Serializable
+                 : ToDocument, Entity, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -157,6 +158,16 @@ data class Game(override val id : UUID,
                              CollValue(this.authors),
                              ProdValue(this.engine),
                              PrimValue(GameBookIds(this.bookIds)))
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENTITY
+    // -----------------------------------------------------------------------------------------
+
+    override fun name() = this.gameName.value
+
+
+    override fun summary() = this.gameSummary.value
 
 
     // -----------------------------------------------------------------------------------------

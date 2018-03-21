@@ -5,12 +5,12 @@ package com.kispoko.tome.load
 import android.content.Context
 import com.kispoko.tome.ApplicationAssets
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.app.assetInputStream
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.theme.Theme
-import com.kispoko.tome.rts.official.OfficialManager.assetInputStream
 import effect.*
 import lulo.SchemaParseError
 import lulo.SchemaParseValue

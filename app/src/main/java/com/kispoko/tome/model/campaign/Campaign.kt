@@ -14,6 +14,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.rts.entity.Entity
 import effect.apply
 import effect.effError
 import effect.effValue
@@ -34,7 +35,7 @@ data class Campaign(override val id : UUID,
                     val campaignName : CampaignName,
                     val campaignSummary : CampaignSummary,
                     val gameId : GameId)
-                     : ProdType, Serializable
+                     : Entity, ProdType, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -113,6 +114,16 @@ data class Campaign(override val id : UUID,
                                  PrimValue(campaignName),
                                  PrimValue(campaignSummary),
                                  PrimValue(gameId))
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENTITY
+    // -----------------------------------------------------------------------------------------
+
+    override fun name() = this.campaignName()
+
+
+    override fun summary() = this.campaignSummary()
 
 }
 

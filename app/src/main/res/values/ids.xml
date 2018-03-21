@@ -158,6 +158,12 @@
     <item name="game_nav_item_header" type="id"/>
     <item name="game_nav_item_summary" type="id"/>
 
+    <!-- MAGIC CARNIVAL CREATURE SHEETS FRAGMENT -->
+    <item name="item_description" type="id"/>
+    <item name="item_summary" type="id"/>
+    <item name="item_open_button" type="id"/>
+    <item name="item_more_info" type="id"/>
+
     <!-- MAGIC OF HEROES CHARACTER SHEETS FRAGMENT -->
     <item name="heroes_chars_item_layout" type="id"/>
     <item name="heroes_chars_item_name" type="id"/>
@@ -176,6 +182,18 @@
     <item name="heroes_creatures_item_name" type="id"/>
     <item name="heroes_creatures_item_description" type="id"/>
     <item name="heroes_creatures_item_summary" type="id"/>
+
+    <!-- MAGIC CARNIVAL CREATURE SHEETS FRAGMENT -->
+    <item name="carnival_creatures_item_layout" type="id"/>
+    <item name="carnival_creatures_item_name" type="id"/>
+    <item name="carnival_creatures_item_cr" type="id"/>
+    <item name="carnival_creatures_item_size" type="id"/>
+    <item name="carnival_creatures_item_type" type="id"/>
+    <item name="carnival_creatures_item_description" type="id"/>
+    <item name="carnival_creatures_item_summary" type="id"/>
+    <item name="carnival_creatures_item_open_button" type="id"/>
+    <item name="carnival_creatures_item_info_button" type="id"/>
+
 
     <!-- AMANACE GENERIC NPC SHEETS FRAGMENT -->
     <item name="heroes_generic_npc_item_layout" type="id"/>

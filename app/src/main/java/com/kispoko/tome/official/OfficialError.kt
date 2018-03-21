@@ -26,6 +26,17 @@ class GameManifestParseError(val errorString : String) : OfficialError()
 }
 
 
+class SheetManifestParseError(val errorString : String) : OfficialError()
+{
+    override fun debugMessage() : String = """
+            |Sheet Manifest Parse Error:
+            |    $errorString
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
 class HeroesCharSheetManifestParseError(val errorString : String) : OfficialError()
 {
     override fun debugMessage() : String = """

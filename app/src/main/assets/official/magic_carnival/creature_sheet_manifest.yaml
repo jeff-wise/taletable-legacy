@@ -1,0 +1,15 @@
+summaries:
+- name: Doge
+  id: creature_doge
+  summary: >
+    A circus performer as a kid and a pirate as a teengaer, Casmey is now a reluctant adult looking for a
+    new adventure
+  description: >
+    A circus performer as a kid and a pirate as a teengaer, Casmey is now a reluctant adult looking for a
+    new adventure. That shouldn't be hard though -- she's always been quite talented at finding trouble. Since her days
+    on the trapeze, she's been most comfortable perched in precarious situations, where a tiny mistake
+    leads to a painful fall. When she does fall -- and she has many times -- she tends
+    to land on her feet, ready to climb back up.
+  cr: 3
+  size: Small
+  type: Faerie Meme

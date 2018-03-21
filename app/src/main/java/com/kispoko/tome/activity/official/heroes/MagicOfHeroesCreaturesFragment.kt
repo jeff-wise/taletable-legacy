@@ -21,7 +21,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.official.HeroesCreatureSheetSummary
+import com.kispoko.tome.official.games.HeroesCreatureSheetSummary
 import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 
@@ -177,7 +177,7 @@ class CreatureSummaryRecyclerViewAdapter(val items : List<HeroesCreatureSheetSum
         viewHolder.setSummaryText(summary.summary)
         viewHolder.setCrText(summary.challengeRating.toString())
 
-//        val activity = context as OpenSheetOfficialSheetsActivity
+//        val activity = context as OpenHeroesSessionActivity
 //        viewHolder.setOnClick(View.OnClickListener {
 //            val viewBuilder = VariantsViewBuilder(summary.name,
 //                                                  sheetVariants,

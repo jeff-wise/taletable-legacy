@@ -21,10 +21,11 @@ import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.engine.procedure.ProcedureUpdateDialog
+import com.kispoko.tome.activity.session.SessionActivity
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
+import com.kispoko.tome.activity.test.TestSessionActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.procedure.ProcedureInvocation
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
@@ -32,17 +33,17 @@ import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.OnVariableChangeListener
 import com.kispoko.tome.rts.entity.sheet.*
-import com.kispoko.tome.rts.entity.theme.ThemeManager
-import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
 import maybe.Just
 import effect.Val
 import io.reactivex.disposables.CompositeDisposable
+
 
 
 object SheetActivityGlobal
@@ -139,7 +140,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         this.initializeViews()
 
-        this.initializeBottomNavigation()
+        this.initializeFAB()
+
+//        this.initializeBottomNavigation()
 
         // (5) Initialize Sheet
         // -------------------------------------------------------------------------------------
@@ -179,21 +182,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
-    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?)
-    {
-        if (requestCode == SheetActivityRequest.PROCEDURE_INVOCATION) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                if (data != null && data.hasExtra("procedure_invocation")) {
-                    val procedureInvocation = data.getSerializableExtra("procedure_invocation") as ProcedureInvocation
-                    Log.d("***SHEET ACTIVITY", "got procedure invocation")
-                }
-            }
-        }
-
-    }
-
-
     override fun onDestroy()
     {
         super.onDestroy()
@@ -208,7 +196,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
 //        finish()
 //        startActivity(intent)
     }
-
 
 
     // UI
@@ -267,7 +254,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
         this.pagePagerAdapter = pagePagerAdapter
 
         this.viewPager = this.findViewById(R.id.page_pager) as ViewPager
-        this.viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
+//        this.viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
 
         this.viewPager?.adapter = pagePagerAdapter
         val sheetActivity = this
@@ -298,12 +285,23 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
+    private fun initializeFAB()
+    {
+        val fab = findViewById(R.id.session_button) as FloatingActionButton
+        fab.setOnClickListener {
+            val intent = Intent(this, SessionActivity::class.java)
+            finish()
+            startActivity(intent)
+        }
+    }
+
+
     private fun initializeBottomNavigation()
     {
 //        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
 //        this.bottomNavigation = bottomNavigation
-        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as LinearLayout
-        this.bottomNavigation = bottomNavigation
+//        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as LinearLayout
+//        this.bottomNavigation = bottomNavigation
     }
 
 
@@ -340,8 +338,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
     {
-        val viewBuilder = BottomNavigationViewBuilder(uiColors, sheetId, this)
-        this.bottomNavigation?.addView(viewBuilder.view())
+//        val viewBuilder = BottomNavigationViewBuilder(uiColors, sheetId, this)
+//        this.bottomNavigation?.addView(viewBuilder.view())
     }
 
 
@@ -358,9 +356,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
     override fun rootSheetView() : View? = this.viewPager
 
 
-    fun applyTheme(sheetId : SheetId, uiColors : UIColors)
+    fun applyTheme(theme : Theme)
     {
-        val entityId = EntitySheetId(sheetId)
+        val uiColors = theme.uiColors()
 
         // STATUS BAR
         // -------------------------------------------------------------------------------------
@@ -371,7 +369,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = colorOrBlack(uiColors.toolbarBackgroundColorId(), entityId)
+            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
         }
 
         // TOOLBAR
@@ -379,10 +377,10 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val toolbar = findViewById(R.id.toolbar) as Toolbar
 
         // Toolbar > Background
-        toolbar.setBackgroundColor(colorOrBlack(uiColors.toolbarBackgroundColorId(), entityId))
+        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
 
         // Toolbar > Icons
-        var iconColor = colorOrBlack(uiColors.toolbarIconsColorId(), entityId)
+        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
 
         val menuLeftButton = this.findViewById(R.id.menuLeft) as ImageView
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
@@ -396,26 +394,25 @@ class SheetActivity : AppCompatActivity(), SheetUI
         // TITLE
         // -------------------------------------------------------------------------------------
         val titleView = this.findViewById(R.id.toolbar_title) as TextView
-        titleView.setTextColor(colorOrBlack(uiColors.toolbarTitleColorId(), entityId))
+        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
         // TAB LAYOUT
         // -------------------------------------------------------------------------------------
         val tabLayout = this.findViewById(R.id.tab_layout) as CustomTabLayout
 
         // Tab Layout > Background
-        tabLayout.setBackgroundColor(colorOrBlack(uiColors.tabBarBackgroundColorId(), entityId))
+        tabLayout.setBackgroundColor(theme.colorOrBlack(uiColors.tabBarBackgroundColorId()))
 
         // Tab Layout > Text
-        tabLayout.setTabTextColors(colorOrBlack(uiColors.tabTextNormalColorId(), entityId),
-                                   colorOrBlack(uiColors.tabTextSelectedColorId(), entityId))
+        tabLayout.setTabTextColors(theme.colorOrBlack(uiColors.tabTextNormalColorId()),
+                                   theme.colorOrBlack(uiColors.tabTextSelectedColorId()))
 
         // Tab Layout > Underline
-        tabLayout.setSelectedTabIndicatorColor(
-                colorOrBlack(uiColors.tabUnderlineColorId(), entityId))
+        tabLayout.setSelectedTabIndicatorColor(theme.colorOrBlack(uiColors.tabUnderlineColorId()))
 
         // BOTTOM NAVIGATION VIEW
         // -------------------------------------------------------------------------------------
-        this.configureBottomNavigation(sheetId, uiColors)
+//        this.configureBottomNavigation(sheetId, uiColors)
 
     }
 
@@ -475,12 +472,14 @@ class SheetActivity : AppCompatActivity(), SheetUI
     fun renderSheet(sheet : Sheet)
     {
         // Theme UI
-        val theme = ThemeManager.theme(sheet.settings().themeId())
-        when (theme)
-        {
-            is Val -> this.applyTheme(sheet.sheetId(), theme.value.uiColors())
-            is Err -> ApplicationLog.error(theme.error)
-        }
+//        val theme = ThemeManager.theme(sheet.settings().themeId())
+//        when (theme)
+//        {
+//            is Val -> this.applyTheme(sheet.sheetId(), theme.value.uiColors())
+//            is Err -> ApplicationLog.error(theme.error)
+//        }
+
+        this.applyTheme(officialThemeLight)
 
         val start = System.currentTimeMillis()
 

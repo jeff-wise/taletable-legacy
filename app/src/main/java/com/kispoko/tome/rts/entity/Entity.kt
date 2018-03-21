@@ -55,9 +55,9 @@ private var stateById : MutableMap<EntityId, EntityRecord> = mutableMapOf()
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Entity State
+ * Entity Record
  */
-fun entityState(entityId : EntityId) : AppEff<EntityRecord> =
+fun entityRecord(entityId : EntityId) : AppEff<EntityRecord> =
     if (stateById.containsKey(entityId))
         effValue(stateById[entityId]!!)
     else
@@ -529,7 +529,7 @@ fun textValue(valueReference : ValueReference, entityId : EntityId) : AppEff<Val
 // ---------------------------------------------------------------------------------------------
 
 fun entityEngineState(entityId : EntityId) : AppEff<EntityState> =
-        entityState(entityId).apply { effValue<AppError, EntityState>(it.engineState) }
+        entityRecord(entityId).apply { effValue<AppError, EntityState>(it.engineState) }
 
 
 // STATE > Variable
@@ -644,7 +644,7 @@ fun activeMechanicsInCategory(categoryId : MechanicCategoryReference,
 // ---------------------------------------------------------------------------------------------
 
 fun entityThemeId(entityId : EntityId) : AppEff<ThemeId> =
-    entityState(entityId).apply {
+    entityRecord(entityId).apply {
         note<AppError,ThemeId>(it.themeId, AppEntityError(EntityDoesNotHaveTheme(entityId)))
     }
 
@@ -746,6 +746,9 @@ sealed class EntityRecord(open val engineState : EntityState,
                           open val themeId : Maybe<ThemeId>)
 {
     abstract val entityType : EntityType
+
+    abstract fun entity() : Entity
+
 }
 
 
@@ -755,7 +758,11 @@ data class EntitySheetRecord(val sheet : Sheet,
                              override val themeId : Maybe<ThemeId>)
                               : EntityRecord(engineState, themeId)
 {
+
     override val entityType = EntityTypeSheet
+
+    override fun entity() = sheet
+
 }
 
 
@@ -764,7 +771,11 @@ data class EntityCampaignRecord(val campaign : Campaign,
                                 override val themeId : Maybe<ThemeId>)
                                  : EntityRecord(engineState, themeId)
 {
+
     override val entityType = EntityTypeCampaign
+
+    override fun entity() = campaign
+
 }
 
 
@@ -773,7 +784,11 @@ data class EntityGameRecord(val game : Game,
                             override val themeId : Maybe<ThemeId>)
                              : EntityRecord(engineState, themeId)
 {
+
     override val entityType = EntityTypeGame
+
+    override fun entity() = game
+
 }
 
 
@@ -782,8 +797,17 @@ data class EntityBookRecord(val book : Book,
                             override val themeId : Maybe<ThemeId>)
                              : EntityRecord(engineState, themeId)
 {
+
     override val entityType = EntityTypeBook
+
+    override fun entity() = book
+
 }
 
 
 
+interface Entity
+{
+    fun name() : String
+    fun summary() : String
+}

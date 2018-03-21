@@ -267,10 +267,12 @@
     <color name="dark_theme_gold_15">#9C9376</color>
 
     <color name="light_theme_green">#45BD72</color>
+    <color name="light_theme_green_90">#E645BD72</color>
     <color name="light_theme_light_blue">#1887C0</color>
     <color name="light_theme_light_blue_90">#E61887C0</color>
     <color name="light_theme_light_grey_3">#F3F3F3</color>
     <color name="light_theme_light_grey_5">#EAEAEA</color>
+    <color name="light_theme_light_grey_8">#DDDDDD</color>
     <color name="light_theme_dark_grey_4">#2A2A2A</color>
     <color name="light_theme_dark_grey_10">#4A4A4A</color>
 

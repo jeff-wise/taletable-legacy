@@ -41,7 +41,7 @@ import effect.Val
  *
  * Lets the user choose from a collection of pre-made sheets for some official game.
  */
-class OpenSheetOfficialSheetsActivity : AppCompatActivity()
+class OpenHeroesSessionActivity : AppCompatActivity()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ class OpenSheetOfficialSheetsActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         // > Toolbar
-        this.configureToolbar(getString(R.string.sheets))
+        this.configureToolbar("The Magic of Heroes")
 
         // > Theme
         val theme = ThemeManager.theme(this.appSettings.themeId())

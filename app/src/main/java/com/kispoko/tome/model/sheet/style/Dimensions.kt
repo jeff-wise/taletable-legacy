@@ -91,7 +91,7 @@ sealed class Width : ToDocument, SQLSerializable, Serializable
     {
         is Wrap     -> "wrap"
         is Justify  -> "justify"
-        is Fixed -> this.value.toString()
+        is Fixed    -> this.value.toString()
     }
 
 

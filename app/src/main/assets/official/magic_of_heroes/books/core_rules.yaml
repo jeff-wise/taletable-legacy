@@ -1,6 +1,7 @@
 book_id: core_rules
 book_info:
   title: 'Core Rules'
+  summary: 'The core rules for being a player and running a game for Magic of Heroes.'
   authors:
   - name: Jeff Wise
   abstract: |-

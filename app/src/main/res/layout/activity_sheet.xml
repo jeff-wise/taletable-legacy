@@ -99,22 +99,21 @@
             android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingBottom="60dp"
             android:layout_weight="1">
 
             </android.support.v4.view.ViewPager>
 
-        <FrameLayout
-            android:id="@+id/sheet_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:minHeight="40dp"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="60dp"
-            android:background="@color/dark_theme_medium_grey_12">
-        </FrameLayout>
+        <!--<FrameLayout-->
+            <!--android:id="@+id/sheet_toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:visibility="gone"-->
+            <!--android:minHeight="40dp"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_marginBottom="60dp"-->
+            <!--android:background="@color/dark_theme_medium_grey_12">-->
+        <!--</FrameLayout>-->
 
 
         <!--<RelativeLayout-->
@@ -129,25 +128,25 @@
         <!--</RelativeLayout>-->
 
 
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="16dp"-->
-            <!--android:clickable="true"-->
-            <!--android:src="@drawable/ic_fab_random"-->
-            <!--app:layout_anchor="@id/bottom_sheet"-->
-            <!--app:layout_anchorGravity="top|end"-->
-            <!--app:backgroundTint="@color/dark_theme_light_green_13"-->
-            <!--app:rippleColor="#FFF" />-->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/session_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@drawable/ic_fab_session"
+            app:layout_anchor="@id/page_pager"
+            app:layout_anchorGravity="bottom|end"
+            app:backgroundTint="@color/light_theme_light_grey_3"
+            app:rippleColor="#FFF" />
 
-        <LinearLayout
-            android:id="@+id/bottom_navigation"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom" >
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/bottom_navigation"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_gravity="bottom" >-->
+        <!--</LinearLayout>-->
 
 
         <!--<com.aurelhubert.ahbottomnavigation.AHBottomNavigation-->

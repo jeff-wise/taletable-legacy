@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.official
+package com.kispoko.tome.official.games
 
 
 import com.kispoko.culebra.*

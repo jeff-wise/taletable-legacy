@@ -37,6 +37,15 @@ private var activeSessionId : Maybe<SessionId> = Nothing()
 
 
 
+fun activeSession() : Maybe<Session> = activeSessionId ap {
+    val session = sessionById[it]
+    if (session != null)
+        Just(session)
+    else
+        Nothing<Session>()
+}
+
+
 fun newSession(loaders : List<EntityLoader>,
                sessionId : SessionId,
                context : Context) = launch(UI)
@@ -46,6 +55,8 @@ fun newSession(loaders : List<EntityLoader>,
     }.await()
 
     sessionById.put(sessionId, loadedSession)
+
+    activeSessionId = Just(sessionId)
 
     Router.send(MessageSessionLoaded(sessionId))
 }
@@ -61,13 +72,6 @@ fun session(sessionId : SessionId) : Maybe<Session>
 }
 
 
-//fun sessionSheet(sheetId : SheetId) : Maybe<Sheet>
-//{
-//
-//}
-
-
-
 /**
  * Session
  */
@@ -78,12 +82,6 @@ data class Session(val sessionId : SessionId,
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
-
-
-    // -----------------------------------------------------------------------------------------
-    // ADD
-    // -----------------------------------------------------------------------------------------
-
 
     companion object
     {
@@ -109,85 +107,42 @@ data class Session(val sessionId : SessionId,
     }
 
 
-
-//    suspend fun addOfficialSheet(officialSheetId : OfficialSheetId, context : Context)
-//    {
-//        val onLoad : (Sheet) -> Unit = {
-//            launch(UI) {
-//                // Add sheet to session
-//                addSheet(it)
-//
-//                // Broadcast session update
-//                Log.d("***SESSION", "send sheet loaded message")
-//                Router.send(SessionMessageOfficialSheetLoaded(it.sheetId()))
-//            }
-//        }
-//
-//        // Second, make sure campaign is present
-//        addOfficialCampaign(officialSheetId.officialCampaignId(), context)
-//
-//        // Finally, load sheet
-//        OfficialManager.loadSheet(officialSheetId, onLoad, context)
-//
-//    }
-//
-//
-//    suspend fun addOfficialCampaign(officialCampaignId : OfficialCampaignId, context : Context)
-//    {
-//        // Campaign already exists.
-//        when (campaign(officialCampaignId.campaignId)) {
-//            is Just -> return
-//        }
-//
-//        val onLoad : (Campaign) -> Unit = {
-//            launch(UI) {
-//                // Add campaign
-//                addCampaign(it)
-//
-//                // Broadcast session update
-//                Router.send(SessionMessageOfficialCampaignLoaded(it.campaignId()))
-//            }
-//        }
-//
-//        // First, make sure game is present
-//        addOfficialGame(officialCampaignId.officialGameId(), context)
-//
-//        OfficialManager.loadCampaign(officialCampaignId, onLoad, context)
-//    }
-//
-//
-//    suspend fun addOfficialGame(officialGameId : OfficialGameId, context : Context)
-//    {
-//        // Check if game already exists.
-//        when (game(officialGameId.gameId)) {
-//            is Just -> return
-//        }
-//
-//        val onLoad : (Game) -> Unit = {
-//            launch(UI) {
-//                // Add campaign to state
-//                addGame(it)
-//
-//                // Broadcast session update
-//                Router.send(SessionMessageOfficialGameLoaded(it.gameId()))
-//            }
-//        }
-//
-//        OfficialManager.loadGame(officialGameId, onLoad, context)
-//    }
-
-
     // -----------------------------------------------------------------------------------------
-    // GET
+    // ENTITIES
     // -----------------------------------------------------------------------------------------
 
-//    fun sheet(sheetId : SheetId) : Maybe<Sheet> = entitySheet(sheetId)
+    fun entityRecords() : List<EntityRecord>
+    {
+        val records : MutableList<EntityRecord> = mutableListOf()
+
+        this.entityIds.forEach {
+            entityRecord(it) apDo {
+                records.add(it)
+            }
+        }
+
+        return records
+    }
+
+
+    fun entityRecordsByType() : Map<String,List<Entity>>
+    {
+        val recordByType : MutableMap<String,MutableList<Entity>> = mutableMapOf()
+
+        this.entityIds.forEach { entityId ->
+            entityRecord(entityId) apDo { record ->
+                val entityType = record.entityType.toString()
+                if (!recordByType.containsKey(entityType))
+                    recordByType.put(entityType, mutableListOf())
+
+                recordByType[entityType]!!.add(record.entity())
+            }
+        }
+
+        return recordByType
+    }
 
 }
-
-
-data class SessionEntityLoader(val entityId : EntityId, val entityLoader : EntityLoader)
-
 
 
 /**

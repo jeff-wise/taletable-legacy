@@ -28,7 +28,7 @@ import java.util.*
 data class Settings(override val id : UUID,
                     val themeId : ThemeId,
                     val sheetName : SheetName,
-                    val sheetSummary: SheetSummary)
+                    val sheetSummary : SheetSummary)
                      : ProdType, ToDocument
 {
 
@@ -89,7 +89,9 @@ data class Settings(override val id : UUID,
 
     fun themeId() : ThemeId = this.themeId
 
+
     fun sheetName() : String = this.sheetName.value
+
 
     fun sheetSummary() : String = this.sheetSummary.value
 

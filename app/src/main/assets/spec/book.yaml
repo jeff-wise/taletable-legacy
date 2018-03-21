@@ -89,7 +89,13 @@ types:
         type: prim_type
         prim_type: string
       presence: required
-      description: The title of the game book.
+      description: The title of the book.
+    - name: summary
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The summary of the book.
     - name: authors
       type: 
         type: custom_coll_type

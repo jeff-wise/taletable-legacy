@@ -918,6 +918,32 @@ types:
       presence: required
       description: >
         The widget identifier.
+    - name: format
+      type: 
+        type: custom_type
+        custom_type: image_widget_format
+      presence: optional
+      description: Image format.
+    - name: official_images
+      type: 
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: Image format.
+- type: product_type
+  product_type:
+    name: image_widget_format
+    label: Image Widget Format
+    description: >
+      Image Widget formatting options.
+    group: 'Widget: Image'
+    fields:
+    - name: widget_format
+      type: 
+        type: custom_type
+        custom_type: widget_format
+      presence: optional
+      description: Widget format.
 - type: product_type
   product_type:
     name: widget_list

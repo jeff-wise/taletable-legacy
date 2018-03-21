@@ -2,89 +2,248 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import com.kispoko.tome.R
+import com.kispoko.tome.db.*
+import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue1
+import com.kispoko.tome.lib.orm.schema.ProdValue
+import com.kispoko.tome.lib.orm.sql.SQLBlob
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.util.Util
+import effect.apply
+import effect.effError
+import effect.effValue
+import effect.split
+import lulo.document.*
+import lulo.value.UnexpectedType
+import lulo.value.ValueParser
+import org.apache.commons.lang3.SerializationUtils
+import java.io.InputStream
+import java.io.Serializable
+import java.util.*
+
 
 
 /**
  * Image Widget Format
  */
-//data class ImageWidgetFormat(override val id : UUID,
-//                             val widgetFormat : Prod<WidgetFormat>) : ToDocument, ProdType
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.widgetFormat.name      = "widget_format"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    companion object : Factory<ImageWidgetFormat>
-//    {
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<ImageWidgetFormat> = when (doc)
-//        {
-//            is DocDict -> effApply(::ImageWidgetFormat,
-//                                   // ProdType Id
-//                                   effValue(UUID.randomUUID()),
-//                                   // Widget Format
-//                                   doc.at("widget_format") ap {
-//                                       effApply(::Prod, WidgetFormat.fromDocument(it))
-//                                   })
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "widget_format" to this.widgetFormat().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name : String = "image_widget_format"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<Val<*>> =
-//            listOf(this.widgetFormat)
-//
-//}
+data class ImageWidgetFormat(override val id : UUID,
+                             val widgetFormat : WidgetFormat)
+                             : ToDocument, ProdType, Serializable
+{
 
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetFormat : WidgetFormat)
+        : this(UUID.randomUUID(),
+               widgetFormat)
+
+
+    companion object : Factory<ImageWidgetFormat>
+    {
+
+        private fun defaultWidgetFormat()       = WidgetFormat.default()
+
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ImageWidgetFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ImageWidgetFormat,
+                     // Widget Format
+                     split(doc.maybeAt("widget_format"),
+                           effValue(defaultWidgetFormat()),
+                           { WidgetFormat.fromDocument(it) })
+                     )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = ImageWidgetFormat(defaultWidgetFormat())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    override val prodTypeObject = this
+
+
+    override fun rowValue() : DB_WidgetImageFormatValue =
+        RowValue1(widgetImageFormatTable,
+                  ProdValue(this.widgetFormat))
+
+}
+
+
+/**
+ * Official Image Id
+ */
+data class OfficialImageId(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<OfficialImageId>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<OfficialImageId> = when (doc)
+        {
+            is DocText -> effValue(OfficialImageId(doc.text))
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
+ * Official Image Id List
+ */
+data class OfficialImageIdList(val imageIds : List<OfficialImageId>) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
+
+
+class ImageWidgetUI(val imageWidget : ImageWidget,
+                    val entityId : EntityId,
+                    val context : Context)
+{
+
+
+    fun view() : View
+    {
+        val layout = WidgetView.layout(imageWidget.widgetFormat(), entityId, context)
+
+
+//        val layoutId = Util.generateViewId()
+//        contentLayout.id = layoutId
+//        imageWidget.layoutViewId = layoutId
+
+//        val layout = this.viewLayout()
 //
-//
-//
-//    // > Widget
-//    // ------------------------------------------------------------------------------------------
-//
-//    @Override
-//    public void initialize(GroupParent groupParent, Context context)
-//    {
-//        this.groupParent = groupParent;
-//    }
-//
+//        if (imageWidget.officialImageIds().isNotEmpty())
+//            layout.addView(this.officialImageView(imageWidget.officialImageIds().first()))
+
+        this.updateView(layout)
+
+        return layout
+    }
+
+
+    private fun updateView(layout : LinearLayout)
+    {
+        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        contentLayout.removeAllViews()
+
+        if (imageWidget.officialImageIds().isNotEmpty())
+            layout.addView(this.officialImageView(imageWidget.officialImageIds().first()))
+    }
+
+
+    private fun viewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun officialImageView(officialImageId : OfficialImageId) : ImageView
+    {
+        val image               = ImageViewBuilder()
+
+        image.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        image.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        image.scaleType         = ImageView.ScaleType.FIT_XY
+        image.adjustViewBounds  = true
+
+        val imagePath = "images/${officialImageId.value}.png"
+
+        var stream : InputStream? = null
+        try
+        {
+            stream = context.assets.open(imagePath)
+            if (stream != null)
+                image.bitmap = BitmapFactory.decodeStream(stream)
+        }
+        finally {
+            try
+            {
+                if(stream != null)
+                {
+                    stream.close();
+                }
+            } catch (e : Exception) {}
+        }
+
+        return image.imageView(context)
+    }
+
+}
+
+
 //
 //    // > Image
 //    // ------------------------------------------------------------------------------------------
@@ -193,100 +352,6 @@ package com.kispoko.tome.model.sheet.widget
 //        sheetActivity.setChooseImageAction(new ChooseImageAction(this));
 //
 //        sheetActivity.startActivityForResult(intent, SheetActivityOld.CHOOSE_IMAGE_FROM_FILE);
-//    }
-//
-//
-//    // > Views
-//    // ------------------------------------------------------------------------------------------
-//
-//    private LinearLayout viewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = LinearLayout.VERTICAL;
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.gravity              = Gravity.CENTER_HORIZONTAL;
-//
-//        layout.backgroundColor      = this.data().format().background().colorId();
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private ImageView imageView(Context context)
-//    {
-//        ImageViewBuilder imageView = new ImageViewBuilder();
-//        this.imageViewId = Util.generateViewId();
-//
-//        imageView.id                = this.imageViewId;
-//        imageView.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        imageView.height            = R.dimen.widget_image_view_height;
-//        imageView.scaleType         = ImageView.ScaleType.FIT_XY;
-//        imageView.adjustViewBounds  = true;
-//
-//        return imageView.imageView(context);
-//    }
-//
-//
-//    /**
-//     * The choose image view that is displayed on the sheet if the image widget is present, but no
-//     * image is currently chosen or loaded.
-//     * @param context The context.
-//     * @return The choose image view.
-//     */
-//    private LinearLayout chooseImageView(Context context)
-//    {
-//        // [1] Declarations
-//        // -------------------------------------------------------------------------------------
-//
-//        LinearLayoutBuilder layout   = new LinearLayoutBuilder();
-//        ImageViewBuilder    iconView = new ImageViewBuilder();
-//        TextViewBuilder     textView = new TextViewBuilder();
-//
-//        this.chooseImageButtonId = Util.generateViewId();
-//
-//        // [2] Layout
-//        // --------------------------------------------------------------------------------------
-//
-//        layout.id                   = this.chooseImageButtonId;
-//
-//        layout.orientation          = LinearLayout.VERTICAL;
-//        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.gravity              = Gravity.CENTER_HORIZONTAL;
-//
-////        layout.padding.top      = R.dimen.widget_image_choose_layout_padding_vert;
-////        layout.padding.bottom   = R.dimen.widget_image_choose_layout_padding_vert;
-//
-//        layout.backgroundResource   = R.drawable.bg_choose_image_button;
-//
-//        layout.child(iconView)
-//              .child(textView);
-//
-//        // [3 A] Icon View
-//        // --------------------------------------------------------------------------------------
-//
-//        iconView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        iconView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        iconView.image          = R.drawable.ic_choose_a_picture;
-//
-//        iconView.margin.bottom  = R.dimen.widget_image_choose_icon_margin_bottom;
-//
-//        // [3 B] Text View
-//        // --------------------------------------------------------------------------------------
-//
-//        textView.width  = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        textView.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        textView.text   = "Choose a Picture";
-//        textView.size   = R.dimen.widget_image_choose_text_size;
-//        textView.color  = R.color.dark_blue_2;
-//        textView.font   = Font.sansSerifFontRegular(context);
-//
-//
-//        return layout.linearLayout(context);
 //    }
 //
 
