@@ -163,6 +163,21 @@ data class Procedure(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // DESCRIPTION
+    // -----------------------------------------------------------------------------------------
+
+    fun descriptionLength() : Int = when (this.description)
+    {
+        is Just -> {
+            this.description.value.template.value.length
+        }
+        else -> {
+            0
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // PROGRAMS
     // -----------------------------------------------------------------------------------------
 
@@ -177,7 +192,10 @@ data class Procedure(override val id : UUID,
 
 
     private fun programs(entityId : EntityId) : AppEff<List<Program>> =
-        this.procedureUpdates.mapM { program(it.programId(), entityId) }
+        if (this.procedureUpdates.isNotEmpty())
+            this.procedureUpdates.mapM { program(it.programId(), entityId) }
+        else
+            effValue(listOf())
 
     // -----------------------------------------------------------------------------------------
     // RUN

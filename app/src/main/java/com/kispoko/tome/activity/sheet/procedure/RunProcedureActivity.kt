@@ -415,7 +415,7 @@ class ComplexProcedureUI(val procedure : Procedure,
 
         description.backgroundColor    = Color.WHITE
 
-        description.margin.topDp        = 2f
+        description.margin.topDp       = 2f
 
         description.padding.topDp      = 10f
         description.padding.bottomDp   = 10f
@@ -430,14 +430,14 @@ class ComplexProcedureUI(val procedure : Procedure,
         }
 
         description.font               = Font.typeface(TextFont.default(),
-                                                       TextFontStyle.Medium,
+                                                       TextFontStyle.Regular,
                                                        context)
 
         description.sizeSp             = 18f
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         description.color              = colorOrBlack(colorTheme, entityId)
 
         return description.textView(context)

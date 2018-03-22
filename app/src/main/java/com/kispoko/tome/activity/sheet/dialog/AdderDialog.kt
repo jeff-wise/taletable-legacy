@@ -504,9 +504,9 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         name.width              = LinearLayout.LayoutParams.MATCH_PARENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.margin.topDp        = 4f
-        name.margin.leftDp        = 4f
-        name.margin.rightDp        = 4f
+        name.margin.topDp       = 3f
+        name.margin.leftDp      = 3f
+        name.margin.rightDp     = 3f
 
         name.padding.topDp       = 5f
         name.padding.leftDp      = 8f
@@ -566,8 +566,8 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.leftDp    = 4f
-        layout.margin.rightDp   = 4f
+        layout.margin.leftDp    = 3f
+        layout.margin.rightDp   = 3f
         layout.margin.bottomDp  = 2f
 
         layout.padding.leftDp   = 8f
@@ -785,8 +785,8 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
 
-        layout.margin.leftDp    = 2f
-        layout.margin.rightDp   = 2f
+        layout.margin.leftDp    = 3f
+        layout.margin.rightDp   = 3f
         layout.margin.bottomDp  = 2f
 
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
@@ -866,7 +866,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         value.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         value.font              = Font.typeface(TextFont.default(),
@@ -1295,8 +1295,8 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp         = 60
 
-        layout.margin.rightDp   = 4f
-        layout.margin.leftDp    = 4f
+        layout.margin.rightDp   = 3f
+        layout.margin.leftDp    = 3f
 
         layout.orientation      = LinearLayout.HORIZONTAL
 

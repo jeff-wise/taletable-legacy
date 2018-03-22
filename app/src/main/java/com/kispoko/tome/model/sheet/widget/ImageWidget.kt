@@ -4,6 +4,7 @@ package com.kispoko.tome.model.sheet.widget
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -19,8 +20,10 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.model.sheet.style.Icon
+import com.kispoko.tome.model.sheet.style.IconFormat
 import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.util.Util
+import com.kispoko.tome.rts.entity.colorOrBlack
 import effect.apply
 import effect.effError
 import effect.effValue
@@ -28,6 +31,7 @@ import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Just
 import org.apache.commons.lang3.SerializationUtils
 import java.io.InputStream
 import java.io.Serializable
@@ -56,7 +60,7 @@ data class ImageWidgetFormat(override val id : UUID,
     companion object : Factory<ImageWidgetFormat>
     {
 
-        private fun defaultWidgetFormat()       = WidgetFormat.default()
+        private fun defaultWidgetFormat()  = WidgetFormat.default()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<ImageWidgetFormat> = when (doc)
@@ -193,8 +197,17 @@ class ImageWidgetUI(val imageWidget : ImageWidget,
         val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
         contentLayout.removeAllViews()
 
+        val maybeIcon = imageWidget.icon
+        when (maybeIcon) {
+            is Just -> {
+                Log.d("***IMAGE WIDGET", "rendering icon view")
+                contentLayout.addView(this.iconView(maybeIcon.value))
+                return
+            }
+        }
+
         if (imageWidget.officialImageIds().isNotEmpty())
-            layout.addView(this.officialImageView(imageWidget.officialImageIds().first()))
+            contentLayout.addView(this.officialImageView(imageWidget.officialImageIds().first()))
     }
 
 
@@ -206,6 +219,30 @@ class ImageWidgetUI(val imageWidget : ImageWidget,
         layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
 
         return layout.linearLayout(context)
+    }
+
+
+    private fun iconView(icon : Icon) : ImageView
+    {
+        val image               = ImageViewBuilder()
+
+        val iconFormat = icon.iconFormat()
+
+        image.widthDp           = iconFormat.size().width
+        image.heightDp          = iconFormat.size().height
+
+//        image.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        image.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        image.scaleType         = ImageView.ScaleType.FIT_XY
+//        image.adjustViewBounds  = true
+
+        image.image             = icon.iconType().drawableResId()
+//        image.image             = R.drawable.icon_planet
+
+        image.color             = colorOrBlack(iconFormat.colorTheme(), entityId)
+
+        return image.imageView(context)
     }
 
 

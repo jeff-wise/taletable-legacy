@@ -8,8 +8,8 @@ android {
         applicationId "com.kispoko.tome"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "0.7.0"
+        versionCode 2
+        versionName "0.8.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

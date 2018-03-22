@@ -40,14 +40,14 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-
+import java.util.*
 
 
 // ---------------------------------------------------------------------------------------------
 // STATE
 // ---------------------------------------------------------------------------------------------
 
-private var stateById : MutableMap<EntityId, EntityRecord> = mutableMapOf()
+private var entityRecordById : MutableMap<EntityId,EntityRecord> = mutableMapOf()
 
 
 // ---------------------------------------------------------------------------------------------
@@ -58,8 +58,8 @@ private var stateById : MutableMap<EntityId, EntityRecord> = mutableMapOf()
  * Entity Record
  */
 fun entityRecord(entityId : EntityId) : AppEff<EntityRecord> =
-    if (stateById.containsKey(entityId))
-        effValue(stateById[entityId]!!)
+    if (entityRecordById.containsKey(entityId))
+        effValue(entityRecordById[entityId]!!)
     else
         effError(AppEntityError(EntityDoesNotExist(entityId)))
 
@@ -73,7 +73,7 @@ fun entityRecord(entityId : EntityId) : AppEff<EntityRecord> =
 
 fun sheet(sheetId : SheetId) : Maybe<Sheet>
 {
-    val entityState = stateById.get(EntitySheetId(sheetId))
+    val entityState = entityRecordById.get(EntitySheetId(sheetId))
     return when (entityState) {
         is EntitySheetRecord -> {
             Just(entityState.sheet)
@@ -89,7 +89,7 @@ fun sheetOrError(sheetId : SheetId) : AppEff<Sheet> =
 
 fun sheetOrError(entityId : EntityId) : AppEff<Sheet>
 {
-    val record = stateById.get(entityId)
+    val record = entityRecordById.get(entityId)
     return if (record != null) {
         when (record) {
             is EntitySheetRecord -> effValue(record.sheet)
@@ -111,7 +111,7 @@ fun sheetOrError(entityId : EntityId) : AppEff<Sheet>
 
 fun campaign(campaignId : CampaignId) : Maybe<Campaign>
 {
-    val entityState = stateById.get(EntityCampaignId(campaignId))
+    val entityState = entityRecordById.get(EntityCampaignId(campaignId))
     return when (entityState) {
         is EntityCampaignRecord -> {
             Just(entityState.campaign)
@@ -123,7 +123,7 @@ fun campaign(campaignId : CampaignId) : Maybe<Campaign>
 
 fun game(gameId : GameId) : Maybe<Game>
 {
-    val entityState = stateById.get(EntityGameId(gameId))
+    val entityState = entityRecordById.get(EntityGameId(gameId))
     return when (entityState) {
         is EntityGameRecord -> {
             Just(entityState.game)
@@ -135,7 +135,7 @@ fun game(gameId : GameId) : Maybe<Game>
 
 fun book(bookId : BookId) : Maybe<Book>
 {
-    val entityState = stateById.get(EntityBookId(bookId))
+    val entityState = entityRecordById.get(EntityBookId(bookId))
     return when (entityState) {
         is EntityBookRecord -> {
             Just(entityState.book)
@@ -154,7 +154,7 @@ fun addSheet(sheet : Sheet)
     val engineState = EntityState(entityId, listOf())
     val sheetRecord = EntitySheetRecord(sheet, engineState, Just(sheet.settings().themeId()))
 
-    stateById.put(entityId, sheetRecord)
+    entityRecordById.put(entityId, sheetRecord)
 }
 
 
@@ -164,7 +164,7 @@ fun addCampaign(campaign : Campaign)
     val engineState = EntityState(entityId, listOf())
     val campaignRecord = EntityCampaignRecord(campaign, engineState, Nothing())
 
-    stateById.put(entityId, campaignRecord)
+    entityRecordById.put(entityId, campaignRecord)
 }
 
 
@@ -174,7 +174,7 @@ fun addGame(game : Game)
     val engineState = EntityState(entityId, listOf())
     val gameRecord = EntityGameRecord(game, engineState, Nothing())
 
-    stateById.put(entityId, gameRecord)
+    entityRecordById.put(entityId, gameRecord)
 }
 
 
@@ -188,7 +188,7 @@ fun addBook(book : Book)
         entityState.addVariable(it)
     }
 
-    stateById.put(entityId, bookRecord)
+    entityRecordById.put(entityId, bookRecord)
 }
 
 
@@ -808,6 +808,7 @@ data class EntityBookRecord(val book : Book,
 
 interface Entity
 {
+    val id : UUID
     fun name() : String
     fun summary() : String
 }

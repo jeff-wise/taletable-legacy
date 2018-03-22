@@ -372,12 +372,13 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         //layout.layoutGravity = Gravity.CENTER
 
         layout.onClick      = View.OnClickListener {
+            Log.d("***ACTION WIDGET", "on click")
             if (this.isActive)
             {
                 actionWidget.procedure(entityId) apDo { procedure ->
 
                     // If has parameters, use the activity
-                    if (procedure.hasParameters(entityId)) {
+                    if (procedure.hasParameters(entityId) || procedure.descriptionLength() > 70) {
                         val activity = context as AppCompatActivity
                         val intent = Intent(activity, RunProcedureActivity::class.java)
                         intent.putExtra("procedure_id", actionWidget.procedureId())
@@ -387,8 +388,8 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
                     // Otherwise, use the dialog
                     else {
                         val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
-                                UpdateTargetActionWidget(actionWidget.id),
-                                entityId)
+                                                                 UpdateTargetActionWidget(actionWidget.id),
+                                                                 entityId)
                         val activity = context as AppCompatActivity
                         dialog.show(activity.supportFragmentManager, "")
                     }
@@ -454,7 +455,6 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         icon.widthDp    = format.iconFormat().size().width
         icon.heightDp   = format.iconFormat().size().height
 
-        Log.d("***ACTION WIDGET", "icon size: ${format.iconFormat().size()}")
 
         if (this.isActive)
         {

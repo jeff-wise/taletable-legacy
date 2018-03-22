@@ -41,6 +41,7 @@ import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.style.Icon
 import com.kispoko.tome.model.sheet.style.Width
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.rts.entity.*
@@ -987,7 +988,8 @@ data class ExpanderWidget(override val id : UUID,
 data class ImageWidget(override val id : UUID,
                        val widgetId : WidgetId,
                        val format : ImageWidgetFormat,
-                       val officialImageIds : MutableList<OfficialImageId>) : Widget()
+                       val officialImageIds : MutableList<OfficialImageId>,
+                       val icon : Maybe<Icon>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -996,11 +998,13 @@ data class ImageWidget(override val id : UUID,
 
     constructor(widgetId : WidgetId,
                 format : ImageWidgetFormat,
-                officialImageIds : MutableList<OfficialImageId>)
+                officialImageIds : MutableList<OfficialImageId>,
+                icon : Maybe<Icon>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
-               officialImageIds)
+               officialImageIds,
+               icon)
 
 
     companion object : Factory<Widget>
@@ -1019,7 +1023,11 @@ data class ImageWidget(override val id : UUID,
                       // Official Image Id
                       split(doc.maybeList("official_images"),
                             effValue(mutableListOf()),
-                            { it.mapMut { OfficialImageId.fromDocument(it) } })
+                            { it.mapMut { OfficialImageId.fromDocument(it) } }),
+                      // Icon
+                      split(doc.maybeAt("icon"),
+                            effValue<ValueError,Maybe<Icon>>(Nothing()),
+                            { apply(::Just, Icon.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1045,6 +1053,9 @@ data class ImageWidget(override val id : UUID,
 
 
     fun officialImageIds() : List<OfficialImageId> = this.officialImageIds
+
+
+    fun icon() : Maybe<Icon> = this.icon
 
 
     // -----------------------------------------------------------------------------------------

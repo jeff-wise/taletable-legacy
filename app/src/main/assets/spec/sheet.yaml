@@ -924,6 +924,12 @@ types:
         custom_type: image_widget_format
       presence: optional
       description: Image format.
+    - name: icon
+      type: 
+        type: custom_type
+        custom_type: icon
+      presence: optional
+      description: Icon
     - name: official_images
       type: 
         type: prim_coll_type

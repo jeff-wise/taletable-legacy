@@ -169,6 +169,21 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object Doge : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "doge" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("doge")
+
+    }
+
     object Heart : IconType()
     {
 
@@ -380,6 +395,7 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
                 "coins"                 -> effValue<ValueError, IconType>(IconType.Coins)
                 "dice_roll"             -> effValue<ValueError, IconType>(IconType.DiceRoll)
                 "dice_roll_filled"      -> effValue<ValueError, IconType>(IconType.DiceRollFilled)
+                "doge"                  -> effValue<ValueError, IconType>(IconType.Doge)
                 "heart"                 -> effValue<ValueError, IconType>(IconType.Heart)
                 "heart_plus"            -> effValue<ValueError, IconType>(IconType.HeartPlus)
                 "info_bubble"           -> effValue<ValueError, IconType>(IconType.InfoBubble)
@@ -412,6 +428,7 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
         is Coins                -> R.drawable.icon_coins
         is DiceRoll             -> R.drawable.icon_dice_roll
         is DiceRollFilled       -> R.drawable.icon_dice_roll_filled
+        is Doge                 -> R.drawable.icon_doge
         is Heart                -> R.drawable.icon_heart
         is HeartPlus            -> R.drawable.icon_heart_plus
         is InfoBubble           -> R.drawable.icon_info_bubble

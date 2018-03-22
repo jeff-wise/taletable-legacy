@@ -89,20 +89,21 @@ data class Session(val sessionId : SessionId,
                          sessionId : SessionId,
                          context : Context) : Session
         {
-            val loadedEntityIds : MutableSet<EntityId> = mutableSetOf()
+            val entityLoadResults : MutableSet<EntityLoadResult> = mutableSetOf()
 
             loaders.forEach {
-                val entityId = async(CommonPool) { loadEntity(it, context) }.await()
-                when (entityId) {
-                    is Just -> loadedEntityIds.add(entityId.value)
+                val entityLoadResult = async(CommonPool) { loadEntity(it, context) }.await()
+                when (entityLoadResult) {
+                    is Just -> entityLoadResults.add(entityLoadResult.value)
                 }
             }
 
-            loadedEntityIds.forEach {
-                initialize(it)
+            entityLoadResults.forEach {
+                if (!it.fromCache)
+                    initialize(it.entityId)
             }
 
-            return Session(sessionId, loadedEntityIds)
+            return Session(sessionId, entityLoadResults.map { it.entityId }.toMutableSet() )
         }
     }
 

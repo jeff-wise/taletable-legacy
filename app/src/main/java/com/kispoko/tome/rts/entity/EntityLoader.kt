@@ -18,12 +18,13 @@ import maybe.Nothing
 import java.io.Serializable
 
 
+
 // ---------------------------------------------------------------------------------------------
 // LOAD
 // ---------------------------------------------------------------------------------------------
 
 suspend fun loadEntity(entityLoader : EntityLoader,
-                       context : Context) : Maybe<EntityId> = when (entityLoader)
+                       context : Context) : Maybe<EntityLoadResult> = when (entityLoader)
 {
     is EntityLoaderOfficial ->
     {
@@ -46,8 +47,12 @@ suspend fun loadEntity(entityLoader : EntityLoader,
 
 fun loadOfficialSheet(officialSheetLoader : OfficialSheetLoader,
                       context : Context)
-                       : Maybe<EntityId>
+                       : Maybe<EntityLoadResult>
 {
+    when (sheet(officialSheetLoader.sheetId)) {
+        is Just -> return Just(EntityLoadResult(EntitySheetId(officialSheetLoader.sheetId), true))
+    }
+
     val sheetLoader = assetInputStream(context, officialSheetLoader.filePath())
                             .apply { TomeDoc.loadSheet(it, officialSheetLoader.sheetId.value, context) }
     return when (sheetLoader)
@@ -61,7 +66,7 @@ fun loadOfficialSheet(officialSheetLoader : OfficialSheetLoader,
             // Log event
             ApplicationLog.event(OfficialSheetLoaded(sheet.sheetId().value))
 
-            Just(EntitySheetId(sheet.sheetId()))
+            Just(EntityLoadResult(EntitySheetId(sheet.sheetId()), false))
         }
         is Err -> {
             ApplicationLog.error(sheetLoader.error)
@@ -76,8 +81,12 @@ fun loadOfficialSheet(officialSheetLoader : OfficialSheetLoader,
 
 fun loadOfficialCampaign(officialCampaignLoader : OfficialCampaignLoader,
                          context : Context)
-                          : Maybe<EntityId>
+                          : Maybe<EntityLoadResult>
 {
+    when (campaign(officialCampaignLoader.campaignId)) {
+        is Just -> return Just(EntityLoadResult(EntityCampaignId(officialCampaignLoader.campaignId), true))
+    }
+
     val campaignLoader = assetInputStream(context, officialCampaignLoader.filePath())
                             .apply { TomeDoc.loadCampaign(it, officialCampaignLoader.campaignId.value, context) }
     return when (campaignLoader)
@@ -91,7 +100,7 @@ fun loadOfficialCampaign(officialCampaignLoader : OfficialCampaignLoader,
             // Log event
             ApplicationLog.event(OfficialCampaignLoaded(campaign.campaignId().value))
 
-            Just(EntityCampaignId(campaign.campaignId))
+            Just(EntityLoadResult(EntityCampaignId(campaign.campaignId), false))
         }
         is Err -> {
             ApplicationLog.error(campaignLoader.error)
@@ -106,8 +115,12 @@ fun loadOfficialCampaign(officialCampaignLoader : OfficialCampaignLoader,
 
 fun loadOfficialGame(officialGameLoader : OfficialGameLoader,
                      context : Context)
-                      : Maybe<EntityId>
+                      : Maybe<EntityLoadResult>
 {
+    when (game(officialGameLoader.gameId)) {
+        is Just -> return Just(EntityLoadResult(EntityGameId(officialGameLoader.gameId), true))
+    }
+
     val gameLoader = assetInputStream(context, officialGameLoader.filePath())
                        .apply { TomeDoc.loadGame(it, officialGameLoader.gameId.value, context) }
     return when (gameLoader)
@@ -121,7 +134,7 @@ fun loadOfficialGame(officialGameLoader : OfficialGameLoader,
             // Log event
             ApplicationLog.event(OfficialGameLoaded(game.gameId().value))
 
-            Just(EntityGameId(game.gameId))
+            Just(EntityLoadResult(EntityGameId(game.gameId), false))
         }
         is Err -> {
             ApplicationLog.error(gameLoader.error)
@@ -136,8 +149,12 @@ fun loadOfficialGame(officialGameLoader : OfficialGameLoader,
 
 fun loadOfficialBook(officialBookLoader : OfficialBookLoader,
                      context : Context)
-                      : Maybe<EntityId>
+                      : Maybe<EntityLoadResult>
 {
+    when (book(officialBookLoader.bookId)) {
+        is Just -> return Just(EntityLoadResult(EntityBookId(officialBookLoader.bookId), true))
+    }
+
     val bookLoader = assetInputStream(context, officialBookLoader.filePath())
                        .apply { TomeDoc.loadBook(it, officialBookLoader.bookId.value, context) }
     return when (bookLoader)
@@ -151,7 +168,7 @@ fun loadOfficialBook(officialBookLoader : OfficialBookLoader,
             // Log event
             ApplicationLog.event(OfficialBookLoaded(book.bookId().value))
 
-            Just(EntityBookId(book.bookId()))
+            Just(EntityLoadResult(EntityBookId(book.bookId()), false))
         }
         is Err -> {
             ApplicationLog.error(bookLoader.error)
@@ -165,10 +182,16 @@ fun loadOfficialBook(officialBookLoader : OfficialBookLoader,
 // DEFINITIONS
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityLoader(open val label : String) : Serializable
+data class EntityLoadResult(val entityId : EntityId, val fromCache : Boolean)
 
 
 // ---------------------------------------------------------------------------------------------
+// ENTITY LOADER
+// ---------------------------------------------------------------------------------------------
+
+sealed class EntityLoader(open val label : String) : Serializable
+
+
 // ENTITY LOADER > OFFICIAL
 // ---------------------------------------------------------------------------------------------
 
