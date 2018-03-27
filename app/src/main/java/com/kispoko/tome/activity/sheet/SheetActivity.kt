@@ -23,7 +23,6 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.engine.procedure.ProcedureUpdateDialog
 import com.kispoko.tome.activity.session.SessionActivity
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
-import com.kispoko.tome.activity.test.TestSessionActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.variable.TextVariable
@@ -75,7 +74,7 @@ object SheetActivityRequest
 /**
  * Sheet Activity
  */
-class SheetActivity : AppCompatActivity(), SheetUI
+class SheetActivity : AppCompatActivity()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -85,7 +84,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // STATE > Sheet
     // -----------------------------------------------------------------------------------------
 
-    private var sheetId : SheetId? = null
+    var sheetId : SheetId? = null
 
 
     // STATE > Views
@@ -98,8 +97,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
     private var bottomNavigation : LinearLayout? = null
 
     private var fab : FloatingActionButton? = null
-    private var bottomSheet : RelativeLayout? = null
-    private var bottomSheetBehavior : BottomSheetBehavior<RelativeLayout>? = null
+    private var bottomSheet : FrameLayout? = null
+    var bottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
 
     private var toolbarView : FrameLayout? = null
     private var activeTableRow : TableWidgetRow? = null
@@ -139,6 +138,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
         this.configureToolbar("")
 
         this.initializeViews()
+
+        this.initializeSidebars()
 
         this.initializeFAB()
 
@@ -256,8 +257,15 @@ class SheetActivity : AppCompatActivity(), SheetUI
         this.viewPager = this.findViewById(R.id.page_pager) as ViewPager
 //        this.viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
 
+        this.bottomSheet = this.findViewById(R.id.bottom_sheet) as FrameLayout
+        this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheet)
+
+        if (this.bottomSheet == null)
+            Log.d("***SHEET ACTIVITY", "bottom sheet is null")
+
         this.viewPager?.adapter = pagePagerAdapter
         val sheetActivity = this
+
         this.viewPager?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener
         {
             override fun onPageScrollStateChanged(state : Int) { }
@@ -296,15 +304,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
-    private fun initializeBottomNavigation()
-    {
-//        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
-//        this.bottomNavigation = bottomNavigation
-//        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as LinearLayout
-//        this.bottomNavigation = bottomNavigation
-    }
-
-
 //    override fun onDestroy() {
 //        super.onDestroy()
 //        // TODO sheet manager remove context reference
@@ -315,7 +314,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     /**
      * Initialize the sidebars.
      */
-    override fun initializeSidebars()
+    fun initializeSidebars()
     {
         val drawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
 
@@ -324,7 +323,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val menuRight = findViewById(R.id.toolbar_options_button) as ImageView
 
         val rightNavView = findViewById(R.id.right_nav_view) as NavigationView
-        val sheetOptionsViewBuilder = SheetOptionsViewBuilder(this)
+        val sheetOptionsViewBuilder = SheetOptionsUI(this)
         rightNavView.addView(sheetOptionsViewBuilder.view())
 
         menuRight.setOnClickListener {
@@ -336,24 +335,14 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
-    private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
-    {
-//        val viewBuilder = BottomNavigationViewBuilder(uiColors, sheetId, this)
-//        this.bottomNavigation?.addView(viewBuilder.view())
-    }
-
-
     // -----------------------------------------------------------------------------------------
     // SHEET UI
     // -----------------------------------------------------------------------------------------
 
-    override fun pagePagerAdatper() : PagePagerAdapter = this.pagePagerAdapter!!
+    fun pagePagerAdatper() : PagePagerAdapter = this.pagePagerAdapter!!
 
 
-//    override fun bottomNavigation() : AHBottomNavigation = this.bottomNavigation!!
-
-
-    override fun rootSheetView() : View? = this.viewPager
+    fun rootSheetView() : View? = this.viewPager
 
 
     fun applyTheme(theme : Theme)
@@ -417,7 +406,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
     }
 
 
-    override fun context() : Context = this
+    fun context() : Context = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -471,14 +460,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
     fun renderSheet(sheet : Sheet)
     {
-        // Theme UI
-//        val theme = ThemeManager.theme(sheet.settings().themeId())
-//        when (theme)
-//        {
-//            is Val -> this.applyTheme(sheet.sheetId(), theme.value.uiColors())
-//            is Err -> ApplicationLog.error(theme.error)
-//        }
-
         this.applyTheme(officialThemeLight)
 
         val start = System.currentTimeMillis()
@@ -487,6 +468,23 @@ class SheetActivity : AppCompatActivity(), SheetUI
         if (section != null) {
             pagePagerAdatper().setPages(section.pages(), sheet.sheetId())
         }
+
+//        this.bottomSheet?.addView(tableActionBarBuilder.view())
+
+        if (this.bottomSheetBehavior == null)
+            Log.d("***SHEET ACTIVITY", "beahvior is null")
+
+//        this.bottomSheetBehavior?.peekHeight = 100
+        this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        this.bottomSheetBehavior?.peekHeight = 0
+
+        this.bottomSheetBehavior?.state = BottomSheetBehavior.PEEK_HEIGHT_AUTO
+
+
+
+        val saveMenuUI = SaveMenuUI(this, officialThemeLight)
+        this.bottomSheet?.removeAllViews()
+        this.bottomSheet?.addView(saveMenuUI.view())
 
         val end = System.currentTimeMillis()
 

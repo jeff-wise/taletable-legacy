@@ -64,6 +64,20 @@ fun entityRecord(entityId : EntityId) : AppEff<EntityRecord> =
         effError(AppEntityError(EntityDoesNotExist(entityId)))
 
 
+fun entitySheetRecord(sheetId : SheetId) : AppEff<EntitySheetRecord> =
+    entityRecord(EntitySheetId(sheetId)) apply {
+        when (it) {
+            is EntitySheetRecord -> effValue(it)
+            else                 -> {
+                effError<AppError,EntitySheetRecord>(AppEntityError(
+                        EntityIsUnexpectedType(EntitySheetId(sheetId),
+                                               EntityTypeSheet,
+                                               it.entityType)))
+            }
+        }
+    }
+
+
 // ---------------------------------------------------------------------------------------------
 // GET
 // ---------------------------------------------------------------------------------------------

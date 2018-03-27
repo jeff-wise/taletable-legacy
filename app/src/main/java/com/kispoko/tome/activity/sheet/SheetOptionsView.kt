@@ -3,64 +3,97 @@ package com.kispoko.tome.activity.sheet
 
 
 import android.content.Context
-import android.content.Intent
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.edit
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
-import com.kispoko.tome.model.theme.ColorId
-import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.model.theme.ThemeColorId
-import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.entity.theme.ThemeManager
+import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialThemeLight
 
 
 
 /**
- * Sheet Options View (Sidebar)
+ * Sheet Options UI (Sidebar)
  */
-class SheetOptionsViewBuilder(val context : Context)
+class SheetOptionsUI(val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    val themeId : ThemeId = ThemeId.Light
+    val theme : Theme = officialThemeLight
 
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
     // -----------------------------------------------------------------------------------------
 
-
     fun view() : LinearLayout
     {
         val layout = this.viewLayout()
 
-        // Header
-        layout.addView(this.headerView())
+        // Edit
+        val editLayout = buttonGroupLayout()
+        layout.addView(editLayout)
+
+        editLayout.addView(this.headerView(R.string.edit, null))
 
         // ------------------------
         layout.addView(this.dividerView())
 
-        // Edit Layout View
-        layout.addView(this.editLayoutView())
+        // Layout Editor
+        editLayout.addView(this.editModeView())
 
-        // ------------------------
-        layout.addView(this.dividerView())
+        // Edit State
+        editLayout.addView(this.buttonView(R.drawable.icon_apps,
+                                           R.string.edit_state))
+
+        // Edit Rules
+        editLayout.addView(this.buttonView(R.drawable.icon_bulleted_list,
+                                           R.string.edit_rules))
 
         // Settings
-        layout.addView(this.settingsView())
+        val settingsLayout = buttonGroupLayout()
+        layout.addView(settingsLayout)
+
+        settingsLayout.addView(this.headerView(R.string.settings, null))
+
+        // Theme Button
+        settingsLayout.addView(this.buttonView(R.drawable.icon_change_theme,
+                                               R.string.manage_themes))
 
         // ------------------------
         layout.addView(this.dividerView())
 
-        // State Button
-        layout.addView(this.advancedView())
+
+        // Save
+        val saveLayout = buttonGroupLayout()
+        layout.addView(saveLayout)
+
+        saveLayout.addView(this.headerView(R.string.save, null))
+
+        // Save Copy
+        saveLayout.addView(this.buttonView(R.drawable.icon_save,
+                                           R.string.save_sheet_copy))
+
+        // ------------------------
+        layout.addView(this.dividerView())
+
+        // Share
+        val shareLayout = buttonGroupLayout()
+        layout.addView(shareLayout)
+
+        shareLayout.addView(this.headerView(R.string.share, null))
+
+        // Export to File
+        shareLayout.addView(this.buttonView(R.drawable.icon_download,
+                                           R.string.export_to_file))
+
 
         return layout
     }
@@ -75,7 +108,7 @@ class SheetOptionsViewBuilder(val context : Context)
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.topDp    = 34f
+        layout.padding.topDp    = 25f
 
         return layout.linearLayout(context)
     }
@@ -85,30 +118,74 @@ class SheetOptionsViewBuilder(val context : Context)
     // HEADER
     // -----------------------------------------------------------------------------------------
 
-    private fun headerView() : TextView
+    private fun headerView(labelId : Int, annotationString : String?) : LinearLayout
     {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
         val header                  = TextViewBuilder()
+        val annotation              = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.margin.leftDp        = 14f
+
+        layout.padding.topDp        = 10f
+        layout.padding.bottomDp     = 10f
+
+        layout.child(header)
+
+        if (annotationString != null)
+            layout.child(annotation)
+
+        // (3 A) Header
+        // -------------------------------------------------------------------------------------
 
         header.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        header.textId               = R.string.sheet_options
+        header.text                 = context.getString(labelId).toUpperCase()
 
-        val colorTheme = ColorTheme(setOf(
+        val headerColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        header.color                = ThemeManager.color(themeId, colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_20"))))
+        header.color                = theme.colorOrBlack(headerColorTheme)
 
-        header.font                 = Font.typeface(TextFont.FiraSans,
+        header.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Bold,
                                                     context)
 
-        header.sizeSp               = 16f
+        header.sizeSp               = 14f
 
-        header.margin.leftDp        = 10f
-        header.margin.bottomDp      = 12f
+        // (3 B) Annotation
+        // -------------------------------------------------------------------------------------
 
-        return header.textView(context)
+        annotation.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        annotation.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        annotation.text             = annotationString
+
+        val annotationColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("red_90"))))
+        annotation.color            = theme.colorOrBlack(annotationColorTheme)
+
+        annotation.font             = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.Regular,
+                                                    context)
+
+        annotation.sizeSp           = 14f
+
+        annotation.margin.leftDp    = 8f
+
+        return layout.linearLayout(context)
     }
 
 
@@ -125,8 +202,8 @@ class SheetOptionsViewBuilder(val context : Context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        divider.backgroundColor     = ThemeManager.color(themeId, colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_5"))))
+        divider.backgroundColor     = theme.colorOrBlack(colorTheme)
 
         return divider.linearLayout(context)
     }
@@ -152,10 +229,10 @@ class SheetOptionsViewBuilder(val context : Context)
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp = 12f
 
-        layout.margin.leftDp    = 10f
+        layout.margin.leftDp    = 16f
         layout.margin.rightDp   = 10f
 
         layout.child(icon)
@@ -164,60 +241,45 @@ class SheetOptionsViewBuilder(val context : Context)
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp        = 20
-        icon.heightDp       = 20
+        icon.widthDp        = 19
+        icon.heightDp       = 19
 
         icon.image          = iconId
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        icon.color          = ThemeManager.color(themeId, iconColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
+        icon.color          = theme.colorOrBlack(iconColorTheme)
 
-        icon.margin.rightDp = 12f
+        icon.margin.rightDp = 16f
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
 
-        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.textId        = labelId
+        label.textId            = labelId
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        label.color         = ThemeManager.color(themeId, colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_12"))))
+        label.color             = theme.colorOrBlack(colorTheme)
 
-        label.font          = Font.typeface(TextFont.FiraSans,
-                                            TextFontStyle.Regular,
-                                            context)
+        label.font              = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Medium,
+                                                context)
 
-        label.sizeSp         = 17f
+        label.padding.bottomDp  = 1f
+
+        label.sizeSp            = 17f
 
 
         return layout.linearLayout(context)
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // EDIT LAYOUT VIEW
-    // -----------------------------------------------------------------------------------------
-
-    private fun editLayoutView() : LinearLayout
-    {
-        val layout = this.editLayoutViewLayout()
-
-        layout.addView(editModeView())
-
-        layout.addView(this.buttonView(R.drawable.icon_layout,
-                                       R.string.layout_editor))
-
-        return layout
-    }
-
-
-    private fun editLayoutViewLayout() : LinearLayout
+    private fun buttonGroupLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -226,8 +288,8 @@ class SheetOptionsViewBuilder(val context : Context)
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp = 12f
 
         return layout.linearLayout(context)
     }
@@ -250,7 +312,7 @@ class SheetOptionsViewBuilder(val context : Context)
 
         layout.orientation          = LinearLayout.HORIZONTAL
 
-        layout.margin.leftDp        = 10f
+        layout.margin.leftDp        = 16f
         layout.margin.rightDp       = 10f
 
         layout.padding.topDp        = 5f
@@ -266,16 +328,16 @@ class SheetOptionsViewBuilder(val context : Context)
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
         label.weight                = 1f
 
-        label.textId                = R.string.edit_mode
+        label.textId                = R.string.layout_editor
 
-        label.font                  = Font.typeface(TextFont.FiraSans,
-                                                    TextFontStyle.Regular,
+        label.font                  = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.Medium,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        label.color                 = ThemeManager.color(themeId, colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_12"))))
+        label.color                 = theme.colorOrBlack(colorTheme)
 
         label.sizeSp                = 17f
 
@@ -301,14 +363,6 @@ class SheetOptionsViewBuilder(val context : Context)
     private fun settingsView() : LinearLayout
     {
         val layout = this.settingsViewLayout()
-
-        // Theme Button
-        layout.addView(this.buttonView(R.drawable.icon_change_theme,
-                                       R.string.manage_themes))
-
-        // Settings Button
-        layout.addView(this.buttonView(R.drawable.icon_settings,
-                                       R.string.settings))
 
         return layout
     }
@@ -368,52 +422,7 @@ class SheetOptionsViewBuilder(val context : Context)
         return layout.linearLayout(context)
     }
 
-//
-//    private fun stateButtonView(sheetUIContext : SheetUIContext) : TextView
-//    {
-//        val button                  = TextViewBuilder()
-//
-//        button.width                = LinearLayout.LayoutParams.MATCH_PARENT
-//        button.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//        button.textId               = R.string.view_state
-//
-//        button.gravity              = Gravity.CENTER
-//
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-//        button.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, bgColorTheme)
-//
-//        button.corners              = Corners(TopLeftCornerRadius(2f),
-//                                              TopRightCornerRadius(2f),
-//                                              BottomRightCornerRadius(2f),
-//                                              BottomLeftCornerRadius(2f))
-//
-//        val textColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-//        button.color                = SheetManager.color(sheetUIContext.sheetId, textColorTheme)
-//
-//        button.font                 = Font.typeface(TextFont.FiraSans,
-//                                                    TextFontStyle.Regular,
-//                                                    sheetUIContext.context)
-//
-//        button.sizeSp               = 16f
-//
-//        button.margin.leftDp        = 10f
-//        button.margin.rightDp       = 10f
-//
-//        button.margin.topDp         = 12f
-//        button.margin.bottomDp      = 12f
-//
-//        button.padding.topDp        = 8f
-//        button.padding.bottomDp     = 8f
-//        button.padding.leftDp       = 8f
-//        button.padding.rightDp      = 8f
-//
-//        return button.textView(sheetUIContext.context)
-//    }
+
 }
 
 

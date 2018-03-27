@@ -901,7 +901,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
         value.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         value.font              = Font.typeface(TextFont.default(),

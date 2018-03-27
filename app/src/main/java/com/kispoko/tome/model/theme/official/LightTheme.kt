@@ -34,6 +34,9 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("light_grey_15"), "#A9A9A9"),
         ThemeColor(ColorId.Theme("light_grey_16"), "#A5A5A5"),
         ThemeColor(ColorId.Theme("light_grey_17"), "#A1A1A1"),
+        ThemeColor(ColorId.Theme("light_grey_18"), "#9C9C9C"),
+        ThemeColor(ColorId.Theme("light_grey_19"), "#969696"),
+        ThemeColor(ColorId.Theme("light_grey_20"), "#919191"),
         ThemeColor(ColorId.Theme("dark_grey_1"), "#050505"),
         ThemeColor(ColorId.Theme("dark_grey_2"), "#0A0A0A"),
         ThemeColor(ColorId.Theme("dark_grey_3"), "#111111"),
@@ -84,12 +87,12 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("light_blue_70"), "#B21887C0"),
         ThemeColor(ColorId.Theme("light_blue_60"), "#991887C0"),
         ThemeColor(ColorId.Theme("light_blue_50"), "#801887C0"),
-        ThemeColor(ColorId.Theme("purple"), "#6734B5"),
-        ThemeColor(ColorId.Theme("purple_90"), "#E66734B5"),
-        ThemeColor(ColorId.Theme("purple_80"), "#C46734B5"),
-        ThemeColor(ColorId.Theme("purple_70"), "#B26734B5"),
-        ThemeColor(ColorId.Theme("purple_60"), "#996734B5"),
-        ThemeColor(ColorId.Theme("purple_50"), "#806734B5"),
+        ThemeColor(ColorId.Theme("purple"), "#9161C0"),
+        ThemeColor(ColorId.Theme("purple_90"), "#E69161C0"),
+        ThemeColor(ColorId.Theme("purple_80"), "#C49161C0"),
+        ThemeColor(ColorId.Theme("purple_70"), "#B29161C0"),
+        ThemeColor(ColorId.Theme("purple_60"), "#999161C0"),
+        ThemeColor(ColorId.Theme("purple_50"), "#809161C0"),
         ThemeColor(ColorId.Theme("transparent"), "#00FFFFFF")
 )
 

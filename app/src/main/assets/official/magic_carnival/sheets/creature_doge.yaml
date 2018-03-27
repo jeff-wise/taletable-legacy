@@ -657,7 +657,7 @@ variables:
     description: Maximum hit points.
     value:
       type: number_literal
-      number_literal: 34
+      number_literal: 40
 - type: variable_number
   variable_number:
     id: current_hit_points
@@ -1882,7 +1882,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: purple_90
                   corners:
                     top_right_radius: 4
                     bottom_right_radius: 4
@@ -1926,7 +1926,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_70
+                      color_id: purple_70
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4
@@ -2295,7 +2295,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: purple_90
                   corners:
                     top_right_radius: 4
                     bottom_right_radius: 4
@@ -2339,7 +2339,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_70
+                      color_id: purple_70
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4
@@ -2637,7 +2637,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: purple_90
                   corners:
                     top_right_radius: 4
                     bottom_right_radius: 4
@@ -2681,7 +2681,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_70
+                      color_id: purple_70
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4
@@ -2755,7 +2755,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_90
+                      color_id: purple_90
                   corners:
                     top_right_radius: 4
                     bottom_right_radius: 4
@@ -2799,7 +2799,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_70
+                      color_id: purple_70
                   corners:
                     top_left_radius: 4
                     bottom_left_radius: 4

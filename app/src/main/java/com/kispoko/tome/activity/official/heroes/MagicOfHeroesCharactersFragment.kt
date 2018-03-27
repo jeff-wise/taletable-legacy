@@ -717,10 +717,6 @@ private fun pcFooterViewLayout(theme : Theme, context : Context) : LinearLayout
 
     layout.gravity          = Gravity.END
 
-    layout.padding.topDp    = 6f
-    layout.padding.bottomDp = 6f
-    layout.padding.rightDp  = 6f
-
     return layout.linearLayout(context)
 }
 
@@ -740,7 +736,13 @@ private fun pcOpenButtonView(label : String, id : Int, theme : Theme, context : 
                                                 TextFontStyle.Bold,
                                                 context)
 
-    button.margin.leftDp       = 25f
+    button.margin.leftDp        = 5f
+
+
+    button.padding.leftDp       = 10f
+    button.padding.rightDp      = 10f
+    button.padding.topDp        = 6f
+    button.padding.bottomDp     = 6f
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),

@@ -123,6 +123,7 @@ class EntityState(val entityId : EntityId,
     // VARIABLES
     // -----------------------------------------------------------------------------------------
 
+
     /**
      * Add a variable to the index. If a variable with the same name already exists in the index,
      * then the new variable replaces the old variable.

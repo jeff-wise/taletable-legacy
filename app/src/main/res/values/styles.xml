@@ -6,10 +6,10 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="colorControlNormal">@color/dark_theme_light_grey_17</item>
-        <item name="colorControlActivated">@color/dark_theme_light_grey_17</item>
+        <item name="colorControlNormal">@color/light_theme_light_grey_15</item>
+        <item name="colorControlActivated">@color/light_theme_light_blue</item>
         <item name="colorControlHighlight">#876333</item>
-        <item name="colorSwitchThumbNormal">@color/dark_theme_light_grey_17</item>
+        <item name="colorSwitchThumbNormal">@color/light_theme_light_grey_15</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
