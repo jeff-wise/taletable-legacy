@@ -14,12 +14,9 @@ import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.game.engine.variable.VariableTag
-import com.kispoko.tome.model.game.engine.variable.VariableTagSet
-import com.kispoko.tome.rts.entity.Entity
+import com.kispoko.tome.rts.entity.*
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -42,7 +39,8 @@ data class Game(override val id : UUID,
                 val gameSummary : GameSummary,
                 val authors : MutableList<Author>,
                 val engine : Engine,
-                val bookIds : List<BookId>)
+                val bookIds : List<BookId>,
+                var entityLoader : EntityLoader)
                  : ToDocument, Entity, ProdType, Serializable
 {
 
@@ -71,7 +69,8 @@ data class Game(override val id : UUID,
                gameSummary,
                authors.toMutableList(),
                engine,
-               bookIds)
+               bookIds,
+               EntityLoaderUnknown())
 
 
     companion object : Factory<Game>
@@ -168,6 +167,9 @@ data class Game(override val id : UUID,
 
 
     override fun summary() = this.gameSummary.value
+
+
+    override fun entityLoader() = this.entityLoader
 
 
     // -----------------------------------------------------------------------------------------

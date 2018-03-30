@@ -712,14 +712,29 @@ fun colorOrBlack(colorId : ColorId, entityId : EntityId) : Int
 sealed class EntityId : Serializable
 
 data class EntitySheetId(val sheetId : SheetId) : EntityId()
+{
+    override fun toString() = sheetId.value
+}
 
 data class EntityCampaignId(val campaignId : CampaignId) : EntityId()
+{
+    override fun toString() = campaignId.value
+}
 
 data class EntityGameId(val gameId : GameId) : EntityId()
+{
+    override fun toString() = gameId.value
+}
 
 data class EntityThemeId(val themeId : ThemeId) : EntityId()
+{
+    override fun toString() = themeId.toString()
+}
 
 data class EntityBookId(val bookId : BookId) : EntityId()
+{
+    override fun toString() = bookId.value
+}
 
 
 // Entity Type
@@ -820,9 +835,21 @@ data class EntityBookRecord(val book : Book,
 
 
 
-interface Entity
+sealed class EntitySource
+
+
+class EntitySourceOfficial : EntitySource()
+
+
+data class EntitySourceLocal(val rowId : Long) : EntitySource()
+
+
+
+interface Entity : Serializable
 {
     val id : UUID
     fun name() : String
     fun summary() : String
+    fun entityLoader() : EntityLoader
 }
+

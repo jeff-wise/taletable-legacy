@@ -22,8 +22,10 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.rts.entity.updateVariable
 
 
@@ -41,7 +43,7 @@ class TextEditorDialog : DialogFragment()
 
     private var title        : String? = null
     private var text         : String? = null
-    private var variableId   : VariableId? = null
+    private var updateTarget : UpdateTarget? = null
     private var entityId     : EntityId? = null
 
 
@@ -53,7 +55,7 @@ class TextEditorDialog : DialogFragment()
     {
         fun newInstance(title : String,
                         text : String,
-                        variableId : VariableId,
+                        updateTarget : UpdateTarget,
                         entityId : EntityId) : TextEditorDialog
         {
             val dialog = TextEditorDialog()
@@ -61,7 +63,7 @@ class TextEditorDialog : DialogFragment()
             val args = Bundle()
             args.putString("text", text)
             args.putString("title", title)
-            args.putSerializable("variable_id", variableId)
+            args.putSerializable("update_target", updateTarget)
             args.putSerializable("entity_id", entityId)
 
             dialog.arguments = args
@@ -80,10 +82,10 @@ class TextEditorDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.title      = arguments.getString("title")
-        this.text       = arguments.getString("text")
-        this.variableId = arguments.getSerializable("variable_id") as VariableId?
-        this.entityId   = arguments.getSerializable("entity_id") as EntityId
+        this.title          = arguments.getString("title")
+        this.text           = arguments.getString("text")
+        this.updateTarget   = arguments.getSerializable("update_target") as UpdateTarget?
+        this.entityId       = arguments.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -111,16 +113,16 @@ class TextEditorDialog : DialogFragment()
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val title      = this.title
-        val text       = this.text
-        val entityId   = this.entityId
-        val variableId = this.variableId
+        val title        = this.title
+        val text         = this.text
+        val entityId     = this.entityId
+        val updateTarget = this.updateTarget
 
-        return if (title != null && text != null && entityId != null && variableId != null)
+        return if (title != null && text != null && entityId != null && updateTarget != null)
         {
             val viewBuilder = TextEditorViewBuilder(title,
                                                     text,
-                                                    variableId,
+                                                    updateTarget,
                                                     this,
                                                     entityId,
                                                     context)
@@ -155,7 +157,7 @@ class TextEditorDialog : DialogFragment()
 
 class TextEditorViewBuilder(val title : String,
                             val text : String,
-                            val variableId : VariableId,
+                            val updateTarget : UpdateTarget,
                             val dialog : DialogFragment,
                             val entityId : EntityId,
                             val context : Context)
@@ -276,14 +278,6 @@ class TextEditorViewBuilder(val title : String,
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation          = LinearLayout.VERTICAL
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
-//        layout.backgroundColor      = Color.WHITE //  SheetManager.color(sheetUIContext.sheetId, colorTheme)
-
-//        layout.gravity              = Gravity.CENTER_VERTICAL
-
-//        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
         return layout.linearLayout(context)
     }
@@ -489,30 +483,21 @@ class TextEditorViewBuilder(val title : String,
             val currentValue = this.valueView?.text?.toString()
             if (currentValue != null)
             {
-                updateVariable(variableId,
-                               EngineValueText(currentValue),
-                               entityId)
-                dialog.dismiss()
-//                when (updateTarget)
-//                {
-//                    is UpdateTargetStoryWidgetPart ->
-//                    {
-//                        if (variableId != null)
-//                        {
-//
-//                        }
-//                    }
-//                    is UpdateTargetTextWidget ->
-//                    {
-//                        val textWidgetUpdate = TextWidgetUpdateSetText(updateTarget.textWidgetId,
-//                                                                       currentValue)
-//                        SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                                 textWidgetUpdate,
-//                                                 sheetUIContext.sheetUI())
-//                        dialog.dismiss()
-//                    }
-//                }
+                when (updateTarget)
+                {
+                    is UpdateTargetStoryWidgetPart ->
+                    {
+                    }
+                    is UpdateTargetTextWidget ->
+                    {
+                        val textWidgetUpdate = TextWidgetUpdateSetText(updateTarget.textWidgetId,
+                                                                       currentValue)
+                        Router.send(MessageSheetUpdate(textWidgetUpdate))
+                    }
+                }
             }
+
+            dialog.dismiss()
         }
 
         layout// .child(icon)

@@ -14,7 +14,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.rts.entity.Entity
+import com.kispoko.tome.rts.entity.*
 import effect.apply
 import effect.effError
 import effect.effValue
@@ -34,7 +34,8 @@ data class Campaign(override val id : UUID,
                     val engine : Engine,
                     val campaignName : CampaignName,
                     val campaignSummary : CampaignSummary,
-                    val gameId : GameId)
+                    val gameId : GameId,
+                    val entityLoader : EntityLoader)
                      : Entity, ProdType, Serializable
 {
 
@@ -52,7 +53,8 @@ data class Campaign(override val id : UUID,
                engine,
                campaignName,
                campaignSummary,
-               gameId)
+               gameId,
+               EntityLoaderUnknown())
 
 
     companion object : Factory<Campaign>
@@ -124,6 +126,9 @@ data class Campaign(override val id : UUID,
 
 
     override fun summary() = this.campaignSummary()
+
+
+    override fun entityLoader() = this.entityLoader
 
 }
 

@@ -3,17 +3,23 @@ package com.kispoko.tome.lib.ui;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.kispoko.tome.model.sheet.style.Corners;
 import com.kispoko.tome.util.Util;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +56,7 @@ public class RelativeLayoutBuilder
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
+    public String                   backgroundBitmapPath;
 
     public Margins                  margin;
     public Padding                  padding;
@@ -91,6 +98,8 @@ public class RelativeLayoutBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
+
+        this.backgroundBitmapPath = null;
 
         this.margin             = new Margins();
         this.padding            = new Padding();
@@ -164,6 +173,32 @@ public class RelativeLayoutBuilder
 
         if (this.onClick != null)
             relativeLayout.setOnClickListener(this.onClick);
+
+        // > Background Bitmap
+        // --------------------------------------------------------------------------------------
+
+        if (this.backgroundBitmapPath != null)
+        {
+
+            InputStream stream = null;
+
+            try(InputStream is = context.getAssets().open(this.backgroundBitmapPath))
+            {
+                if (is != null)
+                {
+                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
+
+                    BitmapDrawable background = new BitmapDrawable(context.getResources(),
+                                                                   bitmap);
+                    relativeLayout.setBackground(background);
+                    Log.d("***REL LAY", "setting bg");
+                }
+            }
+            catch (Exception ex) {
+                //omitted.
+            }
+
+        }
 
         // > Background Color
         // --------------------------------------------------------------------------------------

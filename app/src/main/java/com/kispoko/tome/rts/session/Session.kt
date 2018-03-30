@@ -76,7 +76,7 @@ fun session(sessionId : SessionId) : Maybe<Session>
  * Session
  */
 data class Session(val sessionId : SessionId,
-                   val entityIds : MutableSet<EntityId>)
+                   val entityIds : MutableSet<EntityId>) : Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -143,6 +143,14 @@ data class Session(val sessionId : SessionId,
         return recordByType
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // LOADER
+    // -----------------------------------------------------------------------------------------
+
+    fun loader() : SessionLoader =
+        SessionLoader(this.entityRecords().map { it.entity().entityLoader() })
+
 }
 
 
@@ -181,3 +189,6 @@ data class SessionId(val value : String) : ToDocument, SQLSerializable, Serializ
 
 }
 
+
+
+data class SessionLoader(val entityLoaders : List<EntityLoader>) : Serializable

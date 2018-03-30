@@ -3,11 +3,11 @@ package com.kispoko.tome.lib.ui;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.PaintDrawable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -55,6 +55,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
+    public Bitmap                   backgroundBitmap;
     public Float                    elevation;
 
     public Margins                  margin;
@@ -245,6 +246,15 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         if (this.hapticFeedback != null)
             linearLayout.setHapticFeedbackEnabled(this.hapticFeedback);
+
+        // > Background Bitmap
+        // --------------------------------------------------------------------------------------
+
+        if (this.backgroundBitmap != null)
+        {
+            BitmapDrawable background = new BitmapDrawable(context.getResources(), this.backgroundBitmap);
+            linearLayout.setBackground(background);
+        }
 
         // > Background Color
         // --------------------------------------------------------------------------------------

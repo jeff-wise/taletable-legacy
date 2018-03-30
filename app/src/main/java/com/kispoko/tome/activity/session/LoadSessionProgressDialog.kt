@@ -33,9 +33,7 @@ import com.kispoko.tome.rts.session.SessionId
 import com.kispoko.tome.rts.session.newSession
 import com.kispoko.tome.util.Util
 import com.wang.avi.AVLoadingIndicatorView
-import com.wang.avi.Indicator
 import com.wang.avi.indicators.BallSpinFadeLoaderIndicator
-import com.wang.avi.indicators.SemiCircleSpinIndicator
 import java.io.Serializable
 
 

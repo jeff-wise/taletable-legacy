@@ -7,7 +7,11 @@ import android.util.Log
 import android.view.View
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppSheetError
+import com.kispoko.tome.app.ApplicationError
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.DB_SheetValue
+import com.kispoko.tome.db.saveEntity
+import com.kispoko.tome.db.saveUpdate
 import com.kispoko.tome.db.sheetTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
@@ -25,12 +29,13 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*
-import com.kispoko.tome.rts.entity.Entity
-import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.EntitySheetId
-import com.kispoko.tome.rts.entity.addVariable
+import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.*
 import effect.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -48,7 +53,8 @@ data class Sheet(override val id : UUID,
                  private var sections : MutableList<Section>,
                  private var engine : Engine,
                  private var variables : MutableList<Variable>,
-                 private var settings : Settings)
+                 private var settings : Settings,
+                 private var entitySource : EntityLoader)
                   : Entity, ProdType, ToDocument, Serializable
 {
 
@@ -121,7 +127,8 @@ data class Sheet(override val id : UUID,
                sections.toMutableList(),
                engine,
                variables.toMutableList(),
-               settings)
+               settings,
+               EntityLoaderUnknown())
 
 
     companion object : Factory<Sheet>
@@ -194,6 +201,12 @@ data class Sheet(override val id : UUID,
 
 
     override fun summary() : String = this.settings.sheetSummary()
+
+
+    override fun entityLoader() = this.entitySource
+
+
+    fun entityId() : EntityId = EntitySheetId(this.sheetId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -295,11 +308,42 @@ data class Sheet(override val id : UUID,
 
     fun update(sheetUpdate : SheetUpdate,
                rootView : View,
-               context : Context) =
-        when (sheetUpdate)
-        {
+               context : Context)
+    {
+        // Update sheet
+        when (sheetUpdate) {
             is SheetUpdateWidget -> this.updateWidget(sheetUpdate, rootView, context)
         }
+
+        // Save update
+        launch(UI) {
+            saveSheetUpdate(sheetUpdate, context)
+        }
+    }
+
+
+
+    suspend fun saveSheetUpdate(sheetUpdate : SheetUpdate, context : Context)
+    {
+        when (this.entitySource)
+        {
+            is EntityLoaderSaved ->
+            {
+                saveUpdate(this.entityId(), context)
+            }
+            else -> {
+                val rowId = async(CommonPool) { saveEntity(entityId(), name(), context) }.await()
+                when (rowId) {
+                    is Val -> {
+                        this.entitySource = EntityLoaderSaved(rowId.value)
+                        saveUpdate(this.entityId(), context)
+                    }
+                    is Err -> ApplicationLog.error(rowId.error)
+                }
+            }
+        }
+
+    }
 
 
 
@@ -349,8 +393,8 @@ data class Sheet(override val id : UUID,
             }
             is WidgetUpdateTextWidget ->
             {
-//                val textWidget = this.textWidgetById[widgetUpdate.widgetId]
-//                textWidget?.update(widgetUpdate, sheetContext, rootView)
+                val textWidget = this.textWidgetById[widgetUpdate.widgetId]
+                textWidget?.update(widgetUpdate, entityId, rootView, context)
             }
         }
 

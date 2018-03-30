@@ -482,9 +482,9 @@ class SheetActivity : AppCompatActivity()
 
 
 
-        val saveMenuUI = SaveMenuUI(this, officialThemeLight)
-        this.bottomSheet?.removeAllViews()
-        this.bottomSheet?.addView(saveMenuUI.view())
+//        val saveMenuUI = SaveMenuUI(this, officialThemeLight)
+//        this.bottomSheet?.removeAllViews()
+//        this.bottomSheet?.addView(saveMenuUI.view())
 
         val end = System.currentTimeMillis()
 

@@ -3,6 +3,7 @@ package com.kispoko.tome.rts.entity
 
 
 import android.content.Context
+import com.kispoko.tome.R.string.label
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.app.assetInputStream
 import com.kispoko.tome.load.*
@@ -35,6 +36,9 @@ suspend fun loadEntity(entityLoader : EntityLoader,
             is OfficialGameLoader     -> loadOfficialGame(entityLoader, context)
             is OfficialBookLoader     -> loadOfficialBook(entityLoader, context)
         }
+    }
+    else -> {
+        Nothing()
     }
 }
 
@@ -190,6 +194,18 @@ data class EntityLoadResult(val entityId : EntityId, val fromCache : Boolean)
 // ---------------------------------------------------------------------------------------------
 
 sealed class EntityLoader(open val label : String) : Serializable
+
+
+// ENTITY LOADER > UNKNOWN
+// ---------------------------------------------------------------------------------------------
+
+class EntityLoaderUnknown() : EntityLoader("")
+
+
+// ENTITY LOADER > SAVED
+// ---------------------------------------------------------------------------------------------
+
+data class EntityLoaderSaved(val rowId : Long) : EntityLoader("")
 
 
 // ENTITY LOADER > OFFICIAL

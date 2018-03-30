@@ -3631,30 +3631,21 @@ data class TextWidget(override val id : UUID,
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
-    fun update(textWidgetUpdate : WidgetUpdateTextWidget,
+    fun update(update : WidgetUpdateTextWidget,
+               entityId : EntityId,
                rootView : View,
-               entityId : EntityId) =
-        when (textWidgetUpdate)
+               context : Context) =
+        when (update)
         {
             is TextWidgetUpdateSetText ->
             {
-                this.updateTextValue(textWidgetUpdate.newText, entityId)
-                this.updateTextView(this.valueString(entityId), rootView)
+                this.updateValue(update.newText, entityId)
+                this.updateView(rootView, entityId, context)
             }
         }
 
 
-    private fun updateTextView(newText : String, rootView : View)
-    {
-//        val viewId = this.viewId
-//        if (viewId != null) {
-//            val textView = rootView.findViewById(viewId) as TextView?
-//            textView?.text = newText
-//        }
-    }
-
-
-    fun updateTextValue(newText : String, entityId : EntityId)
+    fun updateValue(newText : String, entityId : EntityId)
     {
         val textVariable = this.valueVariable(entityId)
         when (textVariable) {
@@ -3662,6 +3653,22 @@ data class TextWidget(override val id : UUID,
             is Err -> ApplicationLog.error(textVariable.error)
         }
     }
+
+
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
+    {
+        val layoutId = this.layoutId
+        if (layoutId != null)
+        {
+            try {
+                val layout = rootView.findViewById(layoutId) as LinearLayout
+                TextWidgetView.updateView(this, entityId, layout, context)
+            }
+            catch (e: TypeCastException) {
+            }
+        }
+    }
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -3731,21 +3738,6 @@ data class TextWidget(override val id : UUID,
     }
 
 
-
-    private fun updateView(rootView : View, entityId : EntityId, context : Context)
-    {
-        val layoutId = this.layoutId
-        if (layoutId != null)
-        {
-            //val activity = context as AppCompatActivity
-            val layout = rootView.findViewById(layoutId) as LinearLayout
-            TextWidgetView.updateView(this, entityId, layout, context)
-
-//            val textView = rootView.findViewById(viewId) as TextView?
-//            val newText = this.valueString(entityId)
-//            textView?.text = newText
-        }
-    }
 
 
 }

@@ -2,6 +2,7 @@
 package com.kispoko.tome.app
 
 
+import com.kispoko.tome.db.DatabaseError
 import com.kispoko.tome.official.OfficialError
 import com.kispoko.tome.rts.entity.EntityError
 import com.kispoko.tome.rts.entity.campaign.CampaignError
@@ -39,6 +40,14 @@ class AppVoidError() : AppError()
     override fun debugMessage(): String = "void"
 
     override fun logMessage(): String = "void"
+}
+
+
+class AppDBError(val error : DatabaseError) : AppError()
+{
+    override fun debugMessage(): String = error.debugMessage()
+
+    override fun logMessage(): String = error.userMessage()
 }
 
 

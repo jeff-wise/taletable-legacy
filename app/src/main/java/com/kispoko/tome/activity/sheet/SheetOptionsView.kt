@@ -3,11 +3,11 @@ package com.kispoko.tome.activity.sheet
 
 
 import android.content.Context
+import android.content.Intent
 import android.view.Gravity
+import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.edit
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -19,7 +19,7 @@ import com.kispoko.tome.model.theme.official.officialThemeLight
 /**
  * Sheet Options UI (Sidebar)
  */
-class SheetOptionsUI(val context : Context)
+class SheetOptionsUI(val sheetActivity : SheetActivity)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -27,6 +27,8 @@ class SheetOptionsUI(val context : Context)
     // -----------------------------------------------------------------------------------------
 
     val theme : Theme = officialThemeLight
+
+    val context = sheetActivity as Context
 
 
     // -----------------------------------------------------------------------------------------
@@ -78,8 +80,17 @@ class SheetOptionsUI(val context : Context)
         saveLayout.addView(this.headerView(R.string.save, null))
 
         // Save Copy
+        val onSave = View.OnClickListener {
+            val intent = Intent(sheetActivity, SaveSheetActivity::class.java)
+
+            val sheetId = sheetActivity.sheetId
+            if (sheetId != null)
+                intent.putExtra("sheet_id", sheetId)
+            sheetActivity.startActivity(intent)
+        }
         saveLayout.addView(this.buttonView(R.drawable.icon_save,
-                                           R.string.save_sheet_copy))
+                                           R.string.save_sheet_copy,
+                                           onSave))
 
         // ------------------------
         layout.addView(this.dividerView())
@@ -210,7 +221,8 @@ class SheetOptionsUI(val context : Context)
 
 
     private fun buttonView(iconId : Int,
-                           labelId : Int) : LinearLayout
+                           labelId : Int,
+                           onClick : View.OnClickListener? = null) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -234,6 +246,8 @@ class SheetOptionsUI(val context : Context)
 
         layout.margin.leftDp    = 16f
         layout.margin.rightDp   = 10f
+
+        layout.onClick          = onClick
 
         layout.child(icon)
               .child(label)

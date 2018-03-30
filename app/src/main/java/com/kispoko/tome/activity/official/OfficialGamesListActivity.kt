@@ -19,7 +19,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.fifth_ed_srd.FifthEdSRDCharactersFragment
 import com.kispoko.tome.activity.official.fifth_ed_srd.OpenFifthEdSRDSessionActivity
 import com.kispoko.tome.activity.official.heroes.OpenHeroesSessionActivity
 import com.kispoko.tome.activity.official.magic_carnival.OpenMagicCarnivalSessionActivity
@@ -123,7 +122,6 @@ class OfficialGamesListActivity : AppCompatActivity() {
         titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
     }
 
-
 }
 
 
@@ -163,7 +161,7 @@ class GamesListUI(val gameManifest: GameManifest,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
         scrollView.backgroundColor  = theme.colorOrBlack(colorTheme)
 
         return scrollView.scrollView(context)
@@ -228,9 +226,6 @@ class GamesListUI(val gameManifest: GameManifest,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
         layout.backgroundColor  = Color.WHITE
 
         layout.margin.topDp     = 4f

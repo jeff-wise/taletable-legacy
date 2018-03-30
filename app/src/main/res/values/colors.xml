@@ -272,10 +272,12 @@
     <color name="light_theme_light_blue_90">#E61887C0</color>
     <color name="light_theme_light_grey_3">#F3F3F3</color>
     <color name="light_theme_light_grey_5">#EAEAEA</color>
+    <color name="light_theme_light_grey_6">#E8E8E8</color>
     <color name="light_theme_light_grey_8">#DDDDDD</color>
     <color name="light_theme_light_grey_15">#A9A9A9</color>
     <color name="light_theme_dark_grey_4">#181818</color>
     <color name="light_theme_dark_grey_6">#272727</color>
+    <color name="light_theme_dark_grey_8">#393939</color>
     <color name="light_theme_dark_grey_10">#4A4A4A</color>
 
     <color name="light_theme_red">#C32C39</color>

@@ -19,7 +19,7 @@ import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.entity.Entity
+import com.kispoko.tome.rts.entity.*
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -44,7 +44,8 @@ data class Book(override val id : UUID,
                 val variables : List<Variable>,
                 val introduction : Maybe<BookContent>,
                 val conclusion : Maybe<BookContent>,
-                val chapters : MutableList<BookChapter>)
+                val chapters : MutableList<BookChapter>,
+                var entityLoader : EntityLoader)
                  : ToDocument, Entity, ProdType, Serializable
 {
 
@@ -77,7 +78,8 @@ data class Book(override val id : UUID,
                variables,
                introduction,
                conclusion,
-               chapters.toMutableList())
+               chapters.toMutableList(),
+               EntityLoaderUnknown())
 
 
     companion object : Factory<Book>
@@ -166,6 +168,9 @@ data class Book(override val id : UUID,
 
 
     override fun summary() = this.bookInfo.summary.value
+
+
+    override fun entityLoader() = this.entityLoader
 
 
     // -----------------------------------------------------------------------------------------
