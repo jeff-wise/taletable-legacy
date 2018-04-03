@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.campaign
 
 
+import com.kispoko.culebra.*
 import com.kispoko.tome.db.DB_CampaignValue
 import com.kispoko.tome.db.campaignTable
 import com.kispoko.tome.lib.Factory
@@ -14,6 +15,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.entity.*
 import effect.apply
 import effect.effError
@@ -151,6 +153,16 @@ data class CampaignId(val value : String) : ToDocument, SQLSerializable, Seriali
             is DocText -> effValue(CampaignId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<CampaignId> =
+            when (yamlValue)
+            {
+                is YamlText -> effValue(CampaignId(yamlValue.text))
+                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                         yamlType(yamlValue),
+                                                         yamlValue.path))
+            }
+
     }
 
 

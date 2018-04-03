@@ -3,6 +3,7 @@ package com.kispoko.tome.rts.entity
 
 
 import android.graphics.Color
+import com.kispoko.culebra.*
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookId
@@ -35,12 +36,14 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.entity.engine.TextReferenceIsNull
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.rts.entity.theme.ThemeManager
+import com.kispoko.tome.rts.session.SessionTag
 import effect.*
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
 import java.util.*
+
 
 
 // ---------------------------------------------------------------------------------------------
@@ -590,9 +593,9 @@ fun updateVariable(variableId : VariableId,
 }
 
 
-fun addOnVariableChangeListener(variableId : VariableId,
-                                onChangeListener : OnVariableChangeListener,
-                                entityId : EntityId)
+fun addVariableChangeListener(variableId : VariableId,
+                              onChangeListener : VariableChangeListener,
+                              entityId : EntityId)
 {
     entityEngineState(entityId) apDo {
         it.addVariableOnChangeListener(variableId, onChangeListener)
@@ -710,30 +713,90 @@ fun colorOrBlack(colorId : ColorId, entityId : EntityId) : Int
 // ---------------------------------------------------------------------------------------------
 
 sealed class EntityId : Serializable
+{
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityId> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                yamlValue.text("type") apply {
+                    when (it) {
+                        "sheet"    -> yamlValue.at("sheet").apply(EntitySheetId.Companion::fromYaml) as YamlParser<EntityId>
+                        "campaign" -> yamlValue.at("campaign").apply(EntityCampaignId.Companion::fromYaml) as YamlParser<EntityId>
+                        "game"     -> yamlValue.at("game").apply(EntityGameId.Companion::fromYaml) as YamlParser<EntityId>
+                        "book"     -> yamlValue.at("book").apply(EntityBookId.Companion::fromYaml) as YamlParser<EntityId>
+                        else       -> effError<YamlParseError,EntityId>(
+                                        UnexpectedStringValue(it, yamlValue.path))
+                    }
+                }
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+    }
+
+}
+
 
 data class EntitySheetId(val sheetId : SheetId) : EntityId()
 {
     override fun toString() = sheetId.value
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntitySheetId> =
+            apply(::EntitySheetId, SheetId.fromYaml(yamlValue))
+    }
+
 }
+
 
 data class EntityCampaignId(val campaignId : CampaignId) : EntityId()
 {
     override fun toString() = campaignId.value
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityCampaignId> =
+            apply(::EntityCampaignId, CampaignId.fromYaml(yamlValue))
+    }
+
 }
 
 data class EntityGameId(val gameId : GameId) : EntityId()
 {
     override fun toString() = gameId.value
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityGameId> =
+            apply(::EntityGameId, GameId.fromYaml(yamlValue))
+    }
+
 }
 
 data class EntityThemeId(val themeId : ThemeId) : EntityId()
 {
     override fun toString() = themeId.toString()
+
+//    companion object
+//    {
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityThemeId> =
+//            apply(::EntityThemeId, ThemeId.fromYaml(yamlValue))
+//    }
+
 }
 
 data class EntityBookId(val bookId : BookId) : EntityId()
 {
     override fun toString() = bookId.value
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityBookId> =
+            apply(::EntityBookId, BookId.fromYaml(yamlValue))
+    }
+
 }
 
 
@@ -766,6 +829,37 @@ object EntityTypeBook : EntityType()
 {
     override fun toString() = "Book"
 }
+
+
+// Entity Kind
+// ---------------------------------------------------------------------------------------------
+
+data class EntityKind(val id : String,
+                      val name : String,
+                      val description : String) : Serializable
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityKind> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                apply(::EntityKind,
+                      // Id
+                      yamlValue.text("id"),
+                      // Name
+                      yamlValue.text("name"),
+                      // Description
+                      yamlValue.text("description")
+                      )
+            }
+            else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+    }
+
+}
+
 
 
 // Entity State

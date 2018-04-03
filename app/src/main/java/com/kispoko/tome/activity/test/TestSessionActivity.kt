@@ -67,27 +67,22 @@ class TestSessionActivity : AppCompatActivity()
         // (3) Load Test Sheet
         // -------------------------------------------------------------------------------------
 
-
         val context = this
         launch(UI) {
-            val sheetLoader = OfficialSheetLoader("Casmey",
-                                                  sheetId,
-                                                  CampaignId("isara"),
+            val sheetLoader = OfficialSheetLoader(sheetId,
                                                   GameId("magic_of_heroes"))
 
-            val campaignLoader = OfficialCampaignLoader("Isara",
-                                                        CampaignId("isara"),
+            val campaignLoader = OfficialCampaignLoader(CampaignId("isara"),
                                                         GameId("magic_of_heroes"))
 
-            val gameLoader = OfficialGameLoader("Magic of Heroes", GameId("magic_of_heroes"))
+            val gameLoader = OfficialGameLoader(GameId("magic_of_heroes"))
 
-            val coreRulebookLoader = OfficialBookLoader("Core Rules",
-                                                        BookId("core_rules"),
+            val coreRulebookLoader = OfficialBookLoader(BookId("core_rules"),
                                                         GameId("magic_of_heroes"))
 
             val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
 
-            newSession(loaders, SessionId("test"), context)
+//            newSession(loaders, SessionId("test"), context)
         }
 
     }

@@ -4,8 +4,12 @@ package com.kispoko.tome.official
 
 import com.kispoko.culebra.*
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.rts.entity.EntityKind
 import effect.apply
 import effect.effValue
+import effect.split
+import java.io.Serializable
+
 
 
 // ---------------------------------------------------------------------------------------------
@@ -43,7 +47,8 @@ data class GameSummary(val gameId : GameId,
                        val description : String,
                        val genre : String,
                        val players : Int,
-                       val likes : Int)
+                       val likes : Int,
+                       val entityKinds : List<EntityKind>) : Serializable
 {
 
     companion object
@@ -66,7 +71,11 @@ data class GameSummary(val gameId : GameId,
                       // Players
                       yamlValue.integer("players"),
                       // Likes
-                      yamlValue.integer("likes")
+                      yamlValue.integer("likes"),
+                      // Entity Kinds
+                      split(yamlValue.maybeArray("entity_kinds"),
+                            effValue(listOf()),
+                            { it.mapApply { EntityKind.fromYaml(it) }})
                       )
             }
             else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))

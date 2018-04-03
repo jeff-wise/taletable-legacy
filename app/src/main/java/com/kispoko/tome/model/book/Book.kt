@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.book
 
 
+import com.kispoko.culebra.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.*
@@ -308,6 +309,16 @@ data class BookId(val value : String) : ToDocument, SQLSerializable, Serializabl
             is DocText -> effValue(BookId(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<BookId> =
+            when (yamlValue)
+            {
+                is YamlText -> effValue(BookId(yamlValue.text))
+                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                         yamlType(yamlValue),
+                                                         yamlValue.path))
+            }
+
     }
 
 

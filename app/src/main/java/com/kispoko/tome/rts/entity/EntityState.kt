@@ -57,7 +57,7 @@ class EntityState(val entityId : EntityId,
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
     private val listenerTagsByRelation : MutableMap<VariableRelation,MutableSet<RelationListener>> = mutableMapOf()
 
-    private val onChangeListenersById : MutableMap<VariableId,MutableSet<OnVariableChangeListener>> = mutableMapOf()
+    private val onChangeListenersById : MutableMap<VariableId,MutableSet<VariableChangeListener>> = mutableMapOf()
 
 
     // Mechanic Indexes
@@ -542,6 +542,18 @@ class EntityState(val entityId : EntityId,
 //
 
         this.updateListeners(variable, UUID.randomUUID())
+
+        this.onVariableChange(variableId)
+    }
+
+
+    fun onVariableChange(variableId : VariableId)
+    {
+        if (onChangeListenersById.containsKey(variableId))
+        {
+            val listeners = onChangeListenersById[variableId]
+            listeners?.forEach { it.onRemove() }
+        }
     }
 
 
@@ -558,7 +570,7 @@ class EntityState(val entityId : EntityId,
             {
                 if (listener.lastUpdateId != updateId)
                 {
-                    listener.onUpdate()
+                    onVariableChange(listener.variableId())
                     listener.lastUpdateId = updateId
                     this.updateListeners(listener, updateId)
                 }
@@ -577,7 +589,8 @@ class EntityState(val entityId : EntityId,
                 {
                     if (listener.lastUpdateId != updateId)
                     {
-                        listener.onUpdate()
+//                        listener.onUpdate()
+                        onVariableChange(listener.variableId())
                         listener.lastUpdateId = updateId
                         this.updateListeners(listener, updateId)
                     }
@@ -689,7 +702,8 @@ class EntityState(val entityId : EntityId,
                 if (listener.lastUpdateId != updateId)
                 {
                     Log.d("****WIDGET", "updating variable: ${listener.variableId()}")
-                    listener.onUpdate()
+//                    listener.onUpdate()
+                    onVariableChange(listener.variableId())
                     listener.lastUpdateId = updateId
                     this.updateListeners(listener, updateId)
                 }
@@ -708,7 +722,8 @@ class EntityState(val entityId : EntityId,
                 {
                     if (listener.lastUpdateId != updateId)
                     {
-                        listener.onUpdate()
+//                        listener.onUpdate()
+                        onVariableChange(listener.variableId())
                         listener.lastUpdateId = updateId
                         this.updateListeners(listener, updateId)
                     }
@@ -741,7 +756,8 @@ class EntityState(val entityId : EntityId,
                             this.variable(listener.variableId) apDo { listenerVar ->
                                 if (listenerVar.lastUpdateId != updateId)
                                 {
-                                    listenerVar.onUpdate()
+//                                    listenerVar.onUpdate()
+                                    onVariableChange(listenerVar.variableId())
                                     listenerVar.lastUpdateId = updateId
                                     this.updateListeners(listenerVar, updateId)
                                 }
@@ -777,7 +793,7 @@ class EntityState(val entityId : EntityId,
     // ON CHANGE LISTENERS
     // -----------------------------------------------------------------------------------------
 
-    fun addVariableOnChangeListener(variableId : VariableId, listener : OnVariableChangeListener)
+    fun addVariableOnChangeListener(variableId : VariableId, listener : VariableChangeListener)
     {
         if (!this.onChangeListenersById.containsKey(variableId))
             this.onChangeListenersById.put(variableId, mutableSetOf())
@@ -927,14 +943,14 @@ class EntityState(val entityId : EntityId,
     // LISTEN
     // -----------------------------------------------------------------------------------------
 
-    val onChangeListenerByVariableId : MutableMap<VariableId, OnVariableChangeListener> = mutableMapOf()
+    val onChangeListenerByVariableId : MutableMap<VariableId, VariableChangeListener> = mutableMapOf()
 
     // TODO optimize this with indexes
     val triggersRelatedVariableSet : MutableSet<RelatedVariableSet> = mutableSetOf()
 
 
     fun listen(variableReference : VariableReference,
-               listener : OnVariableChangeListener) = when (variableReference)
+               listener : VariableChangeListener) = when (variableReference)
     {
         is RelatedVariableSet -> {
             this.triggersRelatedVariableSet.add(variableReference)
@@ -1023,6 +1039,6 @@ data class MechanicState(val state : MutableMap<VariableId,Boolean>,
 // ON CHANGE LISTERER
 // ---------------------------------------------------------------------------------------------
 
-data class OnVariableChangeListener(val onUpdate : (Variable) -> Unit,
-                                    val onRemove : () -> Unit)
+data class VariableChangeListener(val onUpdate : (Variable) -> Unit,
+                                  val onRemove : () -> Unit)
 

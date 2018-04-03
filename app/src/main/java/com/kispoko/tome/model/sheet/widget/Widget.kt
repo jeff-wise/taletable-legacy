@@ -520,12 +520,16 @@ data class ActionWidget(override val id : UUID,
                 val variable = booleanVariable(activeVariableId.value, entityId)
                 when (variable) {
                     is Val -> {
-                        variable.value.addOnUpdateListener {
-                            Log.d("****WIDGET", "action widget update")
+                       val listener = VariableChangeListener({
+                           Log.d("****WIDGET", "action widget update")
                             rootView?.let {
                                 this.updateView(it, entityId, context)
                             }
-                        }
+                       }, {})
+
+                       addVariableChangeListener(variable.value.variableId(),
+                                                   listener,
+                                                   entityId)
                     }
                 }
             }
@@ -739,12 +743,13 @@ data class BooleanWidget(override val id : UUID,
 
         this.variables(entityId) apDo {
             it.forEach {
-                it.addOnUpdateListener {
-//                    Log.d("****WIDGET", "boolean update")
+                val listener = VariableChangeListener({
                     rootView?.let {
                         this.updateView(it, entityId, context)
                     }
-                }
+                }, {})
+
+                addVariableChangeListener(it.variableId(), listener, entityId)
             }
         }
     }
@@ -771,33 +776,6 @@ data class BooleanWidget(override val id : UUID,
 
         return booleanVariables
     }
-
-
-//    fun variable(sheetContext : SheetContext) : AppEff<BooleanVariable>
-//    {
-//        val variables = this.variables(sheetContext)
-//        return when (variables) {
-//            is Val -> {
-//                val first = variables.value.toList().firstOrNull()
-//                if (first != null) {
-//                    when (first) {
-//                        is BooleanVariable -> effValue(first)
-//                        else               -> effError<AppError,BooleanVariable>(AppStateError(VariableIsOfUnexpectedType(sheetContext.sheetId,
-//                                                                                                first.variableId(),
-//                                                                                                VariableType.BOOLEAN,
-//                                                                                                first.type())))
-//                    }
-//                }
-//                else {
-//                    effError<AppError,BooleanVariable>(AppStateError(VariableDoesNotExist(sheetContext.sheetId, this.valueVariablesReference)))
-//                }
-//            }
-//            is Err -> {
-//                effError(variables.error)
-//            }
-//        }
-//
-//    }
 
 
     fun variableValue(entityId : EntityId) : AppEff<Boolean> =
@@ -1713,12 +1691,13 @@ data class NumberWidget(override val id : UUID,
         val rootView = sheetActivity.rootSheetView()
 
         this.valueVariable(entityId) apDo { currentValueVar ->
-            currentValueVar.addOnUpdateListener {
-//                Log.d("****WIDGET", "number widget update: ${currentValueVar.variableId()}")
+            val listener = VariableChangeListener({
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
-            }
+            }, {})
+
+            addVariableChangeListener(currentValueVar.variableId(), listener, entityId)
         }
     }
 
@@ -2241,19 +2220,23 @@ data class PointsWidget(override val id : UUID,
         val rootView = sheetActivity.rootSheetView()
 
         this.currentValueVariable(entityId) apDo { currentValueVar ->
-            currentValueVar.addOnUpdateListener {
+            val listener = VariableChangeListener({
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
-            }
+            }, {})
+
+            addVariableChangeListener(currentValueVar.variableId(), listener, entityId)
         }
 
         this.limitValueVariable(entityId) apDo { variable ->
-            variable.addOnUpdateListener {
+            val listener = VariableChangeListener({
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
-            }
+            }, {})
+
+            addVariableChangeListener(variable.variableId(), listener, entityId)
         }
     }
 
@@ -2581,12 +2564,13 @@ data class RollWidget(override val id : UUID,
 
         deps.forEach { varRef ->
             variable(varRef, entityId) apDo { variable ->
-               variable.addOnUpdateListener {
-//                   Log.d("****WIDGET", "roll widget update: ${variable.variableId()}")
-                   rootView?.let {
-                       updateView(it, entityId, context)
-                   }
-               }
+                val listener = VariableChangeListener({
+                    rootView?.let {
+                        this.updateView(it, entityId, context)
+                    }
+                }, {})
+
+                addVariableChangeListener(variable.variableId(), listener, entityId)
             }
         }
 
@@ -2834,12 +2818,13 @@ data class StoryWidget(override val id : UUID,
 
 
         this.variables(entityId).forEach {
-            it.addOnUpdateListener {
-                Log.d("****WIDGET", "story widget update: ${it.variableId()}")
+            val listener = VariableChangeListener({
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
-            }
+            }, {})
+
+            addVariableChangeListener(it.variableId(), listener, entityId)
         }
     }
 
@@ -3293,10 +3278,13 @@ data class TableWidget(override val id : UUID,
                                        listOf(),
                                        column.variableRelation(),
                                        booleanCell.variableValue())
-        variable.addOnUpdateListener {
-//            Log.d("****WIDGET", " boolean cell update: ${variable.variableId()}")
+
+        val listener = VariableChangeListener({
             booleanCell.updateView(entityId, context)
-        }
+        }, {})
+
+        addVariableChangeListener(variableId, listener, entityId)
+
         addVariable(variable, entityId)
         booleanCell.variableId = variableId
 
@@ -3321,10 +3309,13 @@ data class TableWidget(override val id : UUID,
                                       listOf(),
                                       column.variableRelation(),
                                       numberCell.variableValue())
-        variable.addOnUpdateListener {
-//            Log.d("****WIDGET", " number cell update: ${variable.variableId()}")
+
+        val listener = VariableChangeListener({
             numberCell.updateView(entityId, context)
-        }
+        }, {})
+
+        addVariableChangeListener(variableId, listener, entityId)
+
         addVariable(variable, entityId)
         numberCell.variableId = variableId
 
@@ -3349,10 +3340,12 @@ data class TableWidget(override val id : UUID,
 
         variable.addTags(column.tags().toSet())
 
-        variable.addOnUpdateListener {
-//            Log.d("****WIDGET", " text cell update: ${variable.variableId()}")
+        val listener = VariableChangeListener({
             textCell.updateView(entityId, context)
-        }
+        }, {})
+
+        addVariableChangeListener(variableId, listener, entityId)
+
         addVariable(variable, entityId)
         textCell.variableId = variableId
 
@@ -3599,6 +3592,7 @@ data class TextWidget(override val id : UUID,
         when (valueVar) {
             is effect.Val ->
             {
+                Log.d("***WIDGET", "open text widget editor")
                 openTextVariableEditorDialog(valueVar.value,
                                              UpdateTargetTextWidget(this.id),
                                              entityId,
@@ -3707,11 +3701,14 @@ data class TextWidget(override val id : UUID,
         val rootView = sheetActivity.rootSheetView()
 
         this.valueVariable(entityId) apDo { currentValueVar ->
-            currentValueVar.addOnUpdateListener {
+
+            val listener = VariableChangeListener({
                 rootView?.let {
                     this.updateView(it, entityId, context)
                 }
-            }
+            }, {})
+
+            addVariableChangeListener(currentValueVar.variableId(), listener, entityId)
         }
     }
 

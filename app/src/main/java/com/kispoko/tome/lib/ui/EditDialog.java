@@ -63,11 +63,11 @@ public class EditDialog
         switch (shade)
         {
             case LIGHT:
-                layout.backgroundResource = R.drawable.bg_dialog;
+                layout.backgroundResource = R.drawable.bg_session_back_button;
                 break;
             case DARK:
                 layout.backgroundColor  = R.color.dark_blue_7;
-                layout.backgroundResource = R.drawable.bg_dialog;
+                layout.backgroundResource = R.drawable.bg_session_back_button;
                 break;
         }
 

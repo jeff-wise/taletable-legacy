@@ -2,6 +2,7 @@
 package com.kispoko.tome.app
 
 
+import com.kispoko.culebra.YamlParseError
 import com.kispoko.tome.db.DatabaseError
 import com.kispoko.tome.official.OfficialError
 import com.kispoko.tome.rts.entity.EntityError
@@ -122,6 +123,13 @@ class AppOfficialError(val error : OfficialError) : AppError()
     override fun logMessage(): String = error.userMessage()
 }
 
+
+class AppYamlError(val error : YamlParseError) : AppError()
+{
+    override fun debugMessage(): String = error.toString()
+
+    override fun logMessage(): String = error.toString()
+}
 
 
 

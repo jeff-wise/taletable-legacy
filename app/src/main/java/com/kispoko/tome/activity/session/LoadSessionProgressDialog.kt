@@ -20,7 +20,6 @@ import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -28,30 +27,28 @@ import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityLoader
+import com.kispoko.tome.rts.entity.EntitySheetId
 import com.kispoko.tome.rts.session.MessageSessionLoaded
-import com.kispoko.tome.rts.session.SessionId
+import com.kispoko.tome.rts.session.SessionLoader
 import com.kispoko.tome.rts.session.newSession
 import com.kispoko.tome.util.Util
 import com.wang.avi.AVLoadingIndicatorView
 import com.wang.avi.indicators.BallSpinFadeLoaderIndicator
-import java.io.Serializable
 
 
 
 /**
  * Load Session Dialog
  */
-class LoadSessionDialog : DialogFragment()
+class LoadSessionProgressDialog : DialogFragment()
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var loaders   : MutableList<EntityLoader> = mutableListOf()
-    private var sessionId : SessionId?                = null
-    private var sheetId   : SheetId?                  = null
-    private var name      : String?                   = null
+    private var sessionLoader : SessionLoader? = null
+    private var name          : String?        = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -60,17 +57,13 @@ class LoadSessionDialog : DialogFragment()
 
     companion object
     {
-        fun newInstance(loaders : MutableList<EntityLoader>,
-                        sessionId : SessionId,
-                        sheetId : SheetId,
-                        name : String) : LoadSessionDialog
+        fun newInstance(sessionLoader : SessionLoader,
+                        name : String) : LoadSessionProgressDialog
         {
-            val dialog = LoadSessionDialog()
+            val dialog = LoadSessionProgressDialog()
 
             val args = Bundle()
-            args.putSerializable("loaders", loaders as Serializable)
-            args.putSerializable("session_id", sessionId)
-            args.putSerializable("sheet_id", sheetId)
+            args.putSerializable("session_loader", sessionLoader)
             args.putString("name", name)
             dialog.arguments = args
 
@@ -88,10 +81,8 @@ class LoadSessionDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.loaders   = arguments.getSerializable("loaders") as MutableList<EntityLoader>
-        this.sessionId = arguments.getSerializable("session_id") as SessionId
-        this.sheetId   = arguments.getSerializable("sheet_id") as SheetId
-        this.name      = arguments.getString("name")
+        this.sessionLoader = arguments.getSerializable("session_loader") as SessionLoader
+        this.name          = arguments.getString("name")
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -121,13 +112,14 @@ class LoadSessionDialog : DialogFragment()
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val sessionId = this.sessionId
-        val sheetId = this.sheetId
-        val name = this.name
+        val sessionLoader = this.sessionLoader
 
-        return if (sessionId != null && name != null && sheetId != null)
+        return if (sessionLoader != null)
         {
-            val sessionLoaderUI = SessionLoaderUI(this.loaders, sessionId, sheetId, name, this, officialThemeLight, context)
+            val sessionLoaderUI = SessionLoaderUI(sessionLoader,
+                                                  this,
+                                                  officialThemeLight,
+                                                  context)
             sessionLoaderUI.view()
         }
         else
@@ -159,10 +151,7 @@ class LoadSessionDialog : DialogFragment()
 
 
 
-class SessionLoaderUI(val loaders : MutableList<EntityLoader>,
-                      val sessionId : SessionId,
-                      val sheetId : SheetId,
-                      val name : String,
+class SessionLoaderUI(val sessionLoader : SessionLoader,
                       val dialog : DialogFragment,
                       val theme : Theme,
                       val context : Context)
@@ -173,7 +162,7 @@ class SessionLoaderUI(val loaders : MutableList<EntityLoader>,
     {
         val layout = this.viewLayout()
 
-        layout.addView(this.simpleLoaderView(name))
+        layout.addView(this.simpleLoaderView(sessionLoader.sessionName.value))
 
         // Loaders
 //        layout.addView(this.entityLoadersView())
@@ -187,7 +176,7 @@ class SessionLoaderUI(val loaders : MutableList<EntityLoader>,
               .subscribe(this::onLoad)
 
 
-        newSession(loaders, sessionId, context)
+        newSession(sessionLoader, context)
 
         return layout
     }
@@ -195,14 +184,19 @@ class SessionLoaderUI(val loaders : MutableList<EntityLoader>,
 
     private fun onLoad(message : MessageSessionLoaded)
     {
-        if (message.sessionId == sessionId)
+        if (message.sessionId == sessionLoader.sessionId)
         {
-            val activity = context as AppCompatActivity
-            val intent = Intent(activity, SheetActivity::class.java)
-            intent.putExtra("sheet_id", sheetId)
-            activity.startActivity(intent)
-            dialog.dismiss()
-
+            val mainEntityId = sessionLoader.mainEntityId
+            when (mainEntityId)
+            {
+                is EntitySheetId -> {
+                    val activity = context as AppCompatActivity
+                    val intent = Intent(activity, SheetActivity::class.java)
+                    intent.putExtra("sheet_id", mainEntityId.sheetId)
+                    activity.startActivity(intent)
+                    dialog.dismiss()
+                }
+            }
         }
     }
 
@@ -233,7 +227,7 @@ class SessionLoaderUI(val loaders : MutableList<EntityLoader>,
     {
         val layout = this.entityLoadersViewLayout()
 
-        this.loaders.forEach {
+        this.sessionLoader.entityLoaders.forEach {
             layout.addView(this.entityLoaderView(it))
         }
 
@@ -278,7 +272,7 @@ class SessionLoaderUI(val loaders : MutableList<EntityLoader>,
         statusLayout.addView(progressBar)
 
         // Name
-        layout.addView(this.entityLoadNameView(entityLoader.label))
+        layout.addView(this.entityLoadNameView(entityLoader.toString()))
 
         return layout
     }

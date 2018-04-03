@@ -147,7 +147,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         layout.backgroundColor      = R.color.dark_blue_9;
-        layout.backgroundResource   = R.drawable.bg_dialog;
+//        layout.backgroundResource   = R.drawable.bg_dialog;
 
         layout.padding.leftDp       = 12f;
         layout.padding.rightDp      = 12f;

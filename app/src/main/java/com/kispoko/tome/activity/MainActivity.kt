@@ -6,26 +6,24 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.OfficialGamesListActivity
+import com.kispoko.tome.activity.session.GameActionLoadSession
+import com.kispoko.tome.activity.session.GameActionNewSession
+import com.kispoko.tome.activity.session.GamesListActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialThemeLight
-import com.kispoko.tome.util.configureToolbar
 import java.io.InputStream
 
 
@@ -272,7 +270,9 @@ class MainUI(val theme : Theme,
         layout.padding.bottomDp = 10f
 
         layout.onClick          = View.OnClickListener {
-
+            val intent = Intent(activity, GamesListActivity::class.java)
+            intent.putExtra("game_action", GameActionLoadSession)
+            activity.startActivity(intent)
         }
 
         layout.child(label)
@@ -328,7 +328,8 @@ class MainUI(val theme : Theme,
         layout.corners          = Corners(4.0, 4.0, 4.0, 4.0)
 
         layout.onClick          = View.OnClickListener {
-            val intent = Intent(activity, OfficialGamesListActivity::class.java)
+            val intent = Intent(activity, GamesListActivity::class.java)
+            intent.putExtra("game_action", GameActionNewSession)
             activity.startActivity(intent)
         }
 

@@ -757,10 +757,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             {
                 contentLayout.addView(this.counterBarView())
             }
-
             is PointsBarStyle.None ->
             {
-                Log.d("***POINTS WIDGET", "no bar")
             }
             else ->
             {
@@ -1005,10 +1003,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         {
             layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
             layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-            Log.d("***POINTS WIDGET", "special layout")
         }
-
 
         layout.marginSpacing            = format.elementFormat().margins()
 

@@ -21,7 +21,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.OfficialGamesListActivity
+import com.kispoko.tome.activity.session.GamesListActivity
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
@@ -111,7 +111,7 @@ class SheetNavigationActivity : AppCompatActivity()
 //            val intent = Intent(this, OpenSheetActivity::class.java)
 //            this.startActivity(intent)
 
-            val intent = Intent(this, OfficialGamesListActivity::class.java)
+            val intent = Intent(this, GamesListActivity::class.java)
             this.startActivity(intent)
         }
     }

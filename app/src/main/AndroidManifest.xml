@@ -26,12 +26,20 @@
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".activity.session.SessionListActivity"
+            android:label="Value Sets"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.session.EntityTypeListActivity"
+            android:label="Value Sets"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activity.entity.book.BookActivity"
             android:label="Book"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.MainActivity"
-            android:label="Book"
+            android:label="Tome"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -119,7 +127,7 @@
             android:label="@string/title_activity_sheet"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.official.OfficialGamesListActivity"
+            android:name=".activity.session.GamesListActivity"
             android:label="Games"
             android:theme="@style/AppTheme.NoActionBar">
             <!--<intent-filter>-->

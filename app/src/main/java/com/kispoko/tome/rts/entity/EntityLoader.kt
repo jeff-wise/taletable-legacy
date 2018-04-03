@@ -3,6 +3,7 @@ package com.kispoko.tome.rts.entity
 
 
 import android.content.Context
+import com.kispoko.culebra.*
 import com.kispoko.tome.R.string.label
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.app.assetInputStream
@@ -11,8 +12,11 @@ import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.rts.entity.OfficialSheetLoader.Companion.fromYaml
 import effect.Err
 import effect.Val
+import effect.apply
+import effect.effError
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
@@ -193,74 +197,181 @@ data class EntityLoadResult(val entityId : EntityId, val fromCache : Boolean)
 // ENTITY LOADER
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityLoader(open val label : String) : Serializable
+sealed class EntityLoader() : Serializable
+{
+    companion object
+    {
+        fun fromYaml(yamlValue: YamlValue) : YamlParser<EntityLoader> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                yamlValue.text("type") apply {
+                    when (it) {
+                        "official" -> yamlValue.at("official").apply(EntityLoaderOfficial.Companion::fromYaml) as YamlParser<EntityLoader>
+                        else       -> effError<YamlParseError,EntityLoader>(
+                                        UnexpectedStringValue(it, yamlValue.path))
+                    }
+                }
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+    }
+
+}
 
 
 // ENTITY LOADER > UNKNOWN
 // ---------------------------------------------------------------------------------------------
 
-class EntityLoaderUnknown() : EntityLoader("")
+class EntityLoaderUnknown() : EntityLoader()
 
 
 // ENTITY LOADER > SAVED
 // ---------------------------------------------------------------------------------------------
 
-data class EntityLoaderSaved(val rowId : Long) : EntityLoader("")
+data class EntityLoaderSaved(val rowId : Long) : EntityLoader()
 
 
 // ENTITY LOADER > OFFICIAL
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityLoaderOfficial(override val label : String) : EntityLoader(label)
+sealed class EntityLoaderOfficial : EntityLoader()
 {
     abstract fun filePath() : String
+
+    companion object
+    {
+        fun fromYaml(yamlValue: YamlValue) : YamlParser<EntityLoaderOfficial> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                yamlValue.text("type") apply {
+                    when (it) {
+                        "sheet"    -> yamlValue.at("sheet").apply(OfficialSheetLoader.Companion::fromYaml)
+                        "campaign" -> yamlValue.at("campaign").apply(OfficialCampaignLoader.Companion::fromYaml)
+                        "game"     -> yamlValue.at("game").apply(OfficialGameLoader.Companion::fromYaml)
+                        "book"     -> yamlValue.at("book").apply(OfficialBookLoader.Companion::fromYaml)
+                        else       -> effError<YamlParseError,EntityLoaderOfficial>(
+                                          UnexpectedStringValue(it, yamlValue.path))
+                    }
+                }
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+
+    }
 }
 
 
-data class OfficialSheetLoader(override val label : String,
-                               val sheetId : SheetId,
-                               val campaignId : CampaignId,
-                               val gameId : GameId) : EntityLoaderOfficial(label)
+data class OfficialSheetLoader(val sheetId : SheetId,
+                               val gameId : GameId) : EntityLoaderOfficial()
 {
 
     override fun filePath() : String =
             "official/" + gameId.value +
             "/sheets/" + sheetId.value + ".yaml"
 
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityLoaderOfficial> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                apply(::OfficialSheetLoader,
+                      // Sheet Id
+                      yamlValue.at("sheet_id") ap { SheetId.fromYaml(it) },
+                      // Game Id
+                      yamlValue.at("game_id") ap { GameId.fromYaml(it) })
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+
+    }
+
 }
 
 
-data class OfficialCampaignLoader(override val label : String,
-                                  val campaignId : CampaignId,
-                                  val gameId : GameId) : EntityLoaderOfficial(label)
+data class OfficialCampaignLoader(val campaignId : CampaignId,
+                                  val gameId : GameId) : EntityLoaderOfficial()
 {
 
     override fun filePath() : String =
             "official/" + gameId.value +
             "/campaigns/" + campaignId.value + ".yaml"
 
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityLoaderOfficial> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                apply(::OfficialCampaignLoader,
+                      // Campaign Id
+                      yamlValue.at("campaign_id") ap { CampaignId.fromYaml(it) },
+                      // Game Id
+                      yamlValue.at("game_id") ap { GameId.fromYaml(it) })
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+
+    }
+
+
 }
 
 
-data class OfficialGameLoader(override val label : String,
-                              val gameId : GameId) : EntityLoaderOfficial(label)
+data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
 {
 
     override fun filePath() : String =
         "official/" + gameId.value +
         "/" + gameId.value +  ".yaml"
 
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityLoaderOfficial> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                apply(::OfficialGameLoader,
+                      // Game Id
+                      yamlValue.at("game_id") ap { GameId.fromYaml(it) })
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+
+    }
+
 }
 
 
-data class OfficialBookLoader(override val label : String,
-                              val bookId : BookId,
+data class OfficialBookLoader(val bookId : BookId,
                               val gameId : GameId)
-                               : EntityLoaderOfficial(label)
+                               : EntityLoaderOfficial()
 {
 
     override fun filePath() : String =
         "official/" + gameId.value +
         "/books/" + bookId.value +  ".yaml"
 
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityLoaderOfficial> = when (yamlValue)
+        {
+            is YamlDict ->
+            {
+                apply(::OfficialBookLoader,
+                      // Book Id
+                      yamlValue.at("book_id") ap { BookId.fromYaml(it) },
+                      // Game Id
+                      yamlValue.at("game_id") ap { GameId.fromYaml(it) })
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+        }
+
+    }
 }

@@ -18,7 +18,6 @@ import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.onVariableUpdate
 import com.kispoko.tome.rts.entity.sheet.*
@@ -35,7 +34,7 @@ import java.io.Serializable
 import java.util.*
 
 
-typealias VariableOnUpdateListener = () -> Unit
+//typealias VariableOnUpdateListener = () -> Unit
 
 /**
  * Variable
@@ -49,7 +48,7 @@ sealed class Variable : ProdType, ToDocument, Serializable
     // -----------------------------------------------------------------------------------------
 
 
-    private var onUpdateListeners : MutableList<VariableOnUpdateListener> = mutableListOf()
+//    private var onUpdateListeners : MutableList<VariableOnUpdateListener> = mutableListOf()
 
 
     private val relationToVariableId : MutableMap<VariableRelation,VariableId> = mutableMapOf()
@@ -223,20 +222,20 @@ sealed class Variable : ProdType, ToDocument, Serializable
      * This method is called when one of the variable's dependencies has been updated, and this
      * variable must therefore be updated.
      */
-    fun onUpdate()
-    {
+//    fun onUpdate()
+//    {
 //        Log.d("****VARIABLE", "calling on update listener: ${this.variableId()}")
-        this.onUpdateListeners.forEach {
-            it()
-        }
-    }
+//        this.onUpdateListeners.forEach {
+//            it()
+//        }
+    //}
 
 
-    fun addOnUpdateListener(listener : () -> Unit) {
-        this.onUpdateListeners.add(listener)
+//    fun addOnUpdateListener(listener : () -> Unit) {
+//        this.onUpdateListeners.add(listener)
 //        Log.d("****VARIABLE", "setting on update listener for: ${this.variableId()}")
 //        this.onUpdateListener = listener
-    }
+//    }
 
 
     abstract fun onAddToState(entityId : EntityId, parentVariable : Variable? = null)
@@ -469,7 +468,7 @@ data class BooleanVariable(override val id : UUID,
             is BooleanVariableLiteralValue -> {
                 this.variableValue = BooleanVariableLiteralValue(value)
                 onVariableUpdate(this, entityId)
-                this.onUpdate()
+//                this.onUpdate()
             }
         }
     }
@@ -912,7 +911,7 @@ data class NumberVariable(override val id : UUID,
                         constraint.value.constrainedValue(value, entityId) apDo {
                             this.variableValue = NumberVariableLiteralValue(it)
                             onVariableUpdate(this, entityId)
-                            this.onUpdate()
+//                            this.onUpdate()
                         }
                     }
                     is Nothing ->
@@ -920,7 +919,7 @@ data class NumberVariable(override val id : UUID,
                         Log.d("***WIDGET", "updating number litera variable no constraint")
                         this.variableValue = NumberVariableLiteralValue(value)
                         onVariableUpdate(this, entityId)
-                        this.onUpdate()
+//                        this.onUpdate()
                     }
                 }
             }
@@ -1360,14 +1359,14 @@ data class TextVariable(override val id : UUID,
             {
                 this.variableValue = TextVariableLiteralValue(value)
                 onVariableUpdate(this, entityId)
-                this.onUpdate()
+//                this.onUpdate()
             }
             is TextVariableValueValue -> {
                 val valueSetId = currentVariableValue.valueReference.valueSetId
                 val newValueReference = ValueReference(valueSetId, TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
                 onVariableUpdate(this, entityId)
-                this.onUpdate()
+//                this.onUpdate()
             }
             is TextVariableValueUnknownValue -> {
                 val valueSetId = currentVariableValue.valueSetId
@@ -1375,7 +1374,7 @@ data class TextVariable(override val id : UUID,
                                                        TextReferenceLiteral(value))
                 this.variableValue = TextVariableValueValue(newValueReference)
                 onVariableUpdate(this, entityId)
-                this.onUpdate()
+//                this.onUpdate()
             }
         }
     }

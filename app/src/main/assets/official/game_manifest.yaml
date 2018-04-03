@@ -5,6 +5,24 @@ summaries:
   genre: 'Fantasy'
   players: 570
   likes: 392
+  entity_kinds:
+  - id: player_character
+    name: "Player Characters"
+    description: "Ready-to-play character sheets for all classes and levels, ranging from simple, concise
+                  templates for new players to complex designs for player verterans. "
+  - id: campaign
+    name: "Campaigns"
+    description: "A series of adventures and/or a world, possibly with a set of setting specific rules and data."
+  - id: book
+    name: "Books"
+    description: "Rulebooks, campaign setting guides, creature compendiums, short stories, etc\u2026"
+  - id: generic_npc
+    name: "Generic Non-player Characters"
+    description: "Character templates controlled by the GM that can be reused for insignificant
+                   encounters or large groups of enemies."
+  - id: named_npc
+    name: "Named Non-player Characters"
+    description: "Named or famous non-player characters with distinctive personalities, roles, and abilities."
 - game_id: 5e_srd
   name: '5e SRD'
   description: 'The rules for the 5th edition Open Game License of the world''s most popular role-playing game.'

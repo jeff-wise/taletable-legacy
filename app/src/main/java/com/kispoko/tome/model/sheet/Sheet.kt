@@ -3,16 +3,12 @@ package com.kispoko.tome.model.sheet
 
 
 import android.content.Context
-import android.util.Log
 import android.view.View
+import com.kispoko.culebra.*
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppSheetError
-import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.DB_SheetValue
-import com.kispoko.tome.db.saveEntity
-import com.kispoko.tome.db.saveUpdate
-import com.kispoko.tome.db.sheetTable
+import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue6
@@ -31,6 +27,7 @@ import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.session.SessionTag
 import effect.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -336,7 +333,10 @@ data class Sheet(override val id : UUID,
                 when (rowId) {
                     is Val -> {
                         this.entitySource = EntityLoaderSaved(rowId.value)
+
                         saveUpdate(this.entityId(), context)
+
+                        saveCurrentSession(context)
                     }
                     is Err -> ApplicationLog.error(rowId.error)
                 }
@@ -344,7 +344,6 @@ data class Sheet(override val id : UUID,
         }
 
     }
-
 
 
     fun updateWidget(widgetUpdate : SheetUpdateWidget,
@@ -387,7 +386,6 @@ data class Sheet(override val id : UUID,
             }
             is WidgetUpdateTableWidget ->
             {
-                Log.d("***SHEET", "update table widget")
                 val tableWidget = this.tableWidgetById[widgetUpdate.widgetId]
                 tableWidget?.update(widgetUpdate, entityId, rootView, context)
             }
@@ -422,6 +420,16 @@ data class SheetId(val value : String) : ToDocument, SQLSerializable, Serializab
             is DocText -> effValue(SheetId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<SheetId> =
+            when (yamlValue)
+            {
+                is YamlText -> effValue(SheetId(yamlValue.text))
+                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                         yamlType(yamlValue),
+                                                         yamlValue.path))
+            }
+
     }
 
 

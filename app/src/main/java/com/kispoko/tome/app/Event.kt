@@ -2,6 +2,7 @@
 package com.kispoko.tome.app
 
 
+import com.kispoko.tome.db.DatabaseEvent
 import com.kispoko.tome.official.OfficialTheme
 import com.kispoko.tome.rts.entity.sheet.SheetUpdateEvent
 import com.kispoko.tome.rts.entity.sheet.StateEvent
@@ -26,6 +27,14 @@ data class OfficialThemeAdded(val officialTheme : OfficialTheme) : AppEvent()
     override fun debugMessage() = "Official Theme Added: $officialTheme"
 
     override fun logMessage() : String = debugMessage()
+}
+
+
+data class AppDBEvent(val dbEvent : DatabaseEvent) : AppEvent()
+{
+    override fun debugMessage() : String = "Database Event: " + dbEvent.debugMessage()
+
+    override fun logMessage() : String = "Database Event: " + dbEvent.logMessage()
 }
 
 

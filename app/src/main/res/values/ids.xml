@@ -227,6 +227,12 @@
     <item name="sheet_summary_list_item_feature3_name" type="id"/>
     <item name="sheet_summary_list_item_feature3_value" type="id"/>
 
+
+    <!-- LOAD SESSION LIST ITEM -->
+    <item name="load_session_item_layout" type="id"/>
+    <item name="load_session_item_name" type="id"/>
+    <item name="load_session_item_date" type="id"/>
+
     <!-- SHEET SUMMARY LIST ITEM -->
     <item name="game_summary_layout" type="id"/>
     <item name="game_summary_name" type="id"/>
@@ -235,6 +241,15 @@
     <item name="game_summary_players" type="id"/>
     <item name="game_summary_created" type="id"/>
     <item name="game_summary_creators" type="id"/>
+
+    <!-- SESSION SUMMARY -->
+    <item name="session_summary_layout" type="id"/>
+    <item name="session_summary_name" type="id"/>
+    <item name="session_summary_summary" type="id"/>
+    <item name="session_summary_description" type="id"/>
+    <item name="session_summary_attributes_layout" type="id"/>
+    <item name="session_summary_open_button" type="id"/>
+    <item name="session_summary_info_button" type="id"/>
 
     <!-- DRAGGABLE CARD -->
     <item name="draggable_card_layout" type="id"/>

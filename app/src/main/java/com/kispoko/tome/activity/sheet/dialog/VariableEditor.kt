@@ -172,7 +172,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val sheetActivity = context as SheetActivity
             val dialog = TextEditorDialog.newInstance(title,
                                                       text,
-                                                      textVariable.variableId(),
+                                                      updateTarget,
                                                       entityId)
             dialog.show(sheetActivity.supportFragmentManager, "")
         }

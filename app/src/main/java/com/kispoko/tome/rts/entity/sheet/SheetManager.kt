@@ -108,9 +108,9 @@ import com.kispoko.tome.rts.entity.EntityId
 //    }
 //
 //
-//    fun addOnVariableChangeListener(sheetId : SheetId,
+//    fun addVariableChangeListener(sheetId : SheetId,
 //                                    variableId : VariableId,
-//                                    onChangeListener : OnVariableChangeListener) =
+//                                    onChangeListener : VariableChangeListener) =
 //        SheetManager.sheetRecord(sheetId)
 //                .apDo { it.state().addVariableOnChangeListener(variableId, onChangeListener) }
 

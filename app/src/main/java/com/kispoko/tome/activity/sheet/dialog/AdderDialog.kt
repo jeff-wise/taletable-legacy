@@ -390,13 +390,6 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 val numberWidgetUpdate = NumberWidgetUpdateValue(adderState.updateTarget.numberWidgetId,
                                                                  finalValue)
                 Router.send(MessageSheetUpdate(numberWidgetUpdate))
-
-//                this.adderState.variableId?.let { varId ->
-//                    SheetManager.sheetState(sheetContext.sheetId) apDo {
-//                    it.updateVariable(varId, EngineValueNumber(finalValue), sheetContext)
-//                    }
-//                }
-
             }
             is UpdateTargetNumberCell ->
             {

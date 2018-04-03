@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game
 
 
+import com.kispoko.culebra.*
 import com.kispoko.tome.db.DB_GameValue
 import com.kispoko.tome.db.gameTable
 import com.kispoko.tome.lib.Factory
@@ -16,6 +17,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.entity.*
 import effect.effApply
 import effect.effError
@@ -198,6 +200,15 @@ data class GameId(val value : String) : ToDocument, SQLSerializable, Serializabl
             is DocText -> effValue(GameId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<GameId> =
+            when (yamlValue)
+            {
+                is YamlText -> effValue(GameId(yamlValue.text))
+                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                         yamlType(yamlValue),
+                                                         yamlValue.path))
+            }
     }
 
 

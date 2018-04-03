@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -480,6 +481,7 @@ class TextEditorViewBuilder(val title : String,
 
 
         layout.onClick          = View.OnClickListener {
+            Log.d("***TEXT EDITOR", "on click text editor")
             val currentValue = this.valueView?.text?.toString()
             if (currentValue != null)
             {
@@ -490,6 +492,7 @@ class TextEditorViewBuilder(val title : String,
                     }
                     is UpdateTargetTextWidget ->
                     {
+                        Log.d("***TEXT EDITOR", "updating text widget")
                         val textWidgetUpdate = TextWidgetUpdateSetText(updateTarget.textWidgetId,
                                                                        currentValue)
                         Router.send(MessageSheetUpdate(textWidgetUpdate))

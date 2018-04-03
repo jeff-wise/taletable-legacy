@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.official
+package com.kispoko.tome.activity.session
 
 
 import android.content.Context
@@ -24,7 +24,6 @@ import com.kispoko.tome.activity.official.heroes.OpenHeroesSessionActivity
 import com.kispoko.tome.activity.official.magic_carnival.OpenMagicCarnivalSessionActivity
 import com.kispoko.tome.activity.official.pathfinder_one_srd.OpenPathfinderOneSRDSessionActivity
 import com.kispoko.tome.activity.official.starfinder_srd.OpenStarfinderSRDSessionActivity
-import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.*
@@ -34,26 +33,29 @@ import com.kispoko.tome.official.GameManifest
 import com.kispoko.tome.official.GameSummary
 import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.util.configureToolbar
+import java.io.Serializable
 
 
 
 /**
- * Official Games Activity
+ * Games List Activity
  */
-class OfficialGamesListActivity : AppCompatActivity() {
+class GamesListActivity : AppCompatActivity()
+{
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private val appSettings: AppSettings = AppSettings(ThemeId.Light)
+    private var gameAction : GameAction? = null
 
 
     // -----------------------------------------------------------------------------------------
     // ACTIVITY
     // -----------------------------------------------------------------------------------------
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState : Bundle?)
+    {
         super.onCreate(savedInstanceState)
 
         // (1) Set Content View
@@ -61,21 +63,25 @@ class OfficialGamesListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_official_games)
 
-        // (2) Initialize UI
+        // (2) Read Parameters
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.choose_game))
+        if (this.intent.hasExtra("game_action"))
+            this.gameAction = this.intent.getSerializableExtra("game_action") as GameAction
+
+        // (3) Initialize UI
+        // -------------------------------------------------------------------------------------
+
+        this.initializeToolbarView(officialThemeLight)
 
         this.applyTheme(officialThemeLight)
-//        when (theme) {
-//            is Val -> this.applyTheme(theme.value.uiColors())
-//            is Err -> ApplicationLog.error(theme.error)
-//        }
 
         val gameManifest = OfficialManager.gameManifest(this)
-        if (gameManifest != null) {
+        val gameAction = this.gameAction
+        if (gameManifest != null && gameAction != null)
+        {
             val contentLayout = this.findViewById(R.id.content) as LinearLayout
-            val gamesListUI = GamesListUI(gameManifest, officialThemeLight, this)
+            val gamesListUI = GamesListUI(gameManifest, gameAction, officialThemeLight, this)
             contentLayout.addView(gamesListUI.view())
         }
     }
@@ -85,13 +91,42 @@ class OfficialGamesListActivity : AppCompatActivity() {
     // UI
     // -----------------------------------------------------------------------------------------
 
+    private fun initializeToolbarView(theme : Theme)
+    {
+        // Back label text
+        val backLabelView = this.findViewById(R.id.toolbar_back_label) as TextView
+        backLabelView.typeface = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
+        backLabelView.text     = getString(R.string.back_to_home)
 
-    private fun applyTheme(theme: Theme) {
+        val backLabelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_15"))))
+        backLabelView.setTextColor(theme.colorOrBlack(backLabelColorTheme))
+
+        // Back button
+        val backButton = this.findViewById(R.id.toolbar_back_button) as LinearLayout?
+        backButton?.setOnClickListener {
+            this.finish()
+        }
+
+        // Breadcrumbs
+        val breadcrumbsLayout = this.findViewById(R.id.breadcrumbs) as LinearLayout?
+        val breadcrumbsUI = SessionBreadcrumbsUI(listOf(getString(R.string.which_game_do_you_play)),
+                                                 true,
+                                                 officialThemeLight,
+                                                 this)
+        breadcrumbsLayout?.addView(breadcrumbsUI.view())
+    }
+
+
+    private fun applyTheme(theme : Theme)
+    {
         val uiColors = theme.uiColors()
 
         // STATUS BAR
         // -------------------------------------------------------------------------------------
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
             val window = this.window
 
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -102,24 +137,24 @@ class OfficialGamesListActivity : AppCompatActivity() {
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-
-        // Toolbar > Background
-        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
-
-        // Toolbar > Icons
-        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
-
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
-        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-
-        val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
-        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-
-        // TITLE
-        // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
-        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
+//        val toolbar = findViewById(R.id.toolbar) as Toolbar
+//
+//        // Toolbar > Background
+//        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
+//
+//        // Toolbar > Icons
+//        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
+//
+//        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+//        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+//
+//        val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+//        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+//
+//        // TITLE
+//        // -------------------------------------------------------------------------------------
+//        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+//        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
     }
 
 }
@@ -127,19 +162,69 @@ class OfficialGamesListActivity : AppCompatActivity() {
 
 
 class GamesListUI(val gameManifest: GameManifest,
+                  val gameAction : GameAction,
                   val theme : Theme,
                   val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
-    // UI
+    // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     val activity = context as AppCompatActivity
 
 
     // -----------------------------------------------------------------------------------------
-    // UI
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    private fun openNewSessionActivity(gameSummary : GameSummary)
+    {
+        val intent = Intent(activity, EntityTypeListActivity::class.java)
+        intent.putExtra("game_summary", gameSummary)
+        activity.startActivity(intent)
+    }
+//        when (gameSummary.gameId.value)
+//        {
+//            "magic_of_heroes" -> {
+//                val intent = Intent(activity, OpenHeroesSessionActivity::class.java)
+//                intent.putExtra("game_id", gameSummary.gameId)
+//                activity.startActivity(intent)
+//            }
+//            "5e_srd" -> {
+//                val intent = Intent(activity, OpenFifthEdSRDSessionActivity::class.java)
+//                intent.putExtra("game_id", gameSummary.gameId)
+//                activity.startActivity(intent)
+//            }
+//            "pathfinder_srd" -> {
+//                val intent = Intent(activity, OpenPathfinderOneSRDSessionActivity::class.java)
+//                intent.putExtra("game_id", gameSummary.gameId)
+//                activity.startActivity(intent)
+//            }
+//            "starfinder_srd" -> {
+//                val intent = Intent(activity, OpenStarfinderSRDSessionActivity::class.java)
+//                intent.putExtra("game_id", gameSummary.gameId)
+//                activity.startActivity(intent)
+//            }
+//            "magic_carnival" -> {
+//                val intent = Intent(activity, OpenMagicCarnivalSessionActivity::class.java)
+//                intent.putExtra("game_id", gameSummary.gameId)
+//                activity.startActivity(intent)
+//            }
+//            else -> { }
+//        }
+
+
+    private fun openLoadSessionActivity(gameSummary : GameSummary)
+    {
+        val intent = Intent(activity, EntityTypeListActivity::class.java)
+        intent.putExtra("game_summary", gameSummary)
+        activity.startActivity(intent)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
     // -----------------------------------------------------------------------------------------
 
     fun view() : ScrollView
@@ -161,7 +246,7 @@ class GamesListUI(val gameManifest: GameManifest,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
         scrollView.backgroundColor  = theme.colorOrBlack(colorTheme)
 
         return scrollView.scrollView(context)
@@ -199,7 +284,7 @@ class GamesListUI(val gameManifest: GameManifest,
 
     private fun gameView(gameSummary : GameSummary) : LinearLayout
     {
-        val layout          = this.gameViewLayout(gameSummary.gameId)
+        val layout          = this.gameViewLayout(gameSummary)
 
         // Name
         layout.addView(this.gameHeaderView(gameSummary.name))
@@ -217,7 +302,7 @@ class GamesListUI(val gameManifest: GameManifest,
     }
 
 
-    private fun gameViewLayout(gameId : GameId) : LinearLayout
+    private fun gameViewLayout(gameSummary : GameSummary) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -228,7 +313,7 @@ class GamesListUI(val gameManifest: GameManifest,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.topDp     = 4f
+        layout.margin.topDp     = 8f
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
@@ -238,33 +323,10 @@ class GamesListUI(val gameManifest: GameManifest,
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.onClick          = View.OnClickListener {
-            when (gameId.value)
+            when (this.gameAction)
             {
-                "magic_of_heroes" -> {
-                    val intent = Intent(activity, OpenHeroesSessionActivity::class.java)
-                    intent.putExtra("game_id", gameId)
-                    activity.startActivity(intent)
-                }
-                "5e_srd" -> {
-                    val intent = Intent(activity, OpenFifthEdSRDSessionActivity::class.java)
-                    intent.putExtra("game_id", gameId)
-                    activity.startActivity(intent)
-                }
-                "pathfinder_srd" -> {
-                    val intent = Intent(activity, OpenPathfinderOneSRDSessionActivity::class.java)
-                    intent.putExtra("game_id", gameId)
-                    activity.startActivity(intent)
-                }
-                "starfinder_srd" -> {
-                    val intent = Intent(activity, OpenStarfinderSRDSessionActivity::class.java)
-                    intent.putExtra("game_id", gameId)
-                    activity.startActivity(intent)
-                }
-                "magic_carnival" -> {
-                    val intent = Intent(activity, OpenMagicCarnivalSessionActivity::class.java)
-                    intent.putExtra("game_id", gameId)
-                    activity.startActivity(intent)
-                }
+                is GameActionNewSession -> this.openNewSessionActivity(gameSummary)
+                is GameActionLoadSession -> this.openLoadSessionActivity(gameSummary)
             }
         }
 
@@ -283,14 +345,14 @@ class GamesListUI(val gameManifest: GameManifest,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         header.color        = theme.colorOrBlack(colorTheme)
 
         header.font         = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Bold,
+                                            TextFontStyle.Medium,
                                             context)
 
-        header.sizeSp       = 19f
+        header.sizeSp       = 20f
 
         return header.textView(context)
     }
@@ -469,4 +531,13 @@ class GamesListUI(val gameManifest: GameManifest,
     }
 
 }
+
+
+sealed class GameAction : Serializable
+
+object GameActionNewSession : GameAction()
+
+object GameActionLoadSession : GameAction()
+
+
 

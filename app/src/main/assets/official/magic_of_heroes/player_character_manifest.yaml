@@ -1,0 +1,45 @@
+summaries:
+- session_id: "b3b4894d-7f2a-4f11-9b27-6e8133f7000f"
+  session_name: Casmey Dalseya
+  info:
+    summary: >-
+      A circus performer as a kid and a pirate as a teengaer, Casmey is now a reluctant adult looking for a
+      new adventure
+    description: >-
+      A circus performer as a kid and a pirate as a teengaer, Casmey is now a reluctant adult looking for a
+      new adventure. That shouldn't be hard though -- she's always been quite talented at finding trouble. Since her days
+      on the trapeze, she's been most comfortable perched in precarious situations, where a tiny mistake
+      leads to a painful fall. When she does fall -- and she has many times -- she tends
+      to land on her feet, ready to climb back up.
+    primary_tag: 'Level 1'
+    secondary_tags:
+    - Human
+    - Fighter
+  game_id: magic_of_heroes
+  loaders:
+  - type: official
+    official:
+      type: sheet
+      sheet:
+        sheet_id: character_casmey_level_1
+        game_id: magic_of_heroes
+  - type: official
+    official:
+      type: campaign
+      campaign:
+        campaign_id: isara
+        game_id: magic_of_heroes
+  - type: official
+    official:
+      type: game
+      game:
+        game_id: magic_of_heroes
+  - type: official
+    official:
+      type: book
+      book:
+        book_id: core_rules
+        game_id: magic_of_heroes
+  main_entity_id:
+    type: sheet
+    sheet: character_casmey_level_1

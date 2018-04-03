@@ -2,11 +2,16 @@
 package com.kispoko.tome.official
 
 
+import com.kispoko.culebra.*
 import com.kispoko.tome.ApplicationAssets
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
-
+import com.kispoko.tome.official.games.HeroesCharacterSheetManifest
+import com.kispoko.tome.official.games.HeroesCharacterSheetSummary
+import effect.apply
+import effect.effValue
+import effect.split
 
 
 // ---------------------------------------------------------------------------------------------
@@ -108,5 +113,11 @@ sealed class OfficialTheme
 // ---------------------------------------------------------------------------------------------
 
 val officialDirectoryPath = "official"
+
+
+
+fun officialManifestPath(gameId : GameId, entityTypeId : String) =
+   "$officialDirectoryPath/${gameId.value}/${entityTypeId}_manifest.yaml"
+
 
 

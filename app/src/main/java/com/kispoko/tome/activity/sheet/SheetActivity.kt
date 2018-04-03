@@ -35,7 +35,7 @@ import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
-import com.kispoko.tome.rts.entity.OnVariableChangeListener
+import com.kispoko.tome.rts.entity.VariableChangeListener
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -447,10 +447,10 @@ class SheetActivity : AppCompatActivity()
         // Ensure toolbar updates value when name changes
         // -------------------------------------------------------------------------------------
 
-        val updateToolbarOnNameChange = OnVariableChangeListener(
+        val updateToolbarOnNameChange = VariableChangeListener(
                 { updateToolbar(it, sheet.sheetId()) },
                 {})
-        addOnVariableChangeListener(VariableId("name"),
+        addVariableChangeListener(VariableId("name"),
                                     updateToolbarOnNameChange,
                                     entityId)
 

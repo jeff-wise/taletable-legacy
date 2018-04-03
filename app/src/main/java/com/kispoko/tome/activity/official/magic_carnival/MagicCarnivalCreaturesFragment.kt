@@ -17,7 +17,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.official.*
-import com.kispoko.tome.activity.session.LoadSessionDialog
+import com.kispoko.tome.activity.session.LoadSessionProgressDialog
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.book.BookId
@@ -30,16 +30,16 @@ import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.games.CarnivalCreatureSheetManifest
 import com.kispoko.tome.official.games.CarnivalCreatureSheetSummary
-import com.kispoko.tome.rts.entity.OfficialBookLoader
-import com.kispoko.tome.rts.entity.OfficialCampaignLoader
-import com.kispoko.tome.rts.entity.OfficialGameLoader
-import com.kispoko.tome.rts.entity.OfficialSheetLoader
+import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.official.sheetManifest
 import com.kispoko.tome.rts.official.sheetManifestFilepath
 import com.kispoko.tome.rts.session.SessionId
+import com.kispoko.tome.rts.session.SessionLoader
+import com.kispoko.tome.rts.session.SessionName
 import effect.Err
 import effect.Val
-
+import maybe.Nothing
+import java.util.*
 
 
 /**
@@ -317,19 +317,15 @@ class CreatureSummaryViewHolder(itemView : View,
 
     fun configureOpenButton(sheetId : String, name: String, activity : AppCompatActivity)
     {
-        val sheetLoader = OfficialSheetLoader("Sheet",
-                                              SheetId(sheetId),
-                                              CampaignId("isara"),
+        val sheetLoader = OfficialSheetLoader(SheetId(sheetId),
                                               GameId("magic_carnival"))
 
-        val campaignLoader = OfficialCampaignLoader("Isara",
-                                                    CampaignId("isara"),
+        val campaignLoader = OfficialCampaignLoader(CampaignId("isara"),
                                                     GameId("magic_carnival"))
 
-        val gameLoader = OfficialGameLoader("Magic Carnival", GameId("magic_carnival"))
+        val gameLoader = OfficialGameLoader(GameId("magic_carnival"))
 
-        val coreRulebookLoader = OfficialBookLoader("Core Rules",
-                                                    BookId("core_rules"),
+        val coreRulebookLoader = OfficialBookLoader(BookId("core_rules"),
                                                     GameId("magic_carnival"))
 
 
@@ -337,11 +333,15 @@ class CreatureSummaryViewHolder(itemView : View,
         val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
 
         this.openButtonView?.setOnClickListener {
-            val dialog = LoadSessionDialog.newInstance(loaders.toMutableList(),
-                                                       SessionId("casmey"),
-                                                       SheetId(sheetId),
-                                                       name)
-            dialog.show(activity.supportFragmentManager, "")
+//            val sessionLoader = SessionLoader(SessionId(UUID.randomUUID()),
+//                                              SessionName(""),
+//                                              Nothing(),
+//                                              GameId("magic_of_heroes"),
+//                                              Calendar.getInstance(),
+//                                              loaders,
+//                                              EntitySheetId(SheetId(sheetId)))
+//            val dialog = LoadSessionProgressDialog.newInstance(sessionLoader, name)
+//            dialog.show(activity.supportFragmentManager, "")
         }
 
     }
