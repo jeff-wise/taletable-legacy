@@ -37,6 +37,7 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
 import java.io.Serializable
 import java.util.*
 
@@ -354,10 +355,10 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
                     layout.addView(this.mechanicView(it))
                 }
                 is MechanicType.OptionSelected -> {
-                    layout.addView(this.mechanicView(it))
+//                    layout.addView(this.mechanicView(it))
                 }
                 is MechanicType.Option -> {
-                    layout.addView(this.optionMechanicView(it))
+//                    layout.addView(this.optionMechanicView(it))
                 }
             }
         }
@@ -388,9 +389,28 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     // Header
     // -----------------------------------------------------------------------------------------
 
-    private fun headerView(headerString : String) : TextView
+    private fun headerView(headerString : String) : LinearLayout
+    {
+        val layout = this.headerViewLayout()
+
+        layout.addView(this.headerTextView(headerString))
+
+        val bottomBorder = mechanicWidget.format().headerFormat().elementFormat().border().bottom()
+        when (bottomBorder) {
+            is Just -> {
+                layout.addView(this.borderView(bottomBorder.value))
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun headerTextView(headerString : String) : TextView
     {
         val header              = TextViewBuilder()
+
+        val format = mechanicWidget.format().headerFormat()
 
         header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
         header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -400,8 +420,27 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         mechanicWidget.format().headerFormat()
                       .styleTextViewBuilder(header, entityId, context)
 
+        header.marginSpacing    = format.elementFormat().margins()
+        header.paddingSpacing   = format.elementFormat().padding()
+
         return header.textView(context)
     }
+
+
+    private fun headerViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+
+        return layout.linearLayout(context)
+    }
+
+
 
 
     // MECHANIC AUTO
@@ -411,12 +450,23 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
     {
         val layout = this.mechanicViewLayout()
 
+        val innerLayout = this.mechanicViewInnerLayout()
+        layout.addView(innerLayout)
+
         // Header
-        layout.addView(this.mechanicHeaderView(mechanic))
+        innerLayout.addView(this.mechanicHeaderView(mechanic))
 
         // Summary
-        layout.addView(this.mechanicSummaryView(mechanic.summaryString()))
+        innerLayout.addView(this.mechanicSummaryView(mechanic.summaryString()))
 
+        val border = mechanicWidget.format().mechanicFormat().border()
+
+        val bottomBorder = border.bottom()
+        when (bottomBorder) {
+            is Just -> {
+                layout.addView(this.borderView(bottomBorder.value))
+            }
+        }
 
         return layout
     }
@@ -438,6 +488,22 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
         layout.corners          = format.corners()
 
         layout.marginSpacing    = format.margins()
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun mechanicViewInnerLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        val format              = mechanicWidget.format().mechanicFormat()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
         layout.paddingSpacing   = format.padding()
 
         return layout.linearLayout(context)
@@ -627,6 +693,20 @@ class MechanicWidgetViewBuilder(val mechanicWidget : MechanicWidget,
 
         return header.textView(context)
     }
+
+
+    private fun borderView(edge : BorderEdge) : LinearLayout
+    {
+        val border = LinearLayoutBuilder()
+
+        border.width               = LinearLayout.LayoutParams.MATCH_PARENT
+        border.heightDp            = edge.thickness().value
+
+        border.backgroundColor     = colorOrBlack(edge.colorTheme(), entityId)
+
+        return border.linearLayout(context)
+    }
+
 
 
 }

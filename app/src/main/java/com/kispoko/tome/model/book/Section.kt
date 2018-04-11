@@ -141,9 +141,8 @@ data class BookSection(override val id : UUID,
 
 
     override fun rowValue() : DB_BookSectionValue =
-        RowValue4(bookSectionTable, PrimValue(this.sectionId),
+        RowValue3(bookSectionTable, PrimValue(this.sectionId),
                                     PrimValue(this.title),
-                                    ProdValue(this.body),
                                     CollValue(this.subsections))
 
 }

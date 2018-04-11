@@ -3,7 +3,9 @@ package com.kispoko.tome.rts.entity
 
 
 import android.graphics.Color
+import android.util.Log
 import com.kispoko.culebra.*
+import com.kispoko.tome.R.string.mechanics
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookId
@@ -30,6 +32,8 @@ import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.group.Group
+import com.kispoko.tome.model.sheet.group.GroupId
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeId
@@ -150,6 +154,10 @@ fun game(gameId : GameId) : Maybe<Game>
 }
 
 
+fun game(campaignId : CampaignId) : Maybe<Game> =
+    campaign(campaignId).apply { game(it.gameId) }
+
+
 fun book(bookId : BookId) : Maybe<Book>
 {
     val entityState = entityRecordById.get(EntityBookId(bookId))
@@ -264,6 +272,25 @@ fun entityEngines(entityId : EntityId) : AppEff<List<Engine>> = when (entityId)
         effValue(engines)
     }
     else -> effValue(listOf())
+}
+
+
+/**
+ * Group With Id
+ */
+fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group> = when (entityId)
+{
+    is EntitySheetId ->
+    {
+        Log.d("***ENTITY", "getting group with id")
+        sheet(entityId.sheetId)   ap {
+        campaign(it.campaignId()) ap {
+        game(it.gameId())         ap {
+            Log.d("***ENTITY", "got game")
+            it.groupWithId(groupId)
+        } } }
+    }
+    else -> Nothing()
 }
 
 

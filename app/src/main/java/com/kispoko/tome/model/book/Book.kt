@@ -279,14 +279,12 @@ data class Book(override val id : UUID,
 
 
     override fun rowValue() : DB_BookValue =
-        RowValue8(bookTable,
+        RowValue6(bookTable,
                   PrimValue(this.bookId),
                   ProdValue(this.bookInfo),
                   ProdValue(this.settings),
                   ProdValue(this.engine),
                   CollValue(this.variables),
-                  MaybeProdValue(this.introduction),
-                  MaybeProdValue(this.conclusion),
                   CollValue(this.chapters))
 
 }
@@ -618,9 +616,9 @@ data class BookSettings(override val id : UUID,
 /**
  * Book Content
  */
-data class BookContent(override val id : UUID,
+data class BookContent(val id : UUID,
                        val groups : List<Group>)
-                        : ToDocument, ProdType, Serializable
+                        : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -668,16 +666,16 @@ data class BookContent(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookContentValue =
-        RowValue1(bookContentTable,
-                  CollValue(this.groups))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_BookContentValue =
+//        RowValue1(bookContentTable,
+//                  CollValue(this.groups))
 
 }
 

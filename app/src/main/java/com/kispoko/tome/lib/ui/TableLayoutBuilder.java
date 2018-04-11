@@ -4,10 +4,11 @@ package com.kispoko.tome.lib.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
+
+import com.kispoko.tome.R;
 
 
 /**
@@ -159,10 +160,11 @@ public class TableLayoutBuilder
         // > Divider
         // --------------------------------------------------------------------------------------
 
-        if (this.divider != null) {
-            tableLayout.setDividerDrawable(this.divider);
-            tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-        }
+//        if (this.divider != null) {
+//            tableLayout.setDividerDrawable(context.getResources().getDrawable(R.drawable.divider_choose_value));
+//            tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.VERTICAL);
+//            tableLayout.setDividerDrawable();
+//        }
 
 
         // [2] Layout Parameters

@@ -9,6 +9,7 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue1
+import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
@@ -126,10 +127,9 @@ data class Page(override val id : UUID,
 
 
     override fun rowValue() : DB_PageValue =
-        RowValue4(pageTable, PrimValue(this.pageName),
+        RowValue3(pageTable, PrimValue(this.pageName),
                              ProdValue(this.format),
-                             PrimValue(this.index),
-                             CollValue(this.groups))
+                             PrimValue(this.index))
 
 
     // -----------------------------------------------------------------------------------------

@@ -31,33 +31,13 @@ types:
       presence: required
       description: >
         The name of the game.
-    - name: summary
-      type: 
+    - name: game_info
+      type:
         type: custom_type
-        custom_type: game_summary
+        custom_type: game_info
       presence: required
       description: >
-        A brief description of the game.
-    - name: game_name
-      type:
-        type: prim_type
-        prim_type: string
-      presence: required
-      description: >
-        The game name.
-    - name: authors
-      type: 
-        type: custom_coll_type
-        custom_coll_type: author
-      presence: required
-      description: >
-        The game's authors.
-    - name: book_ids
-      type:
-        type: prim_coll_type
-        prim_coll_type: string
-      presence: optional
-      description: The game book ids.
+        The game engine.
     - name: engine
       type:
         type: custom_type
@@ -65,6 +45,18 @@ types:
       presence: required
       description: >
         The game engine.
+    - name: variables
+      type:
+        type: custom_coll_type
+        custom_coll_type: variable
+      presence: optional
+      description: Game variables.
+    - name: groups
+      type:
+        type: custom_coll_type
+        custom_coll_type: group
+      presence: optional
+      description: Groups.
 - type: primitive_type
   primitive_type: 
     name: game_id
@@ -85,6 +77,38 @@ types:
     base_type:
       type: prim_type
       prim_type: string
+- type: product_type
+  product_type:
+    name: game_info
+    label: Game Info
+    description: Game info.
+    group: Game
+    fields:
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The game name.
+    - name: summary
+      type:
+        type: custom_type
+        custom_type: game_summary
+      presence: required
+      description: The game name.
+    - name: authors
+      type: 
+        type: custom_coll_type
+        custom_coll_type: author
+      presence: required
+      description: >
+        The game's authors.
+    - name: book_ids
+      type:
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: The game book ids.
 - type: product_type
   product_type:
     name: author

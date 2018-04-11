@@ -3,15 +3,11 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.db.DB_BorderValue
-import com.kispoko.tome.db.DB_DividerValue
 import com.kispoko.tome.db.borderTable
-import com.kispoko.tome.db.dividerTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.asSQLValue

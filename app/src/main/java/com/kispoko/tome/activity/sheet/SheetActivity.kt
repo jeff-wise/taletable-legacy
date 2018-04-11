@@ -4,6 +4,7 @@ package com.kispoko.tome.activity.sheet
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
@@ -23,13 +25,14 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.engine.procedure.ProcedureUpdateDialog
 import com.kispoko.tome.activity.session.SessionActivity
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.style.TextFont
+import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialThemeLight
@@ -38,9 +41,7 @@ import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.VariableChangeListener
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.configureToolbar
-import effect.Err
 import maybe.Just
-import effect.Val
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -135,7 +136,7 @@ class SheetActivity : AppCompatActivity()
         // (4) Configure UI
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar("")
+        this.configureToolbar("Character Sheet")
 
         this.initializeViews()
 
@@ -290,6 +291,11 @@ class SheetActivity : AppCompatActivity()
 //            val intent = Intent(this, NavigationActivity::class.java)
 //            this.startActivity(intent)
 //        }
+
+
+        val toolbarContentLayout = this.findViewById(R.id.toolbar_content) as LinearLayout?
+        val mainTabBarUI = MainTabBarUI(officialThemeLight, this)
+        toolbarContentLayout?.addView(mainTabBarUI.view())
     }
 
 
@@ -429,19 +435,19 @@ class SheetActivity : AppCompatActivity()
 
         // Configure toolbar to be character name
         // -------------------------------------------------------------------------------------
-
-        val maybeName =  textVariable(VariableId("name"), entityId) ap { it.value(entityId) }
-
-        when (maybeName)
-        {
-            is Val -> {
-                val name = maybeName.value
-                when (name) {
-                    is Just -> this.configureToolbar(name.value)
-                }
-            }
-            is Err -> ApplicationLog.error(maybeName.error)
-        }
+//
+//        val maybeName =  textVariable(VariableId("name"), entityId) ap { it.value(entityId) }
+//
+//        when (maybeName)
+//        {
+//            is Val -> {
+//                val name = maybeName.value
+//                when (name) {
+//                    is Just -> this.configureToolbar(name.value)
+//                }
+//            }
+//            is Err -> ApplicationLog.error(maybeName.error)
+//        }
 
 
         // Ensure toolbar updates value when name changes
@@ -498,23 +504,173 @@ class SheetActivity : AppCompatActivity()
         {
             is TextVariable ->
             {
-                val mText = variable.variableValue().value(EntitySheetId(sheetId))
-                when (mText)
-                {
-                    is Val -> {
-                        val text = mText.value
-                        when (text) {
-                            is Just -> this.configureToolbar(text.value)
-                        }
-                    }
-                    is Err -> ApplicationLog.error(mText.error)
-                }
+//                val mText = variable.variableValue().value(EntitySheetId(sheetId))
+//                when (mText)
+//                {
+//                    is Val -> {
+//                        val text = mText.value
+//                        when (text) {
+//                            is Just -> this.configureToolbar(text.value)
+//                        }
+//                    }
+//                    is Err -> ApplicationLog.error(mText.error)
+//                }
             }
         }
     }
 
 }
 
+
+
+class MainTabBarUI(val theme : Theme, val context : Context)
+{
+
+
+    fun view() : View
+    {
+        val layout = this.viewLayout()
+
+        // Pages
+        layout.addView(this.buttonView(R.string.pages, true))
+
+        // Tasks
+        layout.addView(this.buttonView(R.string.tasks, false))
+
+        // History
+        layout.addView(this.buttonView(R.string.history, false))
+
+        return layout
+    }
+
+
+    private fun viewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.margin.topDp     = 2f
+        layout.margin.bottomDp  = 2f
+        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 1f
+
+        return layout.linearLayout(context)
+    }
+
+
+
+    private fun buttonView(labelStringId : Int, isSelected : Boolean) : LinearLayout
+    {
+        val layout = this.buttonViewLayout(isSelected)
+
+        layout.addView(this.buttonLabelView(labelStringId, isSelected))
+
+        return layout
+    }
+
+
+    private fun buttonViewLayout(isSelected : Boolean) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.weight           = 1f
+
+        layout.gravity          = Gravity.CENTER
+
+        val bgNormalColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+
+        val bgSelectedColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("orange_70"))))
+
+        if (isSelected)
+            layout.backgroundColor  = theme.colorOrBlack(bgSelectedColorTheme)
+        else
+            layout.backgroundColor  = theme.colorOrBlack(bgNormalColorTheme)
+
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
+
+        layout.margin.leftDp    = 1f
+        layout.margin.rightDp   = 1f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun buttonLabelView(labelId : Int, isSelected : Boolean) : TextView
+    {
+        val label                   = TextViewBuilder()
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text                  = context.getString(labelId).toUpperCase()
+
+        label.gravity               = Gravity.CENTER
+
+        val normalColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+
+//        val selectedColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+
+        if (isSelected)
+            label.color             = Color.WHITE
+        else
+            label.color             = theme.colorOrBlack(normalColorTheme)
+
+        label.font                  = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.SemiBold,
+                                                    context)
+
+        label.sizeSp                 = 14f
+
+        return label.textView(context)
+    }
+
+
+    private fun countView(countString : String) : TextView
+    {
+        val count                   = TextViewBuilder()
+
+        count.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        count.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        count.backgroundResource    = R.drawable.bg_session_step
+
+        val indexColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+
+        count.color             = theme.colorOrBlack(indexColorTheme)
+
+        count.font                  = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.Bold,
+                                                    context)
+
+        count.text                  = countString
+
+        count.gravity               = Gravity.CENTER
+
+        count.sizeSp                = 17f
+
+        count.margin.rightDp        = 10f
+
+        return count.textView(context)
+    }
+
+}
 
 
 

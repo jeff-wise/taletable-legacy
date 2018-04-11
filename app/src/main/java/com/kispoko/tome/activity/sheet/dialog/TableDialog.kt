@@ -347,8 +347,8 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         layout.orientation          = LinearLayout.VERTICAL
 
-        layout.padding.topDp        = 4f
-        layout.padding.bottomDp     = 4f
+        layout.padding.topDp        = 6f
+        layout.padding.bottomDp     = 6f
 
         layout.backgroundColor      = Color.WHITE
 
@@ -406,7 +406,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         icon.color             = colorOrBlack(iconColorTheme, entityId)
 
-        icon.margin.rightDp     = 12f
+        icon.margin.rightDp     = 18f
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
@@ -422,7 +422,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         label.color             = colorOrBlack(labelColorTheme, entityId)
 
         label.sizeSp            = 19f

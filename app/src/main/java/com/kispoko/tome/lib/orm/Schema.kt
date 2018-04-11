@@ -347,6 +347,17 @@ sealed class RowValue()
 }
 
 
+class RowValue0<A> : RowValue()
+        where A : ColumnValue
+{
+
+    override fun columns() = listOf<Column>()
+
+    override fun table() = Table1("", "")
+
+}
+
+
 
 // ---------------------------------------------------------------------------------------------
 // DB VALUE

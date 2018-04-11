@@ -12,6 +12,10 @@
     <string name="campaigns">Campaigns</string>
     <string name="games">Games</string>
 
+    <string name="tasks">Tasks</string>
+    <string name="messages">Messages</string>
+    <string name="pages">Pages</string>
+
     <string name="dialog_cancel">CANCEL</string>
     <string name="cancel">Cancel</string>
     <string name="programming">Programming</string>

@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TabWidget
 import android.widget.TableLayout
 import android.widget.TextView
 import com.kispoko.tome.R
@@ -23,10 +24,7 @@ import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.*
-import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -39,6 +37,8 @@ import com.kispoko.tome.model.game.engine.procedure.Procedure
 import com.kispoko.tome.model.game.engine.procedure.ProcedureId
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.group.Group
+import com.kispoko.tome.model.sheet.group.GroupReference
+import com.kispoko.tome.model.sheet.group.groups
 import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Icon
@@ -65,7 +65,7 @@ import java.util.*
  * Widget
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
+sealed class Widget : ToDocument, SheetComponent, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -87,6 +87,8 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
                                             // as ValueParser<Widget>
                     "widget_expander" -> ExpanderWidget.fromDocument(doc)
                                            //  as ValueParser<Widget>
+                    "widget_group"    -> WidgetGroup.fromDocument(doc)
+                                            //  as ValueParser<Widget>
                     "widget_image"    -> ImageWidget.fromDocument(doc)
 //                                            as ValueParser<Widget>
                     "widget_list"     -> ListWidget.fromDocument(doc)
@@ -103,14 +105,16 @@ sealed class Widget : ToDocument, ProdType, SheetComponent, Serializable
                                             as ValueParser<Widget>
                     "widget_quote"    -> QuoteWidget.fromDocument(doc)
                                             as ValueParser<Widget>
-                    "widget_roll"    -> RollWidget.fromDocument(doc)
+                    "widget_roll"     -> RollWidget.fromDocument(doc)
                                             as ValueParser<Widget>
+                    "widget_slider"   -> WidgetSlider.fromDocument(doc)
+                                                as ValueParser<Widget>
                     "widget_story"    -> StoryWidget.fromDocument(doc)
                                             as ValueParser<Widget>
                     "widget_table"    -> TableWidget.fromDocument(doc)
                                             as ValueParser<Widget>
-//                    "widget_tab"      -> TabWidget.fromDocument(doc)
-//                                            as ValueParser<Widget>
+                    "widget_tab"      -> WidgetTab.fromDocument(doc)
+                                            as ValueParser<Widget>
                     "widget_text"     -> TextWidget.fromDocument(doc)
                                             as ValueParser<Widget>
                     else       -> effError<ValueError,Widget>(UnknownCase(doc.case(), doc.path))
@@ -380,12 +384,12 @@ data class WidgetId(val value : String) : ToDocument, SQLSerializable, Serializa
 /**
  * Action Widget
  */
-data class ActionWidget(override val id : UUID,
-                       val widgetId : WidgetId,
-                       val format : ActionWidgetFormat,
-                       val procedureId : ProcedureId,
-                       val activeVariableId : Maybe<VariableId>,
-                       val description : Maybe<ActionWidgetDescription>) : Widget()
+data class ActionWidget(val id : UUID,
+                        val widgetId : WidgetId,
+                        val format : ActionWidgetFormat,
+                        val procedureId : ProcedureId,
+                        val activeVariableId : Maybe<VariableId>,
+                        val description : Maybe<ActionWidgetDescription>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -489,19 +493,19 @@ data class ActionWidget(override val id : UUID,
     // PROD TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetActionValue =
-        RowValue4(widgetActionTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.procedureId),
-                  MaybePrimValue(this.description))
-
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetActionValue =
+//        RowValue4(widgetActionTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.procedureId),
+//                  MaybePrimValue(this.description))
+//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -629,7 +633,7 @@ data class ActionWidget(override val id : UUID,
 /**
  * Boolean Widget
  */
-data class BooleanWidget(override val id : UUID,
+data class BooleanWidget(val id : UUID,
                          private val widgetId : WidgetId,
                          private val format : BooleanWidgetFormat,
                          private val valueVariablesReference : VariableReference) : Widget()
@@ -718,18 +722,18 @@ data class BooleanWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetBooleanValue =
-        RowValue3(widgetBooleanTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.valueVariablesReference))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetBooleanValue =
+//        RowValue3(widgetBooleanTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.valueVariablesReference))
 
 
     // -----------------------------------------------------------------------------------------
@@ -839,7 +843,7 @@ data class BooleanWidget(override val id : UUID,
 /**
  * Expander Widget
  */
-data class ExpanderWidget(override val id : UUID,
+data class ExpanderWidget(val id : UUID,
                           val widgetId : WidgetId,
                           val format : ExpanderWidgetFormat,
                           val header : ExpanderWidgetLabel,
@@ -931,19 +935,18 @@ data class ExpanderWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetExpanderValue =
-        RowValue4(widgetExpanderTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.header),
-                  CollValue(this.groups))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetExpanderValue =
+//        RowValue3(widgetExpanderTable,
+//                  PrimValue(this.widgetId),
+//                  PrimValue(this.header),
+//                  CollValue(this.groups))
 
 
     // -----------------------------------------------------------------------------------------
@@ -961,9 +964,137 @@ data class ExpanderWidget(override val id : UUID,
 
 
 /**
+ * Group Widget
+ */
+data class WidgetGroup(val id : UUID,
+                       val widgetId : WidgetId,
+                       val format : GroupWidgetFormat,
+                       val groupReferences : List<GroupReference>) : Widget()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var groupsCache : Maybe<List<Group>> = Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : GroupWidgetFormat,
+                groupReferences : List<GroupReference>)
+        : this(UUID.randomUUID(),
+               widgetId,
+               format,
+               groupReferences)
+
+
+    companion object : Factory<Widget>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Widget> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::WidgetGroup,
+                      // Widget Id
+                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Format
+                      split(doc.maybeAt("format"),
+                           effValue(GroupWidgetFormat.default()),
+                           { GroupWidgetFormat.fromDocument(it) }),
+                      // Group References
+                      doc.list("group_references") ap { docList ->
+                          docList.map { GroupReference.fromDocument(it) }
+                      })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.widgetId().toDocument(),
+        "format" to this.format().toDocument(),
+        "group_references" to DocList(this.groupReferences.map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : GroupWidgetFormat = this.format
+
+
+    fun groupReferences() : List<GroupReference> = this.groupReferences
+
+
+    // -----------------------------------------------------------------------------------------
+    // GROUP
+    // -----------------------------------------------------------------------------------------
+
+    fun groupAtIndex(index : Int, entityId : EntityId) : Maybe<Group>
+    {
+        val groups = this.groups(entityId)
+
+        return if (groups.size > index)
+            Just(groups[index]!!)
+        else
+            Nothing()
+    }
+
+
+    fun groups(entityId : EntityId) : List<Group>
+    {
+        val groupsCache = this.groupsCache
+        return when (groupsCache) {
+            is Just    -> groupsCache.value
+            is Nothing -> groups(this.groupReferences, entityId)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun view(entityId : EntityId, context : Context) : View {
+        val widgetUI = GroupWidgetUI(this, entityId, context)
+        return widgetUI.view()
+    }
+
+
+    override fun widgetId() = this.widgetId
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    {
+        this.groups(entityId).forEach {
+            it.onSheetComponentActive(entityId, context)
+        }
+    }
+
+}
+
+
+/**
  * Image Widget
  */
-data class ImageWidget(override val id : UUID,
+data class ImageWidget(val id : UUID,
                        val widgetId : WidgetId,
                        val format : ImageWidgetFormat,
                        val officialImageIds : MutableList<OfficialImageId>,
@@ -1056,18 +1187,18 @@ data class ImageWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // PROD TYPE
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetImageValue =
-        RowValue3(widgetImageTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(OfficialImageIdList(this.officialImageIds)))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetImageValue =
+//        RowValue3(widgetImageTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(OfficialImageIdList(this.officialImageIds)))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1083,7 +1214,7 @@ data class ImageWidget(override val id : UUID,
 /**
  * List Widget
  */
-data class ListWidget(override val id : UUID,
+data class ListWidget(val id : UUID,
                       val widgetId : WidgetId,
                       val format : ListWidgetFormat,
                       val valuesVariableId : VariableId,
@@ -1183,18 +1314,18 @@ data class ListWidget(override val id : UUID,
     // PROD TYPE
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetListValue =
-        RowValue3(widgetListTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.valuesVariableId))
-
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetListValue =
+//        RowValue3(widgetListTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.valuesVariableId))
+//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -1261,7 +1392,7 @@ data class ListWidget(override val id : UUID,
 /**
  * Log Widget
  */
-data class LogWidget(override val id : UUID,
+data class LogWidget(val id : UUID,
                      private val widgetId : WidgetId,
                      private val format : LogWidgetFormat,
                      private val entries : MutableList<LogEntry>) : Widget()
@@ -1343,19 +1474,19 @@ data class LogWidget(override val id : UUID,
 
     // PROD TYPE
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetLogValue =
-        RowValue3(widgetLogTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  CollValue(this.entries))
-
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetLogValue =
+//        RowValue3(widgetLogTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  CollValue(this.entries))
+//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -1370,7 +1501,7 @@ data class LogWidget(override val id : UUID,
 /**
  * Mechanic Widget
  */
-data class MechanicWidget(override val id : UUID,
+data class MechanicWidget(val id : UUID,
                           private val widgetId : WidgetId,
                           private val format : MechanicWidgetFormat,
                           private val categoryReference : MechanicCategoryReference) : Widget()
@@ -1460,18 +1591,18 @@ data class MechanicWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetMechanicValue =
-        RowValue3(widgetMechanicTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.categoryReference))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetMechanicValue =
+//        RowValue3(widgetMechanicTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.categoryReference))
 
 
     // -----------------------------------------------------------------------------------------
@@ -1529,7 +1660,7 @@ data class MechanicWidget(override val id : UUID,
 /**
  * Number Widget
  */
-data class NumberWidget(override val id : UUID,
+data class NumberWidget(val id : UUID,
                         val widgetId : WidgetId,
                         val format : NumberWidgetFormat,
                         val valueVariableId : VariableId,
@@ -1666,20 +1797,20 @@ data class NumberWidget(override val id : UUID,
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetNumberValue =
-        RowValue5(widgetNumberTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.valueVariableId),
-                  MaybePrimValue(this.insideLabel),
-                  MaybeProdValue(this.bookReference))
-
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetNumberValue =
+//        RowValue5(widgetNumberTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.valueVariableId),
+//                  MaybePrimValue(this.insideLabel),
+//                  MaybeProdValue(this.bookReference))
+//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -1959,7 +2090,7 @@ data class NumberWidget(override val id : UUID,
 /**
  * Points Widget
  */
-data class PointsWidget(override val id : UUID,
+data class PointsWidget(val id : UUID,
                         val widgetId : WidgetId,
                         val format : PointsWidgetFormat,
                         val limitValueVariableId : VariableId,
@@ -2195,20 +2326,20 @@ data class PointsWidget(override val id : UUID,
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetPointsValue =
-        RowValue5(widgetPointsTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.limitValueVariableId),
-                  PrimValue(this.currentValueVariableId),
-                  MaybePrimValue(this.label))
-
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetPointsValue =
+//        RowValue5(widgetPointsTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.limitValueVariableId),
+//                  PrimValue(this.currentValueVariableId),
+//                  MaybePrimValue(this.label))
+//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -2246,7 +2377,7 @@ data class PointsWidget(override val id : UUID,
 /**
  * Quote Widget
  */
-data class QuoteWidget(override val id : UUID,
+data class QuoteWidget(val id : UUID,
                        val widgetId : WidgetId,
                        val format : QuoteWidgetFormat,
                        val quoteVariableId : VariableId,
@@ -2386,18 +2517,18 @@ data class QuoteWidget(override val id : UUID,
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetQuoteValue =
-        RowValue4(widgetQuoteTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.quoteVariableId),
-                  MaybePrimValue(this.sourceVariableId))
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetQuoteValue =
+//        RowValue4(widgetQuoteTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.quoteVariableId),
+//                  MaybePrimValue(this.sourceVariableId))
 
 
     // -----------------------------------------------------------------------------------------
@@ -2412,7 +2543,7 @@ data class QuoteWidget(override val id : UUID,
 /**
  * Roll Widget
  */
-data class RollWidget(override val id : UUID,
+data class RollWidget(val id : UUID,
                       val widgetId : WidgetId,
                       val format : RollWidgetFormat,
                       val rollGroup : DiceRollGroup,
@@ -2532,20 +2663,20 @@ data class RollWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // PROD TYPE
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetRollValue =
-        RowValue5(widgetRollTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  ProdValue(this.rollGroup),
-                  MaybePrimValue(this.description),
-                  MaybePrimValue(this.resultDescription))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetRollValue =
+//        RowValue5(widgetRollTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  ProdValue(this.rollGroup),
+//                  MaybePrimValue(this.description),
+//                  MaybePrimValue(this.resultDescription))
 
 
     // -----------------------------------------------------------------------------------------
@@ -2593,8 +2724,113 @@ data class RollWidget(override val id : UUID,
         }
     }
 
+}
 
 
+/**
+ * Slider Widget
+ */
+data class WidgetSlider(val id : UUID,
+                        val widgetId : WidgetId,
+                        val format : SliderWidgetFormat,
+                        val groups : List<Group>) : Widget()
+{
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : SliderWidgetFormat,
+                groups : MutableList<Group>)
+        : this(UUID.randomUUID(),
+               widgetId,
+               format,
+               groups)
+
+
+    companion object : Factory<Widget>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Widget> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::WidgetSlider,
+                      // Widget Name
+                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Format
+                     split(doc.maybeAt("format"),
+                           effValue(SliderWidgetFormat.default()),
+                           { SliderWidgetFormat.fromDocument(it) }),
+                      // Groups
+                      doc.list("groups") ap { docList ->
+                          docList.mapIndexed { d,index -> Group.fromDocument(d,index) }
+                      })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.widgetId().toDocument(),
+        "format" to this.format().toDocument(),
+        "groups" to DocList(this.groups.map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : SliderWidgetFormat = this.format
+
+
+    fun groups() : List<Group> = this.groups
+
+
+    // -----------------------------------------------------------------------------------------
+    // GROUP
+    // -----------------------------------------------------------------------------------------
+
+    fun groupAtIndex(index : Int) : Maybe<Group> =
+        if (this.groups.size > index)
+            Just(this.groups[index]!!)
+        else
+            Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun view(entityId : EntityId, context : Context) : View {
+        val widgetUI = SliderWidgetUI(this, entityId, context)
+        return widgetUI.view()
+    }
+
+
+    override fun widgetId() = this.widgetId
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    {
+        this.groups().forEach {
+            it.onSheetComponentActive(entityId, context)
+        }
+    }
 
 }
 
@@ -2602,7 +2838,7 @@ data class RollWidget(override val id : UUID,
 /**
  * Story Widget
  */
-data class StoryWidget(override val id : UUID,
+data class StoryWidget(val id : UUID,
                        val widgetId : WidgetId,
                        val format : StoryWidgetFormat,
                        val story : List<StoryPart>) : Widget()
@@ -2719,17 +2955,17 @@ data class StoryWidget(override val id : UUID,
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetStoryValue =
-        RowValue3(widgetStoryTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  CollValue(this.story))
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetStoryValue =
+//        RowValue3(widgetStoryTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  CollValue(this.story))
 
 
     // -----------------------------------------------------------------------------------------
@@ -2839,146 +3075,124 @@ data class StoryWidget(override val id : UUID,
         }
     }
 
-
-
 }
 
 
 /**
  * Tab Widget
  */
-//data class TabWidget(override val id : UUID,
-//                     val widgetId : Prim<WidgetId>,
-//                     val format : Prod<TabWidgetFormat>,
-//                     val tabs : Coll<Tab>,
-//                     val defaultSelected : Prim<DefaultSelected>) : Widget()
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.widgetId.name          = "widget_id"
-//        this.format.name            = "format"
-//        this.tabs.name              = "tabs"
-//        this.defaultSelected.name   = "default_selected"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : TabWidgetFormat,
-//                tabs : MutableList<Tab>,
-//                defaultSelected : DefaultSelected)
-//        : this(UUID.randomUUID(),
-//               Prim(widgetId),
-//               Prod(format),
-//               Coll(tabs),
-//               Prim(defaultSelected))
-//
-//
-//    companion object : Factory<TabWidget>
-//    {
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<TabWidget> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                effApply(::TabWidget,
-//                         // Widget Id
-//                         doc.at("id") ap { WidgetId.fromDocument(it) },
-//                         // Format
-//                         split(doc.maybeAt("format"),
-//                               effValue(TabWidgetFormat.default()),
-//                               { TabWidgetFormat.fromDocument(it) }),
-//                         // Tabs
-//                         doc.list("tabs") ap { docList ->
-//                             docList.mapMut { Tab.fromDocument(it) }
-//                         },
-//                         // Default Selected
-//                         split(doc.maybeAt("default_selected"),
-//                               effValue(DefaultSelected(1)),
-//                               { DefaultSelected.fromDocument(it) })
-//                         )
+data class WidgetTab(val id : UUID,
+                     val widgetId : WidgetId,
+                     val format : TabWidgetFormat,
+                     val tabs : List<Tab>) : Widget()
+{
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : TabWidgetFormat,
+                tabs : MutableList<Tab>)
+        : this(UUID.randomUUID(),
+               widgetId,
+               format,
+               tabs)
+
+
+    companion object : Factory<Widget>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Widget> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::WidgetTab,
+                      // Widget Id
+                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Format
+                     split(doc.maybeAt("format"),
+                           effValue(TabWidgetFormat.default()),
+                           { TabWidgetFormat.fromDocument(it) }),
+                     // Tabs
+                     doc.list("tabs") ap { docList ->
+                         docList.mapMut { Tab.fromDocument(it) }
+                     })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.widgetId().toDocument(),
+        "format" to this.format().toDocument(),
+        "tabs" to DocList(this.tabs.map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : TabWidgetFormat = this.format
+
+
+    fun tabs() : List<Tab> = this.tabs
+
+
+    // -----------------------------------------------------------------------------------------
+    // TABS
+    // -----------------------------------------------------------------------------------------
+
+    fun tabAtIndex(index : Int) : Maybe<Tab> =
+        if (this.tabs.size > index)
+            Just(this.tabs[index]!!)
+        else
+            Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun view(entityId : EntityId, context : Context) : View {
+        val widgetUI = TabWidgetUI(this, entityId, context)
+        return widgetUI.view()
+    }
+
+
+    override fun widgetId() = this.widgetId
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    {
+        this.tabs().forEach {
+//            it.groupReferences()
+//            it..forEach {
+//                it.onSheetComponentActive(entityId, context)
 //            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//            "id" to this.widgetId().toDocument(),
-//            "format" to this.format().toDocument(),
-//            "tabs" to DocList(this.tabs().map { it.toDocument() }),
-//            "default_selected" to this.defaultSelected().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun widgetId() : WidgetId = this.widgetId.value
-//
-//    fun format() : TabWidgetFormat = this.format.value
-//
-//    fun tabs() : List<Tab> = this.tabs.value
-//
-//    fun defaultSelected() : DefaultSelected = this.defaultSelected.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // WIDGET
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
-//
-//
-//    override fun view(sheetUIContext: SheetUIContext): View {
-//        TODO("not implemented")
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name : String = "widget_tab"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<com.kispoko.tome.lib.functor.Val<*>> =
-//            listOf(this.widgetId,
-//                   this.format,
-//                   this.tabs,
-//                   this.defaultSelected)
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // SHEET COMPONENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onSheetComponentActive(sheetUIContext : SheetUIContext) {
-//        TODO("not implemented")
-//    }
-//
-//}
+        }
+    }
+
+}
 
 
 /**
  * Table Widget
  */
-data class TableWidget(override val id : UUID,
+data class TableWidget(val id : UUID,
                        private val widgetId : WidgetId,
                        private val format : TableWidgetFormat,
                        private val columns : MutableList<TableWidgetColumn>,
@@ -3225,19 +3439,19 @@ data class TableWidget(override val id : UUID,
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableValue =
-        RowValue5(widgetTableTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  CollValue(this.columns),
-                  CollValue(this.rows),
-                  MaybePrimValue(this.sort))
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetTableValue =
+//        RowValue5(widgetTableTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  CollValue(this.columns),
+//                  CollValue(this.rows),
+//                  MaybePrimValue(this.sort))
 
 
     // -----------------------------------------------------------------------------------------
@@ -3472,7 +3686,7 @@ data class TableWidget(override val id : UUID,
 /**
  * Text Widget
  */
-data class TextWidget(override val id : UUID,
+data class TextWidget(val id : UUID,
                       val widgetId : WidgetId,
                       val format : TextWidgetFormat,
                       val valueVariableId : VariableId,
@@ -3677,19 +3891,19 @@ data class TextWidget(override val id : UUID,
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTextValue =
-        RowValue4(widgetTextTable,
-                  PrimValue(this.widgetId),
-                  ProdValue(this.format),
-                  PrimValue(this.valueVariableId),
-                  MaybeProdValue(this.bookReference))
-
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetTextValue =
+//        RowValue4(widgetTextTable,
+//                  PrimValue(this.widgetId),
+//                  ProdValue(this.format),
+//                  PrimValue(this.valueVariableId),
+//                  MaybeProdValue(this.bookReference))
+//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT

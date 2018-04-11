@@ -16,13 +16,12 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.theme.ThemeManager
-import com.kispoko.tome.rts.session.MessageSessionLoaded
-import com.kispoko.tome.rts.session.SessionId
-import com.kispoko.tome.rts.session.newSession
+import com.kispoko.tome.rts.session.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-
+import maybe.Nothing
+import java.util.*
 
 
 /**
@@ -41,7 +40,8 @@ class TestSessionActivity : AppCompatActivity()
     private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
 
-    private val sheetId = SheetId("creature_brown_bear")
+//    private val sheetId = SheetId("creature_brown_bear")
+    private val sheetId = SheetId("character_casmey_level_1")
 
 
     // -----------------------------------------------------------------------------------------
@@ -82,7 +82,19 @@ class TestSessionActivity : AppCompatActivity()
 
             val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
 
-//            newSession(loaders, SessionId("test"), context)
+            val sessionInfo = SessionInfo(SessionSummary(""),
+                                          SessionDescription(""),
+                                          SessionTag("Level 1"),
+                                          listOf(SessionTag("Human"), SessionTag("Fighter")))
+            val sessionLoader = SessionLoader(SessionId(UUID.randomUUID()),
+                                              SessionName("Casmey Dalseya"),
+                                              sessionInfo,
+                                              GameId("magic_of_heroes"),
+                                              Nothing(),
+                                              loaders,
+                                              EntitySheetId(SheetId("character_casmey_level_1")))
+
+            newSession(sessionLoader, context)
         }
 
     }

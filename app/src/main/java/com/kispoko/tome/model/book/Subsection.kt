@@ -6,6 +6,7 @@ import com.kispoko.tome.db.DB_BookSubsectionValue
 import com.kispoko.tome.db.bookSubsectionTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
@@ -100,9 +101,8 @@ data class BookSubsection(override val id : UUID,
 
 
     override fun rowValue() : DB_BookSubsectionValue =
-        RowValue3(bookSubsectionTable, PrimValue(this.subsectionId),
-                                       PrimValue(this.title),
-                                       ProdValue(this.body))
+        RowValue2(bookSubsectionTable, PrimValue(this.subsectionId),
+                                       PrimValue(this.title))
 
 }
 

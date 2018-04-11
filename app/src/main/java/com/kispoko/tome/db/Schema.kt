@@ -95,25 +95,21 @@ typealias DB_AuthorValue =
 // ---------------------------------------------------------------------------------------------
 
 val bookTable =
-    Table8("book",
+    Table6("book",
            "book_id",
            "info",
            "settings",
            "engine",
            "variables",
-           "introduction",
-           "conclusion",
            "chapters")
 
 
 typealias DB_BookValue =
-    RowValue8<PrimValue<BookId>,
+    RowValue6<PrimValue<BookId>,
               ProdValue<BookInfo>,
               ProdValue<BookSettings>,
               ProdValue<Engine>,
               CollValue<Variable>,
-              MaybeProdValue<BookContent>,
-              MaybeProdValue<BookContent>,
               CollValue<BookChapter>>
 
 
@@ -162,13 +158,13 @@ typealias DB_BookSettingsValue =
 
 // BOOK CONTENT
 // ---------------------------------------------------------------------------------------------
-
-val bookContentTable =
-    Table1("book_content",
-           "groups")
-
-typealias DB_BookContentValue =
-    RowValue1<CollValue<Group>>
+//
+//val bookContentTable =
+//    Table1("book_content",
+//           "groups")
+//
+//typealias DB_BookContentValue =
+//    RowValue1<CollValue<Group>>
 
 
 // BOOK CHAPTER
@@ -190,16 +186,14 @@ typealias DB_BookChapterValue =
 // ---------------------------------------------------------------------------------------------
 
 val bookSectionTable =
-    Table4("book_section",
+    Table3("book_section",
            "section_id",
            "title",
-           "body",
            "subsections")
 
 typealias DB_BookSectionValue =
-    RowValue4<PrimValue<BookSectionId>,
+    RowValue3<PrimValue<BookSectionId>,
               PrimValue<BookSectionTitle>,
-              ProdValue<BookContent>,
               CollValue<BookSubsection>>
 
 
@@ -235,15 +229,13 @@ typealias DB_BookSectionPageHeaderFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val bookSubsectionTable =
-    Table3("book_subsection",
+    Table2("book_subsection",
            "subsection_id",
-           "title",
-           "body")
+           "title")
 
 typealias DB_BookSubsectionValue =
-    RowValue3<PrimValue<BookSubsectionId>,
-              PrimValue<BookSubsectionTitle>,
-              ProdValue<BookContent>>
+    RowValue2<PrimValue<BookSubsectionId>,
+              PrimValue<BookSubsectionTitle>>
 
 
 // BOOK REFERENCE
@@ -479,16 +471,16 @@ typealias DB_GameValue =
 // GROUP
 // ---------------------------------------------------------------------------------------------
 
-val groupTable =
-    Table3("group",
-           "format",
-           "index",
-           "rows")
-
-typealias DB_GroupValue =
-    RowValue3<ProdValue<GroupFormat>,
-              PrimValue<GroupIndex>,
-              CollValue<GroupRow>>
+//val groupTable =
+//    Table3("group",
+//           "format",
+//           "index",
+//           "rows")
+//
+//typealias DB_GroupValue =
+//    RowValue3<ProdValue<GroupFormat>,
+//              PrimValue<GroupIndex>,
+//              CollValue<GroupRow>>
 
 
 // GROUP FORMAT
@@ -508,15 +500,13 @@ typealias DB_GroupFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val groupRowTable =
-    Table3("group_row",
+    Table2("group_row",
            "format",
-           "index",
-           "widgets")
+           "index")
 
 typealias DB_GroupRowValue =
-    RowValue3<ProdValue<GroupRowFormat>,
-              PrimValue<GroupRowIndex>,
-              CollValue<Widget>>
+    RowValue2<ProdValue<GroupRowFormat>,
+              PrimValue<GroupRowIndex>>
 
 
 // GROUP ROW FORMAT
@@ -623,17 +613,15 @@ typealias DB_MessageValue =
 // ---------------------------------------------------------------------------------------------
 
 val pageTable =
-    Table4("page",
+    Table3("page",
            "page_name",
            "format",
-           "index",
-           "groups")
+           "index")
 
 typealias DB_PageValue =
-    RowValue4<PrimValue<PageName>,
+    RowValue3<PrimValue<PageName>,
               ProdValue<PageFormat>,
-              PrimValue<PageIndex>,
-              CollValue<Group>>
+              PrimValue<PageIndex>>
 
 
 // PAGE FORMAT
@@ -1162,20 +1150,18 @@ typealias DB_WidgetBooleanFormatValue =
 
 // WIDGET: EXPANDER
 // ---------------------------------------------------------------------------------------------
-
-val widgetExpanderTable =
-    Table4("widget_expander",
-           "widget_id",
-           "format",
-           "header",
-           "groups")
-
-
-typealias DB_WidgetExpanderValue =
-    RowValue4<PrimValue<WidgetId>,
-              ProdValue<ExpanderWidgetFormat>,
-              PrimValue<ExpanderWidgetLabel>,
-              CollValue<Group>>
+//
+//val widgetExpanderTable =
+//    Table3("widget_expander",
+//           "widget_id",
+//           "header",
+//           "groups")
+//
+//
+//typealias DB_WidgetExpanderValue =
+//    RowValue3<PrimValue<WidgetId>,
+//              PrimValue<ExpanderWidgetLabel>,
+//              CollValue<Group>>
 
 
 // WIDGET: EXPANDER > FORMAT

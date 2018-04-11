@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
@@ -14,24 +15,19 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
-import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.asSQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.groupWithId
 import com.kispoko.tome.rts.entity.sheet.SheetComponent
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
+import lulo.value.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
-import lulo.value.ValueParser
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
@@ -43,11 +39,11 @@ import java.util.*
 /**
  * Group
  */
-data class Group(override val id : UUID,
+data class Group(val id : GroupId,
                  private val format : GroupFormat,
-                 private var index : GroupIndex,
+                 private var index : Int,
                  private val rows : MutableList<GroupRow>)
-                  : ToDocument, ProdType, SheetComponent, Comparable<Group>, Serializable
+                  : ToDocument, SheetComponent, Comparable<Group>, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -55,9 +51,9 @@ data class Group(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(format : GroupFormat,
-                index : GroupIndex,
+                index : Int,
                 rows : List<GroupRow>)
-        : this(UUID.randomUUID(),
+        : this(GroupId(UUID.randomUUID()),
                format,
                index,
                rows.toMutableList())
@@ -70,12 +66,16 @@ data class Group(override val id : UUID,
             is DocDict ->
             {
                 apply(::Group,
+                      // Group Id
+                      split(doc.maybeAt("id"),
+                            effValue(GroupId(UUID.randomUUID())),
+                            { GroupId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(GroupFormat.default()),
                             { GroupFormat.fromDocument(it)}),
                       // Index
-                      effValue(GroupIndex(index)),
+                      effValue(index),
                       // Groups
                       doc.list("rows") ap { docList ->
                           docList.mapIndexed {
@@ -103,25 +103,11 @@ data class Group(override val id : UUID,
 
     fun format() : GroupFormat = this.format
 
-    fun indexInt() : Int = this.index.value
+
+    fun index() : Int = this.index
+
 
     fun rows() : List<GroupRow> = this.rows
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_GroupValue =
-        RowValue3(groupTable, ProdValue(this.format),
-                              PrimValue(this.index),
-                              CollValue(this.rows))
 
 
     // SHEET COMPONENT
@@ -137,7 +123,7 @@ data class Group(override val id : UUID,
     // COMPARABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun compareTo(other : Group) = compareValuesBy(this, other, { it.indexInt() })
+    override fun compareTo(other : Group) = compareValuesBy(this, other, { it.index() })
 
 
     // -----------------------------------------------------------------------------------------
@@ -150,21 +136,136 @@ data class Group(override val id : UUID,
 
 
 /**
- * Group Index
+ * Group Id
  */
-data class GroupIndex(val value : Int) : SQLSerializable, Serializable
+data class GroupId(val value : UUID) : Serializable
 {
 
-    companion object : Factory<GroupIndex>
+    companion object : Factory<GroupId>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<GroupIndex> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupId> = when (doc)
         {
-            is DocNumber -> effValue(GroupIndex(doc.number.toInt()))
-            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+            is DocText -> {
+                try {
+                    effValue<ValueError,GroupId>(GroupId(UUID.fromString(doc.text)))
+                }
+                catch (e : IllegalArgumentException) {
+                    effError<ValueError,GroupId>(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+                }
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+
+    }
+
+}
+
+
+sealed class GroupReference : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<GroupReference>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReference> =
+            when (doc.case())
+            {
+                "group_id" -> GroupReferenceId.fromDocument(doc) as ValueParser<GroupReference>
+                "group"    -> GroupReferenceLiteral.fromDocument(doc) as ValueParser<GroupReference>
+                else       -> effError(UnknownCase(doc.case(), doc.path))
+            }
+    }
+
+}
+
+
+data class GroupReferenceId(val groupId : GroupId) : GroupReference()
+{
+    companion object : Factory<GroupReferenceId>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReferenceId> = when (doc)
+        {
+            is DocText -> {
+                try {
+                    effValue<ValueError,GroupReferenceId>(
+                            GroupReferenceId(GroupId(UUID.fromString(doc.text))))
+                }
+                catch (e : IllegalArgumentException) {
+                    effError<ValueError,GroupReferenceId>(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+                }
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 
-    override fun asSQLValue() = this.value.asSQLValue()
+
+    override fun toDocument() = DocText(this.groupId.value.toString()).withCase("group_id")
+
+}
+
+
+
+fun groups(groupReferences : List<GroupReference>, entityId : EntityId) : List<Group>
+{
+    val groups : MutableList<Group> = mutableListOf()
+
+    groupReferences.forEach {
+        when (it) {
+            is GroupReferenceLiteral -> groups.add(it.group)
+            is GroupReferenceId      -> {
+                Log.d("***GROUP", "group reference id: ${it.groupId}")
+                groupWithId(it.groupId, entityId).doMaybe {
+                    groups.add(it)
+                }
+            }
+        }
+    }
+
+    return groups
+}
+
+
+
+data class GroupReferenceLiteral(val group : Group) : GroupReference()
+{
+
+    companion object : Factory<GroupReferenceLiteral>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReferenceLiteral> =
+                effApply(::GroupReferenceLiteral, Group.fromDocument(doc, 0))
+    }
+
+
+    override fun toDocument() = this.group.toDocument()
+                                    .withCase("group")
+
+}
+
+
+/**
+ * Group Index
+ */
+data class GroupIndex(val groups : List<Group>)
+{
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<GroupIndex> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::GroupIndex,
+                      // Groups
+                      doc.list("groups") ap { docList ->
+                          docList.map { Group.fromDocument(it, 0) } }
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
 
 }
 

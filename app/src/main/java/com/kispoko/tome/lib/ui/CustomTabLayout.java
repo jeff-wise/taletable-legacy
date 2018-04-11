@@ -19,8 +19,22 @@ public class CustomTabLayout extends TabLayout
 {
     private Typeface mTypeface;
 
-    public CustomTabLayout(Context context) {
+    private TextFont textFont = TextFont.Cabin.INSTANCE;
+    private TextFontStyle textFontStyle = TextFontStyle.SemiBold.INSTANCE;
+
+    public CustomTabLayout(Context context)
+    {
         super(context);
+        init(context);
+    }
+
+    public CustomTabLayout(Context context, TextFont textFont, TextFontStyle textFontStyle)
+    {
+        super(context);
+
+        this.textFont = textFont;
+        this.textFontStyle = textFontStyle;
+
         init(context);
     }
 
@@ -36,8 +50,8 @@ public class CustomTabLayout extends TabLayout
 
     private void init(Context context)
     {
-        mTypeface = Font.INSTANCE.typeface(TextFont.FiraSans.INSTANCE,
-                                           TextFontStyle.Regular.INSTANCE,
+        mTypeface = Font.INSTANCE.typeface(this.textFont,
+                                           this.textFontStyle,
                                            context);
     }
 

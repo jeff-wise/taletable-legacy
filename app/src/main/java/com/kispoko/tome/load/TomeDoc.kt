@@ -10,6 +10,7 @@ import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.sheet.Sheet
+import com.kispoko.tome.model.sheet.group.GroupIndex
 import com.kispoko.tome.model.theme.Theme
 import effect.*
 import lulo.SchemaParseError
@@ -31,12 +32,13 @@ object TomeDoc
     // Properties > Schemas
     // -----------------------------------------------------------------------------------------
 
-    var cachedSheetSchema : Schema? = null
-    var cachedCampaignSchema : Schema? = null
-    var cachedGameSchema : Schema? = null
-    var cachedEngineSchema : Schema? = null
-    var cachedThemeSchema : Schema? = null
-    var cachedBookSchema : Schema? = null
+    var cachedSheetSchema       : Schema? = null
+    var cachedCampaignSchema    : Schema? = null
+    var cachedGameSchema        : Schema? = null
+    var cachedEngineSchema      : Schema? = null
+    var cachedThemeSchema       : Schema? = null
+    var cachedBookSchema        : Schema? = null
+    var cachedGroupIndexSchema  : Schema? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -284,6 +286,53 @@ object TomeDoc
     }
 
 
+    // Load > Group Index
+    // -----------------------------------------------------------------------------------------
+
+    fun loadGroupIndex(inputStream : InputStream,
+                       gameName : String,
+                       context : Context) : DocLoader<GroupIndex>
+    {
+        // LET...
+        val templateFileString : DocLoader<String> =
+            effValue(inputStream.bufferedReader().use { it.readText() })
+
+        fun templateDocument(templateString : String,
+                             groupIndexSchema : Schema,
+                             themeSchema : Schema,
+                             engineSchema : Schema,
+                             sheetSchema : Schema) : DocLoader<SchemaDoc>
+        {
+            val docParse = groupIndexSchema.parseDocument(templateString,
+                                    listOf(themeSchema, engineSchema, sheetSchema))
+            return when (docParse)
+            {
+                is Val -> effValue(docParse.value)
+                is Err -> effError(DocumentParseError("Group Index for $gameName", "group_index", docParse.error))
+            }
+        }
+
+        fun groupIndexFromDocument(specDoc : SchemaDoc) : DocLoader<GroupIndex>
+        {
+            val groupIndexParse = GroupIndex.fromDocument(specDoc)
+            return when (groupIndexParse)
+            {
+                is Val -> effValue(groupIndexParse.value)
+                is Err -> effError(ValueParseError("Group Index for $gameName", groupIndexParse.error))
+            }
+        }
+
+        // DO...
+        return templateFileString
+               .applyWith(::templateDocument,
+                          groupIndexSchemaLoader(context),
+                          themeSchemaLoader(context),
+                          engineSchemaLoader(context),
+                          sheetSchemaLoader(context))
+               .apply(::groupIndexFromDocument)
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // SCHEMAS
     // -----------------------------------------------------------------------------------------
@@ -516,6 +565,43 @@ object TomeDoc
             effError(SchemaIsNull("book"))
     }
 
+
+    // Schemas > Group Index
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Get the Group Index specification (Lulo). If it is null, try to load it.
+     */
+    fun groupIndexSchema(context : Context) : Schema?
+    {
+        if (cachedGroupIndexSchema == null)
+        {
+            val schemaLoader = loadLuloSchema("group_index", context)
+            when (schemaLoader)
+            {
+                is Val -> {
+                    cachedGroupIndexSchema = schemaLoader.value
+                    ApplicationLog.event(SchemaLoaded("group_index"))
+                }
+                is Err -> ApplicationLog.error(schemaLoader.error)
+            }
+        }
+
+        return cachedGroupIndexSchema
+    }
+
+
+    /**
+     * get the specification in the loader context.
+     */
+    fun groupIndexSchemaLoader(context : Context) : DocLoader<Schema>
+    {
+        val schema = groupIndexSchema(context)
+        return if (schema != null)
+            effValue(schema)
+        else
+            effError(SchemaIsNull("group_index"))
+    }
 
 }
 

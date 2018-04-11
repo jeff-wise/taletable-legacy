@@ -8,17 +8,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.kispoko.tome.model.sheet.style.Corners;
+import com.kispoko.tome.model.sheet.style.Spacing;
 import com.kispoko.tome.util.Util;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +57,10 @@ public class RelativeLayoutBuilder
     public String                   backgroundBitmapPath;
 
     public Margins                  margin;
+    public Spacing                  marginSpacing;
+
     public Padding                  padding;
+    public Spacing                  paddingSpacing;
 
     public Corners corners;
 
@@ -102,7 +103,10 @@ public class RelativeLayoutBuilder
         this.backgroundBitmapPath = null;
 
         this.margin             = new Margins();
+        this.marginSpacing      = null;
+
         this.padding            = new Padding();
+        this.paddingSpacing     = null;
 
         this.corners            = null;
 
@@ -160,6 +164,17 @@ public class RelativeLayoutBuilder
                                   this.padding.top(context),
                                   this.padding.right(context),
                                   this.padding.bottom(context));
+
+        // > Padding Spacing
+        // --------------------------------------------------------------------------------------
+
+        if (this.paddingSpacing != null)
+        {
+            relativeLayout.setPadding(this.paddingSpacing.leftPx(),
+                                     this.paddingSpacing.topPx(),
+                                     this.paddingSpacing.rightPx(),
+                                     this.paddingSpacing.bottomPx());
+        }
 
         // > Gravity
         // --------------------------------------------------------------------------------------
@@ -279,7 +294,11 @@ public class RelativeLayoutBuilder
         // > Margins
         // --------------------------------------------------------------------------------------
 
-        layoutParamsBuilder.setMargins(this.margin);
+        if (this.marginSpacing != null)
+            layoutParamsBuilder.setMargins(this.marginSpacing);
+        else
+            layoutParamsBuilder.setMargins(this.margin);
+
 
 
         // > Rules (Relative Layout Only)

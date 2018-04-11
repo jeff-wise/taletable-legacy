@@ -15,6 +15,7 @@ import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
@@ -125,10 +126,9 @@ data class GroupRow(override val id : UUID,
 
 
     override fun rowValue() : DB_GroupRowValue =
-        RowValue3(groupRowTable,
+        RowValue2(groupRowTable,
                   ProdValue(this.format),
-                  PrimValue(this.index),
-                  CollValue(this.widgets))
+                  PrimValue(this.index))
 
 
     // -----------------------------------------------------------------------------------------
@@ -185,9 +185,6 @@ data class GroupRow(override val id : UUID,
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                      LinearLayout.LayoutParams.WRAP_CONTENT)
-
-        layout.gravity = elementFormat.alignment().gravityConstant() or
-                                    elementFormat.verticalAlignment().gravityConstant()
 
         val margins = elementFormat.margins()
         layoutParams.leftMargin = margins.leftPx()
@@ -278,11 +275,17 @@ data class GroupRow(override val id : UUID,
     {
         val layout = LinearLayoutBuilder()
 
+        val elementFormat = this.format().elementFormat()
+
         layout.orientation      = LinearLayout.HORIZONTAL
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.paddingSpacing   = this.format().elementFormat().padding()
+
+
+        layout.gravity = elementFormat.alignment().gravityConstant() or
+                            elementFormat.verticalAlignment().gravityConstant()
 
         return layout.linearLayout(context)
     }

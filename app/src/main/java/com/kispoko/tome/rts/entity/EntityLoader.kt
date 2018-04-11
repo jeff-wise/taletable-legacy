@@ -4,12 +4,14 @@ package com.kispoko.tome.rts.entity
 
 import android.content.Context
 import com.kispoko.culebra.*
+import com.kispoko.tome.R.string.group
 import com.kispoko.tome.R.string.label
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.app.assetInputStream
 import com.kispoko.tome.load.*
 import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.CampaignId
+import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.entity.OfficialSheetLoader.Companion.fromYaml
@@ -137,6 +139,8 @@ fun loadOfficialGame(officialGameLoader : OfficialGameLoader,
         {
             val game = gameLoader.value
 
+            loadOfficialGameData(officialGameLoader, game, context)
+
             addGame(game)
 
             // Log event
@@ -149,6 +153,26 @@ fun loadOfficialGame(officialGameLoader : OfficialGameLoader,
             Nothing()
         }
     }
+}
+
+
+private fun loadOfficialGameData(officialGameLoader : OfficialGameLoader,
+                                 game : Game,
+                                 context : Context)
+{
+    val groupIndexLoader = assetInputStream(context, officialGameLoader.weaponGroupsFilePath())
+            .apply { TomeDoc.loadGroupIndex(it, officialGameLoader.gameId.value, context) }
+
+    when (groupIndexLoader)
+    {
+        is Val -> {
+            game.addGroups(groupIndexLoader.value.groups)
+        }
+        is Err -> {
+            ApplicationLog.error(groupIndexLoader.error)
+        }
+    }
+
 }
 
 
@@ -328,6 +352,10 @@ data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
     override fun filePath() : String =
         "official/" + gameId.value +
         "/" + gameId.value +  ".yaml"
+
+
+    fun weaponGroupsFilePath() : String =
+            "official/" + gameId.value + "/indexes/group/weapons.yaml"
 
 
     companion object

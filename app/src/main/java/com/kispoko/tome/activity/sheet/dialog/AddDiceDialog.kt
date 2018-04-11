@@ -1247,7 +1247,7 @@ class DiceViewBuilder(val operation : DiceOperation,
         icon.widthDp            = 35
         icon.heightDp           = 35
 
-        icon.image              = R.drawable.icon_chevron_right
+        icon.image              = R.drawable.icon_chevron_right_bold
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_27")),

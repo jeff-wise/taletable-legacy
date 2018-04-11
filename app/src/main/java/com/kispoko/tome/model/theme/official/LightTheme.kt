@@ -111,11 +111,11 @@ val palette = mutableListOf(
 val uiColors = UIColors(
         ColorId.Theme("dark_grey_8"),
         ColorId.Theme("light_grey_4"),
-        ColorId.Theme("light_grey_1"),
-        ColorId.Theme("dark_grey_8"),
-        ColorId.Theme("light_grey_3"),
-        ColorId.Theme("light_grey_2"),
-        ColorId.Theme("light_grey_3"),
+        ColorId.Theme("white"),
+        ColorId.Theme("white"),
+        ColorId.Theme("dark_grey_16"),
+        ColorId.Theme("orange_90"),
+        ColorId.Theme("orange_90"),
         ColorId.Theme("dark_grey_8"),
         ColorId.Theme("light_grey_10"))
 

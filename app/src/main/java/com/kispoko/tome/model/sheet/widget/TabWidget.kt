@@ -2,96 +2,112 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
+import android.view.Gravity
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.lib.ui.CustomTabLayout
+import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.group.Group
+import com.kispoko.tome.model.sheet.group.GroupReference
+import com.kispoko.tome.model.sheet.group.groups
+import com.kispoko.tome.model.sheet.style.BorderEdge
+import com.kispoko.tome.model.sheet.style.ElementFormat
+import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
+
 
 
 /**
  * Tab
  */
-//data class Tab(override val id : UUID,
-//               val tabName : Val<TabName>,
-//               val groups : Coll<Group>) : ToDocument, ProdType, Serializable
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.tabName.name       = "tab_name"
-//        this.groups.name        = "groups"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    companion object : Factory<Tab>
-//    {
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<Tab> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                apply(::Tab,
-//                      // ProdType Id
-//                      effValue(UUID.randomUUID()),
-//                      // Tab Name
-//                      doc.at("name") ap {
-//                          effApply(::Prim, TabName.fromDocument(it))
-//                      },
-//                      // Groups
-//                      doc.list("groups") ap { docList ->
-//                          effApply(::Coll, docList.mapIndexed {
-//                              d,index -> Group.fromDocument(d,index) })
-//                      })
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "name" to this.tabName().toDocument(),
-//        "groups" to DocList(this.groups().map { it.toDocument() })
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun tabName() : TabName = this.tabName.value
-//
-//    fun groups() : List<Group> = this.groups.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name : String = "tab"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<Val<*>> =
-//            listOf(this.tabName,
-//                   this.groups)
-//
-//}
+data class Tab(val tabName : TabName,
+               val groupReferences : List<GroupReference>)
+                : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var groupsCache : Maybe<List<Group>> = Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<Tab>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<Tab> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::Tab,
+                      // Tab Name
+                      doc.at("name") ap { TabName.fromDocument(it) },
+                      // Group References
+                      doc.list("group_references") ap { docList ->
+                          docList.map { GroupReference.fromDocument(it) }
+                      })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.tabName().toDocument(),
+        "group_references" to DocList(this.groupReferences.map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun tabName() : TabName = this.tabName
+
+
+    fun groupReferences() : List<GroupReference> = this.groupReferences
+
+
+    // -----------------------------------------------------------------------------------------
+    // GROUPS
+    // -----------------------------------------------------------------------------------------
+
+    fun groups(entityId : EntityId) : List<Group>
+    {
+        val groupsCache = this.groupsCache
+        return when (groupsCache) {
+            is Just    -> groupsCache.value
+            is Nothing -> groups(this.groupReferences, entityId)
+        }
+    }
+
+}
 
 
 /**
@@ -131,20 +147,20 @@ data class TabName(val value : String) : ToDocument, SQLSerializable, Serializab
 
 
 /**
- * Default Selected
+ * Default Tab Index
  */
-data class DefaultSelected(val value : Int) : ToDocument, SQLSerializable, Serializable
+data class DefaultTabIndex(val value : Int) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<DefaultSelected>
+    companion object : Factory<DefaultTabIndex>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultSelected> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<DefaultTabIndex> = when (doc)
         {
-            is DocNumber -> effValue(DefaultSelected(doc.number.toInt()))
+            is DocNumber -> effValue(DefaultTabIndex(doc.number.toInt()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
@@ -166,235 +182,79 @@ data class DefaultSelected(val value : Int) : ToDocument, SQLSerializable, Seria
 }
 
 
-/**
- * Tab Widget Row Format
- */
-//data class TabWidgetFormat(override val id : UUID,
-//                           val widgetFormat : Prod<WidgetFormat>,
-//                           val tabDefaultStyle : Prod<TextFormat>,
-//                           val tabSelectedStyle : Prod<TextFormat>,
-//                           val underlineSelected : Prim<TabUnderlineSelected>,
-//                           val underlineThickness : Prim<TabUnderlineThickness>,
-//                           val tabMargins : Prod<Spacing>,
-//                           val tabPaddingVertical : Prim<TabVerticalPadding>,
-//                           val tabHeight : Prim<Height>,
-//                           val backgroundColorTheme : Prim<ColorTheme>,
-//                           val tabCorners : Prod<Corners>)
-//                            : ToDocument, ProdType, Serializable
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.widgetFormat.name              = "widget_format"
-//        this.tabDefaultStyle.name           = "tab_default_style"
-//        this.tabSelectedStyle.name          = "tab_selected_style"
-//        this.underlineSelected.name         = "underline_selected"
-//        this.underlineThickness.name        = "underline_thickness"
-//        this.tabMargins.name                = "tab_margins"
-//        this.tabPaddingVertical.name        = "tab_padding_vertical"
-//        this.tabHeight.name                 = "tab_height"
-//        this.backgroundColorTheme.name      = "background_color_theme"
-//        this.tabCorners.name                = "tab_corners"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetFormat : WidgetFormat,
-//                tabDefaultStyle : TextFormat,
-//                tabSelectedstyle : TextFormat,
-//                underlineSelected : TabUnderlineSelected,
-//                underlineThickness : TabUnderlineThickness,
-//                tabMargins : Spacing,
-//                tabPaddingVertical: TabVerticalPadding,
-//                tabHeight : Height,
-//                backgroundColorTheme : ColorTheme,
-//                tabCorners : Corners)
-//        : this(UUID.randomUUID(),
-//               Prod(widgetFormat),
-//               Prod(tabDefaultStyle),
-//               Prod(tabSelectedstyle),
-//               Prim(underlineSelected),
-//               Prim(underlineThickness),
-//               Prod(tabMargins),
-//               Prim(tabPaddingVertical),
-//               Prim(tabHeight),
-//               Prim(backgroundColorTheme),
-//               Prod(tabCorners))
-//
-//
-//    companion object : Factory<TabWidgetFormat>
-//    {
-//
-//        private fun defaultWidgetFormat()         = WidgetFormat.default()
-//        private fun defaultTabDefaultStyle()      = TextFormat.default()
-//        private fun defaultTabSelectedStyle()     = TextFormat.default()
-//        private fun defaultUnderlineSelected()    = TabUnderlineSelected(true)
-//        private fun defaultUnderlineThickness()   = TabUnderlineThickness(2)
-//        private fun defaultTabMargins()           = Spacing.default()
-//        private fun defaultTabPaddingVertical()   = TabVerticalPadding(5)
-//        private fun defaultTabHeight()            = Height.Wrap
-//        private fun defaultBackgroundColorTheme() = ColorTheme.transparent
-//        private fun defaultTabCorners()           = Corners.default()
-//
-//
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<TabWidgetFormat> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                apply(::TabWidgetFormat,
-//                      // Widget Format
-//                      split(doc.maybeAt("widget_format"),
-//                            effValue(defaultWidgetFormat()),
-//                            { WidgetFormat.fromDocument(it) }),
-//                      // Tab Default Style
-//                      split(doc.maybeAt("tab_default_style"),
-//                            effValue(defaultTabDefaultStyle()),
-//                            { TextFormat.fromDocument(it) }),
-//                      // Tab Selected Style
-//                      split(doc.maybeAt("tab_selected_style"),
-//                            effValue(defaultTabSelectedStyle()),
-//                            { TextFormat.fromDocument(it) }),
-//                      // Underline Selected?
-//                      split(doc.maybeAt("underline_selected"),
-//                            effValue(defaultUnderlineSelected()),
-//                            { TabUnderlineSelected.fromDocument(it) }),
-//                      // Underline Thickness
-//                      split(doc.maybeAt("underline_thickness"),
-//                            effValue(defaultUnderlineThickness()),
-//                            { TabUnderlineThickness.fromDocument(it) }),
-//                      // Margins
-//                      split(doc.maybeAt("tab_margins"),
-//                            effValue(defaultTabMargins()),
-//                            { Spacing.fromDocument(it) }),
-//                      // Tab Padding Vertical
-//                      split(doc.maybeAt("tab_padding_vertical"),
-//                            effValue(defaultTabPaddingVertical()),
-//                            { TabVerticalPadding.fromDocument(it) }),
-//                      // Tab Height
-//                      split(doc.maybeAt("tab_height"),
-//                            effValue<ValueError,Height>(defaultTabHeight()),
-//                            { Height.fromDocument(it) }),
-//                      // Background Color Theme
-//                      split(doc.maybeAt("background_color_theme"),
-//                            effValue(defaultBackgroundColorTheme()),
-//                            { ColorTheme.fromDocument(it) }),
-//                      // Tab Corners
-//                      split(doc.maybeAt("tab_corners"),
-//                            effValue<ValueError,Corners>(defaultTabCorners()),
-//                            { Corners.fromDocument(it) })
-//                   )
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//
-//
-//        fun default() = TabWidgetFormat(defaultWidgetFormat(),
-//                                        defaultTabDefaultStyle(),
-//                                        defaultTabSelectedStyle(),
-//                                        defaultUnderlineSelected(),
-//                                        defaultUnderlineThickness(),
-//                                        defaultTabMargins(),
-//                                        defaultTabPaddingVertical(),
-//                                        defaultTabHeight(),
-//                                        defaultBackgroundColorTheme(),
-//                                        defaultTabCorners())
-//
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "widget_format" to this.widgetFormat().toDocument(),
-//        "tab_default_style" to this.tabDefaultStyle().toDocument(),
-//        "tab_selected_style" to this.tabSelectedStyle().toDocument(),
-//        "underline_selected" to this.underlineSelected().toDocument(),
-//        "underline_thickness" to this.underlineThickness().toDocument(),
-//        "tab_margins" to this.tabMargins().toDocument(),
-//        "tab_padding_vertical" to this.tabPaddingVertical().toDocument(),
-//        "tab_height" to this.tabHeight().toDocument(),
-//        "background_color_theme" to this.backgroundColorTheme().toDocument(),
-//        "tab_corners" to this.tabCorners().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
-//
-//    fun tabDefaultStyle() : TextFormat = this.tabDefaultStyle.value
-//
-//    fun tabSelectedStyle() : TextFormat = this.tabSelectedStyle.value
-//
-//    fun underlineSelected() : TabUnderlineSelected = this.underlineSelected.value
-//
-//    fun underlineThickness() : TabUnderlineThickness = this.underlineThickness.value
-//
-//    fun tabMargins() : Spacing = this.tabMargins.value
-//
-//    fun tabPaddingVertical() : TabVerticalPadding = this.tabPaddingVertical.value
-//
-//    fun tabHeight() : Height = this.tabHeight.value
-//
-//    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
-//
-//    fun tabCorners() : Corners = this.tabCorners.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name : String = "tab_widget_format"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<Val<*>> =
-//            listOf(this.widgetFormat,
-//                   this.tabDefaultStyle,
-//                   this.tabSelectedStyle,
-//                   this.underlineSelected,
-//                   this.underlineThickness,
-//                   this.tabMargins,
-//                   this.tabPaddingVertical,
-//                   this.tabHeight,
-//                   this.backgroundColorTheme,
-//                   this.tabCorners)
-//
-//}
-//
-
 
 /**
- * Tab Underline Selected?
- */
-data class TabUnderlineSelected(val value : Boolean) : ToDocument, SQLSerializable, Serializable
+ * Tab Widget Format
+*/
+data class TabWidgetFormat(val widgetFormat : WidgetFormat,
+                           val viewType : TabWidgetViewType,
+                           val tabBarFormat : ElementFormat,
+                           val contentFormat : ElementFormat,
+                           val selectedTabFormat : TextFormat,
+                           val unselectedTabFormat : TextFormat,
+                           val tabFormat : TabFormat)
+                           : ToDocument, Serializable
 {
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<TabUnderlineSelected>
+    companion object : Factory<TabWidgetFormat>
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TabUnderlineSelected> = when (doc)
+
+        private fun defaultWidgetFormat()        = WidgetFormat.default()
+        private fun defaultViewType()            = TabWidgetViewType.Underline
+        private fun defaultTabBarFormat()        = ElementFormat.default()
+        private fun defaultContentFormat()       = ElementFormat.default()
+        private fun defaultSelectedTabFormat()   = TextFormat.default()
+        private fun defaultUnselectedTabFormat() = TextFormat.default()
+        private fun defaultTabFormat()           = TabFormat.default()
+
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TabWidgetFormat> = when (doc)
         {
-            is DocBoolean -> effValue(TabUnderlineSelected(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+            is DocDict ->
+            {
+                apply(::TabWidgetFormat,
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue(defaultWidgetFormat()),
+                            { WidgetFormat.fromDocument(it) }),
+                      // View Type
+                      split(doc.maybeAt("view_type"),
+                            effValue<ValueError,TabWidgetViewType>(defaultViewType()),
+                            { TabWidgetViewType.fromDocument(it) }),
+                      // Tab Bar Format
+                      split(doc.maybeAt("tab_bar_format"),
+                            effValue(defaultTabBarFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Content Format
+                      split(doc.maybeAt("content_format"),
+                            effValue(defaultContentFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Selected Tab Format
+                      split(doc.maybeAt("selected_tab_format"),
+                            effValue(defaultSelectedTabFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Unselected Tab Format
+                      split(doc.maybeAt("unselected_tab_format"),
+                            effValue(defaultUnselectedTabFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Tab Format
+                      split(doc.maybeAt("tab_format"),
+                            effValue(defaultTabFormat()),
+                            { TabFormat.fromDocument(it) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() = TabWidgetFormat(defaultWidgetFormat(),
+                                         defaultViewType(),
+                                         defaultTabBarFormat(),
+                                         defaultContentFormat(),
+                                         defaultSelectedTabFormat(),
+                                         defaultUnselectedTabFormat(),
+                                         defaultTabFormat())
+
     }
 
 
@@ -402,14 +262,162 @@ data class TabUnderlineSelected(val value : Boolean) : ToDocument, SQLSerializab
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocBoolean(this.value)
+    override fun toDocument() = DocDict(mapOf(
+        "widget_format" to this.widgetFormat().toDocument(),
+        "view_type" to this.viewType.toDocument(),
+        "tab_bar_format" to this.tabBarFormat.toDocument(),
+        "content_format" to this.contentFormat.toDocument(),
+        "selected_tab_format" to this.selectedTabFormat.toDocument(),
+        "unselected_tab_format" to this.unselectedTabFormat.toDocument(),
+        "tab_format" to this.tabFormat.toDocument()
+    ))
 
 
     // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
+    // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
+    fun widgetFormat() : WidgetFormat = this.widgetFormat
+
+
+    fun viewType() : TabWidgetViewType = this.viewType
+
+
+    fun tabBarFormat() : ElementFormat = this.tabBarFormat
+
+
+    fun contentFormat() : ElementFormat = this.contentFormat
+
+
+    fun selectedTabFormat() : TextFormat = this.selectedTabFormat
+
+
+    fun unselectedTabFormat() : TextFormat = this.unselectedTabFormat
+
+
+    fun tabFormat() : TabFormat = this.tabFormat
+
+}
+
+
+/**
+ * Tab Widget View Type
+ */
+sealed class TabWidgetViewType : ToDocument, SQLSerializable, Serializable
+{
+
+    object Basic : TabWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "basic" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("basic")
+
+    }
+
+
+    object Underline : TabWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "underline" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("underline")
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<TabWidgetViewType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "basic"     -> effValue<ValueError,TabWidgetViewType>(
+                                    TabWidgetViewType.Basic)
+                "underline" -> effValue<ValueError,TabWidgetViewType>(
+                                        TabWidgetViewType.Underline)
+                else     -> effError<ValueError,TabWidgetViewType>(
+                                    UnexpectedValue("TabWidgetViewType", doc.text, doc.path))
+            }
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+}
+
+
+/**
+ * Tab Format
+*/
+data class TabFormat(val underlineThickness : TabUnderlineThickness,
+                     val underlineColorTheme : ColorTheme)
+                      : ToDocument, Serializable
+{
+
+    companion object : Factory<TabFormat>
+    {
+
+        private fun defaultUnderlineThickness()  = TabUnderlineThickness(3)
+        private fun defaultUnderlineColorTheme() = ColorTheme.black
+
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TabFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::TabFormat,
+                      // Underline Thickness
+                      split(doc.maybeAt("underline_thickness"),
+                            effValue(defaultUnderlineThickness()),
+                            { TabUnderlineThickness.fromDocument(it) }),
+                      // Underline Color Theme
+                      split(doc.maybeAt("underline_color_theme"),
+                            effValue(defaultUnderlineColorTheme()),
+                            { ColorTheme.fromDocument(it) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = TabFormat(defaultUnderlineThickness(),
+                                  defaultUnderlineColorTheme())
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "underline_thickness" to this.underlineThickness.toDocument(),
+        "underline_color_theme" to this.underlineColorTheme.toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun underlineThickness() : TabUnderlineThickness = this.underlineThickness
+
+
+    fun underlineColorTheme() : ColorTheme = this.underlineColorTheme
 
 }
 
@@ -449,313 +457,251 @@ data class TabUnderlineThickness(val value : Int) : ToDocument, SQLSerializable,
 }
 
 
-/**
- * Tab Vertical Padding
- */
-data class TabVerticalPadding(val value : Int) : ToDocument, SQLSerializable, Serializable
+class TabWidgetUI(val tabWidget : WidgetTab,
+                  val entityId : EntityId,
+                  val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<TabVerticalPadding>
+    private var contentViewLayout: LinearLayout? = null
+
+    private var currentTabIndex : Int = 0
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    fun view() : View
     {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TabVerticalPadding> = when (doc)
-        {
-            is DocNumber -> effValue(TabVerticalPadding(doc.number.toInt()))
-            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        val layout = this.viewLayout()
+
+        // Tab Bar
+        layout.addView(this.tabBarView())
+
+        // Content
+        val contentViewLayout = this.contentViewLayout()
+        this.contentViewLayout = contentViewLayout
+        layout.addView(contentViewLayout)
+
+        tabWidget.tabAtIndex(0).doMaybe {
+            it.groups(entityId).forEach {
+                contentViewLayout.addView(it.view(entityId, context))
+            }
         }
+
+        return layout
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
+    private fun viewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    // VIEWS > Content View
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocNumber(this.value.toDouble())
+    private fun contentViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        val format              = tabWidget.format().contentFormat()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.marginSpacing    = format.margins()
+        layout.paddingSpacing   = format.padding()
+
+        layout.backgroundColor  = colorOrBlack(format.backgroundColorTheme(), entityId)
+
+        return layout.linearLayout(context)
+    }
 
 
+    private fun borderView(format : BorderEdge) : LinearLayout
+    {
+        val border                  = LinearLayoutBuilder()
+
+        border.width               = LinearLayout.LayoutParams.MATCH_PARENT
+        border.heightDp            = format.thickness().value
+
+        border.backgroundColor     = colorOrBlack(format.colorTheme(), entityId)
+
+        return border.linearLayout(context)
+    }
+
+
+
+    // VIEWS > Tab Bar
     // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
+
+    private fun tabBarView() : View = when (tabWidget.format().viewType())
+    {
+        is TabWidgetViewType.Basic -> tabBarBasicView()
+        is TabWidgetViewType.Underline -> {
+            tabBarUnderlineView()
+        }
+
+    }
+
+    // VIEWS > Tab Bar > Underline
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() = this.value.asSQLValue()
+    private fun tabBarUnderlineView() : LinearLayout
+    {
+        val layout = this.tabBarUnderlineViewLayout()
+
+        tabWidget.format().tabBarFormat().border().top().doMaybe {
+            layout.addView(this.borderView(it))
+        }
+
+        layout.addView(this.tabBarUnderlineTabsView())
+
+        tabWidget.format().tabBarFormat().border().bottom().doMaybe {
+            layout.addView(this.borderView(it))
+        }
+
+        return layout
+    }
+
+
+    private fun tabBarUnderlineViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun tabBarUnderlineTabsView() : View
+    {
+        val selectedTextFormat = tabWidget.format().selectedTabFormat()
+        val unselectedTextFormat = tabWidget.format().unselectedTabFormat()
+        val tabFormat = tabWidget.format().tabFormat()
+
+        val tabLayout = CustomTabLayout(context,
+                                        selectedTextFormat.font(),
+                                        selectedTextFormat.fontStyle())
+
+        tabWidget.tabs().forEach {
+            tabLayout.addTab(tabLayout.newTab().setText(it.tabName.value))
+        }
+
+        tabLayout.setTabTextColors(
+                colorOrBlack(unselectedTextFormat.colorTheme(), entityId),
+                colorOrBlack(selectedTextFormat.colorTheme(), entityId)
+        )
+
+        tabLayout.setSelectedTabIndicatorHeight(Util.dpToPixel(tabFormat.underlineThickness.value.toFloat()))
+
+        tabLayout.setSelectedTabIndicatorColor(
+                colorOrBlack(tabFormat.underlineColorTheme(), entityId))
+
+        return tabLayout
+    }
+
+
+    // VIEWS > Tab Bar > Basic
+    // -----------------------------------------------------------------------------------------
+
+    private fun tabBarBasicView() : LinearLayout
+    {
+        val layout = this.tabBarViewLayout()
+
+        tabWidget.tabs().forEachIndexed { index, tab ->
+            val isSelected = index == currentTabIndex
+            layout.addView(this.tabView(tab.tabName.value, isSelected))
+        }
+
+        return layout
+    }
+
+
+    private fun tabBarViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation  = LinearLayout.HORIZONTAL
+
+        return layout.linearLayout(context)
+    }
+
+
+
+    private fun tabView(labelString : String, isSelected : Boolean) : LinearLayout
+    {
+        val layout = this.tabViewLayout()
+
+        layout.addView(tabTextView(labelString, isSelected))
+
+        return layout
+    }
+
+
+    private fun tabViewLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = 0
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.weight       = 1f
+
+        layout.orientation  = LinearLayout.VERTICAL
+
+        layout.gravity      = Gravity.CENTER
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun tabTextView(labelString : String, isSelected : Boolean) : TextView
+    {
+        val label               = TextViewBuilder()
+
+        val format =    if (isSelected)
+                            tabWidget.format().selectedTabFormat()
+                        else
+                            tabWidget.format().unselectedTabFormat()
+
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text              = labelString
+
+        label.color             = colorOrBlack(format.colorTheme(), entityId)
+
+        label.sizeSp            = format.sizeSp()
+
+        label.font              = Font.typeface(format.font(),
+                                                format.fontStyle(),
+                                                context)
+
+        label.paddingSpacing    = format.elementFormat().padding()
+        label.marginSpacing     = format.elementFormat().margins()
+
+        return label.textView(context)
+    }
 
 }
-
-
-
-
-//
-//    // > Initialize
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeTabWidget()
-//    {
-//        // [1] Apply default formats
-//        // -------------------------------------------------------------------------------------
-//
-//        if (this.data().format().alignmentIsDefault())
-//            this.data().format().setAlignment(Alignment.CENTER);
-//
-//        if (this.data().format().backgroundIsDefault())
-//            this.data().format().setBackground(BackgroundColor.NONE);
-//
-//        if (this.data().format().cornersIsDefault())
-//            this.data().format().setCorners(Corners.NONE);
-//
-//        // [2] Current Tab Index
-//        // -------------------------------------------------------------------------------------
-//
-//        this.currentTabIndex = this.defaultSelected();
-//    }
-//
-//
-//    // > Views
-//    // ------------------------------------------------------------------------------------------
-//
-//    private View widgetView(Context context)
-//    {
-//        LinearLayout layout = widgetViewLayout(context);
-//
-//        layout.addView(this.tabBarView(context));
-//
-//        layout.addView(this.groupsView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout widgetViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.VERTICAL;
-//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private View tabBarView(Context context)
-//    {
-//        LinearLayout layout = this.tabBarLayout(context);
-//
-//        // > Create tab text views
-//        List<TextView> tabTextViews = new ArrayList<>();
-//        List<LinearLayout> underlineViews = new ArrayList<>();
-//
-//        for (Tab tab : this.tabs())
-//        {
-//            TextView tabTextView = this.tabTextView(tab.name(), context);
-//            tabTextViews.add(tabTextView);
-//
-//            LinearLayout underlineView = this.underlineView(context);
-//            underlineViews.add(underlineView);
-//
-//            layout.addView(tabView(tabTextView, underlineView, context));
-//        }
-//
-//        // Style default selected tab
-//        this.styleTabTextViewSelected(tabTextViews.get(this.currentTabIndex - 1),
-//                                      underlineViews.get(this.currentTabIndex - 1),
-//                                      context);
-//
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout tabBarLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.HORIZONTAL;
-//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.marginSpacing    = this.data().format().margins();
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout tabView(TextView tabTextView,
-//                                 LinearLayout underlineView,
-//                                 Context context)
-//    {
-//        LinearLayout layout = tabViewLayout(context);
-//
-//        layout.addView(tabTextView);
-//
-//        layout.addView(underlineView);
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout tabViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation  = LinearLayout.VERTICAL;
-//
-//        layout.width        = 0;
-//        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.weight       = 1.0f;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout underlineView(Context context)
-//    {
-//        LinearLayoutBuilder line = new LinearLayoutBuilder();
-//
-//        line.orientation        = LinearLayout.VERTICAL;
-//
-//        line.width              = LinearLayout.LayoutParams.MATCH_PARENT;
-//        line.heightDp           = this.format().underlineThickness();
-//
-//        line.backgroundColor    = this.resolveTabBackgroundColor().colorId();
-//
-//        line.margin.top         = R.dimen.four_dp;
-//
-//        return line.linearLayout(context);
-//    }
-//
-//
-//    private TextView tabTextView(String tabLabel, Context context)
-//    {
-//        TextViewBuilder tab = new TextViewBuilder();
-//
-//        tab.width       = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        tab.height      = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        tab.text        = tabLabel;
-//
-//        tab.gravity      = Gravity.CENTER;
-//        tab.layoutGravity = Gravity.CENTER;
-//
-//        this.format().tabDefaultTextStyle().styleTextViewBuilder(tab, context);
-//
-//        // > Background Color
-//        // -------------------------------------------------------------------------------------
-//        tab.backgroundColor  = this.resolveTabBackgroundColor().colorId();
-//
-//        // > Background Resource
-//        if (this.format().tabPaddingVertical() == null)
-//        {
-//            if (this.format().tabHeight() != null)
-//            {
-//                switch (this.format().tabHeight())
-//                {
-//                    case MEDIUM_SMALL:
-//                        tab.backgroundResource = R.drawable.bg_tab_medium_small;
-//                        break;
-//                    case MEDIUM:
-//                        tab.backgroundResource = R.drawable.bg_tab_medium;
-//                        break;
-//                    default:
-//                        tab.backgroundResource = R.drawable.bg_tab_medium_small;
-//                }
-//            }
-//            else
-//            {
-//                switch (this.format().tabDefaultTextStyle().size())
-//                {
-//                    case MEDIUM_SMALL:
-//                        tab.backgroundResource = R.drawable.bg_tab_medium_small;
-//                        break;
-//                    case MEDIUM:
-//                        tab.backgroundResource = R.drawable.bg_tab_medium;
-//                        break;
-//                    default:
-//                        tab.backgroundResource = R.drawable.bg_tab_medium_small;
-//                }
-//            }
-//        }
-//        else
-//        {
-//            tab.padding.topDp    = this.format().tabPaddingVertical().floatValue();
-//            tab.padding.bottomDp = this.format().tabPaddingVertical().floatValue();
-//        }
-//
-//        return tab.textView(context);
-//    }
-//
-//
-//    private void styleTabTextViewSelected(TextView tabView,
-//                                          LinearLayout underlineView,
-//                                          Context context)
-//    {
-//        int colorResId = this.format().tabSelectedTextStyle().color().resourceId();
-//
-//        // > Set Text Color
-//        tabView.setTextColor(ContextCompat.getColor(context, colorResId));
-//
-//        // > Set Text Size
-//        int sizeResourceId = this.format().tabSelectedTextStyle().size().resourceId();
-//        tabView.setTextSize(context.getResources().getDimensionPixelSize(sizeResourceId));
-//
-//        // > Underline Color
-//        underlineView.setBackgroundColor(ContextCompat.getColor(context, colorResId));
-//    }
-//
-//
-//    private void styleTabTextViewDefault(TextView tabView, Context context)
-//    {
-//        // > Set Text Color
-//        int colorResourceId = this.format().tabDefaultTextStyle().color().resourceId();
-//        tabView.setTextColor(ContextCompat.getColor(context, colorResourceId));
-//
-//        // > Set Text Size
-//        int sizeResourceId = this.format().tabDefaultTextStyle().size().resourceId();
-//        tabView.setTextSize(context.getResources().getDimensionPixelSize(sizeResourceId));
-//    }
-//
-//
-//    private BackgroundColor resolveTabBackgroundColor()
-//    {
-//        BackgroundColor thisTabBgColor = this.format().tabBackgroundColor();
-//        BackgroundColor thisBgColor = this.data().format().background();
-//        BackgroundColor parentBgColor = this.groupParent.background();
-//
-//        if (thisTabBgColor != null && thisTabBgColor != BackgroundColor.NONE)
-//            return thisTabBgColor;
-//
-//        if (thisBgColor != null && thisBgColor != BackgroundColor.NONE)
-//            return thisBgColor;
-//
-//        return parentBgColor;
-//    }
-//
-//
-//    private LinearLayout groupsView(Context context)
-//    {
-//        LinearLayout layout = groupsViewLayout(context);
-//
-//        Tab currentTab = this.tabs().get(this.currentTabIndex - 1);
-//
-//        for (Group group : currentTab.groups())
-//        {
-//            layout.addView(group.view(context));
-//        }
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout groupsViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.VERTICAL;
-//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        return layout.linearLayout(context);
-//    }
-//}

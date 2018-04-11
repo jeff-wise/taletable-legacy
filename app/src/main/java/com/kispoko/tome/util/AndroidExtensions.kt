@@ -50,7 +50,7 @@ fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle
     if (fontStyle != null)
         titleView.typeface  = Font.typeface(TextFont.default(), fontStyle, this)
     else
-        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
+        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Medium, this)
 
     val trimmedTitle = if (title.length >= 25) {
         title.substring(0, 25).plus("\u2026")

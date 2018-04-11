@@ -8,13 +8,12 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <FrameLayout
-        android:id="@+id/loading_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dark_theme_dark_grey_10">
-    </FrameLayout>
-
+    <!--<FrameLayout-->
+        <!--android:id="@+id/loading_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@color/dark_theme_dark_grey_10">-->
+    <!--</FrameLayout>-->
 
     <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,14 +29,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:elevation="0dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:background="@color/transparent">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/dark_theme_primary_88"
-                app:elevation="0dp"
+                android:background="@color/transparent"
                 app:contentInsetStart="0dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
@@ -78,19 +76,40 @@
 
             </android.support.v7.widget.Toolbar>
 
+            <LinearLayout
+                android:id="@+id/toolbar_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal">
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:background="@drawable/dropshadow" />
+
+
             <com.kispoko.tome.lib.ui.CustomTabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dark_theme_primary_88"
+                android:background="@color/white"
                 app:tabGravity="fill"
                 app:tabMode="scrollable"
                 app:tabTextColor="@color/dark_blue_hl_8"
                 app:tabSelectedTextColor="@color/dark_blue_hlx_5"
                 app:tabIndicatorColor="@color/dark_blue_hl_1" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:orientation="horizontal"
+                android:background="@color/light_theme_light_grey_10">
+            </LinearLayout>
 
         </android.support.design.widget.AppBarLayout>
+
 
         <android.support.v4.view.ViewPager
             android:id="@+id/page_pager"
@@ -103,6 +122,7 @@
 
         </android.support.v4.view.ViewPager>
 
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/session_button"
             android:layout_width="wrap_content"
@@ -113,8 +133,7 @@
             android:src="@drawable/ic_fab_session"
             app:layout_anchor="@id/bottom_sheet"
             app:layout_anchorGravity="top|end"
-            app:backgroundTint="@color/light_theme_light_grey_3"/>
-
+            app:backgroundTint="@color/light_theme_dark_grey_10"/>
 
         <FrameLayout
             android:id="@+id/bottom_sheet"
@@ -127,8 +146,6 @@
             app:behavior_peekHeight="0dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
         </FrameLayout>
-
-
 
     </android.support.design.widget.CoordinatorLayout>
 

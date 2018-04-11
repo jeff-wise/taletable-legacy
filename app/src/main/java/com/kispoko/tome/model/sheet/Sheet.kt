@@ -277,10 +277,19 @@ data class Sheet(override val id : UUID,
 
     fun onActive(entityId : EntityId, context : Context)
     {
+        // Add game variables
+        game(this.campaignId).doMaybe {
+            it.variables().forEach {
+                addVariable(it, entityId)
+            }
+        }
+
+        // Add sheet variables
         this.variables().forEach {
             addVariable(it, entityId)
         }
 
+        // Initialize UI components
         this.sections.forEach { it.onActive(entityId, context) }
     }
 

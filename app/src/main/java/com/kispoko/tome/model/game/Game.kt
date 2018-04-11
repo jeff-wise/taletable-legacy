@@ -3,29 +3,24 @@ package com.kispoko.tome.model.game
 
 
 import com.kispoko.culebra.*
-import com.kispoko.tome.db.DB_GameValue
-import com.kispoko.tome.db.gameTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
-import com.kispoko.tome.lib.orm.schema.CollValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.book.BookId
+import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.sheet.group.Group
+import com.kispoko.tome.model.sheet.group.GroupId
 import com.kispoko.tome.rts.entity.*
-import effect.effApply
-import effect.effError
-import effect.effValue
-import effect.split
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
@@ -37,43 +32,26 @@ import java.util.*
  */
 data class Game(override val id : UUID,
                 val gameId : GameId,
-                val gameName : GameName,
-                val gameSummary : GameSummary,
-                val authors : MutableList<Author>,
+                val gameInfo : GameInfo,
                 val engine : Engine,
-                val bookIds : List<BookId>,
+                val variables : MutableList<Variable>,
+                val groups : MutableList<Group>,
                 var entityLoader : EntityLoader)
-                 : ToDocument, Entity, ProdType, Serializable
+                 : ToDocument, Entity, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // INDEXES
     // -----------------------------------------------------------------------------------------
 
-//    private val rulebookById : MutableMap<BookId, Book> =
-//                        rulebooks.associateBy { it.rulebookId() }
-//                                as MutableMap<BookId, Book>
+    private val groupById : MutableMap<GroupId,Group> =
+                               groups.associateBy { it.id }
+                                    as MutableMap<GroupId,Group>
 
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(gameId : GameId,
-                gameName : GameName,
-                gameSummary : GameSummary,
-                authors : List<Author>,
-                engine : Engine,
-                bookIds : List<BookId>)
-        : this(UUID.randomUUID(),
-               gameId,
-               gameName,
-               gameSummary,
-               authors.toMutableList(),
-               engine,
-               bookIds,
-               EntityLoaderUnknown())
-
 
     companion object : Factory<Game>
     {
@@ -81,25 +59,25 @@ data class Game(override val id : UUID,
         {
             is DocDict ->
             {
-                val gameIdParser = doc.at("id") ap { GameId.fromDocument(it) }
-                gameIdParser ap { gameId ->
-                    effApply(::Game,
-                             // Game Id
-                             effValue(gameId),
-                             // Name
-                             doc.at("game_name") apply { GameName.fromDocument(it) },
-                             // Summary
-                             doc.at("summary") apply { GameSummary.fromDocument(it) },
-                             // Authors
-                             doc.list("authors") ap { it.map { Author.fromDocument(it) } },
-                             // Engine
-                             doc.at("engine") apply { Engine.fromDocument(it) },
-                             // Book Ids
-                             split(doc.maybeList("book_ids"),
-                                   effValue(listOf()),
-                                   { it.map { BookId.fromDocument(it) } } )
-                             )
-                }
+                apply(::Game,
+                      effValue(UUID.randomUUID()),
+                      // Game Id
+                      doc.at("id") apply { GameId.fromDocument(it) },
+                      // Game Info
+                      doc.at("game_info") apply { GameInfo.fromDocument(it) },
+                      // Engine
+                      doc.at("engine") apply { Engine.fromDocument(it) },
+                      // Variables
+                      split(doc.maybeList("variables"),
+                            effValue(mutableListOf()),
+                            { it.mapMut { Variable.fromDocument(it) } }),
+                      // Groups
+                      split(doc.maybeList("groups"),
+                            effValue(mutableListOf()),
+                            { it.mapIndexed { d, i -> Group.fromDocument(d,i) }} ),
+                      // Entity Loader
+                      effValue(EntityLoaderUnknown())
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -111,12 +89,9 @@ data class Game(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "id" to this.gameId().toDocument(),
-        "game_name" to this.gameName.toDocument(),
-        "game_summary" to this.gameSummary.toDocument(),
-        "authors" to DocList(this.authors.map { it.toDocument() }),
-        "book_ids" to DocList(this.bookIds.map { it.toDocument() }),
-        "engine" to this.engine().toDocument()
+        "id" to this.gameId.toDocument(),
+        "game_info" to this.gameInfo.toDocument(),
+        "engine" to this.engine.toDocument()
     ))
 
 
@@ -127,48 +102,50 @@ data class Game(override val id : UUID,
     fun gameId() : GameId = this.gameId
 
 
-    fun gameName() : GameName = this.gameName
+    fun gameInfo() : GameInfo = this.gameInfo
 
 
-    fun gameSummary() : GameSummary = this.gameSummary
-
-
-    fun authors() : List<Author> = this.authors
+    fun groups() : List<Group> = this.groups
 
 
     fun engine() : Engine = this.engine
 
 
-    fun bookIds() : List<BookId> = this.bookIds
+    fun variables() : List<Variable> = this.variables
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // GROUPS
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
+    fun groupWithId(groupId : GroupId) : Maybe<Group>
+    {
+        val _group = this.groupById[groupId]
+        return if (_group != null)
+            Just(_group)
+        else
+            Nothing()
+    }
 
 
-    override val prodTypeObject = this
+    fun addGroups(groups : List<Group>)
+    {
+        this.groups.addAll(groups)
 
-
-    override fun rowValue() : DB_GameValue =
-        RowValue6(gameTable, PrimValue(this.gameId),
-                             PrimValue(this.gameName),
-                             PrimValue(this.gameSummary),
-                             CollValue(this.authors),
-                             ProdValue(this.engine),
-                             PrimValue(GameBookIds(this.bookIds)))
+        groups.forEach {
+            this.groupById.put(it.id, it)
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
     // ENTITY
     // -----------------------------------------------------------------------------------------
 
-    override fun name() = this.gameName.value
+    override fun name() = this.gameInfo.name().value
 
 
-    override fun summary() = this.gameSummary.value
+    override fun summary() = this.gameInfo.summary().value
 
 
     override fun entityLoader() = this.entityLoader
@@ -242,6 +219,72 @@ data class GameBookIds(val bookIds : List<BookId>) : SQLSerializable, Serializab
     override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
 
 }
+
+
+/**
+ * Game Info
+ */
+data class GameInfo(val name : GameName,
+                    val summary : GameSummary,
+                    val authors : MutableList<Author>,
+                    val bookIds : List<BookId>)
+                     : ToDocument, Serializable
+{
+
+    companion object : Factory<GameInfo>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GameInfo> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::GameInfo,
+                      // Name
+                      doc.at("name") apply { GameName.fromDocument(it) },
+                      // Summary
+                      doc.at("summary") apply { GameSummary.fromDocument(it) },
+                      // Authors
+                      doc.list("authors") apply { it.mapMut { Author.fromDocument(it) } },
+                      // Book Ids
+                      split(doc.maybeList("book_ids"),
+                            effValue(mutableListOf()),
+                            { it.map { BookId.fromDocument(it) } })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.name.toDocument(),
+        "summary" to this.summary.toDocument(),
+        "authors" to DocList(this.authors.map { it.toDocument() }),
+        "book_ids" to DocList(this.bookIds.map { it.toDocument() })
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun name() : GameName = this.name
+
+
+    fun summary() : GameSummary = this.summary
+
+
+    fun authors() : List<Author> = this.authors
+
+
+    fun bookIds() : List<BookId> = this.bookIds
+
+}
+
+
 
 //
 ///**

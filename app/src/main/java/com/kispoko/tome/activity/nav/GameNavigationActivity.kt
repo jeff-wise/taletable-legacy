@@ -216,8 +216,8 @@ class GameRecyclerViewAdapter(val games : List<Game>,
             activity.startActivity(intent)
         })
 
-        viewHolder.setNameText(game.gameName().value)
-        viewHolder.setSummaryText(game.gameName().value)
+        viewHolder.setNameText(game.gameInfo().name.value)
+        viewHolder.setSummaryText(game.gameInfo().name.value)
     }
 
 

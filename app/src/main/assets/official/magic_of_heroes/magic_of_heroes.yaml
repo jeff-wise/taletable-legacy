@@ -1,7 +1,18 @@
 id: magic_of_heroes
-summary: 'A 5e-based fantasy game with a focus on magic systems and events of epic and mythical scale.'
-game_name: 'The Magic of Heroes'
-authors:
+game_info:
+  name: 'The Magic of Heroes'
+  summary: 'A 5e-based fantasy game with a focus on magic systems and events of epic and mythical scale.'
+  authors:
+groups:
+variables:
+- type: variable_text
+  variable_text:
+    id: description_attack_roll
+    label: Attack Roll Description
+    description: Attack Roll Description
+    value:
+      type: text_literal
+      text_literal: 'Roll equal to or higher than your opponent''s armor class to hit.'
 engine:
   value_sets:
   - type: value_set_base

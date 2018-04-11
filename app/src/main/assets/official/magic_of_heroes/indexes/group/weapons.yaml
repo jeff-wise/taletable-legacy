@@ -1,0 +1,257 @@
+groups:
+- id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
+  rows:
+  - widgets:
+    - type: widget_expander
+      widget_expander:
+        id: rapier
+        label: "Rapier"
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 20
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+        groups:
+        - rows:
+          - widgets:
+            - type: widget_tab
+              widget_tab:
+                id: rapier_options
+                format:
+                  tab_bar_format:
+                    border:
+                      bottom:
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: light_grey_7
+                        thickness: 1
+                  selected_tab_format:
+                    font_style: medium
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: dark_grey_14
+                  unselected_tab_format:
+                    font_style: medium
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: dark_grey_18
+                  tab_format:
+                    underline_thickness: 2
+                    underline_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: dark_grey_18
+                tabs:
+                - name: Attack
+                  group_references:
+                  - type: group
+                    group:
+                      format:
+                        element_format:
+                          padding:
+                            top: 10
+                            bottom: 12
+                            left: 8
+                            right: 10
+                      rows:
+                      - widgets:
+                        - type: widget_text
+                          widget_text:
+                            id: description_attack_roll
+                            format:
+                              value_format:
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_14
+                                font_style: regular
+                                size: 17
+                                element_format:
+                                  horizontal_alignment: left
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: left
+                            value_variable_id: description_attack_roll
+                      - format:
+                          element_format:
+                            horizontal_alignment: right
+                            margins:
+                              top: 10
+                        widgets:
+                        - type: widget_roll
+                          widget_roll:
+                            id: weapon_rapier_attack_roll
+                            format:
+                              widget_format:
+                                element_format:
+                                  height: 40
+                                  width:
+                                    type: width_wrap
+                                    width_wrap: wrap
+                              roll_text_location: button
+                              view_type: inline_right_button
+                              button_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_6
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_12
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: dark_grey_12
+                                  size:
+                                    width: 22
+                                    height: 22
+                                font_style: semi_bold
+                                size: 20
+                              button_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_90
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: white
+                                  size:
+                                    width: 20
+                                    height: 20
+                                font_style: semi_bold
+                                size: 21
+                              description_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_4
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_12
+                                font_style: semi_bold
+                                size: 18
+                              description_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_80
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: semi_bold
+                                size: 18
+                              roll_text_format:
+                                element_format:
+                                  padding:
+                                    left: 5
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_12
+                                font_style: semi_bold
+                                size: 21
+                                roll_format: modifier_only
+                            roll_group:
+                              roll_references:
+                              - type: summation_id
+                                summation_id: weapon_rapier_attack_roll
+                            description: 'Roll Attack'
+                            result_description: 'Attack Roll'
+                - name: Damage
+                  group_references:
+                - name: Properties
+                  group_references:
+

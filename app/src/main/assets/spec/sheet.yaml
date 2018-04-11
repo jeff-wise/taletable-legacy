@@ -377,6 +377,15 @@ types:
       presence: optional
       description: >
         The element format.
+- type: primitive_type
+  primitive_type:
+    name: group_id
+    label: Group Id
+    description: A group identifier.
+    group: Group
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: product_type
   product_type:
     name: group
@@ -402,6 +411,12 @@ types:
       </figure>
     group: Group
     fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: group_id
+      presence: optional
+      description: The group id.
     - name: format
       type: 
         type: custom_type
@@ -462,6 +477,17 @@ types:
         custom_type: border
       presence: optional
       description: A border.
+- type: sum_type
+  sum_type:
+    name: group_reference
+    label: Group Reference
+    description: A group reference.
+    group: Group
+    cases:
+    - type: group_id
+      description: Group Id
+    - type: group
+      description: Group
 - type: product_type
   product_type:
     name: group_row
@@ -582,6 +608,9 @@ types:
     - type: widget_expander
       description: >
         Expander Widget
+    - type: widget_group
+      description: >
+        Group Widget
     - type: widget_image
       description: >
         Image Widget
@@ -609,6 +638,9 @@ types:
     - type: widget_roll
       description: >
         Roll Widget
+    - type: widget_slider
+      description: >
+        Slider Widget
     - type: widget_story
       description: >
         Story Widget
@@ -891,18 +923,67 @@ types:
         custom_type: text_format
       presence: optional
       description: Text format
-    - name: header_icon_open_format
+    - name: header_open_icon
       type:
         type: custom_type
-        custom_type: text_format
+        custom_type: icon
       presence: optional
       description: Text format
-    - name: header_icon_closed_format
+    - name: header_closed_icon
       type:
         type: custom_type
-        custom_type: text_format
+        custom_type: icon
       presence: optional
       description: Text format
+- type: product_type
+  product_type:
+    name: widget_group
+    label: Group Widget
+    description: >
+      Group Widget
+    group: 'Widget: Group'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: widget_id
+      presence: required
+      description: >
+        The widget identifier.
+    - name: format
+      type:
+        type: custom_type
+        custom_type: group_widget_format
+      presence: optional
+      description: >
+        The expander widget formatting options.
+    - name: group_references
+      type:
+        type: custom_coll_type
+        custom_coll_type: group_reference
+      presence: required
+      description: Group references.
+- type: product_type
+  product_type:
+    name: group_widget_format
+    label: Group Widget Format
+    description: >
+      Group Widget formatting options.
+    group: 'Widget: Group'
+    fields:
+    - name: widget_format
+      type: 
+        type: custom_type
+        custom_type: widget_format
+      presence: optional
+      description: >
+        Standard widget formatting options.
+    - name: view_type
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The view type.
 - type: product_type
   product_type:
     name: widget_image
@@ -1930,6 +2011,110 @@ types:
       presence: optional
       description: The roll text format.
 - type: product_type
+  product_type:
+    name: widget_slider
+    label: Slider Widget
+    description: Slider Widget
+    group: 'Widget: Slider'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: widget_id
+      presence: required
+      description: >
+        The widget identifier.
+    - name: format
+      type:
+        type: custom_type
+        custom_type: slider_widget_format
+      presence: optional
+      description: >
+        The roll widget formatting options.
+    - name: groups
+      type:
+        type: custom_coll_type
+        custom_coll_type: group
+      presence: required
+      description: >
+        The groups.
+- type: product_type
+  product_type:
+    name: slider_widget_format
+    label: Slider Widget Format
+    description: >
+      Slider Widget formatting options.
+    group: 'Widget: Slider'
+    fields:
+    - name: widget_format
+      type: 
+        type: custom_type
+        custom_type: widget_format
+      presence: optional
+      description: Standard widget formatting options.
+    - name: view_type
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The view type.
+    - name: group_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The group format.
+    - name: controls_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The controls format.
+    - name: change_button_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The controls format.
+    - name: counter_format
+      type: 
+        type: custom_type
+        custom_type: slider_widget_counter_format
+      presence: optional
+      description: The controls format.
+- type: product_type
+  product_type:
+    name: slider_widget_counter_format
+    label: Slider Widget CounterFormat
+    description: >
+      Slider Widget formatting options.
+    group: 'Widget: Slider'
+    fields:
+    - name: element_format
+      type: 
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The element format.
+    - name: current_value_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The current value format.
+    - name: separator_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The separator format.
+    - name: limit_value_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The limit value format.
+- type: product_type
   product_type: 
     name: widget_story
     label: Story Widget
@@ -2901,23 +3086,15 @@ types:
       type:
         type: custom_type
         custom_type: tab_widget_format
-      presence: required
-      description: >
-        The tab widget formatting options.
-    - name: default_selected
-      type:
-        type: custom_type
-        custom_type: index
       presence: optional
       description: >
-        The default selected tab index.
+        The tab widget formatting options.
     - name: tabs
       type:
         type: custom_coll_type
         custom_coll_type: tab_widget_tab
       presence: required
-      description: >
-        The tabs.
+      description: The tabs.
 - type: product_type
   product_type:
     name: tab_widget_tab
@@ -2933,13 +3110,12 @@ types:
       presence: required
       description: >
         The tab name.
-    - name: groups
+    - name: group_references
       type:
         type: custom_coll_type
-        custom_coll_type: group
+        custom_coll_type: group_reference
       presence: required
-      description: >
-        The tab groups.
+      description: Group references.
 - type: product_type
   product_type:
     name: tab_widget_format
@@ -2955,13 +3131,62 @@ types:
       presence: optional
       description: >
         The standard widget formatting options.
-    - name: cell_height
+    - name: view_type
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The view type.
+    - name: tab_bar_format
       type:
         type: custom_type
-        custom_type: widget_height
+        custom_type: element_format
       presence: optional
-      description: >
-        The cell height.
+      description: The view type.
+    - name: content_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The view type.
+    - name: selected_tab_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The view type.
+    - name: unselected_tab_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The view type.
+    - name: tab_format
+      type:
+        type: custom_type
+        custom_type: tab_format
+      presence: optional
+      description: The view type.
+- type: product_type
+  product_type:
+    name: tab_format
+    label: Tab Format
+    description: >
+      Tab formatting options.
+    group: 'Widget: Tab'
+    fields:
+    - name: underline_thickness
+      type: 
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: The underline thickness.
+    - name: underline_color_theme
+      type: 
+        type: custom_type
+        custom_type: color_theme
+      presence: optional
+      description: The underline color theme.
 - type: product_type
   product_type:
     name: widget_text

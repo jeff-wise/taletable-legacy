@@ -124,6 +124,66 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object ChevronDownBold : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "chevron_down_bold" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("chevron_down_bold")
+
+    }
+
+    object ChevronRightBold : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "chevron_right_bold" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("chevron_right_bold")
+
+    }
+
+    object ChevronDown : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "chevron_down" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("chevron_down")
+
+    }
+
+    object ChevronUp : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "chevron_up" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("chevron_up")
+
+    }
+
     object Coins : IconType()
     {
 
@@ -196,6 +256,21 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
         // -------------------------------------------------------------------------------------
 
         override fun toDocument() = DocText("heart")
+
+    }
+
+    object HeartPlus : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "heart_plus" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("heart_plus")
 
     }
 
@@ -365,21 +440,6 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
 
     }
 
-    object HeartPlus : IconType()
-    {
-
-        // SQL SERIALIZABLE
-        // -------------------------------------------------------------------------------------
-
-        override fun asSQLValue() : SQLValue = SQLText({ "heart_plus" })
-
-        // TO DOCUMENT
-        // -------------------------------------------------------------------------------------
-
-        override fun toDocument() = DocText("heart_plus")
-
-    }
-
     companion object
     {
         fun fromDocument(doc : SchemaDoc) : ValueParser<IconType> = when (doc)
@@ -392,6 +452,10 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
                 "cancel"                -> effValue<ValueError, IconType>(IconType.Cancel)
                 "cancel_bold"           -> effValue<ValueError, IconType>(IconType.CancelBold)
                 "check_bold"            -> effValue<ValueError, IconType>(IconType.CheckBold)
+                "chevron_down_bold"     -> effValue<ValueError, IconType>(IconType.ChevronDownBold)
+                "chevron_right_bold"    -> effValue<ValueError, IconType>(IconType.ChevronRightBold)
+                "chevron_down"          -> effValue<ValueError, IconType>(IconType.ChevronDown)
+                "chevron_up"            -> effValue<ValueError, IconType>(IconType.ChevronUp)
                 "coins"                 -> effValue<ValueError, IconType>(IconType.Coins)
                 "dice_roll"             -> effValue<ValueError, IconType>(IconType.DiceRoll)
                 "dice_roll_filled"      -> effValue<ValueError, IconType>(IconType.DiceRollFilled)
@@ -425,6 +489,12 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
         is Cancel               -> R.drawable.icon_toolbar_cancel
         is CancelBold           -> R.drawable.icon_cancel_bold
         is CheckBold            -> R.drawable.icon_check_bold
+        is ChevronDown          -> R.drawable.icon_chevron_down
+        is ChevronUp            -> R.drawable.icon_chevron_up
+        is ChevronDownBold      -> R.drawable.icon_chevron_down_bold
+        is ChevronRightBold     -> R.drawable.icon_chevron_right_bold
+        is ChevronDown          -> R.drawable.icon_chevron_up
+        is ChevronUp            -> R.drawable.icon_chevron_up
         is Coins                -> R.drawable.icon_coins
         is DiceRoll             -> R.drawable.icon_dice_roll
         is DiceRollFilled       -> R.drawable.icon_dice_roll_filled
@@ -496,6 +566,11 @@ data class Icon(override val id : UUID,
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default(iconType : IconType) = Icon(iconType,
+                                                ElementFormat.default(),
+                                                IconFormat.default())
 
     }
 
