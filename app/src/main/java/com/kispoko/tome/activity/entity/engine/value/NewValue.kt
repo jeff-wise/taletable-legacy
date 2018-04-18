@@ -111,7 +111,7 @@ class NewValueActivity : AppCompatActivity()
             this.configureToolbar(this.getString(R.string.value))
 
             // Form Toolbar
-            val formToolbarLayout = this.findViewById(R.id.form_toolbar) as LinearLayout?
+            val formToolbarLayout = this.findViewById<LinearLayout>(R.id.form_toolbar)
             formToolbarLayout?.addView(Form.toolbarView(this.appSettings.themeId(), this))
         }
 
@@ -125,7 +125,7 @@ class NewValueActivity : AppCompatActivity()
         // FORM
         if (value != null)
         {
-            val contentLayout = this.findViewById(R.id.content) as ScrollView?
+            val contentLayout = this.findViewById<ScrollView>(R.id.content)
             val viewBuilder = NewValueFormViewBuilder(value, this.appSettings.themeId(), this)
             contentLayout?.addView(viewBuilder.view())
         }
@@ -160,7 +160,7 @@ class NewValueActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
@@ -168,7 +168,7 @@ class NewValueActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
 //        val searchButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
@@ -176,7 +176,7 @@ class NewValueActivity : AppCompatActivity()
 
         // TOOLBAR TITLE
         // -------------------------------------------------------------------------------------
-        val toolbarTitleView = this.findViewById(R.id.toolbar_title) as TextView
+        val toolbarTitleView = this.findViewById<TextView>(R.id.toolbar_title)
         toolbarTitleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
 
     }

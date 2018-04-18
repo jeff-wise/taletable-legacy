@@ -139,7 +139,7 @@ class DiceRollerActivity : AppCompatActivity()
 
     private fun initializeFABView()
     {
-        val fabView = this.findViewById(R.id.roll_button)
+        val fabView = this.findViewById<View>(R.id.roll_button)
         fabView?.setOnClickListener {
             this.diceRollerUI?.roll()
         }
@@ -165,7 +165,7 @@ class DiceRollerActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
@@ -173,16 +173,16 @@ class DiceRollerActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageView
+        val menuLeftButton = this.findViewById<ImageView>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val optionsButton = this.findViewById(R.id.toolbar_options_button) as ImageView
+        val optionsButton = this.findViewById<ImageView>(R.id.toolbar_options_button)
         optionsButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
 
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
         titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
     }
@@ -190,7 +190,7 @@ class DiceRollerActivity : AppCompatActivity()
 
     private fun initializeViews()
     {
-        val layout = findViewById(R.id.dice_roller_layout) as LinearLayout
+        val layout = this.findViewById<LinearLayout>(R.id.dice_roller_layout)
 
         val diceRollGroup = this.diceRollGroup
         val entityId = this.entityId

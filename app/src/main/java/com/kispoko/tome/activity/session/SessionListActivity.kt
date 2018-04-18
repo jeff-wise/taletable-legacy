@@ -102,7 +102,7 @@ class SessionListActivity : AppCompatActivity()
     private fun initializeToolbarView(theme : Theme)
     {
         // Back label text
-        val backLabelView = this.findViewById(R.id.toolbar_back_label) as TextView
+        val backLabelView = this.findViewById<TextView>(R.id.toolbar_back_label)
         backLabelView.typeface = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
         backLabelView.text     = getString(R.string.back_to_game_items)
 
@@ -112,13 +112,13 @@ class SessionListActivity : AppCompatActivity()
         backLabelView.setTextColor(theme.colorOrBlack(backLabelColorTheme))
 
         // Back button
-        val backButton = this.findViewById(R.id.toolbar_back_button) as LinearLayout?
+        val backButton = this.findViewById<LinearLayout>(R.id.toolbar_back_button)
         backButton?.setOnClickListener {
             this.finish()
         }
 
         // Breadcrumbs
-        val breadcrumbsLayout = this.findViewById(R.id.breadcrumbs) as LinearLayout?
+        val breadcrumbsLayout = this.findViewById<LinearLayout>(R.id.breadcrumbs)
 
         val breadcrumbs : MutableList<String> = mutableListOf()
         this.gameSummary?.let { breadcrumbs.add(it.name) }
@@ -131,7 +131,7 @@ class SessionListActivity : AppCompatActivity()
 
     private fun initializeSessionList()
     {
-        val content = this.findViewById(R.id.content) as LinearLayout?
+        val content = this.findViewById<LinearLayout>(R.id.content)
 
         val gameId = this.gameSummary?.gameId
         val entityTypeId = this.entityKind?.id
@@ -302,12 +302,12 @@ class SessionListUI(val sessionSummaryList : List<SessionLoader>,
 
         init
         {
-            this.layout           = itemView.findViewById(R.id.session_summary_layout) as LinearLayout?
-            this.attributesLayout = itemView.findViewById(R.id.session_summary_attributes_layout) as LinearLayout?
-            this.nameView         = itemView.findViewById(R.id.session_summary_name) as TextView?
-            this.descriptionView  = itemView.findViewById(R.id.session_summary_description) as TextView?
-            this.summaryView      = itemView.findViewById(R.id.session_summary_summary) as TextView?
-            this.openButtonView   = itemView.findViewById(R.id.session_summary_open_button) as TextView?
+            this.layout           = itemView.findViewById(R.id.session_summary_layout)
+            this.attributesLayout = itemView.findViewById(R.id.session_summary_attributes_layout)
+            this.nameView         = itemView.findViewById(R.id.session_summary_name)
+            this.descriptionView  = itemView.findViewById(R.id.session_summary_description)
+            this.summaryView      = itemView.findViewById(R.id.session_summary_summary)
+            this.openButtonView   = itemView.findViewById(R.id.session_summary_open_button)
 
             this.summaryView?.setOnClickListener {
                 this.summaryView?.visibility = View.GONE

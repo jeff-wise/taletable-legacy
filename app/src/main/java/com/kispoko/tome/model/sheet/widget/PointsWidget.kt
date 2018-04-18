@@ -731,7 +731,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
     fun updateView(layout : LinearLayout)
     {
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
 
         contentLayout.removeAllViews()
 
@@ -832,7 +832,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             is PointsInfoStyle.LabelLeftSlashRight ->
             {
                 layout = this.infoViewLinearLayout(pointsWidget.format().infoFormat().format())
-                val infoContentLayout = layout.findViewById(R.id.content) as LinearLayout
+                val infoContentLayout = layout.findViewById<LinearLayout>(R.id.content)
 
                 val border = pointsWidget.format().infoFormat().format().elementFormat().border()
 
@@ -871,7 +871,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             is PointsInfoStyle.CurrentSlashLimit ->
             {
                 layout = this.infoViewLinearLayout(pointsWidget.format().infoFormat().format())
-                val infoContentLayout = layout.findViewById(R.id.content) as LinearLayout
+                val infoContentLayout = layout.findViewById<LinearLayout>(R.id.content)
 
 //                if (currentPointsString != null && limitPointsString != null)
 //                {

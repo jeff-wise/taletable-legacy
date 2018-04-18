@@ -19,11 +19,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.official.fifth_ed_srd.OpenFifthEdSRDSessionActivity
-import com.kispoko.tome.activity.official.heroes.OpenHeroesSessionActivity
-import com.kispoko.tome.activity.official.magic_carnival.OpenMagicCarnivalSessionActivity
-import com.kispoko.tome.activity.official.pathfinder_one_srd.OpenPathfinderOneSRDSessionActivity
-import com.kispoko.tome.activity.official.starfinder_srd.OpenStarfinderSRDSessionActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.*
@@ -80,7 +75,7 @@ class GamesListActivity : AppCompatActivity()
         val gameAction = this.gameAction
         if (gameManifest != null && gameAction != null)
         {
-            val contentLayout = this.findViewById(R.id.content) as LinearLayout
+            val contentLayout = this.findViewById<LinearLayout>(R.id.content)
             val gamesListUI = GamesListUI(gameManifest, gameAction, officialThemeLight, this)
             contentLayout.addView(gamesListUI.view())
         }
@@ -94,7 +89,7 @@ class GamesListActivity : AppCompatActivity()
     private fun initializeToolbarView(theme : Theme)
     {
         // Back label text
-        val backLabelView = this.findViewById(R.id.toolbar_back_label) as TextView
+        val backLabelView = this.findViewById<TextView>(R.id.toolbar_back_label)
         backLabelView.typeface = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
         backLabelView.text     = getString(R.string.back_to_home)
 
@@ -104,13 +99,13 @@ class GamesListActivity : AppCompatActivity()
         backLabelView.setTextColor(theme.colorOrBlack(backLabelColorTheme))
 
         // Back button
-        val backButton = this.findViewById(R.id.toolbar_back_button) as LinearLayout?
+        val backButton = this.findViewById<LinearLayout>(R.id.toolbar_back_button)
         backButton?.setOnClickListener {
             this.finish()
         }
 
         // Breadcrumbs
-        val breadcrumbsLayout = this.findViewById(R.id.breadcrumbs) as LinearLayout?
+        val breadcrumbsLayout = this.findViewById<LinearLayout>(R.id.breadcrumbs)
         val breadcrumbsUI = SessionBreadcrumbsUI(listOf(getString(R.string.which_game_do_you_play)),
                                                  true,
                                                  officialThemeLight,

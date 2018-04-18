@@ -128,7 +128,7 @@ class GameActivity : AppCompatActivity()
 
     private fun initializeViews()
     {
-        val viewPager = this.findViewById(R.id.view_pager) as ViewPager
+        val viewPager = this.findViewById<ViewPager>(R.id.view_pager)
 
         val game = this.game
         if (game != null)
@@ -138,7 +138,7 @@ class GameActivity : AppCompatActivity()
                                                  this.appSettings.themeId())
         }
 
-        val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
+        val tabLayout = this.findViewById<TabLayout>(R.id.tab_layout)
         tabLayout.setupWithViewPager(viewPager)
     }
 
@@ -159,7 +159,7 @@ class GameActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
@@ -167,20 +167,20 @@ class GameActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
         menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
         titleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
 
         // TAB LAYOUT
         // -------------------------------------------------------------------------------------
-        val tabLayout = this.findViewById(R.id.tab_layout) as CustomTabLayout
+        val tabLayout = this.findViewById<CustomTabLayout>(R.id.tab_layout)
 
         // Tab Layout > Background
         tabLayout.setBackgroundColor(this.appSettings.color(uiColors.tabBarBackgroundColorId()))

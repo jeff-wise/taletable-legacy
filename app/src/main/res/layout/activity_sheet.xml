@@ -57,7 +57,7 @@
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:textSize="18sp"
-                        android:textColor="@color/dark_theme_primary_15"
+                        android:textColor="@color/white"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
                         android:layout_width="wrap_content"
@@ -81,13 +81,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
+                android:layout_marginBottom="1dp"
                 android:orientation="horizontal">
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:background="@drawable/dropshadow" />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="4dp"-->
+                <!--android:background="@drawable/dropshadow" />-->
 
 
             <com.kispoko.tome.lib.ui.CustomTabLayout

@@ -138,7 +138,7 @@ class BaseValueSetActivity : AppCompatActivity()
     private fun initializeValueListView(valueSet : ValueSetBase,
                                         gameId : GameId)
     {
-        val recyclerView = this.findViewById(R.id.value_list_view) as RecyclerView
+        val recyclerView = this.findViewById<RecyclerView>(R.id.value_list_view)
 
         val adapter = ValueRecyclerViewAdapter(valueSet.sortedValues(),
                                                this.appSettings.themeId(),
@@ -161,7 +161,7 @@ class BaseValueSetActivity : AppCompatActivity()
 
     private fun initializeFABView()
     {
-        val fabView = this.findViewById(R.id.button_new_value)
+        val fabView = this.findViewById<View>(R.id.button_new_value)
         fabView.setOnClickListener {
             val valueSet = this.valueSet
             val gameId = this.gameId
@@ -203,7 +203,7 @@ class BaseValueSetActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
@@ -211,21 +211,21 @@ class BaseValueSetActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val searchButton = this.findViewById(R.id.toolbar_search_button) as ImageButton
+        val searchButton = this.findViewById<ImageButton>(R.id.toolbar_search_button)
         searchButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TOOLBAR TITLE
         // -------------------------------------------------------------------------------------
-        val toolbarTitleView = this.findViewById(R.id.toolbar_title) as TextView
+        val toolbarTitleView = this.findViewById<TextView>(R.id.toolbar_title)
         toolbarTitleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
 
         // TITLE
         // -------------------------------------------------------------------------------------
 
-        val titleView = this.findViewById(R.id.title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.title)
         titleView.typeface = Font.typeface(TextFont.FiraSans, TextFontStyle.Regular, this)
 
         val colorTheme = ColorTheme(setOf(
@@ -341,9 +341,9 @@ class ValueSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView
 
     init
     {
-        this.layout    = itemView.findViewById(R.id.value_list_item_layout) as LinearLayout
-        this.valueView = itemView.findViewById(R.id.value_list_item_value) as TextView
-        this.descView  = itemView.findViewById(R.id.value_list_item_description) as TextView
+        this.layout    = itemView.findViewById(R.id.value_list_item_layout)
+        this.valueView = itemView.findViewById(R.id.value_list_item_value)
+        this.descView  = itemView.findViewById(R.id.value_list_item_description)
     }
 
 

@@ -346,7 +346,7 @@ object NumberWidgetView
                    context : Context)
     {
 
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
         contentLayout.removeAllViews()
         contentLayout.addView(this.mainView(numberWidget, entityId, context))
     }

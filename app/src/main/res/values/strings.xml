@@ -49,6 +49,7 @@
     <string name="edit_rules">Edit Rules</string>
     <string name="save_sheet">Save Sheet</string>
     <string name="edit_state">Edit State</string>
+    <string name="view_only">View Only</string>
 
     <string name="save_a_copy_of_sheet">Save a Copy of This Sheet</string>
     <string name="save_sheet_copy">Save Copy of Sheet</string>

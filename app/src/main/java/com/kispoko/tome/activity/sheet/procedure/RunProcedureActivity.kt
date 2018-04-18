@@ -166,7 +166,7 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
     private fun initializeFABView()
     {
-        val fabView = this.findViewById(R.id.run_procedure_button)
+        val fabView = this.findViewById<View>(R.id.run_procedure_button)
         fabView.setOnClickListener {
             val entityProcedure = this.entityProcedure
             val procedureUI = this.procedureUI
@@ -191,7 +191,7 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
         val entityId = this.entityId
         if (entityProcedure != null && entityId != null)
         {
-            val contentLayout = findViewById(R.id.content) as LinearLayout
+            val contentLayout = this.findViewById<LinearLayout>(R.id.content)
 
             val procedureUI = ComplexProcedureUI(entityProcedure, entityId, this)
             contentLayout.addView(procedureUI.view())
@@ -219,7 +219,7 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         val toolbarBgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
@@ -236,10 +236,10 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
 
         ThemeManager.color(this.appSettings.themeId, toolbarIconColorTheme)?.let {
-            val menuLeftButton = this.findViewById(R.id.toolbar_close_button) as ImageButton
+            val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_close_button)
             menuLeftButton.colorFilter = PorterDuffColorFilter(it, PorterDuff.Mode.SRC_IN)
 
-            val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+            val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
             menuRightButton.colorFilter = PorterDuffColorFilter(it, PorterDuff.Mode.SRC_IN)
         }
 
@@ -252,7 +252,7 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
 
         ThemeManager.color(this.appSettings.themeId, toolbarIconColorTheme)?.let {
-            val titleView = this.findViewById(R.id.toolbar_title) as TextView
+            val titleView = this.findViewById<TextView>(R.id.toolbar_title)
             titleView.setTextColor(it)
         }
 

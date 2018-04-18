@@ -5,9 +5,15 @@ package com.kispoko.tome.model.sheet.widget.table
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TableLayout
 import android.widget.TableRow
+import com.kispoko.tome.R
+import com.kispoko.tome.R.string.label
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.activity.sheet.dialog.TableDialog
@@ -19,7 +25,11 @@ import com.kispoko.tome.lib.orm.RowValue1
 import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LayoutType
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
+import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.theme.ColorId
@@ -174,7 +184,7 @@ data class TableWidgetRow(override val id : UUID,
         {
             val activity = context as SheetActivity
 
-            val tableRow = activity.findViewById(viewId) as TableRow?
+            val tableRow = activity.findViewById<TableRow>(viewId)
 
             val bgDrawable = GradientDrawable()
 
@@ -201,7 +211,7 @@ data class TableWidgetRow(override val id : UUID,
         {
             val activity = context as SheetActivity
 
-            val tableRow = activity.findViewById(viewId) as TableRow?
+            val tableRow = activity.findViewById<TableRow>(viewId)
 
             val bgDrawable = GradientDrawable()
 
@@ -238,6 +248,8 @@ data class TableWidgetRow(override val id : UUID,
 
         tableRow.layoutParams = layoutParams
 
+        tableRow.gravity        = Gravity.CENTER_VERTICAL
+
         val viewId = Util.generateViewId()
         this.viewId = viewId
         tableRow.id = viewId
@@ -254,69 +266,8 @@ data class TableWidgetRow(override val id : UUID,
         tableRow.setBackgroundColor(bgColor)
         this.backgroundColor = bgColor
 
-//        val tableRow                = TableRowBuilder()
-//
-//        val viewId = Util.generateViewId()
-//        this.viewId = viewId
-//        tableRow.id                 = viewId
-//
-//        tableRow.layoutType         = LayoutType.TABLE
-//        tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT
-//        tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT
-//
-//        tableRow.marginSpacing      = tableWidget.format().rowFormat().margins()
-//        tableRow.paddingSpacing     = tableWidget.format().rowFormat().padding()
-//
-//        tableRow.backgroundColor    = SheetManager.color(sheetUIContext.sheetId,
-//                tableWidget.format().rowFormat().backgroundColorTheme())
-//
-//        this.backgroundColor = tableRow.backgroundColor
-
-
-//        tableRow.onClick            = View.OnClickListener {
-//            val sheetActivity = sheetUIContext.context as SheetActivity
-//            val tableRowAction = SheetAction.TableRow(tableWidget.id,
-//                                                      rowIndex,
-//                                                      tableWidget.tableNameString(),
-//                                                      tableWidget.columns())
-////            sheetActivity.showActionBar(tableRowAction, SheetContext(sheetUIContext))
-//        }
-
-//
-//        tableRow.setOnLongClickListener {
-//            true
-//        }
-
-
-//         val sheetActivity = sheetUIContext.context as SheetActivity
-//
-//        val gd = GestureDetectorCompat(sheetActivity,
-//            object: GestureDetector.SimpleOnGestureListener() {
-//
-////                override fun onDown(e: MotionEvent?): Boolean {
-////                    Log.d("***WIDGET", "on down table row")
-////                    return super.onDown(e)
-////                }
-//
-//                override fun onLongPress(e: MotionEvent?) {
-//                    val updateTarget = UpdateTargetInsertTableRow(tableWidget)
-//                    Log.d("***TABLEWIDGETROW", "on long press")
-//                    tableWidget.selectedRow = rowIndex
-//                    toggleHighlight(sheetUIContext)
-//                    sheetActivity.showTableEditor(updateTarget, SheetContext(sheetUIContext))
-//                }
-//
-////                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-////                    return super.onSingleTapConfirmed(e)
-////                }
-//            })
-//
-//
-//        tableRow.setOnTouchListener { _, event ->
-//            gd.onTouchEvent(event)
-//            false
-//        }
-
+        val rowElementFormat = tableWidget.format().rowFormat().textFormat().elementFormat()
+        tableRow.addView(editRowButtonView(false, rowElementFormat, entityId, context))
 
         this.cells().forEachIndexed { i, tableWidgetCell ->
             when (tableWidgetCell)
@@ -375,6 +326,8 @@ data class TableWidgetRow(override val id : UUID,
 
         return tableRow //.tableRow(sheetUIContext.context)
     }
+
+
 
 }
 
@@ -437,6 +390,60 @@ class TableRowWidgetView(val tableWidgetRow : TableWidgetRow,
 
 
 }
+
+
+fun editRowButtonView(isPlaceholder : Boolean,
+                      rowFormat : ElementFormat,
+                      entityId : EntityId,
+                      context : Context) : LinearLayout
+{
+    // (1) Declarations
+    // -------------------------------------------------------------------------------------
+
+    val layout              = LinearLayoutBuilder()
+    val icon                = ImageViewBuilder()
+
+    // (2) Layout
+    // -------------------------------------------------------------------------------------
+
+    layout.id               = R.id.table_row_edit_button
+
+    layout.layoutType       = LayoutType.TABLE_ROW
+    layout.widthDp          = 20
+    layout.height           = TableRow.LayoutParams.WRAP_CONTENT
+
+    layout.onClick          = View.OnClickListener {
+    }
+
+    layout.visibility       = View.GONE
+
+    layout.gravity          = Gravity.CENTER_VERTICAL
+    layout.layoutGravity    = Gravity.CENTER_VERTICAL
+
+    layout.margin.rightDp   = rowFormat.margins().rightDp()
+
+    layout.child(icon)
+
+    // (3) Icon
+    // -------------------------------------------------------------------------------------
+
+    icon.widthDp            = 18
+    icon.heightDp           = 18
+
+    if (!isPlaceholder)
+        icon.image              = R.drawable.icon_vertical_ellipsis
+
+    icon.layoutGravity      = Gravity.CENTER
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+    icon.color              = colorOrBlack(colorTheme, entityId)
+
+
+    return layout.linearLayout(context)
+}
+
 
 
 /**

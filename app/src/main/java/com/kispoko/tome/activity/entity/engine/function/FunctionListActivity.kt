@@ -121,7 +121,7 @@ class FunctionListActivity : AppCompatActivity()
 
     private fun initializeFunctionListView(functions : List<Function>, gameId : GameId)
     {
-        val recyclerView = this.findViewById(R.id.function_list_view) as RecyclerView
+        val recyclerView = this.findViewById<RecyclerView>(R.id.function_list_view)
 
         recyclerView.adapter = FunctionRecyclerViewAdapter(functions,
                                                            gameId,
@@ -170,7 +170,7 @@ class FunctionListActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
@@ -178,15 +178,15 @@ class FunctionListActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val searchButton = this.findViewById(R.id.toolbar_search_button) as ImageButton
+        val searchButton = this.findViewById<ImageButton>(R.id.toolbar_search_button)
         searchButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TOOLBAR TITLE
         // -------------------------------------------------------------------------------------
-        val toolbarTitleView = this.findViewById(R.id.toolbar_title) as TextView
+        val toolbarTitleView = this.findViewById<TextView>(R.id.toolbar_title)
         toolbarTitleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
     }
 
@@ -297,17 +297,17 @@ class FunctionViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 
     init
     {
-        this.layout = itemView.findViewById(R.id.function_list_item_layout) as LinearLayout
-        this.headerView = itemView.findViewById(R.id.function_list_item_header) as TextView
-        this.descriptionView = itemView.findViewById(R.id.function_list_item_description) as TextView
+        this.layout = itemView.findViewById(R.id.function_list_item_layout)
+        this.headerView = itemView.findViewById(R.id.function_list_item_header)
+        this.descriptionView = itemView.findViewById(R.id.function_list_item_description)
 
-        this.parameterType1View = itemView.findViewById(R.id.function_list_item_parameter_type_1) as TextView
-        this.parameterType2View = itemView.findViewById(R.id.function_list_item_parameter_type_2) as TextView
-        this.parameterType3View = itemView.findViewById(R.id.function_list_item_parameter_type_3) as TextView
-        this.parameterType4View = itemView.findViewById(R.id.function_list_item_parameter_type_4) as TextView
-        this.parameterType5View = itemView.findViewById(R.id.function_list_item_parameter_type_5) as TextView
+        this.parameterType1View = itemView.findViewById(R.id.function_list_item_parameter_type_1)
+        this.parameterType2View = itemView.findViewById(R.id.function_list_item_parameter_type_2)
+        this.parameterType3View = itemView.findViewById(R.id.function_list_item_parameter_type_3)
+        this.parameterType4View = itemView.findViewById(R.id.function_list_item_parameter_type_4)
+        this.parameterType5View = itemView.findViewById(R.id.function_list_item_parameter_type_5)
 
-        this.resultTypeView = itemView.findViewById(R.id.function_list_item_result_type) as TextView
+        this.resultTypeView = itemView.findViewById(R.id.function_list_item_result_type)
     }
 
 

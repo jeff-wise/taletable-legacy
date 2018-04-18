@@ -55,7 +55,7 @@ groups:
               - theme_id: light
                 color_id: dark_grey_12
             font_style: medium
-            size: 20
+            size: 19
           header_label_closed_format:
             color_theme:
               theme_color_ids:

@@ -105,7 +105,7 @@ class SaveSheetActivity : AppCompatActivity()
         val sheetId = this.sheetId
         if (sheetId != null)
         {
-            val content = this.findViewById(R.id.content) as LinearLayout
+            val content = this.findViewById<LinearLayout>(R.id.content)
             val saveSheetUI = SaveSheetUI(sheetId, officialThemeLight, this)
             content.addView(saveSheetUI.view())
         }
@@ -130,7 +130,7 @@ class SaveSheetActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
@@ -138,15 +138,15 @@ class SaveSheetActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
         menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
         titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
     }

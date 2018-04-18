@@ -169,6 +169,21 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object ChevronRight : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "chevron_right" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("chevron_right")
+
+    }
+
     object ChevronUp : IconType()
     {
 
@@ -454,6 +469,7 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
                 "check_bold"            -> effValue<ValueError, IconType>(IconType.CheckBold)
                 "chevron_down_bold"     -> effValue<ValueError, IconType>(IconType.ChevronDownBold)
                 "chevron_right_bold"    -> effValue<ValueError, IconType>(IconType.ChevronRightBold)
+                "chevron_right"         -> effValue<ValueError, IconType>(IconType.ChevronRight)
                 "chevron_down"          -> effValue<ValueError, IconType>(IconType.ChevronDown)
                 "chevron_up"            -> effValue<ValueError, IconType>(IconType.ChevronUp)
                 "coins"                 -> effValue<ValueError, IconType>(IconType.Coins)
@@ -493,8 +509,7 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
         is ChevronUp            -> R.drawable.icon_chevron_up
         is ChevronDownBold      -> R.drawable.icon_chevron_down_bold
         is ChevronRightBold     -> R.drawable.icon_chevron_right_bold
-        is ChevronDown          -> R.drawable.icon_chevron_up
-        is ChevronUp            -> R.drawable.icon_chevron_up
+        is ChevronRight         -> R.drawable.icon_chevron_right
         is Coins                -> R.drawable.icon_coins
         is DiceRoll             -> R.drawable.icon_dice_roll
         is DiceRollFilled       -> R.drawable.icon_dice_roll_filled

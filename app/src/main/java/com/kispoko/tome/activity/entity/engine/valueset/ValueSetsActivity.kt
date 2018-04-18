@@ -124,7 +124,7 @@ class ValueSetsActivity : AppCompatActivity()
     private fun initializeValueSetListView(entityId : EntityId,
                                            valueSets : List<ValueSet>)
     {
-        val recyclerView = this.findViewById(R.id.value_set_list_view) as RecyclerView
+        val recyclerView = this.findViewById<RecyclerView>(R.id.value_set_list_view)
 
         recyclerView.adapter =
                 ValueSetRecyclerViewAdapter(valueSets, entityId, this.appSettings.themeId(), this)
@@ -167,7 +167,7 @@ class ValueSetsActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
@@ -175,15 +175,15 @@ class ValueSetsActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val searchButton = this.findViewById(R.id.toolbar_search_button) as ImageButton
+        val searchButton = this.findViewById<ImageButton>(R.id.toolbar_search_button)
         searchButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
         titleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
 
     }
@@ -273,10 +273,10 @@ class ValueSetSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemV
 
     init
     {
-        this.layout     = itemView.findViewById(R.id.value_set_list_item_layout) as LinearLayout
-        this.headerView = itemView.findViewById(R.id.value_set_list_item_header) as TextView
-        this.descView   = itemView.findViewById(R.id.value_set_list_item_description) as TextView
-        this.countView  = itemView.findViewById(R.id.value_set_list_item_count) as TextView
+        this.layout     = itemView.findViewById(R.id.value_set_list_item_layout)
+        this.headerView = itemView.findViewById(R.id.value_set_list_item_header)
+        this.descView   = itemView.findViewById(R.id.value_set_list_item_description)
+        this.countView  = itemView.findViewById(R.id.value_set_list_item_count)
     }
 
 

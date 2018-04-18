@@ -2367,12 +2367,6 @@ types:
       presence: optional
       description: >
         The table widget formatting options.
-    - name: table_name
-      type:
-        type: prim_type
-        prim_type: string
-      presence: required
-      description: The table name.
     - name: columns
       type:
         type: custom_coll_type
@@ -2393,6 +2387,12 @@ types:
         custom_type: table_sort
       presence: optional
       description: How the rows are sorted (if at all).
+    - name: title_variable_id
+      type:
+        type: custom_type
+        custom_type: variable_id
+      presence: optional
+      description: The title variable id.
 - type: primitive_type
   primitive_type:
     name: table_sort_order
@@ -2439,6 +2439,12 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
+    - name: view_type
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The title bar format.
     - name: header_format
       type:
         type: custom_type
@@ -2453,13 +2459,24 @@ types:
       presence: optional
       description: >
         Standard widget formatting options.
-    - name: height
+    - name: title_bar_format
       type:
         type: custom_type
-        custom_type: height
+        custom_type: element_format
       presence: optional
-      description: >
-        The table cell height.
+      description: The title bar format.
+    - name: title_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The title bar format.
+    - name: edit_button_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The title bar format.
 - type: sum_type
   sum_type: 
     name: table_widget_column

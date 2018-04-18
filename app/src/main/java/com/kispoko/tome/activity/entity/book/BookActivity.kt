@@ -96,7 +96,7 @@ class BookActivity : AppCompatActivity()
 
     private fun initializeView()
     {
-        val contentView = this.findViewById(R.id.book_content) as LinearLayout
+        val contentView = this.findViewById<LinearLayout>(R.id.book_content)
 
         val currentBookReference = this.currentBookReference
         val currentBook = this.currentBook
@@ -168,7 +168,7 @@ class BookActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
@@ -176,15 +176,15 @@ class BookActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_main_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_main_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
         menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
         titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
     }

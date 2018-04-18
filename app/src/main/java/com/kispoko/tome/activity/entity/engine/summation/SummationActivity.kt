@@ -127,7 +127,7 @@ class SummationActivity : AppCompatActivity()
 
     private fun renderView(summation : Summation, entityId : EntityId)
     {
-        val contentScrollView = this.findViewById(R.id.content) as ScrollView?
+        val contentScrollView = this.findViewById<ScrollView>(R.id.content)
         val viewBuilder = SummationEditorUI(summation,
                                                this.appSettings.themeId(),
                                                entityId,
@@ -152,7 +152,7 @@ class SummationActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
@@ -160,21 +160,21 @@ class SummationActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val searchButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+        val searchButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
         searchButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TOOLBAR TITLE
         // -------------------------------------------------------------------------------------
-        val toolbarTitleView = this.findViewById(R.id.toolbar_title) as TextView
+        val toolbarTitleView = this.findViewById<TextView>(R.id.toolbar_title)
         toolbarTitleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
 
         // TITLE
         // -------------------------------------------------------------------------------------
 
-        val titleView = this.findViewById(R.id.title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.title)
         titleView.typeface = Font.typeface(TextFont.FiraSans, TextFontStyle.Regular, this)
 
         val colorTheme = ColorTheme(setOf(

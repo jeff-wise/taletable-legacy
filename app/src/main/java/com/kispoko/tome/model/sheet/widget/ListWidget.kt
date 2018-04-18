@@ -270,7 +270,7 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
     {
         val layout = WidgetView.layout(listWidget.widgetFormat(), entityId, context)
 
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
 
         contentLayout.addView(this.inlineView())
 

@@ -3,30 +3,24 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TableLayout
-import android.widget.TableRow
+import android.widget.*
 import com.kispoko.tome.R
-import com.kispoko.tome.db.DB_WidgetTableFormatValue
-import com.kispoko.tome.db.widgetTableFormatTable
+import com.kispoko.tome.R.string.edit
+import com.kispoko.tome.R.string.table
+import com.kispoko.tome.activity.sheet.widget.table.TableEditorActivity
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue4
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
-import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.lib.ui.LayoutType
-import com.kispoko.tome.lib.ui.TableLayoutBuilder
-import com.kispoko.tome.lib.ui.TableRowBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.sheet.style.ElementFormat
+import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
@@ -39,46 +33,35 @@ import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Table Widget Format
  */
-data class TableWidgetFormat(override val id : UUID,
-                             val widgetFormat : WidgetFormat,
+data class TableWidgetFormat(val widgetFormat : WidgetFormat,
+                             val viewType : TableWidgetViewType,
                              val headerFormat : TableWidgetRowFormat,
                              val rowFormat : TableWidgetRowFormat,
-                             val cellHeight : Height)
-                              : ToDocument, ProdType, Serializable
+                             val titleBarFormat : ElementFormat,
+                             val titleFormat : TextFormat,
+                             val editButtonFormat : TextFormat)
+                              : ToDocument, Serializable
 {
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                headerFormat : TableWidgetRowFormat,
-                rowFormat : TableWidgetRowFormat,
-                cellHeight : Height)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               headerFormat,
-               rowFormat,
-               cellHeight)
-
 
     companion object : Factory<TableWidgetFormat>
     {
 
-        private fun defaultWidgetFormat()      = WidgetFormat.default()
-        private fun defaultHeaderFormat()      = TableWidgetRowFormat.default()
-        private fun defaultRowFormat()         = TableWidgetRowFormat.default()
-        private fun defaultCellHeight()        = Height.Wrap
+        private fun defaultWidgetFormat()       = WidgetFormat.default()
+        private fun defaultViewType()           = TableWidgetViewType.TitleBar
+        private fun defaultHeaderFormat()       = TableWidgetRowFormat.default()
+        private fun defaultRowFormat()          = TableWidgetRowFormat.default()
+        private fun defaultTitleBarFormat()     = ElementFormat.default()
+        private fun defaultTitleFormat()        = TextFormat.default()
+        private fun defaultEditButtonFormat()   = TextFormat.default()
 
 
-        override fun fromDocument(doc: SchemaDoc): ValueParser<TableWidgetFormat> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
@@ -87,6 +70,10 @@ data class TableWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("widget_format"),
                             effValue(defaultWidgetFormat()),
                             { WidgetFormat.fromDocument(it) }),
+                      // View Type
+                      split(doc.maybeAt("view_type"),
+                            effValue<ValueError,TableWidgetViewType>(defaultViewType()),
+                            { TableWidgetViewType.fromDocument(it) }),
                       // Header Format
                       split(doc.maybeAt("header_format"),
                             effValue(defaultHeaderFormat()),
@@ -95,10 +82,18 @@ data class TableWidgetFormat(override val id : UUID,
                       split(doc.maybeAt("row_format"),
                             effValue(defaultRowFormat()),
                             { TableWidgetRowFormat.fromDocument(it) }),
-                      // Height
-                      split(doc.maybeAt("height"),
-                            effValue<ValueError,Height>(defaultCellHeight()),
-                            { Height.fromDocument(it) })
+                      // Title Bar Format
+                      split(doc.maybeAt("title_bar_format"),
+                            effValue(defaultTitleBarFormat()),
+                            { ElementFormat.fromDocument(it) }),
+                      // Title Format
+                      split(doc.maybeAt("title_format"),
+                            effValue(defaultTitleFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Edit Button Format
+                      split(doc.maybeAt("edit_button_format"),
+                            effValue(defaultEditButtonFormat()),
+                            { TextFormat.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -106,9 +101,12 @@ data class TableWidgetFormat(override val id : UUID,
 
 
         fun default() = TableWidgetFormat(defaultWidgetFormat(),
+                                          defaultViewType(),
                                           defaultHeaderFormat(),
                                           defaultRowFormat(),
-                                          defaultCellHeight())
+                                          defaultTitleBarFormat(),
+                                          defaultTitleFormat(),
+                                          defaultEditButtonFormat())
 
     }
 
@@ -120,8 +118,7 @@ data class TableWidgetFormat(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "widget_format" to this.widgetFormat().toDocument(),
         "header_format" to this.headerFormat().toDocument(),
-        "row_format" to this.rowFormat().toDocument(),
-        "height" to this.cellHeight().toDocument()
+        "row_format" to this.rowFormat().toDocument()
     ))
 
 
@@ -132,103 +129,65 @@ data class TableWidgetFormat(override val id : UUID,
     fun widgetFormat() : WidgetFormat = this.widgetFormat
 
 
+    fun viewType() : TableWidgetViewType = this.viewType
+
+
     fun headerFormat() : TableWidgetRowFormat = this.headerFormat
 
 
     fun rowFormat() : TableWidgetRowFormat = this.rowFormat
 
 
-    fun cellHeight() : Height = this.cellHeight
+    fun titleFormat() : TextFormat = this.titleFormat
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
+    fun titleBarFormat() : ElementFormat = this.titleBarFormat
 
 
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableFormatValue =
-        RowValue4(widgetTableFormatTable,
-                  ProdValue(this.widgetFormat),
-                  ProdValue(this.headerFormat),
-                  ProdValue(this.rowFormat),
-                  PrimValue(this.cellHeight))
+    fun editButtonFormat() : TextFormat = this.editButtonFormat
 
 }
 
 
 /**
- * Table Widget Name
+ * Table Widget View Type
  */
-data class TableWidgetName(val value : String) : ToDocument, SQLSerializable, Serializable
+sealed class TableWidgetViewType : ToDocument, SQLSerializable, Serializable
 {
+
+    object TitleBar : TableWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "title_bar" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("title_bar")
+
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<TableWidgetName>
+    companion object
     {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetName> = when (doc)
+        fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetViewType> = when (doc)
         {
-            is DocText -> effValue(TableWidgetName(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+            is DocText -> when (doc.text)
+            {
+                "tile_bar" -> effValue<ValueError,TableWidgetViewType>(
+                                    TableWidgetViewType.TitleBar)
+                else       -> effError<ValueError,TableWidgetViewType>(
+                                    UnexpectedValue("TableWidgetViewType", doc.text, doc.path))
+            }
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLText({ this.value })
-
-}
-
-
-/**
- * Show Table Dividers
- */
-data class ShowTableDividers(val value : Boolean) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ShowTableDividers>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<ShowTableDividers> = when (doc)
-        {
-            is DocBoolean -> effValue(ShowTableDividers(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocBoolean(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
 
 }
 
@@ -316,45 +275,136 @@ sealed class TableSortOrder : ToDocument, SQLSerializable, Serializable
 }
 
 
-object TableWidgetView
+class TableWidgetUI(val tableWidget : TableWidget,
+                    val entityId : EntityId,
+                    val context : Context)
 {
 
 
-    fun view(tableWidget : TableWidget,
-             format : TableWidgetFormat,
-             entityId : EntityId,
-             context : Context) : View
-    {
-        val layout = WidgetView.widgetTouchLayout(format.widgetFormat(), entityId, context)
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
 
-        val tableLayout = this.tableLayout(format, entityId, context)
+    private var editMode : Boolean = false
+
+    private var editButtonTextView : TextView? = null
+
+    private var tableRowViews : MutableList<TableRow> = mutableListOf()
+    private var headerRowView : TableRow? = null
+
+
+    private fun toggleEditMode()
+    {
+        editMode = !editMode
+
+        this.toggleTableRowEditButtons()
+
+        this.toggleEditButton()
+
+//        this.updateTitleTextView()
+    }
+
+
+    private fun toggleEditButton()
+    {
+        if (editMode)
+            this.editButtonTextView?.text = context.getString(R.string.view_only)
+        else
+            this.editButtonTextView?.text = context.getString(R.string.edit)
+    }
+
+
+    private fun toggleTableRowEditButtons()
+    {
+        if (editMode)
+        {
+            this.tableRowViews.forEach { tableRowView ->
+
+                val editButtonView = tableRowView.findViewById<LinearLayout>(R.id.table_row_edit_button)
+                if (editButtonView != null)
+                    editButtonView.visibility = View.VISIBLE
+
+            }
+            val headerRowEditButtonView = headerRowView?.findViewById<LinearLayout>(R.id.table_row_edit_button)
+            if (headerRowEditButtonView != null)
+                headerRowEditButtonView.visibility = View.VISIBLE
+        }
+        else
+        {
+            this.tableRowViews.forEach { tableRowView ->
+
+                val editButtonView = tableRowView.findViewById<LinearLayout>(R.id.table_row_edit_button)
+                if (editButtonView != null)
+                    editButtonView.visibility = View.GONE
+
+            }
+
+            val headerRowEditButtonView = headerRowView?.findViewById<LinearLayout>(R.id.table_row_edit_button)
+            if (headerRowEditButtonView != null)
+                headerRowEditButtonView.visibility = View.GONE
+        }
+    }
+
+
+//    private fun updateTitleTextView()
+//    {
+//        if (editMode)
+//        {
+//            tableWidget.title(entityId).doMaybe { titleString ->
+//                titleTextView?.text =  "${context.getString(R.string.edit)} $titleString"
+//            }
+//        }
+//        else
+//        {
+//            tableWidget.title(entityId).doMaybe { titleString ->
+//                titleTextView?.text = titleString
+//            }
+//        }
+//
+//    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    fun view() : View
+    {
+        val layout = WidgetView.widgetTouchLayout(tableWidget.format().widgetFormat(), entityId, context)
+
+        val tableLayout = this.tableLayout()
         val tableLayoutId = Util.generateViewId()
         tableLayout.id = tableLayoutId
         tableWidget.tableLayoutId = tableLayoutId
 
+        layout.addView(this.titleBarView())
+
         layout.addView(tableLayout)
 
-        tableLayout.addView(this.headerRowView(tableWidget.columns(),
+        val headerRowView = this.headerRowView(tableWidget.columns(),
                                                tableWidget.format(),
                                                entityId,
-                                               context))
+                                               context)
+        tableLayout.addView(headerRowView)
+        this.headerRowView = headerRowView
 
         tableWidget.rows().forEachIndexed { rowIndex, tableWidgetRow ->
-            tableLayout.addView(tableWidgetRow.view(tableWidget,
+            val tableRowView = tableWidgetRow.view(tableWidget,
                                                     rowIndex,
                                                     entityId,
-                                                    context))
+                                                    context)
+            tableLayout.addView(tableRowView)
+            this.tableRowViews.add(tableRowView)
         }
 
         return layout
     }
 
 
-    private fun tableLayout(format : TableWidgetFormat,
-                            entityId : EntityId,
-                            context : Context) : TableLayout
+    private fun tableLayout() : TableLayout
     {
         val layout = TableLayoutBuilder()
+        val format = tableWidget.format()
 
         layout.layoutType           = LayoutType.LINEAR
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
@@ -418,6 +468,7 @@ object TableWidgetView
                                         format.headerFormat().textFormat().elementFormat().backgroundColorTheme(),
                                         entityId)
 
+        tableRow.rows.add(editRowButtonView(true, format.rowFormat().textFormat().elementFormat(), entityId, context))
         columns.forEach { column ->
 
             val cellView = this.headerCellView(format.headerFormat(),
@@ -456,121 +507,131 @@ object TableWidgetView
     }
 
 
+    // VIEWS > Title Bar
+    // -----------------------------------------------------------------------------------------
 
-//    private LinearLayout widgetLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation         = LinearLayout.VERTICAL;
-//        layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        return layout.linearLayout(context);
-//    }
-//
+    private fun titleBarView() : View
+    {
+        val layout = this.titleBarViewLayout()
 
-//
-//    private android.widget.TableRow headerTableRow(Context context)
-//    {
-//
-//        TableRowBuilder headerRow = new TableRowBuilder();
-//
-//        headerRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
-//        headerRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
-//        headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
-//        headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
-//
-//        android.widget.TableRow headerRowView = headerRow.tableRow(context);
-//
-//
-//        for (int i = 0; i < this.width(); i++)
-//        {
-//            CellUnion headerCell = this.headerRow.cellAtIndex(i);
-//
-//            Column column = this.columnAtIndex(i).column();
-//            TextColumnFormat format = new TextColumnFormat(UUID.randomUUID(),
-//                                                           null,
-//                                                           column.alignment(),
-//                                                           column.width(),
-//                                                           null);
-//            TextColumn textColumn = new TextColumn(null, null, null, null, format,
-//                                                   false, false);
-//            ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
-//
-//            LinearLayout headerCellView =
-//                    (LinearLayout) headerCell.view(columnUnion, this.headerRow.format(), context);
-//
-//            headerRowView.addView(headerCellView);
-//        }
-//
-//        return headerRowView;
-//    }
+        val titleTextView = this.titleTextView()
+        layout.addView(titleTextView)
+
+        layout.addView(this.editButtonView())
+
+        return layout
+    }
 
 
+    private fun titleBarViewLayout() : RelativeLayout
+    {
+        val layout              = RelativeLayoutBuilder()
+        val format              = tableWidget.format().titleBarFormat()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.marginSpacing    = format.margins()
+        layout.paddingSpacing   = format.padding()
+
+        layout.backgroundColor  = colorOrBlack(format.backgroundColorTheme(), entityId)
+
+        layout.corners          = format.corners()
+
+        return layout.relativeLayout(context)
+    }
+
+
+    private fun titleTextView() : TextView
+    {
+        val title               = TextViewBuilder()
+        val format              = tableWidget.format().titleFormat()
+
+        title.layoutType        = LayoutType.RELATIVE
+        title.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
+        title.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        title.addRule(RelativeLayout.ALIGN_PARENT_START)
+        title.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        tableWidget.title(entityId).doMaybe { titleString ->
+            title.text          = titleString
+        }
+
+        title.color             = colorOrBlack(format.colorTheme(), entityId)
+
+        title.sizeSp            = format.sizeSp()
+
+        title.font              = Font.typeface(format.font(),
+                                                format.fontStyle(),
+                                                context)
+
+        title.paddingSpacing    = format.elementFormat().padding()
+        title.marginSpacing     = format.elementFormat().margins()
+
+        return title.textView(context)
+    }
+
+
+    private fun editButtonView() : LinearLayout
+    {
+        val layout      = this.editButtonViewLayout()
+
+        val v = this.editButtonTextView()
+        layout.addView(v)
+        this.editButtonTextView = v
+
+        return layout
+    }
+
+
+    private fun editButtonViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = RelativeLayout.LayoutParams.MATCH_PARENT
+
+        layout.padding.leftDp   = 10f
+        layout.padding.rightDp  = 5f
+
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+
+        layout.onClick          = View.OnClickListener {
+            this.toggleEditMode()
+        }
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun editButtonTextView() : TextView
+    {
+        val label               = TextViewBuilder()
+
+        val format              = tableWidget.format().editButtonFormat()
+
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId            = R.string.edit
+//
+//        label.color             = colorOrBlack(format.colorTheme(), entityId)
+//
+//        label.sizeSp            = format.sizeSp()
+//
+//        label.font              = Font.typeface(format.font(),
+//                                                format.fontStyle(),
+//                                                context)
+//
+        format.styleTextViewBuilder(label, entityId, context)
+
+        return label.textView(context)
+    }
 
 }
-
-
-//
-//
-//
-//    // > Views
-//    // ------------------------------------------------------------------------------------------
-//
-
-//
-//    // INTERNAL
-//    // -----------------------------------------------------------------------------------------
-//
-//    private void initializeTableWidget()
-//    {
-//        // [1] Apply default formats
-//        // -------------------------------------------------------------------------------------
-//
-//        if (this.data().format().backgroundIsDefault())
-//            this.data().format().setBackground(BackgroundColor.NONE);
-//
-//
-//        // [2] The header row is derived from the column information, so create it each time the
-//        //     table widget is instantiated
-//        // -------------------------------------------------------------------------------------
-//
-//        List<CellUnion> headerCells = new ArrayList<>();
-//
-//        for (ColumnUnion columnUnion : this.columns())
-//        {
-//            TextVariable headerCellValue =
-//                    TextVariable.asText(UUID.randomUUID(),
-//                                        columnUnion.column().name().toUpperCase());
-//            TextFormat headerCellStyle = new TextFormat(UUID.randomUUID(),
-//                                                      TextColor.THEME_DARK,
-//                                                      TextSize.SUPER_SMALL);
-//
-//            TextCellFormat format = new TextCellFormat(UUID.randomUUID(),
-//                                                       columnUnion.column().alignment(),
-//                                                       BackgroundColor.NONE,
-//                                                       headerCellStyle);
-//            TextCell headerCell = new TextCell(UUID.randomUUID(),
-//                                               headerCellValue,
-//                                               format);
-//            CellUnion headerCellUnion = CellUnion.asText(null, headerCell);
-//            headerCells.add(headerCellUnion);
-//        }
-//
-//        TableRowFormat headerRowFormat = new TableRowFormat(UUID.randomUUID(), null);
-//
-//        this.headerRow = new TableRow(null, headerCells, headerRowFormat);
-//
-//        // [3] Index all of the cells in the table
-//        // -------------------------------------------------------------------------------------
-//
-//        this.cellById = new HashMap<>();
-//
-//        for (TableRow row : this.rows()) {
-//            for (CellUnion cellUnion : row.cells()) {
-//                this.cellById.put(cellUnion.getId(), cellUnion);
-//            }
-//        }
-//    }
-//
-

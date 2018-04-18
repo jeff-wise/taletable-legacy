@@ -209,8 +209,8 @@ class OpenCampaignSummaryViewHolder(itemView : View) : RecyclerView.ViewHolder(i
 
     init
     {
-        this.nameView    = itemView.findViewById(R.id.campaign_nav_item_header) as TextView
-        this.summaryView = itemView.findViewById(R.id.campaign_nav_item_summary) as TextView
+        this.nameView    = itemView.findViewById(R.id.campaign_nav_item_header)
+        this.summaryView = itemView.findViewById(R.id.campaign_nav_item_summary)
     }
 
 

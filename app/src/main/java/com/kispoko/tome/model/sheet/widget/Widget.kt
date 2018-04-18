@@ -620,7 +620,7 @@ data class ActionWidget(val id : UUID,
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
-            val layout = rootView.findViewById(layoutViewId) as LinearLayout?
+            val layout = rootView.findViewById<LinearLayout>(layoutViewId)
             layout?.removeAllViews()
             layout?.addView(ActionWidgetViewBuilder(this, entityId, context).inlineLeftButtonView())
         }
@@ -816,7 +816,7 @@ data class BooleanWidget(val id : UUID,
     {
         val viewId = this.layoutId
         if (viewId != null) {
-            val layout = rootView.findViewById(viewId) as LinearLayout?
+            val layout = rootView.findViewById<LinearLayout>(viewId)
             if (layout != null)
                 BooleanWidgetViewBuilder(this, entityId, context).updateView(layout)
         }
@@ -1380,7 +1380,7 @@ data class ListWidget(val id : UUID,
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
-            val layout = rootView.findViewById(layoutViewId) as LinearLayout?
+            val layout = rootView.findViewById<LinearLayout>(layoutViewId)
             layout?.removeAllViews()
             layout?.addView(ListWidgetViewBuilder(this, entityId, context).inlineView())
         }
@@ -1647,7 +1647,7 @@ data class MechanicWidget(val id : UUID,
         val viewId = this.viewId
         if (viewId != null)
         {
-            val layout = rootView.findViewById(viewId) as LinearLayout?
+            val layout = rootView.findViewById<LinearLayout>(viewId)
             if (layout != null) {
                 MechanicWidgetViewBuilder(this, entityId, context).updateView(layout)
             }
@@ -1919,7 +1919,7 @@ data class NumberWidget(val id : UUID,
         {
 //            val activity = context as AppCompatActivity
             try {
-                val layout = rootView.findViewById(layoutId) as LinearLayout
+                val layout = rootView.findViewById<LinearLayout>(layoutId)
                 NumberWidgetView.updateView(this, entityId, layout, context)
             }
             catch (e : TypeCastException) {
@@ -2314,7 +2314,7 @@ data class PointsWidget(val id : UUID,
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
-            val layout = rootView.findViewById(layoutViewId) as LinearLayout?
+            val layout = rootView.findViewById<LinearLayout>(layoutViewId)
             if (layout != null) {
                 PointsWidgetViewBuilder(this, entityId, context).updateView(layout)
             }
@@ -2717,7 +2717,7 @@ data class RollWidget(val id : UUID,
         val layoutId = this.layoutId
         if (layoutId != null)
         {
-            val layout = rootView.findViewById(layoutId) as LinearLayout?
+            val layout = rootView.findViewById<LinearLayout>(layoutId)
             if (layout != null) {
                 RollWidgetViewBuilder(this, entityId, context).updateContentView(layout)
             }
@@ -3069,7 +3069,7 @@ data class StoryWidget(val id : UUID,
     {
         val viewId = this.viewId
         if (viewId != null) {
-            val layout = rootView.findViewById(viewId) as LinearLayout?
+            val layout = rootView.findViewById<LinearLayout>(viewId)
             if (layout != null)
                 StoryWidgetViewBuilder(this, entityId, context).updateView(layout)
         }
@@ -3197,7 +3197,8 @@ data class TableWidget(val id : UUID,
                        private val format : TableWidgetFormat,
                        private val columns : MutableList<TableWidgetColumn>,
                        private val rows : MutableList<TableWidgetRow>,
-                       private val sort : Maybe<TableSort>) : Widget()
+                       private val sort : Maybe<TableSort>,
+                       private val titleVariableId : Maybe<VariableId>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -3207,6 +3208,8 @@ data class TableWidget(val id : UUID,
     var tableLayoutId : Int? = null
 
     var selectedRow : Int? = null
+
+    var editMode : Boolean = false
 
 
     // -----------------------------------------------------------------------------------------
@@ -3242,13 +3245,15 @@ data class TableWidget(val id : UUID,
                 format : TableWidgetFormat,
                 columns: List<TableWidgetColumn>,
                 rows: List<TableWidgetRow>,
-                sort : Maybe<TableSort>)
+                sort : Maybe<TableSort>,
+                titleVariableId : Maybe<VariableId>)
         : this(UUID.randomUUID(),
                widgetId,
                format,
                columns.toMutableList(),
                rows.toMutableList(),
-               sort)
+               sort,
+               titleVariableId)
 
 
     companion object : Factory<TableWidget>
@@ -3275,7 +3280,11 @@ data class TableWidget(val id : UUID,
                      // Table Sort
                      split(doc.maybeAt("sort"),
                              effValue<ValueError, Maybe<TableSort>>(Nothing()),
-                             { effApply(::Just, TableSort.fromDocument(it)) })
+                             { apply(::Just, TableSort.fromDocument(it)) }),
+                      // Title Variable Id
+                      split(doc.maybeAt("title_variable_id"),
+                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                            { apply(::Just, VariableId.fromDocument(it)) })
                      )
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -3313,6 +3322,9 @@ data class TableWidget(val id : UUID,
     fun sort() : Maybe<TableSort> = this.sort
 
 
+    fun titleVariableId() : Maybe<VariableId> = this.titleVariableId
+
+
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
@@ -3321,6 +3333,20 @@ data class TableWidget(val id : UUID,
 
 
     override fun widgetId() = this.widgetId
+
+
+    // -----------------------------------------------------------------------------------------
+    // TITLE
+    // -----------------------------------------------------------------------------------------
+
+    fun title(entityId : EntityId) : Maybe<String> =
+        this.titleVariableId ap {
+            val value = textVariable(it, entityId).apply { it.value(entityId) }
+            when (value) {
+                is Val -> value.value
+                else    -> Nothing()
+            }
+        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -3360,7 +3386,7 @@ data class TableWidget(val id : UUID,
         val numberCell = this.numberCellById[numberCellUpdate.cellId]
 
         numberCell?.viewId?.let {
-            val textView = rootView.findViewById(it) as TextView?
+            val textView = rootView.findViewById<TextView>(it)
             textView?.text = Util.doubleString(numberCellUpdate.newNumber)
         }
     }
@@ -3400,7 +3426,7 @@ data class TableWidget(val id : UUID,
 
         // Update View
         cell?.viewId?.let {
-            val textView = rootView.findViewById(it) as TextView?
+            val textView = rootView.findViewById<TextView>(it)
             textView?.text = newValue
         }
     }
@@ -3412,7 +3438,7 @@ data class TableWidget(val id : UUID,
 
         if (tableLayoutId != null)
         {
-            val tableLayout = rootView.findViewById(tableLayoutId) as TableLayout?
+            val tableLayout = rootView.findViewById<TableLayout>(tableLayoutId)
             if (tableLayout != null)
             {
                 val newTableRow = this.defaultTableRow()
@@ -3470,8 +3496,11 @@ data class TableWidget(val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    override fun view(entityId : EntityId, context : Context) : View =
-            TableWidgetView.view(this, this.format(), entityId, context)
+    override fun view(entityId : EntityId, context : Context) : View
+    {
+        val tableWidgetUI = TableWidgetUI(this, entityId, context)
+        return tableWidgetUI.view()
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -3869,7 +3898,7 @@ data class TextWidget(val id : UUID,
         if (layoutId != null)
         {
             try {
-                val layout = rootView.findViewById(layoutId) as LinearLayout
+                val layout = rootView.findViewById<LinearLayout>(layoutId)
                 TextWidgetView.updateView(this, entityId, layout, context)
             }
             catch (e: TypeCastException) {

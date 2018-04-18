@@ -20,7 +20,7 @@ public class CustomTabLayout extends TabLayout
     private Typeface mTypeface;
 
     private TextFont textFont = TextFont.Cabin.INSTANCE;
-    private TextFontStyle textFontStyle = TextFontStyle.SemiBold.INSTANCE;
+    private TextFontStyle textFontStyle = TextFontStyle.Bold.INSTANCE;
 
     public CustomTabLayout(Context context)
     {

@@ -1102,10 +1102,10 @@ class ListEditorValueViewHolder(itemView : View,
 
     init
     {
-        this.layout      = itemView.findViewById(R.id.dialog_list_editor_item_layout) as LinearLayout
-        this.valueView   = itemView.findViewById(R.id.dialog_list_editor_item_value) as TextView
-        this.summaryView = itemView.findViewById(R.id.dialog_list_editor_item_summary) as TextView
-        this.checkIconView  = itemView.findViewById(R.id.dialog_list_editor_checkbox_icon) as ImageView
+        this.layout      = itemView.findViewById(R.id.dialog_list_editor_item_layout)
+        this.valueView   = itemView.findViewById(R.id.dialog_list_editor_item_value)
+        this.summaryView = itemView.findViewById(R.id.dialog_list_editor_item_summary)
+        this.checkIconView  = itemView.findViewById(R.id.dialog_list_editor_checkbox_icon)
 //        this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
     }
 
@@ -1206,7 +1206,7 @@ class ListEditorHeaderViewHolder(val headerView : View) : RecyclerView.ViewHolde
 
     init
     {
-        this.headerTextView = headerView.findViewById(R.id.dialog_list_editor_header) as TextView
+        this.headerTextView = headerView.findViewById(R.id.dialog_list_editor_header)
     }
 
 

@@ -36,7 +36,7 @@ fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle
     // (1) Configure Action Bar
     // -------------------------------------------------------------------------------------
 
-    val toolbar = this.findViewById(R.id.toolbar) as Toolbar
+    val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
     this.setSupportActionBar(toolbar)
     val actionBar = this.supportActionBar
 
@@ -45,7 +45,7 @@ fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle
     // (2) Configure Title
     // -------------------------------------------------------------------------------------
 
-    val titleView = this.findViewById(R.id.toolbar_title) as TextView
+    val titleView = this.findViewById<TextView>(R.id.toolbar_title)
 
     if (fontStyle != null)
         titleView.typeface  = Font.typeface(TextFont.default(), fontStyle, this)
@@ -66,10 +66,10 @@ fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle
     // (3) Configure Back Button
     // -------------------------------------------------------------------------------------
 
-    val backButtonView = this.findViewById(R.id.toolbar_back_button) as? ImageView
+    val backButtonView = this.findViewById<ImageView>(R.id.toolbar_back_button)
     backButtonView?.setOnClickListener { this.finish() }
 
-    val closeButtonView = this.findViewById(R.id.toolbar_close_button) as? ImageView
+    val closeButtonView = this.findViewById<ImageView>(R.id.toolbar_close_button)
     closeButtonView?.setOnClickListener { this.finish() }
 
 }

@@ -255,10 +255,10 @@ class SheetActivity : AppCompatActivity()
 
         this.pagePagerAdapter = pagePagerAdapter
 
-        this.viewPager = this.findViewById(R.id.page_pager) as ViewPager
+        this.viewPager = this.findViewById<ViewPager>(R.id.page_pager)
 //        this.viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
 
-        this.bottomSheet = this.findViewById(R.id.bottom_sheet) as FrameLayout
+        this.bottomSheet = this.findViewById<FrameLayout>(R.id.bottom_sheet)
         this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheet)
 
         if (this.bottomSheet == null)
@@ -283,7 +283,7 @@ class SheetActivity : AppCompatActivity()
             }
         })
 
-        val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
+        val tabLayout = this.findViewById<TabLayout>(R.id.tab_layout)
         tabLayout.setupWithViewPager(viewPager)
 
 //        val navButtonView = this.findViewById(R.id.toolbar_nav_button) as ImageView
@@ -293,7 +293,7 @@ class SheetActivity : AppCompatActivity()
 //        }
 
 
-        val toolbarContentLayout = this.findViewById(R.id.toolbar_content) as LinearLayout?
+        val toolbarContentLayout = this.findViewById<LinearLayout>(R.id.toolbar_content)
         val mainTabBarUI = MainTabBarUI(officialThemeLight, this)
         toolbarContentLayout?.addView(mainTabBarUI.view())
     }
@@ -301,7 +301,7 @@ class SheetActivity : AppCompatActivity()
 
     private fun initializeFAB()
     {
-        val fab = findViewById(R.id.session_button) as FloatingActionButton
+        val fab = findViewById<FloatingActionButton>(R.id.session_button)
         fab.setOnClickListener {
             val intent = Intent(this, SessionActivity::class.java)
             finish()
@@ -322,13 +322,13 @@ class SheetActivity : AppCompatActivity()
      */
     fun initializeSidebars()
     {
-        val drawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
+        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
         // Right Sidebar
         // -------------------------------------------------------------------------------------
-        val menuRight = findViewById(R.id.toolbar_options_button) as ImageView
+        val menuRight = this.findViewById<ImageView>(R.id.toolbar_options_button)
 
-        val rightNavView = findViewById(R.id.right_nav_view) as NavigationView
+        val rightNavView = this.findViewById<NavigationView>(R.id.right_nav_view)
         val sheetOptionsViewBuilder = SheetOptionsUI(this)
         rightNavView.addView(sheetOptionsViewBuilder.view())
 
@@ -369,7 +369,7 @@ class SheetActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
@@ -377,23 +377,23 @@ class SheetActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.menuLeft) as ImageView
+        val menuLeftButton = this.findViewById<ImageView>(R.id.menuLeft)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
 //        val navButton = this.findViewById(R.id.toolbar_nav_button) as ImageView
 //        navButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val optionsButton = this.findViewById(R.id.toolbar_options_button) as ImageView
+        val optionsButton = this.findViewById<ImageView>(R.id.toolbar_options_button)
         optionsButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title) as TextView
         titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
         // TAB LAYOUT
         // -------------------------------------------------------------------------------------
-        val tabLayout = this.findViewById(R.id.tab_layout) as CustomTabLayout
+        val tabLayout = this.findViewById<CustomTabLayout>(R.id.tab_layout) as CustomTabLayout
 
         // Tab Layout > Background
         tabLayout.setBackgroundColor(theme.colorOrBlack(uiColors.tabBarBackgroundColorId()))
@@ -430,7 +430,7 @@ class SheetActivity : AppCompatActivity()
         sheet.onActive(entityId, this)
 
         // TODO why?
-        val coordinatorLayout = this.findViewById(R.id.coordinator_layout) as CoordinatorLayout
+        val coordinatorLayout = this.findViewById<CoordinatorLayout>(R.id.coordinator_layout)
         coordinatorLayout.visibility = View.VISIBLE
 
         // Configure toolbar to be character name
@@ -553,10 +553,10 @@ class MainTabBarUI(val theme : Theme, val context : Context)
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.margin.topDp     = 2f
-        layout.margin.bottomDp  = 2f
-        layout.margin.leftDp    = 1f
-        layout.margin.rightDp   = 1f
+//        layout.margin.topDp     = 2f
+//        layout.margin.bottomDp  = 2f
+//        layout.margin.leftDp    = 1f
+//        layout.margin.rightDp   = 1f
 
         return layout.linearLayout(context)
     }
@@ -585,11 +585,11 @@ class MainTabBarUI(val theme : Theme, val context : Context)
 
         val bgNormalColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
 
         val bgSelectedColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("orange_70"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
 
         if (isSelected)
             layout.backgroundColor  = theme.colorOrBlack(bgSelectedColorTheme)
@@ -599,8 +599,8 @@ class MainTabBarUI(val theme : Theme, val context : Context)
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
 
-        layout.margin.leftDp    = 1f
-        layout.margin.rightDp   = 1f
+//        layout.margin.leftDp    = 1f
+//        layout.margin.rightDp   = 1f
 
         return layout.linearLayout(context)
     }
@@ -626,9 +626,9 @@ class MainTabBarUI(val theme : Theme, val context : Context)
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
 
         if (isSelected)
-            label.color             = Color.WHITE
-        else
             label.color             = theme.colorOrBlack(normalColorTheme)
+        else
+            label.color             = Color.WHITE
 
         label.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.SemiBold,

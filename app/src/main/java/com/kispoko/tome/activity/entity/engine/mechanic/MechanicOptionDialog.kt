@@ -517,9 +517,9 @@ class MechanicOptionViewHolder(itemView : View)
 
     init
     {
-        this.layout      = itemView.findViewById(R.id.dialog_mechanic_options_layout) as LinearLayout
-        this.titleView   = itemView.findViewById(R.id.dialog_mechanic_options_title) as TextView
-        this.summaryView = itemView.findViewById(R.id.dialog_mechanic_options_summary) as TextView
+        this.layout      = itemView.findViewById(R.id.dialog_mechanic_options_layout)
+        this.titleView   = itemView.findViewById(R.id.dialog_mechanic_options_title)
+        this.summaryView = itemView.findViewById(R.id.dialog_mechanic_options_summary)
     }
 
 

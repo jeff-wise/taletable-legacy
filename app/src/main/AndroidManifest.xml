@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kispoko.tome">
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application
         android:allowBackup="true"
         android:name="android.support.multidex.MultiDexApplication"
@@ -53,6 +55,10 @@
         <activity
             android:name="com.kispoko.tome.activity.entity.engine.valueset.BaseValueSetActivity"
             android:label="Base Value Set"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.sheet.widget.table.TableEditorActivity"
+            android:label="Table Editor"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.kispoko.tome.activity.entity.engine.function.FunctionEditorActivity"

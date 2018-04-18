@@ -1683,16 +1683,14 @@ typealias DB_WidgetStoryPartActionValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetTableTable =
-    Table5("widget_table",
+    Table4("widget_table",
            "widget_id",
-           "format",
            "columns",
            "rows",
            "sort")
 
 typealias DB_WidgetTableValue =
-    RowValue5<PrimValue<WidgetId>,
-              ProdValue<TableWidgetFormat>,
+    RowValue4<PrimValue<WidgetId>,
               CollValue<TableWidgetColumn>,
               CollValue<TableWidgetRow>,
               MaybePrimValue<TableSort>>

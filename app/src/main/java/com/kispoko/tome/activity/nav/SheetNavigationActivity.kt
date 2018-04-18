@@ -106,7 +106,7 @@ class SheetNavigationActivity : AppCompatActivity()
 
     private fun initializeFAB()
     {
-        val fabView = this.findViewById(R.id.button_open_sheet)
+        val fabView = this.findViewById<View>(R.id.button_open_sheet)
         fabView.setOnClickListener {
 //            val intent = Intent(this, OpenSheetActivity::class.java)
 //            this.startActivity(intent)
@@ -119,7 +119,7 @@ class SheetNavigationActivity : AppCompatActivity()
 
     private fun initializeRecyclerView()
     {
-        val coordLayout = findViewById(R.id.sheet_list_coordinator) as CoordinatorLayout
+        val coordLayout = this.findViewById<CoordinatorLayout>(R.id.sheet_list_coordinator)
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
@@ -128,7 +128,7 @@ class SheetNavigationActivity : AppCompatActivity()
 
         var sheetItems : MutableList<SheetItem> = mutableListOf()
 
-        val recyclerView = this.findViewById(R.id.sheet_list_view) as RecyclerView
+        val recyclerView = this.findViewById<RecyclerView>(R.id.sheet_list_view)
         val adapter = SheetRecyclerViewAdapter(sheetItems, this.appSettings.themeId)
 
         recyclerView.adapter = adapter
@@ -183,7 +183,7 @@ class SheetNavigationActivity : AppCompatActivity()
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
 
         // Toolbar > Background
         toolbar.setBackgroundColor(this.appSettings.color(uiColors.toolbarBackgroundColorId()))
@@ -191,15 +191,15 @@ class SheetNavigationActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = this.appSettings.color(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
+        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
         menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
         titleView.setTextColor(this.appSettings.color(uiColors.toolbarTitleColorId()))
 
     }
@@ -282,8 +282,8 @@ class SheetItemViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 
     init
     {
-        this.nameView     = itemView.findViewById(R.id.sheet_nav_item_header) as TextView
-        this.summaryView  = itemView.findViewById(R.id.sheet_nav_item_summary) as TextView
+        this.nameView     = itemView.findViewById(R.id.sheet_nav_item_header)
+        this.summaryView  = itemView.findViewById(R.id.sheet_nav_item_summary)
 //        this.campaignView = itemView.findViewById(R.id.sheet_nav_item_campaign) as TextView
 //        this.gameView     = itemView.findViewById(R.id.sheet_nav_item_game) as TextView
     }

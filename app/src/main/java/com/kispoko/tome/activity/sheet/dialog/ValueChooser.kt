@@ -835,10 +835,10 @@ class ValueViewHolder(itemView : View, val entityId : EntityId, val context : Co
 
     init
     {
-        this.layout      = itemView.findViewById(R.id.choose_value_item_layout) as LinearLayout
-        this.valueView   = itemView.findViewById(R.id.choose_value_item_value) as TextView
-        this.summaryView = itemView.findViewById(R.id.choose_value_item_summary) as TextView
-        this.iconView    = itemView.findViewById(R.id.choose_value_item_icon) as ImageView
+        this.layout      = itemView.findViewById(R.id.choose_value_item_layout)
+        this.valueView   = itemView.findViewById(R.id.choose_value_item_value)
+        this.summaryView = itemView.findViewById(R.id.choose_value_item_summary)
+        this.iconView    = itemView.findViewById(R.id.choose_value_item_icon)
 //        this.refView     = itemView.findViewById(R.id.choose_value_item_reference) as LinearLayout
     }
 
@@ -934,7 +934,7 @@ class HeaderViewHolder(val headerView : View) : RecyclerView.ViewHolder(headerVi
 
     init
     {
-        this.headerTextView = headerView.findViewById(R.id.choose_value_header) as TextView
+        this.headerTextView = headerView.findViewById(R.id.choose_value_header)
     }
 
 

@@ -89,6 +89,12 @@ sealed class TableWidgetCell : ToDocument, ProdType, Serializable
 
     abstract fun updateView(entityId : EntityId, context : Context)
 
+
+    open fun variableId() : VariableId? = null
+
+
+    abstract fun variableIdOrError() : AppEff<VariableId>
+
 }
 
 
@@ -170,7 +176,7 @@ data class TableWidgetBooleanCell(override val id : UUID,
     fun variableValue() : BooleanVariableValue = this.variableValue
 
 
-    fun variableId() : AppEff<VariableId> =
+    override fun variableIdOrError() : AppEff<VariableId> =
             note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
 
 
@@ -201,12 +207,15 @@ data class TableWidgetBooleanCell(override val id : UUID,
     }
 
 
+    override fun variableId() = this.variableId
+
+
     // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
     fun valueVariable(entityId : EntityId) : AppEff<BooleanVariable> =
-        this.variableId().apply { booleanVariable(it, entityId) }
+        this.variableIdOrError().apply { booleanVariable(it, entityId) }
 
 
     fun value(entityId : EntityId) : AppEff<Boolean> =
@@ -350,7 +359,7 @@ data class TableWidgetNumberCell(override val id : UUID,
         }
 
 
-    fun variableId() : AppEff<VariableId> =
+    override fun variableIdOrError() : AppEff<VariableId> =
         note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
 
 
@@ -368,7 +377,7 @@ data class TableWidgetNumberCell(override val id : UUID,
     {
         this.viewId?.let {
             val activity = context as AppCompatActivity
-            val valueTextView = activity.findViewById(it) as TextView?
+            val valueTextView = activity.findViewById<TextView>(it)
             val maybeValue = this.value(entityId)
             when (maybeValue)
             {
@@ -391,6 +400,9 @@ data class TableWidgetNumberCell(override val id : UUID,
     }
 
 
+    override fun variableId() = this.variableId
+
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -409,12 +421,13 @@ data class TableWidgetNumberCell(override val id : UUID,
                   MaybeProdValue(this.action))
 
 
+
     // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
     fun valueVariable(entityId : EntityId) : AppEff<NumberVariable> =
-        this.variableId().apply { numberVariable(it, entityId) }
+        this.variableIdOrError().apply { numberVariable(it, entityId) }
 
 
     fun valueString(entityId : EntityId) : AppEff<String> =
@@ -547,12 +560,12 @@ data class TableWidgetTextCell(override val id : UUID,
     fun variableValue() : TextVariableValue = this.variableValue
 
 
-    fun variableId() : AppEff<VariableId> =
+    override fun variableIdOrError() : AppEff<VariableId> =
             note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
 
 
     fun valueVariable(entityId : EntityId) : AppEff<TextVariable> =
-        this.variableId().apply { textVariable(it, entityId) }
+        this.variableIdOrError().apply { textVariable(it, entityId) }
 
 
     fun action() : Maybe<Action> = this.action
@@ -575,6 +588,9 @@ data class TableWidgetTextCell(override val id : UUID,
 
     override fun updateView(entityId : EntityId, context : Context) {
     }
+
+
+    override fun variableId() = this.variableId
 
 
     // -----------------------------------------------------------------------------------------

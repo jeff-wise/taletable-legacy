@@ -4,6 +4,9 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
@@ -152,7 +155,6 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
     }
 
 
-    @SuppressLint("ClickableViewAccessibility")
     fun view() : View
     {
         val layout = TableWidgetCellView.layout(column.format().columnFormat(),
@@ -166,33 +168,26 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         val CLICK_DURATION = 500
 
 
-//        @SuppressLint("ClickableViewAccessibility")
+//        @SuppressLint("")
         layout.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action)
             {
                 MotionEvent.ACTION_DOWN -> {
-                    Log.d("***TEXTCELL", "action down")
+//                    Log.d("***TEXTCELL", "action down")
                     clickTime = System.currentTimeMillis()
                 }
                 MotionEvent.ACTION_UP -> {
-                    Log.d("***TEXTCELL", "action down")
-
+//                    Log.d("***TEXTCELL", "action down")
                     val upTime = System.currentTimeMillis()
                     if ((upTime - clickTime) < CLICK_DURATION) {
                         this.openEditorDialog()
-//                        val cellAction = cell.resolveAction(column)
-//                        val cellActionRollGroup =  cellAction ap { it.rollGroup() }
-//                        when (cellActionRollGroup) {
-//                            is Just -> {
-//                                val cellNS = cell.namespace
-//                                val rowContext = if (cellNS != null) Just(cellNS)
-//                                                    else Nothing<VariableNamespace>()
-//                                val dialog = DiceRollDialog.newInstance(cellActionRollGroup.value,
-//                                                                        SheetContext(sheetUIContext))
-//                                dialog.show(sheetActivity.supportFragmentManager, "")
-//                            }
-//                            else -> {
-//                            }
+//                        val vibrator = sheetActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+//                        // Vibrate for 500 milliseconds
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+//                        } else {
+//                            //deprecated in API 26
+//                            vibrator.vibrate(500)
 //                        }
                     }
                 }

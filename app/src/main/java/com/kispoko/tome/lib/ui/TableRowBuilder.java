@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TableRow;
 
 import com.kispoko.tome.model.sheet.style.Spacing;
+import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class TableRowBuilder implements ViewBuilder
     public Integer                  id;
 
     public Integer                  height;
+    public Integer                  heightDp;
+
     public Integer                  width;
 
     public Integer                  visibility;
@@ -63,6 +66,8 @@ public class TableRowBuilder implements ViewBuilder
         this.id                 = null;
 
         this.height             = null;
+        this.heightDp           = null;
+
         this.width              = null;
 
         this.visibility         = null;
@@ -197,6 +202,10 @@ public class TableRowBuilder implements ViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+
+        if (this.heightDp != null) {
+            layoutParamsBuilder.setHeightDp(this.heightDp);
+        }
 
         // > Gravity
         // --------------------------------------------------------------------------------------

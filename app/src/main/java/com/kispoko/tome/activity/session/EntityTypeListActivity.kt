@@ -89,7 +89,7 @@ class EntityTypeListActivity : AppCompatActivity()
     private fun initializeToolbarView(theme : Theme)
     {
         // Back label text
-        val backLabelView = this.findViewById(R.id.toolbar_back_label) as TextView
+        val backLabelView = this.findViewById<TextView>(R.id.toolbar_back_label)
         backLabelView.typeface = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
         backLabelView.text     = getString(R.string.back_to_games)
 
@@ -99,13 +99,13 @@ class EntityTypeListActivity : AppCompatActivity()
         backLabelView.setTextColor(theme.colorOrBlack(backLabelColorTheme))
 
         // Back button
-        val backButton = this.findViewById(R.id.toolbar_back_button) as LinearLayout?
+        val backButton = this.findViewById<LinearLayout>(R.id.toolbar_back_button)
         backButton?.setOnClickListener {
             this.finish()
         }
 
         // Breadcrumbs
-        val breadcrumbsLayout = this.findViewById(R.id.breadcrumbs) as LinearLayout?
+        val breadcrumbsLayout = this.findViewById<LinearLayout>(R.id.breadcrumbs)
 
         val breadcrumbs : MutableList<String> = mutableListOf()
         this.gameSummary?.let { breadcrumbs.add(it.name) }
@@ -118,7 +118,7 @@ class EntityTypeListActivity : AppCompatActivity()
 
     private fun initializeContentView()
     {
-        val content = this.findViewById(R.id.content) as LinearLayout?
+        val content = this.findViewById<LinearLayout>(R.id.content)
 
         this.gameSummary?.let {
             val entityKindListUI = EntityKindListUI(it, officialThemeLight, this)

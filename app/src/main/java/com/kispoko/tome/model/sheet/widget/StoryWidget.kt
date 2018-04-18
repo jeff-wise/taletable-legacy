@@ -1026,7 +1026,7 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget,
 
     fun updateView(layout : LinearLayout)
     {
-        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
+        val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
 
         contentLayout.removeAllViews()
 

@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity()
 
     private fun initializeViews()
     {
-        val content = this.findViewById(R.id.content) as LinearLayout?
+        val content = this.findViewById<LinearLayout>(R.id.content)
 
         val mainUI = MainUI(officialThemeLight, this)
         content?.addView(mainUI.view())
