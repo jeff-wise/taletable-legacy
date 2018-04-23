@@ -3,10 +3,12 @@ package com.kispoko.tome.rts.entity.sheet
 
 
 import com.kispoko.tome.app.ApplicationEvent
+import com.kispoko.tome.app.EventTypeState
 import com.kispoko.tome.model.game.engine.mechanic.MechanicId
 import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.game.engine.variable.VariableRelation
 import com.kispoko.tome.model.game.engine.variable.VariableTag
+
 
 
 /**
@@ -21,6 +23,8 @@ data class VariableAdded(val variableId : VariableId) : StateEvent()
             |    Variable Id: $variableId""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 
 
@@ -30,6 +34,8 @@ data class VariableRemoved(val variableId : VariableId) : StateEvent()
             |    Variable Id: $variableId""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 
 
@@ -39,6 +45,8 @@ data class VariableUpdated(val variableId : VariableId) : StateEvent()
             |    Variable Id: $variableId""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 
 
@@ -49,6 +57,8 @@ data class VariableRenamed(val variableId : VariableId, val newVariableId : Vari
             |    New Variable Id: $newVariableId""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 
 
@@ -60,6 +70,8 @@ data class VariableRelationAdded(val variableId : VariableId,
             |    Relation: ${relation.value}""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 
 
@@ -71,6 +83,8 @@ data class VariableTagAdded(val variableId : VariableId,
             |    Tag: ${tag.value}""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 
 
@@ -89,6 +103,8 @@ data class MechanicAdded(val mechanicId : MechanicId,
     }
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 
 
@@ -107,5 +123,7 @@ data class MechanicRemoved(val mechanicId : MechanicId,
     }
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeState
 }
 

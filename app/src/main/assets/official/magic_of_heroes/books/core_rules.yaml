@@ -165,7 +165,6 @@ chapters:
           widgets:
           - type: widget_text
             widget_text:
-              id: humans_introduction
               format:
                 value_format:
                   element_format:
@@ -214,7 +213,6 @@ chapters:
           widgets:
           - type: widget_text
             widget_text:
-              id: humans_ability_score_increase_header
               format:
                 value_format:
                   color_theme:
@@ -232,7 +230,6 @@ chapters:
         - widgets:
           - type: widget_text
             widget_text:
-              id: humans_ability_score_increase_content
               format:
                 value_format:
                   element_format:
@@ -277,7 +274,6 @@ chapters:
           widgets:
           - type: widget_text
             widget_text:
-              id: humans_age_header
               format:
                 value_format:
                   color_theme:
@@ -295,7 +291,6 @@ chapters:
         - widgets:
           - type: widget_text
             widget_text:
-              id: humans_age_content
               format:
                 value_format:
                   element_format:
@@ -340,7 +335,6 @@ chapters:
           widgets:
           - type: widget_text
             widget_text:
-              id: humans_alignment_header
               format:
                 value_format:
                   color_theme:
@@ -358,7 +352,6 @@ chapters:
         - widgets:
           - type: widget_text
             widget_text:
-              id: humans_alignment_content
               format:
                 value_format:
                   element_format:
@@ -403,7 +396,6 @@ chapters:
           widgets:
           - type: widget_text
             widget_text:
-              id: humans_size_header
               format:
                 value_format:
                   color_theme:
@@ -421,7 +413,6 @@ chapters:
         - widgets:
           - type: widget_text
             widget_text:
-              id: humans_size_content
               format:
                 value_format:
                   element_format:
@@ -466,7 +457,6 @@ chapters:
           widgets:
           - type: widget_text
             widget_text:
-              id: humans_speed_header
               format:
                 value_format:
                   color_theme:
@@ -484,7 +474,6 @@ chapters:
         - widgets:
           - type: widget_text
             widget_text:
-              id: humans_speed_content
               format:
                 value_format:
                   element_format:
@@ -529,7 +518,6 @@ chapters:
           widgets:
           - type: widget_text
             widget_text:
-              id: humans_languages_header
               format:
                 value_format:
                   color_theme:
@@ -547,7 +535,6 @@ chapters:
         - widgets:
           - type: widget_text
             widget_text:
-              id: humans_languages_content
               format:
                 value_format:
                   element_format:

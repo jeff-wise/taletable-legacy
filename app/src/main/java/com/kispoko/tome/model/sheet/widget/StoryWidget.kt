@@ -1080,7 +1080,7 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget,
                                                              storyWidget.format(),
                                                              storyPart,
                                                              partIndex,
-                                                             storyWidget.id))
+                                                             storyWidget.widgetId()))
                     }
                 }
                 is StoryPartIcon ->
@@ -1156,7 +1156,7 @@ class StoryWidgetViewBuilder(val storyWidget : StoryWidget,
                          format : StoryWidgetFormat,
                          storyPart : StoryPartVariable,
                          partIndex : Int,
-                         widgetId : UUID) : View
+                         widgetId : WidgetId) : View
     {
         val text = TextViewBuilder()
 
@@ -1235,7 +1235,7 @@ fun storySpannableView(storyWidget : StoryWidget,
     story.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
     story.textSpan      = spannableStringBuilder(storyWidget.story(),
-                                                 storyWidget.id,
+                                                 storyWidget.widgetId(),
                                                  storyWidget.format().lineHeight(),
                                                  storyWidget.format().lineSpacing(),
                                                  entityId,
@@ -1286,7 +1286,7 @@ data class Phrase(val storyPart : StoryPart,
 
 
 private fun spannableStringBuilder(storyParts : List<StoryPart>,
-                                   storyWidgetId : UUID,
+                                   storyWidgetId : WidgetId,
                                    lineHeight : Maybe<LineHeight>,
                                    lineSpacing : Maybe<LineSpacing>,
                                    entityId : EntityId,

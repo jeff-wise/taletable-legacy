@@ -147,7 +147,7 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         {
             is effect.Val -> openTextVariableEditorDialog(
                                         valueVariable.value,
-                                        UpdateTargetTextCell(tableWidget.id, cell.id),
+                                        UpdateTargetTextCell(tableWidget.widgetId(), cell.id),
                                         entityId,
                                         context)
             is Err -> ApplicationLog.error(valueVariable.error)

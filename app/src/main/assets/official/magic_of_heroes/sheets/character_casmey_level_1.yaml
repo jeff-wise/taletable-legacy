@@ -1435,7 +1435,15 @@ variables:
     description: Inspiration Label
     value:
       type: text_literal
-      text_literal: 'Inspiration'
+      text_literal: 'My inspiration'
+- type: variable_text
+  variable_text:
+    id: inspiration_description
+    label: Inspiration Description
+    description: Inspiration Description
+    value:
+      type: text_literal
+      text_literal: "I am searching for inspiration\u2026"
 - type: variable_text
   variable_text:
     id: health_label
@@ -1467,7 +1475,7 @@ variables:
     description: Conditions Label
     value:
       type: text_literal
-      text_literal: 'My conditions'
+      text_literal: 'Conditions'
 - type: variable_text
   variable_text:
     id: mood_label
@@ -1905,7 +1913,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: name_label
+#            id: name_label
             format:
               value_format:
                 color_theme:
@@ -1925,7 +1933,7 @@ sections:
       - widgets:
         - type: widget_story
           widget_story:
-            id: name
+#            id: name
             format:
               widget_format:
                 element_format:
@@ -1971,7 +1979,7 @@ sections:
         widgets:
         - type: widget_story
           widget_story:
-            id: summary
+#            id: summary
             format:
               line_spacing: 8
               line_height: 36
@@ -2195,7 +2203,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: xp_label
+#            id: xp_label
             format:
               value_format:
                 color_theme:
@@ -2216,7 +2224,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: level_label
+#            id: level_label
             format:
               value_format:
                 color_theme:
@@ -2251,7 +2259,7 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: level
+#            id: level
             value_variable_id: level
             format:
               widget_format:
@@ -2302,7 +2310,7 @@ sections:
         widgets:
         - type: widget_points
           widget_points:
-            id: current_xp
+#            id: current_xp
             label: Experience Points
             format:
               limit_text_format:
@@ -2386,7 +2394,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: ability_scores_label
+#            id: ability_scores_label
             format:
               value_format:
                 color_theme:
@@ -2409,7 +2417,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: strength_label
+#            id: strength_label
             format:
               value_format:
                 color_theme:
@@ -2439,7 +2447,7 @@ sections:
             value_variable_id: strength_label
         - type: widget_number
           widget_number:
-            id: strength
+#            id: strength
             value_variable_id: strength
             format:
               widget_format:
@@ -2463,7 +2471,7 @@ sections:
                 size: 20
         - type: widget_text
           widget_text:
-            id: modifier_label
+#            id: modifier_label
             format:
               widget_format:
                 element_format:
@@ -2492,7 +2500,7 @@ sections:
             value_variable_id: modifier_label
         - type: widget_number
           widget_number:
-            id: strength_modifier
+#            id: strength_modifier
             value_variable_id: strength_modifier
             format:
               widget_format:
@@ -2526,7 +2534,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: dexterity_label
+#            id: dexterity_label
             format:
               value_format:
                 color_theme:
@@ -2556,7 +2564,7 @@ sections:
             value_variable_id: dexterity_label
         - type: widget_number
           widget_number:
-            id: dexterity
+#            id: dexterity
             value_variable_id: dexterity
             format:
               widget_format:
@@ -2580,7 +2588,7 @@ sections:
                 size: 20
         - type: widget_text
           widget_text:
-            id: modifier_label
+#            id: modifier_label
             format:
               widget_format:
                 element_format:
@@ -2609,7 +2617,7 @@ sections:
             value_variable_id: modifier_label
         - type: widget_number
           widget_number:
-            id: dexterity_modifier
+#            id: dexterity_modifier
             value_variable_id: dexterity_modifier
             format:
               widget_format:
@@ -2643,7 +2651,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: constitution_label
+#            id: constitution_label
             format:
               value_format:
                 color_theme:
@@ -2673,7 +2681,7 @@ sections:
             value_variable_id: constitution_label
         - type: widget_number
           widget_number:
-            id: constitution
+#            id: constitution
             value_variable_id: constitution
             format:
               widget_format:
@@ -2697,7 +2705,7 @@ sections:
                 size: 20
         - type: widget_text
           widget_text:
-            id: modifier_label
+#            id: modifier_label
             format:
               widget_format:
                 element_format:
@@ -2726,7 +2734,7 @@ sections:
             value_variable_id: modifier_label
         - type: widget_number
           widget_number:
-            id: constitution_modifier
+#            id: constitution_modifier
             value_variable_id: constitution_modifier
             format:
               widget_format:
@@ -2760,7 +2768,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: intelligence_label
+#            id: intelligence_label
             format:
               value_format:
                 color_theme:
@@ -2790,7 +2798,7 @@ sections:
             value_variable_id: intelligence_label
         - type: widget_number
           widget_number:
-            id: intelligence
+#            id: intelligence
             value_variable_id: intelligence
             format:
               widget_format:
@@ -2814,7 +2822,7 @@ sections:
                 size: 20
         - type: widget_text
           widget_text:
-            id: modifier_label
+#            id: modifier_label
             format:
               widget_format:
                 element_format:
@@ -2843,7 +2851,7 @@ sections:
             value_variable_id: modifier_label
         - type: widget_number
           widget_number:
-            id: intelligence_modifier
+#            id: intelligence_modifier
             value_variable_id: intelligence_modifier
             format:
               widget_format:
@@ -2877,7 +2885,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: wisdom_label
+#            id: wisdom_label
             format:
               value_format:
                 color_theme:
@@ -2907,7 +2915,7 @@ sections:
             value_variable_id: wisdom_label
         - type: widget_number
           widget_number:
-            id: wisdom
+#            id: wisdom
             value_variable_id: wisdom
             format:
               widget_format:
@@ -2931,7 +2939,7 @@ sections:
                 size: 20
         - type: widget_text
           widget_text:
-            id: modifier_label
+#            id: modifier_label
             format:
               widget_format:
                 element_format:
@@ -2960,7 +2968,7 @@ sections:
             value_variable_id: modifier_label
         - type: widget_number
           widget_number:
-            id: wisdom_modifier
+#            id: wisdom_modifier
             value_variable_id: wisdom_modifier
             format:
               widget_format:
@@ -2994,7 +3002,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: charisma_label
+#            id: charisma_label
             format:
               value_format:
                 color_theme:
@@ -3024,7 +3032,7 @@ sections:
             value_variable_id: charisma_label
         - type: widget_number
           widget_number:
-            id: charisma
+#            id: charisma
             value_variable_id: charisma
             format:
               widget_format:
@@ -3048,7 +3056,7 @@ sections:
                 size: 20
         - type: widget_text
           widget_text:
-            id: modifier_label
+#            id: modifier_label
             format:
               widget_format:
                 element_format:
@@ -3077,7 +3085,7 @@ sections:
             value_variable_id: modifier_label
         - type: widget_number
           widget_number:
-            id: charisma_modifier
+#            id: charisma_modifier
             value_variable_id: charisma_modifier
             format:
               widget_format:
@@ -3128,6 +3136,7 @@ sections:
                   color_id: light_grey_7
               thickness: 1
           element_format:
+            horizontal_alignment: left
             padding:
               left: 8
               right: 8
@@ -3136,7 +3145,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: alignment_label
+#            id: alignment_label
             format:
               value_format:
                 color_theme:
@@ -3159,7 +3168,7 @@ sections:
         widgets:
         - type: widget_story
           widget_story:
-            id: alignment
+#            id: alignment
             format:
               widget_format:
                 element_format:
@@ -3242,6 +3251,7 @@ sections:
                   color_id: light_grey_7
               thickness: 1
           element_format:
+            horizontal_alignment: left
             padding:
               left: 8
               right: 8
@@ -3250,7 +3260,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: deity_label
+#            id: deity_label
             format:
               value_format:
                 color_theme:
@@ -3273,7 +3283,7 @@ sections:
         widgets:
         - type: widget_story
           widget_story:
-            id: deity
+#            id: deity
             format:
               widget_format:
                 element_format:
@@ -3353,7 +3363,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: my_body_label
+#            id: my_body_label
             format:
               value_format:
                 color_theme:
@@ -3375,7 +3385,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: gender_label
+#            id: gender_label
             format:
               value_format:
                 color_theme:
@@ -3409,7 +3419,7 @@ sections:
             value_variable_id: gender_label
         - type: widget_text
           widget_text:
-            id: height_label
+#            id: height_label
             format:
               value_format:
                 color_theme:
@@ -3440,7 +3450,7 @@ sections:
             value_variable_id: height_label
         - type: widget_text
           widget_text:
-            id: weight_label
+#            id: weight_label
             format:
               value_format:
                 color_theme:
@@ -3472,7 +3482,7 @@ sections:
       - widgets:
         - type: widget_text
           widget_text:
-            id: gender
+#            id: gender
             format:
               value_format:
                 color_theme:
@@ -3506,7 +3516,7 @@ sections:
             value_variable_id: gender
         - type: widget_text
           widget_text:
-            id: height
+#            id: height
             format:
               value_format:
                 color_theme:
@@ -3537,7 +3547,7 @@ sections:
             value_variable_id: height
         - type: widget_number
           widget_number:
-            id: weight
+#            id: weight
             format:
               value_format:
                 color_theme:
@@ -3583,6 +3593,7 @@ sections:
       rows:
       - format:
           element_format:
+            horizontal_alignment: left
             padding:
               left: 8
               right: 8
@@ -3598,7 +3609,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: languages_label
+#            id: languages_label
             format:
               value_format:
                 color_theme:
@@ -3615,6 +3626,7 @@ sections:
             value_variable_id: languages_label
       - format:
           element_format:
+            horizontal_alignment: left
             padding:
               left: 8
               right: 8
@@ -3623,7 +3635,7 @@ sections:
         widgets:
         - type: widget_list
           widget_list:
-            id: languages
+#            id: languages
             format:
               widget_format:
                 element_format:
@@ -3657,11 +3669,13 @@ sections:
             top: 15
       rows:
       - format:
+          element_format:
+            horizontal_alignment: left
           has_columns: true
         widgets:
         - type: widget_text
           widget_text:
-            id: background_label
+#            id: background_label
             format:
               value_format:
                 color_theme:
@@ -3697,7 +3711,7 @@ sections:
               subsection_id: challenge
         - type: widget_text
           widget_text:
-            id: background
+#            id: background
             value_variable_id: background
             format:
               widget_format:
@@ -3747,6 +3761,8 @@ sections:
             top: 10
       rows:
       - format:
+          element_format:
+            horizontal_alignment: left
           border:
             bottom:
               color_theme:
@@ -3757,7 +3773,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: personality_traits_label
+#            id: personality_traits_label
             format:
               value_format:
                 color_theme:
@@ -3778,6 +3794,7 @@ sections:
             value_variable_id: personality_traits_label
       - format:
           element_format:
+            horizontal_alignment: left
             padding:
               left: 6
               right: 6
@@ -3793,7 +3810,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: background_personality_trait_1
+#            id: background_personality_trait_1
             format:
               value_format:
                 element_format:
@@ -3815,7 +3832,7 @@ sections:
                   horizontal_alignment: left
             value_variable_id: background_personality_trait_1
       - format:
-          element_format:
+            horizontal_alignment: left
             padding:
               left: 6
               right: 6
@@ -3824,7 +3841,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: background_personality_trait_2
+#            id: background_personality_trait_2
             format:
               value_format:
                 element_format:
@@ -3864,6 +3881,8 @@ sections:
             top: 6
       rows:
       - format:
+          element_format:
+            horizontal_alignment: left
           border:
             bottom:
               color_theme:
@@ -3874,7 +3893,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: ideals_label
+#            id: ideals_label
             format:
               value_format:
                 color_theme:
@@ -3895,6 +3914,7 @@ sections:
             value_variable_id: ideals_label
       - format:
           element_format:
+            horizontal_alignment: left
             padding:
               left: 6
               right: 6
@@ -3903,7 +3923,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: background_ideal
+#            id: background_ideal
             format:
               value_format:
                 element_format:
@@ -3943,6 +3963,8 @@ sections:
             top: 6
       rows:
       - format:
+          element_format:
+            horizontal_alignment: left
           border:
             bottom:
               color_theme:
@@ -3953,7 +3975,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: bonds_label
+#            id: bonds_label
             format:
               value_format:
                 color_theme:
@@ -3974,6 +3996,7 @@ sections:
             value_variable_id: bonds_label
       - format:
           element_format:
+            horizontal_alignment: left
             margins:
               top: 10
             padding:
@@ -3984,7 +4007,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: background_bond
+#            id: background_bond
             format:
               value_format:
                 element_format:
@@ -4024,6 +4047,8 @@ sections:
             top: 6
       rows:
       - format:
+          element_format:
+            horizontal_alignment: left
           border:
             bottom:
               color_theme:
@@ -4034,7 +4059,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: flaws_label
+#            id: flaws_label
             format:
               value_format:
                 color_theme:
@@ -4055,6 +4080,7 @@ sections:
             value_variable_id: flaws_label
       - format:
           element_format:
+            horizontal_alignment: left
             margins:
               top: 10
             padding:
@@ -4065,7 +4091,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: background_flaw
+#            id: background_flaw
             format:
               value_format:
                 element_format:
@@ -4109,7 +4135,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: defense_label
+#            id: defense_label
             format:
               value_format:
                 color_theme:
@@ -4119,7 +4145,7 @@ sections:
                   - theme_id: light
                     color_id: dark_grey_18
                 font_style: regular
-                size: 17
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -4133,7 +4159,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: armor_class_label
+#            id: armor_class_label
             format:
               value_format:
                 color_theme:
@@ -4161,7 +4187,7 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: armor_class_label
-            primary_action_widget_id: armor_class
+            primary_action_widget_id: "f831d60a-8cee-4f25-89b1-de8a79b2d44d"
             book_reference:
               book_id: core_rules
               chapter_id: running_a_game
@@ -4169,7 +4195,8 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: armor_class
+            id: "f831d60a-8cee-4f25-89b1-de8a79b2d44d"
+#            id: armor_class
             value_variable_id: armor_class
             format:
               widget_format:
@@ -4199,7 +4226,7 @@ sections:
               subsection_id: challenge
         - type: widget_boolean
           widget_boolean:
-            id: wearing_armor
+#            id: wearing_armor
             value_variables_reference:
               type: related_variable_set
               related_variable_set:
@@ -4289,7 +4316,7 @@ sections:
         widgets:
         - type: widget_list
           widget_list:
-            id: resistances
+#            id: resistances
             format:
               description_format:
                 color_theme:
@@ -4325,7 +4352,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: health_label
+#            id: health_label
             format:
               value_format:
                 color_theme:
@@ -4335,7 +4362,7 @@ sections:
                   - theme_id: light
                     color_id: dark_grey_18
                 font_style: regular
-                size: 17
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -4345,7 +4372,71 @@ sections:
       - widgets:
         - type: widget_points
           widget_points:
-            id: current_hit_points
+#            id: hit_dice
+            label: Hit Dice
+            format:
+              widget_format:
+                column: 1
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                  height: 70
+                  padding:
+                    left: 8
+                    right: 8
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+              limit_text_format:
+                element_format:
+                  vertical_alignment: bottom
+                  margins:
+                    left: 2
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_10
+                  - theme_id: light
+                    color_id: dark_grey_26
+                font_style: medium
+                size: 20
+              current_text_format:
+                element_format:
+                  margins:
+                    right: 2
+                  vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_10
+                  - theme_id: light
+                    color_id: light_blue_90
+                font_style: bold
+                size: 22
+              label_text_format:
+                element_format:
+                  vertical_alignment: bottom
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_10
+                  - theme_id: light
+                    color_id: dark_grey_14
+                font_style: medium
+                size: 16
+              info_format:
+                style: label_top_slash_bottom
+              bar_format:
+                bar_style: none
+            limit_value_variable_id: level
+            current_value_variable_id: current_hit_dice
+        - type: widget_points
+          widget_points:
+#            id: current_hit_points
             label: hit points
             format:
               widget_format:
@@ -4357,17 +4448,14 @@ sections:
                       color_id: white
                   corners:
                     top_right_radius: 2
-                    top_left_radius: 2
-                    bottom_left_radius: 2
-                    bottom_right_radius: 2
+                  height: 70
+                  margins:
+                    left: 1
                   padding:
                     top: 14
                     bottom: 16
                     left: 8
                     right: 8
-                  width:
-                    type: width_justify
-                    width_justify: justify
               limit_text_format:
                 element_format:
                   padding:
@@ -4431,264 +4519,22 @@ sections:
             limit_value_variable_id: max_hit_points
             current_value_variable_id: current_hit_points
       - format:
-          has_columns: true
           element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            horizontal_alignment: left
             margins:
-              top: 10
+              top: 1
+            padding:
+              left: 8
+              right: 8
+              top: 6
         widgets:
         - type: widget_text
           widget_text:
-            id: hit_dice_label
-            format:
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_20
-                  - theme_id: light
-                    color_id: dark_grey_14
-                size: 18
-                font_style: medium
-              widget_format:
-                column: 1
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_grey_2
-                  corners:
-                    top_left_radius: 2
-                    bottom_left_radius: 2
-                  height: 42
-                  padding:
-                    left: 10
-                    right: 10
-                  width:
-                    type: width_wrap
-                    width_wrap: wrap
-            value_variable_id: hit_dice_label
-        - type: widget_points
-          widget_points:
-            id: hit_dice
-            label: Hit Dice
-            format:
-              widget_format:
-                column: 1
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_right_radius: 2
-                    bottom_right_radius: 2
-                  height: 42
-              limit_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue_90
-                font_style: bold
-                size: 20
-              current_text_format:
-                element_format:
-                  margins:
-                    right: 1
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue_90
-                font_style: bold
-                size: 20
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_18
-                font_style: medium
-                size: 19
-              info_format:
-                style: current_slash_limit
-                format:
-                  element_format:
-                    padding:
-                      left: 12
-                      right: 12
-              bar_format:
-                bar_style: none
-#                counter_active_text: 'HD'
-#                counter_inactive_text: 'HD'
-#                element_format:
-#                  padding:
-#                    top: 4
-#                    bottom: 4
-#                    left: 6
-#                    right: 6
-#                limit_format:
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: dark_grey_24
-#                  font_style: bold
-#                  element_format:
-#                    background_color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_3
-#                    corners:
-#                      top_left_radius: 2
-#                      top_right_radius: 2
-#                      bottom_right_radius: 2
-#                      bottom_left_radius: 2
-#                    height: 42
-#                    width:
-#                      type: number_literal
-#                      number_literal: 55
-#                      bottom: 4
-#                current_format:
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: white
-#                  font_style: bold
-#                  element_format:
-#                    background_color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_blue_70
-#                    corners:
-#                      top_left_radius: 2
-#                      top_right_radius: 2
-#                      bottom_right_radius: 2
-#                      bottom_left_radius: 2
-#                    height: 42
-#                    width:
-#                      type: number_literal
-#                      number_literal: 55
-#                      bottom: 4
-            limit_value_variable_id: level
-            current_value_variable_id: current_hit_dice
-        - type: widget_action
-          widget_action:
-            id: spend_hit_dice
-            format:
-              widget_format:
-                column: 2
-                element_format:
-                  horizontal_alignment: left
-                  height: 42
-                  margins:
-                    left: 10
-              button_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
-                  padding:
-                    right: 8
-                    left: 8
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_12
-                icon_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: dark_grey_14
-                  size:
-                    width: 23
-                    height: 23
-              button_inactive_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
-                  padding:
-                    right: 8
-                    left: 8
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_12
-                icon_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: dark_grey_14
-                  size:
-                    width: 23
-                    height: 23
-              description_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: white
-                  corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
-                  padding:
-                    right: 8
-                    bottom: 2
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_14
-                font_style: medium
-                size: 18
-              description_inactive_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_grey_2
-                  corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
-                  padding:
-                    right: 8
-                    bottom: 2
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_14
-                font_style: medium
-                size: 18
-              button_icon: heart_plus
-            procedure_id: second_wind
-            description: 'Spend HD'
-      - format:
-          element_format:
-            margins:
-              top: 10
-        widgets:
-        - type: widget_text
-          widget_text:
-            id: conditions_label
+#            id: conditions_label
             format:
               value_format:
                 color_theme:
@@ -4697,47 +4543,43 @@ sections:
                     color_id: dark_grey_23
                   - theme_id: light
                     color_id: dark_grey_18
-                font_style: bold
-                size: 16
+                font_style: medium
+                size: 15
               widget_format:
                 element_format:
                   horizontal_alignment: left
-                  margins:
-                    bottom: 10
             value_variable_id: conditions_label
       - format:
           element_format:
-            margins:
-              top: 0
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            horizontal_alignment: left
+            padding:
+              left: 8
+              right: 8
+              top: 4
+              bottom: 10
         widgets:
         - type: widget_list
           widget_list:
-            id: conditions
+#            id: conditions
             format:
               widget_format:
                 element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: white
                   corners:
-                    top_right_radius: 2
+                    bottom_left_radius: 2
                     bottom_right_radius: 2
-                  height: 45
-                  padding:
-                    left: 10
-                    right: 10
-                  width:
-                    type: width_wrap
-                    width_wrap: wrap
+                  margins:
+                    top: 2
               description_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: dark_grey_23
                   - theme_id: light
-                    color_id: dark_grey_14
-                font_style: medium
+                    color_id: dark_grey_12
                 size: 19
               item_format:
                 color_theme:
@@ -4751,173 +4593,12 @@ sections:
             value_set_id: conditions
             values_variable_id: conditions
             description: 'I am '
-#    - format:
-#        element_format:
-#          background_color_theme:
-#            theme_color_ids:
-#            - theme_id: light
-#              color_id: dark_grey_16
-#          padding:
-#            top: 10
-#            bottom: 10
-#            left: 8
-#            right: 8
-#      rows:
-#      - widgets:
-#        - type: widget_story
-#          widget_story:
-#            id: damage_taken
-#            format:
-#              text_format:
-#                element_format:
-#                  padding:
-#                    bottom: 6
-#                    top: 4
-#              widget_format:
-#                element_format:
-#                  horizontal_alignment: left
-#                  width:
-#                    type: width_justify
-#                    width_justify: justify
-#            story:
-#            - type: story_part_icon
-#              story_part_icon:
-#                icon:
-#                  icon_type: info_bubble
-#                  icon_format:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: white
-#                    size:
-#                      width: 20
-#                      height: 20
-#            - type: story_part_span
-#              story_part_span:
-#                text: '  I have taken'
-#                text_format:
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: dark
-#                      color_id: light_grey_14
-#                    - theme_id: light
-#                      color_id: light_grey_5
-#                  size: 17
-#            - type: story_part_variable
-#              story_part_variable:
-#                variable_id: damage_taken
-#                text_format:
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: dark
-#                      color_id: light_blue_8
-#                    - theme_id: light
-#                      color_id: light_grey_2
-#                  font_style: bold
-#                  size: 17
-#            - type: story_part_span
-#              story_part_span:
-#                text: ' damage in my adventures.'
-#                text_format:
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: dark
-#                      color_id: light_grey_14
-#                    - theme_id: light
-#                      color_id: light_grey_5
-#                  size: 17
     - format:
         element_format:
           padding:
             left: 6
             right: 6
-            top: 15
-            bottom: 15
-        border:
-          bottom:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_grey_10
-            thickness: 2
-      rows:
-      - widgets:
-        - type: widget_text
-          widget_text:
-            id: inspiration_label
-            format:
-              value_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_23
-                  - theme_id: light
-                    color_id: dark_grey_18
-                font_style: bold
-                size: 16
-              widget_format:
-                element_format:
-                  horizontal_alignment: left
-                  margins:
-                    bottom: 10
-            value_variable_id: inspiration_label
-      - widgets:
-        - type: widget_boolean
-          widget_boolean:
-            id: inspiration
-            value_variables_reference:
-              type: variable_id
-              variable_id: has_inspiration
-            format:
-              widget_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_4
-                    - theme_id: light
-                      color_id: light_grey_2
-                  corners:
-                    top_left_radius: 2
-                    top_right_radius: 2
-                    bottom_right_radius: 2
-                    bottom_left_radius: 2
-                  height: 42
-                  padding:
-                    left: 8
-                    right: 8
-              true_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_4
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_21
-                  - theme_id: light
-                    color_id: green_90
-                font_style: semi_bold
-                size: 18
-              false_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_21
-                  - theme_id: light
-                    color_id: dark_grey_14
-                font_style: semi_bold
-                size: 18
-              true_text: 'I am inspired'
-              false_text: "I am searching for inspiration\u2026"
-    - format:
-        element_format:
-          padding:
-            top: 10
-            bottom: 15
-            left: 6
-            right: 6
+            top: 6
       rows:
       - format:
           element_format:
@@ -4925,7 +4606,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: life_and_death_label
+#            id: inspiration_label
             format:
               value_format:
                 color_theme:
@@ -4935,12 +4616,123 @@ sections:
                   - theme_id: light
                     color_id: dark_grey_18
                 font_style: regular
-                size: 17
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
                   margins:
-                    bottom: 10
+                    bottom: 4
+            value_variable_id: inspiration_label
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 2
+              top_right_radius: 2
+              bottom_right_radius: 2
+              bottom_left_radius: 2
+            horizontal_alignment: left
+        widgets:
+        - type: widget_boolean
+          widget_boolean:
+#            id: inspiration
+            value_variables_reference:
+              type: variable_id
+              variable_id: has_inspiration
+            format:
+              widget_format:
+                element_format:
+                  padding:
+                    left: 14
+                    right: 14
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+              true_icon:
+                icon_type: check_bold
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: green
+                  size:
+                    width: 22
+                    height: 22
+              false_icon:
+                icon_type: cancel_bold
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: dark_grey_18
+                  size:
+                    width: 22
+                    height: 22
+        - type: widget_text
+          widget_text:
+#            id: inspiration_description
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_23
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: regular
+                size: 19
+              widget_format:
+                element_format:
+                  border:
+                    left:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: light_grey_5
+                      thickness: 1
+                  horizontal_alignment: left
+                  vertical_alignment: middle
+                  padding:
+                    bottom: 12
+                    left: 14
+                    top: 12
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+            value_variable_id: inspiration_description
+    - format:
+        element_format:
+          padding:
+            top: 6
+            bottom: 15
+            left: 6
+            right: 6
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_text
+          widget_text:
+#            id: life_and_death_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: dark_grey_23
+                  - theme_id: light
+                    color_id: dark_grey_18
+                font_style: regular
+                size: 16
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+                  margins:
+                    bottom: 4
             value_variable_id: life_and_death_label
       - format:
           element_format:
@@ -4949,7 +4741,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: state_label
+#            id: state_label
             format:
               value_format:
                 color_theme:
@@ -4985,7 +4777,7 @@ sections:
               subsection_id: challenge
         - type: widget_text
           widget_text:
-            id: state
+#            id: state
             value_variable_id: state
             format:
               widget_format:
@@ -5042,7 +4834,7 @@ sections:
         widgets:
         - type: widget_action
           widget_action:
-            id: roll_death_save
+#            id: roll_death_save
             format:
               widget_format:
                 element_format:
@@ -5152,7 +4944,7 @@ sections:
         widgets:
         - type: widget_points
           widget_points:
-            id: life_saves
+#            id: life_saves
             label: Life Saves
             format:
               limit_text_format:
@@ -5268,7 +5060,7 @@ sections:
         widgets:
         - type: widget_points
           widget_points:
-            id: death_saves
+#            id: death_saves
             label: Death Saves
             format:
               limit_text_format:
@@ -5408,7 +5200,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: surprise_label
+#            id: surprise_label
             format:
               value_format:
                 color_theme:
@@ -5431,7 +5223,7 @@ sections:
         widgets:
         - type: widget_roll
           widget_roll:
-            id: initiative
+#            id: initiative
             format:
               widget_format:
                 element_format:
@@ -5556,7 +5348,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: turn_label
+#            id: turn_label
             format:
               value_format:
                 color_theme:
@@ -5603,7 +5395,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: movement_label
+#            id: movement_label
             format:
               value_format:
                 color_theme:
@@ -5623,7 +5415,7 @@ sections:
         widgets:
         - type: widget_story
           widget_story:
-            id: walk_speed
+#            id: walk_speed
             format:
               line_spacing: 5
               line_height: 32
@@ -5716,7 +5508,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: actions_label
+#            id: actions_label
             format:
               value_format:
                 color_theme:
@@ -5732,7 +5524,7 @@ sections:
       - widgets:
         - type: widget_slider
           widget_slider:
-            id: actions
+#            id: actions
             format:
               group_format:
                 padding:
@@ -5795,7 +5587,7 @@ sections:
               - widgets:
                 - type: widget_story
                   widget_story:
-                    id: action_attack
+#                    id: action_attack
                     format:
                       text_format:
                         element_format:
@@ -5837,7 +5629,7 @@ sections:
               - widgets:
                 - type: widget_story
                   widget_story:
-                    id: action_cast_spell
+#                    id: action_cast_spell
                     format:
                       text_format:
                         element_format:
@@ -6766,7 +6558,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: bonus_actions_label
+#            id: bonus_actions_label
             format:
               value_format:
                 color_theme:
@@ -6782,7 +6574,7 @@ sections:
       - widgets:
         - type: widget_slider
           widget_slider:
-            id: bonus_actions
+#            id: bonus_actions
             format:
               group_format:
                 padding:
@@ -6874,7 +6666,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: reactions_label
+#            id: reactions_label
             format:
               value_format:
                 color_theme:
@@ -6890,7 +6682,7 @@ sections:
       - widgets:
         - type: widget_slider
           widget_slider:
-            id: reactions
+#            id: reactions
             format:
               group_format:
                 padding:
@@ -6972,7 +6764,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: resting_label
+#            id: resting_label
             format:
               value_format:
                 color_theme:
@@ -6992,7 +6784,7 @@ sections:
       - widgets:
         - type: widget_action
           widget_action:
-            id: short_rest
+#            id: short_rest
             format:
               widget_format:
                 element_format:
@@ -7087,7 +6879,7 @@ sections:
             description: 'Short Rest'
         - type: widget_action
           widget_action:
-            id: long_rest
+#            id: long_rest
             format:
               widget_format:
                 element_format:
@@ -7203,7 +6995,7 @@ sections:
       - widgets:
         - type: widget_group
           widget_group:
-            id: attacks
+#            id: attacks
             group_references:
             - type: group_id
               group_id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
@@ -7246,7 +7038,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: strength_label
+#            id: strength_label
             format:
               value_format:
                 color_theme:
@@ -7277,7 +7069,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: strength_ability
+#            id: strength_ability
             label: "Checks"
             format:
               widget_format:
@@ -7344,7 +7136,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: strength_saving_throw_roll
+#                    id: strength_saving_throw_roll
                     format:
                       widget_format:
                         element_format:
@@ -7469,7 +7261,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: strength_check_roll
+#                    id: strength_check_roll
                     format:
                       widget_format:
                         element_format:
@@ -7594,7 +7386,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: strength_ability
+#            id: strength_ability
             label: "Skills"
             format:
               widget_format:
@@ -7663,7 +7455,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_athletics_roll
+#                    id: skill_athletics_roll
                     format:
                       widget_format:
                         element_format:
@@ -7776,7 +7568,7 @@ sections:
                     description: 'Athletics'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_athletics_is_proficient
+#                    id: skill_athletics_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_athletics_is_proficient
@@ -7859,7 +7651,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: strength_ability
+#            id: strength_ability
             label: "More Info"
             format:
               widget_format:
@@ -7926,7 +7718,7 @@ sections:
                 widgets:
                 - type: widget_story
                   widget_story:
-                    id: carrying_capacity
+#                    id: carrying_capacity
                     format:
                       widget_format:
                         element_format:
@@ -7994,7 +7786,7 @@ sections:
                 widgets:
                 - type: widget_story
                   widget_story:
-                    id: push_lift_drag
+#                    id: push_lift_drag
                     format:
                       widget_format:
                         element_format:
@@ -8083,7 +7875,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: dexterity_label
+#            id: dexterity_label
             format:
               value_format:
                 color_theme:
@@ -8114,7 +7906,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: strength_ability
+#            id: strength_ability
             label: "Checks"
             format:
               widget_format:
@@ -8181,7 +7973,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: dexterity_saving_throw_roll
+#                    id: dexterity_saving_throw_roll
                     format:
                       widget_format:
                         element_format:
@@ -8306,7 +8098,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: dexterity_check_roll
+#                    id: dexterity_check_roll
                     format:
                       widget_format:
                         element_format:
@@ -8431,7 +8223,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: strength_ability
+#            id: strength_ability
             label: "Skills"
             format:
               widget_format:
@@ -8500,7 +8292,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_acrobatics_roll
+#                    id: skill_acrobatics_roll
                     format:
                       widget_format:
                         element_format:
@@ -8613,7 +8405,7 @@ sections:
                     description: 'Acrobatics'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_acrobatics_is_proficient
+#                    id: skill_acrobatics_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_acrobatics_is_proficient
@@ -8695,7 +8487,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_sleight_of_hand_roll
+#                    id: skill_sleight_of_hand_roll
                     format:
                       widget_format:
                         element_format:
@@ -8808,7 +8600,7 @@ sections:
                     description: 'Sleight of Hand'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_sleight_of_hand_is_proficient
+#                    id: skill_sleight_of_hand_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_sleight_of_hand_is_proficient
@@ -8890,7 +8682,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_stealth_roll
+#                    id: skill_stealth_roll
                     format:
                       widget_format:
                         element_format:
@@ -9003,7 +8795,7 @@ sections:
                     description: 'Stealth'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_stealth_is_proficient
+#                    id: skill_stealth_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_stealth_is_proficient
@@ -9104,7 +8896,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: constitution_label
+#            id: constitution_label
             format:
               value_format:
                 color_theme:
@@ -9135,7 +8927,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: constitution_ability
+#            id: constitution_ability
             label: "Checks"
             format:
               widget_format:
@@ -9202,7 +8994,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: constitution_saving_throw_roll
+#                    id: constitution_saving_throw_roll
                     format:
                       widget_format:
                         element_format:
@@ -9327,7 +9119,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: constitution_check_roll
+#                    id: constitution_check_roll
                     format:
                       widget_format:
                         element_format:
@@ -9470,7 +9262,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: intelligence_label
+#            id: intelligence_label
             format:
               value_format:
                 color_theme:
@@ -9501,7 +9293,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: intelligence_ability
+#            id: intelligence_ability
             label: "Checks"
             format:
               widget_format:
@@ -9568,7 +9360,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: intelligence_saving_throw_roll
+#                    id: intelligence_saving_throw_roll
                     format:
                       widget_format:
                         element_format:
@@ -9693,7 +9485,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: intelligence_check_roll
+#                    id: intelligence_check_roll
                     format:
                       widget_format:
                         element_format:
@@ -9818,7 +9610,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: intelligence_skills
+#            id: intelligence_skills
             label: "Skills"
             format:
               widget_format:
@@ -9887,7 +9679,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_arcana_roll
+#                    id: skill_arcana_roll
                     format:
                       widget_format:
                         element_format:
@@ -10000,7 +9792,7 @@ sections:
                     description: 'Arcana'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_arcana_is_proficient
+#                    id: skill_arcana_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_arcana_is_proficient
@@ -10082,7 +9874,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_history_roll
+#                    id: skill_history_roll
                     format:
                       widget_format:
                         element_format:
@@ -10195,7 +9987,7 @@ sections:
                     description: 'History'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_history_is_proficient
+#                    id: skill_history_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_history_is_proficient
@@ -10277,7 +10069,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_investigation_roll
+#                    id: skill_investigation_roll
                     format:
                       widget_format:
                         element_format:
@@ -10390,7 +10182,7 @@ sections:
                     description: 'Investigation'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_investigation_is_proficient
+#                    id: skill_investigation_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_investigation_is_proficient
@@ -10472,7 +10264,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_nature_roll
+#                    id: skill_nature_roll
                     format:
                       widget_format:
                         element_format:
@@ -10585,7 +10377,7 @@ sections:
                     description: 'Nature'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_nature_is_proficient
+#                    id: skill_nature_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_nature_is_proficient
@@ -10667,7 +10459,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_religion_roll
+#                    id: skill_religion_roll
                     format:
                       widget_format:
                         element_format:
@@ -10780,7 +10572,7 @@ sections:
                     description: 'Religion'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_religion_is_proficient
+#                    id: skill_religion_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_religion_is_proficient
@@ -10881,7 +10673,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: wisdom_label
+#            id: wisdom_label
             format:
               value_format:
                 color_theme:
@@ -10912,7 +10704,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: wisdom_ability
+#            id: wisdom_ability
             label: "Checks"
             format:
               widget_format:
@@ -10979,7 +10771,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: wisdom_saving_throw_roll
+#                    id: wisdom_saving_throw_roll
                     format:
                       widget_format:
                         element_format:
@@ -11104,7 +10896,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: wisdom_check_roll
+#                    id: wisdom_check_roll
                     format:
                       widget_format:
                         element_format:
@@ -11229,7 +11021,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: wisdom_skills
+#            id: wisdom_skills
             label: "Skills"
             format:
               widget_format:
@@ -11298,7 +11090,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_animal_handling_roll
+#                    id: skill_animal_handling_roll
                     format:
                       widget_format:
                         element_format:
@@ -11411,7 +11203,7 @@ sections:
                     description: 'Animal Handling'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_animal_handling_is_proficient
+#                    id: skill_animal_handling_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_animal_handling_is_proficient
@@ -11493,7 +11285,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_insight_roll
+#                    id: skill_insight_roll
                     format:
                       widget_format:
                         element_format:
@@ -11606,7 +11398,7 @@ sections:
                     description: 'Insight'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_insight_is_proficient
+#                    id: skill_insight_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_insight_is_proficient
@@ -11688,7 +11480,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_medicine_roll
+#                    id: skill_medicine_roll
                     format:
                       widget_format:
                         element_format:
@@ -11801,7 +11593,7 @@ sections:
                     description: 'Medicine'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_medicine_is_proficient
+#                    id: skill_medicine_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_medicine_is_proficient
@@ -11883,7 +11675,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_perception_roll
+#                    id: skill_perception_roll
                     format:
                       widget_format:
                         element_format:
@@ -11996,7 +11788,7 @@ sections:
                     description: 'Perception'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_perception_is_proficient
+#                    id: skill_perception_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_perception_is_proficient
@@ -12078,7 +11870,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_survival_roll
+#                    id: skill_survival_roll
                     format:
                       widget_format:
                         element_format:
@@ -12191,7 +11983,7 @@ sections:
                     description: 'Survival'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_survival_is_proficient
+#                    id: skill_survival_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_survival_is_proficient
@@ -12292,7 +12084,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: charisma_label
+#            id: charisma_label
             format:
               value_format:
                 color_theme:
@@ -12323,7 +12115,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: charisma_ability
+#            id: charisma_ability
             label: "Checks"
             format:
               widget_format:
@@ -12390,7 +12182,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: charisma_saving_throw_roll
+#                    id: charisma_saving_throw_roll
                     format:
                       widget_format:
                         element_format:
@@ -12515,7 +12307,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: charisma_check_roll
+#                    id: charisma_check_roll
                     format:
                       widget_format:
                         element_format:
@@ -12627,7 +12419,7 @@ sections:
                     roll_group:
                       roll_references:
                       - type: summation_id
-                        summation_id: charism_check_roll
+                        summation_id: charisma_check_roll
                     description: 'Charisma Check'
       - format:
           border:
@@ -12640,7 +12432,7 @@ sections:
         widgets:
         - type: widget_expander
           widget_expander:
-            id: charisma_skills
+#            id: charisma_skills
             label: "Skills"
             format:
               widget_format:
@@ -12709,7 +12501,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_deception_roll
+#                    id: skill_deception_roll
                     format:
                       widget_format:
                         element_format:
@@ -12822,7 +12614,7 @@ sections:
                     description: 'Deception'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_deception_is_proficient
+#                    id: skill_deception_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_deception_is_proficient
@@ -12904,7 +12696,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_intimidation_roll
+#                    id: skill_intimidation_roll
                     format:
                       widget_format:
                         element_format:
@@ -13017,7 +12809,7 @@ sections:
                     description: 'Intimidation'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_intimidation_is_proficient
+#                    id: skill_intimidation_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_intimidation_is_proficient
@@ -13099,7 +12891,7 @@ sections:
                 widgets:
                 - type: widget_roll
                   widget_roll:
-                    id: skill_persuasion_roll
+#                    id: skill_persuasion_roll
                     format:
                       widget_format:
                         element_format:
@@ -13212,7 +13004,7 @@ sections:
                     description: 'Persuasion'
                 - type: widget_boolean
                   widget_boolean:
-                    id: skill_persuasion_is_proficient
+#                    id: skill_persuasion_is_proficient
                     value_variables_reference:
                       type: variable_id
                       variable_id: skill_persuasion_is_proficient
@@ -13302,7 +13094,7 @@ sections:
       - widgets:
         - type: widget_table
           widget_table:
-            id: armor_and_shields
+#            id: armor_and_shields
             title_variable_id: armor_table_label
             format:
               widget_format:
@@ -13504,7 +13296,7 @@ sections:
       - widgets:
         - type: widget_table
           widget_table:
-            id: weapons
+#            id: weapons
             title_variable_id: weapon_table_label
             format:
               widget_format:
@@ -13709,7 +13501,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: coins_label
+#            id: coins_label
             format:
               value_format:
                 color_theme:
@@ -13733,7 +13525,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: copper_label
+#            id: copper_label
             format:
               value_format:
                 color_theme:
@@ -13769,7 +13561,7 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: copper
+#            id: copper
             value_variable_id: copper
             format:
               widget_format:
@@ -13808,7 +13600,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: silver_label
+#            id: silver_label
             format:
               value_format:
                 color_theme:
@@ -13844,7 +13636,7 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: silver
+#            id: silver
             value_variable_id: silver
             format:
               widget_format:
@@ -13883,7 +13675,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: gold_label
+#            id: gold_label
             format:
               value_format:
                 color_theme:
@@ -13919,7 +13711,7 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: gold
+#            id: gold
             value_variable_id: gold
             format:
               widget_format:
@@ -13959,7 +13751,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: electrum_label
+#            id: electrum_label
             format:
               value_format:
                 color_theme:
@@ -13995,7 +13787,7 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: electrum
+#            id: electrum
             value_variable_id: electrum
             format:
               widget_format:
@@ -14034,7 +13826,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: platinum_label
+#            id: platinum_label
             format:
               value_format:
                 color_theme:
@@ -14070,7 +13862,7 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: platinum
+#            id: platinum
             value_variable_id: platinum
             format:
               widget_format:
@@ -14119,7 +13911,7 @@ sections:
       - widgets:
         - type: widget_table
           widget_table:
-            id: backpack
+#            id: backpack
             title_variable_id: backpack_table_label
             format:
               title_bar_format:
@@ -14364,7 +14156,7 @@ sections:
       - widgets:
         - type: widget_text
           widget_text:
-            id: encumbrance_label
+#            id: encumbrance_label
             format:
               value_format:
                 color_theme:
@@ -14386,7 +14178,7 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-            id: total_weight_label
+#            id: total_weight_label
             format:
               value_format:
                 color_theme:
@@ -14422,7 +14214,7 @@ sections:
               subsection_id: challenge
         - type: widget_number
           widget_number:
-            id: gear_total_weight
+#            id: gear_total_weight
             value_variable_id: gear_total_weight
             format:
               widget_format:
@@ -14484,7 +14276,7 @@ sections:
       - widgets:
         - type: widget_mechanic
           widget_mechanic:
-            id: race_mechanics
+#            id: race_mechanics
             category_reference:
               type: mechanic_category_tag
               mechanic_category_tag: race
@@ -14561,7 +14353,7 @@ sections:
       - widgets:
         - type: widget_mechanic
           widget_mechanic:
-            id: background_mechanics
+#            id: background_mechanics
             category_reference:
               type: mechanic_category_tag
               mechanic_category_tag: background
@@ -14638,7 +14430,7 @@ sections:
       - widgets:
         - type: widget_mechanic
           widget_mechanic:
-            id: class_mechanics
+#            id: class_mechanics
             category_reference:
               type: mechanic_category_tag
               mechanic_category_tag: class
@@ -14834,7 +14626,6 @@ sections:
       - widgets:
         - type: widget_log
           widget_log:
-            id: journal
             format:
               widget_format:
                 element_format:

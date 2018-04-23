@@ -384,13 +384,21 @@ sealed class PointsInfoStyle : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object LabelTopSlashBottom : PointsInfoStyle()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "label_top_slash_bottom" })
+
+        override fun toDocument() = DocText("label_top_slash_bottom")
+    }
+
+
     companion object
     {
         fun fromDocument(doc : SchemaDoc) : ValueParser<PointsInfoStyle> = when (doc)
         {
             is DocText -> when (doc.text)
             {
-                "current_slash_limit"  -> effValue<ValueError, PointsInfoStyle>(
+                "current_slash_limit"    -> effValue<ValueError, PointsInfoStyle>(
                                                 PointsInfoStyle.CurrentSlashLimit)
                 "limit_label_max_right"  -> effValue<ValueError, PointsInfoStyle>(
                                                 PointsInfoStyle.LimitLabelMaxRight)
@@ -398,6 +406,8 @@ sealed class PointsInfoStyle : ToDocument, SQLSerializable, Serializable
                                                 PointsInfoStyle.LabelLeftSlashRight)
                 "center_label_right"     -> effValue<ValueError, PointsInfoStyle>(
                                                 PointsInfoStyle.CenterLabelRight)
+                "label_top_slash_bottom" -> effValue<ValueError, PointsInfoStyle>(
+                                                PointsInfoStyle.LabelTopSlashBottom)
                 else                  -> effError<ValueError, PointsInfoStyle>(
                                              UnexpectedValue("PointsInfoStyle", doc.text, doc.path))
             }
@@ -773,7 +783,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
                         {
                             openNumberVariableEditorDialog(currentValueVariable.value,
                                                            NumericEditorType.Adder,
-                                                           UpdateTargetPointsWidget(pointsWidget.id),
+                                                           UpdateTargetPointsWidget(pointsWidget.widgetId()),
                                                            entityId,
                                                            context)
                         }
@@ -800,6 +810,23 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         when (pointsWidget.format().infoFormat().style())
         {
+            is PointsInfoStyle.LabelTopSlashBottom ->
+            {
+                layout = this.infoViewLinearLayout(pointsWidget.format().infoFormat().format())
+                val infoContentLayout = layout.findViewById<LinearLayout>(R.id.content)
+                infoContentLayout.orientation = LinearLayout.VERTICAL
+
+                val label = pointsWidget.label()
+                when (label) {
+                    is Just -> {
+                        val labelView = this.labelView(label.value.value,
+                                                       pointsWidget.format().labelTextFormat())
+                        infoContentLayout.addView(labelView)
+                    }
+                }
+
+                infoContentLayout.addView(this.pointsSlashView())
+            }
             is PointsInfoStyle.LimitLabelMaxRight ->
             {
                 if (currentPointsString != null) {
@@ -950,15 +977,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         layout.gravity          = Gravity.TOP
 
         return layout.relativeLayout(context)
-    }
-
-
-    private fun infoViewVerticalBorder(border : BorderEdge) : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-
-        return layout.linearLayout(context)
     }
 
 
@@ -1449,6 +1467,40 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     // -----------------------------------------------------------------------------------------
     // SHARED LINEAR VIEWS
     // -----------------------------------------------------------------------------------------
+
+    private fun pointsSlashView() : LinearLayout
+    {
+        val layout = this.pointsSlashViewLayout()
+
+        val currentPointsString = pointsWidget.currentValueString(entityId)
+        val limitPointsString = pointsWidget.limitValueString(entityId)
+
+        val currentTextFormat = pointsWidget.format().currentTextFormat()
+        val limitTextFormat = pointsWidget.format().limitTextFormat()
+
+        if (currentPointsString != null)
+            layout.addView(this.currentPointsLinearView(currentPointsString, currentTextFormat))
+
+        layout.addView(this.slashTextView(limitTextFormat))
+
+        if (limitPointsString != null)
+            layout.addView(this.limitPointsLinearView(limitPointsString, limitTextFormat))
+
+        return layout
+    }
+
+
+    private fun pointsSlashViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        return layout.linearLayout(context)
+    }
 
     private fun currentPointsLinearView(currentString : String,
                                         textFormat : TextFormat) : TextView

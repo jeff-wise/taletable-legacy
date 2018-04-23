@@ -674,7 +674,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -765,7 +765,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -804,6 +804,12 @@ types:
       presence: optional
       description: >
         The text style.
+    - name: view_type
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The view type.
     - name: true_format
       type:
         type: custom_type
@@ -818,6 +824,18 @@ types:
       presence: optional
       description: >
         The text style.
+    - name: left_toggle_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Left toggle format.
+    - name: right_toggle_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Right toggle format.
     - name: true_text
       type:
         type: prim_type
@@ -854,7 +872,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -947,7 +965,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -996,7 +1014,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1043,7 +1061,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1117,7 +1135,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1289,7 +1307,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1380,7 +1398,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1533,7 +1551,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1660,7 +1678,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1849,7 +1867,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -1926,7 +1944,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -2021,7 +2039,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -2126,7 +2144,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -2357,7 +2375,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -3096,7 +3114,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format
@@ -3216,7 +3234,7 @@ types:
       type: 
         type: custom_type
         custom_type: widget_id
-      presence: required
+      presence: optional
       description: >
         The widget identifier.
     - name: format

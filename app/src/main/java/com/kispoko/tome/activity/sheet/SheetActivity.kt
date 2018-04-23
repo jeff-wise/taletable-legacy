@@ -216,14 +216,18 @@ class SheetActivity : AppCompatActivity()
         val sheetId = this.sheetId
         val viewPager = this.viewPager
 
+        Log.d("***SHEET ACT", "on message")
+
         if (sheetId != null)
         {
             when (message)
             {
                 is MessageSheetUpdate ->
                 {
-                    if (sheetId != null && viewPager != null) {
+                    Log.d("***SHEET ACT", "sheet update")
+                    if (viewPager != null) {
                         sheetOrError(sheetId) apDo {
+                            Log.d("***SHEET ACT", "update sheet")
                             it.update(message.update, viewPager, this)
                         }
                     }

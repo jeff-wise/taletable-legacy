@@ -8,14 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.db.DB_WidgetBooleanFormatValue
-import com.kispoko.tome.db.widgetBooleanFormatTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue8
-import com.kispoko.tome.lib.orm.schema.MaybeProdValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
@@ -28,10 +21,9 @@ import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.sheet.BooleanWidgetUpdateSetValue
 import com.kispoko.tome.rts.entity.sheet.BooleanWidgetUpdateToggle
 import com.kispoko.tome.rts.entity.sheet.MessageSheetUpdate
-import com.kispoko.tome.rts.entity.sheet.SheetUpdateWidget
-import com.kispoko.tome.rts.entity.sheetOrError
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -50,39 +42,42 @@ import java.util.*
 /**
  * Boolean Widget Format
  */
-data class BooleanWidgetFormat(override val id : UUID,
-                               val widgetFormat : WidgetFormat,
-                               val viewType: BooleanWidgetViewType,
+data class BooleanWidgetFormat(val widgetFormat : WidgetFormat,
+                               val viewType : BooleanWidgetViewType,
                                val trueFormat : TextFormat,
                                val falseFormat : TextFormat,
+                               val leftToggleFormat : TextFormat,
+                               val rightToggleFormat : TextFormat,
                                val trueText : TrueText,
                                val falseText : FalseText,
                                val trueIcon : Maybe<Icon>,
                                val falseIcon : Maybe<Icon>)
-                                : ToDocument, ProdType, Serializable
+                                : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                viewType : BooleanWidgetViewType,
-                trueFormat : TextFormat,
-                falseFormat : TextFormat,
-                trueText : TrueText,
-                falseText : FalseText,
-                trueIcon : Maybe<Icon>,
-                falseIcon : Maybe<Icon>)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               viewType,
-               trueFormat,
-               falseFormat,
-               trueText,
-               falseText,
-               trueIcon,
-               falseIcon)
+//
+//    constructor(widgetFormat : WidgetFormat,
+//                viewType : BooleanWidgetViewType,
+//                trueFormat : TextFormat,
+//                falseFormat : TextFormat,
+//                leftToggleFormat: TextFormat,
+//                rightToggleFormat: TextFormat,
+//                trueText : TrueText,
+//                falseText : FalseText,
+//                trueIcon : Maybe<Icon>,
+//                falseIcon : Maybe<Icon>)
+//        : this(UUID.randomUUID(),
+//               widgetFormat,
+//               viewType,
+//               trueFormat,
+//               falseFormat,
+//               trueText,
+//               falseText,
+//               trueIcon,
+//               falseIcon)
 
 
     companion object : Factory<BooleanWidgetFormat>
@@ -92,8 +87,10 @@ data class BooleanWidgetFormat(override val id : UUID,
         private fun defaultWidgetViewType()         = BooleanWidgetViewType.SimpleText
         private fun defaultTrueFormat()             = TextFormat.default()
         private fun defaultFalseFormat()            = TextFormat.default()
-        private fun defaultTrueText()               = TrueText("true")
-        private fun defaultFalseText()              = FalseText("false")
+        private fun defaultLeftToggleFormat()       = TextFormat.default()
+        private fun defaultRightToggleFormat()      = TextFormat.default()
+        private fun defaultTrueText()               = TrueText("")
+        private fun defaultFalseText()              = FalseText("")
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<BooleanWidgetFormat> = when (doc)
@@ -116,6 +113,14 @@ data class BooleanWidgetFormat(override val id : UUID,
                       // False Format
                       split(doc.maybeAt("false_format"),
                             effValue(defaultFalseFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Left Toggle Format
+                      split(doc.maybeAt("left_toggle_format"),
+                            effValue(defaultRightToggleFormat()),
+                            { TextFormat.fromDocument(it) }),
+                      // Right Toggle Format
+                      split(doc.maybeAt("right_toggle_format"),
+                            effValue(defaultRightToggleFormat()),
                             { TextFormat.fromDocument(it) }),
                       // True Text
                       split(doc.maybeAt("true_text"),
@@ -143,6 +148,8 @@ data class BooleanWidgetFormat(override val id : UUID,
                                             defaultWidgetViewType(),
                                             defaultTrueFormat(),
                                             defaultFalseFormat(),
+                                            defaultLeftToggleFormat(),
+                                            defaultRightToggleFormat(),
                                             defaultTrueText(),
                                             defaultFalseText(),
                                             Nothing(),
@@ -170,10 +177,19 @@ data class BooleanWidgetFormat(override val id : UUID,
     fun widgetFormat() : WidgetFormat = this.widgetFormat
 
 
+    fun viewType() : BooleanWidgetViewType = this.viewType
+
+
     fun trueFormat() : TextFormat = this.trueFormat
 
 
     fun falseFormat() : TextFormat = this.falseFormat
+
+
+    fun leftToggleFormat() : TextFormat = this.leftToggleFormat
+
+
+    fun rightToggleFormat() : TextFormat = this.rightToggleFormat
 
 
     fun trueText() : TrueText = this.trueText
@@ -191,23 +207,23 @@ data class BooleanWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetBooleanFormatValue =
-        RowValue8(widgetBooleanFormatTable,
-                  ProdValue(this.widgetFormat),
-                  PrimValue(this.viewType),
-                  ProdValue(this.trueFormat),
-                  ProdValue(this.falseFormat),
-                  PrimValue(this.trueText),
-                  PrimValue(this.falseText),
-                  MaybeProdValue(this.trueIcon),
-                  MaybeProdValue(this.falseIcon))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetBooleanFormatValue =
+//        RowValue8(widgetBooleanFormatTable,
+//                  ProdValue(this.widgetFormat),
+//                  PrimValue(this.viewType),
+//                  ProdValue(this.trueFormat),
+//                  ProdValue(this.falseFormat),
+//                  PrimValue(this.trueText),
+//                  PrimValue(this.falseText),
+//                  MaybeProdValue(this.trueIcon),
+//                  MaybeProdValue(this.falseIcon))
 
 }
 
@@ -305,6 +321,21 @@ sealed class BooleanWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object SimpleToggle : BooleanWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "simple_toggle" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("simple_toggle")
+
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -315,10 +346,12 @@ sealed class BooleanWidgetViewType : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "simple_text" -> effValue<ValueError,BooleanWidgetViewType>(
-                                     BooleanWidgetViewType.SimpleText)
+                "simple_text"   -> effValue<ValueError,BooleanWidgetViewType>(
+                                        BooleanWidgetViewType.SimpleText)
+                "simple_toggle" -> effValue<ValueError,BooleanWidgetViewType>(
+                                        BooleanWidgetViewType.SimpleToggle)
                 else          -> effError<ValueError,BooleanWidgetViewType>(
-                                     UnexpectedValue("BooleanWidgetViewType", doc.text, doc.path))
+                                        UnexpectedValue("BooleanWidgetViewType", doc.text, doc.path))
             }
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
@@ -353,48 +386,58 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
         val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
         contentLayout.removeAllViews()
 
-        val simpleView = this.simpleView()
-        contentLayout.addView(simpleView)
+        booleanWidget.variableValue(entityId) apDo { currentValue ->
 
-        layout.setOnClickListener {
-            Router.send(MessageSheetUpdate(BooleanWidgetUpdateToggle(booleanWidget.id)))
+            val contentView = this.contentView(currentValue)
+            contentLayout.addView(contentView)
         }
 
     }
 
 
-    fun simpleView() : LinearLayout
-    {
-        val layout      = this.simpleViewLayout()
-
-        booleanWidget.variableValue(entityId) apDo { currentValue ->
-
-            val format = booleanWidget.format()
-
-            if (currentValue)
-            {
-                val trueIcon = booleanWidget.format().trueIcon()
-                when (trueIcon) {
-                    is Just -> layout.addView(this.iconView(trueIcon.value))
-                }
-            }
-            else
-            {
-                val falseIcon = booleanWidget.format().falseIcon()
-                when (falseIcon) {
-                    is Just -> layout.addView(this.iconView(falseIcon.value))
-                }
-            }
-
-            layout.addView(this.simpleTextView(currentValue))
-
+    private fun contentView(currentValue : Boolean) : View =
+        when(booleanWidget.format().viewType())
+        {
+            is BooleanWidgetViewType.SimpleText -> simpleTextView(currentValue)
+            is BooleanWidgetViewType.SimpleToggle -> simpleToggleView(currentValue)
         }
+
+
+    fun simpleTextView(currentValue : Boolean) : LinearLayout
+    {
+        val format  = if (currentValue)
+                          booleanWidget.format().trueFormat()
+                      else
+                          booleanWidget.format().falseFormat()
+
+        val layout      = this.simpleTextViewLayout(format)
+
+        layout.setOnClickListener {
+            Router.send(MessageSheetUpdate(BooleanWidgetUpdateToggle(booleanWidget.widgetId())))
+        }
+
+        if (currentValue)
+        {
+            val trueIcon = booleanWidget.format().trueIcon()
+            when (trueIcon) {
+                is Just -> layout.addView(this.iconView(trueIcon.value))
+            }
+        }
+        else
+        {
+            val falseIcon = booleanWidget.format().falseIcon()
+            when (falseIcon) {
+                is Just -> layout.addView(this.iconView(falseIcon.value))
+            }
+        }
+
+        layout.addView(this.simpleTextTextView(currentValue))
 
         return layout
     }
 
 
-    fun simpleViewLayout() : LinearLayout
+    fun simpleTextViewLayout(format : TextFormat) : LinearLayout
     {
         val layout          = LinearLayoutBuilder()
 
@@ -403,11 +446,18 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
 
         layout.gravity      = Gravity.CENTER_VERTICAL
 
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
+        layout.corners          = format.elementFormat().corners()
+
+        layout.paddingSpacing   = format.elementFormat().padding()
+        layout.marginSpacing    = format.elementFormat().margins()
+
         return layout.linearLayout(context)
     }
 
 
-    fun simpleTextView(currentValue : Boolean) : TextView
+    fun simpleTextTextView(currentValue : Boolean) : TextView
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -480,5 +530,104 @@ class BooleanWidgetViewBuilder(val booleanWidget : BooleanWidget,
         return layout.linearLayout(context)
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS > Simple Toggle View
+    // -----------------------------------------------------------------------------------------
+
+    private fun simpleToggleView(currentValue : Boolean) : LinearLayout
+    {
+        val layout = this.simpleToggleViewLayout()
+
+        layout.addView(this.simpleToggleFalseOptionView(currentValue))
+        layout.addView(this.simpleToggleTrueOptionView(currentValue))
+
+        return layout
+    }
+
+
+    private fun simpleToggleViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun simpleToggleFalseOptionView(currentValue : Boolean) : TextView
+    {
+        val text            = TextViewBuilder()
+
+        text.width          = LinearLayout.LayoutParams.WRAP_CONTENT
+        text.height         = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        val format = if (!currentValue) {
+            booleanWidget.format().falseFormat()
+        }
+        else {
+            booleanWidget.format().leftToggleFormat()
+        }
+
+        val bgColorTheme = format.elementFormat().backgroundColorTheme()
+        text.backgroundColor    = colorOrBlack(bgColorTheme, entityId)
+
+        text.corners            = format.elementFormat().corners()
+
+        format.styleTextViewBuilder(text, entityId, context)
+
+        text.text               = booleanWidget.format().falseText().value
+
+        text.paddingSpacing     = format.elementFormat().padding()
+        text.marginSpacing      = format.elementFormat().margins()
+
+        text.onClick            = View.OnClickListener {
+            if (currentValue) {
+                Router.send(MessageSheetUpdate(BooleanWidgetUpdateSetValue(booleanWidget.widgetId(), false)))
+            }
+        }
+
+        return text.textView(context)
+    }
+
+
+    private fun simpleToggleTrueOptionView(currentValue : Boolean) : TextView
+    {
+        val text            = TextViewBuilder()
+
+        text.width          = LinearLayout.LayoutParams.WRAP_CONTENT
+        text.height         = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        var format : TextFormat
+
+        if (currentValue)
+            format = booleanWidget.format().trueFormat()
+        else
+            format = booleanWidget.format().rightToggleFormat()
+
+        text.text           = booleanWidget.format().trueText().value
+
+        val bgColorTheme = format.elementFormat().backgroundColorTheme()
+        text.backgroundColor    = colorOrBlack(bgColorTheme, entityId)
+
+        text.corners            = format.elementFormat().corners()
+
+        text.paddingSpacing     = format.elementFormat().padding()
+        text.marginSpacing      = format.elementFormat().margins()
+
+        format.styleTextViewBuilder(text, entityId, context)
+
+        text.onClick            = View.OnClickListener {
+            if (!currentValue) {
+                Router.send(MessageSheetUpdate(BooleanWidgetUpdateSetValue(booleanWidget.widgetId(), true)))
+            }
+        }
+
+        return text.textView(context)
+    }
 
 }

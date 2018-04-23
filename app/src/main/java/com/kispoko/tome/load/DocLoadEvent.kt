@@ -3,6 +3,7 @@ package com.kispoko.tome.load
 
 
 import com.kispoko.tome.app.ApplicationEvent
+import com.kispoko.tome.app.EventTypeLoad
 
 
 
@@ -10,6 +11,9 @@ import com.kispoko.tome.app.ApplicationEvent
  * Doc Load Event
  */
 sealed class DocLoadEvent : ApplicationEvent
+{
+    override fun eventType() = EventTypeLoad
+}
 
 
 data class SchemaLoaded(val schemaName : String) : DocLoadEvent()

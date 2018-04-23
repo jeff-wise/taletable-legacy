@@ -3,6 +3,7 @@ package com.kispoko.tome.model.sheet
 
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import com.kispoko.culebra.*
 import com.kispoko.tome.app.AppEff
@@ -27,7 +28,6 @@ import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.*
-import com.kispoko.tome.rts.session.SessionTag
 import effect.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -89,21 +89,21 @@ data class Sheet(override val id : UUID,
 
     init {
 
-        this.forEachWidget {
-            when (it) {
-                is ActionWidget  -> actionWidgetById.put(it.id, it)
-                is BooleanWidget -> booleanWidgetById.put(it.id, it)
-                is NumberWidget  -> numberWidgetById.put(it.id, it)
-                is ListWidget    -> listWidgetById.put(it.id, it)
-                is PointsWidget  -> pointsWidgetById.put(it.id, it)
-                is StoryWidget   -> storyWidgetById.put(it.id, it)
-                is TableWidget   -> tableWidgetById.put(it.id, it)
-                is TextWidget    -> textWidgetById.put(it.id, it)
-            }
-        }
+//        this.forEachWidget {
+//            when (it) {
+//                is ActionWidget  -> actionWidgetById.put(it.id, it)
+//                is BooleanWidget -> booleanWidgetById.put(it.id, it)
+//                is NumberWidget  -> numberWidgetById.put(it.id, it)
+//                is ListWidget    -> listWidgetById.put(it.id, it)
+//                is PointsWidget  -> pointsWidgetById.put(it.id, it)
+//                is StoryWidget   -> storyWidgetById.put(it.id, it)
+//                is TableWidget   -> tableWidgetById.put(it.id, it)
+//                is TextWidget    -> textWidgetById.put(it.id, it)
+//            }
+//        }
 
         this.forEachWidget {
-            this.widgetById.put(it.widgetId(), it)
+            this.indexWidget(it)
         }
     }
 
@@ -271,6 +271,11 @@ data class Sheet(override val id : UUID,
     }
 
 
+    fun indexWidget(widget : Widget) {
+        this.widgetById[widget.widgetId()] = widget
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
@@ -361,6 +366,8 @@ data class Sheet(override val id : UUID,
     {
         val entityId = EntitySheetId(this.sheetId())
 
+        Log.d("***SHEET", "update widget")
+
         when (widgetUpdate)
         {
             is WidgetUpdateActionWidget ->
@@ -370,38 +377,74 @@ data class Sheet(override val id : UUID,
             }
             is WidgetUpdateBooleanWidget ->
             {
-                val booleanWidget = this.booleanWidgetById[widgetUpdate.widgetId]
-                booleanWidget?.update(widgetUpdate, entityId, rootView, context)
+                Log.d("***SHEET", "update boolean widget")
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is BooleanWidget -> {
+                            it.update(widgetUpdate, entityId, rootView, context)
+                        }
+                    }
+                }
             }
             is WidgetUpdateNumberWidget ->
             {
-                val numberWidget = this.numberWidgetById[widgetUpdate.widgetId]
-                numberWidget?.update(widgetUpdate, entityId, rootView, context)
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is NumberWidget -> {
+                            it.update(widgetUpdate, entityId, rootView, context)
+                        }
+                    }
+                }
             }
             is WidgetUpdateListWidget ->
             {
-                val listWidget = this.listWidgetById[widgetUpdate.widgetId]
-                listWidget?.update(widgetUpdate, entityId, rootView, context)
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is ListWidget -> {
+                            it.update(widgetUpdate, entityId, rootView, context)
+                        }
+                    }
+                }
             }
             is WidgetUpdatePointsWidget ->
             {
-                val pointsWidget = this.pointsWidgetById[widgetUpdate.widgetId]
-                pointsWidget?.update(widgetUpdate, entityId, rootView, context)
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is PointsWidget -> {
+                            it.update(widgetUpdate, entityId, rootView, context)
+                        }
+                    }
+                }
             }
             is WidgetUpdateStoryWidget ->
             {
-                val storyWidget = this.storyWidgetById[widgetUpdate.widgetId]
-                storyWidget?.update(widgetUpdate, entityId, rootView, context)
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is StoryWidget -> {
+                            it.update(widgetUpdate, entityId, rootView, context)
+                        }
+                    }
+                }
             }
             is WidgetUpdateTableWidget ->
             {
-                val tableWidget = this.tableWidgetById[widgetUpdate.widgetId]
-                tableWidget?.update(widgetUpdate, entityId, rootView, context)
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is TableWidget -> {
+                            it.update(widgetUpdate, entityId, rootView, context)
+                        }
+                    }
+                }
             }
             is WidgetUpdateTextWidget ->
             {
-                val textWidget = this.textWidgetById[widgetUpdate.widgetId]
-                textWidget?.update(widgetUpdate, entityId, rootView, context)
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is TextWidget -> {
+                            it.update(widgetUpdate, entityId, rootView, context)
+                        }
+                    }
+                }
             }
         }
 

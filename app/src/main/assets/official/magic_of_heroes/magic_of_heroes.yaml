@@ -13,6 +13,38 @@ variables:
     value:
       type: text_literal
       text_literal: 'Roll equal to or higher than your opponent''s armor class to hit.'
+- type: variable_text
+  variable_text:
+    id: description_damage_roll
+    label: Damage Roll Description
+    description: Damage Roll Description
+    value:
+      type: text_literal
+      text_literal: 'Roll for rapier damage to your opponent.'
+- type: variable_text
+  variable_text:
+    id: field_label_is_critical_hit
+    label: 'Field Label: Is Critical Hit?'
+    description: 'Field Label: Is Critical Hit?'
+    value:
+      type: text_literal
+      text_literal: 'Is critical hit?'
+- type: variable_boolean
+  variable_boolean:
+    id: current_attack_critical_hit
+    label: 'Current Attack is Critical Hit'
+    description: 'Current Attack is Critical Hit'
+    value:
+      type: boolean_literal
+      boolean_literal: false
+- type: variable_boolean
+  variable_boolean:
+    id: rapier_use_finesse
+    label: 'Rapier: Use Finesse'
+    description: 'Rapier: Use Finesse'
+    value:
+      type: boolean_literal
+      boolean_literal: false
 engine:
   value_sets:
   - type: value_set_base

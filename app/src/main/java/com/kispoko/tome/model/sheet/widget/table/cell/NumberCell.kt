@@ -148,7 +148,7 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
                 val editorType = cell.resolveEditorType(column)
                 openNumberVariableEditorDialog(valueVariable.value,
                                                editorType,
-                                               UpdateTargetNumberCell(tableWidget.id, cell.id),
+                                               UpdateTargetNumberCell(tableWidget.widgetId(), cell.id),
                                                entityId,
                                                context)
             }

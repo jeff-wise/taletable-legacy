@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TabWidget
 import android.widget.TableLayout
 import android.widget.TextView
 import com.kispoko.tome.R
@@ -157,11 +156,14 @@ object WidgetView
 
         val contentLayout = this.contentLayout(widgetFormat, context)
 
+        widgetFormat.elementFormat().border().left().doMaybe {
+            layout.addView(this.verticalBorderView(it, entityId, context))
+        }
+
         layout.addView(contentLayout)
 
-        val rightBorder = widgetFormat.elementFormat().border().right()
-        when (rightBorder) {
-            is Just -> layout.addView(this.verticalBorderView(rightBorder.value, entityId, context))
+        widgetFormat.elementFormat().border().right().doMaybe {
+            layout.addView(this.verticalBorderView(it, entityId, context))
         }
 
         return layout
@@ -195,8 +197,12 @@ object WidgetView
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        when (widgetFormat.elementFormat().border().right()) {
-            is Just -> layout.orientation = LinearLayout.HORIZONTAL
+        widgetFormat.elementFormat().border().right().doMaybe {
+            layout.orientation = LinearLayout.HORIZONTAL
+        }
+
+        widgetFormat.elementFormat().border().left().doMaybe {
+            layout.orientation = LinearLayout.HORIZONTAL
         }
 
 
@@ -348,7 +354,7 @@ object WidgetView
 /**
  * Widget Name
  */
-data class WidgetId(val value : String) : ToDocument, SQLSerializable, Serializable
+data class WidgetId(val value : UUID) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -359,9 +365,19 @@ data class WidgetId(val value : String) : ToDocument, SQLSerializable, Serializa
     {
         override fun fromDocument(doc: SchemaDoc): ValueParser<WidgetId> = when (doc)
         {
-            is DocText -> effValue(WidgetId(doc.text))
+            is DocText -> {
+                try {
+                    effValue<ValueError,WidgetId>(WidgetId(UUID.fromString(doc.text)))
+                }
+                catch (e : IllegalArgumentException) {
+                    effError<ValueError,WidgetId>(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+                }
+            }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+
+
+        fun random() = WidgetId(UUID.randomUUID())
     }
 
 
@@ -369,14 +385,14 @@ data class WidgetId(val value : String) : ToDocument, SQLSerializable, Serializa
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocText(this.value)
+    override fun toDocument() = DocText(this.value.toString())
 
 
     // -----------------------------------------------------------------------------------------
     // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLText({this.value})
+    override fun asSQLValue() : SQLValue = SQLText({this.value.toString()})
 
 }
 
@@ -384,8 +400,7 @@ data class WidgetId(val value : String) : ToDocument, SQLSerializable, Serializa
 /**
  * Action Widget
  */
-data class ActionWidget(val id : UUID,
-                        val widgetId : WidgetId,
+data class ActionWidget(val widgetId : WidgetId,
                         val format : ActionWidgetFormat,
                         val procedureId : ProcedureId,
                         val activeVariableId : Maybe<VariableId>,
@@ -402,19 +417,19 @@ data class ActionWidget(val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetId : WidgetId,
-                format : ActionWidgetFormat,
-                procedureId : ProcedureId,
-                activeVariableId : Maybe<VariableId>,
-                description : Maybe<ActionWidgetDescription>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               procedureId,
-               activeVariableId,
-               description)
-
+//
+//    constructor(widgetId : WidgetId,
+//                format : ActionWidgetFormat,
+//                procedureId : ProcedureId,
+//                activeVariableId : Maybe<VariableId>,
+//                description : Maybe<ActionWidgetDescription>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               procedureId,
+//               activeVariableId,
+//               description)
+//
 
     companion object : Factory<ActionWidget>
     {
@@ -424,7 +439,9 @@ data class ActionWidget(val id : UUID,
             {
                 apply(::ActionWidget,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(ActionWidgetFormat.default()),
@@ -633,8 +650,7 @@ data class ActionWidget(val id : UUID,
 /**
  * Boolean Widget
  */
-data class BooleanWidget(val id : UUID,
-                         private val widgetId : WidgetId,
+data class BooleanWidget(private val widgetId : WidgetId,
                          private val format : BooleanWidgetFormat,
                          private val valueVariablesReference : VariableReference) : Widget()
 {
@@ -650,13 +666,13 @@ data class BooleanWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : BooleanWidgetFormat,
-                valueVariablesReference : VariableReference)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               valueVariablesReference)
+//    constructor(widgetId : WidgetId,
+//                format : BooleanWidgetFormat,
+//                valueVariablesReference : VariableReference)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               valueVariablesReference)
 
 
     companion object : Factory<Widget>
@@ -667,7 +683,9 @@ data class BooleanWidget(val id : UUID,
             {
                 apply(::BooleanWidget,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(BooleanWidgetFormat.default()),
@@ -801,15 +819,23 @@ data class BooleanWidget(val id : UUID,
     fun update(booleanWidgetUpdate : WidgetUpdateBooleanWidget,
                entityId: EntityId,
                rootView : View,
-               context : Context) =
-        when (booleanWidgetUpdate)
+               context : Context)
+    {
+        return when (booleanWidgetUpdate)
         {
             is BooleanWidgetUpdateToggle ->
             {
                 this.toggleValues(entityId)
                 this.updateView(rootView, entityId, context)
             }
+            is BooleanWidgetUpdateSetValue ->
+            {
+                this.updateValues(booleanWidgetUpdate.newValue, entityId)
+                this.updateView(rootView, entityId, context)
+            }
         }
+    }
+
 
 
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
@@ -837,14 +863,27 @@ data class BooleanWidget(val id : UUID,
     }
 
 
+    fun updateValues(newValue : Boolean, entityId : EntityId)
+    {
+        val booleanVariables = this.variables(entityId)
+        when (booleanVariables) {
+            is Val -> {
+                booleanVariables.value.forEach {
+                    it.updateValue(newValue, entityId)
+                }
+            }
+            is Err -> ApplicationLog.error(booleanVariables.error)
+        }
+    }
+
+
 }
 
 
 /**
  * Expander Widget
  */
-data class ExpanderWidget(val id : UUID,
-                          val widgetId : WidgetId,
+data class ExpanderWidget(val widgetId : WidgetId,
                           val format : ExpanderWidgetFormat,
                           val header : ExpanderWidgetLabel,
                           val groups : List<Group>) : Widget()
@@ -854,16 +893,16 @@ data class ExpanderWidget(val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetId : WidgetId,
-                format : ExpanderWidgetFormat,
-                header : ExpanderWidgetLabel,
-                groups : MutableList<Group>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               header,
-               groups)
+//
+//    constructor(widgetId : WidgetId,
+//                format : ExpanderWidgetFormat,
+//                header : ExpanderWidgetLabel,
+//                groups : MutableList<Group>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               header,
+//               groups)
 
 
     companion object : Factory<Widget>
@@ -873,8 +912,10 @@ data class ExpanderWidget(val id : UUID,
             is DocDict ->
             {
                 apply(::ExpanderWidget,
-                      // Widget Name
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                      split(doc.maybeAt("format"),
                            effValue(ExpanderWidgetFormat.default()),
@@ -966,8 +1007,7 @@ data class ExpanderWidget(val id : UUID,
 /**
  * Group Widget
  */
-data class WidgetGroup(val id : UUID,
-                       val widgetId : WidgetId,
+data class WidgetGroup(val widgetId : WidgetId,
                        val format : GroupWidgetFormat,
                        val groupReferences : List<GroupReference>) : Widget()
 {
@@ -982,15 +1022,15 @@ data class WidgetGroup(val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetId : WidgetId,
-                format : GroupWidgetFormat,
-                groupReferences : List<GroupReference>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               groupReferences)
-
+//
+//    constructor(widgetId : WidgetId,
+//                format : GroupWidgetFormat,
+//                groupReferences : List<GroupReference>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               groupReferences)
+//
 
     companion object : Factory<Widget>
     {
@@ -1000,7 +1040,9 @@ data class WidgetGroup(val id : UUID,
             {
                 apply(::WidgetGroup,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                            effValue(GroupWidgetFormat.default()),
@@ -1094,8 +1136,7 @@ data class WidgetGroup(val id : UUID,
 /**
  * Image Widget
  */
-data class ImageWidget(val id : UUID,
-                       val widgetId : WidgetId,
+data class ImageWidget(val widgetId : WidgetId,
                        val format : ImageWidgetFormat,
                        val officialImageIds : MutableList<OfficialImageId>,
                        val icon : Maybe<Icon>) : Widget()
@@ -1105,15 +1146,15 @@ data class ImageWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : ImageWidgetFormat,
-                officialImageIds : MutableList<OfficialImageId>,
-                icon : Maybe<Icon>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               officialImageIds,
-               icon)
+//    constructor(widgetId : WidgetId,
+//                format : ImageWidgetFormat,
+//                officialImageIds : MutableList<OfficialImageId>,
+//                icon : Maybe<Icon>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               officialImageIds,
+//               icon)
 
 
     companion object : Factory<Widget>
@@ -1123,8 +1164,10 @@ data class ImageWidget(val id : UUID,
             is DocDict ->
             {
                 apply(::ImageWidget,
-                      // Widget Name
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(ImageWidgetFormat.default()),
@@ -1214,8 +1257,7 @@ data class ImageWidget(val id : UUID,
 /**
  * List Widget
  */
-data class ListWidget(val id : UUID,
-                      val widgetId : WidgetId,
+data class ListWidget(val widgetId : WidgetId,
                       val format : ListWidgetFormat,
                       val valuesVariableId : VariableId,
                       val description : Maybe<ListWidgetDescription>) : Widget()
@@ -1232,15 +1274,15 @@ data class ListWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : ListWidgetFormat,
-                valuesVariableId : VariableId,
-                description : Maybe<ListWidgetDescription>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               valuesVariableId,
-               description)
+//    constructor(widgetId : WidgetId,
+//                format : ListWidgetFormat,
+//                valuesVariableId : VariableId,
+//                description : Maybe<ListWidgetDescription>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               valuesVariableId,
+//               description)
 
 
     companion object : Factory<ListWidget>
@@ -1250,19 +1292,21 @@ data class ListWidget(val id : UUID,
             is DocDict ->
             {
                 apply(::ListWidget,
-                    // Widget Name
-                    doc.at("id") ap { WidgetId.fromDocument(it) },
-                    // Format
-                    split(doc.maybeAt("format"),
-                          effValue(ListWidgetFormat.default()),
-                          { ListWidgetFormat.fromDocument(it) }),
-                    // Values Variable Id
-                    doc.at("values_variable_id") ap { VariableId.fromDocument(it) },
-                    // Description
-                    split(doc.maybeAt("description"),
-                          effValue<ValueError,Maybe<ListWidgetDescription>>(Nothing()),
-                          { apply(::Just, ListWidgetDescription.fromDocument(it)) })
-                    )
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(ListWidgetFormat.default()),
+                            { ListWidgetFormat.fromDocument(it) }),
+                      // Values Variable Id
+                      doc.at("values_variable_id") ap { VariableId.fromDocument(it) },
+                      // Description
+                      split(doc.maybeAt("description"),
+                            effValue<ValueError,Maybe<ListWidgetDescription>>(Nothing()),
+                            { apply(::Just, ListWidgetDescription.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -1392,8 +1436,7 @@ data class ListWidget(val id : UUID,
 /**
  * Log Widget
  */
-data class LogWidget(val id : UUID,
-                     private val widgetId : WidgetId,
+data class LogWidget(private val widgetId : WidgetId,
                      private val format : LogWidgetFormat,
                      private val entries : MutableList<LogEntry>) : Widget()
 {
@@ -1402,13 +1445,13 @@ data class LogWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : LogWidgetFormat,
-                entries : List<LogEntry>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               entries.toMutableList())
+//    constructor(widgetId : WidgetId,
+//                format : LogWidgetFormat,
+//                entries : List<LogEntry>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               entries.toMutableList())
 
 
     companion object : Factory<LogWidget>
@@ -1418,8 +1461,10 @@ data class LogWidget(val id : UUID,
             is DocDict ->
             {
                 apply(::LogWidget,
-                      // Widget Name
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(LogWidgetFormat.default()),
@@ -1501,8 +1546,7 @@ data class LogWidget(val id : UUID,
 /**
  * Mechanic Widget
  */
-data class MechanicWidget(val id : UUID,
-                          private val widgetId : WidgetId,
+data class MechanicWidget(private val widgetId : WidgetId,
                           private val format : MechanicWidgetFormat,
                           private val categoryReference : MechanicCategoryReference) : Widget()
 {
@@ -1518,13 +1562,13 @@ data class MechanicWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : MechanicWidgetFormat,
-                categoryReference : MechanicCategoryReference)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               categoryReference)
+//    constructor(widgetId : WidgetId,
+//                format : MechanicWidgetFormat,
+//                categoryReference : MechanicCategoryReference)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               categoryReference)
 
 
     companion object : Factory<MechanicWidget>
@@ -1534,8 +1578,10 @@ data class MechanicWidget(val id : UUID,
             is DocDict ->
             {
                 apply(::MechanicWidget,
-                     // Widget Id
-                     doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                      // Format
                      split(doc.maybeAt("format"),
                            effValue(MechanicWidgetFormat.default()),
@@ -1660,8 +1706,7 @@ data class MechanicWidget(val id : UUID,
 /**
  * Number Widget
  */
-data class NumberWidget(val id : UUID,
-                        val widgetId : WidgetId,
+data class NumberWidget(val widgetId : WidgetId,
                         val format : NumberWidgetFormat,
                         val valueVariableId : VariableId,
                         val insideLabel : Maybe<NumberWidgetLabel>,
@@ -1680,17 +1725,17 @@ data class NumberWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : NumberWidgetFormat,
-                valueVariableId : VariableId,
-                insideLabel : Maybe<NumberWidgetLabel>,
-                bookReference: Maybe<BookReference>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               valueVariableId,
-               insideLabel,
-               bookReference)
+//    constructor(widgetId : WidgetId,
+//                format : NumberWidgetFormat,
+//                valueVariableId : VariableId,
+//                insideLabel : Maybe<NumberWidgetLabel>,
+//                bookReference: Maybe<BookReference>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               valueVariableId,
+//               insideLabel,
+//               bookReference)
 
 
     companion object : Factory<NumberWidget>
@@ -1701,7 +1746,9 @@ data class NumberWidget(val id : UUID,
             {
                 apply(::NumberWidget,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(NumberWidgetFormat.default()),
@@ -1771,7 +1818,7 @@ data class NumberWidget(val id : UUID,
             is Val ->
             {
                 openNumberVariableEditorDialog(valueVariable.value,
-                                               UpdateTargetNumberWidget(this.id),
+                                               UpdateTargetNumberWidget(this.widgetId),
                                                entityId,
                                                context)
             }
@@ -2090,8 +2137,7 @@ data class NumberWidget(val id : UUID,
 /**
  * Points Widget
  */
-data class PointsWidget(val id : UUID,
-                        val widgetId : WidgetId,
+data class PointsWidget(val widgetId : WidgetId,
                         val format : PointsWidgetFormat,
                         val limitValueVariableId : VariableId,
                         val currentValueVariableId : VariableId,
@@ -2109,18 +2155,18 @@ data class PointsWidget(val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetId : WidgetId,
-                format : PointsWidgetFormat,
-                limitValueVariableId : VariableId,
-                currentValueVariableId : VariableId,
-                label : Maybe<PointsWidgetLabel>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               limitValueVariableId,
-               currentValueVariableId,
-               label)
+//
+//    constructor(widgetId : WidgetId,
+//                format : PointsWidgetFormat,
+//                limitValueVariableId : VariableId,
+//                currentValueVariableId : VariableId,
+//                label : Maybe<PointsWidgetLabel>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               limitValueVariableId,
+//               currentValueVariableId,
+//               label)
 
 
     companion object : Factory<PointsWidget>
@@ -2131,7 +2177,9 @@ data class PointsWidget(val id : UUID,
             {
                 apply(::PointsWidget,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(PointsWidgetFormat.default()),
@@ -2377,8 +2425,7 @@ data class PointsWidget(val id : UUID,
 /**
  * Quote Widget
  */
-data class QuoteWidget(val id : UUID,
-                       val widgetId : WidgetId,
+data class QuoteWidget(val widgetId : WidgetId,
                        val format : QuoteWidgetFormat,
                        val quoteVariableId : VariableId,
                        val sourceVariableId : Maybe<VariableId>) : Widget()
@@ -2388,16 +2435,16 @@ data class QuoteWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format   : QuoteWidgetFormat,
-                quote    : VariableId,
-                source   : Maybe<VariableId>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               quote,
-               source)
-
+//    constructor(widgetId : WidgetId,
+//                format   : QuoteWidgetFormat,
+//                quote    : VariableId,
+//                source   : Maybe<VariableId>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               quote,
+//               source)
+//
 
     companion object : Factory<QuoteWidget>
     {
@@ -2407,7 +2454,9 @@ data class QuoteWidget(val id : UUID,
             {
                 apply(::QuoteWidget,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(QuoteWidgetFormat.default()),
@@ -2543,8 +2592,7 @@ data class QuoteWidget(val id : UUID,
 /**
  * Roll Widget
  */
-data class RollWidget(val id : UUID,
-                      val widgetId : WidgetId,
+data class RollWidget(val widgetId : WidgetId,
                       val format : RollWidgetFormat,
                       val rollGroup : DiceRollGroup,
                       val description : Maybe<RollWidgetDescription>,
@@ -2561,30 +2609,30 @@ data class RollWidget(val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetId : WidgetId,
-                format : RollWidgetFormat,
-                rollGroup : DiceRollGroup,
-                description : Maybe<RollWidgetDescription>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               rollGroup,
-               description,
-               Nothing())
-
-
-    constructor(widgetId : WidgetId,
-                format : RollWidgetFormat,
-                rollGroup : DiceRollGroup,
-                description : Maybe<RollWidgetDescription>,
-                resultDescription : Maybe<RollWidgetResultDescription>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               rollGroup,
-               description,
-               resultDescription)
+//
+//    constructor(widgetId : WidgetId,
+//                format : RollWidgetFormat,
+//                rollGroup : DiceRollGroup,
+//                description : Maybe<RollWidgetDescription>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               rollGroup,
+//               description,
+//               Nothing())
+//
+//
+//    constructor(widgetId : WidgetId,
+//                format : RollWidgetFormat,
+//                rollGroup : DiceRollGroup,
+//                description : Maybe<RollWidgetDescription>,
+//                resultDescription : Maybe<RollWidgetResultDescription>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               rollGroup,
+//               description,
+//               resultDescription)
 
 
     companion object : Factory<RollWidget>
@@ -2594,23 +2642,25 @@ data class RollWidget(val id : UUID,
             is DocDict ->
             {
                 apply(::RollWidget,
-                    // Widget Id
-                    doc.at("id") ap { WidgetId.fromDocument(it) },
-                    // Format
-                    split(doc.maybeAt("format"),
-                          effValue(RollWidgetFormat.default()),
-                          { RollWidgetFormat.fromDocument(it) }),
-                    // Roll Group
-                    doc.at("roll_group") ap { DiceRollGroup.fromDocument(it) },
-                    // Description
-                    split(doc.maybeAt("description"),
-                          effValue<ValueError,Maybe<RollWidgetDescription>>(Nothing()),
-                          { apply(::Just, RollWidgetDescription.fromDocument(it)) }),
-                    // Result Description
-                    split(doc.maybeAt("result_description"),
-                          effValue<ValueError,Maybe<RollWidgetResultDescription>>(Nothing()),
-                          { apply(::Just, RollWidgetResultDescription.fromDocument(it)) })
-                    )
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(RollWidgetFormat.default()),
+                            { RollWidgetFormat.fromDocument(it) }),
+                      // Roll Group
+                      doc.at("roll_group") ap { DiceRollGroup.fromDocument(it) },
+                      // Description
+                      split(doc.maybeAt("description"),
+                            effValue<ValueError,Maybe<RollWidgetDescription>>(Nothing()),
+                            { apply(::Just, RollWidgetDescription.fromDocument(it)) }),
+                      // Result Description
+                      split(doc.maybeAt("result_description"),
+                            effValue<ValueError,Maybe<RollWidgetResultDescription>>(Nothing()),
+                            { apply(::Just, RollWidgetResultDescription.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -2730,8 +2780,7 @@ data class RollWidget(val id : UUID,
 /**
  * Slider Widget
  */
-data class WidgetSlider(val id : UUID,
-                        val widgetId : WidgetId,
+data class WidgetSlider(val widgetId : WidgetId,
                         val format : SliderWidgetFormat,
                         val groups : List<Group>) : Widget()
 {
@@ -2741,13 +2790,13 @@ data class WidgetSlider(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : SliderWidgetFormat,
-                groups : MutableList<Group>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               groups)
+//    constructor(widgetId : WidgetId,
+//                format : SliderWidgetFormat,
+//                groups : MutableList<Group>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               groups)
 
 
     companion object : Factory<Widget>
@@ -2757,8 +2806,10 @@ data class WidgetSlider(val id : UUID,
             is DocDict ->
             {
                 apply(::WidgetSlider,
-                      // Widget Name
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                      split(doc.maybeAt("format"),
                            effValue(SliderWidgetFormat.default()),
@@ -2838,8 +2889,7 @@ data class WidgetSlider(val id : UUID,
 /**
  * Story Widget
  */
-data class StoryWidget(val id : UUID,
-                       val widgetId : WidgetId,
+data class StoryWidget(val widgetId : WidgetId,
                        val format : StoryWidgetFormat,
                        val story : List<StoryPart>) : Widget()
 {
@@ -2854,14 +2904,14 @@ data class StoryWidget(val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetId : WidgetId,
-                format : StoryWidgetFormat,
-                story : List<StoryPart>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               story)
+//
+//    constructor(widgetId : WidgetId,
+//                format : StoryWidgetFormat,
+//                story : List<StoryPart>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               story)
 
 
     companion object : Factory<StoryWidget>
@@ -2872,7 +2922,9 @@ data class StoryWidget(val id : UUID,
             {
                 apply(::StoryWidget,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(StoryWidgetFormat.default()),
@@ -3081,8 +3133,7 @@ data class StoryWidget(val id : UUID,
 /**
  * Tab Widget
  */
-data class WidgetTab(val id : UUID,
-                     val widgetId : WidgetId,
+data class WidgetTab(val widgetId : WidgetId,
                      val format : TabWidgetFormat,
                      val tabs : List<Tab>) : Widget()
 {
@@ -3092,13 +3143,13 @@ data class WidgetTab(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId : WidgetId,
-                format : TabWidgetFormat,
-                tabs : MutableList<Tab>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               tabs)
+//    constructor(widgetId : WidgetId,
+//                format : TabWidgetFormat,
+//                tabs : MutableList<Tab>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               tabs)
 
 
     companion object : Factory<Widget>
@@ -3109,13 +3160,15 @@ data class WidgetTab(val id : UUID,
             {
                 apply(::WidgetTab,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
-                     split(doc.maybeAt("format"),
-                           effValue(TabWidgetFormat.default()),
-                           { TabWidgetFormat.fromDocument(it) }),
-                     // Tabs
-                     doc.list("tabs") ap { docList ->
+                      split(doc.maybeAt("format"),
+                            effValue(TabWidgetFormat.default()),
+                            { TabWidgetFormat.fromDocument(it) }),
+                      // Tabs
+                      doc.list("tabs") ap { docList ->
                          docList.mapMut { Tab.fromDocument(it) }
                      })
             }
@@ -3192,8 +3245,7 @@ data class WidgetTab(val id : UUID,
 /**
  * Table Widget
  */
-data class TableWidget(val id : UUID,
-                       private val widgetId : WidgetId,
+data class TableWidget(private val widgetId : WidgetId,
                        private val format : TableWidgetFormat,
                        private val columns : MutableList<TableWidgetColumn>,
                        private val rows : MutableList<TableWidgetRow>,
@@ -3240,20 +3292,20 @@ data class TableWidget(val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetId: WidgetId,
-                format : TableWidgetFormat,
-                columns: List<TableWidgetColumn>,
-                rows: List<TableWidgetRow>,
-                sort : Maybe<TableSort>,
-                titleVariableId : Maybe<VariableId>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               columns.toMutableList(),
-               rows.toMutableList(),
-               sort,
-               titleVariableId)
+//
+//    constructor(widgetId: WidgetId,
+//                format : TableWidgetFormat,
+//                columns: List<TableWidgetColumn>,
+//                rows: List<TableWidgetRow>,
+//                sort : Maybe<TableSort>,
+//                titleVariableId : Maybe<VariableId>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               columns.toMutableList(),
+//               rows.toMutableList(),
+//               sort,
+//               titleVariableId)
 
 
     companion object : Factory<TableWidget>
@@ -3263,8 +3315,10 @@ data class TableWidget(val id : UUID,
             is DocDict ->
             {
                 apply(::TableWidget,
-                     // Widget Id
-                     doc.at("id") ap { WidgetId.fromDocument(it) },
+                      // Widget Id
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                      // Format
                      split(doc.maybeAt("format"),
                              effValue(TableWidgetFormat.default()),
@@ -3715,8 +3769,7 @@ data class TableWidget(val id : UUID,
 /**
  * Text Widget
  */
-data class TextWidget(val id : UUID,
-                      val widgetId : WidgetId,
+data class TextWidget(val widgetId : WidgetId,
                       val format : TextWidgetFormat,
                       val valueVariableId : VariableId,
                       val bookReference : Maybe<BookReference>,
@@ -3736,19 +3789,19 @@ data class TextWidget(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetId: WidgetId,
-                format : TextWidgetFormat,
-                valueVariableId : VariableId,
-                bookReference : Maybe<BookReference>,
-                primaryActionWidgetId : Maybe<WidgetId>,
-                secondaryActionWigdetId : Maybe<WidgetId>)
-        : this(UUID.randomUUID(),
-               widgetId,
-               format,
-               valueVariableId,
-               bookReference,
-               primaryActionWidgetId,
-               secondaryActionWigdetId)
+//    constructor(widgetId: WidgetId,
+//                format : TextWidgetFormat,
+//                valueVariableId : VariableId,
+//                bookReference : Maybe<BookReference>,
+//                primaryActionWidgetId : Maybe<WidgetId>,
+//                secondaryActionWigdetId : Maybe<WidgetId>)
+//        : this(UUID.randomUUID(),
+//               widgetId,
+//               format,
+//               valueVariableId,
+//               bookReference,
+//               primaryActionWidgetId,
+//               secondaryActionWigdetId)
 
 
     companion object : Factory<TextWidget>
@@ -3759,7 +3812,9 @@ data class TextWidget(val id : UUID,
             {
                 apply(::TextWidget,
                       // Widget Id
-                      doc.at("id") ap { WidgetId.fromDocument(it) },
+                      split(doc.maybeAt("id"),
+                            effValue(WidgetId.random()),
+                            { WidgetId.fromDocument(it) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(TextWidgetFormat.default()),
@@ -3837,7 +3892,7 @@ data class TextWidget(val id : UUID,
             {
                 Log.d("***WIDGET", "open text widget editor")
                 openTextVariableEditorDialog(valueVar.value,
-                                             UpdateTargetTextWidget(this.id),
+                                             UpdateTargetTextWidget(this.widgetId),
                                              entityId,
                                              context)
 //                val viewId = this.viewId

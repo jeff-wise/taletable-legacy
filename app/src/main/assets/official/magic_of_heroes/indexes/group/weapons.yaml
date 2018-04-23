@@ -4,7 +4,6 @@ groups:
   - widgets:
     - type: widget_expander
       widget_expander:
-        id: rapier
         label: "Rapier"
         format:
           widget_format:
@@ -68,7 +67,6 @@ groups:
           - widgets:
             - type: widget_tab
               widget_tab:
-                id: rapier_options
                 format:
                   tab_bar_format:
                     border:
@@ -112,7 +110,6 @@ groups:
                       - widgets:
                         - type: widget_text
                           widget_text:
-                            id: description_attack_roll
                             format:
                               value_format:
                                 color_theme:
@@ -135,7 +132,6 @@ groups:
                         widgets:
                         - type: widget_roll
                           widget_roll:
-                            id: weapon_rapier_attack_roll
                             format:
                               widget_format:
                                 element_format:
@@ -252,6 +248,417 @@ groups:
                             result_description: 'Attack Roll'
                 - name: Damage
                   group_references:
+                  - type: group
+                    group:
+                      rows:
+                      - format:
+                          element_format:
+                            padding:
+                              left: 10
+                              right: 10
+                              top: 14
+                              bottom: 14
+                        widgets:
+                        - type: widget_text
+                          widget_text:
+                            format:
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: left
+                                  width:
+                                    type: width_justify
+                                    width_justify: justify
+                              value_format:
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_14
+                                font_style: medium
+                                size: 18
+                                element_format:
+                                  horizontal_alignment: left
+                            value_variable_id: field_label_is_critical_hit
+                        - type: widget_boolean
+                          widget_boolean:
+                            value_variables_reference:
+                              type: variable_id
+                              variable_id: current_attack_critical_hit
+                            format:
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: right
+                                  padding:
+                                    left: 8
+                                    right: 8
+                                  width:
+                                    type: width_justify
+                                    width_justify: justify
+                              true_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_4
+                                  corners:
+                                    top_left_radius: 2
+                                    top_right_radius: 2
+                                    bottom_right_radius: 2
+                                    bottom_left_radius: 2
+                                  padding:
+                                    top: 2
+                                    bottom: 2
+                                    left: 8
+                                    right: 8
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: green
+                                font_style: semi_bold
+                                size: 16
+                              false_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_4
+                                  corners:
+                                    top_left_radius: 2
+                                    top_right_radius: 2
+                                    bottom_right_radius: 2
+                                    bottom_left_radius: 2
+                                  padding:
+                                    top: 2
+                                    bottom: 2
+                                    left: 8
+                                    right: 8
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: dark_grey_22
+                                font_style: semi_bold
+                                size: 16
+                              true_text: 'YES'
+                              false_text: 'NO'
+                      - format:
+                          border:
+                            top:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_grey_5
+                              thickness: 1
+                          element_format:
+                            horizontal_alignment: left
+                            padding:
+                              left: 10
+                              right: 10
+                              top: 14
+                        widgets:
+                        - type: widget_text
+                          widget_text:
+                            format:
+                              value_format:
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_14
+                                font_style: regular
+                                size: 17
+                                element_format:
+                                  horizontal_alignment: left
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: left
+                            value_variable_id: description_damage_roll
+                      - format:
+                          element_format:
+                            horizontal_alignment: right
+                            padding:
+                              top: 14
+                              bottom: 14
+                              left: 10
+                              right: 10
+                        widgets:
+                        - type: widget_roll
+                          widget_roll:
+                            format:
+                              widget_format:
+                                element_format:
+                                  height: 40
+                                  width:
+                                    type: width_wrap
+                                    width_wrap: wrap
+                              roll_text_location: button
+                              view_type: inline_right_button
+                              button_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_6
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_12
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: dark_grey_12
+                                  size:
+                                    width: 22
+                                    height: 22
+                                font_style: medium
+                                size: 18
+                              button_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_90
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: white
+                                  size:
+                                    width: 20
+                                    height: 20
+                                font_style: semi_bold
+                                size: 20
+                              description_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_4
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_14
+                                font_style: semi_bold
+                                size: 18
+                              description_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_80
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: semi_bold
+                                size: 18
+                              roll_text_format:
+                                element_format:
+                                  padding:
+                                    left: 5
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_12
+                                font_style: bold
+                                size: 18
+                                roll_format: normal
+                            roll_group:
+                              roll_references:
+                              - type: summation_id
+                                summation_id: weapon_rapier_attack_roll
+                            description: 'Damage'
+                            result_description: 'Damage'
                 - name: Properties
                   group_references:
+                  - type: group
+                    group:
+                      rows:
+                      - format:
+                          element_format:
+                            padding:
+                              left: 10
+                              right: 10
+                              top: 14
+                              bottom: 14
+                        widgets:
+                        - type: widget_story
+                          widget_story:
+                            format:
+                              line_spacing: 4
+                              line_height: 36
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: left
+                                  width:
+                                    type: width_justify
+                                    width_justify: justify
+                            story:
+                            - type: story_part_span
+                              story_part_span:
+                                text: 'Finesse.'
+                                text_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: dark
+                                      color_id: light_grey_14
+                                    - theme_id: light
+                                      color_id: dark_grey_12
+                                  font_style: semi_bold
+                                  size: 17
+                            - type: story_part_span
+                              story_part_span:
+                                text: 'You may use your Strength or Dexterity modifier as a bonus to attack and damage rolls.'
+                                text_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: dark
+                                      color_id: light_grey_14
+                                    - theme_id: light
+                                      color_id: dark_grey_12
+                                  size: 16
+                      - format:
+                          element_format:
+                            padding:
+                              top: 8
+                              bottom: 14
+                              left: 10
+                              right: 10
+                        widgets:
+                        - type: widget_boolean
+                          widget_boolean:
+                            value_variables_reference:
+                              type: variable_id
+                              variable_id: rapier_use_finesse
+                            format:
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: right
+                                  padding:
+                                    left: 8
+                                    right: 8
+                                  width:
+                                    type: width_justify
+                                    width_justify: justify
+                              view_type: simple_toggle
+                              left_toggle_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_5
+                                  corners:
+                                    top_left_radius: 2
+                                    bottom_left_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: dark_grey_22
+                                font_style: semi_bold
+                                size: 16
+                              right_toggle_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_5
+                                  corners:
+                                    top_right_radius: 2
+                                    bottom_right_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: dark_grey_22
+                                font_style: semi_bold
+                                size: 16
+                              true_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_2
+                                  corners:
+                                    top_right_radius: 2
+                                    bottom_right_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: green_90
+                                font_style: semi_bold
+                                size: 16
+                              false_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_2
+                                  corners:
+                                    top_left_radius: 2
+                                    bottom_left_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: green_90
+                                font_style: semi_bold
+                                size: 16
+                              false_text: 'Strength'
+                              true_text: 'Dexterity'
 

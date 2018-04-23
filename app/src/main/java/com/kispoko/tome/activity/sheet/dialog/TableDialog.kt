@@ -284,7 +284,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                     if (selectedRow != null)
                     {
                         val tableUpdate = TableWidgetUpdateInsertRowBefore(
-                                                            updateTarget.tableWidget.id,
+                                                            updateTarget.tableWidget.widgetId(),
                                                             selectedRow)
                         Router.send(MessageSheetUpdate(tableUpdate))
                         dialog.dismiss()
@@ -307,7 +307,7 @@ class TableDialogViewBuilder(val updateTarget : UpdateTarget,
                     if (selectedRow != null)
                     {
                         val tableUpdate = TableWidgetUpdateInsertRowAfter(
-                                                            updateTarget.tableWidget.id,
+                                                            updateTarget.tableWidget.widgetId(),
                                                             selectedRow)
                         Router.send(MessageSheetUpdate(tableUpdate))
                         dialog.dismiss()

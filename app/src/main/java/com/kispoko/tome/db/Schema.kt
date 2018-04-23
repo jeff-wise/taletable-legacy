@@ -1113,14 +1113,12 @@ typealias DB_WidgetActionFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetBooleanTable =
-    Table3("widget_boolean",
+    Table2("widget_boolean",
            "widget_id",
-           "format",
            "value_variables_reference")
 
 typealias DB_WidgetBooleanValue =
-    RowValue3<PrimValue<WidgetId>,
-              ProdValue<BooleanWidgetFormat>,
+    RowValue2<PrimValue<WidgetId>,
               PrimValue<VariableReference>>
 
 

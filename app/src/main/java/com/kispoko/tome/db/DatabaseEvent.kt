@@ -3,9 +3,11 @@ package com.kispoko.tome.db
 
 
 import com.kispoko.tome.app.ApplicationEvent
+import com.kispoko.tome.app.EventTypeDatabase
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.session.SessionId
 import com.kispoko.tome.util.Util
+
 
 
 /**
@@ -22,6 +24,8 @@ data class DatabaseEntitySaved(val entityId : EntityId,
             |    Insert Time (ms): ${Util.timeDifferenceString(insertTimeMS)}""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeDatabase
 }
 
 
@@ -33,6 +37,8 @@ data class DatabaseEntityUpdated(val entityId : EntityId,
             |    Insert Time (ms): ${Util.timeDifferenceString(insertTimeMS)}""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeDatabase
 }
 
 
@@ -45,4 +51,6 @@ data class DatabaseSessionSaved(val sessionId : SessionId,
             |    Insert Time (ms): ${Util.timeDifferenceString(insertTimeMS)}""".trimMargin()
 
     override fun logMessage(): String = debugMessage()
+
+    override fun eventType() = EventTypeDatabase
 }

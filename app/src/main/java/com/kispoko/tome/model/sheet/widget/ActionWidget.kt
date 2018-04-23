@@ -388,7 +388,7 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
                     // Otherwise, use the dialog
                     else {
                         val dialog = ProcedureDialog.newInstance(actionWidget.procedureId(),
-                                                                 UpdateTargetActionWidget(actionWidget.id),
+                                                                 UpdateTargetActionWidget(actionWidget.widgetId()),
                                                                  entityId)
                         val activity = context as AppCompatActivity
                         dialog.show(activity.supportFragmentManager, "")

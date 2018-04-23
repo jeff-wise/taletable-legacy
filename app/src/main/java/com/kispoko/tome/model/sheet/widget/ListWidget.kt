@@ -325,7 +325,7 @@ class ListWidgetViewBuilder(val listWidget : ListWidget,
                 is Val -> {
                     openVariableEditorDialog(textListVariable.value,
                                              null,
-                                             UpdateTargetListWidget(listWidget.id),
+                                             UpdateTargetListWidget(listWidget.widgetId()),
                                              entityId,
                                              context)
                 }

@@ -3,10 +3,12 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.support.design.widget.TabLayout
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.kispoko.tome.R.string.widget
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.CustomTabLayout
@@ -22,6 +24,8 @@ import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.sheet
+import com.kispoko.tome.rts.entity.sheetOrError
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -103,7 +107,17 @@ data class Tab(val tabName : TabName,
         val groupsCache = this.groupsCache
         return when (groupsCache) {
             is Just    -> groupsCache.value
-            is Nothing -> groups(this.groupReferences, entityId)
+            is Nothing -> {
+                val _groups = groups(this.groupReferences, entityId)
+                _groups.forEach {
+                    it.rows().forEach {
+                        it.widgets().forEach { widget ->
+                            sheetOrError(entityId) apDo { it.indexWidget(widget)  }
+                        }
+                    }
+                }
+                _groups
+            }
         }
     }
 
@@ -472,6 +486,25 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
 
     // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    fun showTab(index : Int)
+    {
+        if (index >= 0 && index < tabWidget.tabs().size)
+        {
+            val groups = tabWidget.tabs()[index].groups(entityId)
+
+            contentViewLayout?.removeAllViews()
+
+            groups.forEach {
+                contentViewLayout?.addView(it.view(entityId, context))
+            }
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // VIEWS
     // -----------------------------------------------------------------------------------------
 
@@ -614,6 +647,24 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
         tabLayout.setSelectedTabIndicatorColor(
                 colorOrBlack(tabFormat.underlineColorTheme(), entityId))
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
+            override fun onTabReselected(tab: TabLayout.Tab?) { }
+
+            override fun onTabSelected(tab : TabLayout.Tab?) {
+                if (tab != null) {
+                    val pos = tab.position
+                    if (pos >= 0 && pos < tabWidget.tabs().size)
+                        showTab(pos)
+                }
+                else {
+                    showTab(0)
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) { }
+        })
 
         return tabLayout
     }
