@@ -203,7 +203,7 @@ data class Sheet(override val id : UUID,
     override fun entityLoader() = this.entitySource
 
 
-    fun entityId() : EntityId = EntitySheetId(this.sheetId)
+    override fun entityId() = EntitySheetId(this.sheetId)
 
 
     // -----------------------------------------------------------------------------------------

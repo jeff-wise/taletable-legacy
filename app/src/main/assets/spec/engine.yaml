@@ -750,6 +750,24 @@ types:
       code: |+
         modifier: 5
         name: 'strength bonus'
+- type: sum_type
+  sum_type:
+    name: formula_modifier
+    label: Formula Modifier
+    description: Formula modifier.
+    group: 'Formula Modifier'
+    cases:
+    - type: multiply_dice 
+      description: Multiply dice rolls in roll.
+- type: primitive_type
+  primitive_type:
+    name: multiply_dice
+    label: Multiply Dice
+    description: Multiply dice.
+    group: Procedure
+    base_type:
+      type: prim_type
+      prim_type: number
 - type: primitive_type
   primitive_type:
     name: procedure_id
@@ -2260,58 +2278,8 @@ types:
     - type: summation_term_conditional
       description: >
         The value depends on if a boolean variable is true or false.
-    - type: summation_term_either
-      description: An either term.
-- type: product_type
-  product_type:
-    name: summation_term_conditional
-    label: Conditional Term
-    description: >
-      A conditional summation term is a term that can take on two different values, depending on the 
-      truthfulness of a boolean variable. 
-    group: Summation
-    fields:
-    - name: conditional_term_value
-      type: 
-        type: custom_type
-        custom_type: variable_boolean
-      presence: required
-      description: >
-        A boolean variable that is used to determine which branch to follow.
-    - name: true_term_value
-      type:
-        type: custom_type
-        custom_type: variable_number
-      presence: required
-      description: >
-        The number variable to be the result when the conditional term is true.
-    - name: false_term_value
-      type:
-        type: custom_type
-        custom_type: variable_number
-      presence: required
-      description: >
-        The number variable to be the result when the conditional term is false.
-- type: product_type
-  product_type:
-    name: summation_term_either
-    label: Either Term
-    description: Either term
-    group: Summation
-    fields:
-    - name: term_name
-      type: 
-        type: custom_type
-        custom_type: summation_term_name
-      presence: optional
-      description: Term Name
-    - name: either_references
-      type: 
-        type: custom_coll_type
-        custom_coll_type: data_reference_number
-      presence: required
-      description: >
-        A boolean variable that is used to determine which branch to follow.
+    - type: summation_term_conditional_function
+      description: A conditional function.
 - type: primitive_type
   primitive_type:
     name: summation_term_name
@@ -2445,6 +2413,32 @@ types:
       presence: required
       description: >
         The dice roll value that is the term value.
+- type: product_type
+  product_type:
+    name: summation_term_conditional_function
+    label: Conditional Term Function
+    description: Conditional Term Function
+    group: Summation
+    fields:
+    - name: term_name
+      type: 
+        type: custom_type
+        custom_type: summation_term_name
+      presence: optional
+      description: Term Name
+    - name: condition
+      type:
+        type: custom_type
+        custom_type: data_reference_boolean
+      presence: required
+      description: >
+        The dice roll value that is the term value.
+    - name: formula_modifier
+      type:
+        type: custom_type
+        custom_type: formula_modifier
+      presence: required
+      description: The formula modifier.
 - type: product_type
   product_type:
     name: value_reference

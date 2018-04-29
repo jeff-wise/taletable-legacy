@@ -372,13 +372,12 @@ class ActionWidgetViewBuilder(val actionWidget : ActionWidget,
         //layout.layoutGravity = Gravity.CENTER
 
         layout.onClick      = View.OnClickListener {
-            Log.d("***ACTION WIDGET", "on click")
             if (this.isActive)
             {
                 actionWidget.procedure(entityId) apDo { procedure ->
 
                     // If has parameters, use the activity
-                    if (procedure.hasParameters(entityId) || procedure.descriptionLength() > 70) {
+                    if (procedure.hasParameters(entityId) || procedure.descriptionLength() > 110) {
                         val activity = context as AppCompatActivity
                         val intent = Intent(activity, RunProcedureActivity::class.java)
                         intent.putExtra("procedure_id", actionWidget.procedureId())

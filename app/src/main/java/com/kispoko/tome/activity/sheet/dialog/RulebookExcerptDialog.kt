@@ -13,9 +13,7 @@ import android.widget.ScrollView
 import br.tiagohm.markdownview.MarkdownView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.book.RulebookExcerpt
 import com.kispoko.tome.model.book.BookReference
-import com.kispoko.tome.model.book.RulebookReferencePath
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme

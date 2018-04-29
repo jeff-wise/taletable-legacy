@@ -23,7 +23,6 @@ import com.kispoko.tome.model.game.engine.reference.NumberReference
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.summation.SummationId
 import com.kispoko.tome.model.game.engine.summation.SummationName
-import com.kispoko.tome.model.game.engine.summation.term.EitherReferences
 import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
 import com.kispoko.tome.model.game.engine.summation.term.TermName
 import com.kispoko.tome.model.game.engine.value.*
@@ -658,20 +657,19 @@ typealias DB_ProcedureValue =
 // ---------------------------------------------------------------------------------------------
 
 val programTable =
-    Table6("program",
+    Table5("program",
            "program_id",
            "label",
            "description",
            "type_signature",
-           "statements",
            "result_binding_name")
 
 typealias DB_ProgramValue =
-    RowValue6<PrimValue<ProgramId>,
+    RowValue5<PrimValue<ProgramId>,
               PrimValue<ProgramLabel>,
               PrimValue<ProgramDescription>,
               ProdValue<ProgramTypeSignature>,
-              CollValue<Statement>,
+//              CollValue<Statement>,
               PrimValue<StatementBindingName>>
 
 
@@ -850,29 +848,27 @@ val statementTable =
            "parameter_4",
            "parameter_5")
 
-typealias DB_StatementValue =
-    RowValue7<PrimValue<StatementBindingName>,
-              PrimValue<FunctionId>,
-              MaybeSumValue<StatementParameter>,
-              MaybeSumValue<StatementParameter>,
-              MaybeSumValue<StatementParameter>,
-              MaybeSumValue<StatementParameter>,
-              MaybeSumValue<StatementParameter>>
+//typealias DB_StatementValue =
+//    RowValue7<PrimValue<StatementBindingName>,
+//              PrimValue<FunctionId>,
+//              MaybeSumValue<StatementParameter>,
+//              MaybeSumValue<StatementParameter>,
+//              MaybeSumValue<StatementParameter>,
+//              MaybeSumValue<StatementParameter>,
+//              MaybeSumValue<StatementParameter>>
 
 
 // SUMMATION
 // ---------------------------------------------------------------------------------------------
 
 val summationTable =
-    Table3("summationWithId",
+    Table2("summationWithId",
            "summation_id",
-           "summation_name",
-           "terms")
+           "summation_name")
 
 typealias DB_SummationValue =
-    RowValue3<PrimValue<SummationId>,
-              PrimValue<SummationName>,
-              CollValue<SummationTerm>>
+    RowValue2<PrimValue<SummationId>,
+              PrimValue<SummationName>>
 
 
 // TERM: NUMBER
@@ -914,9 +910,9 @@ val summationTermDiceRollTable =
             "term_name",
             "value_reference")
 
-typealias DB_SummationTermDiceRollValue =
-    RowValue2<MaybePrimValue<TermName>,
-              SumValue<DiceRollReference>>
+//typealias DB_SummationTermDiceRollValue =
+//    RowValue2<MaybePrimValue<TermName>>
+//              SumValue<DiceRollReference>>
 
 
 // TERM: CONDITIONAL
@@ -934,19 +930,6 @@ typealias DB_SummationTermConditionalValue =
               SumValue<BooleanReference>,
               SumValue<NumberReference>,
               SumValue<NumberReference>>
-
-
-// TERM: EITHER
-// ---------------------------------------------------------------------------------------------
-
-val summationTermEitherTable =
-    Table2("summation_term_either",
-           "term_name",
-           "either_references")
-
-typealias DB_SummationTermEitherValue =
-    RowValue2<MaybePrimValue<TermName>,
-              PrimValue<EitherReferences>>
 
 
 // TEXT FORMAT
@@ -1361,19 +1344,17 @@ typealias DB_WidgetMechanicFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetNumberTable =
-    Table5("widget_number",
+    Table4("widget_number",
            "widget_id",
            "format",
            "value_variable_id",
-           "inside_label",
-           "rulebook_reference")
+           "inside_label")
 
 typealias DB_WidgetNumberValue =
-    RowValue5<PrimValue<WidgetId>,
+    RowValue4<PrimValue<WidgetId>,
               ProdValue<NumberWidgetFormat>,
               PrimValue<VariableId>,
-              MaybePrimValue<NumberWidgetLabel>,
-              MaybeProdValue<BookReference>>
+              MaybePrimValue<NumberWidgetLabel>>
 
 
 // WIDGET: NUMBER > FORMAT
@@ -1948,17 +1929,15 @@ typealias DB_WidgetTableRowFormatValue =
 // ---------------------------------------------------------------------------------------------
 
 val widgetTextTable =
-    Table4("widget_text",
+    Table3("widget_text",
            "widget_id",
            "format",
-           "value_variable_id",
-           "rulebook_reference")
+           "value_variable_id")
 
 typealias DB_WidgetTextValue =
-    RowValue4<PrimValue<WidgetId>,
+    RowValue3<PrimValue<WidgetId>,
               ProdValue<TextWidgetFormat>,
-              PrimValue<VariableId>,
-              MaybeProdValue<BookReference>>
+              PrimValue<VariableId>>
 
 
 // WIDGET: TEXT > FORMAT
@@ -1982,17 +1961,15 @@ typealias DB_WidgetTextFormat =
 // ---------------------------------------------------------------------------------------------
 
 val valueNumberTable =
-    Table5("value_number",
+    Table4("value_number",
            "value_id",
            "description",
-           "rulebook_reference",
            "variables",
            "value")
 
 typealias DB_ValueNumberValue =
-    RowValue5<PrimValue<ValueId>,
+    RowValue4<PrimValue<ValueId>,
               PrimValue<ValueDescription>,
-              MaybeProdValue<BookReference>,
               CollValue<Variable>,
               PrimValue<NumberValue>>
 
@@ -2001,17 +1978,15 @@ typealias DB_ValueNumberValue =
 // ---------------------------------------------------------------------------------------------
 
 val valueTextTable =
-    Table5("value_text",
+    Table4("value_text",
            "value_id",
            "description",
-           "rulebook_reference",
            "variables",
            "value")
 
 typealias DB_ValueTextValue =
-    RowValue5<PrimValue<ValueId>,
+    RowValue4<PrimValue<ValueId>,
               PrimValue<ValueDescription>,
-              MaybeProdValue<BookReference>,
               CollValue<Variable>,
               PrimValue<TextValue>>
 
@@ -2081,19 +2056,17 @@ typealias DB_VariableBooleanValue =
 // ---------------------------------------------------------------------------------------------
 
 val variableDiceRollTable =
-    Table5("variable_dice_roll",
+    Table4("variable_dice_roll",
            "variable_id",
            "label",
            "description",
-           "tags",
-           "variable_value")
+           "tags")
 
 typealias DB_VariableDiceRollValue =
-    RowValue5<PrimValue<VariableId>,
+    RowValue4<PrimValue<VariableId>,
               PrimValue<VariableLabel>,
               PrimValue<VariableDescription>,
-              PrimValue<VariableTagSet>,
-              SumValue<DiceRollVariableValue>>
+              PrimValue<VariableTagSet>>
 
 
 // VARIABLE: NUMBER

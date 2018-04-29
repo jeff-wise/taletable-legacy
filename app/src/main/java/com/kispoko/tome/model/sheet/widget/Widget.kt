@@ -208,15 +208,18 @@ object WidgetView
 
         val width = widgetFormat.elementFormat().width()
         when (width) {
+            is Width.Fill -> {
+                layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+            }
             is Width.Justify -> {
-                layout.width            = 0
-                layout.weight           = widgetFormat.width().toFloat()
+                layout.width        = 0
+                layout.weight       = widgetFormat.width().toFloat()
             }
             is Width.Wrap -> {
-                layout.width = LinearLayout.LayoutParams.WRAP_CONTENT
+                layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
             }
             is Width.Fixed -> {
-                layout.widthDp  = width.value.toInt()
+                layout.widthDp      = width.value.toInt()
             }
         }
 
@@ -886,7 +889,8 @@ data class BooleanWidget(private val widgetId : WidgetId,
 data class ExpanderWidget(val widgetId : WidgetId,
                           val format : ExpanderWidgetFormat,
                           val header : ExpanderWidgetLabel,
-                          val groups : List<Group>) : Widget()
+                          val groups : List<Group>,
+                          val bookReference : Maybe<BookReference>) : Widget()
 {
 
 
@@ -917,7 +921,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
                             effValue(WidgetId.random()),
                             { WidgetId.fromDocument(it) }),
                       // Format
-                     split(doc.maybeAt("format"),
+                      split(doc.maybeAt("format"),
                            effValue(ExpanderWidgetFormat.default()),
                            { ExpanderWidgetFormat.fromDocument(it) }),
                       // Label
@@ -925,7 +929,12 @@ data class ExpanderWidget(val widgetId : WidgetId,
                       // Groups
                       doc.list("groups") ap { docList ->
                           docList.mapIndexed { d,index -> Group.fromDocument(d,index) }
-                      })
+                      },
+                      // Book Reference
+                      split(doc.maybeAt("book_reference"),
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { apply(::Just, BookReference.fromDocument(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -957,6 +966,9 @@ data class ExpanderWidget(val widgetId : WidgetId,
     fun groups() : List<Group> = this.groups
 
 
+    fun bookReference() : Maybe<BookReference> = this.bookReference
+
+
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
@@ -965,7 +977,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
 
 
     override fun view(entityId : EntityId, context : Context) : View {
-        val viewBuilder = ExpanderWidgetViewBuilder(this, entityId, context)
+        val viewBuilder = ExpanderWidgetUI(this, entityId, context)
         return viewBuilder.view()
     }
 
@@ -1126,6 +1138,7 @@ data class WidgetGroup(val widgetId : WidgetId,
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
         this.groups(entityId).forEach {
+//            Log.d("****GROUP WIDGET", "initializing group: ${it.id}")
             it.onSheetComponentActive(entityId, context)
         }
     }
@@ -1145,17 +1158,6 @@ data class ImageWidget(val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-//    constructor(widgetId : WidgetId,
-//                format : ImageWidgetFormat,
-//                officialImageIds : MutableList<OfficialImageId>,
-//                icon : Maybe<Icon>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               officialImageIds,
-//               icon)
-
 
     companion object : Factory<Widget>
     {
@@ -2609,31 +2611,6 @@ data class RollWidget(val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : RollWidgetFormat,
-//                rollGroup : DiceRollGroup,
-//                description : Maybe<RollWidgetDescription>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               rollGroup,
-//               description,
-//               Nothing())
-//
-//
-//    constructor(widgetId : WidgetId,
-//                format : RollWidgetFormat,
-//                rollGroup : DiceRollGroup,
-//                description : Maybe<RollWidgetDescription>,
-//                resultDescription : Maybe<RollWidgetResultDescription>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               rollGroup,
-//               description,
-//               resultDescription)
-
 
     companion object : Factory<RollWidget>
     {
@@ -2711,25 +2688,6 @@ data class RollWidget(val widgetId : WidgetId,
 
 
     // -----------------------------------------------------------------------------------------
-    // PROD TYPE
-    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetRollValue =
-//        RowValue5(widgetRollTable,
-//                  PrimValue(this.widgetId),
-//                  ProdValue(this.format),
-//                  ProdValue(this.rollGroup),
-//                  MaybePrimValue(this.description),
-//                  MaybePrimValue(this.resultDescription))
-
-
-    // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
@@ -2764,6 +2722,7 @@ data class RollWidget(val widgetId : WidgetId,
 
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
+        Log.d("***WIDGET", "updating roll widget view")
         val layoutId = this.layoutId
         if (layoutId != null)
         {
@@ -3138,19 +3097,9 @@ data class WidgetTab(val widgetId : WidgetId,
                      val tabs : List<Tab>) : Widget()
 {
 
-
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-//    constructor(widgetId : WidgetId,
-//                format : TabWidgetFormat,
-//                tabs : MutableList<Tab>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               tabs)
-
 
     companion object : Factory<Widget>
     {
@@ -3232,10 +3181,9 @@ data class WidgetTab(val widgetId : WidgetId,
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
         this.tabs().forEach {
-//            it.groupReferences()
-//            it..forEach {
-//                it.onSheetComponentActive(entityId, context)
-//            }
+            it.groups(entityId).forEach {
+                it.onSheetComponentActive(entityId, context)
+            }
         }
     }
 

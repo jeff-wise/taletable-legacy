@@ -7,20 +7,19 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
-import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.game.engine.FormulaModifier
+import com.kispoko.tome.model.game.engine.FormulaModifierMultiplyDice
 import com.kispoko.tome.model.game.engine.reference.DiceRollReference
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
+import lulo.value.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
-import lulo.value.ValueParser
 import maybe.Just
 import maybe.Nothing
 import maybe.Maybe
@@ -33,11 +32,11 @@ import java.util.*
 /**
  * Dice Roll
  */
-data class DiceRoll(override val id : UUID,
-                    val quantities : MutableList<DiceQuantity>,
+data class DiceRoll(val quantities : MutableList<DiceQuantity>,
                     val modifiers : MutableList<RollModifier>,
+                    val formulaModifiers : MutableList<FormulaModifier>,
                     val rollName : Maybe<DiceRollName>)
-                     : ToDocument, ProdType, Serializable
+                     : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -46,22 +45,14 @@ data class DiceRoll(override val id : UUID,
 
     constructor(quantities : List<DiceQuantity>,
                 modifiers : List<RollModifier>,
-                rollName : Maybe<DiceRollName>)
-        : this(UUID.randomUUID(),
-               quantities.toMutableList(),
+                formulaModifiers : List<FormulaModifier>)
+        : this(quantities.toMutableList(),
                modifiers.toMutableList(),
-               rollName)
-
-
-    constructor(quantities : List<DiceQuantity>,
-                modifiers : List<RollModifier>)
-        : this(UUID.randomUUID(),
-               quantities.toMutableList(),
-               modifiers.toMutableList(),
+               formulaModifiers.toMutableList(),
                Nothing())
 
 
-    constructor() : this(UUID.randomUUID(),
+    constructor() : this(mutableListOf(),
                          mutableListOf(),
                          mutableListOf(),
                          Nothing())
@@ -76,12 +67,16 @@ data class DiceRoll(override val id : UUID,
                 apply(::DiceRoll,
                       // Quantity
                       doc.list("quantities") ap {
-                          it.map { DiceQuantity.fromDocument(it) }
+                          it.mapMut { DiceQuantity.fromDocument(it) }
                       },
-                      // Modifier
+                      // Modifiers
                       split(doc.maybeList("modifiers"),
-                            effValue(listOf()),
-                           { it.map { RollModifier.fromDocument(it) } }),
+                            effValue(mutableListOf()),
+                           { it.mapMut { RollModifier.fromDocument(it) } }),
+                      // Formula Modifiers
+                      split(doc.maybeList("formula_modifiers"),
+                            effValue(mutableListOf()),
+                            { it.mapMut { FormulaModifier.fromDocument(it) } }),
                       // Name
                       split(doc.maybeAt("name"),
                            effValue<ValueError, Maybe<DiceRollName>>(Nothing()),
@@ -115,31 +110,42 @@ data class DiceRoll(override val id : UUID,
     fun modifiers() : List<RollModifier> = this.modifiers
 
 
+    fun formulaModifiers() : List<FormulaModifier> = this.formulaModifiers
+
+
     fun rollName() : Maybe<DiceRollName> = this.rollName
 
 
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_DiceRollValue =
-        RowValue3(diceRollTable, PrimValue(DiceQuantitySet(this.quantities)),
-                                 CollValue(this.modifiers),
-                                 MaybePrimValue(this.rollName))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_DiceRollValue =
+//        RowValue3(diceRollTable, PrimValue(DiceQuantitySet(this.quantities)),
+//                                 CollValue(this.modifiers),
+//                                 MaybePrimValue(this.rollName))
 
 
     // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun roll() : Int = this.quantities().map({ it.roll() }).sum() +
-                       this.modifierValues().sum()
+
+
+
+    fun roll() : Int
+    {
+        val modRoll = this.withFormulaModifiers()
+
+        return modRoll.quantities().map({ it.roll() }).sum() +
+                       modRoll.modifierValues().sum()
+    }
 
 
     fun modifierValues() : List<Int> = this.modifiers().map { it.valueInt() }
@@ -147,11 +153,13 @@ data class DiceRoll(override val id : UUID,
 
     fun rollSummary() : RollSummary
     {
-        val quantitySummaries = this.quantities()
+        val modRoll = this.withFormulaModifiers()
+
+        val quantitySummaries = modRoll.quantities()
                                     .sortedByDescending { it.quantityInt() }
                                     .map { RollPartSummary(it.roll(), it.toString(), "") }
 
-        val modifierSummaries = this.modifiers()
+        val modifierSummaries = modRoll.modifiers()
                                     .filter { it.valueInt() != 0 }
                                     .sortedByDescending { it.valueInt() }
                                     .map { RollPartSummary(it.valueInt(), "", it.name().toNullable()?.value ?: "") }
@@ -169,8 +177,9 @@ data class DiceRoll(override val id : UUID,
     {
         val quantities = this.quantities().plus(diceRoll.quantities())
         val modifiers = this.modifiers().plus(diceRoll.modifiers())
+        val formulaModifiers = this.formulaModifiers().plus(diceRoll.formulaModifiers())
 
-        return DiceRoll(quantities, modifiers)
+        return DiceRoll(quantities, modifiers, formulaModifiers)
     }
 
 
@@ -210,11 +219,13 @@ data class DiceRoll(override val id : UUID,
 
     override fun toString() : String
     {
-        val diceString = this.quantities().sortedBy { it.sidesInt() }
+        val modRoll = this.withFormulaModifiers()
+
+        val diceString = modRoll.quantities().sortedBy { it.sidesInt() }
                                           .map { it.toString() }
                                           .joinToString(" + ")
 
-        val modifierSum = this.modifierValues().sum()
+        val modifierSum = modRoll.modifierValues().sum()
         var modifierString = ""
         if (modifierSum > 0)
             modifierString = " + " + modifierSum.toString()
@@ -227,7 +238,9 @@ data class DiceRoll(override val id : UUID,
 
     fun modifierString() : String
     {
-        val modifierSum = this.modifierValues().sum()
+        val modRoll = this.withFormulaModifiers()
+
+        val modifierSum = modRoll.modifierValues().sum()
 
         var modifierString = ""
         if (modifierSum > 0)
@@ -239,6 +252,32 @@ data class DiceRoll(override val id : UUID,
 
         return modifierString
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // FORMULA MODIFIERS
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Returns this dice roll after being modified by the formula modifiers.
+     */
+    private fun withFormulaModifiers() : DiceRoll
+    {
+        var currentDiceRoll : DiceRoll = this
+
+        this.formulaModifiers.forEach {
+            currentDiceRoll = currentDiceRoll.withFormulaModifier(it)
+        }
+
+        return currentDiceRoll
+    }
+
+
+    private fun withFormulaModifier(formulaModifier : FormulaModifier) : DiceRoll =
+        when (formulaModifier) {
+            is FormulaModifierMultiplyDice -> formulaModifier.apply(this)
+        }
+
 
 }
 
@@ -761,6 +800,7 @@ data class DiceRollGroupName(val value : String) : ToDocument, SQLSerializable, 
 }
 
 
+
 /**
  * Dice Roll References
  */
@@ -798,5 +838,9 @@ sealed class DiceRollModifierFunction : Serializable
         override fun toString() = "Drop the Lowest Roll"
     }
 }
+
+
+
+
 
 

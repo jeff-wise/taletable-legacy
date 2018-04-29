@@ -317,7 +317,7 @@ class ProcedureViewBuilder(val procedure : Procedure,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation  = LinearLayout.HORIZONTAL

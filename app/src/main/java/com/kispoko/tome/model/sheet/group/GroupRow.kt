@@ -265,7 +265,7 @@ data class GroupRow(override val id : UUID,
         layout.width            = 0
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.gravity          = Gravity.START
+//        layout.gravity          = Gravity.START
 
         return layout.linearLayout(context)
     }

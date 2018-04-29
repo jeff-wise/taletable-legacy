@@ -308,7 +308,6 @@ class SheetActivity : AppCompatActivity()
         val fab = findViewById<FloatingActionButton>(R.id.session_button)
         fab.setOnClickListener {
             val intent = Intent(this, SessionActivity::class.java)
-            finish()
             startActivity(intent)
         }
     }
@@ -589,7 +588,7 @@ class MainTabBarUI(val theme : Theme, val context : Context)
 
         val bgNormalColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
 
         val bgSelectedColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),

@@ -39,24 +39,7 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: proficiency_bonus
-  - summation_id: weapon_rapier_damage_roll
-    summation_name: Rapier Damage Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: weapon_rapier_damage
-    - type: summation_term_number
-      summation_term_number:
-        term_name: Dexterity Modifier
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: dexterity_modifier
+
   - summation_id: weapon_dagger_attack_roll
     summation_name: Dagger Attack Roll
     terms:
@@ -629,7 +612,7 @@ variables:
     description: Bonus Actions Description
     value:
       type: text_literal
-      text_literal: 'Extra actions that I may take. I can only use one each turn.'
+      text_literal: '1 per turn'
 - type: variable_text
   variable_text:
     id: reactions_description
@@ -637,7 +620,7 @@ variables:
     description: Reactions Description
     value:
       type: text_literal
-      text_literal: 'An action which I can take as a response to a trigger.'
+      text_literal: '1 per turn'
 - type: variable_text
   variable_text:
     id: strength_description
@@ -936,7 +919,7 @@ variables:
     description: About Me Label
     value:
       type: text_literal
-      text_literal: 'A little about me'
+      text_literal: 'About me'
 - type: variable_text
   variable_text:
     id: ability_scores_label
@@ -1072,7 +1055,7 @@ variables:
     description: Gender Label
     value:
       type: text_literal
-      text_literal: 'gender'
+      text_literal: 'Gender'
 - type: variable_text
   variable_text:
     id: gender
@@ -1088,7 +1071,7 @@ variables:
     description: Height Label
     value:
       type: text_literal
-      text_literal: 'height'
+      text_literal: 'Height'
 - type: variable_text
   variable_text:
     id: weight_label
@@ -1096,7 +1079,7 @@ variables:
     description: Weight Label
     value:
       type: text_literal
-      text_literal: 'weight'
+      text_literal: 'Weight'
 - type: variable_text
   variable_text:
     id: size
@@ -1353,6 +1336,14 @@ variables:
     value:
       type: number_literal
       number_literal: 37
+- type: variable_text
+  variable_text:
+    id: death_saves_label
+    label: Death Saves Label
+    description: Death Saves Label
+    value:
+      type: text_literal
+      text_literal: 'Death Saving Throws'
 - type: variable_number
   variable_number:
     id: current_death_saves
@@ -1884,6 +1875,8 @@ sections:
           theme_color_ids:
           - theme_id: light
             color_id: light_grey_7
+        padding:
+          bottom: 60
     groups:
     - format:
         element_format:
@@ -2001,7 +1994,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_14
+                      color_id: light_grey_18
                     - theme_id: light
                       color_id: dark_grey_12
                   size: 17.5
@@ -2035,7 +2028,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_14
+                      color_id: light_grey_18
                     - theme_id: light
                       color_id: dark_grey_12
                   size: 17.5
@@ -2069,7 +2062,7 @@ sections:
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
-                      color_id: light_grey_14
+                      color_id: light_grey_18
                     - theme_id: light
                       color_id: dark_grey_12
                   size: 17.5
@@ -2085,7 +2078,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
+                        color_id: light_grey_18
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2118,7 +2111,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
+                        color_id: light_grey_18
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2151,7 +2144,7 @@ sections:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
+                        color_id: light_grey_18
                   color_theme:
                     theme_color_ids:
                     - theme_id: dark
@@ -2212,7 +2205,7 @@ sections:
                     color_id: light_grey_20
                   - theme_id: light
                     color_id: dark_grey_18
-                size: 17
+                size: 16
                 font_style: regular
               widget_format:
                 element_format:
@@ -2252,11 +2245,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: level_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
 #            id: level
@@ -2284,11 +2272,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 22
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
       - format:
           element_format:
             background_color_theme:
@@ -2315,9 +2298,7 @@ sections:
             format:
               limit_text_format:
                 element_format:
-                  padding:
-                    bottom: 1.5
-                  vertical_alignment: bottom
+                  vertical_alignment: middle
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
@@ -2327,30 +2308,29 @@ sections:
                 size: 18
               current_text_format:
                 element_format:
-                  padding:
-                    bottom: 1.5
-                  vertical_alignment: bottom
+                  vertical_alignment: middle
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: light_grey_10
                   - theme_id: light
                     color_id: light_blue
-                font_style: semi_bold
-                size: 18
+                font_style: bold
+                size: 20
               label_text_format:
                 element_format:
                   margins:
                     left: 5
                   padding:
-                    bottom: 1.5
-                  vertical_alignment: bottom
+                    top: 1.5
+                  vertical_alignment: middle
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: light_grey_10
                   - theme_id: light
-                    color_id: dark_grey_10
+                    color_id: light_blue
+                font_style: medium
                 size: 18
               info_format:
                 style: limit_label_max_right
@@ -2380,13 +2360,6 @@ sections:
             right: 6
             bottom: 6
             top: 6
-        border:
-          bottom:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_grey_10
-            thickness: 2
       rows:
       - format:
           element_format:
@@ -2403,7 +2376,7 @@ sections:
                     color_id: light_grey_20
                   - theme_id: light
                     color_id: dark_grey_18
-                size: 17
+                size: 16
                 font_style: regular
               widget_format:
                 element_format:
@@ -2547,7 +2520,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 50
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2575,7 +2548,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 50
                   padding:
                     left: 14
                     right: 14
@@ -2598,7 +2571,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 50
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2631,7 +2604,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 50
                   padding:
                     left: 14
                     right: 14
@@ -2898,7 +2871,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 44
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2926,7 +2899,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 44
                   padding:
                     left: 14
                     right: 14
@@ -2949,7 +2922,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2982,7 +2955,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 44
                   padding:
                     left: 14
                     right: 14
@@ -3015,7 +2988,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 50
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3043,7 +3016,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 50
                   padding:
                     left: 14
                     right: 14
@@ -3066,7 +3039,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 50
                   margins:
                     left: 4
                   horizontal_alignment: left
@@ -3099,7 +3072,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 50
                   padding:
                     left: 14
                     right: 14
@@ -3111,6 +3084,30 @@ sections:
                 font_style: medium
                 number_format: modifier
                 size: 20
+    - rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+            margins:
+              left: 6
+        widgets:
+        - type: widget_text
+          widget_text:
+#            id: ability_scores_label
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_18
+                size: 16
+                font_style: regular
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: about_me_label
     - format:
         element_format:
           background_color_theme:
@@ -3128,20 +3125,13 @@ sections:
             top: 6
       rows:
       - format:
-          border:
-            bottom:
-              color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_grey_7
-              thickness: 1
           element_format:
             horizontal_alignment: left
             padding:
               left: 8
               right: 8
               top: 6
-              bottom: 6
+              bottom: 2
         widgets:
         - type: widget_text
           widget_text:
@@ -3181,7 +3171,7 @@ sections:
               text_format:
                 element_format:
                   padding:
-                    top: 6
+                    top: 2
                     bottom: 6
             story:
             - type: story_part_span
@@ -3239,17 +3229,10 @@ sections:
           margins:
             left: 6
             right: 6
-            top: 6
-            bottom: 6
+            top: 8
+            bottom: 2
       rows:
       - format:
-          border:
-            bottom:
-              color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_grey_7
-              thickness: 1
           element_format:
             horizontal_alignment: left
             padding:
@@ -3296,7 +3279,7 @@ sections:
               text_format:
                 element_format:
                   padding:
-                    top: 6
+                    top: 0
                     bottom: 6
             story:
             - type: story_part_span
@@ -3345,25 +3328,35 @@ sections:
                   size: 19
     - format:
         element_format:
-          padding:
-            bottom: 15
-            top: 10
-        border:
-          bottom:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_grey_10
-            thickness: 1
+          margins:
+            left: 6
+            right: 6
+            top: 8
       rows:
       - format:
+          border:
+            bottom:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_5
+              thickness: 1
           element_format:
-            margins:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_right_radius: 2
+              top_left_radius: 2
+            horizontal_alignment: left
+            padding:
+              bottom: 6
+              top: 6
               left: 6
         widgets:
         - type: widget_text
           widget_text:
-#            id: my_body_label
             format:
               value_format:
                 color_theme:
@@ -3372,8 +3365,8 @@ sections:
                     color_id: light_grey_20
                   - theme_id: light
                     color_id: dark_grey_18
-                size: 16
-                font_style: bold
+                size: 15
+                font_style: medium
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -3381,7 +3374,7 @@ sections:
       - format:
           element_format:
             margins:
-              top: 10
+              top: 0
         widgets:
         - type: widget_text
           widget_text:
@@ -3407,12 +3400,12 @@ sections:
                     top_right_radius: 2
                   horizontal_alignment: left
                   margins:
-                    left: 6
-                    right: 3
+                    right: 1
                   padding:
                     left: 6
                     right: 6
                     top: 2
+                    bottom: 2
                   width:
                     type: width_justify
                     width_justify: justify
@@ -3437,13 +3430,11 @@ sections:
                     - theme_id: light
                       color_id: white
                   horizontal_alignment: left
-                  margins:
-                    right: 3
-                    left: 3
                   padding:
                     left: 6
                     right: 6
                     top: 2
+                    bottom: 2
                   width:
                     type: width_justify
                     width_justify: justify
@@ -3469,12 +3460,12 @@ sections:
                       color_id: white
                   horizontal_alignment: left
                   margins:
-                    right: 6
-                    left: 3
+                    left: 1
                   padding:
                     left: 6
                     right: 6
                     top: 2
+                    bottom: 2
                   width:
                     type: width_justify
                     width_justify: justify
@@ -3501,11 +3492,9 @@ sections:
                       color_id: white
                   corners:
                     bottom_left_radius: 2
-                    bottom_right_radius: 2
                   horizontal_alignment: left
                   margins:
-                    left: 6
-                    right: 3
+                    right: 1
                   padding:
                     left: 6
                     right: 6
@@ -3534,9 +3523,6 @@ sections:
                     - theme_id: light
                       color_id: white
                   horizontal_alignment: left
-                  margins:
-                    right: 3
-                    left: 3
                   padding:
                     left: 6
                     right: 6
@@ -3564,10 +3550,11 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: white
+                  corners:
+                    bottom_right_radius: 2
                   horizontal_alignment: left
                   margins:
-                    left: 3
-                    right: 6
+                    left: 1
                   padding:
                     left: 6
                     right: 6
@@ -3589,7 +3576,7 @@ sections:
           margins:
             left: 6
             right: 6
-            top: 10
+            top: 8
       rows:
       - format:
           element_format:
@@ -3598,14 +3585,7 @@ sections:
               left: 8
               right: 8
               top: 6
-              bottom: 6
-          border:
-            bottom:
-              color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_grey_7
-              thickness: 1
+              bottom: 2
         widgets:
         - type: widget_text
           widget_text:
@@ -3630,7 +3610,6 @@ sections:
             padding:
               left: 8
               right: 8
-              top: 6
               bottom: 6
         widgets:
         - type: widget_list
@@ -3704,11 +3683,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: background_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_text
           widget_text:
 #            id: background
@@ -3737,11 +3711,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 19
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
     - format:
         element_format:
           background_color_theme:
@@ -3783,7 +3752,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue
                 font_style: medium
-                size: 15
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -3832,6 +3801,7 @@ sections:
                   horizontal_alignment: left
             value_variable_id: background_personality_trait_1
       - format:
+          element_format:
             horizontal_alignment: left
             padding:
               left: 6
@@ -3903,7 +3873,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue
                 font_style: medium
-                size: 15
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -3975,7 +3945,6 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-#            id: bonds_label
             format:
               value_format:
                 color_theme:
@@ -3985,7 +3954,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue
                 font_style: medium
-                size: 15
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -3997,8 +3966,6 @@ sections:
       - format:
           element_format:
             horizontal_alignment: left
-            margins:
-              top: 10
             padding:
               left: 6
               right: 6
@@ -4069,7 +4036,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue
                 font_style: medium
-                size: 15
+                size: 16
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -4081,8 +4048,6 @@ sections:
       - format:
           element_format:
             horizontal_alignment: left
-            margins:
-              top: 10
             padding:
               left: 6
               right: 6
@@ -4121,6 +4086,8 @@ sections:
             color_id: dark_grey_11
           - theme_id: light
             color_id: light_grey_7
+        padding:
+          bottom: 70
     groups:
     - format:
         element_format:
@@ -4188,11 +4155,6 @@ sections:
                     width_wrap: wrap
             value_variable_id: armor_class_label
             primary_action_widget_id: "f831d60a-8cee-4f25-89b1-de8a79b2d44d"
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
             id: "f831d60a-8cee-4f25-89b1-de8a79b2d44d"
@@ -4219,11 +4181,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 21
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_boolean
           widget_boolean:
 #            id: wearing_armor
@@ -4398,12 +4355,10 @@ sections:
                     left: 2
                 color_theme:
                   theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
                   - theme_id: light
-                    color_id: dark_grey_26
-                font_style: medium
-                size: 20
+                    color_id: light_blue_90
+                font_style: semi_bold
+                size: 22
               current_text_format:
                 element_format:
                   margins:
@@ -4415,7 +4370,7 @@ sections:
                     color_id: light_grey_10
                   - theme_id: light
                     color_id: light_blue_90
-                font_style: bold
+                font_style: semi_bold
                 size: 22
               label_text_format:
                 element_format:
@@ -4425,7 +4380,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_10
                   - theme_id: light
-                    color_id: dark_grey_14
+                    color_id: dark_grey_18
                 font_style: medium
                 size: 16
               info_format:
@@ -4534,7 +4489,6 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-#            id: conditions_label
             format:
               value_format:
                 color_theme:
@@ -4559,7 +4513,7 @@ sections:
             padding:
               left: 8
               right: 8
-              top: 4
+              top: 2
               bottom: 10
         widgets:
         - type: widget_list
@@ -4770,11 +4724,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: state_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_text
           widget_text:
 #            id: state
@@ -4803,370 +4752,305 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 19
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
     - format:
         element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: light
-              color_id: white
-          corners:
-            top_left_radius: 2
-            top_right_radius: 2
-            bottom_right_radius: 2
-            bottom_left_radius: 2
           margins:
             left: 6
             right: 6
             bottom: 15
       rows:
-      - format:
-          element_format:
-            padding:
-              bottom: 10
-              left: 8
-              right: 8
-              top: 10
-        widgets:
-        - type: widget_action
-          widget_action:
-#            id: roll_death_save
+      - widgets:
+        - type: widget_expander
+          widget_expander:
+            label: "Death Saves"
             format:
               widget_format:
                 element_format:
-                  horizontal_alignment: left
-                  height: 42
-              button_format:
+                  width:
+                    type: width_justify
+                    width_justify: justify
+              view_type: icon_right
+              header_open_format:
                 element_format:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: purple_90
+                      color_id: white
                   corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
+                    top_right_radius: 2
+                    top_left_radius: 2
                   padding:
-                    right: 12
-                    left: 12
+                    top: 8
+                    bottom: 6
+                    right: 8
+                    left: 8
+              header_closed_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_right_radius: 2
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    top: 8
+                    bottom: 8
+                    right: 8
+                    left: 8
+              header_label_open_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: white
+                    color_id: dark_grey_12
+                font_style: medium
+                size: 19
+              header_label_closed_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: medium
+                size: 19
+              header_open_icon:
+                icon_type: chevron_down
                 icon_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: white
+                      color_id: dark_grey_16
                   size:
-                    width: 25
-                    height: 25
-              button_inactive_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: red_90
-                  corners:
-                    top_left_radius: 4
-                    bottom_left_radius: 4
-                  padding:
-                    right: 12
-                    left: 12
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
+                    width: 28
+                    height: 28
+              header_closed_icon:
+                icon_type: chevron_up
                 icon_format:
                   color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: white
+                      color_id: dark_grey_16
                   size:
-                    width: 25
-                    height: 25
-              description_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: purple_70
-                  corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
-                  padding:
-                    right: 15
-                    left: 15
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                size: 18
-              description_inactive_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: red_70
-                  corners:
-                    top_right_radius: 4
-                    bottom_right_radius: 4
-                  padding:
-                    right: 15
-                    left: 15
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: white
-                size: 18
-              button_icon: dice_roll_filled
-            procedure_id: second_wind
-            active_variable_id: can_use_second_wind
-            description: 'Roll Death Saving Throw'
-      - format:
-          has_columns: true
-          element_format:
-            padding:
-              left: 8
-              right: 8
-              top: 10
-              bottom: 10
-          border:
-            top:
-              color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_grey_55
-              thickness: 2
-        widgets:
-        - type: widget_points
-          widget_points:
-#            id: life_saves
-            label: Life Saves
-            format:
-              limit_text_format:
-                element_format:
-                  margins:
-                    left: 3
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              current_text_format:
-                element_format:
-                  margins:
-                    right: 2
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: purple
-                font_style: semi_bold
-                size: 18
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              info_format:
-                style: label_left_slash_right
-                format:
-                  element_format:
-                    horizontal_alignment: left
-                    margins:
-                      bottom: 6
-              bar_format:
-                bar_height: 13
-                bar_style: counter
-                counter_active_icon: heart
-                limit_format:
-                  icon_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: medium_grey_7
-                      - theme_id: light
-                        color_id: dark_grey_18
-                    size:
-                      width: 27
-                      height: 27
+                    width: 28
+                    height: 28
+            groups:
+            - rows:
+              - format:
+                  has_columns: true
                   element_format:
                     background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_3
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
-                      right: 8
-                current_format:
-                  icon_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: light_blue_10
-                      - theme_id: light
-                        color_id: white
-                    size:
-                      width: 22
-                      height: 22
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: purple_80
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
-                      left: 4
-                      right: 4
-            limit_value_variable_id: max_life_saves
-            current_value_variable_id: current_life_saves
-      - format:
-          element_format:
-            padding:
-              left: 8
-              right: 8
-        widgets:
-        - type: widget_points
-          widget_points:
-#            id: death_saves
-            label: Death Saves
-            format:
-              limit_text_format:
-                element_format:
-                  margins:
-                    left: 3
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              current_text_format:
-                element_format:
-                  margins:
-                    right: 2
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: purple
-                font_style: semi_bold
-                size: 18
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  vertical_alignment: bottom
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              info_format:
-                style: label_left_slash_right
-                format:
-                  element_format:
-                    horizontal_alignment: left
-                    margins:
-                      bottom: 6
-              bar_format:
-                bar_height: 13
-                bar_style: counter
-                counter_active_icon: skull
-                limit_format:
-                  icon_format:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: dark
-                        color_id: medium_grey_7
-                      - theme_id: light
-                        color_id: dark_grey_18
-                    size:
-                      width: 27
-                      height: 27
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_3
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
-                      right: 8
-                      bottom: 6
-                current_format:
-                  icon_format:
-                    color_theme:
                       theme_color_ids:
                       - theme_id: light
                         color_id: white
-                    size:
-                      width: 22
-                      height: 22
+                    padding:
+                      left: 8
+                      right: 8
+                      top: 10
+                      bottom: 10
+                  border:
+                    top:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: light_grey_5
+                      thickness: 1
+                widgets:
+                - type: widget_points
+                  widget_points:
+                    label: Live
+                    format:
+                      widget_format:
+                        column: 1
+                      label_text_format:
+                        element_format:
+                          position: left
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: dark_grey_14
+                        size: 20
+                      info_format:
+                        style: label_only
+                        format:
+                          element_format:
+                            position: left
+                            margins:
+                              right: 6
+                      bar_format:
+                        bar_height: 13
+                        bar_style: counter
+                        counter_active_icon: heart
+                        limit_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: medium_grey_7
+                              - theme_id: light
+                                color_id: dark_grey_18
+                            size:
+                              width: 24
+                              height: 24
+                          element_format:
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            margins:
+                              right: 4
+                        current_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_blue_10
+                              - theme_id: light
+                                color_id: white
+                            size:
+                              width: 24
+                              height: 24
+                          element_format:
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            margins:
+                              right: 4
+                    limit_value_variable_id: max_life_saves
+                    current_value_variable_id: current_life_saves
+                - type: widget_points
+                  widget_points:
+                    label: Die
+                    format:
+                      widget_format:
+                        column: 2
+                      label_text_format:
+                        element_format:
+                          position: left
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: dark
+                            color_id: light_grey_10
+                          - theme_id: light
+                            color_id: dark_grey_14
+                        size: 20
+                      info_format:
+                        style: label_only
+                        format:
+                          element_format:
+                            position: left
+                            margins:
+                              right: 6
+                      bar_format:
+                        bar_height: 13
+                        bar_style: counter
+                        counter_active_icon: skull
+                        limit_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: medium_grey_7
+                              - theme_id: light
+                                color_id: dark_grey_18
+                            size:
+                              width: 24
+                              height: 24
+                          element_format:
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            margins:
+                              right: 4
+                        current_format:
+                          icon_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: light
+                                color_id: white
+                            size:
+                              width: 24
+                              height: 24
+                          element_format:
+                            corners:
+                              top_left_radius: 2
+                              top_right_radius: 2
+                              bottom_right_radius: 2
+                              bottom_left_radius: 2
+                            margins:
+                              right: 4
+                    limit_value_variable_id: max_death_saves
+                    current_value_variable_id: current_death_saves
+              - format:
                   element_format:
                     background_color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_80
-                    corners:
-                      top_left_radius: 2
-                      top_right_radius: 2
-                      bottom_right_radius: 2
-                      bottom_left_radius: 2
-                    height: 45
-                    width:
-                      type: number_literal
-                      number_literal: 45
-                    margins:
-                      left: 4
-                      right: 4
-            limit_value_variable_id: max_death_saves
-            current_value_variable_id: current_death_saves
+                        color_id: white
+                    horizontal_alignment: right
+                    padding:
+                      left: 10
+                      right: 10
+                      bottom: 10
+                      top: 10
+                widgets:
+                - type: widget_action
+                  widget_action:
+                    format:
+                      widget_format:
+                        element_format:
+                          height: 40
+                      button_icon: dice_roll_filled
+                      button_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: light_grey_4
+                          corners:
+                            top_left_radius: 4
+                            bottom_left_radius: 4
+                          padding:
+                            left: 12
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: dark_grey_12
+                        icon_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: dark_grey_14
+                          size:
+                            width: 25
+                            height: 25
+                      description_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: light_grey_4
+                          corners:
+                            top_right_radius: 4
+                            bottom_right_radius: 4
+                          padding:
+                            right: 12
+                            left: 12
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: dark_grey_12
+                        font_style: medium
+                        size: 18
+                    procedure_id: roll_death_save
+                    description: 'Roll Death Save'
   - name: Actions
     format:
       element_format:
@@ -5422,7 +5306,7 @@ sections:
               text_format:
                 element_format:
                   padding:
-                    top: 4
+                    top: 6
                     bottom: 14
               widget_format:
                 element_format:
@@ -5587,7 +5471,6 @@ sections:
               - widgets:
                 - type: widget_story
                   widget_story:
-#                    id: action_attack
                     format:
                       text_format:
                         element_format:
@@ -5618,7 +5501,7 @@ sections:
                         text: 'You make one melee or ranged attack (unless you have an ability which grants you multiple attacks).'
                         text_format:
                           size: 17
-                          font_style: medium
+                          font_style: regular
                           color_theme:
                             theme_color_ids:
                             - theme_id: dark
@@ -5629,7 +5512,6 @@ sections:
               - widgets:
                 - type: widget_story
                   widget_story:
-#                    id: action_cast_spell
                     format:
                       text_format:
                         element_format:
@@ -5660,871 +5542,364 @@ sections:
                         text: 'Cast a spell (with a casting time of 1 action).'
                         text_format:
                           size: 17
-                          font_style: medium
+                          font_style: regular
                           color_theme:
                             theme_color_ids:
                             - theme_id: light
                               color_id: dark_grey_10
-#      - format:
-#          element_format:
-#            margins:
-#              top: 5
-#        widgets:
-#        - type: widget_expander
-#          widget_expander:
-#            id: combat_actions
-#            label: "Actions\u2026"
-#            format:
-#              widget_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: white
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                    bottom_right_radius: 2
-#                    bottom_left_radius: 2
-#                  width:
-#                    type: width_justify
-#                    width_justify: justify
-#              header_open_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: white
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                  padding:
-#                    top: 8
-#                    bottom: 8
-#                    right: 8
-#                    left: 8
-#              header_closed_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: white
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                  padding:
-#                    top: 8
-#                    bottom: 8
-#                    right: 8
-#                    left: 8
-#              header_label_open_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: light
-#                    color_id: dark_grey_12
-#                font_style: semi_bold
-#                size: 19
-#              header_label_closed_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: light
-#                    color_id: light_blue
-#                font_style: semi_bold
-#                size: 19
-#              header_icon_closed_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: light_grey_3
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                    bottom_left_radius: 2
-#                    bottom_right_radius: 2
-#                  padding:
-#                    top: 6
-#                    bottom: 6
-#                    right: 6
-#                    left: 6
-#                icon_format:
-#                  size:
-#                    width: 17
-#                    height: 17
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: dark_grey_12
-#              header_icon_open_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: light_grey_3
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                    bottom_left_radius: 2
-#                    bottom_right_radius: 2
-#                  padding:
-#                    top: 6
-#                    bottom: 6
-#                    right: 6
-#                    left: 6
-#                icon_format:
-#                  size:
-#                    width: 17
-#                    height: 17
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: dark_grey_12
-#            groups:
-#
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_dash
-#                    format:
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                      line_spacing: 5
-#                      line_height: 26
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 4
-#                            bottom: 4
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Dash.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'I can move'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#                    - type: story_part_variable
-#                      story_part_variable:
-#                        format:
-#                          highlight_skew: 0.74
-#                          highlight_corner_radius: 18
-#                        variable_id: dash_speed
-#                        text_format:
-#                          element_format:
-#                            background_color_theme:
-#                              theme_color_ids:
-#                              - theme_id: light
-#                                color_id: light_blue_80
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_blue_8
-#                            - theme_id: light
-#                              color_id: white
-#                          font_style: medium
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: ' this turn.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_disengage
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Disengage.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Your movement doesn’t provoke opportunity attacks for the rest of the turn.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_dodge
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Dodge.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Attack rolls made against you have disadvantage if you can see the attacker, and you make Dexterity saving throws with advantage.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_help
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Help.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Give another creature advantage on an ability check or attack roll.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_hide
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Hide.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Make a stealth check in order to be hidden.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_ready
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Ready.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Delay your action (use it as a Reaction) until a specific trigger occurs.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_search
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Search.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Search for something, possibly with an Investigation or Perception check.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 8
-#              rows:
-#              - widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: action_use_object
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Use an object.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Use an object that requires your attention for a full action.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#      - format:
-#          element_format:
-#            margins:
-#              top: 5
-#        widgets:
-#        - type: widget_expander
-#          widget_expander:
-#            id: combat_bonus_actions
-#            label: "Bonus Actions\u2026"
-#            format:
-#              widget_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: white
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                    bottom_right_radius: 2
-#                    bottom_left_radius: 2
-#                  width:
-#                    type: width_justify
-#                    width_justify: justify
-#              header_open_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: white
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                  padding:
-#                    top: 8
-#                    bottom: 8
-#                    right: 8
-#                    left: 8
-#              header_closed_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: white
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                  padding:
-#                    top: 8
-#                    bottom: 8
-#                    right: 8
-#                    left: 8
-#              header_label_open_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: light
-#                    color_id: dark_grey_12
-#                font_style: semi_bold
-#                size: 19
-#              header_label_closed_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: light
-#                    color_id: light_blue
-#                font_style: semi_bold
-#                size: 19
-#              header_icon_closed_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: light_grey_3
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                    bottom_left_radius: 2
-#                    bottom_right_radius: 2
-#                  padding:
-#                    top: 6
-#                    bottom: 6
-#                    right: 6
-#                    left: 6
-#                icon_format:
-#                  size:
-#                    width: 17
-#                    height: 17
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: dark_grey_12
-#              header_icon_open_format:
-#                element_format:
-#                  background_color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: light_grey_3
-#                  corners:
-#                    top_right_radius: 2
-#                    top_left_radius: 2
-#                    bottom_left_radius: 2
-#                    bottom_right_radius: 2
-#                  padding:
-#                    top: 6
-#                    bottom: 6
-#                    right: 6
-#                    left: 6
-#                icon_format:
-#                  size:
-#                    width: 17
-#                    height: 17
-#                  color_theme:
-#                    theme_color_ids:
-#                    - theme_id: light
-#                      color_id: dark_grey_12
-#            groups:
-#            - format:
-#                border:
-#                  top:
-#                    color_theme:
-#                      theme_color_ids:
-#                      - theme_id: light
-#                        color_id: light_grey_55
-#                    thickness: 2
-#                element_format:
-#                  padding:
-#                    left: 8
-#                    right: 8
-#                    top: 8
-#                    bottom: 12
-#              rows:
-#              - format:
-#                  element_format:
-#                    margins:
-#                      bottom: 8
-#                widgets:
-#                - type: widget_story
-#                  widget_story:
-#                    id: second_wind_description
-#                    format:
-#                      text_format:
-#                        element_format:
-#                          padding:
-#                            top: 0
-#                            bottom: 0
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          width:
-#                            type: width_justify
-#                            width_justify: justify
-#                    story:
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Second Wind.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          font_style: bold
-#                          size: 17
-#                    - type: story_part_span
-#                      story_part_span:
-#                        text: 'Quickly recover hit points.'
-#                        text_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: dark
-#                              color_id: light_grey_14
-#                            - theme_id: light
-#                              color_id: dark_grey_10
-#                          size: 17
-#              - widgets:
-#                - type: widget_action
-#                  widget_action:
-#                    id: second_wind
-#                    format:
-#                      widget_format:
-#                        element_format:
-#                          horizontal_alignment: left
-#                          height: 42
-#                      button_format:
-#                        element_format:
-#                          background_color_theme:
-#                            theme_color_ids:
-#                            - theme_id: light
-#                              color_id: light_blue
-#                          corners:
-#                            top_left_radius: 4
-#                            bottom_left_radius: 4
-#                          padding:
-#                            right: 12
-#                            left: 12
-#                        color_theme:
-#                          theme_color_ids:
-#                          - theme_id: light
-#                            color_id: white
-#                        icon_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: light
-#                              color_id: white
-#                          size:
-#                            width: 25
-#                            height: 25
-#                      button_inactive_format:
-#                        element_format:
-#                          background_color_theme:
-#                            theme_color_ids:
-#                            - theme_id: light
-#                              color_id: dark_grey_18
-#                          corners:
-#                            top_left_radius: 4
-#                            bottom_left_radius: 4
-#                          padding:
-#                            right: 12
-#                            left: 12
-#                        color_theme:
-#                          theme_color_ids:
-#                          - theme_id: light
-#                            color_id: white
-#                        icon_format:
-#                          color_theme:
-#                            theme_color_ids:
-#                            - theme_id: light
-#                              color_id: white
-#                          size:
-#                            width: 25
-#                            height: 25
-#                      description_format:
-#                        element_format:
-#                          background_color_theme:
-#                            theme_color_ids:
-#                            - theme_id: light
-#                              color_id: light_blue_70
-#                          corners:
-#                            top_right_radius: 4
-#                            bottom_right_radius: 4
-#                          padding:
-#                            right: 15
-#                            left: 15
-#                        color_theme:
-#                          theme_color_ids:
-#                          - theme_id: light
-#                            color_id: white
-#                        font_style: medium
-#                        size: 18
-#                      description_inactive_format:
-#                        element_format:
-#                          background_color_theme:
-#                            theme_color_ids:
-#                            - theme_id: light
-#                              color_id: dark_grey_22
-#                          corners:
-#                            top_right_radius: 4
-#                            bottom_right_radius: 4
-#                          padding:
-#                            right: 15
-#                            left: 15
-#                        color_theme:
-#                          theme_color_ids:
-#                          - theme_id: light
-#                            color_id: white
-#                        font_style: medium
-#                        size: 18
-#                      button_icon: heart_plus
-#                    procedure_id: second_wind
-#                    active_variable_id: can_use_second_wind
-#                    description: 'Second Wind'
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Dash.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'I can move'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+                    - type: story_part_variable
+                      story_part_variable:
+                        format:
+                          highlight_skew: 0.74
+                          highlight_corner_radius: 8
+                        variable_id: dash_speed
+                        text_format:
+                          element_format:
+                            background_color_theme:
+                              theme_color_ids:
+                              - theme_id: light
+                                color_id: light_blue_90
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_blue_8
+                            - theme_id: light
+                              color_id: white
+                          font_style: medium
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: ' this turn.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Disengage.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Your movement doesn’t provoke opportunity attacks for the rest of the turn.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Dodge.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Attack rolls made against you have disadvantage if you can see the attacker, and you make Dexterity saving throws with advantage.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Help.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Give another creature advantage on an ability check or attack roll.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Hide.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Make a stealth check in order to be hidden.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Ready.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Delay your action (use it as a Reaction) until a specific trigger occurs.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Search.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Search for something, possibly with an Investigation or Perception check.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+            - rows:
+              - widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Use an object.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Use an object that requires your attention for a full action.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          size: 17
+
+
     - format:
         element_format:
           background_color_theme:
@@ -6555,10 +5930,10 @@ sections:
               top: 6
               bottom: 6
               left: 8
+          has_columns: true
         widgets:
         - type: widget_text
           widget_text:
-#            id: bonus_actions_label
             format:
               value_format:
                 color_theme:
@@ -6568,9 +5943,30 @@ sections:
                 size: 18
                 font_style: medium
               widget_format:
+                column: 1
                 element_format:
                   horizontal_alignment: left
             value_variable_id: bonus_actions_label
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 17
+                font_style: regular
+              widget_format:
+                column: 2
+                element_format:
+                  horizontal_alignment: right
+                  margins:
+                    right: 10
+                  width:
+                    type: width_fill
+                    width_fill: fill
+            value_variable_id: bonus_actions_description
       - widgets:
         - type: widget_slider
           widget_slider:
@@ -6633,6 +6029,151 @@ sections:
                       left: 2
                       right: 2
             groups:
+            - rows:
+              - format:
+                  element_format:
+                    margins:
+                      bottom: 8
+                widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Second Wind.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_10
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Quickly recover hit points.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_14
+                            - theme_id: light
+                              color_id: dark_grey_12
+                          size: 17
+              - format:
+                  element_format:
+                    horizontal_alignment: right
+                    padding:
+                      top: 4
+                      bottom: 4
+                widgets:
+                - type: widget_action
+                  widget_action:
+                    format:
+                      widget_format:
+                        element_format:
+                          height: 40
+                      button_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: light_blue
+                          corners:
+                            top_left_radius: 4
+                            bottom_left_radius: 4
+                          padding:
+                            right: 12
+                            left: 12
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        icon_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: white
+                          size:
+                            width: 25
+                            height: 25
+                      button_inactive_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: dark_grey_20
+                          corners:
+                            top_left_radius: 4
+                            bottom_left_radius: 4
+                          padding:
+                            right: 12
+                            left: 12
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        icon_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: white
+                          size:
+                            width: 25
+                            height: 25
+                      description_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: light_blue_70
+                          corners:
+                            top_right_radius: 4
+                            bottom_right_radius: 4
+                          padding:
+                            right: 10
+                            left: 10
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        font_style: medium
+                        size: 17
+                      description_inactive_format:
+                        element_format:
+                          background_color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: dark_grey_24
+                          corners:
+                            top_right_radius: 4
+                            bottom_right_radius: 4
+                          padding:
+                            right: 15
+                            left: 15
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        font_style: medium
+                        size: 18
+                      button_icon: heart_plus
+                    procedure_id: second_wind
+                    active_variable_id: can_use_second_wind
+                    description: 'Second Wind'
     - format:
         element_format:
           background_color_theme:
@@ -6657,6 +6198,7 @@ sections:
                 - theme_id: light
                   color_id: light_grey_5
               thickness: 1
+          has_columns: true
           element_format:
             horizontal_alignment: left
             padding:
@@ -6676,9 +6218,30 @@ sections:
                 size: 18
                 font_style: medium
               widget_format:
+                column: 1
                 element_format:
                   horizontal_alignment: left
             value_variable_id: reactions_label
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 17
+                font_style: regular
+              widget_format:
+                column: 2
+                element_format:
+                  horizontal_alignment: right
+                  margins:
+                    right: 10
+                  width:
+                    type: width_fill
+                    width_fill: fill
+            value_variable_id: reactions_description
       - widgets:
         - type: widget_slider
           widget_slider:
@@ -6741,6 +6304,46 @@ sections:
                       left: 2
                       right: 2
             groups:
+            - rows:
+              - format:
+                  element_format:
+                    margins:
+                      bottom: 8
+                widgets:
+                - type: widget_story
+                  widget_story:
+                    format:
+                      text_format:
+                        element_format:
+                          padding:
+                            top: 0
+                            bottom: 0
+                      widget_format:
+                        element_format:
+                          horizontal_alignment: left
+                          width:
+                            type: width_justify
+                            width_justify: justify
+                    story:
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Opportunity Attack.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: light_blue
+                          font_style: bold
+                          size: 17
+                    - type: story_part_span
+                      story_part_span:
+                        text: 'Make an attack against a hostile creature that moves out of reach.'
+                        text_format:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: dark_grey_12
+                          size: 17
     - format:
         element_format:
           padding:
@@ -6982,7 +6585,7 @@ sections:
           - theme_id: light
             color_id: light_grey_7
         padding:
-          bottom: 50
+          bottom: 70
     groups:
     - format:
         element_format:
@@ -13546,7 +13149,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 50
+                  height: 46
                   padding:
                     left: 10
                     right: 10
@@ -13554,11 +13157,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: copper_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
 #            id: copper
@@ -13574,7 +13172,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 50
+                  height: 46
                   padding:
                     left: 16
                     right: 16
@@ -13587,11 +13185,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
       - format:
           element_format:
             horizontal_alignment: left
@@ -13621,7 +13214,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 46
+                  height: 48
                   padding:
                     left: 10
                     right: 10
@@ -13629,11 +13222,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: silver_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
 #            id: silver
@@ -13649,7 +13237,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 48
                   padding:
                     left: 16
                     right: 16
@@ -13662,11 +13250,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
       - format:
           element_format:
             horizontal_alignment: left
@@ -13696,7 +13279,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 46
+                  height: 50
                   padding:
                     left: 10
                     right: 10
@@ -13704,11 +13287,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: gold_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
 #            id: gold
@@ -13724,7 +13302,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 50
                   padding:
                     left: 16
                     right: 16
@@ -13737,11 +13315,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
       - format:
           element_format:
             horizontal_alignment: left
@@ -13772,7 +13345,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 46
+                  height: 44
                   padding:
                     left: 10
                     right: 10
@@ -13780,11 +13353,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: electrum_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
 #            id: electrum
@@ -13800,7 +13368,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 44
                   padding:
                     left: 16
                     right: 16
@@ -13813,11 +13381,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
       - format:
           element_format:
             horizontal_alignment: left
@@ -13847,7 +13410,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 46
+                  height: 44
                   padding:
                     left: 10
                     right: 10
@@ -13855,11 +13418,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: platinum_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
 #            id: platinum
@@ -13875,7 +13433,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 44
                   padding:
                     left: 16
                     right: 16
@@ -13888,11 +13446,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 18
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
     - format:
         element_format:
           padding:
@@ -14207,11 +13760,6 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: total_weight_label
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
         - type: widget_number
           widget_number:
 #            id: gear_total_weight
@@ -14240,11 +13788,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 20
-            book_reference:
-              book_id: core_rules
-              chapter_id: running_a_game
-              section_id: creatures
-              subsection_id: challenge
   - name: Features
     format:
       element_format:

@@ -969,6 +969,7 @@ data class EntitySourceLocal(val rowId : Long) : EntitySource()
 interface Entity : Serializable
 {
     val id : UUID
+    fun entityId() : EntityId
     fun name() : String
     fun summary() : String
     fun entityLoader() : EntityLoader

@@ -1,4 +1,6 @@
+
 package com.kispoko.tome.activity.entity.book
+
 
 import android.content.Context
 import android.graphics.Color
@@ -7,13 +9,13 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import com.kispoko.tome.R.string.name
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.ScrollViewBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookReference
+import com.kispoko.tome.model.book.BookReferenceSection
 import com.kispoko.tome.model.book.BookSection
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -24,15 +26,14 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.entity.EntityBookId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import maybe.Just
-
+import kotlin.text.Typography.section
 
 
 /**
  * Subsection UI
  */
 class SectionUI(val book : Book,
-                val bookReference : BookReference,
-                val section : BookSection,
+                val sectionReference : BookReferenceSection,
                 val context : Context)
 {
 
@@ -40,16 +41,41 @@ class SectionUI(val book : Book,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    val entityId = EntityBookId(bookReference.bookId)
+    val entityId = EntityBookId(book.bookId)
 
     var chapterName : String? = null
 
-    // Get chapter nmae
+    var section : BookSection? = null
+
     init {
-        val chapterId = bookReference.chapterId
+
+        // Chapter Name
+
+
+        // Section
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    private fun chapterName() : String?
+    {
+        val chapterId = sectionReference.chapterId
         val maybeChapter = book.chapter(chapterId)
-        when (maybeChapter) {
-            is Just -> this.chapterName = maybeChapter.value.title().value
+        return when (maybeChapter) {
+            is Just -> maybeChapter.value.title().value
+            else    -> null
+        }
+    }
+
+
+    private fun section() : BookSection?
+    {
+        val maybeSection = book.section(sectionReference.chapterId, sectionReference.sectionId)
+        return when (maybeSection) {
+            is Just -> maybeSection.value
+            else    -> null
         }
     }
 
@@ -62,11 +88,17 @@ class SectionUI(val book : Book,
     {
         val layout = this.viewLayout()
 
-        // Header
-        layout.addView(this.headerView())
+        val section = this.section()
+        val chapterName = this.chapterName()
 
-        // Content
-        layout.addView(this.contentView())
+        if (section != null && chapterName != null)
+        {
+            // Header
+            layout.addView(this.headerView(section, chapterName))
+
+            // Content
+            layout.addView(this.contentView(section))
+        }
 
         return layout
     }
@@ -88,13 +120,13 @@ class SectionUI(val book : Book,
     // VIEWS > Name
     // -----------------------------------------------------------------------------------------
 
-    fun headerView() : LinearLayout
+    fun headerView(section : BookSection, chapterName : String) : LinearLayout
     {
         val layout = this.headerViewLayout()
 
-        layout.addView(this.chapterNameView())
+        layout.addView(this.chapterNameView(chapterName))
 
-        layout.addView(this.sectionNameView())
+        layout.addView(this.sectionNameView(section.title.value))
 
         layout.addView(this.bottomBorderView())
 
@@ -120,14 +152,14 @@ class SectionUI(val book : Book,
     }
 
 
-    fun chapterNameView() : TextView
+    fun chapterNameView(chapterNameString : String) : TextView
     {
         val name                = TextViewBuilder()
 
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.text               = this.chapterName
+        name.text               = chapterNameString
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
@@ -147,14 +179,14 @@ class SectionUI(val book : Book,
     }
 
 
-    fun sectionNameView() : TextView
+    fun sectionNameView(sectionTitleString : String) : TextView
     {
         val name                = TextViewBuilder()
 
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.text               = section.title().value
+        name.text               = sectionTitleString
 
         name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Bold,
@@ -195,11 +227,11 @@ class SectionUI(val book : Book,
     // VIEWS > Content
     // -----------------------------------------------------------------------------------------
 
-    fun contentView() : ScrollView
+    fun contentView(section : BookSection) : ScrollView
     {
         val scrollView = this.contentScrollView()
 
-        scrollView.addView(this.contentGroupsView())
+        scrollView.addView(this.contentGroupsView(section))
 
         return scrollView
     }
@@ -216,7 +248,7 @@ class SectionUI(val book : Book,
     }
 
 
-    fun contentGroupsView() : LinearLayout
+    fun contentGroupsView(section : BookSection) : LinearLayout
     {
         val layout = this.contentGroupsViewLayout()
 

@@ -2,18 +2,12 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
+import android.util.Log
 import com.kispoko.tome.app.*
-import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue2
-import com.kispoko.tome.lib.orm.RowValue4
-import com.kispoko.tome.lib.orm.RowValue5
-import com.kispoko.tome.lib.orm.schema.MaybePrimValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.reference.*
+import com.kispoko.tome.model.game.engine.FormulaModifier
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.booleanVariable
@@ -28,7 +22,6 @@ import maybe.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
-import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
@@ -38,7 +31,7 @@ import java.util.*
  * Summation Term
  */
 sealed class SummationTerm(open val termName : Maybe<TermName>)
-                    : ToDocument, ProdType, Serializable
+                    : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -54,6 +47,7 @@ sealed class SummationTerm(open val termName : Maybe<TermName>)
                 "summation_term_linear_combination" -> SummationTermLinearCombination.fromDocument(doc)
                 "summation_term_dice_roll"          -> SummationTermDiceRoll.fromDocument(doc)
                 "summation_term_conditional"        -> SummationTermConditional.fromDocument(doc)
+                "summation_term_conditional_function" -> SummationTermConditionalFunction.fromDocument(doc)
                 else                                -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
@@ -82,7 +76,7 @@ sealed class SummationTerm(open val termName : Maybe<TermName>)
 }
 
 
-data class SummationTermNumber(override val id : UUID,
+data class SummationTermNumber(val id : UUID,
                                override val termName : Maybe<TermName>,
                                val numberReference : NumberReference)
                                 : SummationTerm(termName)
@@ -194,22 +188,22 @@ data class SummationTermNumber(override val id : UUID,
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_SummationTermNumberValue =
-        RowValue2(summationTermNumberTable,
-                  MaybePrimValue(this.termName),
-                  SumValue(this.numberReference))
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_SummationTermNumberValue =
+//        RowValue2(summationTermNumberTable,
+//                  MaybePrimValue(this.termName),
+//                  SumValue(this.numberReference))
 
 }
 
 
 data class SummationTermLinearCombination(
-                            override val id : UUID,
+                            val id : UUID,
                             override val termName : Maybe<TermName>,
                             val variableTag : VariableTag,
                             val valueRelation : Maybe<VariableRelation>,
@@ -519,24 +513,24 @@ data class SummationTermLinearCombination(
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_SummationTermLinearCombinationValue =
-        RowValue5(summationTermLinearCombinationTable,
-                  MaybePrimValue(this.termName),
-                  PrimValue(this.variableTag),
-                  MaybePrimValue(this.valueRelation),
-                  MaybePrimValue(this.weightRelation),
-                  MaybePrimValue(this.filterRelation))
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_SummationTermLinearCombinationValue =
+//        RowValue5(summationTermLinearCombinationTable,
+//                  MaybePrimValue(this.termName),
+//                  PrimValue(this.variableTag),
+//                  MaybePrimValue(this.valueRelation),
+//                  MaybePrimValue(this.weightRelation),
+//                  MaybePrimValue(this.filterRelation))
 
 }
 
 
-data class SummationTermDiceRoll(override val id : UUID,
+data class SummationTermDiceRoll(val id : UUID,
                                  override val termName : Maybe<TermName>,
                                  val diceRollReference : DiceRollReference)
                                   : SummationTerm(termName)
@@ -648,22 +642,26 @@ data class SummationTermDiceRoll(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_SummationTermDiceRollValue =
-        RowValue2(summationTermDiceRollTable,
-                  MaybePrimValue(this.termName),
-                  SumValue(this.diceRollReference))
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_SummationTermDiceRollValue =
+//        RowValue2(summationTermDiceRollTable,
+//                  MaybePrimValue(this.termName),
+//                  SumValue(this.diceRollReference))
 
 }
 
 
-data class SummationTermConditional(override val id : UUID,
+// ---------------------------------------------------------------------------------------------
+// TERM > Conditional
+// ---------------------------------------------------------------------------------------------
+
+data class SummationTermConditional(val id : UUID,
                                     override val termName : Maybe<TermName>,
                                     val conditionalValueReference : BooleanReference,
                                     val trueValueReference : NumberReference,
@@ -741,20 +739,20 @@ data class SummationTermConditional(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_SummationTermConditionalValue =
-        RowValue4(summationTermConditionalTable,
-                  MaybePrimValue(this.termName),
-                  SumValue(this.conditionalValueReference),
-                  SumValue(this.trueValueReference),
-                  SumValue(this.falseValueReference))
-
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_SummationTermConditionalValue =
+//        RowValue4(summationTermConditionalTable,
+//                  MaybePrimValue(this.termName),
+//                  SumValue(this.conditionalValueReference),
+//                  SumValue(this.trueValueReference),
+//                  SumValue(this.falseValueReference))
+//
 
     // -----------------------------------------------------------------------------------------
     // TERM
@@ -840,38 +838,37 @@ data class SummationTermConditional(override val id : UUID,
 }
 
 
-data class SummationTermEither(override val id : UUID,
-                               override val termName : Maybe<TermName>,
-                               val eitherReferences : List<NumberReference>)
-                                : SummationTerm(termName)
+// ---------------------------------------------------------------------------------------------
+// TERM > Conditional Function
+// ---------------------------------------------------------------------------------------------
+
+data class SummationTermConditionalFunction(
+                        override val termName : Maybe<TermName>,
+                        val conditionalValueReference : BooleanReference,
+                        val function : FormulaModifier)
+                          : SummationTerm(termName)
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(termName : Maybe<TermName>,
-                eitherReferences : List<NumberReference>)
-        : this(UUID.randomUUID(),
-               termName,
-               eitherReferences)
-
-
     companion object : Factory<SummationTerm>
     {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<SummationTerm> = when (doc)
+        override fun fromDocument(doc: SchemaDoc): ValueParser<SummationTerm> = when (doc)
         {
             is DocDict ->
             {
-                apply(::SummationTermEither,
+                apply(::SummationTermConditionalFunction,
                       // Term Name
                       split(doc.maybeAt("term_name"),
                             effValue<ValueError,Maybe<TermName>>(Nothing()),
                             { effApply(::Just, TermName.fromDocument(it)) }),
-                      // Either References
-                      doc.list("either_references") ap {
-                          it.map { NumberReference.fromDocument(it) }
-                      })
+                      // Condition
+                      doc.at("condition") ap {
+                          BooleanReference.fromDocument(it) },
+                      // Formula Modifier
+                      doc.at("formula_modifier") ap { FormulaModifier.fromDocument(it) })
             }
 
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -884,133 +881,44 @@ data class SummationTermEither(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
+        "condition" to this.conditionalValueReference().toDocument()
     ))
-    .maybeMerge(this.termName.apply {
-        Just(Pair("term_name", it.toDocument() as SchemaDoc)) })
-    .withCase("summation_term_either")
 
 
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun eitherReferences() : List<NumberReference> = this.eitherReferences
+    fun conditionalValueReference() : BooleanReference = this.conditionalValueReference
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_SummationTermEitherValue =
-        RowValue2(summationTermEitherTable,
-                  MaybePrimValue(this.termName),
-                  PrimValue(EitherReferences(this.eitherReferences)))
+    fun function() : FormulaModifier = this.function
 
 
     // -----------------------------------------------------------------------------------------
     // TERM
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies(entityId : EntityId) : Set<VariableReference> =
-            this.eitherReferences().fold(setOf(), { depsSet, ref -> depsSet.plus(ref.dependencies()) })
+    override fun dependencies(entityId : EntityId) : Set<VariableReference>
+    {
+        val deps = conditionalValueReference.dependencies()
+
+        Log.d("****TERM", "deps: $deps")
+
+        return deps
+    }
 
 
     override fun value(entityId : EntityId,
-                       context : Maybe<VariableNamespace>) : Maybe<Double>
-    {
-        this.eitherReferences().forEach {
-            val numbers = SheetData.numbers(it, entityId)
-            when (numbers) {
-                is Val -> {
-                    val numberList = numbers.value
-                    if (numberList.isNotEmpty())
-                        return Just(numbers.value.filterJust().sum())
-                }
-            }
-        }
-
-        return Nothing()
-    }
+                       context : Maybe<VariableNamespace>) = Nothing<Double>()
 
 
-    fun firstReference(entityId : EntityId) : NumberReference?
-    {
-        this.eitherReferences().forEach { numberRef ->
-            val numbers = SheetData.numbers(numberRef, entityId)
-            when (numbers) {
-                is Val -> {
-                    val numberList = numbers.value
-                    if (numberList.isNotEmpty())
-                        return numberRef
-                }
-            }
-        }
+    override fun summary(entityId : EntityId) = null
 
-        return null
-    }
-
-
-    override fun summary(entityId : EntityId) : TermSummary?
-    {
-        val numberReference = this.firstReference(entityId)
-
-        if (numberReference != null)
-        {
-
-            val components = numberReference.components(entityId)
-
-            if (components.isNotEmpty())
-            {
-                return TermSummary(this.termName().toNullable()?.value, components, this)
-            }
-            else
-            {
-                val termName = this.termName()
-                when (termName)
-                {
-                    is Just ->
-                    {
-                        val value = SheetData.number(numberReference, entityId)
-                        when (value)
-                        {
-                            is effect.Val -> {
-                                return TermSummary(termName().toNullable()?.value,
-                                                   listOf(TermComponent(termName.value.value, value.value.toString())),
-                                                   this)
-                            }
-                            is Err -> ApplicationLog.error(value.error)
-                        }
-                    }
-                }
-            }
-
-        }
-
-        return null
-    }
-
-}
-
-
-/**
- * Either References
- */
-data class EitherReferences(val parameters : List<NumberReference>)
-                : SQLSerializable, Serializable
-{
 
     // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
+    // FUNCTION
     // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
-
 }
 
 

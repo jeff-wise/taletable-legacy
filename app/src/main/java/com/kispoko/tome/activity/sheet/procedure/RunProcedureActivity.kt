@@ -120,7 +120,7 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
         val statusBarColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
         ThemeManager.color(this.appSettings.themeId, statusBarColorTheme)?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -223,7 +223,7 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
         val toolbarBgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
 
         // Toolbar > Background
         ThemeManager.color(this.appSettings.themeId, toolbarBgColorTheme)?.let {

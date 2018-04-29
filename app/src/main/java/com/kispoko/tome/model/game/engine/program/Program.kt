@@ -11,6 +11,7 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
+import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
@@ -160,11 +161,11 @@ data class Program(override val id : UUID,
 
 
     override fun rowValue() : DB_ProgramValue =
-        RowValue6(programTable, PrimValue(this.programId),
+        RowValue5(programTable, PrimValue(this.programId),
                                 PrimValue(this.label),
                                 PrimValue(this.description),
                                 ProdValue(this.typeSignature),
-                                CollValue(this.statements),
+//                                CollValue(this.statements),
                                 PrimValue(this.resultBindingName))
 
 

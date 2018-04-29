@@ -7,7 +7,6 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue1
 import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue

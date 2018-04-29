@@ -654,6 +654,12 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                                                             value.valueId())
                             Router.send(MessageSheetUpdate(textCellUpdate))
                         }
+                        is UpdateTargetTextWidget ->
+                        {
+                            val textWidgetUpdate = TextWidgetUpdateSetText(updateTarget.textWidgetId,
+                                                                           value.valueId().value)
+                            Router.send(MessageSheetUpdate(textWidgetUpdate))
+                        }
                     }
                     dialog.dismiss()
 //                    updateVariable(variableId, EngineValueText(value.valueId().value), entityId)

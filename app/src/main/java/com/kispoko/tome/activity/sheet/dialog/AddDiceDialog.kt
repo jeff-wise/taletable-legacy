@@ -299,7 +299,7 @@ class DiceViewBuilder(val operation : DiceOperation,
             else
                 null
         }
-        val diceRoll = DiceRoll(quantities, listOf())
+        val diceRoll = DiceRoll(quantities, listOf(), listOf())
 
         return adderState.copy(diceRolls = adderState.diceRolls.plusElement(diceRoll))
     }

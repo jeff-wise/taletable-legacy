@@ -31,17 +31,17 @@ variables:
       text_literal: 'Is critical hit?'
 - type: variable_boolean
   variable_boolean:
-    id: current_attack_critical_hit
-    label: 'Current Attack is Critical Hit'
-    description: 'Current Attack is Critical Hit'
+    id: rapier_use_finesse
+    label: 'Rapier: Use Finesse'
+    description: 'Rapier: Use Finesse'
     value:
       type: boolean_literal
       boolean_literal: false
 - type: variable_boolean
   variable_boolean:
-    id: rapier_use_finesse
-    label: 'Rapier: Use Finesse'
-    description: 'Rapier: Use Finesse'
+    id: rapier_is_critical_hit
+    label: 'Rapier: Is Critical Hit?'
+    description: 'Is critical hit with the rapier.'
     value:
       type: boolean_literal
       boolean_literal: false
@@ -1051,9 +1051,10 @@ engine:
                         and 200 lbs. They rarely live past a century.'
           value: Human
           book_reference:
-            book_id: core_rules
-            chapter_id: races
-            section_id: humans
+            type: book_reference_content
+            book_reference_content:
+              book_id: core_rules
+              content_id: race_humans
           variables:
           - type: variable_boolean
             variable_boolean:
@@ -5943,6 +5944,35 @@ engine:
       - key: 'level'
     action_label: 'Use Second Wind'
   summations:
+  - summation_id: weapon_rapier_damage_roll
+    summation_name: Rapier Damage Roll
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: weapon_rapier_damage
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Dexterity Modifier
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_conditional_function
+      summation_term_conditional_function:
+        term_name: Critical Hit Damage
+        formula_modifier:
+          type: multiply_dice
+          multiply_dice: 2
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: rapier_is_critical_hit
   - summation_id: strength
     summation_name: Strength
     terms:

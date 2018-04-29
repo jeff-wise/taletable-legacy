@@ -223,6 +223,10 @@ data class TextVariableValueValue(val valueReference : ValueReference)
     // Value
     // -----------------------------------------------------------------------------------------
 
+    override fun dependencies(entityId : EntityId) : Set<VariableReference> =
+            this.valueReference.dependencies(entityId)
+
+
     override fun value(entityId : EntityId) : AppEff<Maybe<String>> =
         textValue(this.valueReference, entityId)
           .apply { effValue<AppError,Maybe<String>>(Just(it.value())) }

@@ -132,6 +132,9 @@ data class Campaign(override val id : UUID,
 
     override fun entityLoader() = this.entityLoader
 
+
+    override fun entityId() = EntityCampaignId(this.campaignId)
+
 }
 
 

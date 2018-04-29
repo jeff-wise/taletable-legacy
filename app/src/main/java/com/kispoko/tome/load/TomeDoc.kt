@@ -301,10 +301,11 @@ object TomeDoc
                              groupIndexSchema : Schema,
                              themeSchema : Schema,
                              engineSchema : Schema,
+                             bookSchema : Schema,
                              sheetSchema : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = groupIndexSchema.parseDocument(templateString,
-                                    listOf(themeSchema, engineSchema, sheetSchema))
+                                    listOf(themeSchema, engineSchema, sheetSchema, bookSchema))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -328,6 +329,7 @@ object TomeDoc
                           groupIndexSchemaLoader(context),
                           themeSchemaLoader(context),
                           engineSchemaLoader(context),
+                          bookSchemaLoader(context),
                           sheetSchemaLoader(context))
                .apply(::groupIndexFromDocument)
     }

@@ -896,6 +896,12 @@ types:
       presence: required
       description: >
         The groups.
+    - name: book_reference
+      type:
+        type: custom_type
+        custom_type: book_reference
+      presence: optional
+      description: Book reference.
 - type: product_type
   product_type:
     name: expander_widget_format
@@ -3768,6 +3774,8 @@ types:
       description: A literal number.
     - type: width_wrap
       description: Width wrap
+    - type: width_fill
+      description: Width fill
     - type: width_justify
       description: Width justify
 - type: symbol_type
@@ -3784,6 +3792,13 @@ types:
     description: Justify
     group: 'Style: Width'
     symbol: 'justify'
+- type: symbol_type
+  symbol_type:
+    name: width_fill
+    label: Width Fill
+    description: Justify
+    group: 'Style: Width'
+    symbol: 'fill'
 - type: primitive_type
   primitive_type:
     name: position

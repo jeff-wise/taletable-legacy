@@ -3,12 +3,15 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.content.Intent
+import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -231,6 +234,21 @@ sealed class ExpanderWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object IconRight : ExpanderWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "icon_right" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("icon_right")
+
+    }
+
+
     object ButtonBottom : ExpanderWidgetViewType()
     {
         // SQL SERIALIZABLE
@@ -258,6 +276,8 @@ sealed class ExpanderWidgetViewType : ToDocument, SQLSerializable, Serializable
             {
                 "icon_left"     -> effValue<ValueError,ExpanderWidgetViewType>(
                                             ExpanderWidgetViewType.IconLeft)
+                "icon_right"    -> effValue<ValueError,ExpanderWidgetViewType>(
+                                            ExpanderWidgetViewType.IconRight)
                 "plain"         -> effValue<ValueError,ExpanderWidgetViewType>(
                                             ExpanderWidgetViewType.Plain)
                 "button_bottom" -> effValue<ValueError,ExpanderWidgetViewType>(
@@ -308,15 +328,16 @@ data class ExpanderWidgetLabel(val value : String) : ToDocument, SQLSerializable
 }
 
 
-class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
-                                val entityId : EntityId,
-                                val context : Context)
+class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
+                       val entityId : EntityId,
+                       val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+    val activity = context as AppCompatActivity
 
     var isOpen : Boolean = false
 
@@ -382,6 +403,7 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
     {
         is ExpanderWidgetViewType.Plain -> plainHeaderView()
         is ExpanderWidgetViewType.IconLeft -> iconLeftHeaderView()
+        is ExpanderWidgetViewType.IconRight -> iconRightHeaderView()
         is ExpanderWidgetViewType.ButtonBottom -> this.buttonBottomHeaderView()
     }
 
@@ -438,6 +460,15 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
 
         layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
                                                entityId)
+
+        expanderWidget.bookReference.doMaybe { bookRef ->
+            layout.onLongClick = View.OnLongClickListener {
+                val intent = Intent(activity, BookActivity::class.java)
+                intent.putExtra("book_reference", bookRef)
+                activity.startActivity(intent)
+                true
+            }
+        }
 
         return layout.linearLayout(context)
     }
@@ -523,6 +554,35 @@ class ExpanderWidgetViewBuilder(val expanderWidget : ExpanderWidget,
 
 
         return icon.imageView(context)
+    }
+
+
+    // HEADER > Right Icon
+    // -----------------------------------------------------------------------------------------
+
+    private fun iconRightHeaderView() : LinearLayout
+    {
+        val layout          = this.headerViewLayout()
+
+        // Label
+        val labelView = this.headerLabelView()
+        val labelLayoutParams = labelView.layoutParams as LinearLayout.LayoutParams
+        labelLayoutParams.width = 0
+        labelLayoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelLayoutParams.weight  = 1f
+        labelView.layoutParams = labelLayoutParams
+
+        layout.addView(labelView)
+
+        // Icon
+        val iconLayout = this.headerIconLayoutView()
+
+        val iconView = this.headerIconView()
+        this.iconView = iconView
+        iconLayout.addView(iconView)
+        layout.addView(iconLayout)
+
+        return layout
     }
 
 

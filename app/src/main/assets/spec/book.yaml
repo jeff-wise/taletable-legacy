@@ -67,6 +67,12 @@ types:
         custom_coll_type: book_chapter
       presence: required
       description: The chapters
+    - name: content
+      type: 
+        type: custom_coll_type
+        custom_coll_type: book_content
+      presence: optional
+      description: The content.
 - type: primitive_type
   primitive_type: 
     name: book_id
@@ -129,6 +135,18 @@ types:
     description: Book content
     group: 'Book'
     fields:
+    - name: id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The content id.
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The content id.
     - name: groups
       type:
         type: custom_coll_type
@@ -320,11 +338,82 @@ types:
         custom_type: book_content
       presence: required
       description: The subsection body.
-- type: product_type
-  product_type:
+- type: sum_type
+  sum_type:
     name: book_reference
     label: Book Reference
-    description: Chapter
+    description: Book reference
+    group: Book Reference
+    cases:
+    - type: book_reference_book 
+      description: Book reference book.
+    - type: book_reference_chapter 
+      description: Book reference chapter.
+    - type: book_reference_section
+      description: Book reference section.
+    - type: book_reference_subsection
+      description: Book reference subsection.
+    - type: book_reference_content
+      description: Book reference content.
+- type: product_type
+  product_type:
+    name: book_reference_content
+    label: Book Reference Content
+    description: Book Reference Content
+    group: 'book'
+    type: product
+    fields:
+    - name: book_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+    - name: content_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The content id.
+- type: product_type
+  product_type:
+    name: book_reference_book
+    label: Book Reference Book
+    description: Book Reference Book
+    group: 'book'
+    type: product
+    fields:
+    - name: book_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The book id.
+- type: product_type
+  product_type:
+    name: book_reference_chapter
+    label: Book Reference Chapter
+    description: Book Reference Chapter
+    group: 'book'
+    type: product
+    fields:
+    - name: book_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+    - name: chapter_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+- type: product_type
+  product_type:
+    name: book_reference_section
+    label: Book Reference Section
+    description: Book Reference Section
     group: 'book'
     type: product
     fields:
@@ -344,12 +433,38 @@ types:
       type:
         type: prim_type
         prim_type: string
-      presence: optional
+      presence: required
+      description: The section id.
+- type: product_type
+  product_type:
+    name: book_reference_subsection
+    label: Book Reference Subsection
+    description: Book Reference Subsection
+    group: 'book'
+    type: product
+    fields:
+    - name: book_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+    - name: chapter_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The chapter id.
+    - name: section_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
       description: The section id.
     - name: subsection_id
       type:
         type: prim_type
         prim_type: string
-      presence: optional
+      presence: required
       description: The subsection id.
 constraints:

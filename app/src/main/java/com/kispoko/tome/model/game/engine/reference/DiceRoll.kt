@@ -4,9 +4,6 @@ package com.kispoko.tome.model.game.engine.reference
 
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.SumType
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.summation.SummationId
@@ -27,7 +24,7 @@ import java.io.Serializable
 /**
  * Boolean Reference
  */
-sealed class DiceRollReference : ToDocument, SumType, Serializable
+sealed class DiceRollReference : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -99,13 +96,13 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = ProdValue(this.value)
-
-
-    override fun case() = "literal"
-
-
-    override val sumModelObject = this
+//    override fun columnValue() = ProdValue(this.value)
+//
+//
+//    override fun case() = "literal"
+//
+//
+//    override val sumModelObject = this
 
 }
 
@@ -173,13 +170,13 @@ data class DiceRollReferenceVariable(val variableReference : VariableReference)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = PrimValue(this)
-
-
-    override fun case() = "partVariable"
-
-
-    override val sumModelObject = this
+//    override fun columnValue() = PrimValue(this)
+//
+//
+//    override fun case() = "partVariable"
+//
+//
+//    override val sumModelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -262,13 +259,13 @@ data class DiceRollReferenceSummation(val summationId : SummationId)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = PrimValue(this)
-
-
-    override fun case() = "partVariable"
-
-
-    override val sumModelObject = this
+//    override fun columnValue() = PrimValue(this)
+//
+//
+//    override fun case() = "partVariable"
+//
+//
+//    override val sumModelObject = this
 
 
     // -----------------------------------------------------------------------------------------

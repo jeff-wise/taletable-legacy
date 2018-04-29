@@ -4,8 +4,6 @@ package com.kispoko.tome.model.game.engine.variable
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.SumType
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.rts.entity.EntityId
 import effect.effApply
@@ -21,7 +19,7 @@ import java.io.Serializable
 /**
  * Dice Variable Value
  */
-sealed class DiceRollVariableValue : ToDocument, SumType, Serializable
+sealed class DiceRollVariableValue : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -94,12 +92,12 @@ data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll) : DiceRollVaria
     // SUM TYPE
     // -----------------------------------------------------------------------------------------
 
-    override val sumModelObject = this
-
-
-    override fun case() = "dice_roll"
-
-
-    override fun columnValue() = ProdValue(this.diceRoll)
+//    override val sumModelObject = this
+//
+//
+//    override fun case() = "dice_roll"
+//
+//
+//    override fun columnValue() = ProdValue(this.diceRoll)
 
 }

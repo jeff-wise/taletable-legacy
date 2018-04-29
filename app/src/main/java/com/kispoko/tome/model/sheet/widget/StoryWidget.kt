@@ -3,10 +3,15 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.support.graphics.drawable.VectorDrawableCompat
+import android.support.v7.app.AppCompatActivity
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -15,12 +20,14 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.flexbox.*
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
@@ -49,6 +56,8 @@ import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.variable
+import com.kispoko.tome.util.LongClickLinkMovementMethod
+import com.kispoko.tome.util.LongClickableSpan
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
@@ -1261,7 +1270,8 @@ fun storySpannableView(storyWidget : StoryWidget,
         }
     }
 
-    story.movementMethod    = LinkMovementMethod.getInstance()
+//    story.movementMethod    = LinkMovementMethod.getInstance()
+    story.movementMethod    = LongClickLinkMovementMethod.getInstance()
 
 //    val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
 //            context as SheetActivity,
@@ -1381,10 +1391,11 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
             is StoryPartVariable ->
             {
 
-                val clickSpan = object: ClickableSpan()
+                val clickSpan = object : LongClickableSpan()
                 {
                     override fun onClick(view : View?)
                     {
+                        Log.d("***STORY WIDGET", "on click")
                         val variable = storyPart.partVariable(entityId)
                         if (variable != null) {
                             openVariableEditorDialog(
@@ -1395,6 +1406,30 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                                     context)
                         }
 
+                    }
+
+                    override fun onLongClick(view: View?)
+                    {
+                        Log.d("***STORY WIDGET", "on long click")
+                        val activity = context as AppCompatActivity
+
+                        val vibrator = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                        // Vibrate for 500 milliseconds
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+                        } else {
+                            //deprecated in API 26
+                            vibrator.vibrate(50)
+                        }
+
+                        val variable = storyPart.partVariable(entityId)
+                        if (variable != null) {
+                            variable.bookReference(entityId).doMaybe {
+                                val intent = Intent(activity, BookActivity::class.java)
+                                intent.putExtra("book_reference", it)
+                                activity.startActivity(intent)
+                            }
+                        }
                     }
 
                     override fun updateDrawState(ds: TextPaint?) {

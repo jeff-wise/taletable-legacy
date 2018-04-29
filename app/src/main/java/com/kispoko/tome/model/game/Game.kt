@@ -151,6 +151,9 @@ data class Game(override val id : UUID,
     override fun entityLoader() = this.entityLoader
 
 
+    override fun entityId() = EntityGameId(this.gameId)
+
+
     // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------

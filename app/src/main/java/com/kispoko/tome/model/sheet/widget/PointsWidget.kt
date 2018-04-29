@@ -392,6 +392,14 @@ sealed class PointsInfoStyle : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object LabelOnly : PointsInfoStyle()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({ "label_only" })
+
+        override fun toDocument() = DocText("label_only")
+    }
+
+
     companion object
     {
         fun fromDocument(doc : SchemaDoc) : ValueParser<PointsInfoStyle> = when (doc)
@@ -408,6 +416,8 @@ sealed class PointsInfoStyle : ToDocument, SQLSerializable, Serializable
                                                 PointsInfoStyle.CenterLabelRight)
                 "label_top_slash_bottom" -> effValue<ValueError, PointsInfoStyle>(
                                                 PointsInfoStyle.LabelTopSlashBottom)
+                "label_only"             -> effValue<ValueError, PointsInfoStyle>(
+                                                PointsInfoStyle.LabelOnly)
                 else                  -> effError<ValueError, PointsInfoStyle>(
                                              UnexpectedValue("PointsInfoStyle", doc.text, doc.path))
             }
@@ -756,6 +766,8 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             is Position.Left -> {
                 contentLayout.orientation = LinearLayout.HORIZONTAL
                 contentLayout.addView(this.infoView())
+
+                contentLayout.gravity   = Gravity.CENTER_VERTICAL
             }
         }
 
@@ -810,6 +822,20 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         when (pointsWidget.format().infoFormat().style())
         {
+            is PointsInfoStyle.LabelOnly ->
+            {
+                layout = this.infoViewLinearLayout(pointsWidget.format().infoFormat().format())
+                val infoContentLayout = layout.findViewById<LinearLayout>(R.id.content)
+
+                val label = pointsWidget.label()
+                when (label) {
+                    is Just -> {
+                        val labelView = this.labelView(label.value.value,
+                                                       pointsWidget.format().labelTextFormat())
+                        infoContentLayout.addView(labelView)
+                    }
+                }
+            }
             is PointsInfoStyle.LabelTopSlashBottom ->
             {
                 layout = this.infoViewLinearLayout(pointsWidget.format().infoFormat().format())

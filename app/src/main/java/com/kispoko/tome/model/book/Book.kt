@@ -7,7 +7,6 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.*
 import com.kispoko.tome.lib.orm.schema.CollValue
-import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -38,16 +37,17 @@ import java.util.*
  * Book
  */
 data class Book(override val id : UUID,
-                val bookId: BookId,
+                val bookId : BookId,
                 val bookInfo : BookInfo,
                 val settings : BookSettings,
                 val engine : Engine,
                 val variables : List<Variable>,
-                val introduction : Maybe<BookContent>,
-                val conclusion : Maybe<BookContent>,
+                val introduction : List<BookContentId>,
+                val conclusion : List<BookContentId>,
                 val chapters : MutableList<BookChapter>,
+                val content : List<BookContent>,
                 var entityLoader : EntityLoader)
-                 : ToDocument, Entity, ProdType, Serializable
+                 : ToDocument, Entity, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -59,28 +59,13 @@ data class Book(override val id : UUID,
                                                 as MutableMap<BookChapterId, BookChapter>
 
 
+    private val contentById : MutableMap<BookContentId,BookContent> =
+                                        content.associateBy { it.id() }
+                                                as MutableMap<BookContentId,BookContent>
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(bookId : BookId,
-                bookInfo : BookInfo,
-                settings : BookSettings,
-                engine : Engine,
-                variables : List<Variable>,
-                introduction : Maybe<BookContent>,
-                conclusion : Maybe<BookContent>,
-                chapters : List<BookChapter>)
-        : this(UUID.randomUUID(),
-               bookId,
-               bookInfo,
-               settings,
-               engine,
-               variables,
-               introduction,
-               conclusion,
-               chapters.toMutableList(),
-               EntityLoaderUnknown())
 
 
     companion object : Factory<Book>
@@ -90,6 +75,18 @@ data class Book(override val id : UUID,
             is DocDict ->
             {
                 apply(::Book,
+                      // Entity Id
+                      split(doc.maybeText("id"),
+                            effValue(UUID.randomUUID()),
+                            { uuidString ->
+                                try {
+                                    effValue(UUID.fromString(uuidString))
+                                }
+                                catch (e : IllegalArgumentException) {
+                                    effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+                                }
+                            }
+                            ),
                       // Book Id
                       doc.at("book_id") apply { BookId.fromDocument(it) },
                       // Book Info
@@ -103,17 +100,24 @@ data class Book(override val id : UUID,
                       // Variables
                       doc.list("variables") apply { it.map { Variable.fromDocument(it) } },
                       // Introduction
-                      split(doc.maybeAt("introduction"),
-                            effValue<ValueError,Maybe<BookContent>>(Nothing()),
-                            { apply(::Just, BookContent.fromDocument(it)) }),
+                      split(doc.maybeList("introduction"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } }),
                       // Conclusion
-                      split(doc.maybeAt("conclusion"),
-                            effValue<ValueError,Maybe<BookContent>>(Nothing()),
-                            { apply(::Just, BookContent.fromDocument(it)) }),
+                      split(doc.maybeList("conclusion"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } }),
                       // Chapters
                       doc.list("chapters") apply {
                           it.mapMut { BookChapter.fromDocument(it) }
-                      })
+                      },
+                      // Content
+                      split(doc.maybeList("content"),
+                            effValue(listOf()),
+                            { it.map { BookContent.fromDocument(it) } }),
+                      // Entity Loader
+                      effValue(EntityLoaderUnknown())
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -152,10 +156,10 @@ data class Book(override val id : UUID,
     fun variables() : List<Variable> = this.variables
 
 
-    fun introduction() : Maybe<BookContent> = this.introduction
+    fun introduction() : List<BookContentId> = this.introduction
 
 
-    fun conclusion() : Maybe<BookContent> = this.conclusion
+    fun conclusion() : List<BookContentId> = this.conclusion
 
 
     fun chapters() : List<BookChapter> = this.chapters
@@ -172,6 +176,9 @@ data class Book(override val id : UUID,
 
 
     override fun entityLoader() = this.entityLoader
+
+
+    override fun entityId() = EntityBookId(this.bookId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -269,23 +276,17 @@ data class Book(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // CONTENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookValue =
-        RowValue6(bookTable,
-                  PrimValue(this.bookId),
-                  ProdValue(this.bookInfo),
-                  ProdValue(this.settings),
-                  ProdValue(this.engine),
-                  CollValue(this.variables),
-                  CollValue(this.chapters))
+    fun content(id : BookContentId) : Maybe<BookContent>
+    {
+        val contentOrNull = this.contentById[id]
+        return if (contentOrNull != null)
+            Just(contentOrNull)
+        else
+            Nothing()
+    }
 
 }
 
@@ -616,19 +617,15 @@ data class BookSettings(override val id : UUID,
 /**
  * Book Content
  */
-data class BookContent(val id : UUID,
-                       val groups : List<Group>)
+data class BookContent(private val id : BookContentId,
+                       private val title : BookContentTitle,
+                       private val groups : List<Group>)
                         : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(groups : List<Group>)
-        : this(UUID.randomUUID(),
-               groups)
-
 
     companion object : Factory<BookContent>
     {
@@ -637,6 +634,10 @@ data class BookContent(val id : UUID,
             is DocDict ->
             {
                 apply(::BookContent,
+                      // Id
+                      doc.at("id") apply { BookContentId.fromDocument(it) },
+                      // Title
+                      doc.at("title") apply { BookContentTitle.fromDocument(it) },
                       // Groups
                       doc.list("groups") apply {
                           it.mapIndexed { doc, index -> Group.fromDocument(doc, index) } }
@@ -660,24 +661,74 @@ data class BookContent(val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun id() : BookContentId = this.id
+
+
+    fun title() : BookContentTitle = this.title
+
+
     fun groups() : List<Group> = this.groups
 
+}
+
+
+/**
+ * Book Content Id
+ */
+data class BookContentId(val value : String) : ToDocument, Serializable
+{
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_BookContentValue =
-//        RowValue1(bookContentTable,
-//                  CollValue(this.groups))
+
+    companion object : Factory<BookContentId>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookContentId> = when (doc)
+        {
+            is DocText -> effValue(BookContentId(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 }
+
+
+/**
+ * Book Content Title
+ */
+data class BookContentTitle(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookContentTitle>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookContentTitle> = when (doc)
+        {
+            is DocText -> effValue(BookContentTitle(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
 
 
 /**

@@ -40,37 +40,36 @@ import java.util.*
 /**
  * Statement
  */
-data class Statement(override val id : UUID,
-                     val bindingName : StatementBindingName,
+data class Statement(val bindingName : StatementBindingName,
                      val functionId : FunctionId,
                      val parameter1 : Maybe<StatementParameter>,
                      val parameter2 : Maybe<StatementParameter>,
                      val parameter3 : Maybe<StatementParameter>,
                      val parameter4 : Maybe<StatementParameter>,
                      val parameter5 : Maybe<StatementParameter>)
-                      : ToDocument, ProdType, Serializable
+                      : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(bindingName : StatementBindingName,
-                functionId : FunctionId,
-                parameter1 : Maybe<StatementParameter>,
-                parameter2 : Maybe<StatementParameter>,
-                parameter3 : Maybe<StatementParameter>,
-                parameter4 : Maybe<StatementParameter>,
-                parameter5 : Maybe<StatementParameter>)
-        : this(UUID.randomUUID(),
-               bindingName,
-               functionId,
-               parameter1,
-               parameter2,
-               parameter3,
-               parameter4,
-               parameter5)
-
+//    constructor(bindingName : StatementBindingName,
+//                functionId : FunctionId,
+//                parameter1 : Maybe<StatementParameter>,
+//                parameter2 : Maybe<StatementParameter>,
+//                parameter3 : Maybe<StatementParameter>,
+//                parameter4 : Maybe<StatementParameter>,
+//                parameter5 : Maybe<StatementParameter>)
+//        : this(UUID.randomUUID(),
+//               bindingName,
+//               functionId,
+//               parameter1,
+//               parameter2,
+//               parameter3,
+//               parameter4,
+//               parameter5)
+//
 
     companion object : Factory<Statement>
     {
@@ -159,22 +158,22 @@ data class Statement(override val id : UUID,
 
     // -----------------------------------------------------------------------------------------
     // PROD MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_StatementValue =
-        RowValue7(statementTable, PrimValue(this.bindingName),
-                                  PrimValue(this.functionId),
-                                  MaybeSumValue(this.parameter1),
-                                  MaybeSumValue(this.parameter2),
-                                  MaybeSumValue(this.parameter3),
-                                  MaybeSumValue(this.parameter4),
-                                  MaybeSumValue(this.parameter5))
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() { }
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_StatementValue =
+//        RowValue7(statementTable, PrimValue(this.bindingName),
+//                                  PrimValue(this.functionId),
+//                                  MaybeSumValue(this.parameter1),
+//                                  MaybeSumValue(this.parameter2),
+//                                  MaybeSumValue(this.parameter3),
+//                                  MaybeSumValue(this.parameter4),
+//                                  MaybeSumValue(this.parameter5))
 
 
     // -----------------------------------------------------------------------------------------
@@ -422,7 +421,7 @@ data class StatementBindingName(val value : String) : ToDocument, SQLSerializabl
  * Statement Parameter
  */
 @Suppress("UNCHECKED_CAST")
-sealed class StatementParameter : ToDocument, SumType, Serializable
+sealed class StatementParameter : ToDocument, Serializable
 {
 
     companion object : Factory<StatementParameter>
@@ -476,13 +475,13 @@ data class StatementParameterBindingName(val bindingName : StatementBindingName)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = PrimValue(this)
-
-
-    override fun case() = "binding_name"
-
-
-    override val sumModelObject = this
+//    override fun columnValue() = PrimValue(this)
+//
+//
+//    override fun case() = "binding_name"
+//
+//
+//    override val sumModelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -529,13 +528,13 @@ data class StatementParameterProgramParameter(val name : ProgramParameterName)
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = PrimValue(this.name)
-
-
-    override fun case() = "program_parameter"
-
-
-    override val sumModelObject = this
+//    override fun columnValue() = PrimValue(this.name)
+//
+//
+//    override fun case() = "program_parameter"
+//
+//
+//    override val sumModelObject = this
 
 }
 
@@ -568,13 +567,13 @@ data class StatementParameterReference(val reference : DataReference) : Statemen
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = SumValue(this.reference)
-
-
-    override fun case() = "data_reference"
-
-
-    override val sumModelObject = this.reference
+//    override fun columnValue() = SumValue(this.reference)
+//
+//
+//    override fun case() = "data_reference"
+//
+//
+//    override val sumModelObject = this.reference
 
 
     // -----------------------------------------------------------------------------------------

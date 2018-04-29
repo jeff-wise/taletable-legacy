@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.tome.R.string.widget
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.CustomTabLayout
@@ -24,7 +23,6 @@ import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
-import com.kispoko.tome.rts.entity.sheet
 import com.kispoko.tome.rts.entity.sheetOrError
 import com.kispoko.tome.util.Util
 import effect.*

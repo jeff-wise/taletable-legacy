@@ -7,6 +7,7 @@ import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.orm.sql.*
@@ -14,6 +15,8 @@ import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.reference.TextReference
 import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.engine.ValueIsOfUnexpectedType
 import com.kispoko.tome.util.Util
 import effect.*
@@ -234,10 +237,9 @@ data class ValueNumber(override val id : UUID,
 
 
     override fun rowValue() : DB_ValueNumberValue =
-        RowValue5(valueNumberTable,
+        RowValue4(valueNumberTable,
                   PrimValue(this.valueId),
                   PrimValue(this.description),
-                  MaybeProdValue(this.bookReference),
                   CollValue(this.variables),
                   PrimValue(this.value))
 
@@ -369,10 +371,9 @@ data class ValueText(override val id : UUID,
 
 
     override fun rowValue() : DB_ValueTextValue =
-        RowValue5(valueTextTable,
+        RowValue4(valueTextTable,
                   PrimValue(this.valueId),
                   PrimValue(this.description),
-                  MaybeProdValue(this.bookReference),
                   CollValue(this.variables),
                   PrimValue(this.value))
 
@@ -501,6 +502,22 @@ data class ValueReference(val valueSetId : TextReference, val valueId : TextRefe
         "value_set_id" to this.valueSetId.toDocument(),
         "value_id" to this.valueId.toDocument()
     ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    fun dependencies(entityId : EntityId) : Set<VariableReference>
+    {
+        val references : MutableSet<VariableReference> = mutableSetOf()
+
+        references.addAll(this.valueSetId.dependencies(entityId))
+
+        references.addAll(this.valueId.dependencies(entityId))
+
+        return references
+    }
 
 
     // -----------------------------------------------------------------------------------------

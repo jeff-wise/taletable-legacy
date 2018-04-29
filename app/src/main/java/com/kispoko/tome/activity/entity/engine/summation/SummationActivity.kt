@@ -201,8 +201,8 @@ class SummationActivity : AppCompatActivity()
 
     private fun onNumberTermUpdate(message : MessageUpdateSummationNumberTerm)
     {
-        val term = entitySummation?.termWithId(message.id)
-        val entityId = this.entityId
+//        val term = entitySummation?.termWithId(message.id)
+//        val entityId = this.entityId
 //        if (term != null && sheetContext != null)
 //        {
 //            when (term)

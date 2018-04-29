@@ -5,6 +5,11 @@ groups:
     - type: widget_expander
       widget_expander:
         label: "Rapier"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: core_rules
+            content_id: weapon_rapier
         format:
           widget_format:
             element_format:
@@ -20,6 +25,7 @@ groups:
               width:
                 type: width_justify
                 width_justify: justify
+          view_type: icon_right
           header_open_format:
             element_format:
               background_color_theme:
@@ -62,6 +68,26 @@ groups:
                 color_id: dark_grey_12
             font_style: medium
             size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
         groups:
         - rows:
           - widgets:
@@ -87,7 +113,7 @@ groups:
                     color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: dark_grey_18
+                        color_id: dark_grey_22
                   tab_format:
                     underline_thickness: 2
                     underline_color_theme:
@@ -272,7 +298,7 @@ groups:
                                 color_theme:
                                   theme_color_ids:
                                   - theme_id: light
-                                    color_id: dark_grey_14
+                                    color_id: dark_grey_16
                                 font_style: medium
                                 size: 18
                                 element_format:
@@ -282,7 +308,7 @@ groups:
                           widget_boolean:
                             value_variables_reference:
                               type: variable_id
-                              variable_id: current_attack_critical_hit
+                              variable_id: rapier_is_critical_hit
                             format:
                               widget_format:
                                 element_format:
@@ -496,7 +522,7 @@ groups:
                             roll_group:
                               roll_references:
                               - type: summation_id
-                                summation_id: weapon_rapier_attack_roll
+                                summation_id: weapon_rapier_damage_roll
                             description: 'Damage'
                             result_description: 'Damage'
                 - name: Properties

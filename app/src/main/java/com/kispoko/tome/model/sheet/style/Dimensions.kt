@@ -91,12 +91,13 @@ sealed class Width : ToDocument, SQLSerializable, Serializable
     {
         is Wrap     -> "wrap"
         is Justify  -> "justify"
+        is Fill     -> "fill"
         is Fixed    -> this.value.toString()
     }
 
 
     /**
-     * Height Wrap
+     * Width Wrap
      */
     object Wrap : Width()
     {
@@ -105,6 +106,15 @@ sealed class Width : ToDocument, SQLSerializable, Serializable
         override fun toDocument() = DocNumber(0.0)
     }
 
+    /**
+     * Fill Width
+     */
+    object Fill : Width()
+    {
+        override fun asSQLValue() : SQLValue = SQLReal({0.0})
+
+        override fun toDocument() = DocNumber(0.0)
+    }
 
 
     /**
@@ -156,6 +166,7 @@ sealed class Width : ToDocument, SQLSerializable, Serializable
                 "number_literal" -> Width.Fixed.fromDocument(doc)
                 "width_wrap"     -> effValue(Width.Wrap)
                 "width_justify"  -> effValue(Width.Justify)
+                "width_fill"     -> effValue(Width.Fill)
                 else             -> effError(UnknownCase(doc.case(), doc.path))
             }
     }

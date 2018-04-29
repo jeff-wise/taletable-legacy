@@ -7,12 +7,14 @@ import com.kispoko.tome.app.*
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
+import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.game.engine.value.ValueReference
@@ -21,6 +23,7 @@ import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.onVariableUpdate
 import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.value
 import com.kispoko.tome.rts.entity.variable
 import com.kispoko.tome.util.Util
 import effect.*
@@ -132,6 +135,9 @@ sealed class Variable : ProdType, ToDocument, Serializable
 
 
     abstract fun relation() : Maybe<VariableRelation>
+
+
+    abstract fun bookReference(entityId : EntityId) : Maybe<BookReference>
 
 
     fun booleanVariable(entityId : EntityId) : AppEff<BooleanVariable> = when (this)
@@ -382,6 +388,9 @@ data class BooleanVariable(override val id : UUID,
     override fun relation() = this.relation
 
 
+    override fun bookReference(entityId : EntityId) : Maybe<BookReference> = Nothing()
+
+
     // -----------------------------------------------------------------------------------------
     // HISTORY
     // -----------------------------------------------------------------------------------------
@@ -584,6 +593,9 @@ data class DiceRollVariable(override val id : UUID,
     override fun relation() = this.relation
 
 
+    override fun bookReference(entityId : EntityId) : Maybe<BookReference> = Nothing()
+
+
     fun variableValue() : DiceRollVariableValue = this.variableValue
 
 
@@ -598,12 +610,11 @@ data class DiceRollVariable(override val id : UUID,
 
 
     override fun rowValue() : DB_VariableDiceRollValue =
-        RowValue5(variableDiceRollTable,
+        RowValue4(variableDiceRollTable,
                   PrimValue(this.variableId),
                   PrimValue(this.label),
                   PrimValue(this.description),
-                  PrimValue(VariableTagSet(this.tags)),
-                  SumValue(this.variableValue))
+                  PrimValue(VariableTagSet(this.tags)))
 
 
     // -----------------------------------------------------------------------------------------
@@ -779,6 +790,9 @@ data class NumberVariable(override val id : UUID,
 
 
     override fun relation() = this.relation
+
+
+    override fun bookReference(entityId : EntityId) : Maybe<BookReference> = Nothing()
 
 
     fun variableValue() : NumberVariableValue = this.variableValue
@@ -1059,6 +1073,9 @@ data class NumberListVariable(override val id : UUID,
     override fun relation() = this.relation
 
 
+    override fun bookReference(entityId : EntityId) : Maybe<BookReference> = Nothing()
+
+
     fun variableValue() : NumberListVariableValue = this.variableValue
 
 
@@ -1258,6 +1275,23 @@ data class TextVariable(override val id : UUID,
 
 
     override fun relation() = this.relation
+
+
+    override fun bookReference(entityId : EntityId) : Maybe<BookReference>
+    {
+        val variableValue = this.variableValue
+        when (variableValue)
+        {
+            is TextVariableValueValue -> {
+                val value = value(variableValue.valueReference, entityId)
+                when (value) {
+                    is Val -> return value.value.bookReference
+                }
+            }
+        }
+
+        return Nothing()
+    }
 
 
     fun variableValue() : TextVariableValue = this.variableValue
@@ -1516,6 +1550,9 @@ data class TextListVariable(override val id : UUID,
 
 
     override fun relation() = this.relation
+
+
+    override fun bookReference(entityId : EntityId) : Maybe<BookReference> = Nothing()
 
 
     fun variableValue() : TextListVariableValue = this.variableValue

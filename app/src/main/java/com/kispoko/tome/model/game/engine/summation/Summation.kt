@@ -9,12 +9,12 @@ import com.kispoko.tome.db.DB_SummationValue
 import com.kispoko.tome.db.summationTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue3
-import com.kispoko.tome.lib.orm.schema.CollValue
+import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.game.engine.FormulaModifier
 import com.kispoko.tome.model.game.engine.dice.*
 import com.kispoko.tome.model.game.engine.summation.term.*
 import com.kispoko.tome.model.game.engine.variable.VariableNamespace
@@ -117,10 +117,9 @@ data class Summation(override val id : UUID,
 
 
     override fun rowValue() : DB_SummationValue =
-        RowValue3(summationTable,
+        RowValue2(summationTable,
                   PrimValue(this.summationId),
-                  PrimValue(this.summationName),
-                  CollValue(this.terms))
+                  PrimValue(this.summationName))
 
 
     // -----------------------------------------------------------------------------------------
@@ -154,6 +153,7 @@ data class Summation(override val id : UUID,
     {
         val quantities : MutableList<DiceQuantity> = mutableListOf()
         val modifiers  : MutableList<RollModifier> = mutableListOf()
+        val formulaModifiers : MutableList<FormulaModifier> = mutableListOf()
 
         for (term in this.terms())
         {
@@ -202,25 +202,43 @@ data class Summation(override val id : UUID,
                         }
                     }
                 }
+                is SummationTermConditionalFunction ->
+                {
+                    val isTrueEff = SheetData.boolean(term.conditionalValueReference(), entityId)
+                    when (isTrueEff)
+                    {
+                        is Val -> {
+                            if (isTrueEff.value)
+                            {
+                                formulaModifiers.add(term.function())
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        return if (quantities.isEmpty())
+        return if (quantities.isEmpty()) {
             effError(AppEngineError(SummationIsNotDiceRoll(summationId())))
-        else
-            effValue(DiceRoll(quantities, modifiers, Just(DiceRollName(this.summationNameString()))))
-    }
-
-
-    fun termWithId(termId : UUID) : SummationTerm?
-    {
-        this.terms().forEach {
-            if (it.id == termId)
-                return it
         }
-
-        return null
+        else {
+            effValue(DiceRoll(quantities,
+                              modifiers,
+                              formulaModifiers,
+                              Just(DiceRollName(this.summationNameString()))))
+        }
     }
+
+
+//    fun termWithId(termId : UUID) : SummationTerm?
+//    {
+//        this.terms().forEach {
+//            if (it.id == termId)
+//                return it
+//        }
+//
+//        return null
+//    }
 
 }
 

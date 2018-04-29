@@ -17,6 +17,7 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookReference
+import com.kispoko.tome.model.book.BookReferenceContent
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.entity.book
 import com.kispoko.tome.rts.entity.theme.ThemeManager
@@ -79,7 +80,11 @@ class BookActivity : AppCompatActivity()
             }
         }
 
-        this.initializeView()
+        val currentBookReference = this.currentBookReference
+        val currentBook = this.currentBook
+
+        if (currentBookReference != null && currentBook != null)
+            this.initializeView(currentBookReference, currentBook)
     }
 
 
@@ -94,57 +99,20 @@ class BookActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeView()
+    private fun initializeView(bookReference : BookReference, book : Book)
     {
         val contentView = this.findViewById<LinearLayout>(R.id.book_content)
 
-        val currentBookReference = this.currentBookReference
-        val currentBook = this.currentBook
-
-        if (currentBookReference != null && currentBook != null)
+        when (bookReference)
         {
-            Log.d("***BOOK ACTIVITY", "book ref: $currentBookReference")
-            val maybeSectionId = currentBookReference.sectionId()
-            when (maybeSectionId) {
-                is Just -> {
-                    val sectionId = maybeSectionId.value
-                    val maybeSubsectionId = currentBookReference.subsectionId()
-                    when (maybeSubsectionId) {
-                        is Just -> {
-                            val subsectionId = maybeSubsectionId.value
-                            val subsection = currentBook.subsection(currentBookReference.chapterId,
-                                                                    sectionId,
-                                                                    subsectionId)
-                            when (subsection) {
-                                is Just -> {
-                                    val subsectionUI = SubsectionUI(currentBook,
-                                                                    currentBookReference,
-                                                                    subsection.value,
-                                                                    this)
-                                    contentView.addView(subsectionUI.view())
-                                }
-                            }
-                        }
-                        else -> {
-                            val section = currentBook.section(currentBookReference.chapterId,
-                                                              sectionId)
-                            when (section) {
-                                is Just -> {
-                                    val sectionUI = SectionUI(currentBook,
-                                                              currentBookReference,
-                                                              section.value,
-                                                              this)
-                                    contentView.addView(sectionUI.view())
-                                }
-                            }
-                            // Show section
-                        }
-                    }
-                }
-                else -> {
-                    // Show chapter
+            is BookReferenceContent ->
+            {
+                book.content(bookReference.contentId).doMaybe {
+                    val cardUI = CardUI(book, it, this)
+                    contentView.addView(cardUI.view())
                 }
             }
+
         }
 
     }

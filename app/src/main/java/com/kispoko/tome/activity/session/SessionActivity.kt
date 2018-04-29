@@ -13,10 +13,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.Menu
 import android.view.WindowManager
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.Corners
@@ -217,15 +214,13 @@ class SessionUI(val session : Session,
     }
 
 
-    private fun entityView(entity : Entity) : LinearLayout
+    private fun entityView(entity : Entity) : RelativeLayout
     {
         val layout = this.entityViewLayout()
 
         layout.addView(this.entityNameView(entity.name()))
 
-        layout.addView(this.entitySummaryView(entity.summary()))
-
-        layout.addView(this.entityFooterView())
+        layout.addView(this.entityNextIconView())
 
         return layout
     }
@@ -235,18 +230,22 @@ class SessionUI(val session : Session,
     {
         val name                = TextViewBuilder()
 
+        name.layoutType         = LayoutType.RELATIVE
         name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        name.addRule(RelativeLayout.ALIGN_PARENT_START)
+        name.addRule(RelativeLayout.CENTER_VERTICAL)
 
         name.text               = nameString
 
         name.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Bold,
+                                                TextFontStyle.Medium,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         name.color              = theme.colorOrBlack(colorTheme)
 
         name.sizeSp             = 20f
@@ -279,24 +278,63 @@ class SessionUI(val session : Session,
     }
 
 
-    private fun entityViewLayout() : LinearLayout
+    private fun entityViewLayout() : RelativeLayout
     {
-        val layout                  = LinearLayoutBuilder()
+        val layout                  = RelativeLayoutBuilder()
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.orientation          = LinearLayout.VERTICAL
+        layout.orientation          = LinearLayout.HORIZONTAL
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
+        layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.padding.topDp        = 8f
-        layout.padding.bottomDp     = 8f
+        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+
+        layout.padding.topDp        = 10f
+        layout.padding.bottomDp     = 10f
 
         layout.padding.leftDp       = 6f
         layout.padding.rightDp      = 6f
+
+        return layout.relativeLayout(context)
+    }
+
+
+    private fun entityNextIconView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 30
+        icon.heightDp           = 30
+
+        icon.image              = R.drawable.icon_chevron_right
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+        icon.color          = theme.colorOrBlack(iconColorTheme)
 
         return layout.linearLayout(context)
     }

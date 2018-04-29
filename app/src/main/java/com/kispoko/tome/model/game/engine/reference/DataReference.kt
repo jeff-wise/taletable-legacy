@@ -21,7 +21,7 @@ import java.io.Serializable
  * Value Reference
  */
 @Suppress("UNCHECKED_CAST")
-sealed class DataReference : ToDocument, SumType, Serializable
+sealed class DataReference : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -91,13 +91,13 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = SumValue(this.reference)
-
-
-    override fun case() = "boolean"
-
-
-    override val sumModelObject = this.reference
+//    override fun columnValue() = SumValue(this.reference)
+//
+//
+//    override fun case() = "boolean"
+//
+//
+//    override val sumModelObject = this.reference
 
 }
 
@@ -137,15 +137,15 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
     // -----------------------------------------------------------------------------------------
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun columnValue() = SumValue(this.reference)
-
-
-    override fun case() = "dice_roll"
-
-
-    override val sumModelObject = this.reference
-
+//
+//    override fun columnValue() = SumValue(this.reference)
+//
+//
+//    override fun case() = "dice_roll"
+//
+//
+//    override val sumModelObject = this.reference
+//
 
     // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
@@ -193,13 +193,13 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = SumValue(this.reference)
-
-
-    override fun case() = "number"
-
-
-    override val sumModelObject = this.reference
+//    override fun columnValue() = SumValue(this.reference)
+//
+//
+//    override fun case() = "number"
+//
+//
+//    override val sumModelObject = this.reference
 
 }
 
@@ -241,12 +241,12 @@ data class DataReferenceText(val reference : TextReference) : DataReference()
     // SUM MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun columnValue() = SumValue(this.reference)
-
-
-    override fun case() = "text"
-
-
-    override val sumModelObject = this.reference
+//    override fun columnValue() = SumValue(this.reference)
+//
+//
+//    override fun case() = "text"
+//
+//
+//    override val sumModelObject = this.reference
 
 }
