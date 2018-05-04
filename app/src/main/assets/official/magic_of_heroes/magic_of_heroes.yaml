@@ -46,6 +46,7 @@ variables:
       type: boolean_literal
       boolean_literal: false
 engine:
+  tasks:
   value_sets:
   - type: value_set_base
     value_set_base:
@@ -5954,14 +5955,23 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: weapon_rapier_damage
-    - type: summation_term_number
-      summation_term_number:
-        term_name: Dexterity Modifier
-        value:
+    - type: summation_term_conditional
+      summation_term_conditional:
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: rapier_use_finesse
+        when_true:
           type: variable_reference
           variable_reference:
             type: variable_id
             variable_id: dexterity_modifier
+        when_false:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
     - type: summation_term_conditional_function
       summation_term_conditional_function:
         term_name: Critical Hit Damage

@@ -27,16 +27,16 @@ import com.kispoko.tome.activity.sheet.dialog.SimpleAdderDialog
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.EngineValue
-import com.kispoko.tome.model.game.engine.EngineValueNumber
-import com.kispoko.tome.model.game.engine.procedure.Procedure
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.procedure.ProcedureInvocation
-import com.kispoko.tome.model.game.engine.program.ProgramId
-import com.kispoko.tome.model.game.engine.program.ProgramParameter
-import com.kispoko.tome.model.game.engine.program.ProgramParameterNumber
-import com.kispoko.tome.model.game.engine.program.ProgramParameterValues
-import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
+import com.kispoko.tome.model.engine.EngineValue
+import com.kispoko.tome.model.engine.EngineValueNumber
+import com.kispoko.tome.model.engine.procedure.Procedure
+import com.kispoko.tome.model.engine.procedure.ProcedureId
+import com.kispoko.tome.model.engine.procedure.ProcedureInvocation
+import com.kispoko.tome.model.engine.program.ProgramId
+import com.kispoko.tome.model.engine.program.ProgramParameter
+import com.kispoko.tome.model.engine.program.ProgramParameterNumber
+import com.kispoko.tome.model.engine.program.ProgramParameterValues
+import com.kispoko.tome.model.engine.constraint.ConstraintNumber
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.IconSize
 import com.kispoko.tome.model.sheet.style.TextFont
@@ -740,7 +740,7 @@ class ComplexProcedureUI(val procedure : Procedure,
 
 data class NumberUpdateRequest(val key : String,
                                val currentValue : Double,
-                               val constraint : Maybe<NumberConstraint>) : Serializable
+                               val constraint : Maybe<ConstraintNumber>) : Serializable
 
 
 interface NumberUpdater

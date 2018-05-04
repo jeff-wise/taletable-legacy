@@ -4,12 +4,13 @@ package com.kispoko.tome.rts.entity
 
 import android.util.Log
 import com.kispoko.tome.app.*
-import com.kispoko.tome.model.game.engine.EngineValue
-import com.kispoko.tome.model.game.engine.EngineValueBoolean
-import com.kispoko.tome.model.game.engine.EngineValueNumber
-import com.kispoko.tome.model.game.engine.EngineValueText
-import com.kispoko.tome.model.game.engine.mechanic.*
-import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.engine.EngineValue
+import com.kispoko.tome.model.engine.EngineValueBoolean
+import com.kispoko.tome.model.engine.EngineValueNumber
+import com.kispoko.tome.model.engine.EngineValueText
+import com.kispoko.tome.model.engine.mechanic.*
+import com.kispoko.tome.model.engine.task.Task
+import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.rts.entity.sheet.*
 import effect.*
 import maybe.Just
@@ -38,7 +39,8 @@ data class RelationListener(val tag : VariableTag, val variableId : VariableId)
  * Game data for a sheet.
  */
 class EntityState(val entityId : EntityId,
-                  mechanics : List<Mechanic>) : State, MechanicStateMachine
+                  val mechanics : MutableList<Mechanic>,
+                  val tasks : MutableList<Task>) : State, MechanicStateMachine
 {
 
     // -----------------------------------------------------------------------------------------
@@ -71,6 +73,14 @@ class EntityState(val entityId : EntityId,
     private val activeMechanicsByCateogryTag : MutableMap<MechanicCategoryTag,MutableSet<Mechanic>> = mutableMapOf()
 
 
+    // Task Indexes
+    // -----------------------------------------------------------------------------------------
+
+    private val tasksByVariableId : MutableMap<VariableId,MutableSet<Task>> = mutableMapOf()
+
+    private val activeTasks : MutableSet<Task> = mutableSetOf()
+
+
     // Search Indexes
     // -----------------------------------------------------------------------------------------
 
@@ -85,13 +95,22 @@ class EntityState(val entityId : EntityId,
     init
     {
         this.indexMechanics(mechanics)
+
+        this.indexTasks()
     }
 
 
     fun setMechanics(mechanics : List<Mechanic>)
     {
-//        this.mechanics = mechanics
         this.indexMechanics(mechanics)
+    }
+
+
+    fun setTasks(tasks : List<Task>)
+    {
+        this.tasks.clear()
+        this.tasks.addAll(tasks)
+        this.indexTasks()
     }
 
 
@@ -116,6 +135,28 @@ class EntityState(val entityId : EntityId,
                 }
             }
         }
+    }
+
+
+    private fun indexTasks()
+    {
+        Log.d("****ENTITY STATE", "index tasks")
+        this.tasks.forEach { task ->
+
+            task.trigger.variableReferences().forEach {
+                when (it) {
+                    is VariableId -> {
+                        Log.d("****ENTITY STATE", "index task at var id: $it")
+                        if (!this.tasksByVariableId.containsKey(it))
+                            this.tasksByVariableId.put(it, mutableSetOf())
+
+                        this.tasksByVariableId[it]!!.add(task)
+                    }
+                }
+            }
+
+        }
+
     }
 
 
@@ -483,6 +524,9 @@ class EntityState(val entityId : EntityId,
         }
 
 
+    fun activeTasks() : Set<Task> = this.activeTasks
+
+
     fun onVariableUpdate(variable : Variable)
     {
 
@@ -777,7 +821,24 @@ class EntityState(val entityId : EntityId,
                 mechanicsByReqVariableId[variableId]?.forEach { it.update(variable, this) }
         }
 
-        // (4) Update on change listeners
+
+        // (4) Update any tasks
+        // -------------------------------------------------------------------------------------
+
+        if (this.tasksByVariableId.containsKey(variableId))
+        {
+            // TODO avoid duplicate checks
+            this.tasksByVariableId[variableId]?.forEach { task ->
+                Log.d("****ENTITY STATE", "updating task for: ${variableId}")
+                if (task.trigger().isActive(entityId)) {
+                    Log.d("****ENTITY STATE", "is active for: ${variableId}")
+                    this.activeTasks.add(task)
+                }
+            }
+        }
+
+
+        // (5) Update on change listeners
         // -------------------------------------------------------------------------------------
 
         if (onChangeListenersById.containsKey(variableId))

@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.session
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -15,7 +16,10 @@ import android.view.Menu
 import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.book.Book
+import com.kispoko.tome.model.book.BookReferenceBook
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -135,10 +139,19 @@ class SessionActivity : AppCompatActivity()
 
 class SessionUI(val session : Session,
                 val theme : Theme,
-                val context : Context)
+                val sessionActivity : SessionActivity)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
 
+    val context = sessionActivity
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
 
     fun view() : ScrollView
     {
@@ -221,6 +234,18 @@ class SessionUI(val session : Session,
         layout.addView(this.entityNameView(entity.name()))
 
         layout.addView(this.entityNextIconView())
+
+        layout.setOnClickListener {
+            when (entity) {
+                is Book -> {
+                    val intent = Intent(sessionActivity, BookActivity::class.java)
+                    val bookReference = BookReferenceBook(entity.bookId())
+                    intent.putExtra("book_reference", bookReference)
+                    sessionActivity.startActivity(intent)
+                }
+            }
+
+        }
 
         return layout
     }

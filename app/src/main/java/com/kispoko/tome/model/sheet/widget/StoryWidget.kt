@@ -33,8 +33,8 @@ import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.variable.Variable
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.engine.variable.Variable
+import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
@@ -51,7 +51,7 @@ import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.engine.variable.NumberVariable
+import com.kispoko.tome.model.engine.variable.NumberVariable
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack

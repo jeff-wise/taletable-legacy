@@ -12,7 +12,7 @@ import android.widget.ScrollView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
-import com.kispoko.tome.model.game.engine.function.Function;
+import com.kispoko.tome.model.engine.function.Function;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;

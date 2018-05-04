@@ -12,6 +12,9 @@
     <string name="campaigns">Campaigns</string>
     <string name="games">Games</string>
 
+    <string name="later">Later</string>
+    <string name="_do">Do</string>
+
     <string name="tasks">Tasks</string>
     <string name="messages">Messages</string>
     <string name="pages">Pages</string>

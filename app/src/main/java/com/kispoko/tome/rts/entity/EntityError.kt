@@ -3,14 +3,14 @@ package com.kispoko.tome.rts.entity
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.game.engine.function.FunctionId
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
-import com.kispoko.tome.model.game.engine.mechanic.MechanicId
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.program.ProgramId
-import com.kispoko.tome.model.game.engine.summation.SummationId
-import com.kispoko.tome.model.game.engine.value.ValueReference
-import com.kispoko.tome.model.game.engine.value.ValueSetId
+import com.kispoko.tome.model.engine.function.FunctionId
+import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
+import com.kispoko.tome.model.engine.mechanic.MechanicId
+import com.kispoko.tome.model.engine.procedure.ProcedureId
+import com.kispoko.tome.model.engine.program.ProgramId
+import com.kispoko.tome.model.engine.summation.SummationId
+import com.kispoko.tome.model.engine.value.ValueReference
+import com.kispoko.tome.model.engine.value.ValueSetId
 
 
 /**

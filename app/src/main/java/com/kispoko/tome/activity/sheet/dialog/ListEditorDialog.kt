@@ -19,7 +19,7 @@ import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.value.*
+import com.kispoko.tome.model.engine.value.*
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -30,7 +30,6 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
-import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.rts.entity.valueSet
 import effect.Err

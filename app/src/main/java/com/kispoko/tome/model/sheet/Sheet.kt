@@ -20,9 +20,9 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.campaign.CampaignId
-import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.game.engine.variable.Variable
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.engine.Engine
+import com.kispoko.tome.model.engine.variable.Variable
+import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*

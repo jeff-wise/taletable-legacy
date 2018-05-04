@@ -22,9 +22,9 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Form
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.value.Value
-import com.kispoko.tome.model.game.engine.value.ValueSet
-import com.kispoko.tome.model.game.engine.value.ValueSetId
+import com.kispoko.tome.model.engine.value.Value
+import com.kispoko.tome.model.engine.value.ValueSet
+import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
 import com.kispoko.tome.rts.entity.game.GameManager

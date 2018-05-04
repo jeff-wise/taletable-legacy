@@ -17,7 +17,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.dice.*
+import com.kispoko.tome.model.engine.dice.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme

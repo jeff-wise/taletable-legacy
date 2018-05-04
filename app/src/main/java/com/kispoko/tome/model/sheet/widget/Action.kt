@@ -13,8 +13,8 @@ import com.kispoko.tome.lib.orm.sql.SQLInt
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
+import com.kispoko.tome.model.engine.dice.DiceRollGroup
+import com.kispoko.tome.model.engine.procedure.ProcedureId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType

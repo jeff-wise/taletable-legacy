@@ -1,0 +1,27 @@
+
+---
+
+version: '0.7'
+metadata:
+  name: Group Index
+  authors:
+  - name: 'Jeff Wise'
+description:
+  overview: >
+    A group index...
+root_type: group_index
+types:
+- type: product_type
+  product_type: 
+    name: group_index  
+    label: Group Index
+    description: A collection of groups.
+    group: Group Index
+    fields:
+    - name: groups
+      type:
+        type: custom_coll_type
+        custom_coll_type: group
+      presence: required
+      description: The groups.
+constraints:

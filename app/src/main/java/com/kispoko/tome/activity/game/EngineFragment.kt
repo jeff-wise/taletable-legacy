@@ -19,7 +19,7 @@ import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme

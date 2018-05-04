@@ -18,10 +18,10 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.dice.DiceRoll
-import com.kispoko.tome.model.game.engine.dice.DiceRollGroup
-import com.kispoko.tome.model.game.engine.dice.RollPartSummary
-import com.kispoko.tome.model.game.engine.dice.RollSummary
+import com.kispoko.tome.model.engine.dice.DiceRoll
+import com.kispoko.tome.model.engine.dice.DiceRollGroup
+import com.kispoko.tome.model.engine.dice.RollPartSummary
+import com.kispoko.tome.model.engine.dice.RollSummary
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme

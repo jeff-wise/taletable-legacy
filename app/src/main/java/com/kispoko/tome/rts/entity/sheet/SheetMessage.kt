@@ -2,7 +2,7 @@
 package com.kispoko.tome.rts.entity.sheet
 
 
-import com.kispoko.tome.model.game.engine.procedure.ProcedureInvocation
+import com.kispoko.tome.model.engine.procedure.ProcedureInvocation
 import java.io.Serializable
 
 

@@ -22,8 +22,8 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Form
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.function.Function
-import com.kispoko.tome.model.game.engine.function.FunctionId
+import com.kispoko.tome.model.engine.function.Function
+import com.kispoko.tome.model.engine.function.FunctionId
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager

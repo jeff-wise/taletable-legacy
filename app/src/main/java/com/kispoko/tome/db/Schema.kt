@@ -9,25 +9,23 @@ import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.campaign.CampaignName
 import com.kispoko.tome.model.campaign.CampaignSummary
 import com.kispoko.tome.model.game.*
-import com.kispoko.tome.model.game.engine.*
-import com.kispoko.tome.model.game.engine.dice.*
-import com.kispoko.tome.model.game.engine.function.*
-import com.kispoko.tome.model.game.engine.function.Function
-import com.kispoko.tome.model.game.engine.mechanic.*
-import com.kispoko.tome.model.game.engine.message.*
-import com.kispoko.tome.model.game.engine.procedure.*
-import com.kispoko.tome.model.game.engine.program.*
-import com.kispoko.tome.model.game.engine.reference.BooleanReference
-import com.kispoko.tome.model.game.engine.reference.DiceRollReference
-import com.kispoko.tome.model.game.engine.reference.NumberReference
-import com.kispoko.tome.model.game.engine.summation.Summation
-import com.kispoko.tome.model.game.engine.summation.SummationId
-import com.kispoko.tome.model.game.engine.summation.SummationName
-import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
-import com.kispoko.tome.model.game.engine.summation.term.TermName
-import com.kispoko.tome.model.game.engine.value.*
-import com.kispoko.tome.model.game.engine.variable.*
-import com.kispoko.tome.model.game.engine.variable.constraint.NumberConstraint
+import com.kispoko.tome.model.engine.*
+import com.kispoko.tome.model.engine.dice.*
+import com.kispoko.tome.model.engine.function.*
+import com.kispoko.tome.model.engine.function.Function
+import com.kispoko.tome.model.engine.mechanic.*
+import com.kispoko.tome.model.engine.message.*
+import com.kispoko.tome.model.engine.procedure.*
+import com.kispoko.tome.model.engine.program.*
+import com.kispoko.tome.model.engine.reference.BooleanReference
+import com.kispoko.tome.model.engine.reference.NumberReference
+import com.kispoko.tome.model.engine.summation.Summation
+import com.kispoko.tome.model.engine.summation.SummationId
+import com.kispoko.tome.model.engine.summation.SummationName
+import com.kispoko.tome.model.engine.summation.term.TermName
+import com.kispoko.tome.model.engine.value.*
+import com.kispoko.tome.model.engine.variable.*
+import com.kispoko.tome.model.engine.constraint.ConstraintNumber
 import com.kispoko.tome.model.sheet.Settings
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.SheetName
@@ -694,17 +692,15 @@ typealias DB_ProgramParameterBooleanValue =
 // ---------------------------------------------------------------------------------------------
 
 val programParameterNumberTable =
-    Table5("program_parameter_number",
+    Table4("program_parameter_number",
            "name",
            "default_value",
-           "constraint",
            "label",
            "input_message")
 
 typealias DB_ProgramParameterNumberValue =
-    RowValue5<PrimValue<ProgramParameterName>,
+    RowValue4<PrimValue<ProgramParameterName>,
               MaybePrimValue<EngineValueNumber>,
-              MaybeSumValue<NumberConstraint>,
               PrimValue<ProgramParameterLabel>,
               ProdValue<Message>>
 

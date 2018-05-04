@@ -3,11 +3,11 @@ package com.kispoko.tome.rts.entity.engine.interpreter
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.game.engine.EngineValueType
-import com.kispoko.tome.model.game.engine.function.FunctionId
-import com.kispoko.tome.model.game.engine.function.FunctionParameters
-import com.kispoko.tome.model.game.engine.program.ProgramId
-import com.kispoko.tome.model.game.engine.program.ProgramParameterName
+import com.kispoko.tome.model.engine.EngineValueType
+import com.kispoko.tome.model.engine.function.FunctionId
+import com.kispoko.tome.model.engine.function.FunctionParameters
+import com.kispoko.tome.model.engine.program.ProgramId
+import com.kispoko.tome.model.engine.program.ProgramParameterName
 
 
 /**

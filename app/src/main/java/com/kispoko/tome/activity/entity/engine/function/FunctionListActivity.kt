@@ -26,7 +26,7 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.function.Function
+import com.kispoko.tome.model.engine.function.Function
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.rts.entity.game.GameManager

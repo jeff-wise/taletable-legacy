@@ -5,7 +5,7 @@ package com.kispoko.tome.rts.entity.game
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppGameError
 import com.kispoko.tome.model.game.*
-import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.official.*
 import effect.*
 import kotlinx.coroutines.experimental.android.UI

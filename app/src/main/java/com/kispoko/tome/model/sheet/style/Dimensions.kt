@@ -3,9 +3,9 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.lib.orm.sql.*
-import com.kispoko.tome.model.game.engine.variable.BooleanVariableLiteralValue
-import com.kispoko.tome.model.game.engine.variable.BooleanVariableProgramValue
-import com.kispoko.tome.model.game.engine.variable.BooleanVariableValue
+import com.kispoko.tome.model.engine.variable.BooleanVariableLiteralValue
+import com.kispoko.tome.model.engine.variable.BooleanVariableProgramValue
+import com.kispoko.tome.model.engine.variable.BooleanVariableValue
 import effect.effError
 import effect.effValue
 import lulo.document.*

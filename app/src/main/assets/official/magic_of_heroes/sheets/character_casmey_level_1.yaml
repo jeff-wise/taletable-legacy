@@ -11,6 +11,46 @@ engine:
   functions:
   programs:
   procedures:
+  tasks:
+  - title: Expertise
+    description: >-
+      Choose two of your skill proficiencies, or one of your skill proficiencies and your
+      proficiency with thieves’ tools. Your proficiency bonus is doubled for any ability check
+      you make that uses either of the chosen proficiencies.
+    action:
+      type: task_action_toggle_variables
+      task_action_toggle_variables:
+        variable_ids:
+    trigger:
+      type: task_trigger_and
+      task_trigger_and:
+        triggers:
+        - type: task_trigger_state
+          task_trigger_state:
+            variable_reference:
+              type: variable_id
+              variable_id: level
+            constraint:
+              type: constraint_number
+              constraint_number:
+                type: number_constraint_equal_to
+                number_constraint_equal_to:
+                  equal_to:
+                    type: number_literal
+                    number_literal: 1
+        - type: task_trigger_state
+          task_trigger_state:
+            variable_reference:
+              type: variable_id
+              variable_id: class
+            constraint:
+              type: constraint_text
+              constraint_text:
+                type: text_constraint_equal_to
+                text_constraint_equal_to:
+                  equal_to:
+                    type: text_literal
+                    text_literal: 'Rogue'
   summations:
   - summation_id: weapon_rapier_attack_roll
     summation_name: Rapier Attack Roll
@@ -166,7 +206,7 @@ variables:
           text_literal: classes
         value_id:
           type: text_literal
-          text_literal: fighter
+          text_literal: rogue
 - type: variable_text
   variable_text:
     id: deity

@@ -22,7 +22,7 @@ import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.TableWidget

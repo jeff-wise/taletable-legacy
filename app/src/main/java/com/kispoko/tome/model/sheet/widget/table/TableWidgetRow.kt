@@ -28,7 +28,7 @@ import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.engine.variable.VariableNamespace
+import com.kispoko.tome.model.engine.variable.VariableNamespace
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget

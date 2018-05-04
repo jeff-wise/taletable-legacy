@@ -13,7 +13,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.model.game.engine.variable.NumberVariable;
+import com.kispoko.tome.model.engine.variable.NumberVariable;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;

@@ -22,8 +22,8 @@ import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TableLayoutBuilder;
 import com.kispoko.tome.lib.ui.TableRowBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.model.game.engine.function.Function;
-import com.kispoko.tome.model.game.engine.function.Tuple;
+import com.kispoko.tome.model.engine.function.Function;
+import com.kispoko.tome.model.engine.function.Tuple;
 import com.kispoko.tome.util.UI;
 
 

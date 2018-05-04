@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.game.engine.variable.VariableReference;
+import com.kispoko.tome.model.engine.variable.VariableReference;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;

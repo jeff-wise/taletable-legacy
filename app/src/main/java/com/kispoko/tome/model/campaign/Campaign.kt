@@ -14,7 +14,7 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.Engine
+import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.entity.*
 import effect.apply

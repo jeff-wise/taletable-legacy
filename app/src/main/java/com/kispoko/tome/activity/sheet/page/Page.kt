@@ -170,38 +170,3 @@ class PageFragment : Fragment()
 
 }
 
-
-class PageScrollView(context : Context) : ScrollView(context)
-{
-
-    override fun onInterceptTouchEvent(ev: MotionEvent?) : Boolean
-    {
-        if (ev != null)
-        {
-            Log.d("***PAGE", ev.action.toString())
-            when (ev.action)
-            {
-                MotionEvent.ACTION_UP ->
-                {
-                    Log.d("***PAGE", "page action up")
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                }
-                MotionEvent.ACTION_OUTSIDE ->
-                {
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                }
-                MotionEvent.ACTION_SCROLL ->
-                {
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                }
-                MotionEvent.ACTION_CANCEL ->
-                {
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                }
-            }
-        }
-        return false
-    }
-
-
-}

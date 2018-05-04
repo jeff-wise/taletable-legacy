@@ -16,9 +16,9 @@ import com.kispoko.tome.R
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.summation.Summation
-import com.kispoko.tome.model.game.engine.summation.SummationId
-import com.kispoko.tome.model.game.engine.summation.term.TermSummary
+import com.kispoko.tome.model.engine.summation.Summation
+import com.kispoko.tome.model.engine.summation.SummationId
+import com.kispoko.tome.model.engine.summation.term.TermSummary
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.router.MessageUpdateSummationNumberTerm

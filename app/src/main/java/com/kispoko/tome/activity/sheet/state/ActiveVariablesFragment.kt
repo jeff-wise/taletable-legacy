@@ -18,7 +18,7 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle

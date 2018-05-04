@@ -22,9 +22,9 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.mechanic.Mechanic
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryId
-import com.kispoko.tome.model.game.engine.mechanic.MechanicType
+import com.kispoko.tome.model.engine.mechanic.Mechanic
+import com.kispoko.tome.model.engine.mechanic.MechanicCategoryId
+import com.kispoko.tome.model.engine.mechanic.MechanicType
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.activeMechanicsInCategory

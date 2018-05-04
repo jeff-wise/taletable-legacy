@@ -16,8 +16,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.EngineValueText
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.engine.EngineValueText
+import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme

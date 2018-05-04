@@ -24,8 +24,8 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.value.ValueSet
-import com.kispoko.tome.model.game.engine.value.ValueSetBase
+import com.kispoko.tome.model.engine.value.ValueSet
+import com.kispoko.tome.model.engine.value.ValueSetBase
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*

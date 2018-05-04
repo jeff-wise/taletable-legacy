@@ -4,8 +4,8 @@ package com.kispoko.tome.rts.entity.sheet
 
 import com.kispoko.tome.app.ApplicationEvent
 import com.kispoko.tome.app.EventTypeSheetUpdate
-import com.kispoko.tome.model.game.engine.value.ValueId
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.engine.value.ValueId
+import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.Widget

@@ -19,7 +19,7 @@ import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.R.string.value
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle

@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.game.engine.program.Program;
+import com.kispoko.tome.model.engine.program.Program;
 import com.kispoko.tome.util.UI;
 
 import java.util.Dictionary;

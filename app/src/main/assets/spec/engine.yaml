@@ -123,6 +123,12 @@ types:
       presence: required
       description: >
         Procedures... TODO
+    - name: tasks
+      type:
+        type: custom_coll_type
+        custom_coll_type: task
+      presence: required
+      description: Tasks
     code_examples:
     - language: YAML
       title: 'An engine with some basic components.'
@@ -1963,6 +1969,69 @@ types:
       description: Relation name
 - type: sum_type
   sum_type:
+    name: constraint
+    label: Constraint
+    description: Constraint.
+    group: 'Constraint'
+    cases: 
+    - type: constraint_and
+      description: A conjunction constraint.
+    - type: constraint_or
+      description: A disjunction constraint.
+    - type: constraint_number
+      description: A numeric constraint.
+    - type: constraint_text
+      description: A text constraint.
+- type: product_type
+  product_type:
+    name: constraint_and
+    label: And constraint.
+    description: And constraint
+    group: 'Constraint'
+    fields:
+    - name: constraints
+      type: 
+        type: custom_coll_type
+        custom_coll_type: constraint
+      presence: required
+      description: Constraint
+- type: product_type
+  product_type:
+    name: constraint_or
+    label: Or constraint.
+    description: Or constraint
+    group: 'Constraint'
+    fields:
+    - name: constraints
+      type: 
+        type: custom_coll_type
+        custom_coll_type: constraint
+      presence: required
+      description: Constraint
+- type: sum_type
+  sum_type:
+    name: constraint_text
+    label: Text Constraint
+    description: A text constraint.
+    group: 'Constraint'
+    cases: 
+    - type: text_constraint_equal_to
+      description: Equal to.
+- type: product_type
+  product_type:
+    name: text_constraint_equal_to
+    label: Equal to constraint.
+    description: A text constraint.
+    group: 'Constraint: Text'
+    fields:
+    - name: equal_to
+      type: 
+        type: custom_type
+        custom_type: data_reference_text
+      presence: required
+      description: Equal to value.
+- type: sum_type
+  sum_type:
     name: constraint_number
     label: Number Constraint
     description: A number constraint.
@@ -1970,12 +2039,27 @@ types:
     cases: 
     - type: number_constraint_range
       description: A range.
+    - type: number_constraint_equal_to
+      description: Equal to.
+- type: product_type
+  product_type:
+    name: number_constraint_equal_to
+    label: Equal to constraint.
+    description: A number constraint.
+    group: 'Constraint: Number'
+    fields:
+    - name: equal_to
+      type: 
+        type: custom_type
+        custom_type: data_reference_number
+      presence: required
+      description: Equal to value.
 - type: product_type
   product_type:
     name: number_constraint_range
     label: Range constraint.
     description: A number constraint.
-    group: 'Constraint'
+    group: 'Constraint: Number'
     fields:
     - name: min
       type: 
@@ -2439,6 +2523,117 @@ types:
         custom_type: formula_modifier
       presence: required
       description: The formula modifier.
+- type: product_type
+  product_type:
+    name: task
+    label: Task
+    description: Task
+    group: Task
+    fields:
+    - name: title
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Task title.
+    - name: description
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Task description.
+    - name: action
+      type: 
+        type: custom_type
+        custom_type: task_action
+      presence: required
+      description: Task description.
+    - name: trigger
+      type: 
+        type: custom_type
+        custom_type: task_trigger
+      presence: required
+      description: Task trigger.
+- type: sum_type
+  sum_type:
+    name: task_action
+    label: Task Action
+    description: Task action
+    group: Value
+    cases:
+    - type: task_action_toggle_variables
+      description: Toggle variables
+- type: product_type
+  product_type:
+    name: task_action_toggle_variables
+    label: 'Task Action: Toggle Variables'
+    description: Toggle variables.
+    group: Value
+    fields:
+    - name: variable_ids
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable_id
+      presence: required
+      description: The boolean variables.
+- type: sum_type
+  sum_type:
+    name: task_trigger
+    label: Task Trigger
+    description: Task trigger
+    group: Value
+    cases:
+    - type: task_trigger_state
+      description: State trigger
+    - type: task_trigger_and
+      description: And trigger
+    - type: task_trigger_or
+      description: Or trigger
+- type: product_type
+  product_type:
+    name: task_trigger_state
+    label: 'Task Trigger: State'
+    description: State trigger
+    group: 'Trigger'
+    fields:
+    - name: variable_reference
+      type: 
+        type: custom_type
+        custom_type: variable_reference
+      presence: required
+      description: Variable reference
+    - name: constraint
+      type: 
+        type: custom_type
+        custom_type: constraint
+      presence: required
+      description: Constraint
+- type: product_type
+  product_type:
+    name: task_trigger_and
+    label: 'Task Trigger: And'
+    description: And trigger
+    group: 'Trigger'
+    fields:
+    - name: triggers
+      type: 
+        type: custom_coll_type
+        custom_coll_type: task_trigger
+      presence: required
+      description: Triggers
+- type: product_type
+  product_type:
+    name: task_trigger_or
+    label: 'Task Trigger: Or'
+    description: Or trigger
+    group: 'Trigger'
+    fields:
+    - name: triggers
+      type: 
+        type: custom_coll_type
+        custom_coll_type: task_trigger
+      presence: required
+      description: Triggers
 - type: product_type
   product_type:
     name: value_reference

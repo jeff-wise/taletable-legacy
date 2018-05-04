@@ -14,9 +14,9 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.procedure.Procedure
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.procedure.ProcedureInvocation
+import com.kispoko.tome.model.engine.procedure.Procedure
+import com.kispoko.tome.model.engine.procedure.ProcedureId
+import com.kispoko.tome.model.engine.procedure.ProcedureInvocation
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle

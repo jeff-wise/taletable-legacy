@@ -11,6 +11,7 @@ settings:
   theme_id: light
 engine:
   value_sets:
+  tasks:
   mechanics:
   mechanic_categories:
   functions:

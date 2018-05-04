@@ -4,10 +4,10 @@ package com.kispoko.tome.rts.entity.sheet
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
-import com.kispoko.tome.model.game.engine.*
-import com.kispoko.tome.model.game.engine.dice.DiceRoll
-import com.kispoko.tome.model.game.engine.reference.*
-import com.kispoko.tome.model.game.engine.variable.VariableNamespace
+import com.kispoko.tome.model.engine.*
+import com.kispoko.tome.model.engine.dice.DiceRoll
+import com.kispoko.tome.model.engine.reference.*
+import com.kispoko.tome.model.engine.variable.VariableNamespace
 import com.kispoko.tome.rts.entity.*
 import effect.*
 import maybe.Just

@@ -6,8 +6,8 @@ import android.content.Context
 import com.kispoko.tome.activity.entity.engine.summation.SummationDialog
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.model.game.engine.value.ValueId
-import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.engine.value.ValueId
+import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.sheet.UpdateTarget

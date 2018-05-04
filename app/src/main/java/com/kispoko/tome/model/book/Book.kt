@@ -13,8 +13,8 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.Author
-import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.engine.Engine
+import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat

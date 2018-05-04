@@ -5,7 +5,7 @@ package com.kispoko.tome.rts.entity
 import android.graphics.Color
 import android.util.Log
 import com.kispoko.culebra.*
-import com.kispoko.tome.R.string.mechanics
+import com.kispoko.tome.R.string.tasks
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookId
@@ -13,23 +13,24 @@ import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.Engine
-import com.kispoko.tome.model.game.engine.EngineValue
-import com.kispoko.tome.model.game.engine.function.Function
-import com.kispoko.tome.model.game.engine.function.FunctionId
-import com.kispoko.tome.model.game.engine.mechanic.Mechanic
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
-import com.kispoko.tome.model.game.engine.mechanic.MechanicId
-import com.kispoko.tome.model.game.engine.procedure.Procedure
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.program.Program
-import com.kispoko.tome.model.game.engine.program.ProgramId
-import com.kispoko.tome.model.game.engine.reference.TextReference
-import com.kispoko.tome.model.game.engine.summation.Summation
-import com.kispoko.tome.model.game.engine.summation.SummationId
-import com.kispoko.tome.model.game.engine.value.*
-import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.engine.Engine
+import com.kispoko.tome.model.engine.EngineValue
+import com.kispoko.tome.model.engine.function.Function
+import com.kispoko.tome.model.engine.function.FunctionId
+import com.kispoko.tome.model.engine.mechanic.Mechanic
+import com.kispoko.tome.model.engine.mechanic.MechanicCategory
+import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
+import com.kispoko.tome.model.engine.mechanic.MechanicId
+import com.kispoko.tome.model.engine.procedure.Procedure
+import com.kispoko.tome.model.engine.procedure.ProcedureId
+import com.kispoko.tome.model.engine.program.Program
+import com.kispoko.tome.model.engine.program.ProgramId
+import com.kispoko.tome.model.engine.reference.TextReference
+import com.kispoko.tome.model.engine.summation.Summation
+import com.kispoko.tome.model.engine.summation.SummationId
+import com.kispoko.tome.model.engine.task.Task
+import com.kispoko.tome.model.engine.value.*
+import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.Group
@@ -176,7 +177,7 @@ fun book(bookId : BookId) : Maybe<Book>
 fun addSheet(sheet : Sheet)
 {
     val entityId = EntitySheetId(sheet.sheetId())
-    val engineState = EntityState(entityId, listOf())
+    val engineState = EntityState(entityId, mutableListOf(), mutableListOf())
     val sheetRecord = EntitySheetRecord(sheet, engineState, Just(sheet.settings().themeId()))
 
     entityRecordById.put(entityId, sheetRecord)
@@ -186,7 +187,7 @@ fun addSheet(sheet : Sheet)
 fun addCampaign(campaign : Campaign)
 {
     val entityId = EntityCampaignId(campaign.campaignId())
-    val engineState = EntityState(entityId, listOf())
+    val engineState = EntityState(entityId, mutableListOf(), mutableListOf())
     val campaignRecord = EntityCampaignRecord(campaign, engineState, Nothing())
 
     entityRecordById.put(entityId, campaignRecord)
@@ -196,7 +197,7 @@ fun addCampaign(campaign : Campaign)
 fun addGame(game : Game)
 {
     val entityId = EntityGameId(game.gameId())
-    val engineState = EntityState(entityId, listOf())
+    val engineState = EntityState(entityId, mutableListOf(), mutableListOf())
     val gameRecord = EntityGameRecord(game, engineState, Nothing())
 
     entityRecordById.put(entityId, gameRecord)
@@ -206,7 +207,7 @@ fun addGame(game : Game)
 fun addBook(book : Book)
 {
     val entityId = EntityBookId(book.bookId())
-    val entityState = EntityState(entityId, listOf())
+    val entityState = EntityState(entityId, mutableListOf(), mutableListOf())
     val bookRecord = EntityBookRecord(book, entityState, Just(book.settings().themeId()))
 
     book.variables().forEach {
@@ -231,10 +232,15 @@ fun initialize(entityId : EntityId) = when (entityId)
 fun initializeSheet(sheetId : SheetId)
 {
     val entityId = EntitySheetId(sheetId)
+
     entityEngineState(entityId) apDo { entityState ->
-    mechanics(entityId)         apDo { mechanicSet ->
-        entityState.setMechanics(mechanicSet.toList())
-    } }
+        mechanics(entityId) apDo { mechanicSet ->
+            entityState.setMechanics(mechanicSet.toList())
+        }
+        tasks(entityId)     apDo { taskSet ->
+            entityState.setTasks(taskSet.toList())
+        }
+    }
 }
 
 
@@ -455,6 +461,27 @@ fun summation(summationId : SummationId, entityId : EntityId) : AppEff<Summation
             return effError(AppEntityError(EntityDoesNotHaveSummation(entityId, summationId)))
         }
         is Err -> return engines as AppEff<Summation>
+    }
+}
+
+
+// Engine > Task
+// ---------------------------------------------------------------------------------------------
+
+fun tasks(entityId : EntityId) : AppEff<Set<Task>>
+{
+    val engines = entityEngines(entityId)
+    val _tasks : MutableSet<Task> = mutableSetOf()
+
+    return when (engines)
+    {
+        is Val -> {
+            engines.value.forEach {
+                _tasks.addAll(it.tasks())
+            }
+            return effValue(_tasks)
+        }
+        is Err -> return engines as AppEff<Set<Task>>
     }
 }
 

@@ -4,7 +4,6 @@ package com.kispoko.tome.activity.sheet
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -25,10 +24,11 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.engine.procedure.ProcedureUpdateDialog
 import com.kispoko.tome.activity.session.SessionActivity
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
+import com.kispoko.tome.activity.sheet.task.TaskPagerAdapter
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.variable.TextVariable
-import com.kispoko.tome.model.game.engine.variable.Variable
-import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.engine.variable.TextVariable
+import com.kispoko.tome.model.engine.variable.Variable
+import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
@@ -91,7 +91,7 @@ class SheetActivity : AppCompatActivity()
     // STATE > Views
     // -----------------------------------------------------------------------------------------
 
-    private var pagePagerAdapter : PagePagerAdapter?   = null
+    var pagePagerAdapter : PagePagerAdapter?   = null
     private var viewPager : ViewPager? = null
 //    private var bottomNavigation : AHBottomNavigation? = null
 
@@ -259,7 +259,7 @@ class SheetActivity : AppCompatActivity()
 
         this.pagePagerAdapter = pagePagerAdapter
 
-        this.viewPager = this.findViewById<ViewPager>(R.id.page_pager)
+        this.viewPager = this.findViewById<ViewPager>(R.id.view_pager)
 //        this.viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
 
         this.bottomSheet = this.findViewById<FrameLayout>(R.id.bottom_sheet)
@@ -296,10 +296,13 @@ class SheetActivity : AppCompatActivity()
 //            this.startActivity(intent)
 //        }
 
-
         val toolbarContentLayout = this.findViewById<LinearLayout>(R.id.toolbar_content)
-        val mainTabBarUI = MainTabBarUI(officialThemeLight, this)
-        toolbarContentLayout?.addView(mainTabBarUI.view())
+
+
+        this.sheetId?.let {
+            val mainTabBarUI = MainTabBarUI(it, officialThemeLight, this)
+            toolbarContentLayout?.addView(mainTabBarUI.view())
+        }
     }
 
 
@@ -478,26 +481,9 @@ class SheetActivity : AppCompatActivity()
             pagePagerAdatper().setPages(section.pages(), sheet.sheetId())
         }
 
-//        this.bottomSheet?.addView(tableActionBarBuilder.view())
-
-        if (this.bottomSheetBehavior == null)
-            Log.d("***SHEET ACTIVITY", "beahvior is null")
-
-//        this.bottomSheetBehavior?.peekHeight = 100
-        this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        this.bottomSheetBehavior?.peekHeight = 0
-
-        this.bottomSheetBehavior?.state = BottomSheetBehavior.PEEK_HEIGHT_AUTO
-
-
-
-//        val saveMenuUI = SaveMenuUI(this, officialThemeLight)
-//        this.bottomSheet?.removeAllViews()
-//        this.bottomSheet?.addView(saveMenuUI.view())
-
         val end = System.currentTimeMillis()
 
-        Log.d("***SHEETMAN", "time to render ms: " + (end - start).toString())
+        Log.d("***SHEET ACTIVITY", "time to render ms: " + (end - start).toString())
     }
 
 
@@ -526,8 +512,68 @@ class SheetActivity : AppCompatActivity()
 
 
 
-class MainTabBarUI(val theme : Theme, val context : Context)
+class MainTabBarUI(val sheetId : SheetId,
+                   val theme : Theme,
+                   val sheetActivity : SheetActivity)
 {
+
+    val context = sheetActivity
+
+    val entityId = EntitySheetId(sheetId)
+
+
+    var pagesTabLayoutView   : LinearLayout? = null
+    var pagesTabTextView     : TextView? = null
+    var tasksTabLayoutView   : LinearLayout? = null
+    var tasksTabTextView     : TextView? = null
+    var historyTabLayoutView : LinearLayout? = null
+    var historyTabTextView   : TextView? = null
+
+
+    val bgNormalColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+
+
+    val bgSelectedColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+
+
+    val selectedColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+
+    val normalColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+
+
+    private fun setSelectedTab(tabIndex : Int)
+    {
+        when (tabIndex)
+        {
+            1 -> {
+                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+
+                pagesTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
+                tasksTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                historyTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+            }
+            2 -> {
+                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+
+                pagesTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                tasksTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
+                historyTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+            }
+        }
+
+    }
 
 
     fun view() : View
@@ -535,13 +581,34 @@ class MainTabBarUI(val theme : Theme, val context : Context)
         val layout = this.viewLayout()
 
         // Pages
-        layout.addView(this.buttonView(R.string.pages, true))
+        val pagesOnClick = View.OnClickListener {
+            sheetActivity.findViewById<View>(R.id.tab_layout)?.visibility = View.VISIBLE
+            val viewPager = sheetActivity.findViewById<View>(R.id.view_pager) as ViewPager?
+            viewPager?.adapter = sheetActivity.pagePagerAdapter
+            this.setSelectedTab(1)
+        }
+        val pagesTabView = this.buttonView(R.string.pages, 1, pagesOnClick)
+        this.pagesTabLayoutView = pagesTabView
+        layout.addView(pagesTabView)
 
         // Tasks
-        layout.addView(this.buttonView(R.string.tasks, false))
+        val tasksOnClick = View.OnClickListener {
+            sheetActivity.findViewById<View>(R.id.tab_layout)?.visibility = View.GONE
+            val viewPager = sheetActivity.findViewById<View>(R.id.view_pager) as ViewPager?
+            viewPager?.adapter = TaskPagerAdapter(sheetActivity.supportFragmentManager, sheetId)
+            this.setSelectedTab(2)
+        }
+        val tasksTabView = this.buttonView(R.string.tasks, 2, tasksOnClick)
+        this.tasksTabLayoutView = tasksTabView
+        layout.addView(tasksTabView)
 
         // History
-        layout.addView(this.buttonView(R.string.history, false))
+        val historyOnClick = View.OnClickListener {  }
+        val historyTabView = this.buttonView(R.string.history, 3, historyOnClick)
+        this.historyTabLayoutView = historyTabView
+        layout.addView(historyTabView)
+
+        this.setSelectedTab(1)
 
         return layout
     }
@@ -566,17 +633,28 @@ class MainTabBarUI(val theme : Theme, val context : Context)
 
 
 
-    private fun buttonView(labelStringId : Int, isSelected : Boolean) : LinearLayout
+    private fun buttonView(labelStringId : Int,
+                           index : Int,
+                           onClick : View.OnClickListener) : LinearLayout
     {
-        val layout = this.buttonViewLayout(isSelected)
+        val layout = this.buttonViewLayout()
 
-        layout.addView(this.buttonLabelView(labelStringId, isSelected))
+        val labelView = this.buttonLabelView(labelStringId)
+        when (index) {
+            1 -> this.pagesTabTextView = labelView
+            2 -> this.tasksTabTextView = labelView
+            3 -> this.historyTabTextView = labelView
+        }
+
+        layout.addView(labelView)
+
+        layout.setOnClickListener(onClick)
 
         return layout
     }
 
 
-    private fun buttonViewLayout(isSelected : Boolean) : LinearLayout
+    private fun buttonViewLayout() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -586,30 +664,14 @@ class MainTabBarUI(val theme : Theme, val context : Context)
 
         layout.gravity          = Gravity.CENTER
 
-        val bgNormalColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
-
-        val bgSelectedColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-
-        if (isSelected)
-            layout.backgroundColor  = theme.colorOrBlack(bgSelectedColorTheme)
-        else
-            layout.backgroundColor  = theme.colorOrBlack(bgNormalColorTheme)
-
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
-
-//        layout.margin.leftDp    = 1f
-//        layout.margin.rightDp   = 1f
 
         return layout.linearLayout(context)
     }
 
 
-    private fun buttonLabelView(labelId : Int, isSelected : Boolean) : TextView
+    private fun buttonLabelView(labelId : Int) : TextView
     {
         val label                   = TextViewBuilder()
 
@@ -619,19 +681,6 @@ class MainTabBarUI(val theme : Theme, val context : Context)
         label.text                  = context.getString(labelId).toUpperCase()
 
         label.gravity               = Gravity.CENTER
-
-        val normalColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-
-//        val selectedColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-
-        if (isSelected)
-            label.color             = theme.colorOrBlack(normalColorTheme)
-        else
-            label.color             = Color.WHITE
 
         label.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.SemiBold,

@@ -31,9 +31,9 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.CustomTypefaceSpan
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.engine.reference.TextReferenceLiteral
-import com.kispoko.tome.model.game.engine.value.ValueReference
-import com.kispoko.tome.model.game.engine.value.ValueSetId
+import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
+import com.kispoko.tome.model.engine.value.ValueReference
+import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack

@@ -3,16 +3,16 @@ package com.kispoko.tome.rts.entity.engine
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.game.engine.function.FunctionId
-import com.kispoko.tome.model.game.engine.mechanic.MechanicCategoryReference
-import com.kispoko.tome.model.game.engine.mechanic.MechanicId
-import com.kispoko.tome.model.game.engine.procedure.ProcedureId
-import com.kispoko.tome.model.game.engine.program.ProgramId
-import com.kispoko.tome.model.game.engine.reference.TextReference
-import com.kispoko.tome.model.game.engine.summation.SummationId
-import com.kispoko.tome.model.game.engine.value.ValueId
-import com.kispoko.tome.model.game.engine.value.ValueSetId
-import com.kispoko.tome.model.game.engine.value.ValueType
+import com.kispoko.tome.model.engine.function.FunctionId
+import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
+import com.kispoko.tome.model.engine.mechanic.MechanicId
+import com.kispoko.tome.model.engine.procedure.ProcedureId
+import com.kispoko.tome.model.engine.program.ProgramId
+import com.kispoko.tome.model.engine.reference.TextReference
+import com.kispoko.tome.model.engine.summation.SummationId
+import com.kispoko.tome.model.engine.value.ValueId
+import com.kispoko.tome.model.engine.value.ValueSetId
+import com.kispoko.tome.model.engine.value.ValueType
 
 
 

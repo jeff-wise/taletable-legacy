@@ -4,10 +4,10 @@ package com.kispoko.tome.rts.entity.sheet
 
 import com.kispoko.tome.app.ApplicationEvent
 import com.kispoko.tome.app.EventTypeState
-import com.kispoko.tome.model.game.engine.mechanic.MechanicId
-import com.kispoko.tome.model.game.engine.variable.VariableId
-import com.kispoko.tome.model.game.engine.variable.VariableRelation
-import com.kispoko.tome.model.game.engine.variable.VariableTag
+import com.kispoko.tome.model.engine.mechanic.MechanicId
+import com.kispoko.tome.model.engine.variable.VariableId
+import com.kispoko.tome.model.engine.variable.VariableRelation
+import com.kispoko.tome.model.engine.variable.VariableTag
 
 
 

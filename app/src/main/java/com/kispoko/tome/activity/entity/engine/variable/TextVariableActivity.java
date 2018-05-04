@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.game.engine.variable.TextVariable;
+import com.kispoko.tome.model.engine.variable.TextVariable;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 

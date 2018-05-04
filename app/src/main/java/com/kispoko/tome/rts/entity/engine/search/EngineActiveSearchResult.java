@@ -2,7 +2,7 @@
 package com.kispoko.tome.rts.entity.engine.search;
 
 
-import com.kispoko.tome.model.game.engine.mechanic.ActiveMechanicSearchResult;
+import com.kispoko.tome.model.engine.mechanic.ActiveMechanicSearchResult;
 import com.kispoko.tome.rts.entity.engine.ActiveVariableSearchResult;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;

@@ -5,7 +5,7 @@ package com.kispoko.tome.model.sheet.style
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.engine.dice.DiceRoll
 import com.kispoko.tome.util.Util
 import effect.effError
 import effect.effValue

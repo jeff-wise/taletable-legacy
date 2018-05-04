@@ -20,10 +20,10 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.engine.EngineValueBoolean
-import com.kispoko.tome.model.game.engine.mechanic.Mechanic
-import com.kispoko.tome.model.game.engine.mechanic.MechanicId
-import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.engine.EngineValueBoolean
+import com.kispoko.tome.model.engine.mechanic.Mechanic
+import com.kispoko.tome.model.engine.mechanic.MechanicId
+import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
