@@ -254,6 +254,7 @@ fun openTextListVariableEditorDialog(textListVariable : TextListVariable,
                     when (values) {
                         is Val -> {
                             val dialog = ListEditorDialog.newInstance(valueSetId.value,
+                                                                      textListVariable.setVariableId(),
                                                                       values.value.map { ValueId(it) },
                                                                       updateTarget,
                                                                       entityId)

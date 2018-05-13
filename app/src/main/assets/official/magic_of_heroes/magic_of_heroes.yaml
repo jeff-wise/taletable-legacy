@@ -3931,6 +3931,14 @@ engine:
           description: ''
           value: 'Unseen Servant'
           variables:
+  - type: value_set_compound
+    value_set_compound:
+      value_set_id: spells_wizard
+      label: Wizard Spells
+      label_singular: Wizard Spell
+      description: 'All wizard spells'
+      value_set_ids:
+      - spells_wizard_level_one
   - type: value_set_base
     value_set_base:
       value_set_id: light_armor

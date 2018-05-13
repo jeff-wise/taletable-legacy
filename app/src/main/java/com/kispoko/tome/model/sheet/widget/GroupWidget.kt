@@ -3,7 +3,6 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import android.content.Context
-import android.util.Log
 import android.widget.LinearLayout
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -143,9 +142,7 @@ class GroupWidgetUI(val groupWidget : WidgetGroup,
         val layout = this.viewLayout()
 
 
-        Log.d("***GROUP WIDGET", "rendering view")
         groupWidget.groups(entityId).forEach {
-            Log.d("***GROUP WIDGET", "group view")
             layout.addView(it.view(entityId, context))
         }
 

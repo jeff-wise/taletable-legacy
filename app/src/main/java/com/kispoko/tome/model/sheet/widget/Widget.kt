@@ -37,6 +37,7 @@ import com.kispoko.tome.model.engine.procedure.Procedure
 import com.kispoko.tome.model.engine.procedure.ProcedureId
 import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.engine.value.ValueReference
+import com.kispoko.tome.model.engine.value.ValueSetBase
 import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.group.Group
@@ -1401,6 +1402,17 @@ data class ListWidget(val widgetId : WidgetId,
             .apply { values ->
                 effValue<AppError,List<String>>(values.map { it.valueString() })
             }
+
+
+//    fun baseValueSets(entityId : EntityId) : List<ValueSetBase> =
+//        this.variable(entityId)
+//        .apply {
+//            note<AppError, ValueSetId>(it.valueSetId().toNullable(),
+//                    AppStateError(VariableDoesNotHaveValueSet(it.variableId())))
+//        }
+//        .apply {
+//            valueSet(it, entityId)
+//        }
 
 
     // -----------------------------------------------------------------------------------------

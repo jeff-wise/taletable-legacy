@@ -477,6 +477,29 @@ data class ValueSetCompound(override val id : UUID,
     }
 
 
+    fun valueAndValueSet(valueId : ValueId, entityId : EntityId) : AppEff<Pair<Value,ValueSet>>
+    {
+        val valueSets = this.valueSetIds().toList().mapM { valueSet(it, entityId) }
+
+        when (valueSets)
+        {
+            is Val ->
+            {
+                for (valueSet in valueSets.value) {
+                    val value = valueSet.value(valueId, entityId)
+                    when (value) {
+                        is Val -> return effValue(Pair(value.value, valueSet))
+                    }
+                }
+            }
+            is Err -> ApplicationLog.error(valueSets.error)
+        }
+
+        return effError(AppEngineError(ValueSetDoesNotContainValue(this.valueSetId(), valueId)))
+
+    }
+
+
     override fun numberValue(valueId : ValueId,
                              entityId : EntityId) : AppEff<ValueNumber> =
         this.value(valueId, entityId).apply { it.numberValue() }
@@ -503,6 +526,26 @@ data class ValueSetCompound(override val id : UUID,
             .mapM  { valueSet(it, entityId) }
             .apply { effValue<AppError,Set<ValueSet>>(it.toSet()) }
 
+
+
+    fun baseValueSets(entityId : EntityId) : Set<ValueSetBase>
+    {
+        val baseValueSets : MutableSet<ValueSetBase> = mutableSetOf()
+
+        this.valueSetIds.forEach {
+            valueSet(it, entityId).apDo {
+                when (it) {
+                    is ValueSetBase     -> baseValueSets.add(it)
+                    is ValueSetCompound -> {
+                        baseValueSets.addAll(it.baseValueSets(entityId))
+                    }
+                }
+
+            }
+        }
+
+        return baseValueSets
+    }
 
 }
 
@@ -575,7 +618,7 @@ data class ValueSetId(val value : String) : ToDocument, SQLSerializable, Seriali
 /**
  * ValueSet Label
  */
-data class ValueSetLabel(val value : String) : ToDocument, SQLSerializable, Serializable
+data class ValueSetLabel(val value : String) : ToDocument, SQLSerializable, Serializable, Comparable<ValueSetLabel>
 {
 
     // -----------------------------------------------------------------------------------------
@@ -597,6 +640,13 @@ data class ValueSetLabel(val value : String) : ToDocument, SQLSerializable, Seri
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // COMPARABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun compareTo(other : ValueSetLabel) : Int = this.value.compareTo(other.value)
 
 
     // -----------------------------------------------------------------------------------------

@@ -1442,7 +1442,8 @@ data class TextListVariable(override val id : UUID,
                             private val tags : MutableList<VariableTag>,
                             private val relation : Maybe<VariableRelation>,
                             var variableValue : TextListVariableValue,
-                            var valueSetId : Maybe<ValueSetId>)
+                            var valueSetId : Maybe<ValueSetId>,
+                            var setVariableId : Maybe<VariableId>)
                             : Variable()
 {
 
@@ -1460,7 +1461,8 @@ data class TextListVariable(override val id : UUID,
                 tags : List<VariableTag>,
                 relation : Maybe<VariableRelation>,
                 variableValue : TextListVariableValue,
-                valueSetId : Maybe<ValueSetId>)
+                valueSetId : Maybe<ValueSetId>,
+                setVariableId : Maybe<VariableId>)
         : this(UUID.randomUUID(),
                variableId,
                label,
@@ -1468,7 +1470,8 @@ data class TextListVariable(override val id : UUID,
                tags.toMutableList(),
                relation,
                variableValue,
-               valueSetId)
+               valueSetId,
+               setVariableId)
 
 
     companion object : Factory<TextListVariable>
@@ -1497,7 +1500,11 @@ data class TextListVariable(override val id : UUID,
                       // Value Set Id
                       split(doc.maybeAt("value_set_id"),
                             effValue<ValueError,Maybe<ValueSetId>>(Nothing()),
-                            { apply(::Just, ValueSetId.fromDocument(it)) } )
+                            { apply(::Just, ValueSetId.fromDocument(it)) } ),
+                      // Set Variable Id
+                      split(doc.maybeAt("set_variable_id"),
+                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                            { apply(::Just, VariableId.fromDocument(it)) } )
                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1553,6 +1560,9 @@ data class TextListVariable(override val id : UUID,
 
 
     fun valueSetId() : Maybe<ValueSetId> = this.valueSetId
+
+
+    fun setVariableId() : Maybe<VariableId> = this.setVariableId
 
 
     // -----------------------------------------------------------------------------------------

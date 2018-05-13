@@ -10,16 +10,16 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.*
 import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.engine.value.*
+import com.kispoko.tome.model.engine.variable.TextListVariable
+import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -31,10 +31,13 @@ import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.textListVariable
 import com.kispoko.tome.rts.entity.valueSet
 import effect.Err
 import maybe.Just
 import effect.Val
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 
 
@@ -49,10 +52,11 @@ class ListEditorDialog : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var valueSetId    : ValueSetId? = null
-    private var currentValues : List<ValueId> = listOf()
-    private var updateTarget  : UpdateTarget? = null
-    private var entityId      : EntityId? = null
+    private var valueSetId    : ValueSetId?       = null
+    private var setVariableId : Maybe<VariableId> = Nothing()
+    private var currentValues : List<ValueId>     =  listOf()
+    private var updateTarget  : UpdateTarget?     = null
+    private var entityId      : EntityId?         = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -62,6 +66,7 @@ class ListEditorDialog : DialogFragment()
     companion object
     {
         fun newInstance(valueSetId : ValueSetId,
+                        setVariableId : Maybe<VariableId>,
                         currentValues : List<ValueId>,
                         updateTarget : UpdateTarget,
                         entityId : EntityId) : ListEditorDialog
@@ -70,6 +75,7 @@ class ListEditorDialog : DialogFragment()
 
             val args = Bundle()
             args.putSerializable("value_set_id", valueSetId)
+            args.putSerializable("set_variable_id", setVariableId)
             args.putSerializable("current_values", currentValues as Serializable)
             args.putSerializable("update_target", updateTarget)
             args.putSerializable("entity_id", entityId)
@@ -90,6 +96,7 @@ class ListEditorDialog : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.valueSetId    = arguments.getSerializable("value_set_id") as ValueSetId
+        this.setVariableId = arguments.getSerializable("set_variable_id") as Maybe<VariableId>
         this.currentValues = arguments.getSerializable("current_values") as List<ValueId>
         this.updateTarget  = arguments.getSerializable("update_target") as UpdateTarget
         this.entityId      = arguments.getSerializable("entity_id") as EntityId
@@ -129,12 +136,13 @@ class ListEditorDialog : DialogFragment()
 
             return when (valueSet) {
                 is Val -> {
-                    val viewBuilder = ListEditorViewBuilder(valueSet.value,
-                                                            this.currentValues,
-                                                            updateTarget,
-                                                            this,
-                                                            entityId,
-                                                            context)
+                    val viewBuilder = ListEditorUI(valueSet.value,
+                                                   this.setVariableId,
+                                                   this.currentValues,
+                                                   updateTarget,
+                                                   this,
+                                                   entityId,
+                                                   context)
                     viewBuilder.view()
                 }
                 is Err -> {
@@ -169,19 +177,21 @@ class ListEditorDialog : DialogFragment()
 
 
 
-class ListEditorViewBuilder(val valueSet : ValueSet,
-                            val currentValues : List<ValueId>,
-                            val updateTarget : UpdateTarget,
-                            val dialog : ListEditorDialog,
-                            val entityId : EntityId,
-                            val context : Context)
+class ListEditorUI(val valueSet : ValueSet,
+                   val setVariableId : Maybe<VariableId>,
+                   val currentValues : List<ValueId>,
+                   val updateTarget : UpdateTarget,
+                   val dialog : ListEditorDialog,
+                   val entityId : EntityId,
+                   val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
     // -----------------------------------------------------------------------------------------
 
-    var adapter : ListEditorBaseValueSetRecyclerViewAdapter? = null
+    var baseAdapter : ListEditorBaseValueSetRecyclerViewAdapter? = null
+    var compoundAdapter : ListEditorCompoundValueSetRecyclerViewAdapter? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -251,6 +261,8 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
         return layout.linearLayout(context)
     }
@@ -343,7 +355,10 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
         layout.onClick = View.OnClickListener {
             when (updateTarget) {
                 is UpdateTargetListWidget -> {
-                    val valueStrings = this.adapter?.selectedValues?.map { it.value }
+                    val valueStrings = if (this.baseAdapter != null)
+                                            this.baseAdapter?.selectedValues?.map { it.value }
+                                       else
+                                            this.compoundAdapter?.selectedValues?.map { it.value }
                     val update = ListWidgetUpdateSetCurrentValue(
                                     updateTarget.listWidgetId,
                                     valueStrings ?: listOf())
@@ -394,15 +409,15 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
         {
             is ValueSetBase ->
             {
-                val adapter = ListEditorBaseValueSetRecyclerViewAdapter(
+                val baseAdapter = ListEditorBaseValueSetRecyclerViewAdapter(
                                                 valueSet.sortedValues(),
                                                 currentValues,
                                                 updateTarget,
                                                 dialog,
                                                 entityId,
                                                 context)
-                this.adapter = adapter
-                recyclerView.adapter = adapter
+                this.baseAdapter = baseAdapter
+                recyclerView.adapter = baseAdapter
             }
             is ValueSetCompound ->
             {
@@ -411,15 +426,38 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
                 {
                     is Val ->
                     {
-                        val items = valueSetIndexList(valueSets.value, entityId, context)
-                        recyclerView.adapter =
+                        var items : List<Any> = listOf()
+
+                        when (setVariableId)
+                        {
+                            is Just -> {
+                                val setVariable = textListVariable(setVariableId.value, entityId)
+                                items = when (setVariable) {
+                                    is Val -> {
+                                        variableValuesInSet(setVariable.value, valueSet)
+                                    }
+                                    is Err -> {
+                                        ApplicationLog.error(setVariable.error)
+                                        valueSetIndexList(valueSets.value, entityId)
+                                    }
+                                }
+
+                            }
+                            is Nothing -> {
+                                items = valueSetIndexList(valueSets.value, entityId)
+                            }
+                        }
+                        val compoundAdapter =
                                 ListEditorCompoundValueSetRecyclerViewAdapter(
-                                        items,
-                                        currentValues,
-                                        updateTarget,
-                                        dialog,
-                                        entityId,
-                                        context)
+                                                items,
+                                                currentValues,
+                                                updateTarget,
+                                                dialog,
+                                                entityId,
+                                                context)
+
+                        this.compoundAdapter = compoundAdapter
+                        recyclerView.adapter = compoundAdapter
                     }
                     is Err -> ApplicationLog.error(valueSets.error)
                 }
@@ -431,8 +469,7 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
 
 
     private fun valueSetIndexList(valueSets : Set<ValueSet>,
-                                  entityId : EntityId,
-                                  context : Context) : List<Any>
+                                  entityId : EntityId) : List<Any>
     {
         fun valueSetItems(valueSet : ValueSet) : List<Any>
         {
@@ -445,6 +482,35 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
 
         return valueSets.sortedBy { it.labelString() }
                         .flatMap(::valueSetItems)
+    }
+
+
+    private fun variableValuesInSet(textListVariable : TextListVariable,
+                                    valueSet : ValueSetCompound) : List<Any>
+    {
+        val valuesBySetId : MutableMap<ValueSetLabel,MutableSet<Value>> = mutableMapOf()
+
+        textListVariable.value(entityId).apDo {
+            it.forEach {
+                valueSet.valueAndValueSet(ValueId(it), entityId).apDo { (value,valueSet) ->
+                    val valueSetLabel = valueSet.label()
+                    if (!valuesBySetId.containsKey(valueSetLabel))
+                        valuesBySetId[valueSetLabel] = mutableSetOf()
+                    valuesBySetId[valueSetLabel]?.add(value)
+                }
+            }
+        }
+
+        val valuesList : MutableList<Any> = mutableListOf()
+
+        valuesBySetId.toSortedMap().entries.forEach {
+            valuesList.add(it.key)
+            it.value.sortedBy { it.valueString() }.forEach {
+                valuesList.add(it)
+            }
+        }
+
+        return valuesList
     }
 
 
@@ -837,7 +903,7 @@ class ListEditorBaseValueSetRecyclerViewAdapter(
                 val isSelected = selectedValues.contains(value.valueId)
                 viewHolder.setValueText(value.value(), isSelected)
 
-                viewHolder.setSummaryText(value.description().value, isSelected)
+                viewHolder.setSummaryText(value.description().value)
 
                 viewHolder.setIcon(isSelected)
 
@@ -856,19 +922,6 @@ class ListEditorBaseValueSetRecyclerViewAdapter(
             is ValueNumber ->
             {
                 //viewHolder.setValueText(value.value().toString())
-            }
-        }
-
-        val bookReference = value.bookReference()
-        when (bookReference) {
-            is Just ->
-            {
-//                viewHolder.setReferenceView(View.OnClickListener {
-//                    val sheetActivity = sheetUIContext.context as SheetActivity
-//                    val dialog = RulebookExcerptDialog.newInstance(rulebookRef.value,
-//                                                                   SheetContext(sheetUIContext))
-//                    dialog.show(sheetActivity.supportFragmentManager, "")
-//                })
             }
         }
     }
@@ -901,6 +954,13 @@ class ListEditorCompoundValueSetRecyclerViewAdapter(
     private val VALUE  = 1
 
 
+    val selectedValues : MutableList<ValueId> = mutableListOf()
+
+    init {
+        currentValues.forEach { selectedValues.add(it) }
+    }
+
+
     // -------------------------------------------------------------------------------------
     // RECYCLER VIEW ADAPTER API
     // -------------------------------------------------------------------------------------
@@ -923,7 +983,7 @@ class ListEditorCompoundValueSetRecyclerViewAdapter(
             HEADER ->
             {
                 val headerView = ListEditor.valueSetNameView(entityId, context)
-                HeaderViewHolder(headerView)
+                ListEditorHeaderViewHolder(headerView)
             }
             // VALUE
             else ->
@@ -940,48 +1000,35 @@ class ListEditorCompoundValueSetRecyclerViewAdapter(
 
         if (item is Value)
         {
-            val valueViewHolder = viewHolder as ValueViewHolder
+            val valueViewHolder = viewHolder as ListEditorValueViewHolder
 
             when (item)
             {
                 is ValueText ->
                 {
-//                    if (item.equals(this.selectedValue))
-//                        valueViewHolder.setValueTextSelected(item.value())
-//                    else
-//                        valueViewHolder.setValueText(item.value())
+                    val isSelected = selectedValues.contains(item.valueId)
+                    valueViewHolder.setValueText(item.value(), isSelected)
 
                     valueViewHolder.setSummaryText(item.description().value)
 
-                    viewHolder.setOnClick(View.OnClickListener {
-                        when (updateTarget) {
-                            is UpdateTargetStoryWidgetPart -> {
-                                val textValuePartUpdate =
-                                        StoryWidgetUpdateTextValuePart(
-                                                updateTarget.storyWidgetId,
-                                                updateTarget.partIndex,
-                                                item.valueId()
-                                        )
-//                                SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                        textValuePartUpdate,
-//                                        sheetUIContext.sheetUI())
-                                dialog.dismiss()
-                            }
-                            is UpdateTargetTextCell -> {
-                                val update = TableWidgetUpdateSetTextCellValue(updateTarget.tableWidgetId,
-                                        updateTarget.cellId,
-                                        item.valueId())
-//                                SheetManager.updateSheet(sheetUIContext.sheetId,
-//                                                         update,
-//                                                         sheetUIContext.sheetUI())
-                                dialog.dismiss()
-                            }
+                    valueViewHolder.setIcon(isSelected)
+
+
+                    valueViewHolder.setOnClick(View.OnClickListener {
+                        if (selectedValues.contains(item.valueId)) {
+                            // DESELECT
+                            viewHolder.setUnselected()
+                            this.selectedValues.remove(item.valueId)
+                        } else {
+                            // SELECT
+                            viewHolder.setSelected()
+                            this.selectedValues.add(item.valueId)
                         }
                     })
                 }
                 is ValueNumber ->
                 {
-                    valueViewHolder.setValueText(item.value().toString())
+//                    valueViewHolder.setValueText(item.value().toString())
                 }
             }
         }
@@ -999,7 +1046,9 @@ class ListEditorCompoundValueSetRecyclerViewAdapter(
 
 
 // ---------------------------------------------------------------------------------------------
-// VALUE VIEW HOLDER
+// =============================================================================================
+// List Editor Value View Holder
+// =============================================================================================
 // ---------------------------------------------------------------------------------------------
 
 /**
@@ -1076,7 +1125,6 @@ class ListEditorValueViewHolder(itemView : View,
         this.valueView?.text = valueString
 
         if (isSelected) {
-            //this.layout?.setBackgroundColor(selectedBgColor)
             this.valueView?.setTextColor(selectedNameColor)
         }
         else {
@@ -1085,7 +1133,7 @@ class ListEditorValueViewHolder(itemView : View,
     }
 
 
-    fun setSummaryText(summaryString : String, isSelected : Boolean)
+    fun setSummaryText(summaryString : String)
     {
         if (summaryString.isNotBlank())
         {

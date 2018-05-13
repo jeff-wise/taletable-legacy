@@ -2178,9 +2178,15 @@ types:
       type: 
         type: custom_type
         custom_type: value_set_id
-      presence: required
+      presence: optional
       description: >
         Tags that can be used to place the variable in a group.
+    - name: set_variable_id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: optional
+      description: Set variable id
 - type: sum_type
   sum_type:
     name: variable_text_list_value

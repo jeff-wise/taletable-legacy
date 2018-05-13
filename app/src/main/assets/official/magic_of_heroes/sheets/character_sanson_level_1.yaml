@@ -372,6 +372,26 @@ variables:
     value:
       type: text_literal
       text_literal: '1st Level Spells'
+- type: variable_text_list
+  variable_text_list:
+    id: prepared_spells
+    label: 'Prepared Spells'
+    description: 'Prepared spells'
+    value_set_id: spells_wizard
+    set_variable_id: spellbook_level_one_spells
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - grease
+      - magic_missile
+- type: variable_text
+  variable_text:
+    id: prepared_spells_label
+    label: 'Prepared Spells Label'
+    description: 'Prepared Spells Label'
+    value:
+      type: text_literal
+      text_literal: 'Prepared Spells'
 - type: variable_number
   variable_number:
     id: proficiency_bonus
@@ -6673,6 +6693,80 @@ sections:
         padding:
           bottom: 70
     groups:
+    - rows:
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: dark_grey_11
+              - theme_id: light
+                color_id: light_grey_7
+            margins:
+              top: 8
+        widgets:
+        - type: widget_list
+          widget_list:
+            format:
+              widget_format:
+                element_format:
+                  margins:
+                    left: 6
+                    right: 6
+              view_type: rows_simple_editor
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                padding:
+                  left: 8
+                  right: 12
+                  top: 16
+                  bottom: 4
+              title_format:
+                size: 17
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_16
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+              item_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 19
+                font_style: medium
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  border:
+                    top:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: light_grey_5
+                      thickness: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+            values_variable_id: prepared_spells
+            title_variable_id: prepared_spells_label
   - name: Abilities
     format:
       element_format:
