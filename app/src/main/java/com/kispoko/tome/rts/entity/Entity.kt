@@ -288,11 +288,11 @@ fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group> = when (e
 {
     is EntitySheetId ->
     {
-        Log.d("***ENTITY", "getting group with id")
+//        Log.d("***ENTITY", "getting group with id")
         sheet(entityId.sheetId)   ap {
         campaign(it.campaignId()) ap {
         game(it.gameId())         ap {
-            Log.d("***ENTITY", "got game")
+//            Log.d("***ENTITY", "got game")
             it.groupWithId(groupId)
         } } }
     }

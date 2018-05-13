@@ -52,13 +52,13 @@ types:
     - name: introduction
       type:
         type: custom_coll_type
-        custom_coll_type: group 
+        custom_coll_type: book_content_id 
       presence: optional
       description: A brief description of the game rules.
     - name: conclusion
       type:
         type: custom_coll_type
-        custom_coll_type: group 
+        custom_coll_type: book_content_id 
       presence: optional
       description: A brief description of the game rules.
     - name: chapters
@@ -128,6 +128,17 @@ types:
         prim_type: string
       presence: optional
       description: The book color theme.
+- type: primitive_type
+  primitive_type: 
+    name: book_content_id
+    label: Book Identifier
+    description: >
+      The unique book identifier.
+    group: Book
+    base_type: 
+      type: prim_type
+      prim_type: string
+
 - type: product_type
   product_type:
     name: book_content
@@ -228,6 +239,18 @@ types:
         prim_type: string
       presence: required
       description: The chapter title.
+    - name: introduction
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_content_id 
+      presence: optional
+      description: A brief description of the game rules.
+    - name: conclusion
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_content_id 
+      presence: optional
+      description: A brief description of the game rules.
     - name: sections
       type:
         type: custom_coll_type
@@ -254,12 +277,18 @@ types:
         prim_type: string
       presence: required
       description: The section title.
-    - name: body
+    - name: introduction
       type:
-        type: custom_type
-        custom_type: book_content
-      presence: required
-      description: The section body.
+        type: custom_coll_type
+        custom_coll_type: book_content_id 
+      presence: optional
+      description: A brief description of the game rules.
+    - name: conclusion
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_content_id 
+      presence: optional
+      description: A brief description of the game rules.
     - name: format
       type:
         type: custom_type
@@ -332,12 +361,18 @@ types:
         prim_type: string
       presence: required
       description: The subsection title.
+    - name: subtitle
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The subsection subtitle.
     - name: body
       type:
-        type: custom_type
-        custom_type: book_content
-      presence: required
-      description: The subsection body.
+        type: custom_coll_type
+        custom_coll_type: book_content_id 
+      presence: optional
+      description: A brief description of the game rules.
 - type: sum_type
   sum_type:
     name: book_reference

@@ -1,9 +1,9 @@
-id: character_casmey_level_1
+id: character_sanson_level_1
 campaign_id: isara
 settings:
   theme_id: light
-  sheet_name: 'Casmey Dalseya'
-  sheet_summary: 'Level 1 Human Rogue - A swashbuckling heroine with a quick wit and a quicker sword.'
+  sheet_name: 'Sanson Alvarion'
+  sheet_summary: 'Level 1 Human Wizard - A young hotshot wizard with a head full of knowledge and heart full of naivety.'
 engine:
   value_sets:
   mechanics:
@@ -178,7 +178,7 @@ variables:
     description: Name
     value:
       type: text_literal
-      text_literal: 'Casmey Dalseya'
+      text_literal: 'Sanson Alvarian'
 - type: variable_text
   variable_text:
     id: race
@@ -206,7 +206,7 @@ variables:
           text_literal: classes
         value_id:
           type: text_literal
-          text_literal: rogue
+          text_literal: wizard
 - type: variable_text
   variable_text:
     id: deity
@@ -288,7 +288,7 @@ variables:
     description: Age
     value:
       type: number_literal
-      number_literal: 21
+      number_literal: 17
 - type: variable_text
   variable_text:
     id: eye_color
@@ -296,7 +296,7 @@ variables:
     description: Eye Color
     value:
       type: text_literal
-      text_literal: green
+      text_literal: brown
 - type: variable_text
   variable_text:
     id: hair_color
@@ -351,6 +351,27 @@ variables:
       type: text_list_literal
       text_list_literal:
       - normal
+- type: variable_text_list
+  variable_text_list:
+    id: spellbook_level_one_spells
+    label: 'Spellbook: 1st Level Spells'
+    description: 'Spellbook: 1st Level Spells'
+    value_set_id: spells_wizard_level_one
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - color_spray
+      - grease
+      - magic_missile
+      - silent_image
+- type: variable_text
+  variable_text:
+    id: spellbook_level_one_spells_label
+    label: 'Spellbook: 1st Level Spells Label'
+    description: 'Spellbook: 1st Level Spells Label'
+    value:
+      type: text_literal
+      text_literal: '1st Level Spells'
 - type: variable_number
   variable_number:
     id: proficiency_bonus
@@ -376,7 +397,7 @@ variables:
     description: Base Strength
     value:
       type: number_literal
-      number_literal: 13
+      number_literal: 10
 - type: variable_number
   variable_number:
     id: strength
@@ -426,7 +447,7 @@ variables:
     description: Base Dexterity
     value:
       type: number_literal
-      number_literal: 15
+      number_literal: 14
 - type: variable_number
   variable_number:
     id: dexterity
@@ -460,7 +481,7 @@ variables:
     description: Base Constitution
     value:
       type: number_literal
-      number_literal: 12
+      number_literal: 13
 - type: variable_number
   variable_number:
     id: constitution
@@ -494,7 +515,7 @@ variables:
     description: Base Intelligence
     value:
       type: number_literal
-      number_literal: 12
+      number_literal: 15
 - type: variable_number
   variable_number:
     id: intelligence
@@ -528,7 +549,7 @@ variables:
     description: Base Wisdom
     value:
       type: number_literal
-      number_literal: 9
+      number_literal: 8
 - type: variable_number
   variable_number:
     id: wisdom
@@ -2558,7 +2579,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 50
+                  height: 48
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2586,7 +2607,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 50
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2609,7 +2630,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 50
+                  height: 48
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2642,7 +2663,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 50
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2675,7 +2696,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 48
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2703,7 +2724,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2726,7 +2747,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 48
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2759,7 +2780,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2792,7 +2813,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 52
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2820,7 +2841,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 52
                   padding:
                     left: 14
                     right: 14
@@ -2843,7 +2864,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 52
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2876,7 +2897,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 52
                   padding:
                     left: 14
                     right: 14
@@ -3026,7 +3047,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 50
+                  height: 46
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3054,7 +3075,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 50
+                  height: 46
                   padding:
                     left: 14
                     right: 14
@@ -3077,7 +3098,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 50
+                  height: 46
                   margins:
                     left: 4
                   horizontal_alignment: left
@@ -3110,7 +3131,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 50
+                  height: 46
                   padding:
                     left: 14
                     right: 14
@@ -6640,6 +6661,18 @@ sections:
             group_references:
             - type: group_id
               group_id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
+  - name: Spells
+    format:
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_11
+          - theme_id: light
+            color_id: light_grey_7
+        padding:
+          bottom: 70
+    groups:
   - name: Abilities
     format:
       element_format:
@@ -12735,6 +12768,7 @@ sections:
       - widgets:
         - type: widget_table
           widget_table:
+#            id: armor_and_shields
             title_variable_id: armor_table_label
             format:
               widget_format:
@@ -13831,6 +13865,92 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 20
+  - name: Spellbook
+    format:
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_11
+          - theme_id: light
+            color_id: light_grey_7
+        padding:
+          bottom: 70
+    groups:
+    - rows:
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: dark_grey_11
+              - theme_id: light
+                color_id: light_grey_7
+            margins:
+              top: 8
+        widgets:
+        - type: widget_list
+          widget_list:
+            format:
+              widget_format:
+                element_format:
+                  margins:
+                    left: 6
+                    right: 6
+              view_type: rows_simple_editor
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                padding:
+                  left: 8
+                  right: 12
+                  top: 16
+                  bottom: 4
+              title_format:
+                size: 17
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_16
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+              item_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 19
+                font_style: medium
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  border:
+                    top:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: light_grey_5
+                      thickness: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+            values_variable_id: spellbook_level_one_spells
+            title_variable_id: spellbook_level_one_spells_label
   - name: Features
     format:
       element_format:
@@ -14124,75 +14244,7 @@ sections:
                     color_id: light_grey_26
                   - theme_id: light
                     color_id: white
-  - name: Background
-    format:
-      element_format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_10
-          - theme_id: light
-            color_id: white
-    groups:
-    - format:
-        element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_10
-            - theme_id: light
-              color_id: white
-          padding:
-            left: 10
-            right: 10
-            top: 15
-            bottom: 15
-      rows:
-#      - widgets:
-#        - type: widget_text
-#          widget_text:
-#            id: story_label
-#            format:
-#              value_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: dark
-#                    color_id: light_grey_20
-#                  - theme_id: light
-#                    color_id: light_blue_90
-#                size: 28
-#                font_style: light
-#              widget_format:
-#                element_format:
-#                  horizontal_alignment: left
-#            value_variable_id: story_label
-#      - format:
-#          element_format:
-#              margins:
-#                top: 10
-#        widgets:
-#        - type: widget_text
-#          widget_text:
-#            id: story_part_1
-#            format:
-#              value_format:
-#                element_format:
-#                  horizontal_alignment: left
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: dark
-#                    color_id: light_grey_20
-#                  - theme_id: light
-#                    color_id: dark_grey_12
-#                size: 18
-#              widget_format:
-#                element_format:
-#                  corners:
-#                    top_left_radius: 1
-#                    top_right_radius: 1
-#                    bottom_right_radius: 1
-#                    bottom_left_radius: 1
-#            value_variable_id: story_part_1
+
 - name: Adventure
   icon: adventure
   pages:

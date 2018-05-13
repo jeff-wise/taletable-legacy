@@ -28,6 +28,7 @@ import lulo.value.ValueParser
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
+import maybe.filterJust
 import java.io.Serializable
 import java.util.*
 
@@ -230,51 +231,6 @@ data class Book(override val id : UUID,
     }
 
 
-//    fun referencePath(rulebookReference : BookReference) : RulebookReferencePath?
-//    {
-//        val chapter = this.chapterById[rulebookReference.chapterId()]
-//
-//        if (chapter != null)
-//        {
-//            val sectionId = rulebookReference.sectionId()
-//            when (sectionId)
-//            {
-//                is Just ->
-//                {
-//                    val section = chapter.sectionWithId(sectionId.value)
-//                    if (section != null)
-//                    {
-//                        val subsectionId = rulebookReference.subsectionId()
-//                        when (subsectionId)
-//                        {
-//                            is Just ->
-//                            {
-//                                val subsection = section.subsectionWithId(subsectionId.value)
-//                                if (subsection != null)
-//                                    return RulebookReferencePath(this.title(),
-//                                            chapter.title(),
-//                                            Just(section.title()),
-//                                            Just(subsection.title()))
-//                            }
-//                            else ->{
-//                                return RulebookReferencePath(this.title(),
-//                                        chapter.title(),
-//                                        Just(section.title()),
-//                                        Nothing())
-//                            }
-//                        }
-//                    }
-//                }
-//                else -> {
-//                    return RulebookReferencePath(this.title(), chapter.title(), Nothing(), Nothing())
-//                }
-//            }
-//        }
-//
-//        return null
-//    }
-
-
     // -----------------------------------------------------------------------------------------
     // CONTENT
     // -----------------------------------------------------------------------------------------
@@ -287,6 +243,14 @@ data class Book(override val id : UUID,
         else
             Nothing()
     }
+
+
+    fun introductionContent() : List<BookContent> =
+        this.introduction.map { this.content(it) }.filterJust()
+
+
+    fun conclusionContent() : List<BookContent> =
+            this.conclusion.map { this.content(it) }.filterJust()
 
 }
 
@@ -428,6 +392,42 @@ data class BookInfo(override val id : UUID,
                   PrimValue(this.summary),
                   CollValue(this.authors),
                   PrimValue(this.abstract))
+
+
+    // -----------------------------------------------------------------------------------------
+    // AUTHORS
+    // -----------------------------------------------------------------------------------------
+
+    fun authorListString() : String =
+        if (this.authors.isEmpty())
+        {
+            ""
+        }
+        else if (this.authors.size == 1)
+        {
+            this.authors.firstOrNull()?.authorName?.value ?: ""
+        }
+        else if (this.authors.size == 2)
+        {
+            val firstAuthorName = this.authors[0].authorName.value
+            val secondAuthorName = this.authors[1].authorName.value
+            "$firstAuthorName and $secondAuthorName"
+        }
+        else
+        {
+            var s = ""
+            this.authors.forEachIndexed { index, author ->
+                if (index > 0)
+                    s += ", "
+
+                if (index == (authors.size - 1))
+                    s += "and "
+
+                s += author.authorName.value
+            }
+            s
+        }
+
 
 }
 

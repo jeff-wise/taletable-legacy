@@ -13,6 +13,7 @@ import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.R.string.edit
 import com.kispoko.tome.R.string.table
+import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.widget.table.TableEditorActivity
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -285,6 +286,8 @@ class TableWidgetUI(val tableWidget : TableWidget,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+    private var activity = context as AppCompatActivity
+
     private var editMode : Boolean = false
 
     private var editButtonTextView : TextView? = null
@@ -298,10 +301,7 @@ class TableWidgetUI(val tableWidget : TableWidget,
         editMode = !editMode
 
         this.toggleTableRowEditButtons()
-
         this.toggleEditButton()
-
-//        this.updateTitleTextView()
     }
 
 
@@ -344,24 +344,6 @@ class TableWidgetUI(val tableWidget : TableWidget,
                 headerRowEditButtonView.visibility = View.GONE
         }
     }
-
-
-//    private fun updateTitleTextView()
-//    {
-//        if (editMode)
-//        {
-//            tableWidget.title(entityId).doMaybe { titleString ->
-//                titleTextView?.text =  "${context.getString(R.string.edit)} $titleString"
-//            }
-//        }
-//        else
-//        {
-//            tableWidget.title(entityId).doMaybe { titleString ->
-//                titleTextView?.text = titleString
-//            }
-//        }
-//
-//    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -414,6 +396,17 @@ class TableWidgetUI(val tableWidget : TableWidget,
         layout.backgroundColor      = colorOrBlack(
                                             format.widgetFormat().elementFormat().backgroundColorTheme(),
                                             entityId)
+
+//        layout.onLongClick          = View.OnLongClickListener {
+//
+//            tableWidget.bookReference().doMaybe {
+//                val intent = Intent(activity, BookActivity::class.java)
+//                intent.putExtra("book_reference", it)
+//                activity.startActivity(intent)
+//            }
+//
+//            true
+//        }
 
         // Divider
         // -------------------------------------------------------------------------------------
@@ -478,6 +471,16 @@ class TableWidgetUI(val tableWidget : TableWidget,
             tableRow.rows.add(cellView)
         }
 
+        tableRow.onLongClick        = View.OnLongClickListener {
+            tableWidget.bookReference().doMaybe {
+                val intent = Intent(activity, BookActivity::class.java)
+                intent.putExtra("book_reference", it)
+                activity.startActivity(intent)
+            }
+
+            true
+        }
+
         return tableRow.tableRow(context)
     }
 
@@ -518,6 +521,17 @@ class TableWidgetUI(val tableWidget : TableWidget,
         layout.addView(titleTextView)
 
         layout.addView(this.editButtonView())
+
+
+        layout.setOnLongClickListener {
+            tableWidget.bookReference().doMaybe {
+                val intent = Intent(activity, BookActivity::class.java)
+                intent.putExtra("book_reference", it)
+                activity.startActivity(intent)
+            }
+
+            true
+        }
 
         return layout
     }

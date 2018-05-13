@@ -322,4 +322,6 @@
     <item name="table_header" type="id"/>
     <item name="table_body" type="id"/>
 
+    <item name="list_item_edit_button" type="id"/>
+
 </resources>

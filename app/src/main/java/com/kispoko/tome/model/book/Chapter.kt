@@ -15,9 +15,11 @@ import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.apply
 import effect.effError
 import effect.effValue
+import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.filterJust
 import java.io.Serializable
 import java.util.*
 
@@ -29,6 +31,8 @@ import java.util.*
 data class BookChapter(override val id : UUID,
                        val chapterId : BookChapterId,
                        val title : BookChapterTitle,
+                       val introduction : List<BookContentId>,
+                       val conclusion : List<BookContentId>,
                        val sections : MutableList<BookSection>)
                             : ToDocument, ProdType, Serializable
 {
@@ -48,10 +52,14 @@ data class BookChapter(override val id : UUID,
 
     constructor(chapterId : BookChapterId,
                 title : BookChapterTitle,
+                introduction: List<BookContentId>,
+                conclusion: List<BookContentId>,
                 sections : List<BookSection>)
         : this(UUID.randomUUID(),
                chapterId,
                title,
+               introduction,
+               conclusion,
                sections.toMutableList())
 
 
@@ -66,6 +74,14 @@ data class BookChapter(override val id : UUID,
                       doc.at("id") apply { BookChapterId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { BookChapterTitle.fromDocument(it) },
+                      // Introduction
+                      split(doc.maybeList("introduction"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } }),
+                      // Conclusion
+                      split(doc.maybeList("conclusion"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } }),
                       // Sections
                       doc.list("sections") apply {
                           it.map { BookSection.fromDocument(it) }
@@ -100,6 +116,12 @@ data class BookChapter(override val id : UUID,
     fun sections() : List<BookSection> = this.sections
 
 
+    fun introduction() : List<BookContentId> = this.introduction
+
+
+    fun conclusion() : List<BookContentId> = this.conclusion
+
+
     // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
@@ -122,6 +144,14 @@ data class BookChapter(override val id : UUID,
         RowValue3(bookChapterTable, PrimValue(this.chapterId),
                                     PrimValue(this.title),
                                     CollValue(this.sections))
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONTENT
+    // -----------------------------------------------------------------------------------------
+
+    fun introductionContent(book : Book) : List<BookContent> =
+            this.introduction.map { book.content(it) }.filterJust()
 
 }
 

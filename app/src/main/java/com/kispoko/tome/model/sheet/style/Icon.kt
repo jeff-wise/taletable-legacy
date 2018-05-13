@@ -259,6 +259,21 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object EllipsisFilled : IconType()
+    {
+
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "ellipsis_filled" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("ellipsis_filled")
+
+    }
+
     object Heart : IconType()
     {
 
@@ -476,6 +491,7 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
                 "dice_roll"             -> effValue<ValueError, IconType>(IconType.DiceRoll)
                 "dice_roll_filled"      -> effValue<ValueError, IconType>(IconType.DiceRollFilled)
                 "doge"                  -> effValue<ValueError, IconType>(IconType.Doge)
+                "ellipsis_filled"       -> effValue<ValueError, IconType>(IconType.EllipsisFilled)
                 "heart"                 -> effValue<ValueError, IconType>(IconType.Heart)
                 "heart_plus"            -> effValue<ValueError, IconType>(IconType.HeartPlus)
                 "info_bubble"           -> effValue<ValueError, IconType>(IconType.InfoBubble)
@@ -514,6 +530,7 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
         is DiceRoll             -> R.drawable.icon_dice_roll
         is DiceRollFilled       -> R.drawable.icon_dice_roll_filled
         is Doge                 -> R.drawable.icon_doge
+        is EllipsisFilled       -> R.drawable.icon_ellipsis_filled
         is Heart                -> R.drawable.icon_heart
         is HeartPlus            -> R.drawable.icon_heart_plus
         is InfoBubble           -> R.drawable.icon_info_bubble

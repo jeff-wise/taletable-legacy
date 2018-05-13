@@ -1787,6 +1787,11 @@ engine:
           value_id: rapier
           description: Rapier
           value: Rapier
+          book_reference:
+            type: book_reference_content
+            book_reference_content:
+              book_id: core_rules
+              content_id: weapon_rapier
           variables:
           - type: variable_number
             variable_number:
@@ -2481,6 +2486,11 @@ engine:
           value_id: bedroll
           description: 'Bedroll'
           value: Bedroll
+          book_reference:
+            type: book_reference_content
+            book_reference_content:
+              book_id: core_rules
+              content_id: gear_bedroll
           variables:
           - type: variable_number
             variable_number:
@@ -3753,6 +3763,176 @@ engine:
                 number_literal: 1
   - type: value_set_base
     value_set_base:
+      value_set_id: spells_wizard_level_one
+      label: '1st Level Wizard Spells'
+      label_singular: '1st Level Wizard Spell'
+      description: '1st Level Wizard Spell'
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: alarm
+          description: ''
+          value: 'Alarm'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: burning_hands
+          description: ''
+          value: 'Burning Hands'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: charm_person
+          description: ''
+          value: 'Charm Person'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: color_spray
+          description: ''
+          value: 'Color Spray'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: comprehend_languages
+          description: ''
+          value: 'Comprehend Languages'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: detect_magic
+          description: ''
+          value: 'Detect Magic'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: disguise_self
+          description: ''
+          value: 'Disguise Self'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: expeditious_retreat
+          description: ''
+          value: 'Expeditious Retreat'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: false_life
+          description: ''
+          value: 'False Life'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: feather_fall
+          description: ''
+          value: 'Feather Fall'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: find_familiar
+          description: ''
+          value: 'Find Familiar'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: floating_disk
+          description: ''
+          value: 'Floating Disk'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: fog_cloud
+          description: ''
+          value: 'Fog Cloud'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: grease
+          description: ''
+          value: 'Grease'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: hideous_laughter
+          description: ''
+          value: 'Hideous Laughter'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: identity
+          description: ''
+          value: 'Identify'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: illusory_script
+          description: ''
+          value: 'Illusory Script'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: jump
+          description: ''
+          value: 'Jump'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: longstrider
+          description: ''
+          value: 'Longstrider'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: mage_armor
+          description: ''
+          value: 'Mage Armor'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: magic_missile
+          description: ''
+          value: 'Magic Missile'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: protection_from_evil_and_good
+          description: ''
+          value: 'Protection from Evil and Good'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: shield
+          description: ''
+          value: 'Shield'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: silent_image
+          description: ''
+          value: 'Silent Image'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: sleep
+          description: ''
+          value: 'Sleep'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: thunderwave
+          description: ''
+          value: 'Thunderwave'
+          variables:
+      - type: value_text
+        value_text:
+          value_id: unseen_servant
+          description: ''
+          value: 'Unseen Servant'
+          variables:
+  - type: value_set_base
+    value_set_base:
       value_set_id: light_armor
       label: Light Armor
       label_singular: Light Armor
@@ -3794,6 +3974,11 @@ engine:
              been stiffened by being boiled in oil. The rest of the armor is made of softer and
              more flexible materials
           value: 'Leather Armor'
+          book_reference:
+            type: book_reference_content
+            book_reference_content:
+              book_id: core_rules
+              content_id: armor_leather
           variables:
           - type: variable_number
             variable_number:

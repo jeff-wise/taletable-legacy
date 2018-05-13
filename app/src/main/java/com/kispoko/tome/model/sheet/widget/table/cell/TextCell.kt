@@ -2,20 +2,17 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.util.Log
+import android.content.Intent
+import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -25,6 +22,7 @@ import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.table.*
@@ -129,16 +127,14 @@ data class TextCellFormat(override val id : UUID,
 }
 
 
-class TextCellViewBuilder(val cell : TableWidgetTextCell,
-                          val rowFormat : TableWidgetRowFormat,
-                          val column : TableWidgetTextColumn,
-                          val rowIndex : Int,
-                          val tableWidget : TableWidget,
-                          val entityId : EntityId,
-                          val context : Context)
+class TextCellUI(val cell : TableWidgetTextCell,
+                 val column : TableWidgetTextColumn,
+                 val tableWidget : TableWidget,
+                 val entityId : EntityId,
+                 val context : Context)
 {
 
-    val sheetActivity = context as SheetActivity
+    val sheetActivity = context as AppCompatActivity
 
     private fun openEditorDialog()
     {
@@ -164,37 +160,59 @@ class TextCellViewBuilder(val cell : TableWidgetTextCell,
         layout.addView(this.valueView())
 
 
-        var clickTime : Long = 0
-        val CLICK_DURATION = 500
+        layout.setOnClickListener {
+            this.openEditorDialog()
+        }
 
+        layout.setOnLongClickListener {
 
-//        @SuppressLint("")
-        layout.setOnTouchListener { _, motionEvent ->
-            when (motionEvent.action)
-            {
-                MotionEvent.ACTION_DOWN -> {
-//                    Log.d("***TEXTCELL", "action down")
-                    clickTime = System.currentTimeMillis()
-                }
-                MotionEvent.ACTION_UP -> {
-//                    Log.d("***TEXTCELL", "action down")
-                    val upTime = System.currentTimeMillis()
-                    if ((upTime - clickTime) < CLICK_DURATION) {
-                        this.openEditorDialog()
-//                        val vibrator = sheetActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-//                        // Vibrate for 500 milliseconds
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
-//                        } else {
-//                            //deprecated in API 26
-//                            vibrator.vibrate(500)
-//                        }
-                    }
+            val bookReference = cell.variable(entityId).apply {
+                effValue<AppError,Maybe<BookReference>>(it.bookReference(entityId))
+            }
+
+            bookReference.apDo { maybeBookRef ->
+                maybeBookRef.doMaybe { bookRef ->
+                    val intent = Intent(sheetActivity, BookActivity::class.java)
+                    intent.putExtra("book_reference", bookRef)
+                    sheetActivity.startActivity(intent)
                 }
             }
 
             true
         }
+
+
+        var clickTime : Long = 0
+        val CLICK_DURATION = 500
+
+
+//        @SuppressLint("")
+//        layout.setOnTouchListener { _, motionEvent ->
+//            when (motionEvent.action)
+//            {
+//                MotionEvent.ACTION_DOWN -> {
+////                    Log.d("***TEXTCELL", "action down")
+//                    clickTime = System.currentTimeMillis()
+//                }
+//                MotionEvent.ACTION_UP -> {
+////                    Log.d("***TEXTCELL", "action down")
+//                    val upTime = System.currentTimeMillis()
+//                    if ((upTime - clickTime) < CLICK_DURATION) {
+//                        this.openEditorDialog()
+////                        val vibrator = sheetActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+////                        // Vibrate for 500 milliseconds
+////                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+////                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+////                        } else {
+////                            //deprecated in API 26
+////                            vibrator.vibrate(500)
+////                        }
+//                    }
+//                }
+//            }
+//
+//            true
+//        }
 
         return layout
     }

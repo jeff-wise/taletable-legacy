@@ -366,9 +366,9 @@ data class TaskTriggerAnd(val triggers : List<TaskTrigger>)
 
     override fun isActive(entityId : EntityId) : Boolean
     {
-        this.triggers.forEach {
-            Log.d("****TASK", "is active: ${it.isActive(entityId)}")
-        }
+//        this.triggers.forEach {
+//            Log.d("****TASK", "is active: ${it.isActive(entityId)}")
+//        }
 
         return this.triggers.map { it.isActive(entityId) }.all { it }
     }

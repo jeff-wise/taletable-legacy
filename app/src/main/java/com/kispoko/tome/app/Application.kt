@@ -23,11 +23,11 @@ object ApplicationLog
 
     fun event(event : ApplicationEvent)
     {
-//        when (event.eventType()) {
-//            is EventTypeLoad -> {
+        when (event.eventType()) {
+            is EventTypeLoad -> {
                 Log.d("***TOME LOG", event.debugMessage())
-//            }
-//        }
+            }
+        }
     }
 
 }

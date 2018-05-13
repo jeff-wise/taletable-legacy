@@ -22,6 +22,7 @@ import com.kispoko.tome.lib.orm.RowValue4
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Action
@@ -37,9 +38,7 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import maybe.Just
-import maybe.Maybe
-import maybe.maybeValue
+import maybe.*
 import maybe.Nothing
 import java.io.Serializable
 import java.util.*
@@ -50,7 +49,7 @@ import java.util.*
  * Table Widget Cell
  */
 @Suppress("UNCHECKED_CAST")
-sealed class TableWidgetCell : ToDocument, ProdType, Serializable
+sealed class TableWidgetCell : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -66,6 +65,8 @@ sealed class TableWidgetCell : ToDocument, ProdType, Serializable
                 when (doc.case())
                 {
                     "table_widget_boolean_cell" -> TableWidgetBooleanCell.fromDocument(doc)
+                                                    as ValueParser<TableWidgetCell>
+                    "table_widget_image_cell"   -> TableWidgetImageCell.fromDocument(doc)
                                                     as ValueParser<TableWidgetCell>
                     "table_widget_number_cell"  -> TableWidgetNumberCell.fromDocument(doc)
                                                     as ValueParser<TableWidgetCell>
@@ -231,6 +232,104 @@ data class TableWidgetBooleanCell(override val id : UUID,
              entityId : EntityId,
              context : Context) : View
         = BooleanCellView.view(this, rowFormat, column, this.format(), entityId, context)
+
+}
+
+
+/**
+ * Table Widget Icon Cell
+ */
+data class TableWidgetImageCell(private val id : UUID,
+                                private val format : ImageCellFormat,
+                                private val iconType : Maybe<IconType>,
+                                private val bookReference : Maybe<BookReference>)
+                                : TableWidgetCell()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TableWidgetImageCell>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetImageCell> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::TableWidgetImageCell,
+                      // Cell Id
+                      effValue(UUID.randomUUID()) ,
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(ImageCellFormat.default()),
+                            { ImageCellFormat.fromDocument(it) }),
+                      // Icon Type
+                      split(doc.maybeAt("icon_type"),
+                            effValue<ValueError,Maybe<IconType>>(Nothing()),
+                            { apply(::Just, IconType.fromDocument(it)) }),
+                      // Book Reference
+                      split(doc.maybeAt("book_reference"),
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { apply(::Just, BookReference.fromDocument(it)) })
+
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : ImageCellFormat = this.format
+
+
+    fun iconType() : Maybe<IconType> = this.iconType
+
+
+    fun bookReference() : Maybe<BookReference> = this.bookReference
+
+
+    // -----------------------------------------------------------------------------------------
+    // CELL
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetCellType = TableWidgetCellType.BOOLEAN
+
+
+    override fun updateView(entityId : EntityId, context : Context) {
+    }
+
+
+    override fun variableId() = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // VARIABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun variableIdOrError() : AppEff<VariableId> =
+        effError(AppSheetError(CellVariableUndefined(this.id)))
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun view(entityId : EntityId,
+             column : TableWidgetImageColumn,
+             context : Context) : View
+        = ImageCellUI(this, column, entityId, context).view()
 
 }
 
@@ -614,6 +713,10 @@ data class TableWidgetTextCell(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
+    fun variable(entityId : EntityId) : AppEff<TextVariable> =
+        this.variableIdOrError() apply { textVariable(it, entityId) }
+
+
     fun valueString(entityId : EntityId) : AppEff<String> =
             this.valueVariable(entityId) ap { it.valueString(entityId) }
 //
@@ -642,13 +745,11 @@ data class TableWidgetTextCell(override val id : UUID,
              entityId : EntityId,
              context : Context) : View
     {
-        val viewBuilder = TextCellViewBuilder(this,
-                                              rowFormat,
-                                              column,
-                                              rowIndex,
-                                              tableWidget,
-                                              entityId,
-                                              context)
+        val viewBuilder = TextCellUI(this,
+                                     column,
+                                     tableWidget,
+                                     entityId,
+                                     context)
         return viewBuilder.view()
     }
 
@@ -658,6 +759,7 @@ data class TableWidgetTextCell(override val id : UUID,
 enum class TableWidgetCellType
 {
     BOOLEAN,
+    IMAGE,
     NUMBER,
     TEXT
 }

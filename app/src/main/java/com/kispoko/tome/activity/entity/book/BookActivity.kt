@@ -8,16 +8,16 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.model.book.Book
-import com.kispoko.tome.model.book.BookReference
-import com.kispoko.tome.model.book.BookReferenceContent
+import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.rts.entity.book
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
@@ -37,6 +37,8 @@ class BookActivity : AppCompatActivity()
 
     private var currentBookReference : BookReference? = null
     private var currentBook          : Book? = null
+
+    var referenceHistory     : MutableList<BookReference> = mutableListOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -83,7 +85,8 @@ class BookActivity : AppCompatActivity()
         val currentBook = this.currentBook
 
         if (currentBookReference != null && currentBook != null)
-            this.initializeView(currentBookReference, currentBook)
+            this.setCurrentBookReference(currentBookReference)
+
     }
 
 
@@ -97,25 +100,6 @@ class BookActivity : AppCompatActivity()
     // -----------------------------------------------------------------------------------------
     // UI
     // -----------------------------------------------------------------------------------------
-
-    private fun initializeView(bookReference : BookReference, book : Book)
-    {
-        val contentView = this.findViewById<LinearLayout>(R.id.book_content)
-
-        when (bookReference)
-        {
-            is BookReferenceContent ->
-            {
-                book.content(bookReference.contentId).doMaybe {
-                    val cardUI = CardUI(book, it, this)
-                    contentView.addView(cardUI.view())
-                }
-            }
-
-        }
-
-    }
-
 
     private fun applyTheme(theme : Theme)
     {
@@ -154,6 +138,86 @@ class BookActivity : AppCompatActivity()
         val titleView = this.findViewById<TextView>(R.id.toolbar_title)
         titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
+    }
+
+
+    fun setCurrentBookReference(bookReference : BookReference)
+    {
+        val contentView = this.findViewById<LinearLayout>(R.id.book_content)
+
+        Log.d("***BOOK ACTIVITY", "setting ref: $bookReference")
+
+        this.currentBook?.let { book ->
+            when (bookReference)
+            {
+                is BookReferenceBook ->
+                {
+                    val bookUI = BookUI(book, this, officialThemeLight)
+                    contentView.removeAllViews()
+                    contentView.addView(bookUI.view())
+
+                    this.referenceHistory.add(bookReference)
+
+                }
+                is BookReferenceChapter ->
+                {
+                    book.chapter(bookReference.chapterId).doMaybe { chapter ->
+                        val chapterUI = ChapterUI(chapter, book, this, officialThemeLight)
+                        contentView.removeAllViews()
+                        contentView.addView(chapterUI.view())
+
+                        this.referenceHistory.add(bookReference)
+                    }
+                }
+                is BookReferenceSection ->
+                {
+                    book.section(bookReference.chapterId(), bookReference.sectionId()).doMaybe { section ->
+                        val sectionUI = SectionUI(section, book, bookReference.chapterId(), this, officialThemeLight)
+                        contentView.removeAllViews()
+                        contentView.addView(sectionUI.view())
+
+                        this.referenceHistory.add(bookReference)
+                    }
+                }
+                is BookReferenceSubsection ->
+                {
+                    book.subsection(bookReference.chapterId(), bookReference.sectionId(), bookReference.subsectionId()).doMaybe { subsection ->
+                        val subsectionUI = SubsectionUI(subsection, book, this, officialThemeLight)
+                        contentView.removeAllViews()
+                        contentView.addView(subsectionUI.view())
+
+                        this.referenceHistory.add(bookReference)
+                    }
+                }
+                is BookReferenceContent ->
+                {
+                    book.content(bookReference.contentId).doMaybe {
+                        val cardUI = CardUI(book, it, this)
+                        contentView.removeAllViews()
+                        contentView.addView(cardUI.view())
+
+                        this.referenceHistory.add(bookReference)
+                    }
+                }
+
+            }
+        }
+
+
+    }
+
+
+    fun setToPreviousReference()
+    {
+        Log.d("***BOOK ACTIVITY", "set previous")
+        if (this.referenceHistory.size >= 2) {
+            // Drop current
+            this.referenceHistory.removeAt(this.referenceHistory.size - 1)
+            // Set to last
+            this.referenceHistory.takeLast(1).firstOrNull()?.let {
+                this.setCurrentBookReference(it)
+            }
+        }
     }
 
 }

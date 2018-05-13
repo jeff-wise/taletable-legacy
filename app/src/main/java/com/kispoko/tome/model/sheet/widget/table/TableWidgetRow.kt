@@ -52,10 +52,10 @@ import java.util.*
 /**
  * Table Widget Row
  */
-data class TableWidgetRow(override val id : UUID,
+data class TableWidgetRow(val id : UUID,
                           val format : TableWidgetRowFormat,
                           val cells : MutableList<TableWidgetCell>)
-                           : ToDocument, SheetComponent, ProdType, Serializable
+                           : ToDocument, SheetComponent, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -129,18 +129,18 @@ data class TableWidgetRow(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() {}
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableRowValue =
-        RowValue2(widgetTableRowTable,
-                  ProdValue(this.format),
-                  CollValue(this.cells))
-
+//
+//    override fun onLoad() {}
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetTableRowValue =
+//        RowValue2(widgetTableRowTable,
+//                  ProdValue(this.format),
+//                  CollValue(this.cells))
+//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -284,6 +284,20 @@ data class TableWidgetRow(override val id : UUID,
                                                                    context))
                         else -> ApplicationLog.error(
                                     CellTypeDoesNotMatchColumnType(TableWidgetCellType.BOOLEAN,
+                                                                   column.type()))
+                    }
+                }
+                is TableWidgetImageCell ->
+                {
+                    val column = tableWidget.columns()[i]
+                    when (column)
+                    {
+                        is TableWidgetImageColumn ->
+                            tableRow.addView(tableWidgetCell.view(entityId,
+                                                                  column,
+                                                                  context))
+                        else -> ApplicationLog.error(
+                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.IMAGE,
                                                                    column.type()))
                     }
                 }

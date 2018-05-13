@@ -6,16 +6,16 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.*
-import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
-import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.engine.variable.*
+import com.kispoko.tome.model.sheet.style.IconType
 import com.kispoko.tome.model.sheet.style.NumericEditorType
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
+import com.kispoko.tome.model.sheet.widget.table.column.ImageColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.rts.entity.EntityId
@@ -40,7 +40,7 @@ sealed class TableWidgetColumn(open val columnName : ColumnName,
                                open val variablePrefix : ColumnVariablePrefix,
                                open val variableRelation : Maybe<VariableRelation>,
                                open val isColumnNamespaced : IsColumnNamespaced)
-                                : ToDocument, ProdType, Serializable
+                                : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -56,6 +56,8 @@ sealed class TableWidgetColumn(open val columnName : ColumnName,
                 when (doc.case())
                 {
                     "table_widget_boolean_column" -> TableWidgetBooleanColumn.fromDocument(doc)
+                                                        as ValueParser<TableWidgetColumn>
+                    "table_widget_image_column"   -> TableWidgetImageColumn.fromDocument(doc)
                                                         as ValueParser<TableWidgetColumn>
                     "table_widget_number_column"  -> TableWidgetNumberColumn.fromDocument(doc)
                                                         as ValueParser<TableWidgetColumn>
@@ -111,7 +113,7 @@ sealed class TableWidgetColumn(open val columnName : ColumnName,
  * Table Widget Boolean Column
  */
 data class TableWidgetBooleanColumn(
-        override val id : UUID,
+        val id : UUID,
         override val columnName : ColumnName,
         override val variablePrefix : ColumnVariablePrefix,
         override val variableRelation : Maybe<VariableRelation>,
@@ -213,19 +215,141 @@ data class TableWidgetBooleanColumn(
     // MODEL
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() {}
+//    override fun onLoad() {}
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetTableColumnBooleanValue =
+//        RowValue5(widgetTableColumnBooleanTable,
+//                  PrimValue(this.columnName),
+//                  PrimValue(this.variablePrefix),
+//                  PrimValue(this.isColumnNamespaced),
+//                  SumValue(this.defaultValue),
+//                  ProdValue(this.format))
+
+}
 
 
-    override val prodTypeObject = this
+/**
+ * Table Widget Image Column
+ */
+data class TableWidgetImageColumn(
+        val id : UUID,
+        override val columnName : ColumnName,
+        override val variablePrefix : ColumnVariablePrefix,
+        override val variableRelation : Maybe<VariableRelation>,
+        override val isColumnNamespaced:  IsColumnNamespaced,
+        val defaultIconType : IconType,
+        val format : ImageColumnFormat)
+          : TableWidgetColumn(columnName, variablePrefix, variableRelation, isColumnNamespaced)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(columnName : ColumnName,
+                variablePrefix : ColumnVariablePrefix,
+                variableRelation : Maybe<VariableRelation>,
+                isColumnNamespaced : IsColumnNamespaced,
+                defaultIconType : IconType,
+                format : ImageColumnFormat)
+        : this(UUID.randomUUID(),
+               columnName,
+               variablePrefix,
+               variableRelation,
+               isColumnNamespaced,
+               defaultIconType,
+               format)
 
 
-    override fun rowValue() : DB_WidgetTableColumnBooleanValue =
-        RowValue5(widgetTableColumnBooleanTable,
-                  PrimValue(this.columnName),
-                  PrimValue(this.variablePrefix),
-                  PrimValue(this.isColumnNamespaced),
-                  SumValue(this.defaultValue),
-                  ProdValue(this.format))
+    companion object : Factory<TableWidgetImageColumn>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TableWidgetImageColumn> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::TableWidgetImageColumn,
+                      // Name
+                      doc.at("name") ap { ColumnName.fromDocument(it) },
+                      // Variable Prefix
+                      effValue(ColumnVariablePrefix("")),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
+                      // Is Column Namespaced
+                      split(doc.maybeAt("is_namespaced"),
+                            effValue(IsColumnNamespaced(false)),
+                            { IsColumnNamespaced.fromDocument(it) }),
+                      // Default Icon Type
+                      doc.at("default_icon_type") ap { IconType.fromDocument(it) },
+                      // Format
+                      split(doc.maybeAt("format"),
+                            effValue(ImageColumnFormat.default()),
+                            { ImageColumnFormat.fromDocument(it) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "name" to this.columnName().toDocument(),
+        "variable_prefix" to this.variablePrefix().toDocument(),
+        "is_namespaced" to this.isColumnNamespaced.toDocument(),
+        "default_icon_type" to this.defaultIconType().toDocument(),
+        "format" to this.format().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun defaultIconType() : IconType = this.defaultIconType
+
+
+    fun format() : ImageColumnFormat = this.format
+
+
+    // -----------------------------------------------------------------------------------------
+    // COLUMN
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetColumnType = TableWidgetColumnType.BOOLEAN
+
+
+    override fun columnFormat(): ColumnFormat = this.format().columnFormat()
+
+
+    override fun defaultValueString(entityId : EntityId) = ""
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onLoad() {}
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetTableColumnBooleanValue =
+//        RowValue5(widgetTableColumnBooleanTable,
+//                  PrimValue(this.columnName),
+//                  PrimValue(this.variablePrefix),
+//                  PrimValue(this.isColumnNamespaced),
+//                  SumValue(this.defaultValue),
+//                  ProdValue(this.format))
 
 }
 
@@ -234,7 +358,7 @@ data class TableWidgetBooleanColumn(
  * Table Widget Number Column
  */
 data class TableWidgetNumberColumn(
-                override val id : UUID,
+                val id : UUID,
                 override val columnName : ColumnName,
                 override val variablePrefix : ColumnVariablePrefix,
                 override val variableRelation : Maybe<VariableRelation>,
@@ -389,22 +513,22 @@ data class TableWidgetNumberColumn(
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() {}
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableColumnNumberValue =
-        RowValue7(widgetTableColumnNumberTable,
-                  PrimValue(this.columnName),
-                  PrimValue(this.variablePrefix),
-                  PrimValue(this.isColumnNamespaced),
-                  SumValue(this.defaultValue),
-                  ProdValue(this.format),
-                  MaybeProdValue(this.action),
-                  PrimValue(this.editorType))
+//
+//    override fun onLoad() {}
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetTableColumnNumberValue =
+//        RowValue7(widgetTableColumnNumberTable,
+//                  PrimValue(this.columnName),
+//                  PrimValue(this.variablePrefix),
+//                  PrimValue(this.isColumnNamespaced),
+//                  SumValue(this.defaultValue),
+//                  ProdValue(this.format),
+//                  MaybeProdValue(this.action),
+//                  PrimValue(this.editorType))
 
 }
 
@@ -413,7 +537,7 @@ data class TableWidgetNumberColumn(
  * Table Widget Text Column
  */
 data class TableWidgetTextColumn(
-        override val id : UUID,
+        val id : UUID,
         override val columnName : ColumnName,
         override val variablePrefix : ColumnVariablePrefix,
         override val variableRelation : Maybe<VariableRelation>,
@@ -564,22 +688,22 @@ data class TableWidgetTextColumn(
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() {}
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableColumnTextValue =
-        RowValue7(widgetTableColumnTextTable,
-                  PrimValue(this.columnName),
-                  PrimValue(this.variablePrefix),
-                  PrimValue(this.isColumnNamespaced),
-                  SumValue(this.defaultValue),
-                  ProdValue(this.format),
-                  MaybeProdValue(this.action),
-                  PrimValue(this.definesNamespace))
+//
+//    override fun onLoad() {}
+//
+//
+//    override val prodTypeObject = this
+//
+//
+//    override fun rowValue() : DB_WidgetTableColumnTextValue =
+//        RowValue7(widgetTableColumnTextTable,
+//                  PrimValue(this.columnName),
+//                  PrimValue(this.variablePrefix),
+//                  PrimValue(this.isColumnNamespaced),
+//                  SumValue(this.defaultValue),
+//                  ProdValue(this.format),
+//                  MaybeProdValue(this.action),
+//                  PrimValue(this.definesNamespace))
 
 }
 

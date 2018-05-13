@@ -4,6 +4,7 @@ package com.kispoko.tome.activity.sheet
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -554,7 +555,8 @@ class MainTabBarUI(val sheetId : SheetId,
         when (tabIndex)
         {
             1 -> {
-                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+//                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+                pagesTabLayoutView?.setBackgroundColor(Color.WHITE)
                 tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
                 historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
 
@@ -564,7 +566,8 @@ class MainTabBarUI(val sheetId : SheetId,
             }
             2 -> {
                 pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
-                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+//                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+                tasksTabLayoutView?.setBackgroundColor(Color.WHITE)
                 historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
 
                 pagesTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))

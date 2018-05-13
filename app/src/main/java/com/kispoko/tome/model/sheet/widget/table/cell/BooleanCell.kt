@@ -4,11 +4,9 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TableRow
 import android.widget.TextView
-import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -16,7 +14,6 @@ import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue5
 import com.kispoko.tome.lib.orm.schema.MaybePrimValue
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
-import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.ElementFormat

@@ -239,37 +239,6 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
         layout.addView(mainLayout)
         layout.addView(this.dividerView())
 
-
-        // > Toggle Menu Functionality
-        // ----------------------------------------------------------------------------
-
-        val closeIcon = ContextCompat.getDrawable(context,
-                                                  R.drawable.ic_dialog_chooser_close_menu)
-
-        val menuIcon = ContextCompat.getDrawable(context,
-                                                 R.drawable.ic_dialog_chooser_menu)
-
-//        iconView.setOnClickListener {
-//            // Show MENU
-//            if (chooserView.visibility == View.VISIBLE)
-//            {
-//                chooserView.visibility = View.GONE
-//                menuView.visibility = View.VISIBLE
-//
-//                iconView.setImageDrawable(closeIcon)
-//
-//                titleView.setText(R.string.options)
-//            }
-//            // Show VALUES
-//            else
-//            {
-//                chooserView.visibility = View.VISIBLE
-//                menuView.visibility = View.GONE
-//
-//                iconView.setImageDrawable(menuIcon)
-//            }
-//        }
-
         return layout
     }
 
@@ -297,10 +266,6 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
         layout.backgroundColor      = Color.WHITE
 
         layout.padding.leftDp       = 10f
@@ -399,10 +364,6 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
 
         icon.image          = R.drawable.icon_check_bold
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
-        //icon.color          = SheetManager.color(sheetUIContext.sheetId, colorTheme)
         icon.color          = Color.WHITE
 
 
@@ -427,10 +388,6 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
         recyclerView.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
-//        val dividerColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-//        val dividerColor = SheetManager.color(sheetUIContext.sheetId, dividerColorTheme)
 //        recyclerView.divider = SimpleDividerItemDecoration(sheetUIContext.context, dividerColor)
 
         when (valueSet)
@@ -455,7 +412,6 @@ class ListEditorViewBuilder(val valueSet : ValueSet,
                     is Val ->
                     {
                         val items = valueSetIndexList(valueSets.value, entityId, context)
-                        //Log.d("***VALUECHOOSER", items.toString())
                         recyclerView.adapter =
                                 ListEditorCompoundValueSetRecyclerViewAdapter(
                                         items,
@@ -717,6 +673,8 @@ object ListEditor
         summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
         summary.id              = R.id.dialog_list_editor_item_summary
+
+        summary.visibility      = View.GONE
 
         summary.font            = Font.typeface(TextFont.Cabin,
                                                 TextFontStyle.Regular,
@@ -1129,14 +1087,11 @@ class ListEditorValueViewHolder(itemView : View,
 
     fun setSummaryText(summaryString : String, isSelected : Boolean)
     {
-        this.summaryView?.text = summaryString
-
-//        if (isSelected) {
-//            this.summaryView?.setTextColor(Color.WHITE)
-//        }
-//        else {
-//            this.summaryView?.setTextColor(unselectedSummaryColor)
-//        }
+        if (summaryString.isNotBlank())
+        {
+            this.summaryView?.visibility = View.VISIBLE
+            this.summaryView?.text = summaryString
+        }
     }
 
 
@@ -1151,15 +1106,6 @@ class ListEditorValueViewHolder(itemView : View,
 
     }
 
-
-//    fun setReferenceView(onClickListener : View.OnClickListener)
-//    {
-//        this.refView?.visibility = View.VISIBLE
-//        this.refView?.setOnClickListener(onClickListener)
-//    }
-//
-//
-
     fun setOnClick(onClickListener : View.OnClickListener)
     {
         this.layout?.setOnClickListener(onClickListener)
@@ -1167,17 +1113,13 @@ class ListEditorValueViewHolder(itemView : View,
 
 
     fun setSelected() {
-     //   this.layout?.setBackgroundColor(selectedBgColor)
         this.valueView?.setTextColor(selectedNameColor)
         this.checkIconView?.setColorFilter(PorterDuffColorFilter(checkSelectedColor, PorterDuff.Mode.SRC_IN))
-        //this.summaryView?.setTextColor(Color.WHITE)
     }
 
     fun setUnselected() {
-    //    this.layout?.setBackgroundColor(unselectedBgColor)
         this.valueView?.setTextColor(unselectedNameColor)
         this.checkIconView?.setColorFilter(PorterDuffColorFilter(checkUnselectedColor, PorterDuff.Mode.SRC_IN))
-        //this.summaryView?.setTextColor(unselectedSummaryColor)
     }
 
 }

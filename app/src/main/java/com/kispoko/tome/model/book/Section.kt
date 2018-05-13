@@ -22,6 +22,7 @@ import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.filterJust
 import java.io.Serializable
 import java.util.*
 
@@ -33,7 +34,8 @@ import java.util.*
 data class BookSection(override val id : UUID,
                        val sectionId : BookSectionId,
                        val title : BookSectionTitle,
-                       val body : BookContent,
+                       val introduction : List<BookContentId>,
+                       val conclusion : List<BookContentId>,
                        val format : BookSectionFormat,
                        val subsections : MutableList<BookSubsection>)
                             : ToDocument, ProdType, java.io.Serializable
@@ -54,13 +56,15 @@ data class BookSection(override val id : UUID,
 
     constructor(sectionId : BookSectionId,
                 title : BookSectionTitle,
-                body : BookContent,
+                introduction: List<BookContentId>,
+                conclusion: List<BookContentId>,
                 format : BookSectionFormat,
                 subsections : List<BookSubsection>)
         : this(UUID.randomUUID(),
                sectionId,
                title,
-               body,
+               introduction,
+               conclusion,
                format,
                subsections.toMutableList())
 
@@ -76,8 +80,14 @@ data class BookSection(override val id : UUID,
                       doc.at("id") apply { BookSectionId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { BookSectionTitle.fromDocument(it) },
-                      // Body
-                      doc.at("body") apply { BookContent.fromDocument(it) },
+                      // Introduction
+                      split(doc.maybeList("introduction"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } }),
+                      // Conclusion
+                      split(doc.maybeList("conclusion"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(BookSectionFormat.default()),
@@ -100,7 +110,6 @@ data class BookSection(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "id" to this.sectionId().toDocument(),
         "title" to this.title().toDocument(),
-        "body" to this.body().toDocument(),
         "subsections" to DocList(this.subsections().map { it.toDocument() })
     ))
 
@@ -115,7 +124,10 @@ data class BookSection(override val id : UUID,
     fun title() : BookSectionTitle = this.title
 
 
-    fun body() : BookContent = this.body
+    fun introduction() : List<BookContentId> = this.introduction
+
+
+    fun conclusion() : List<BookContentId> = this.conclusion
 
 
     fun subsections() : List<BookSubsection> = this.subsections
@@ -127,6 +139,14 @@ data class BookSection(override val id : UUID,
 
     fun subsectionWithId(subsectionId : BookSubsectionId) : BookSubsection? =
         this.subsectionById[subsectionId]
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONTENT
+    // -----------------------------------------------------------------------------------------
+
+    fun introductionContent(book : Book) : List<BookContent> =
+            this.introduction.map { book.content(it) }.filterJust()
 
 
     // -----------------------------------------------------------------------------------------

@@ -22,6 +22,7 @@ import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -34,6 +35,9 @@ import com.kispoko.tome.model.engine.dice.DiceRollGroup
 import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.engine.procedure.Procedure
 import com.kispoko.tome.model.engine.procedure.ProcedureId
+import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
+import com.kispoko.tome.model.engine.value.ValueReference
+import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.group.GroupReference
@@ -57,7 +61,7 @@ import maybe.Nothing
 import maybe.maybeValue
 import java.io.Serializable
 import java.util.*
-
+import kotlin.text.Typography.paragraph
 
 
 /**
@@ -1262,7 +1266,9 @@ data class ImageWidget(val widgetId : WidgetId,
 data class ListWidget(val widgetId : WidgetId,
                       val format : ListWidgetFormat,
                       val valuesVariableId : VariableId,
-                      val description : Maybe<ListWidgetDescription>) : Widget()
+                      val titleVariableId : Maybe<VariableId>,
+                      val description : Maybe<ListWidgetDescription>,
+                      val bookReference : Maybe<BookReference>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1275,17 +1281,6 @@ data class ListWidget(val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-//    constructor(widgetId : WidgetId,
-//                format : ListWidgetFormat,
-//                valuesVariableId : VariableId,
-//                description : Maybe<ListWidgetDescription>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               valuesVariableId,
-//               description)
-
 
     companion object : Factory<ListWidget>
     {
@@ -1304,10 +1299,18 @@ data class ListWidget(val widgetId : WidgetId,
                             { ListWidgetFormat.fromDocument(it) }),
                       // Values Variable Id
                       doc.at("values_variable_id") ap { VariableId.fromDocument(it) },
+                      // Title Variable Id
+                      split(doc.maybeAt("title_variable_id"),
+                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                            { apply(::Just, VariableId.fromDocument(it)) }),
                       // Description
                       split(doc.maybeAt("description"),
                             effValue<ValueError,Maybe<ListWidgetDescription>>(Nothing()),
-                            { apply(::Just, ListWidgetDescription.fromDocument(it)) })
+                            { apply(::Just, ListWidgetDescription.fromDocument(it)) }),
+                      // Book Reference
+                      split(doc.maybeAt("book_reference"),
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { apply(::Just, BookReference.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1339,6 +1342,9 @@ data class ListWidget(val widgetId : WidgetId,
     fun description() : Maybe<ListWidgetDescription> = this.description
 
 
+    fun bookReference() : Maybe<BookReference> = this.bookReference
+
+
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
@@ -1348,30 +1354,13 @@ data class ListWidget(val widgetId : WidgetId,
 
     override fun view(entityId : EntityId, context : Context) : View
     {
-        val viewBuilder = ListWidgetViewBuilder(this, entityId, context)
+        val viewBuilder = ListWidgetUI(this, entityId, context)
         return viewBuilder.view()
     }
 
 
     override fun widgetId() = this.widgetId
 
-
-    // -----------------------------------------------------------------------------------------
-    // PROD TYPE
-    // -----------------------------------------------------------------------------------------
-
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetListValue =
-//        RowValue3(widgetListTable,
-//                  PrimValue(this.widgetId),
-//                  ProdValue(this.format),
-//                  PrimValue(this.valuesVariableId))
-//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -1392,6 +1381,40 @@ data class ListWidget(val widgetId : WidgetId,
     fun value(entityId : EntityId) : AppEff<List<String>> =
         textListVariable(this.valuesVariableId(), entityId)
           .apply { it.value(entityId) }
+
+
+    fun valueIdStrings(entityId : EntityId) : AppEff<List<String>> =
+            this.variable(entityId)
+            .apply {
+                note<AppError, ValueSetId>(it.valueSetId().toNullable(),
+                        AppStateError(VariableDoesNotHaveValueSet(it.variableId())))
+            }
+            .apply { valueSetId ->
+                this.value(entityId) ap { valueIds ->
+                    valueIds.mapM { valueId ->
+                        val valueRef = ValueReference(TextReferenceLiteral(valueSetId.value),
+                                                      TextReferenceLiteral(valueId))
+                        value(valueRef, entityId)
+                    }
+                }
+            }
+            .apply { values ->
+                effValue<AppError,List<String>>(values.map { it.valueString() })
+            }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TITLE
+    // -----------------------------------------------------------------------------------------
+
+    fun title(entityId : EntityId) : Maybe<String> =
+        this.titleVariableId ap {
+            val value = textVariable(it, entityId).apply { it.value(entityId) }
+            when (value) {
+                is Val -> value.value
+                else    -> Nothing()
+            }
+        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1426,9 +1449,9 @@ data class ListWidget(val widgetId : WidgetId,
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
-            val layout = rootView.findViewById<LinearLayout>(layoutViewId)
-            layout?.removeAllViews()
-            layout?.addView(ListWidgetViewBuilder(this, entityId, context).inlineView())
+            rootView.findViewById<LinearLayout>(layoutViewId)?.let {
+                ListWidgetUI(this, entityId, context).updateView(it)
+            }
         }
     }
 
@@ -3198,7 +3221,8 @@ data class TableWidget(private val widgetId : WidgetId,
                        private val columns : MutableList<TableWidgetColumn>,
                        private val rows : MutableList<TableWidgetRow>,
                        private val sort : Maybe<TableSort>,
-                       private val titleVariableId : Maybe<VariableId>) : Widget()
+                       private val titleVariableId : Maybe<VariableId>,
+                       private val bookReference : Maybe<BookReference>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -3281,12 +3305,16 @@ data class TableWidget(private val widgetId : WidgetId,
                      },
                      // Table Sort
                      split(doc.maybeAt("sort"),
-                             effValue<ValueError, Maybe<TableSort>>(Nothing()),
-                             { apply(::Just, TableSort.fromDocument(it)) }),
-                      // Title Variable Id
-                      split(doc.maybeAt("title_variable_id"),
-                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
-                            { apply(::Just, VariableId.fromDocument(it)) })
+                           effValue<ValueError, Maybe<TableSort>>(Nothing()),
+                           { apply(::Just, TableSort.fromDocument(it)) }),
+                     // Title Variable Id
+                     split(doc.maybeAt("title_variable_id"),
+                           effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                           { apply(::Just, VariableId.fromDocument(it)) }),
+                     // Book Reference
+                     split(doc.maybeAt("book_reference"),
+                           effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                           { apply(::Just, BookReference.fromDocument(it)) })
                      )
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -3325,6 +3353,9 @@ data class TableWidget(private val widgetId : WidgetId,
 
 
     fun titleVariableId() : Maybe<VariableId> = this.titleVariableId
+
+
+    fun bookReference() : Maybe<BookReference> = this.bookReference
 
 
     // -----------------------------------------------------------------------------------------

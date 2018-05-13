@@ -1202,10 +1202,9 @@ val widgetListTable =
            "format",
            "values_variable_id")
 
-typealias DB_WidgetListValue =
-    RowValue3<PrimValue<WidgetId>,
-              ProdValue<ListWidgetFormat>,
-              PrimValue<VariableId>>
+//typealias DB_WidgetListValue =
+//    RowValue3<PrimValue<WidgetId>,
+//              PrimValue<VariableId>>
 
 
 // WIDGET: LIST > FORMAT
@@ -1664,11 +1663,9 @@ val widgetTableTable =
            "rows",
            "sort")
 
-typealias DB_WidgetTableValue =
-    RowValue4<PrimValue<WidgetId>,
-              CollValue<TableWidgetColumn>,
-              CollValue<TableWidgetRow>,
-              MaybePrimValue<TableSort>>
+//typealias DB_WidgetTableValue =
+//    RowValue4<PrimValue<WidgetId>,
+//              MaybePrimValue<TableSort>>
 
 
 // WIDGET: TABLE > CELL: BOOLEAN
@@ -1905,9 +1902,9 @@ val widgetTableRowTable =
            "format",
            "cells")
 
-typealias DB_WidgetTableRowValue =
-    RowValue2<ProdValue<TableWidgetRowFormat>,
-              CollValue<TableWidgetCell>>
+//typealias DB_WidgetTableRowValue =
+//    RowValue2<ProdValue<TableWidgetRowFormat>,
+//              CollValue<TableWidgetCell>>
 
 
 // WIDGET: TABLE > ROW > FORMAT

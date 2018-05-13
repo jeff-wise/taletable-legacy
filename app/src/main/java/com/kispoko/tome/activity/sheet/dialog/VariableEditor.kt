@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.sheet.dialog
 
 
 import android.content.Context
+import android.support.v7.app.AppCompatActivity
 import com.kispoko.tome.activity.entity.engine.summation.SummationDialog
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
@@ -169,12 +170,12 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             val title = textVariable.label().value
             val text  = variableValue.value
 
-            val sheetActivity = context as SheetActivity
+            val activity = context as AppCompatActivity
             val dialog = TextEditorDialog.newInstance(title,
                                                       text,
                                                       updateTarget,
                                                       entityId)
-            dialog.show(sheetActivity.supportFragmentManager, "")
+            dialog.show(activity.supportFragmentManager, "")
         }
         is TextVariableValueValue ->
         {

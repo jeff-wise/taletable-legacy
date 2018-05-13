@@ -7,18 +7,22 @@ import com.kispoko.tome.db.bookSubsectionTable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue2
-import com.kispoko.tome.lib.orm.RowValue3
 import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.apply
 import effect.effError
 import effect.effValue
+import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
+import maybe.filterJust
 import java.io.Serializable
 import java.util.*
 
@@ -30,7 +34,8 @@ import java.util.*
 data class BookSubsection(override val id : UUID,
                           val subsectionId : BookSubsectionId,
                           val title : BookSubsectionTitle,
-                          val body : BookContent)
+                          val subtitle : Maybe<BookSubsectionSubtitle>,
+                          val body : List<BookContentId>)
                            : ToDocument, ProdType, Serializable
 {
 
@@ -40,10 +45,12 @@ data class BookSubsection(override val id : UUID,
 
     constructor(subsectionId : BookSubsectionId,
                 title : BookSubsectionTitle,
-                body : BookContent)
+                subtitle : Maybe<BookSubsectionSubtitle>,
+                body : List<BookContentId>)
         : this(UUID.randomUUID(),
                subsectionId,
                title,
+               subtitle,
                body)
 
 
@@ -58,8 +65,15 @@ data class BookSubsection(override val id : UUID,
                       doc.at("id") apply { BookSubsectionId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { BookSubsectionTitle.fromDocument(it) },
+                      // Subtitle
+                      split(doc.maybeAt("subtitle"),
+                            effValue<ValueError,Maybe<BookSubsectionSubtitle>>(Nothing()),
+                            { apply(::Just, BookSubsectionSubtitle.fromDocument(it)) }),
                       // Body
-                      doc.at("body") apply { BookContent.fromDocument(it) })
+                      split(doc.maybeList("body"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } })
+                     )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -72,8 +86,8 @@ data class BookSubsection(override val id : UUID,
 
     override fun toDocument() = DocDict(mapOf(
         "id" to this.subsectionId().toDocument(),
-        "title" to this.title().toDocument(),
-        "content" to this.body().toDocument()
+        "title" to this.title().toDocument()
+//        "content" to this.body().toDocument()
     ))
 
 
@@ -87,7 +101,10 @@ data class BookSubsection(override val id : UUID,
     fun title() : BookSubsectionTitle = this.title
 
 
-    fun body() : BookContent = this.body
+    fun subtitle() : Maybe<BookSubsectionSubtitle> = this.subtitle
+
+
+    fun body() : List<BookContentId> = this.body
 
 
     // -----------------------------------------------------------------------------------------
@@ -103,6 +120,14 @@ data class BookSubsection(override val id : UUID,
     override fun rowValue() : DB_BookSubsectionValue =
         RowValue2(bookSubsectionTable, PrimValue(this.subsectionId),
                                        PrimValue(this.title))
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONTENT
+    // -----------------------------------------------------------------------------------------
+
+    fun bodyContent(book : Book) : List<BookContent> =
+            this.body.map { book.content(it) }.filterJust()
 
 }
 
@@ -175,6 +200,34 @@ data class BookSubsectionTitle(val value : String) : ToDocument, SQLSerializable
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
+ * Subsection Title
+ */
+data class BookSubsectionSubtitle(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookSubsectionSubtitle>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookSubsectionSubtitle> = when (doc)
+        {
+            is DocText -> effValue(BookSubsectionSubtitle(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 }
 

@@ -15,13 +15,13 @@ import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
-import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.rts.session.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import maybe.Nothing
 import java.util.*
+
 
 
 /**
@@ -41,7 +41,7 @@ class TestSessionActivity : AppCompatActivity()
 
 
 //    private val sheetId = SheetId("creature_brown_bear")
-    private val sheetId = SheetId("character_casmey_level_1")
+    private val sheetId = SheetId("character_sanson_level_1")
 
 
     // -----------------------------------------------------------------------------------------

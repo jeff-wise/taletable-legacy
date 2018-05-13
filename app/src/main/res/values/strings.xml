@@ -14,6 +14,13 @@
 
     <string name="later">Later</string>
     <string name="_do">Do</string>
+    <string name="authors">Authors</string>
+    <string name="author">Author</string>
+    <string name="read_more">Read More</string>
+
+    <string name="introduction">Introduction</string>
+    <string name="chapters">Chapters</string>
+    <string name="written_by">Written By</string>
 
     <string name="tasks">Tasks</string>
     <string name="messages">Messages</string>

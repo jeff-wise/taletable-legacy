@@ -141,36 +141,9 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-
         <activity
             android:name=".activity.session.SessionActivity"
             android:label="Official Sheets"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".activity.session.LoadSessionActivity"
-            android:label="Load Session"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".activity.official.heroes.OpenHeroesSessionActivity"
-            android:label="Official Sheets"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.official.fifth_ed_srd.OpenFifthEdSRDSessionActivity"
-            android:label="Official Sheets"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.official.pathfinder_one_srd.OpenPathfinderOneSRDSessionActivity"
-            android:label="Official Sheets"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.official.starfinder_srd.OpenStarfinderSRDSessionActivity"
-            android:label="Official Sheets"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.official.magic_carnival.OpenMagicCarnivalSessionActivity"
-            android:label="The Magic Carnival"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.nav.SheetNavigationActivity"

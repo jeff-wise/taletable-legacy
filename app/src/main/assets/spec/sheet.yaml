@@ -1084,12 +1084,24 @@ types:
       presence: required
       description: >
         The values in the list.
+    - name: title_variable_id
+      type:
+        type: custom_type
+        custom_type: variable_id
+      presence: optional
+      description: Title variable id.
     - name: description
       type:
         type: prim_type
         prim_type: string
       presence: optional
       description: The description.
+    - name: book_reference
+      type:
+        type: custom_type
+        custom_type: book_reference
+      presence: optional
+      description: Book reference.
 - type: product_type
   product_type:
     name: list_widget_format
@@ -1123,12 +1135,24 @@ types:
         custom_type: text_format
       presence: optional
       description: The description format.
-    - name: annotation_format
+    - name: title_bar_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The title bar format.
+    - name: title_format
       type:
         type: custom_type
         custom_type: text_format
       presence: optional
-      description: The annotation format.
+      description: The title bar format.
+    - name: edit_button_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The title bar format.
 - type: product_type
   product_type:
     name: widget_log
@@ -2417,6 +2441,12 @@ types:
         custom_type: variable_id
       presence: optional
       description: The title variable id.
+    - name: book_reference
+      type:
+        type: custom_type
+        custom_type: book_reference
+      presence: optional
+      description: A book reference.
 - type: primitive_type
   primitive_type:
     name: table_sort_order
@@ -2510,6 +2540,7 @@ types:
     group: 'Widget: Table'
     cases:
     - type: table_widget_boolean_column
+    - type: table_widget_image_column
     - type: table_widget_number_column
     - type: table_widget_text_column
 - type: primitive_type
@@ -2639,6 +2670,67 @@ types:
       presence: optional
       description: >
         Show icon next to false values?
+- type: product_type
+  product_type:
+    name: table_widget_image_column
+    label: Image Column
+    description: >
+      Table column with images.
+    group: 'Widget: Table'
+    fields:
+    - name: name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The column name.
+    - name: format
+      type:
+        type: custom_type
+        custom_type: table_widget_image_column_format
+      presence: optional
+      description: >
+        The column format.
+    - name: default_icon_type
+      type:
+        type: custom_type
+        custom_type: icon_type
+      presence: required
+      description: The column default value.
+    - name: variable_prefix
+      type:
+        type: custom_type
+        custom_type: column_variable_prefix
+      presence: optional
+      description: Variable prefix
+    - name: is_namespaced
+      type:
+        type: prim_type
+        prim_type:  boolean
+      presence: optional
+      description: >
+        Are cell in this column namespaced?
+    - name: relation
+      type:
+        type: prim_type
+        prim_type:  string
+      presence: optional
+      description: Variable relation
+- type: product_type
+  product_type:
+    name: table_widget_image_column_format
+    label: Image Column Format
+    description: >
+      Image table column format.
+    group: 'Widget: Table'
+    fields:
+    - name: column_format
+      type: 
+        type: custom_type
+        custom_type: column_format
+      presence: optional
+      description: The column format.
 - type: product_type
   product_type:
     name: table_widget_number_column
@@ -2874,6 +2966,7 @@ types:
     group: 'Widget: Table'
     cases:
     - type: table_widget_boolean_cell
+    - type: table_widget_image_cell
     - type: table_widget_number_cell
     - type: table_widget_text_cell
 - type: product_type
@@ -2984,6 +3077,40 @@ types:
       presence: optional
       description: >
         If true shows an icon for false values.
+- type: product_type
+  product_type:
+    name: table_widget_image_cell
+    label: Text Widget Image Cell
+    description: >
+      Table widget image cell.
+    group: 'Widget: Table'
+    fields:
+    - name: icon_type
+      type: 
+        type: custom_type
+        custom_type: icon_type
+      presence: optional
+      description: Icon type
+    - name: format
+      type:
+        type: custom_type
+        custom_type: book_reference
+      presence: optional
+      description: Book reference.
+- type: product_type
+  product_type:
+    name: table_widget_image_cell_format
+    label: Text Widget Image Cell Format
+    description: >
+      Table widget image cell format.
+    group: 'Widget: Table'
+    fields:
+    - name: text_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Cell specific text format.
 - type: product_type
   product_type:
     name: table_widget_number_cell
