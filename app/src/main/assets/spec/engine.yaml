@@ -1982,6 +1982,8 @@ types:
       description: A numeric constraint.
     - type: constraint_text
       description: A text constraint.
+    - type: constraint_text_list
+      description: A text list constraint.
 - type: product_type
   product_type:
     name: constraint_and
@@ -2030,6 +2032,37 @@ types:
         custom_type: data_reference_text
       presence: required
       description: Equal to value.
+- type: sum_type
+  sum_type:
+    name: constraint_text_list
+    label: Text ListConstraint
+    description: A text list constraint.
+    group: 'Constraint'
+    cases: 
+    - type: constraint_text_list_max_size
+      description: Equal to.
+    - type: constraint_text_list_is_set
+      description: Is set.
+- type: product_type
+  product_type:
+    name: constraint_text_list_max_size
+    label: Max Size Constraint
+    description: A text list constraint.
+    group: 'Constraint: Text'
+    fields:
+    - name: max_size
+      type: 
+        type: custom_type
+        custom_type: data_reference_number
+      presence: required
+      description: Max size value.
+- type: symbol_type
+  symbol_type:
+    name: constraint_text_list_is_set
+    label: 'Text List Constraint: Is Set'
+    description: Text list is a set.
+    group: 'Variable: Text'
+    symbol: 'constraint_text_list_is_set'
 - type: sum_type
   sum_type:
     name: constraint_number
@@ -2187,6 +2220,12 @@ types:
         custom_type: variable_id
       presence: optional
       description: Set variable id
+    - name: constraint
+      type: 
+        type: custom_type
+        custom_type: constraint
+      presence: optional
+      description: Text list constraint.
 - type: sum_type
   sum_type:
     name: variable_text_list_value

@@ -43,9 +43,9 @@ import java.io.Serializable
 
 
 /**
- * List Editor Dialog
+ * Subset Editor Dialog
  */
-class ListEditorDialog : DialogFragment()
+class SubsetEditorDialog : DialogFragment()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -69,9 +69,9 @@ class ListEditorDialog : DialogFragment()
                         setVariableId : Maybe<VariableId>,
                         currentValues : List<ValueId>,
                         updateTarget : UpdateTarget,
-                        entityId : EntityId) : ListEditorDialog
+                        entityId : EntityId) : SubsetEditorDialog
         {
-            val dialog = ListEditorDialog()
+            val dialog = SubsetEditorDialog()
 
             val args = Bundle()
             args.putSerializable("value_set_id", valueSetId)
@@ -181,17 +181,32 @@ class ListEditorUI(val valueSet : ValueSet,
                    val setVariableId : Maybe<VariableId>,
                    val currentValues : List<ValueId>,
                    val updateTarget : UpdateTarget,
-                   val dialog : ListEditorDialog,
+                   val dialog : SubsetEditorDialog,
                    val entityId : EntityId,
                    val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
-    // VIEWS
+    // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     var baseAdapter : ListEditorBaseValueSetRecyclerViewAdapter? = null
     var compoundAdapter : ListEditorCompoundValueSetRecyclerViewAdapter? = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    fun valueStrings() : List<String>
+    {
+        val strings = if (this.baseAdapter != null)
+            this.baseAdapter?.selectedValues?.map { it.value }
+        else
+            this.compoundAdapter?.selectedValues?.map { it.value }
+
+        return strings ?: listOf()
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -285,7 +300,7 @@ class ListEditorUI(val valueSet : ValueSet,
         layout.padding.topDp        = 4f
         layout.padding.bottomDp     = 4f
 
-//        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
+        layout.corners              = Corners(2.0, 2.0, 0.0, 0.0)
 
         return layout.relativeLayout(context)
     }
@@ -305,7 +320,7 @@ class ListEditorUI(val valueSet : ValueSet,
         title.text              = this.valueSet.labelString()
 
         title.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Bold,
+                                                TextFontStyle.Medium,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -362,6 +377,14 @@ class ListEditorUI(val valueSet : ValueSet,
                     val update = ListWidgetUpdateSetCurrentValue(
                                     updateTarget.listWidgetId,
                                     valueStrings ?: listOf())
+                    Router.send(MessageSheetUpdate(update))
+                    dialog.dismiss()
+                }
+                is UpdateTargetTableWidget ->
+                {
+                    val update = TableWidgetUpdateSubset(
+                                        updateTarget.tableWidgetId,
+                                        valueStrings())
                     Router.send(MessageSheetUpdate(update))
                     dialog.dismiss()
                 }
@@ -842,15 +865,15 @@ object ListEditor
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        name.color          = colorOrBlack(colorTheme, entityId)
+        name.color              = colorOrBlack(colorTheme, entityId)
 
-        name.sizeSp         = 12f
+        name.sizeSp             = 16f
 
-        name.margin.leftDp  = 10f
-        name.margin.rightDp = 10f
+        name.margin.leftDp      = 10f
+        name.margin.rightDp     = 10f
 
-        name.margin.topDp   = 10f
-        name.margin.bottomDp = 10f
+        name.margin.topDp       = 6f
+        name.margin.bottomDp    = 6f
 
         return name.textView(context)
     }
@@ -1035,7 +1058,7 @@ class ListEditorCompoundValueSetRecyclerViewAdapter(
         else if (item is ValueSetLabel)
         {
             val headerViewHolder = viewHolder as ListEditorHeaderViewHolder
-            headerViewHolder.setHeaderText(item.value.toUpperCase())
+            headerViewHolder.setHeaderText(item.value)
         }
     }
 

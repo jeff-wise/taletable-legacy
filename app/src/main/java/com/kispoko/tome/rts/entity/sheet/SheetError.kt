@@ -54,6 +54,21 @@ class CellVariableUndefined(val cellId : UUID) : SheetError()
 /**
  * The theme does not have a color with the given id.
  */
+class TableWidgetDoesNotHaveColumnVariableId(val widgetId : WidgetId) : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            Sheet Error: Table Widget Does Not Have Column VariableId
+                Widget Id: $widgetId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+/**
+ * The theme does not have a color with the given id.
+ */
 class SheetDoesNotHaveWidget(val widgetId : WidgetId) : SheetError()
 {
     override fun debugMessage(): String =

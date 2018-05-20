@@ -3772,67 +3772,67 @@ engine:
       - type: value_text
         value_text:
           value_id: alarm
-          description: ''
+          description: 'Set an alarm when a creature enters a small area.'
           value: 'Alarm'
           variables:
       - type: value_text
         value_text:
           value_id: burning_hands
-          description: ''
+          description: 'You shoot flames in a 15ft cone from your hands.'
           value: 'Burning Hands'
           variables:
       - type: value_text
         value_text:
           value_id: charm_person
-          description: ''
+          description: 'You attempt to charm a humanoid that you can see.'
           value: 'Charm Person'
           variables:
       - type: value_text
         value_text:
           value_id: color_spray
-          description: ''
+          description: 'Creatures in a 15ft cone originating at you are blinded.'
           value: 'Color Spray'
           variables:
       - type: value_text
         value_text:
           value_id: comprehend_languages
-          description: ''
+          description: 'Grants the ability to understand and read unfamiliar languages.'
           value: 'Comprehend Languages'
           variables:
       - type: value_text
         value_text:
           value_id: detect_magic
-          description: ''
+          description: 'You are able to detect magic within 30 feet.'
           value: 'Detect Magic'
           variables:
       - type: value_text
         value_text:
           value_id: disguise_self
-          description: ''
+          description: 'You may change your appearance (but not your overall body type).'
           value: 'Disguise Self'
           variables:
       - type: value_text
         value_text:
           value_id: expeditious_retreat
-          description: ''
+          description: 'You may take the Dash action as a bonus action.'
           value: 'Expeditious Retreat'
           variables:
       - type: value_text
         value_text:
           value_id: false_life
-          description: ''
+          description: 'Through the power of necromany, you gain temporary hit points.'
           value: 'False Life'
           variables:
       - type: value_text
         value_text:
           value_id: feather_fall
-          description: ''
+          description: 'You can slow the descent of falling creatures in range.'
           value: 'Feather Fall'
           variables:
       - type: value_text
         value_text:
           value_id: find_familiar
-          description: ''
+          description: 'You gain the service of a familiar.'
           value: 'Find Familiar'
           variables:
       - type: value_text
@@ -3850,7 +3850,7 @@ engine:
       - type: value_text
         value_text:
           value_id: grease
-          description: ''
+          description: 'Cover an area in grease, causing creatures to fall prone.'
           value: 'Grease'
           variables:
       - type: value_text
@@ -3892,7 +3892,7 @@ engine:
       - type: value_text
         value_text:
           value_id: magic_missile
-          description: ''
+          description: 'You fire three darts of magical force at your opponent.'
           value: 'Magic Missile'
           variables:
       - type: value_text
@@ -3949,8 +3949,8 @@ engine:
       values:
       - type: value_text
         value_text:
-          value_id: padded
-          description: |-
+          value_id: light_armor_padded
+          description: >-
             Padded armor consists of quilted layers of cloth and batting.
           value: 'Padded Armor'
           variables:
@@ -3976,8 +3976,8 @@ engine:
                 number_literal: 8
       - type: value_text
         value_text:
-          value_id: leather
-          description: |-
+          value_id: light_armor_leather
+          description: >-
              The breastplate and shoulder protectors of this armor are made of leather that has
              been stiffened by being boiled in oil. The rest of the armor is made of softer and
              more flexible materials
@@ -4010,8 +4010,8 @@ engine:
                 number_literal: 10
       - type: value_text
         value_text:
-          value_id: studded_leather
-          description: |-
+          value_id: light_armor_studded_leather
+          description: >-
             Made from tough but flexible leather, studded leather is reinforced with close-set
             rivets or spikes
           value: 'Studded Leather Armor'
@@ -4047,7 +4047,7 @@ engine:
       - type: value_text
         value_text:
           value_id: hide
-          description: |-
+          description: >-
             This crude armor consists of thick furs and pelts. It is commonly worn by barbarian
             tribes, evil humanoids, and other folk who lack access to the tools and materials
             needed to create better armor.
@@ -4076,7 +4076,7 @@ engine:
       - type: value_text
         value_text:
           value_id: chain_shirt
-          description: |-
+          description: >-
             Made of interlocking metal rings, a chain shirt is worn between layers of clothing
             or leather. This armor offers modest protection to the wearer's upper body and allows
             the sound of the rings rubbing against one another to be muffled by outer layers.
@@ -4105,7 +4105,7 @@ engine:
       - type: value_text
         value_text:
           value_id: scale_mail
-          description: |-
+          description: >-
             This armor consists of a coat and leggings (and perhaps a separate skirt) of leather
             covered with overlapping pieces of metal, much like the scales of a fish. The suit
             includes gauntlets.
@@ -4134,7 +4134,7 @@ engine:
       - type: value_text
         value_text:
           value_id: breastplate
-          description: |-
+          description: >-
             This armor consists of a fitted metal chest piece worn with supple leather. Although
             it leaves the legs and arms relatively unprotected, this armor provides good
             protection for the wearer's vital organs while leaving the wearer relatively unencumbered.
@@ -4163,7 +4163,7 @@ engine:
       - type: value_text
         value_text:
           value_id: halfplate
-          description: |-
+          description: >-
             Half plate consists of shaped metal plates that cover most of the wearer's body. It
             does not include leg protection beyond simple greaves that are attached with leather
             straps.
@@ -4200,7 +4200,7 @@ engine:
       - type: value_text
         value_text:
           value_id: ring_mail
-          description: |-
+          description: >-
             This armor is leather armor with heavy rings sewn into it. The rings help reinforce
             the armor against blows from swords and axes. Ring mail is inferior to chain mail,
             and it's usually worn only by those who can't afford better armor.
@@ -4229,7 +4229,7 @@ engine:
       - type: value_text
         value_text:
           value_id: chain_mail
-          description: |-
+          description: >-
            Made of interlocking metal rings, chain mail includes a layer of quilted fabric worn
            underneath the mail to prevent chafing and to cushion the impact of blows. The suit
            includes gauntlets.
@@ -4257,7 +4257,7 @@ engine:
       - type: value_text
         value_text:
           value_id: splint
-          description: |-
+          description: >-
             This armor is made of narrow vertical strips of metal riveted to a backing of leather
             that is worn over cloth padding. Flexible chain mail protects the joints.
           value: Splint
@@ -4285,7 +4285,7 @@ engine:
       - type: value_text
         value_text:
           value_id: plate
-          description: |-
+          description: >-
             Plate consists of shaped, interlocking metal plates to cover the entire body. A suit
             of plate includes gauntlets, heavy leather boots, a visored helmet, and thick layers
             of padding underneath the armor. Buckles and straps distribute the weight over the body.
@@ -7433,5 +7433,22 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: wisdom_modifier
+  - summation_id: max_prepared_spells
+    summation_name: Max Prepared Spells
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
 book_ids:
 - 'core_rules'

@@ -106,6 +106,17 @@ sealed class TableWidgetColumn(open val columnName : ColumnName,
 
     abstract fun defaultValueString(entityId : EntityId) : String
 
+
+    // -----------------------------------------------------------------------------------------
+    // COLUMN OF TYPE
+    // -----------------------------------------------------------------------------------------
+
+    fun textColumn() : Maybe<TableWidgetTextColumn> = when (this)
+    {
+        is TableWidgetTextColumn -> Just(this)
+        else                     -> Nothing()
+    }
+
 }
 
 
@@ -546,6 +557,7 @@ data class TableWidgetTextColumn(
         val defaultValue : TextVariableValue,
         val format : TextColumnFormat,
         val action : Maybe<Action>,
+        val columnVariableId : Maybe<VariableId>,
         val definesNamespace : DefinesNamespace)
          : TableWidgetColumn(columnName, variablePrefix, variableRelation, isColumnNamespaced)
 {
@@ -563,6 +575,7 @@ data class TableWidgetTextColumn(
                 defaultValue : TextVariableValue,
                 format : TextColumnFormat,
                 action : Maybe<Action>,
+                columnVariableId : Maybe<VariableId>,
                 definesNamespace: DefinesNamespace)
         : this(UUID.randomUUID(),
                columnName,
@@ -573,6 +586,7 @@ data class TableWidgetTextColumn(
                defaultValue,
                format,
                action,
+               columnVariableId,
                definesNamespace)
 
 
@@ -610,6 +624,10 @@ data class TableWidgetTextColumn(
                       split(doc.maybeAt("action"),
                             effValue<ValueError,Maybe<Action>>(Nothing()),
                             { apply(::Just, Action.fromDocument(it)) }),
+                      // Column Variable Id
+                      split(doc.maybeAt("column_variable_id"),
+                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                            { apply(::Just, VariableId.fromDocument(it)) }),
                       // Defines Namespace?
                       split(doc.maybeAt("defines_namespace"),
                             effValue(DefinesNamespace(false)),
@@ -651,6 +669,9 @@ data class TableWidgetTextColumn(
     fun defaultValue() : TextVariableValue = this.defaultValue
 
 
+    fun columnVariableId() : Maybe<VariableId> = this.columnVariableId
+
+
     fun action() : Maybe<Action> = this.action
 
 
@@ -683,27 +704,6 @@ data class TableWidgetTextColumn(
 
 
     fun tags() : List<VariableTag> = this.tags
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() {}
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetTableColumnTextValue =
-//        RowValue7(widgetTableColumnTextTable,
-//                  PrimValue(this.columnName),
-//                  PrimValue(this.variablePrefix),
-//                  PrimValue(this.isColumnNamespaced),
-//                  SumValue(this.defaultValue),
-//                  ProdValue(this.format),
-//                  MaybeProdValue(this.action),
-//                  PrimValue(this.definesNamespace))
 
 }
 
@@ -788,34 +788,6 @@ data class ColumnVariablePrefix(val value : String) : ToDocument, SQLSerializabl
 }
 
 
-/**
- * Default Value Label
- */
-//data class DefaultValueLabel(val value : String) : ToDocument, SQLSerializable, Serializable
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    companion object : Factory<DefaultValueLabel>
-//    {
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<DefaultValueLabel> = when (doc)
-//        {
-//            is DocText -> effValue(DefaultValueLabel(doc.text))
-//            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-//        }
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // SQL SERIALIZABLE
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun asSQLValue(): SQLValue = SQLText({this.value})
-//
-//}
-
 
 /**
  * Is Column Namespaced?
@@ -888,6 +860,35 @@ data class DefinesNamespace(val value : Boolean) : ToDocument, SQLSerializable, 
     override fun asSQLValue(): SQLValue = SQLInt({if (this.value) 1 else 0})
 
 }
+
+
+/**
+ * Primary Column Index
+ */
+data class PrimaryColumnIndex(val value : Int) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<PrimaryColumnIndex>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<PrimaryColumnIndex> = when (doc)
+        {
+            is DocNumber -> effValue(PrimaryColumnIndex(doc.number.toInt()))
+            else          -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+}
+
 
 
 /**

@@ -1123,12 +1123,30 @@ types:
         prim_type: string
       presence: optional
       description: The list widget view type.
+    - name: list_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The values format.
     - name: item_format
       type:
         type: custom_type
         custom_type: text_format
       presence: optional
       description: The values format.
+    - name: item_inactive_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The values format.
+    - name: default_item_text
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The default item text.
     - name: description_format
       type:
         type: custom_type
@@ -1153,6 +1171,37 @@ types:
         custom_type: text_format
       presence: optional
       description: The title bar format.
+    - name: constraint_format
+      type:
+        type: custom_type
+        custom_type: list_widget_constraint_format
+      presence: optional
+      description: The title bar format.
+- type: product_type
+  product_type:
+    name: list_widget_constraint_format
+    label: List Widget
+    description: List widget constraint formatting options.
+    group: 'Widget: List'
+    fields:
+    - name: text_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Text format.
+    - name: fail_text_format
+      type: 
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Text format.
+    - name: message
+      type: 
+        type: custom_type
+        custom_type: message
+      presence: optional
+      description: Message.
 - type: product_type
   product_type:
     name: widget_log
@@ -2426,7 +2475,7 @@ types:
       type:
         type: custom_coll_type
         custom_coll_type: table_widget_row
-      presence: required
+      presence: optional
       description: >
         The table rows.
     - name: sort
@@ -2441,6 +2490,12 @@ types:
         custom_type: variable_id
       presence: optional
       description: The title variable id.
+    - name: primary_column_index
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: The primary column index.
     - name: book_reference
       type:
         type: custom_type
@@ -2848,6 +2903,12 @@ types:
         custom_type: variable_text_value
       presence: required
       description: The column default value.
+    - name: column_variable_id
+      type:
+        type: custom_type
+        custom_type: variable_id
+      presence: optional
+      description: The column variable id.
     - name: defines_namespace
       type:
         type: prim_type

@@ -73,7 +73,8 @@ data class TextListVariableLiteralValue(val value : List<String>)
         override fun fromDocument(doc : SchemaDoc) : ValueParser<TextListVariableValue> = when (doc)
         {
             is DocList -> apply(::TextListVariableLiteralValue, doc.stringList())
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+            // TODO imporve lulo to handle this
+            else       -> effValue(TextListVariableLiteralValue(listOf()))
         }
     }
 

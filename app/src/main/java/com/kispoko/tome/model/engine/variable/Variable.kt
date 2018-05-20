@@ -16,16 +16,15 @@ import com.kispoko.tome.lib.orm.schema.SumValue
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.engine.*
+import com.kispoko.tome.model.engine.constraint.*
 import com.kispoko.tome.model.engine.dice.DiceRoll
 import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
+import com.kispoko.tome.model.engine.value.Value
+import com.kispoko.tome.model.engine.value.ValueId
 import com.kispoko.tome.model.engine.value.ValueReference
 import com.kispoko.tome.model.engine.value.ValueSetId
-import com.kispoko.tome.model.engine.constraint.ConstraintNumber
-import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.onVariableUpdate
+import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.*
-import com.kispoko.tome.rts.entity.value
-import com.kispoko.tome.rts.entity.variable
 import com.kispoko.tome.util.Util
 import effect.*
 import maybe.*
@@ -1442,6 +1441,7 @@ data class TextListVariable(override val id : UUID,
                             private val tags : MutableList<VariableTag>,
                             private val relation : Maybe<VariableRelation>,
                             var variableValue : TextListVariableValue,
+                            var constraint : Maybe<Constraint>,
                             var valueSetId : Maybe<ValueSetId>,
                             var setVariableId : Maybe<VariableId>)
                             : Variable()
@@ -1461,6 +1461,7 @@ data class TextListVariable(override val id : UUID,
                 tags : List<VariableTag>,
                 relation : Maybe<VariableRelation>,
                 variableValue : TextListVariableValue,
+                constraint : Maybe<Constraint>,
                 valueSetId : Maybe<ValueSetId>,
                 setVariableId : Maybe<VariableId>)
         : this(UUID.randomUUID(),
@@ -1470,6 +1471,7 @@ data class TextListVariable(override val id : UUID,
                tags.toMutableList(),
                relation,
                variableValue,
+               constraint,
                valueSetId,
                setVariableId)
 
@@ -1497,6 +1499,10 @@ data class TextListVariable(override val id : UUID,
                             { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
                       doc.at("value") ap { TextListVariableValue.fromDocument(it) },
+                      // Constraint
+                      split(doc.maybeAt("constraint"),
+                            effValue<ValueError,Maybe<Constraint>>(Nothing()),
+                            { apply(::Just, Constraint.fromDocument(it)) } ),
                       // Value Set Id
                       split(doc.maybeAt("value_set_id"),
                             effValue<ValueError,Maybe<ValueSetId>>(Nothing()),
@@ -1559,6 +1565,9 @@ data class TextListVariable(override val id : UUID,
     fun variableValue() : TextListVariableValue = this.variableValue
 
 
+    fun constraint() : Maybe<Constraint> = this.constraint
+
+
     fun valueSetId() : Maybe<ValueSetId> = this.valueSetId
 
 
@@ -1619,6 +1628,22 @@ data class TextListVariable(override val id : UUID,
             apply(::EngineTextListValue, this.value(entityId))
 
 
+    fun setVariable(entityId : EntityId) : Maybe<TextListVariable>
+    {
+        val setVariableId =this.setVariableId
+        return when (setVariableId) {
+            is Just -> {
+                val variable = textListVariable(setVariableId.value, entityId)
+                when (variable) {
+                    is Val -> Just(variable.value)
+                    is Err -> Nothing()
+                }
+            }
+            is Nothing -> Nothing()
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // HISTORY
     // -----------------------------------------------------------------------------------------
@@ -1649,6 +1674,53 @@ data class TextListVariable(override val id : UUID,
                 this.variableValue = TextListVariableLiteralValue(value)
                 onVariableUpdate(this, entityId)
             }
+        }
+    }
+
+
+    fun addValue(value : String, entityId : EntityId)
+    {
+        val variableValue = this.variableValue()
+        when (variableValue)
+        {
+            is TextListVariableLiteralValue ->
+            {
+                val newValueList = variableValue.value.plus(value)
+                this.variableValue = TextListVariableLiteralValue(newValueList)
+                onVariableUpdate(this, entityId)
+            }
+        }
+    }
+
+
+    fun values(entityId : EntityId) : List<Value>
+    {
+        var values : List<Value> = listOf()
+
+        this.valueSetId.doMaybe {
+            valueSet(it, entityId)
+            .apDo { valueSet ->
+                value(entityId)
+            .apDo { valueStrings ->
+                val valueIds = valueStrings.map { ValueId(it) }
+                Log.d("***VARIABLE", "value ids: $valueIds ")
+                values = valueSet.values(valueIds, entityId)
+            } }
+        }
+
+        return values
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRAINTS
+    // -----------------------------------------------------------------------------------------
+
+    fun hasSetConstraint() : Boolean {
+        val constraint = this.constraint
+        return when (constraint) {
+            is Just    -> constraint.value.hasConstraintType(ConstraintTypeTextListIsSet)
+            is Nothing -> false
         }
     }
 

@@ -14,12 +14,14 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.google.android.flexbox.*
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.book.BookActivity
+import com.kispoko.tome.activity.sheet.dialog.ValueChooserDialogFragment
 import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.app.AppStateError
@@ -29,12 +31,16 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.engine.EngineTextListValue
+import com.kispoko.tome.model.engine.constraint.ConstraintTypeTextListMaxSize
+import com.kispoko.tome.model.engine.constraint.TextListConstraintMaxSize
+import com.kispoko.tome.model.engine.message.Message
 import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
+import com.kispoko.tome.model.engine.value.Value
+import com.kispoko.tome.model.engine.value.ValueId
 import com.kispoko.tome.model.engine.value.ValueReference
 import com.kispoko.tome.model.engine.value.ValueSetId
-import com.kispoko.tome.model.sheet.style.BorderEdge
-import com.kispoko.tome.model.sheet.style.ElementFormat
-import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
@@ -42,6 +48,7 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.rts.entity.sheet.*
+import com.kispoko.tome.rts.entity.textListVariable
 import com.kispoko.tome.rts.entity.value
 import com.kispoko.tome.util.Util
 import effect.*
@@ -51,6 +58,8 @@ import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 
 
@@ -60,11 +69,15 @@ import java.io.Serializable
  */
 data class ListWidgetFormat(val widgetFormat : WidgetFormat,
                             val viewType : ListViewType,
+                            val listFormat : ElementFormat,
                             val itemFormat : TextFormat,
+                            val itemInactiveFormat : TextFormat,
+                            val defaultItemText : ListWidgetDefaultItemText,
                             val descriptionFormat : TextFormat,
                             val titleBarFormat : ElementFormat,
                             val titleFormat : TextFormat,
-                            val editButtonFormat : TextFormat)
+                            val editButtonFormat : TextFormat,
+                            val constraintFormat : ListWidgetConstraintFormat)
                              : ToDocument, Serializable
 {
 
@@ -79,11 +92,15 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
 
         private fun defaultWidgetFormat()       = WidgetFormat.default()
         private fun defaultViewType()           = ListViewType.ParagraphCommas
+        private fun defaultListFormat()         = ElementFormat.default()
         private fun defaultItemFormat()         = TextFormat.default()
+        private fun defaultItemInactiveFormat() = TextFormat.default()
+        private fun defaultItemText()           = ListWidgetDefaultItemText("")
         private fun defaultDescriptionFormat()  = TextFormat.default()
         private fun defaultTitleBarFormat()     = ElementFormat.default()
         private fun defaultTitleFormat()        = TextFormat.default()
         private fun defaultEditButtonFormat()   = TextFormat.default()
+        private fun defaultConstraintFormat()   = ListWidgetConstraintFormat.default()
 
 
         override fun fromDocument(doc : SchemaDoc) : ValueParser<ListWidgetFormat> = when (doc)
@@ -99,10 +116,22 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
                      split(doc.maybeAt("view_type"),
                            effValue<ValueError,ListViewType>(defaultViewType()),
                            { ListViewType.fromDocument(it) }),
+                     // List Format
+                     split(doc.maybeAt("list_format"),
+                           effValue(defaultListFormat()),
+                           { ElementFormat.fromDocument(it) }),
                      // Item Format
                      split(doc.maybeAt("item_format"),
                            effValue(defaultItemFormat()),
                            { TextFormat.fromDocument(it) }),
+                     // Item Inactive Format
+                     split(doc.maybeAt("item_inactive_format"),
+                           effValue(defaultItemInactiveFormat()),
+                           { TextFormat.fromDocument(it) }),
+                     // Description Format
+                     split(doc.maybeAt("default_item_text"),
+                           effValue(defaultItemText()),
+                           { ListWidgetDefaultItemText.fromDocument(it) }),
                      // Description Format
                      split(doc.maybeAt("description_format"),
                            effValue(defaultDescriptionFormat()),
@@ -118,7 +147,11 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
                      // Edit Button Format
                      split(doc.maybeAt("edit_button_format"),
                            effValue(defaultEditButtonFormat()),
-                           { TextFormat.fromDocument(it) })
+                           { TextFormat.fromDocument(it) }),
+                     // Constraint Format
+                     split(doc.maybeAt("constraint_format"),
+                           effValue(defaultConstraintFormat()),
+                           { ListWidgetConstraintFormat.fromDocument(it) })
                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -127,11 +160,15 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
 
         fun default() = ListWidgetFormat(defaultWidgetFormat(),
                                          defaultViewType(),
+                                         defaultListFormat(),
                                          defaultItemFormat(),
+                                         defaultItemInactiveFormat(),
+                                         defaultItemText(),
                                          defaultDescriptionFormat(),
                                          defaultTitleBarFormat(),
                                          defaultTitleFormat(),
-                                         defaultEditButtonFormat())
+                                         defaultEditButtonFormat(),
+                                         defaultConstraintFormat())
     }
 
 
@@ -156,7 +193,16 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
     fun viewType() : ListViewType = this.viewType
 
 
+    fun listFormat() : ElementFormat = this.listFormat
+
+
     fun itemFormat() : TextFormat = this.itemFormat
+
+
+    fun itemInactiveFormat() : TextFormat = this.itemInactiveFormat
+
+
+    fun defaultItemText() : ListWidgetDefaultItemText = this.defaultItemText
 
 
     fun descriptionFormat() : TextFormat = this.descriptionFormat
@@ -171,23 +217,82 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
     fun editButtonFormat() : TextFormat = this.editButtonFormat
 
 
+    fun constraintFormat() : ListWidgetConstraintFormat = this.constraintFormat
+
+}
+
+
+
+/**
+ * List Widget Constraint Format
+ */
+data class ListWidgetConstraintFormat(val textFormat : TextFormat,
+                                      val failTextFormat : TextFormat,
+                                      val message : Maybe<Message>)
+                                       : ToDocument, Serializable
+{
+
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetListFormatValue =
-//        RowValue5(widgetListFormatTable,
-//                  ProdValue(this.widgetFormat),
-//                  PrimValue(this.viewType),
-//                  ProdValue(this.itemFormat),
-//                  ProdValue(this.descriptionFormat),
-//                  ProdValue(this.annotationFormat))
+
+    companion object : Factory<ListWidgetConstraintFormat>
+    {
+
+        private fun defaultTextFormat()     = TextFormat.default()
+        private fun defaultFailTextFormat() = TextFormat.default()
+        private fun defaultMessage()        = Nothing<Message>()
+
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ListWidgetConstraintFormat> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ListWidgetConstraintFormat,
+                     // Text Format
+                     split(doc.maybeAt("text_format"),
+                           effValue(defaultTextFormat()),
+                           { TextFormat.fromDocument(it) }),
+                     // Fail Text Format
+                     split(doc.maybeAt("fail_text_format"),
+                           effValue(defaultFailTextFormat()),
+                           { TextFormat.fromDocument(it) }),
+                     // Message
+                     split(doc.maybeAt("message"),
+                           effValue<ValueError,Maybe<Message>>(defaultMessage()),
+                           { apply(::Just, Message.fromDocument(it))  })
+                     )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun default() = ListWidgetConstraintFormat(defaultTextFormat(),
+                                                   defaultFailTextFormat(),
+                                                   defaultMessage())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "text_format" to this.textFormat().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun textFormat() : TextFormat = this.textFormat
+
+
+    fun failTextFormat() : TextFormat = this.failTextFormat
+
+
+    fun message() : Maybe<Message> = this.message
 
 }
 
@@ -240,6 +345,21 @@ sealed class ListViewType : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object Pool : ListViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "pool" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("pool")
+
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -253,6 +373,7 @@ sealed class ListViewType : ToDocument, SQLSerializable, Serializable
                 "paragraph_commas"   -> effValue<ValueError,ListViewType>(ListViewType.ParagraphCommas)
                 "rows"               -> effValue<ValueError,ListViewType>(ListViewType.Rows)
                 "rows_simple_editor" -> effValue<ValueError,ListViewType>(ListViewType.RowsSimpleEditor)
+                "pool"               -> effValue<ValueError,ListViewType>(ListViewType.Pool)
                 else                 -> effError<ValueError,ListViewType>(
                                             UnexpectedValue("ListViewType", doc.text, doc.path))
             }
@@ -300,6 +421,34 @@ data class ListWidgetDescription(val value : String) : ToDocument, SQLSerializab
 }
 
 
+/**
+ * List Widget Default Item Text
+ */
+data class ListWidgetDefaultItemText(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ListWidgetDefaultItemText>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ListWidgetDefaultItemText> = when (doc)
+        {
+            is DocText -> effValue(ListWidgetDefaultItemText(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
+
 
 sealed class ListWidgetEditType
 {
@@ -331,7 +480,7 @@ class ListWidgetUI(val listWidget : ListWidget,
     // METHODS
     // -----------------------------------------------------------------------------------------
 
-    private fun openEditDialog()
+    private fun openSubsetEditDialog()
     {
         val textListVariable =  listWidget.variable(entityId)
         when (textListVariable) {
@@ -344,6 +493,56 @@ class ListWidgetUI(val listWidget : ListWidget,
             }
         }
     }
+
+
+    private fun openListEditDialog(valueString : String? = null)
+    {
+//        val valueIdsEff = listWidget.variable(entityId)
+//                                 .apply { it.setv(entityId) }
+//                                 .apply { effValue<AppError,List<ValueId>>(it.map { ValueId(it) }) }
+
+//
+
+        listWidget.variable(entityId) apDo { variable ->
+
+            val setVariable = variable.setVariable(entityId)
+            when (setVariable)
+            {
+                is Just ->
+                {
+                    val values = setVariable.value.values(entityId)
+                    variable.valueSetId.doMaybe { valueSetId ->
+                        val chooseItemDialog = ValueChooserDialogFragment.newInstance(
+                                                                valueSetId,
+                                                                values.map { it.valueId() },
+                                                                valueString?.let { ValueId(it) },
+                                                                UpdateTargetListWidget(listWidget.widgetId()),
+                                                                entityId)
+                        chooseItemDialog.show(activity.supportFragmentManager, "")
+                    }
+                }
+                is Nothing ->
+                {
+                    variable.valueSetId().doMaybe { valueSetId ->
+                        val chooseItemDialog = ValueChooserDialogFragment.newInstance(
+                                                                valueSetId,
+                                                                listOf(),
+                                                                valueString?.let { ValueId(it) },
+                                                                UpdateTargetListWidget(listWidget.widgetId()),
+                                                                entityId)
+                        chooseItemDialog.show(activity.supportFragmentManager, "")
+                    }
+
+                }
+            }
+
+
+        }
+
+
+
+    }
+
 
 
     private fun toggleEditMode()
@@ -395,6 +594,23 @@ class ListWidgetUI(val listWidget : ListWidget,
     }
 
 
+
+    private fun itemStrings() : List<String>
+    {
+        val idStrings = listWidget.valueIdStrings(entityId)
+        return when (idStrings)
+        {
+            is Val -> {
+                idStrings.value.sorted()
+            }
+            is Err -> {
+                ApplicationLog.error(idStrings.error)
+                listOf()
+            }
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // VIEW
     // -----------------------------------------------------------------------------------------
@@ -418,6 +634,7 @@ class ListWidgetUI(val listWidget : ListWidget,
         is ListViewType.ParagraphCommas  -> inlineView()
         is ListViewType.Rows             -> rowsView(ListWidgetEditType.Advanced)
         is ListViewType.RowsSimpleEditor -> rowsView(ListWidgetEditType.Simple)
+        is ListViewType.Pool             -> poolView()
     }
 
 
@@ -425,9 +642,9 @@ class ListWidgetUI(val listWidget : ListWidget,
     {
         val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
 
-        contentLayout.removeAllViews()
+        contentLayout?.removeAllViews()
 
-        contentLayout.addView(this.listView())
+        contentLayout?.addView(this.listView())
     }
 
 
@@ -592,6 +809,26 @@ class ListWidgetUI(val listWidget : ListWidget,
 
         layout.addView(this.titleBarView(editType))
 
+        listWidget.variable(entityId) apDo { variable ->
+            variable.constraint().doMaybe { constraint ->
+            constraint.constraintOfType(ConstraintTypeTextListMaxSize).doMaybe {
+                if (it is TextListConstraintMaxSize)
+                {
+                    SheetData.number(it.maxSize, entityId).apDo {
+                        it.doMaybe {
+                            val currentSizeString = this.itemStrings().size.toString()
+                            val maxSizeString = Util.doubleString(it)
+                            val counterString = "$currentSizeString\u2008/\u2008$maxSizeString"
+                            listWidget.format().constraintFormat().message().doMaybe {
+                                val constraintString = it.templateString(listOf(counterString))
+                                layout.addView(this.rowsConstraintView(constraintString))
+                            }
+                        }
+                    }
+                }
+            } }
+        }
+
         layout.addView(this.itemsView())
 
         return layout
@@ -645,7 +882,6 @@ class ListWidgetUI(val listWidget : ListWidget,
 
         return layout.linearLayout(context)
     }
-
 
 
     private fun rowView(itemString : String) : LinearLayout
@@ -806,7 +1042,7 @@ class ListWidgetUI(val listWidget : ListWidget,
     // VIEWS > Rows > Title Bar
     // -----------------------------------------------------------------------------------------
 
-    private fun titleBarView(editType : ListWidgetEditType) : RelativeLayout
+    private fun titleBarView(editType : ListWidgetEditType) : ViewGroup
     {
         val layout = this.titleBarViewLayout()
 
@@ -829,9 +1065,9 @@ class ListWidgetUI(val listWidget : ListWidget,
     }
 
 
-    private fun titleBarViewLayout() : RelativeLayout
+    private fun titleBarViewLayout() : LinearLayout
     {
-        val layout              = RelativeLayoutBuilder()
+        val layout              = LinearLayoutBuilder()
         val format              = listWidget.format().titleBarFormat()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
@@ -844,9 +1080,11 @@ class ListWidgetUI(val listWidget : ListWidget,
 
         layout.backgroundColor  = colorOrBlack(format.backgroundColorTheme(), entityId)
 
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
         layout.corners          = format.corners()
 
-        return layout.relativeLayout(context)
+        return layout.linearLayout(context)
     }
 
 
@@ -855,9 +1093,12 @@ class ListWidgetUI(val listWidget : ListWidget,
         val title               = TextViewBuilder()
         val format              = listWidget.format().titleFormat()
 
-        title.layoutType        = LayoutType.RELATIVE
-        title.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
-        title.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
+//        title.layoutType        = LayoutType.RELATIVE
+//        title.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
+//        title.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.weight            = 1f
 
         title.addRule(RelativeLayout.ALIGN_PARENT_START)
         title.addRule(RelativeLayout.CENTER_VERTICAL)
@@ -897,9 +1138,11 @@ class ListWidgetUI(val listWidget : ListWidget,
     {
         val layout              = LinearLayoutBuilder()
 
-        layout.layoutType       = LayoutType.RELATIVE
-        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
+//        layout.layoutType       = LayoutType.RELATIVE
+//        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+//        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.padding.leftDp   = 10f
         layout.padding.rightDp  = 5f
@@ -909,7 +1152,7 @@ class ListWidgetUI(val listWidget : ListWidget,
 
         layout.onClick          = View.OnClickListener {
             when (editType) {
-                is ListWidgetEditType.Simple   -> this.openEditDialog()
+                is ListWidgetEditType.Simple   -> this.openSubsetEditDialog()
                 is ListWidgetEditType.Advanced -> this.toggleEditMode()
             }
 
@@ -933,6 +1176,301 @@ class ListWidgetUI(val listWidget : ListWidget,
 
         return label.textView(context)
     }
+
+
+    // VIEWS > Rows > Constraint
+    // -----------------------------------------------------------------------------------------
+
+    private fun rowsConstraintView(constraintString : String) : LinearLayout
+    {
+        val layout = this.rowsConstraintViewLayout()
+
+        layout.addView(this.rowConstraintTextView(constraintString))
+
+        return layout
+    }
+
+
+    private fun rowsConstraintViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+        var format                  = listWidget.format().constraintFormat().textFormat()
+
+        listWidget.variable(entityId).apDo { variable ->
+            variable.constraint().doMaybe {
+                if (!it.matchesValue(EngineTextListValue(this.itemStrings()), entityId)) {
+                    format = listWidget.format().constraintFormat().failTextFormat()
+                }
+            }
+        }
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.backgroundColor      = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
+        layout.paddingSpacing       = format.elementFormat().padding()
+        layout.marginSpacing        = format.elementFormat().margins()
+
+        return layout.linearLayout(context)
+    }
+
+    private fun rowConstraintTextView(constraintString : String) : TextView
+    {
+        val constraintView              = TextViewBuilder()
+
+        var format                  = listWidget.format().constraintFormat().textFormat()
+
+        listWidget.variable(entityId).apDo { variable ->
+            variable.constraint().doMaybe {
+                if (!it.matchesValue(EngineTextListValue(this.itemStrings()), entityId)) {
+                    format = listWidget.format().constraintFormat().failTextFormat()
+                }
+            }
+        }
+
+        constraintView.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        constraintView.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        constraintView.text             = constraintString
+
+
+
+//        listWidget.variable(entityId).apDo { variable ->
+//            variable.constraint().doMaybe {
+//                when (it) {
+//                    is TextListConstraintMaxSize -> {
+//                        SheetData.number(it.maxSize, entityId).apDo {
+//                            it.doMaybe {
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+        constraintView.color             = colorOrBlack(format.colorTheme(), entityId)
+
+        constraintView.sizeSp            = format.sizeSp()
+
+        constraintView.font              = Font.typeface(format.font(),
+                                                     format.fontStyle(),
+                                                     context)
+
+        return constraintView.textView(context)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW > Pool
+    // -----------------------------------------------------------------------------------------
+
+    private fun poolView() : LinearLayout
+    {
+        val layout          = this.poolViewLayout()
+
+        layout.addView(this.titleBarView(ListWidgetEditType.Advanced))
+
+        layout.addView(this.poolItemsView())
+
+        return layout
+    }
+
+
+    private fun poolViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+        val format              = listWidget.format().listFormat()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.paddingSpacing   = format.padding()
+        layout.marginSpacing    = format.margins()
+
+        layout.backgroundColor  = colorOrBlack(format.backgroundColorTheme(), entityId)
+
+        return layout.linearLayout(context)
+    }
+
+
+
+    private fun poolItemsView() : FlexboxLayout
+    {
+        val layout = this.poolItemsViewLayout()
+
+        listWidget.variable(entityId) apDo { variable ->
+            variable.constraint().doMaybe { constraint ->
+            constraint.constraintOfType(ConstraintTypeTextListMaxSize).doMaybe {
+                if (it is TextListConstraintMaxSize)
+                {
+                    SheetData.number(it.maxSize, entityId).apDo {
+                        it.doMaybe {
+                            val values = variable.values(entityId)
+
+                            Log.d("***LIST WIDGET", "values: $values ")
+
+                            values.forEach {
+                                layout.addView(this.poolItemActiveView(it))
+                            }
+
+                            val maxSize = it.toInt()
+                            val inactiveItems = maxSize - values.size
+
+                            for (i in 1..inactiveItems) {
+                                layout.addView(this.poolItemInactiveView())
+                            }
+
+                        }
+                    }
+                }
+            } }
+        }
+
+        return layout
+    }
+
+
+    private fun poolItemsViewLayout() : FlexboxLayout
+    {
+        val layout              = FlexboxLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        when (format.widgetFormat().elementFormat().alignment()) {
+//            is Alignment.Center -> layout.justification = JustifyContent.CENTER
+//        }
+
+        layout.direction        = FlexDirection.ROW
+        layout.wrap             = FlexWrap.WRAP
+
+//        when (format.widgetFormat().elementFormat().verticalAlignment()) {
+//            is VerticalAlignment.Middle -> layout.itemAlignment = AlignItems.CENTER
+//        }
+
+        return layout.flexboxLayout(context)
+
+    }
+
+
+    private fun poolItemActiveView(value : Value) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val label               = TextViewBuilder()
+
+        val format              = listWidget.format().itemFormat()
+
+        // (2) Declarations
+        // -------------------------------------------------------------------------------------
+
+        layout.layoutType       = LayoutType.FLEXBOX
+
+        val width = format.elementFormat().width()
+        when (width) {
+            is Width.Fixed -> layout.widthDp = width.value.toInt()
+            else           -> layout.width = FlexboxLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        val height = format.elementFormat().height()
+        when (height) {
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+            else            -> layout.height = FlexboxLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
+
+        layout.corners          = format.elementFormat().corners()
+
+        layout.gravity          = Gravity.CENTER
+
+        layout.paddingSpacing    = format.elementFormat().padding()
+        layout.marginSpacing    = format.elementFormat().margins()
+
+        layout.onClick          = View.OnClickListener {
+            this.openListEditDialog(value.valueId().value)
+        }
+
+        layout.child(label)
+
+        // (2) Declarations
+        // -------------------------------------------------------------------------------------
+
+        label.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text         = value.valueString()
+
+        format.styleTextViewBuilder(label, entityId, context)
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun poolItemInactiveView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val label               = TextViewBuilder()
+
+        val format              = listWidget.format().itemInactiveFormat()
+
+        // (2) Declarations
+        // -------------------------------------------------------------------------------------
+
+        layout.layoutType       = LayoutType.FLEXBOX
+
+        val width = format.elementFormat().width()
+        when (width) {
+            is Width.Fixed -> layout.widthDp = width.value.toInt()
+            else           -> layout.width = FlexboxLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        val height = format.elementFormat().height()
+        when (height) {
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+            else            -> layout.height = FlexboxLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
+
+        layout.corners          = format.elementFormat().corners()
+
+        layout.gravity          = Gravity.CENTER
+
+        layout.paddingSpacing   = format.elementFormat().padding()
+        layout.marginSpacing    = format.elementFormat().margins()
+
+        layout.onClick          = View.OnClickListener {
+            this.openListEditDialog()
+        }
+
+        layout.child(label)
+
+        // (2) Declarations
+        // -------------------------------------------------------------------------------------
+
+        label.width        = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text         = listWidget.format().defaultItemText().value
+
+        format.styleTextViewBuilder(label, entityId, context)
+
+        return layout.linearLayout(context)
+    }
+
+
 
 }
 

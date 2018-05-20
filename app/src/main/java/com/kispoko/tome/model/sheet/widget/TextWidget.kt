@@ -167,10 +167,6 @@ object TextWidgetView
 
         this.updateView(textWidget, entityId, layout, context)
 
-//        val contentLayout = layout.findViewById(R.id.widget_content_layout) as LinearLayout
-//
-//        contentLayout.addView(this.mainView(textWidget, format, entityId, context))
-
         // On Click
         // -------------------------------------------------------------------------------------
 

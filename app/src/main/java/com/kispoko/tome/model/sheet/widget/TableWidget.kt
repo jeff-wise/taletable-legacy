@@ -11,20 +11,21 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.*
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.edit
-import com.kispoko.tome.R.string.table
 import com.kispoko.tome.activity.entity.book.BookActivity
-import com.kispoko.tome.activity.sheet.widget.table.TableEditorActivity
+import com.kispoko.tome.activity.sheet.dialog.openTextListVariableEditorDialog
+import com.kispoko.tome.activity.sheet.dialog.openVariableEditorDialog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.engine.variable.TextListVariable
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.sheet.UpdateTargetTableWidget
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -296,6 +297,21 @@ class TableWidgetUI(val tableWidget : TableWidget,
     private var headerRowView : TableRow? = null
 
 
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    private fun openSubsetEditor(variable : TextListVariable)
+    {
+        val updateTarget = UpdateTargetTableWidget(tableWidget.widgetId())
+        openTextListVariableEditorDialog(variable,
+                                         updateTarget,
+                                         entityId,
+                                         context)
+    }
+
+
     private fun toggleEditMode()
     {
         editMode = !editMode
@@ -352,30 +368,69 @@ class TableWidgetUI(val tableWidget : TableWidget,
 
     fun view() : View
     {
-        val layout = WidgetView.widgetTouchLayout(tableWidget.format().widgetFormat(), entityId, context)
+        val layout = WidgetView.layout(tableWidget.format().widgetFormat(), entityId, context)
 
-        val tableLayout = this.tableLayout()
-        val tableLayoutId = Util.generateViewId()
-        tableLayout.id = tableLayoutId
-        tableWidget.tableLayoutId = tableLayoutId
+        val layoutId = Util.generateViewId()
+        layout.id = layoutId
+        tableWidget.layoutId = layoutId
+
+        this.updateView(layout)
+
+        return layout
+    }
+
+
+    fun updateView(layout : LinearLayout)
+    {
+        val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
+
+        contentLayout.removeAllViews()
+
+        contentLayout.addView(this.mainView())
+    }
+
+
+    private fun mainView() : View
+    {
+        val layout = this.mainLayout()
 
         layout.addView(this.titleBarView())
 
-        layout.addView(tableLayout)
+        layout.addView(this.tableView())
+
+        return layout
+    }
+
+
+    private fun mainLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun tableView() : TableLayout
+    {
+        val layout = this.tableLayout()
 
         val headerRowView = this.headerRowView(tableWidget.columns(),
                                                tableWidget.format(),
                                                entityId,
                                                context)
-        tableLayout.addView(headerRowView)
+        layout.addView(headerRowView)
         this.headerRowView = headerRowView
 
-        tableWidget.rows().forEachIndexed { rowIndex, tableWidgetRow ->
+        tableWidget.cachedRows().forEach { tableWidgetRow ->
             val tableRowView = tableWidgetRow.view(tableWidget,
-                                                    rowIndex,
-                                                    entityId,
-                                                    context)
-            tableLayout.addView(tableRowView)
+                                                   entityId,
+                                                   context)
+            layout.addView(tableRowView)
             this.tableRowViews.add(tableRowView)
         }
 
@@ -388,6 +443,10 @@ class TableWidgetUI(val tableWidget : TableWidget,
         val layout = TableLayoutBuilder()
         val format = tableWidget.format()
 
+        val tableLayoutId = Util.generateViewId()
+        layout.id = tableLayoutId
+        tableWidget.tableLayoutId = tableLayoutId
+
         layout.layoutType           = LayoutType.LINEAR
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -396,17 +455,6 @@ class TableWidgetUI(val tableWidget : TableWidget,
         layout.backgroundColor      = colorOrBlack(
                                             format.widgetFormat().elementFormat().backgroundColorTheme(),
                                             entityId)
-
-//        layout.onLongClick          = View.OnLongClickListener {
-//
-//            tableWidget.bookReference().doMaybe {
-//                val intent = Intent(activity, BookActivity::class.java)
-//                intent.putExtra("book_reference", it)
-//                activity.startActivity(intent)
-//            }
-//
-//            true
-//        }
 
         // Divider
         // -------------------------------------------------------------------------------------
@@ -426,18 +474,6 @@ class TableWidgetUI(val tableWidget : TableWidget,
                 layout.divider = dividerDrawable
             }
         }
-
-//
-//        // On Long Click
-//        layout.onLongClick = View.OnLongClickListener {
-//            val sheetActivity = sheetUIContext.context as SheetActivity
-//            val tableRowAction = SheetAction.TableRow()
-//            sheetActivity.showActionBar(SheetContext(sheetUIContext))
-//
-//
-//            true
-//        }
-
 
         return layout.tableLayout(context)
     }
@@ -461,7 +497,8 @@ class TableWidgetUI(val tableWidget : TableWidget,
                                         format.headerFormat().textFormat().elementFormat().backgroundColorTheme(),
                                         entityId)
 
-        tableRow.rows.add(editRowButtonView(true, format.rowFormat().textFormat().elementFormat(), entityId, context))
+//        tableRow.rows.add(editRowButtonView(true, format.rowFormat().textFormat().elementFormat(), entityId, context))
+
         columns.forEach { column ->
 
             val cellView = this.headerCellView(format.headerFormat(),
@@ -607,7 +644,7 @@ class TableWidgetUI(val tableWidget : TableWidget,
 
         layout.layoutType       = LayoutType.RELATIVE
         layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = RelativeLayout.LayoutParams.MATCH_PARENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
         layout.padding.leftDp   = 10f
         layout.padding.rightDp  = 5f
@@ -616,7 +653,12 @@ class TableWidgetUI(val tableWidget : TableWidget,
         layout.addRule(RelativeLayout.ALIGN_PARENT_END)
 
         layout.onClick          = View.OnClickListener {
-            this.toggleEditMode()
+            val rowSetVariable = tableWidget.rowSetVariable(entityId)
+            when (rowSetVariable)
+            {
+                is Val -> this.openSubsetEditor(rowSetVariable.value)
+                is Err -> this.toggleEditMode()
+            }
         }
 
         return layout.linearLayout(context)
@@ -634,15 +676,7 @@ class TableWidgetUI(val tableWidget : TableWidget,
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
         label.textId            = R.string.edit
-//
-//        label.color             = colorOrBlack(format.colorTheme(), entityId)
-//
-//        label.sizeSp            = format.sizeSp()
-//
-//        label.font              = Font.typeface(format.font(),
-//                                                format.fontStyle(),
-//                                                context)
-//
+
         format.styleTextViewBuilder(label, entityId, context)
 
         return label.textView(context)

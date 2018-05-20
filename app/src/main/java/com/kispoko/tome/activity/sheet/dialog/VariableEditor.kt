@@ -196,8 +196,9 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                             val sheetActivity = context as SheetActivity
                             val chooseDialog =
                                     ValueChooserDialogFragment.newInstance(
-                                                    valueSet.value,
-                                                    value.value,
+                                                    valueSet.value.valueSetId,
+                                                    listOf(),
+                                                    value.value.valueId(),
                                                     updateTarget,
                                                     entityId)
                             chooseDialog.show(sheetActivity.supportFragmentManager, "")
@@ -209,23 +210,16 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             }
         }
         is TextVariableValueUnknownValue -> {
-            val valueSet = valueSet(variableValue.valueSetId, entityId)
+            val sheetActivity = context as SheetActivity
+            val chooseDialog =
+                    ValueChooserDialogFragment.newInstance(
+                                    variableValue.valueSetId,
+                                    listOf(),
+                                    null,
+                                    updateTarget,
+                                    entityId)
+            chooseDialog.show(sheetActivity.supportFragmentManager, "")
 
-            when (valueSet)
-            {
-                is Val ->
-                {
-                    val sheetActivity = context as SheetActivity
-                    val chooseDialog =
-                            ValueChooserDialogFragment.newInstance(
-                                            valueSet.value,
-                                            null,
-                                            updateTarget,
-                                            entityId)
-                    chooseDialog.show(sheetActivity.supportFragmentManager, "")
-                }
-                is Err -> ApplicationLog.error(valueSet.error)
-            }
         }
     }
 }
@@ -253,12 +247,27 @@ fun openTextListVariableEditorDialog(textListVariable : TextListVariable,
                 is Just -> {
                     when (values) {
                         is Val -> {
-                            val dialog = ListEditorDialog.newInstance(valueSetId.value,
+                            // Is Set
+                            if (textListVariable.hasSetConstraint())
+                            {
+                                val dialog = SubsetEditorDialog.newInstance(valueSetId.value,
                                                                       textListVariable.setVariableId(),
                                                                       values.value.map { ValueId(it) },
                                                                       updateTarget,
                                                                       entityId)
-                            dialog.show(sheetActivity.supportFragmentManager, "")
+                                dialog.show(sheetActivity.supportFragmentManager, "")
+                            }
+                            // Is List
+                            else
+                            {
+                                val chooseItemDialog = ValueChooserDialogFragment.newInstance(
+                                                                        valueSetId.value,
+                                                                        listOf(),
+                                                                        null,
+                                                                        updateTarget,
+                                                                        entityId)
+                                chooseItemDialog.show(sheetActivity.supportFragmentManager, "")
+                            }
                         }
                     }
                 }

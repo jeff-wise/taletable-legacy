@@ -13,6 +13,7 @@ import com.kispoko.tome.lib.orm.RowValue6
 import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.lib.orm.sql.*
+import com.kispoko.tome.model.engine.variable.TextListVariable
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.engine.ValueSetDoesNotContainValue
 import com.kispoko.tome.rts.entity.valueSet
@@ -114,6 +115,9 @@ sealed class ValueSet(open val valueSetId : ValueSetId,
 
 
     abstract fun values(entityId : EntityId) : AppEff<Set<Value>>
+
+
+    abstract fun values(valueIds : List<ValueId>, entityId : EntityId) : List<Value>
 
 }
 
@@ -274,6 +278,20 @@ data class ValueSetBase(override val id : UUID,
                 else         -> null
             }
         }
+
+
+    override fun values(valueIds : List<ValueId>, entityId : EntityId) : List<Value>
+    {
+        val values : MutableList<Value> = mutableListOf()
+
+        valueIds.forEach {
+            this.value(it, entityId).apDo {
+                values.add(it)
+            }
+        }
+
+        return values
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -500,6 +518,21 @@ data class ValueSetCompound(override val id : UUID,
     }
 
 
+    override fun values(valueIds : List<ValueId>, entityId : EntityId) : List<Value>
+    {
+        // TODO prevent dups
+        val values : MutableList<Value> = mutableListOf()
+
+        this.valueSets(entityId).apDo {
+            it.forEach {
+                values.addAll(it.values(valueIds, entityId))
+            }
+        }
+
+        return values
+    }
+
+
     override fun numberValue(valueId : ValueId,
                              entityId : EntityId) : AppEff<ValueNumber> =
         this.value(valueId, entityId).apply { it.numberValue() }
@@ -546,6 +579,56 @@ data class ValueSetCompound(override val id : UUID,
 
         return baseValueSets
     }
+
+
+    fun indexList(entityId : EntityId) : List<Any>
+    {
+        fun valueSetItems(valueSet : ValueSet) : List<Any>
+        {
+            val values = valueSet.values(entityId)
+            return when (values) {
+                is Val -> listOf(valueSet.label()).plus(values.value)
+                is Err -> listOf(valueSet.label())
+            }
+        }
+
+        var items : List<Any> = listOf()
+
+        this.valueSets(entityId) apDo {
+            items = it.sortedBy { it.labelString() }.flatMap(::valueSetItems)
+        }
+
+        return items
+    }
+
+
+    fun indexList(valueIds : List<ValueId>,
+                  entityId : EntityId) : List<Any>
+    {
+        val valuesBySetId : MutableMap<ValueSetLabel,MutableSet<Value>> = mutableMapOf()
+
+        valueIds.forEach {
+            this.valueAndValueSet(it, entityId).apDo { (value,valueSet) ->
+                val valueSetLabel = valueSet.label()
+                if (!valuesBySetId.containsKey(valueSetLabel))
+                    valuesBySetId[valueSetLabel] = mutableSetOf()
+                valuesBySetId[valueSetLabel]?.add(value)
+            }
+        }
+
+        val valuesList : MutableList<Any> = mutableListOf()
+
+        valuesBySetId.toSortedMap().entries.forEach {
+            valuesList.add(it.key)
+            it.value.sortedBy { it.valueString() }.forEach {
+                valuesList.add(it)
+            }
+        }
+
+        return valuesList
+    }
+
+
 
 }
 

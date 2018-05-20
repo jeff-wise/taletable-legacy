@@ -25,6 +25,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.book.BookReference
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
+import com.kispoko.tome.model.sheet.widget.WidgetId
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.rts.entity.EntityId
@@ -129,12 +130,21 @@ data class TextCellFormat(override val id : UUID,
 
 class TextCellUI(val cell : TableWidgetTextCell,
                  val column : TableWidgetTextColumn,
-                 val tableWidget : TableWidget,
+                 val tableWidgetId : WidgetId,
                  val entityId : EntityId,
                  val context : Context)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
     val sheetActivity = context as AppCompatActivity
+
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
 
     private fun openEditorDialog()
     {
@@ -143,13 +153,17 @@ class TextCellUI(val cell : TableWidgetTextCell,
         {
             is effect.Val -> openTextVariableEditorDialog(
                                         valueVariable.value,
-                                        UpdateTargetTextCell(tableWidget.widgetId(), cell.id),
+                                        UpdateTargetTextCell(tableWidgetId, cell.id),
                                         entityId,
                                         context)
             is Err -> ApplicationLog.error(valueVariable.error)
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
 
     fun view() : View
     {
@@ -159,9 +173,12 @@ class TextCellUI(val cell : TableWidgetTextCell,
 
         layout.addView(this.valueView())
 
-
         layout.setOnClickListener {
-            this.openEditorDialog()
+            when (column.columnVariableId())
+            {
+                is Just    -> { }
+                is Nothing -> this.openEditorDialog()
+            }
         }
 
         layout.setOnLongClickListener {
@@ -180,39 +197,6 @@ class TextCellUI(val cell : TableWidgetTextCell,
 
             true
         }
-
-
-        var clickTime : Long = 0
-        val CLICK_DURATION = 500
-
-
-//        @SuppressLint("")
-//        layout.setOnTouchListener { _, motionEvent ->
-//            when (motionEvent.action)
-//            {
-//                MotionEvent.ACTION_DOWN -> {
-////                    Log.d("***TEXTCELL", "action down")
-//                    clickTime = System.currentTimeMillis()
-//                }
-//                MotionEvent.ACTION_UP -> {
-////                    Log.d("***TEXTCELL", "action down")
-//                    val upTime = System.currentTimeMillis()
-//                    if ((upTime - clickTime) < CLICK_DURATION) {
-//                        this.openEditorDialog()
-////                        val vibrator = sheetActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-////                        // Vibrate for 500 milliseconds
-////                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-////                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
-////                        } else {
-////                            //deprecated in API 26
-////                            vibrator.vibrate(500)
-////                        }
-//                    }
-//                }
-//            }
-//
-//            true
-//        }
 
         return layout
     }
@@ -272,10 +256,6 @@ class TextCellUI(val cell : TableWidgetTextCell,
 
         icon.image          = R.drawable.icon_dice_roll_filled
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-
         val valueStyle      = this.cell.format().resolveTextFormat(column.format())
         icon.color          = colorOrBlack(valueStyle.colorTheme(), entityId)
 
@@ -302,8 +282,6 @@ class TextCellUI(val cell : TableWidgetTextCell,
         val valueStyle      = this.cell.format().resolveTextFormat(column.format())
         valueStyle.styleTextViewBuilder(value, entityId, context)
 
-//        value.layoutGravity = valueStyle.alignment().gravityConstant()
-
         // > VALUE
         val cellValue = cell.valueString(entityId)
         when (cellValue)
@@ -317,305 +295,4 @@ class TextCellUI(val cell : TableWidgetTextCell,
 
 
 }
-
-
-
-//
-//
-//    /**
-//     * Set the cells widget container (which is the parent Table Row).
-//     * @param widgetContainer The widget container.
-//     */
-//    public void initialize(TextColumn column,
-//                           WidgetContainer widgetContainer,
-//                           UUID parentTableWidgetId)
-//    {
-//        // [1] Set properties
-//        // --------------------------------------------------------------------------------------
-//
-//        this.widgetContainer     = widgetContainer;
-//        this.parentTableWidgetId = parentTableWidgetId;
-//
-//        // [2] Inherit column properties
-//        // --------------------------------------------------------------------------------------
-//
-//        if (this.valueVariable() != null)
-//        {
-//            this.valueVariable().setDefinesNamespace(column.definesNamespace());
-//            this.valueVariable().setIsNamespaced(column.isNamespaced());
-//
-//            if (column.defaultLabel() != null && this.valueVariable().label() == null)
-//                this.valueVariable().setLabel(column.defaultLabel());
-//        }
-//
-//        // [3] Initialize value variable
-//        // --------------------------------------------------------------------------------------
-//
-//        // > If null, set default value
-//        if (this.valueVariable.isNull()) {
-//            valueVariable.setValue(TextVariable.asText(UUID.randomUUID(),
-//                                                       column.defaultValue()));
-//        }
-//
-//        this.valueVariable().initialize();
-//
-//        this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-//                                             @Override
-//                                             public void onUpdate() {
-//                onValueUpdate();
-//        }
-//    });
-//
-//        State.addVariable(this.valueVariable());
-//    }
-//
-//
-//    /**
-//     * The cell's variables that may be in a namespace.
-//     * @return The variable list.
-//     */
-//    public List<Variable> namespacedVariables()
-//    {
-//        List<Variable> variables = new ArrayList<>();
-//
-//        if (this.valueVariable().isNamespaced())
-//            variables.add(this.valueVariable());
-//
-//        return variables;
-//    }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Value
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the value of this text cell which is a text variable.
-//     * @return The Text Variable value.
-//     */
-//    public TextVariable valueVariable()
-//    {
-//        return this.valueVariable.getValue();
-//    }
-//
-//
-//    public String value()
-//    {
-//        if (valueVariable() != null)
-//        {
-//            try {
-//                return this.valueVariable().value();
-//            }
-//            catch (NullVariableException exception) {
-//                ApplicationFailure.nullVariable(exception);
-//            }
-//        }
-//
-//        return "N/A";
-//    }
-//
-//
-//    /**
-//     * Update the text cell's literal value.
-//     * @param value
-//     */
-//    public void setLiteralValue(String value, Activity activity)
-//    {
-//        this.valueVariable().setLiteralValue(value);
-//
-//        if (activity != null && this.valueViewId != null)
-//        {
-//            TextView textView = (TextView) activity.findViewById(this.valueViewId);
-//
-//            try
-//            {
-//                textView.setText(this.valueVariable().value());
-//
-//                // > SAVE the new value
-//                this.valueVariable.saveAsync();
-//            }
-//            catch (NullVariableException exception)
-//            {
-//                ApplicationFailure.nullVariable(exception);
-//            }
-//        }
-//
-//    }
-//
-//
-//    // ** Format
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The text cell formatting options.
-//     * @return The format.
-//     */
-//    public TextCellFormat format()
-//    {
-//        return this.format.getValue();
-//    }
-//
-//
-
-//    // > Dialog
-//    // ------------------------------------------------------------------------------------------
-//
-//    public void openEditor(AppCompatActivity activity)
-//    {
-//        switch (this.valueVariable().kind())
-//        {
-//            case LITERAL:
-//                // If the string is short, edit in DIALOG
-//                if (this.value().length() < 145)
-//                {
-//                    TextEditorDialog textDialog =
-//                            TextEditorDialog.forTextCell(this);
-//                    textDialog.show(activity.getSupportFragmentManager(), "");
-//                }
-//                // ...otherwise, edit in ACTIVITY
-//                else
-//                {
-//                    Intent intent = new Intent(activity, TextEditorActivity.class);
-//                    intent.putExtra("text_widget", this);
-//                    activity.startActivity(intent);
-//                }
-//                break;
-//
-//            case VALUE:
-//                Dictionary dictionary = SheetManagerOld.dictionary();
-//
-//                if (this.valueVariable() == null || dictionary == null)
-//                    break;
-//
-//                DataReference valueReference = this.valueVariable().valueReference();
-//                String         valueSetId   = this.valueVariable().valueSetId();
-//
-//                ValueSetUnion valueSetUnion  = dictionary.lookup(valueSetId);
-//                ValueUnion valueUnion     = dictionary.valueUnion(valueReference);
-//
-//                if (valueSetUnion == null || valueUnion == null)
-//                    break;
-//
-//                ChooseValueDialogFragment valueDialog =
-//                            ChooseValueDialogFragment.newInstance(valueSetUnion, valueUnion);
-//                valueDialog.show(activity.getSupportFragmentManager(), "");
-//                break;
-//        }
-//    }
-//
-//
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Initialize the text cell state.
-//     */
-//    private void initializeTextCell()
-//    {
-//        this.valueViewId = null;
-//        this.widgetContainer = null;
-//    }
-//
-//
-//    /**
-//     * Configure the container's namespace. If the text cell's value is a variable that defines
-//     * a namespace, then update the container namespace.
-//     */
-//    private void configureNamespace()
-//    {
-//        if (this.valueVariable().definesNamespace())
-//        {
-//            try {
-//                Namespace namespace = this.valueVariable().namespace();
-//                this.widgetContainer.setNamespace(namespace);
-//            }
-//            catch (NullVariableException exception) {
-//                ApplicationFailure.nullVariable(exception);
-//            }
-//        }
-//    }
-//
-//
-//    /**
-//     * When the text widget's value is updated.
-//     */
-//    private void onValueUpdate()
-//    {
-//        if (this.valueViewId != null && !this.valueVariable.isNull())
-//        {
-//            Activity activity = (Activity) SheetManagerOld.currentSheetContext();
-//            TextView textView = (TextView) activity.findViewById(this.valueViewId);
-//
-//            if (this.value() != null)
-//                textView.setText(this.value());
-//        }
-//        else if (!this.valueVariable.isNull()) {
-//            this.configureNamespace();
-//        }
-//    }
-//
-//
-//    // > Clicks
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void onTextCellShortClick(Context context)
-//    {
-//        AppCompatActivity activity = (AppCompatActivity) context;
-//
-//        TableActionDialogFragment dialog =
-//                TableActionDialogFragment.newInstance(this.parentTableWidgetId,
-//                                                      this.unionId(),
-//                                                      this.column.name());
-//        dialog.show(activity.getSupportFragmentManager(), "");
-//    }
-//
-//
-//    // UPDATE EVENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    public static class UpdateLiteralEvent
-//    {
-//
-//        // PROPERTIES
-//        // -------------------------------------------------------------------------------------
-//
-//        private UUID   tableWidgetId;
-//        private UUID   cellId;
-//        private String newValue;
-//
-//
-//        // CONSTRUCTORS
-//        // -------------------------------------------------------------------------------------
-//
-//        public UpdateLiteralEvent(UUID tableWidgetId, UUID cellId, String newValue)
-//        {
-//            this.tableWidgetId  = tableWidgetId;
-//            this.cellId         = cellId;
-//            this.newValue       = newValue;
-//        }
-//
-//
-//        // API
-//        // -------------------------------------------------------------------------------------
-//
-//        public UUID tableWidgetId()
-//        {
-//            return this.tableWidgetId;
-//        }
-//
-//
-//        public UUID cellId()
-//        {
-//            return this.cellId;
-//        }
-//
-//
-//        public String newValue()
-//        {
-//            return this.newValue;
-//        }
-//
-//    }
 

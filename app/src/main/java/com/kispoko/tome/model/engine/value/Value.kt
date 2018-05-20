@@ -494,6 +494,10 @@ data class ValueReference(val valueSetId : TextReference, val valueId : TextRefe
     }
 
 
+    constructor(valueSetId : ValueSetId, valueId : ValueId)
+            : this(TextReferenceLiteral(valueSetId.value), TextReferenceLiteral(valueId.value))
+
+
     // -----------------------------------------------------------------------------------------
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------

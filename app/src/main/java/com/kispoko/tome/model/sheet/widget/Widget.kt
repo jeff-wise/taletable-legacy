@@ -15,15 +15,13 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.cell
 import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppError
-import com.kispoko.tome.app.AppStateError
-import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.app.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
@@ -36,6 +34,7 @@ import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.engine.procedure.Procedure
 import com.kispoko.tome.model.engine.procedure.ProcedureId
 import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
+import com.kispoko.tome.model.engine.value.Value
 import com.kispoko.tome.model.engine.value.ValueReference
 import com.kispoko.tome.model.engine.value.ValueSetBase
 import com.kispoko.tome.model.engine.value.ValueSetId
@@ -56,10 +55,8 @@ import effect.Val
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
-import maybe.Just
-import maybe.Maybe
+import maybe.*
 import maybe.Nothing
-import maybe.maybeValue
 import java.io.Serializable
 import java.util.*
 import kotlin.text.Typography.paragraph
@@ -1340,6 +1337,9 @@ data class ListWidget(val widgetId : WidgetId,
     fun valuesVariableId() : VariableId = this.valuesVariableId
 
 
+    fun titleVariableId() : Maybe<VariableId> = this.titleVariableId
+
+
     fun description() : Maybe<ListWidgetDescription> = this.description
 
 
@@ -1355,8 +1355,8 @@ data class ListWidget(val widgetId : WidgetId,
 
     override fun view(entityId : EntityId, context : Context) : View
     {
-        val viewBuilder = ListWidgetUI(this, entityId, context)
-        return viewBuilder.view()
+        val listWidgetUI = ListWidgetUI(this, entityId, context)
+        return listWidgetUI.view()
     }
 
 
@@ -1444,6 +1444,11 @@ data class ListWidget(val widgetId : WidgetId,
                 this.updateCurrentValue(listWidgetUpdate.newCurrentValue, entityId)
                 this.updateView(rootView, entityId, context)
             }
+            is ListWidgetUpdateAddValue ->
+            {
+                this.updateAddValue(listWidgetUpdate.newValue, entityId)
+                this.updateView(rootView, entityId, context)
+            }
         }
 
 
@@ -1457,11 +1462,23 @@ data class ListWidget(val widgetId : WidgetId,
     }
 
 
+    private fun updateAddValue(newValue : String, entityId : EntityId)
+    {
+        val currentValueVariable = this.variable(entityId)
+        when (currentValueVariable) {
+            is Val -> currentValueVariable.value.addValue(newValue, entityId)
+            is Err -> ApplicationLog.error(currentValueVariable.error)
+        }
+    }
+
+
+
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
             rootView.findViewById<LinearLayout>(layoutViewId)?.let {
+                Log.d("***WIDGET", "update list widget view")
                 ListWidgetUI(this, entityId, context).updateView(it)
             }
         }
@@ -1998,21 +2015,10 @@ data class NumberWidget(val widgetId : WidgetId,
 
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
-        val layoutId = this.layoutId
-        if (layoutId != null)
-        {
-//            val activity = context as AppCompatActivity
-            try {
-                val layout = rootView.findViewById<LinearLayout>(layoutId)
+        this.layoutId?.let { layoutId ->
+            rootView.findViewById<LinearLayout>(layoutId)?.let { layout ->
                 NumberWidgetView.updateView(this, entityId, layout, context)
             }
-            catch (e : TypeCastException) {
-
-            }
-
-//            val textView = rootView.findViewById(viewId) as TextView?
-//            val newText = this.valueString(entityId)
-//            textView?.text = newText
         }
     }
 
@@ -3234,6 +3240,7 @@ data class TableWidget(private val widgetId : WidgetId,
                        private val rows : MutableList<TableWidgetRow>,
                        private val sort : Maybe<TableSort>,
                        private val titleVariableId : Maybe<VariableId>,
+                       private val primaryColumnIndex : Maybe<PrimaryColumnIndex>,
                        private val bookReference : Maybe<BookReference>) : Widget()
 {
 
@@ -3242,10 +3249,13 @@ data class TableWidget(private val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
 
     var tableLayoutId : Int? = null
+    var layoutId : Int? = null
 
     var selectedRow : Int? = null
 
     var editMode : Boolean = false
+
+    var cachedRows : List<TableWidgetRow> = this.rows
 
 
     // -----------------------------------------------------------------------------------------
@@ -3276,21 +3286,6 @@ data class TableWidget(private val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId: WidgetId,
-//                format : TableWidgetFormat,
-//                columns: List<TableWidgetColumn>,
-//                rows: List<TableWidgetRow>,
-//                sort : Maybe<TableSort>,
-//                titleVariableId : Maybe<VariableId>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               columns.toMutableList(),
-//               rows.toMutableList(),
-//               sort,
-//               titleVariableId)
-
 
     companion object : Factory<TableWidget>
     {
@@ -3312,9 +3307,9 @@ data class TableWidget(private val widgetId : WidgetId,
                          docList.mapMut { TableWidgetColumn.fromDocument(it) }
                      },
                      // Rows
-                     doc.list("rows") ap { docList ->
-                         docList.mapMut { TableWidgetRow.fromDocument(it) }
-                     },
+                     split(doc.maybeList("rows"),
+                           effValue(mutableListOf()),
+                           { it.mapMut { TableWidgetRow.fromDocument(it) } }),
                      // Table Sort
                      split(doc.maybeAt("sort"),
                            effValue<ValueError, Maybe<TableSort>>(Nothing()),
@@ -3323,6 +3318,10 @@ data class TableWidget(private val widgetId : WidgetId,
                      split(doc.maybeAt("title_variable_id"),
                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
                            { apply(::Just, VariableId.fromDocument(it)) }),
+                     // Primary Column Index
+                     split(doc.maybeAt("primary_column_index"),
+                           effValue<ValueError,Maybe<PrimaryColumnIndex>>(Nothing()),
+                           { apply(::Just, PrimaryColumnIndex.fromDocument(it)) }),
                      // Book Reference
                      split(doc.maybeAt("book_reference"),
                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
@@ -3361,10 +3360,17 @@ data class TableWidget(private val widgetId : WidgetId,
     fun rows() : List<TableWidgetRow> = this.rows
 
 
+    fun cachedRows() : List<TableWidgetRow> = this.cachedRows
+
+
     fun sort() : Maybe<TableSort> = this.sort
 
 
     fun titleVariableId() : Maybe<VariableId> = this.titleVariableId
+
+
+    fun primaryColumnIndex() : Maybe<PrimaryColumnIndex> =
+            this.primaryColumnIndex.ap { Just(PrimaryColumnIndex(it.value - 1)) }
 
 
     fun bookReference() : Maybe<BookReference> = this.bookReference
@@ -3378,6 +3384,93 @@ data class TableWidget(private val widgetId : WidgetId,
 
 
     override fun widgetId() = this.widgetId
+
+
+    // -----------------------------------------------------------------------------------------
+    // SET
+    // -----------------------------------------------------------------------------------------
+
+    fun rowSetVariable(entityId: EntityId) : AppEff<TextListVariable>
+    {
+        val maybeSetVariableId = this.primaryColumnIndex()
+                                     .apply { maybe(this.columns.getOrNull(it.value)) }
+                                     .apply { it.textColumn() }
+                                     .apply { it.columnVariableId() }
+
+        return when (maybeSetVariableId) {
+            is Just    -> textListVariable(maybeSetVariableId.value, entityId)
+            is Nothing -> effError(AppSheetError(TableWidgetDoesNotHaveColumnVariableId(this.widgetId)))
+        }
+    }
+
+
+    fun rowsInSet(values : List<Value>) : List<TableWidgetRow>
+    {
+        val rows : MutableList<TableWidgetRow> = mutableListOf()
+
+        val rowByValueId : MutableMap<String,TableWidgetRow> = mutableMapOf()
+
+        // Index rows
+        for (row in this.cachedRows())
+        {
+            val maybePrimaryCell = this.primaryColumnIndex()
+                                       .apply { maybe(row.cells().getOrNull(it.value)) }
+            maybePrimaryCell.doMaybe { cell ->
+                when (cell) {
+                    is TableWidgetTextCell -> {
+                        val cellValueId = cell.valueId
+                        if (cellValueId != null)
+                        {
+                            rowByValueId[cellValueId.value] = row
+                        }
+                        else
+                        {
+                            val cellVariableValue = cell.variableValue()
+                            when (cellVariableValue) {
+                                is TextVariableLiteralValue -> {
+                                    rowByValueId[cellVariableValue.value] = row
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        Log.d("***WIDGET", "row value by id: ${rowByValueId.keys}")
+
+        for (value in values)
+        {
+            val valueIdString = value.valueId().value
+
+            Log.d("***WIDGET", "value id string")
+
+            if (rowByValueId.containsKey(valueIdString))
+            {
+                val row = rowByValueId[valueIdString]!!
+                this.primaryColumnIndex().doMaybe {
+                    row.cells().getOrNull(it.value)?.let { cell ->
+                        when (cell) {
+                            is TableWidgetTextCell -> {
+                                cell.valueId = value.valueId()
+                                cell.variableValue = TextVariableLiteralValue(value.valueString())
+                            }
+                        }
+                    }
+                }
+                rows.add(row)
+            }
+            else
+            {
+                Log.d("***WIDGET", "default row for value: ${value.valueString()}")
+                val defaultRow = this.defaultTableRow(value.valueString())
+                rows.add(defaultRow)
+            }
+        }
+
+        return rows
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -3423,7 +3516,32 @@ data class TableWidget(private val widgetId : WidgetId,
             {
                 this.addRow(tableWidgetUpdate.selectedRow + 1, rootView, entityId, context)
             }
+            is TableWidgetUpdateSubset ->
+            {
+                // Update row set variable
+                this.rowSetVariable(entityId).apDo {
+                    it.updateLiteralValue(tableWidgetUpdate.values, entityId)
+                }
+
+                // Reset state
+                this.removeTableFromState(entityId)
+                this.addTableToState(entityId, context)
+
+                this.updateView(rootView, entityId, context)
+            }
         }
+
+
+    private fun updateView(rootView : View, entityId : EntityId, context : Context)
+    {
+        val layoutId = this.layoutId
+        if (layoutId != null)
+        {
+            rootView.findViewById<LinearLayout>(layoutId)?.let { layout ->
+                TableWidgetUI(this, entityId, context).updateView(layout)
+            }
+        }
+    }
 
 
     private fun updateNumberCellView(numberCellUpdate : TableWidgetUpdateSetNumberCell,
@@ -3491,9 +3609,11 @@ data class TableWidget(private val widgetId : WidgetId,
 
                 this.updateTableVariables(rowIndex + 1 , entityId)
 
-                this.addRowToState(rowIndex, entityId, context)
+                this.cachedRows().getOrNull(rowIndex)?.let {
+                    this.addRowToState(it, rowIndex, entityId, context)
+                }
                 // need to update all variables
-                val rowView = newTableRow.view(this, rowIndex, entityId, context)
+                val rowView = newTableRow.view(this, entityId, context)
                 tableLayout.addView(rowView, rowIndex + 1)
 
                 val selectedRowIndex = this.selectedRow
@@ -3507,32 +3627,34 @@ data class TableWidget(private val widgetId : WidgetId,
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetTableValue =
-//        RowValue5(widgetTableTable,
-//                  PrimValue(this.widgetId),
-//                  ProdValue(this.format),
-//                  CollValue(this.columns),
-//                  CollValue(this.rows),
-//                  MaybePrimValue(this.sort))
-
-
-    // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        this.rows().forEachIndexed { rowIndex, _ ->
-            this.addRowToState(rowIndex, entityId, context)
+        this.addTableToState(entityId, context)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // STATE
+    // -----------------------------------------------------------------------------------------
+
+    private fun addTableToState(entityId : EntityId, context : Context)
+    {
+        val rows = this.dynamicRows(entityId)
+        rows.forEachIndexed { index, row ->
+            this.addRowToState(row, index, entityId, context)
+        }
+
+        this.cachedRows = rows
+    }
+
+
+    private fun removeTableFromState(entityId : EntityId)
+    {
+        for (row in this.cachedRows()) {
+            removeRowFromState(row, entityId)
         }
     }
 
@@ -3650,65 +3772,125 @@ data class TableWidget(private val widgetId : WidgetId,
     // ROWS
     // -----------------------------------------------------------------------------------------
 
-    private fun defaultTableRow() : TableWidgetRow
+    fun dynamicRows(entityId : EntityId) : List<TableWidgetRow>
+    {
+        val rowSetVariable = this.rowSetVariable(entityId)
+        return when (rowSetVariable)
+        {
+            is Val ->
+            {
+                val setValues = rowSetVariable.value.values(entityId)
+                this.rowsInSet(setValues)
+            }
+            is Err ->
+            {
+                this.rows()
+            }
+        }
+    }
+
+
+    private fun defaultTableRow(primaryValue : String? = null) : TableWidgetRow
     {
         val cells : MutableList<TableWidgetCell> = mutableListOf()
 
-        this.columns().forEach {
-            when (it)
+        val primaryColumnIndex = this.primaryColumnIndex()
+        when (primaryColumnIndex)
+        {
+            is Just ->
             {
-                is TableWidgetBooleanColumn ->
-                    cells.add(TableWidgetBooleanCell(it.defaultValue()))
-                is TableWidgetNumberColumn ->
-                    cells.add(TableWidgetNumberCell(it.defaultValue()))
-                is TableWidgetTextColumn ->
-                    cells.add(TableWidgetTextCell(it.defaultValue()))
-            }
+                this.columns().forEachIndexed { index, column ->
 
+                    if (index == primaryColumnIndex.value.value)
+                    {
+                        primaryValue?.let {
+                            val variableValue = TextVariableLiteralValue(primaryValue)
+                            cells.add(TableWidgetTextCell(variableValue))
+                        }
+                    }
+                    else
+                    {
+                        when (column)
+                        {
+                            is TableWidgetBooleanColumn ->
+                                cells.add(TableWidgetBooleanCell(column.defaultValue()))
+                            is TableWidgetNumberColumn ->
+                                cells.add(TableWidgetNumberCell(column.defaultValue()))
+                            is TableWidgetTextColumn ->
+                                cells.add(TableWidgetTextCell(column.defaultValue()))
+                        }
+                    }
+                }
+            }
+            is Nothing ->
+            {
+                this.columns().forEach {
+                    when (it)
+                    {
+                        is TableWidgetBooleanColumn ->
+                            cells.add(TableWidgetBooleanCell(it.defaultValue()))
+                        is TableWidgetNumberColumn ->
+                            cells.add(TableWidgetNumberCell(it.defaultValue()))
+                        is TableWidgetTextColumn ->
+                            cells.add(TableWidgetTextCell(it.defaultValue()))
+                    }
+                }
+            }
         }
 
         return TableWidgetRow(cells)
     }
 
 
-    private fun addRowToState(rowIndex : Int, entityId : EntityId, context : Context)
+    private fun addRowToState(row : TableWidgetRow,
+                              index : Int,
+                              entityId : EntityId,
+                              context : Context)
     {
-        if (rowIndex >= 0 && rowIndex < this.rows().size)
-        {
-            val row = this.rows()[rowIndex]
+        val rowVariables : MutableList<Variable> = mutableListOf()
 
-            val rowVariables : MutableList<Variable> = mutableListOf()
+        row.cells().forEachIndexed { cellIndex, cell ->
+            when (cell) {
+                is TableWidgetBooleanCell ->
+                {
+                    val booleanVar = addBooleanCellVariable(cell, index, cellIndex, entityId, context)
+                    rowVariables.add(booleanVar)
+                }
+                is TableWidgetNumberCell ->
+                {
+                    this.numberCellById.put(cell.id, cell)
+                    val numberVar = addNumberCellVariable(cell, index, cellIndex, entityId, context)
+                    rowVariables.add(numberVar)
+                }
+                is TableWidgetTextCell ->
+                {
+                    this.textCellById[cell.id] = cell
+                    val textVar = addTextCellVariable(cell, index, cellIndex, entityId, context)
+                    rowVariables.add(textVar)
+                }
+            }
+        }
 
-            row.cells().forEachIndexed { cellIndex, cell ->
-                when (cell) {
-                    is TableWidgetBooleanCell ->
-                    {
-                        val booleanVar = addBooleanCellVariable(cell, rowIndex, cellIndex, entityId, context)
-                        rowVariables.add(booleanVar)
-                    }
-                    is TableWidgetNumberCell ->
-                    {
-                        this.numberCellById.put(cell.id, cell)
-                        val numberVar = addNumberCellVariable(cell, rowIndex, cellIndex, entityId, context)
-                        rowVariables.add(numberVar)
-                    }
-                    is TableWidgetTextCell ->
-                    {
-                        this.textCellById.put(cell.id, cell)
-                        val textVar = addTextCellVariable(cell, rowIndex, cellIndex, entityId, context)
-                        rowVariables.add(textVar)
+        rowVariables.forEachIndexed { i, iVar ->
+            rowVariables.forEachIndexed { j, jVar ->
+                val relation = jVar.relation()
+                when (relation) {
+                    is Just -> {
+                        iVar.setRelation(relation.value, jVar.variableId(), entityId)
                     }
                 }
             }
+        }
+    }
 
-            rowVariables.forEachIndexed { i, iVar ->
-                rowVariables.forEachIndexed { j, jVar ->
-                    val relation = jVar.relation()
-                    when (relation) {
-                        is Just -> {
-                            iVar.setRelation(relation.value, jVar.variableId(), entityId)
-                        }
-                    }
+
+    private fun removeRowFromState(row : TableWidgetRow, entityId : EntityId)
+    {
+        for (cell in row.cells())
+        {
+            entityEngineState(entityId).apDo { entityState ->
+                cell.variableId()?.let { cellVarId ->
+                    entityState.removeVariable(cellVarId)
                 }
             }
         }

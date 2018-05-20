@@ -357,11 +357,19 @@ variables:
     label: 'Spellbook: 1st Level Spells'
     description: 'Spellbook: 1st Level Spells'
     value_set_id: spells_wizard_level_one
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
     value:
       type: text_list_literal
       text_list_literal:
       - color_spray
+      - disguise_self
+      - detect_magic
       - grease
+      - mage_armor
       - magic_missile
       - silent_image
 - type: variable_text
@@ -379,6 +387,23 @@ variables:
     description: 'Prepared spells'
     value_set_id: spells_wizard
     set_variable_id: spellbook_level_one_spells
+    constraint:
+      type: constraint_and
+      constraint_and:
+        constraints:
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_is_set
+            constraint_text_list_is_set: constraint_text_list_is_set
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_max_size
+            constraint_text_list_max_size:
+              max_size:
+                type: variable_reference
+                variable_reference:
+                  type: variable_id
+                  variable_id: max_prepared_spells
     value:
       type: text_list_literal
       text_list_literal:
@@ -392,6 +417,63 @@ variables:
     value:
       type: text_literal
       text_literal: 'Prepared Spells'
+- type: variable_number
+  variable_number:
+    id: max_prepared_spells
+    label: Maximum Prepared Spells
+    description: Maximum Prepared Spells
+    value:
+      type: summation_id
+      summation_id: max_prepared_spells
+- type: variable_text
+  variable_text:
+    id: level_one_spell_slots_label
+    label: '1st Level Spell Slots'
+    description: '1st Level Spell Slots'
+    value:
+      type: text_literal
+      text_literal: '1st Level Spell Slots'
+- type: variable_text_list
+  variable_text_list:
+    id: level_one_spell_slots
+    label: '1st Level Spell Slots'
+    description: '1st level spell slots.'
+    value_set_id: spells_wizard
+    set_variable_id: prepared_spells
+    constraint:
+      type: constraint_and
+      constraint_and:
+        constraints:
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_max_size
+            constraint_text_list_max_size:
+              max_size:
+                type: number_literal
+                number_literal: 2
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_is_set
+            constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+- type: variable_text_list
+  variable_text_list:
+    id: inventory_armor
+    label: 'Inventory: Armor'
+    description: 'The armor that the character is carrying.'
+    value_set_id: armor_and_shields
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - light_armor_leather
+      - shield
 - type: variable_number
   variable_number:
     id: proficiency_bonus
@@ -6693,17 +6775,116 @@ sections:
         padding:
           bottom: 70
     groups:
+    - format:
+        element_format:
+          margins:
+            top: 8
+            left: 6
+            right: 6
+      rows:
+      - widgets:
+        - type: widget_list
+          widget_list:
+            values_variable_id: level_one_spell_slots
+            title_variable_id: level_one_spell_slots_label
+            format:
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_grey_3
+                  corners:
+                    top_left_radius: 1
+                    top_right_radius: 1
+                    bottom_right_radius: 1
+                    bottom_left_radius: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+                  width:
+                    type: width_justify
+                    width_justify: justify
+              view_type: pool
+              default_item_text: 'Empty Slot'
+              title_bar_format:
+                padding:
+                  right: 4
+                  bottom: 8
+              title_format:
+                size: 18
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+              item_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    right: 6
+                  padding:
+                    top: 8
+                    bottom: 8
+                    left: 10
+                    right: 10
+                    right: 6
+                size: 17
+                font_style: medium
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_blue
+              item_inactive_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    right: 6
+                  padding:
+                    top: 8
+                    bottom: 8
+                    left: 10
+                    right: 10
+                size: 17
+                font_style: medium
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_18
     - rows:
       - format:
           element_format:
             background_color_theme:
               theme_color_ids:
-              - theme_id: dark
-                color_id: dark_grey_11
               - theme_id: light
                 color_id: light_grey_7
             margins:
-              top: 8
+              top: 12
         widgets:
         - type: widget_list
           widget_list:
@@ -6713,6 +6894,9 @@ sections:
                   margins:
                     left: 6
                     right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
               view_type: rows_simple_editor
               title_bar_format:
                 background_color_theme:
@@ -6720,20 +6904,19 @@ sections:
                   - theme_id: light
                     color_id: light_grey_2
                 corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
+                  top_left_radius: 1
+                  top_right_radius: 1
                 padding:
                   left: 8
                   right: 12
-                  top: 16
-                  bottom: 4
+                  top: 8
               title_format:
-                size: 17
+                size: 18
                 font_style: semi_bold
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: dark_grey_16
+                    color_id: dark_grey_14
               edit_button_format:
                 color_theme:
                   theme_color_ids:
@@ -6741,12 +6924,49 @@ sections:
                     color_id: dark_grey_22
                 size: 16
                 font_style: medium
+              constraint_format:
+                message:
+                  template: '$$$ spells prepared'
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_2
+                    padding:
+                      left: 8
+                      right: 8
+                      bottom: 6
+                      top: 4
+                  size: 16
+                  font_style: regular
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: dark_grey_16
+                fail_text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_2
+                    padding:
+                      left: 8
+                      right: 8
+                      bottom: 6
+                      top: 4
+                  size: 16
+                  font_style: semi_bold
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: red
               item_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: dark_grey_12
-                size: 19
+                    color_id: dark_grey_8
+                size: 18
                 font_style: medium
                 element_format:
                   background_color_theme:
@@ -12862,14 +13082,21 @@ sections:
       - widgets:
         - type: widget_table
           widget_table:
-#            id: armor_and_shields
             title_variable_id: armor_table_label
+            primary_column_index: 1
             format:
               widget_format:
                 element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_grey_10
                   margins:
                     left: 6
                     right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
               title_bar_format:
                 background_color_theme:
                   theme_color_ids:
@@ -12939,6 +13166,7 @@ sections:
                 name: Name
                 variable_prefix: armor
                 defines_namespace: true
+                column_variable_id: inventory_armor
                 default_value:
                   type: value_set_id
                   value_set_id: armor_and_shields
@@ -13016,14 +13244,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: armor_and_shields
-                      value_id:
-                        type: text_literal
-                        text_literal: leather
+                    type: text_literal
+                    text_literal: light_armor_leather
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13038,14 +13260,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: armor_and_shields
-                      value_id:
-                        type: text_literal
-                        text_literal: shield
+                    type: text_literal
+                    text_literal: shield
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13078,6 +13294,9 @@ sections:
                   margins:
                     left: 6
                     right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
               title_bar_format:
                 background_color_theme:
                   theme_color_ids:
@@ -13991,6 +14210,9 @@ sections:
                   margins:
                     left: 6
                     right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
               view_type: rows_simple_editor
               title_bar_format:
                 background_color_theme:

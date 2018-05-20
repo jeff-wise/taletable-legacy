@@ -23,6 +23,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.NumberFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
+import com.kispoko.tome.model.sheet.widget.WidgetId
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.theme.ColorId
@@ -130,10 +131,8 @@ data class NumberCellFormat(override val id : UUID,
 
 
 class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
-                            val row : TableWidgetRow,
                             val column : TableWidgetNumberColumn,
-                            val rowIndex : Int,
-                            val tableWidget : TableWidget,
+                            val tableWidgetId : WidgetId,
                             val entityId : EntityId,
                             val context : Context)
 {
@@ -148,7 +147,7 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
                 val editorType = cell.resolveEditorType(column)
                 openNumberVariableEditorDialog(valueVariable.value,
                                                editorType,
-                                               UpdateTargetNumberCell(tableWidget.widgetId(), cell.id),
+                                               UpdateTargetNumberCell(tableWidgetId, cell.id),
                                                entityId,
                                                context)
             }

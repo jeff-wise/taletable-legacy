@@ -8,7 +8,6 @@ import com.kispoko.tome.model.engine.value.ValueId
 import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.widget.TableWidget
-import com.kispoko.tome.model.sheet.widget.Widget
 import com.kispoko.tome.model.sheet.widget.WidgetId
 import java.io.Serializable
 import java.util.*
@@ -89,6 +88,11 @@ data class ListWidgetUpdateSetCurrentValue(
         val newCurrentValue : List<String>) : WidgetUpdateListWidget(widgetId)
 
 
+data class ListWidgetUpdateAddValue(
+        override val widgetId : WidgetId,
+        val newValue : String) : WidgetUpdateListWidget(widgetId)
+
+
 // ---------------------------------------------------------------------------------------------
 // SHEET UPDATE > Widget Update > Number Widget
 // ---------------------------------------------------------------------------------------------
@@ -149,6 +153,9 @@ data class TableWidgetUpdateInsertRowAfter(
                             override val widgetId : WidgetId,
                             val selectedRow : Int) : WidgetUpdateTableWidget(widgetId)
 
+data class TableWidgetUpdateSubset(override val widgetId : WidgetId,
+                                   val values : List<String>) : WidgetUpdateTableWidget(widgetId)
+
 
 // ---------------------------------------------------------------------------------------------
 // WIDGET UPDATE > Text Widget
@@ -186,6 +193,8 @@ data class UpdateTargetTextCell(val tableWidgetId : WidgetId, val cellId : UUID)
 data class UpdateTargetTextWidget(val textWidgetId : WidgetId) : UpdateTarget()
 
 data class UpdateTargetInsertTableRow(val tableWidget : TableWidget) : UpdateTarget()
+
+data class UpdateTargetTableWidget(val tableWidgetId : WidgetId) : UpdateTarget()
 
 data class UpdateTargetStoryWidgetPart(val storyWidgetId : WidgetId,
                                        val partIndex : Int) : UpdateTarget()

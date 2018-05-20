@@ -27,6 +27,7 @@ import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.engine.value.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
@@ -39,7 +40,7 @@ import com.kispoko.tome.rts.entity.sheet.*
 import effect.Err
 import maybe.Just
 import effect.Val
-
+import java.io.Serializable
 
 
 /**
@@ -52,10 +53,11 @@ class ValueChooserDialogFragment : DialogFragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var valueSet      : ValueSet? = null
-    private var selectedValue : Value? = null
-    private var updateTarget  : UpdateTarget? = null
-    private var entityId      : EntityId? = null
+    private var valueSetId      : ValueSetId? = null
+    private var valueIds        : List<ValueId> = listOf()
+    private var selectedValueId : ValueId? = null
+    private var updateTarget    : UpdateTarget? = null
+    private var entityId        : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -64,16 +66,18 @@ class ValueChooserDialogFragment : DialogFragment()
 
     companion object
     {
-        fun newInstance(valueSet : ValueSet,
-                        selectedValue : Value?,
+        fun newInstance(valueSetId : ValueSetId,
+                        valueIds : List<ValueId>,
+                        selectedValueId : ValueId?,
                         updateTarget : UpdateTarget,
                         entityId : EntityId) : ValueChooserDialogFragment
         {
             val dialog = ValueChooserDialogFragment()
 
             val args = Bundle()
-            args.putSerializable("value_set", valueSet)
-            args.putSerializable("selected_value", selectedValue)
+            args.putSerializable("value_set_id", valueSetId)
+            args.putSerializable("value_ids", valueIds as Serializable)
+            args.putSerializable("selected_value_id", selectedValueId)
             args.putSerializable("update_target", updateTarget)
             args.putSerializable("entity_id", entityId)
             dialog.arguments = args
@@ -92,10 +96,11 @@ class ValueChooserDialogFragment : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.valueSet      = arguments.getSerializable("value_set") as ValueSet
-        this.selectedValue = arguments.getSerializable("selected_value") as Value?
-        this.updateTarget  = arguments.getSerializable("update_target") as UpdateTarget
-        this.entityId      = arguments.getSerializable("entity_id") as EntityId
+        this.valueSetId      = arguments.getSerializable("value_set_id") as ValueSetId
+        this.valueIds        = arguments.getSerializable("value_ids") as List<ValueId>
+        this.selectedValueId = arguments.getSerializable("selected_value_id") as ValueId?
+        this.updateTarget    = arguments.getSerializable("update_target") as UpdateTarget
+        this.entityId        = arguments.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -124,27 +129,53 @@ class ValueChooserDialogFragment : DialogFragment()
                               savedInstanceState : Bundle?) : View?
     {
         val entityId = this.entityId
-        return if (entityId != null)
-        {
-            val valueSet      = this.valueSet
-            val selectedValue = this.selectedValue
-            val updateTarget  = this.updateTarget
+        val valueSetId = this.valueSetId
+        val updateTarget = this.updateTarget
 
-            if (valueSet != null && updateTarget != null) {
-                ValueChooserView.view(valueSet,
-                                      selectedValue,
-                                      updateTarget,
-                                      this,
-                                      entityId,
-                                      context)
-            }
-            else {
-                super.onCreateView(inflater, container, savedInstanceState)
+        if (entityId != null && valueSetId != null && updateTarget != null)
+        {
+            val valueSet = valueSet(valueSetId, entityId)
+            return when (valueSet) {
+                is Val -> {
+                    val selectedValueId = this.selectedValueId
+                    if (selectedValueId != null) {
+                        val selectedValue = value(ValueReference(valueSetId, selectedValueId), entityId)
+                        when (selectedValue) {
+                            is Val -> {
+                                ValueChooserView.view(valueSet.value,
+                                              valueIds,
+                                              selectedValue.value,
+                                              updateTarget,
+                                              this,
+                                              entityId,
+                                              context)
+                            }
+                            is Err -> {
+                                ApplicationLog.error(selectedValue.error)
+                                super.onCreateView(inflater, container, savedInstanceState)
+                            }
+                        }
+                    }
+                    else {
+                        return ValueChooserView.view(valueSet.value,
+                                              valueIds,
+                                              null,
+                                              updateTarget,
+                                              this,
+                                              entityId,
+                                              context)
+
+                    }
+                }
+                is Err -> {
+                    ApplicationLog.error(valueSet.error)
+                    super.onCreateView(inflater, container, savedInstanceState)
+                }
             }
         }
         else
         {
-            super.onCreateView(inflater, container, savedInstanceState)
+            return super.onCreateView(inflater, container, savedInstanceState)
         }
     }
 
@@ -173,6 +204,7 @@ object ValueChooserView
 
 
     fun view(valueSet : ValueSet,
+             valueIds : List<ValueId>,
              selectedValue : Value?,
              updateTarget : UpdateTarget,
              dialog : DialogFragment,
@@ -184,6 +216,7 @@ object ValueChooserView
         // (1) Views
         // -------------------------------------------------------------------
         val chooserView     = chooserView(valueSet,
+                                          valueIds,
                                           selectedValue,
                                           updateTarget,
                                           dialog,
@@ -219,7 +252,7 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
         layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
@@ -259,11 +292,11 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
-        layout.backgroundColor      = Color.WHITE
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_80"))))
+        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
+//        layout.backgroundColor      = Color.WHITE
 
         layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
 
@@ -315,13 +348,14 @@ object ValueChooserView
         title.text              = titleString
 
         title.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Bold,
+                                                TextFontStyle.Medium,
                                                 context)
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
-        title.color           = colorOrBlack(colorTheme, entityId)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+//        title.color           = colorOrBlack(colorTheme, entityId)
+        title.color           = Color.WHITE
 
         title.sizeSp          = 17f
 
@@ -334,6 +368,7 @@ object ValueChooserView
     // -----------------------------------------------------------------------------------------
 
     fun chooserView(valueSet : ValueSet,
+                    valueIds : List<ValueId>,
                     selectedValue : Value?,
                     updateTarget : UpdateTarget,
                     dialog : DialogFragment,
@@ -349,7 +384,7 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
         recyclerView.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         val dividerColorTheme = ColorTheme(setOf(
@@ -362,31 +397,46 @@ object ValueChooserView
         {
             is ValueSetBase ->
             {
-                recyclerView.adapter = BaseValueSetRecyclerViewAdapter(valueSet.sortedValues(),
-                                                                       selectedValue,
-                                                                       updateTarget,
-                                                                       dialog,
-                                                                       entityId,
-                                                                       context)
+                if (valueIds.isEmpty())
+                {
+                    recyclerView.adapter = BaseValueSetRecyclerViewAdapter(valueSet.sortedValues(),
+                                                                           selectedValue,
+                                                                           updateTarget,
+                                                                           dialog,
+                                                                           entityId,
+                                                                           context)
+                }
+                else
+                {
+                    recyclerView.adapter = BaseValueSetRecyclerViewAdapter(valueSet.values(valueIds, entityId),
+                                                                           selectedValue,
+                                                                           updateTarget,
+                                                                           dialog,
+                                                                           entityId,
+                                                                           context)
+                }
             }
             is ValueSetCompound ->
             {
-                val valueSets = valueSet.valueSets(entityId)
-                when (valueSets)
+                if (valueIds.isEmpty())
                 {
-                    is Val ->
-                    {
-                        val items = valueSetIndexList(valueSets.value, entityId, context)
-                        //Log.d("***VALUECHOOSER", items.toString())
-                        recyclerView.adapter =
-                                CompoundValueSetRecyclerViewAdapter(items,
-                                        selectedValue,
-                                        updateTarget,
-                                        dialog,
-                                        entityId,
-                                        context)
-                    }
-                    is Err -> ApplicationLog.error(valueSets.error)
+                    recyclerView.adapter =
+                            CompoundValueSetRecyclerViewAdapter(valueSet.indexList(entityId),
+                                                                selectedValue,
+                                                                updateTarget,
+                                                                dialog,
+                                                                entityId,
+                                                                context)
+                }
+                else
+                {
+                    recyclerView.adapter =
+                            CompoundValueSetRecyclerViewAdapter(valueSet.indexList(valueIds,entityId),
+                                                                selectedValue,
+                                                                updateTarget,
+                                                                dialog,
+                                                                entityId,
+                                                                context)
                 }
             }
         }
@@ -395,22 +445,22 @@ object ValueChooserView
     }
 
 
-    private fun valueSetIndexList(valueSets : Set<ValueSet>,
-                                  entityId : EntityId,
-                                  context : Context) : List<Any>
-    {
-        fun valueSetItems(valueSet : ValueSet) : List<Any>
-        {
-            val values = valueSet.values(entityId)
-            return when (values) {
-                is Val -> listOf(valueSet.label()).plus(values.value)
-                is Err -> listOf(valueSet.label())
-            }
-        }
-
-        return valueSets.sortedBy { it.labelString() }
-                        .flatMap(::valueSetItems)
-    }
+//    private fun valueSetIndexList(valueSets : Set<ValueSet>,
+//                                  entityId : EntityId,
+//                                  context : Context) : List<Any>
+//    {
+//        fun valueSetItems(valueSet : ValueSet) : List<Any>
+//        {
+//            val values = valueSet.values(entityId)
+//            return when (values) {
+//                is Val -> listOf(valueSet.label()).plus(values.value)
+//                is Err -> listOf(valueSet.label())
+//            }
+//        }
+//
+//        return valueSets.sortedBy { it.labelString() }
+//                        .flatMap(::valueSetItems)
+//    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -444,11 +494,11 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.leftDp       = 6f
+        layout.padding.rightDp      = 6f
 
-        layout.padding.topDp        = 10f
-        layout.padding.bottomDp     = 10f
+        layout.padding.topDp        = 6f
+        layout.padding.bottomDp     = 6f
 
         layout.margin.leftDp        = 2f
         layout.margin.rightDp       = 2f
@@ -555,11 +605,11 @@ object ValueChooserView
 
         name.id                 = R.id.choose_value_header
 
-        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.width              = LinearLayout.LayoutParams.MATCH_PARENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
         name.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Bold,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -567,13 +617,26 @@ object ValueChooserView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         name.color              = colorOrBlack(colorTheme, entityId)
 
-        name.sizeSp             = 13f
 
-        name.margin.leftDp      = 10f
-        name.margin.rightDp     = 10f
 
-        name.margin.topDp       = 8f
-        name.margin.bottomDp    = 8f
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+//        name.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
+        name.backgroundColor      = Color.WHITE
+
+        name.sizeSp             = 15f
+
+        name.margin.leftDp      = 2f
+        name.margin.rightDp     = 2f
+
+
+        name.margin.topDp       = 2f
+
+        name.padding.topDp      = 6f
+        name.padding.bottomDp   = 6f
+        name.padding.leftDp     = 6f
+        name.padding.rightDp    = 6f
 
         return name.textView(context)
     }
@@ -765,11 +828,16 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                                                                 updateTarget.tableWidgetId,
                                                                 updateTarget.cellId,
                                                                 item.valueId())
-                                Log.d("***VALUE CHOOSER", "send update: $textCellUpdate")
                                 Router.send(MessageSheetUpdate(textCellUpdate))
                             }
+                            is UpdateTargetListWidget ->
+                            {
+                                val listWidgetUpdate = ListWidgetUpdateAddValue(
+                                                            updateTarget.listWidgetId,
+                                                            item.valueId().value)
+                                Router.send(MessageSheetUpdate(listWidgetUpdate))
+                            }
                         }
-//                        updateVariable(variableId, EngineValueText(item.valueId().value), entityId)
                         dialog.dismiss()
                     })
                 }
@@ -782,7 +850,8 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
         else if (item is ValueSetLabel)
         {
             val headerViewHolder = viewHolder as HeaderViewHolder
-            headerViewHolder.setHeaderText(item.value.toUpperCase())
+//            headerViewHolder.setHeaderText(item.value.toUpperCase())
+            headerViewHolder.setHeaderText(item.value)
         }
     }
 
@@ -816,7 +885,7 @@ class ValueViewHolder(itemView : View, val entityId : EntityId, val context : Co
 
     val normalColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_11"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
     val greyColor = colorOrBlack(normalColorTheme, entityId)
 
 

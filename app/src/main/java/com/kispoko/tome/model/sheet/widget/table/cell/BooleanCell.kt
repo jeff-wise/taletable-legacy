@@ -196,9 +196,7 @@ object BooleanCellView
 {
 
     fun view(cell : TableWidgetBooleanCell,
-             rowFormat : TableWidgetRowFormat,
              column : TableWidgetBooleanColumn,
-             cellFormat : BooleanCellFormat,
              entityId : EntityId,
              context : Context) : View
     {

@@ -3,17 +3,14 @@ package com.kispoko.tome.model.sheet.widget.table
 
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.label
+import com.kispoko.tome.R.string.cell
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
 import com.kispoko.tome.activity.sheet.dialog.TableDialog
@@ -22,12 +19,11 @@ import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
 import com.kispoko.tome.lib.orm.RowValue1
-import com.kispoko.tome.lib.orm.RowValue2
-import com.kispoko.tome.lib.orm.schema.CollValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.model.engine.variable.VariableNamespace
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
@@ -52,8 +48,7 @@ import java.util.*
 /**
  * Table Widget Row
  */
-data class TableWidgetRow(val id : UUID,
-                          val format : TableWidgetRowFormat,
+data class TableWidgetRow(val format : TableWidgetRowFormat,
                           val cells : MutableList<TableWidgetCell>)
                            : ToDocument, SheetComponent, Serializable
 {
@@ -73,15 +68,7 @@ data class TableWidgetRow(val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(cells : MutableList<TableWidgetCell>)
-        : this(UUID.randomUUID(),
-               TableWidgetRowFormat.default(),
-               cells)
-
-
-    constructor(format : TableWidgetRowFormat,
-                cells : MutableList<TableWidgetCell>)
-        : this(UUID.randomUUID(),
-               format,
+        : this(TableWidgetRowFormat.default(),
                cells)
 
 
@@ -100,10 +87,12 @@ data class TableWidgetRow(val id : UUID,
                          // Cells
                          doc.list("cells") ap { docList ->
                              docList.mapMut { TableWidgetCell.Companion.fromDocument(it) }
-                         })
+                         }
+                        )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
     }
 
 
@@ -123,24 +112,9 @@ data class TableWidgetRow(val id : UUID,
 
     fun format() : TableWidgetRowFormat = this.format
 
+
     fun cells() : List<TableWidgetCell> = this.cells
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() {}
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetTableRowValue =
-//        RowValue2(widgetTableRowTable,
-//                  ProdValue(this.format),
-//                  CollValue(this.cells))
-//
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -163,65 +137,9 @@ data class TableWidgetRow(val id : UUID,
         val sheetActivity = context as SheetActivity
         val updateTarget = UpdateTargetInsertTableRow(tableWidget)
         tableWidget.selectedRow = rowIndex
-//        this.addHighlight(sheetUIContext)
-//        sheetActivity.showTableEditor(this, updateTarget, SheetContext(sheetUIContext))
 
         val dialog = TableDialog.newInstance(updateTarget, entityId)
         dialog.show(sheetActivity.supportFragmentManager, "")
-    }
-
-
-    fun onEditorClose(entityId : EntityId, context : Context)
-    {
-        this.removeHighlight(entityId, context)
-    }
-
-
-    fun addHighlight(entityId : EntityId, context : Context)
-    {
-        val viewId = this.viewId
-        if (viewId != null)
-        {
-            val activity = context as SheetActivity
-
-            val tableRow = activity.findViewById<TableRow>(viewId)
-
-            val bgDrawable = GradientDrawable()
-
-            val color = colorOrBlack(this.format().textFormat().elementFormat().backgroundColorTheme(), entityId)
-
-            bgDrawable.setColor(this.backgroundColor ?: color)
-
-
-            val strokeColorTheme = ColorTheme(setOf(
-                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_red_5")),
-                    ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-            val strokeColor = colorOrBlack(strokeColorTheme, entityId)
-            bgDrawable.setStroke(1, strokeColor)
-
-            tableRow?.background = bgDrawable
-        }
-    }
-
-
-    fun removeHighlight(entityId : EntityId, context : Context)
-    {
-        val viewId = this.viewId
-        if (viewId != null)
-        {
-            val activity = context as SheetActivity
-
-            val tableRow = activity.findViewById<TableRow>(viewId)
-
-            val bgDrawable = GradientDrawable()
-
-            val color = colorOrBlack(this.format().textFormat().elementFormat().backgroundColorTheme(), entityId)
-
-            bgDrawable.setColor(this.backgroundColor ?: color)
-            bgDrawable.setStroke(0, Color.WHITE)
-
-            tableRow?.background = bgDrawable
-        }
     }
 
 
@@ -230,232 +148,245 @@ data class TableWidgetRow(val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun view(tableWidget : TableWidget,
-             rowIndex : Int,
              entityId : EntityId,
              context : Context) : TableRow
     {
-        val tableRow = TableRowWidgetView(this, tableWidget, rowIndex, entityId, context)
-
-        val layoutParams = TableLayout.LayoutParams()
-        layoutParams.width  = TableLayout.LayoutParams.MATCH_PARENT
-        layoutParams.height  = TableLayout.LayoutParams.WRAP_CONTENT
-
-        val margins = tableWidget.format().rowFormat().textFormat().elementFormat().margins()
-        layoutParams.leftMargin = margins.leftPx()
-        layoutParams.rightMargin = margins.rightPx()
-        layoutParams.topMargin = margins.topPx()
-        layoutParams.bottomMargin = margins.bottomPx()
-
-        tableRow.layoutParams = layoutParams
-
-        tableRow.gravity        = Gravity.CENTER_VERTICAL
-
-        val viewId = Util.generateViewId()
-        this.viewId = viewId
-        tableRow.id = viewId
-
-        val padding = tableWidget.format().rowFormat().textFormat().elementFormat().padding()
-        tableRow.setPadding(padding.leftPx(),
-                            padding.topPx(),
-                            padding.rightPx(),
-                            padding.bottomPx())
-
-        val bgColor = colorOrBlack(
-                          tableWidget.format().rowFormat().textFormat().elementFormat().backgroundColorTheme(),
-                          entityId)
-        tableRow.setBackgroundColor(bgColor)
-        this.backgroundColor = bgColor
-
-        val rowElementFormat = tableWidget.format().rowFormat().textFormat().elementFormat()
-        tableRow.addView(editRowButtonView(false, rowElementFormat, entityId, context))
-
-        this.cells().forEachIndexed { i, tableWidgetCell ->
-            when (tableWidgetCell)
-            {
-                is TableWidgetBooleanCell ->
-                {
-                    val column = tableWidget.columns()[i]
-                    when (column)
-                    {
-                        is TableWidgetBooleanColumn ->
-                            tableRow.addView(tableWidgetCell.view(this.format(),
-                                                                   column,
-                                                                   entityId,
-                                                                   context))
-                        else -> ApplicationLog.error(
-                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.BOOLEAN,
-                                                                   column.type()))
-                    }
-                }
-                is TableWidgetImageCell ->
-                {
-                    val column = tableWidget.columns()[i]
-                    when (column)
-                    {
-                        is TableWidgetImageColumn ->
-                            tableRow.addView(tableWidgetCell.view(entityId,
-                                                                  column,
-                                                                  context))
-                        else -> ApplicationLog.error(
-                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.IMAGE,
-                                                                   column.type()))
-                    }
-                }
-                is TableWidgetNumberCell ->
-                {
-                    val column = tableWidget.columns()[i]
-                    when (column)
-                    {
-                        is TableWidgetNumberColumn ->
-                            tableRow.addView(tableWidgetCell.view(this,
-                                                                   column,
-                                                                   rowIndex,
-                                                                   tableWidget,
-                                                                   entityId,
-                                                                   context))
-                        else -> ApplicationLog.error(
-                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.NUMBER,
-                                                                   column.type()))
-                    }
-                }
-                is TableWidgetTextCell ->
-                {
-                    val column = tableWidget.columns()[i]
-                    when (column)
-                    {
-                        is TableWidgetTextColumn ->
-                            tableRow.addView(tableWidgetCell.view(this.format(),
-                                                                   column,
-                                                                   rowIndex,
-                                                                   tableWidget,
-                                                                   entityId,
-                                                                   context))
-                        else -> ApplicationLog.error(
-                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.TEXT,
-                                                                   column.type()))
-                    }
-                }
-            }
-        }
-
-        return tableRow //.tableRow(sheetUIContext.context)
+        val rowUI = TableWidgetRowUI(this, tableWidget, entityId, context)
+        return rowUI.view()
     }
+
+
+//    fun view(tableWidget : TableWidget,
+//             rowIndex : Int,
+//             entityId : EntityId,
+//             context : Context) : TableRow
+//    {
+//        val tableRow = TableRowWidgetView(this, tableWidget, rowIndex, entityId, context)
+//
+//        val layoutParams = TableLayout.LayoutParams()
+//        layoutParams.width  = TableLayout.LayoutParams.MATCH_PARENT
+//        layoutParams.height  = TableLayout.LayoutParams.WRAP_CONTENT
+//
+//        val margins = tableWidget.format().rowFormat().textFormat().elementFormat().margins()
+//        layoutParams.leftMargin = margins.leftPx()
+//        layoutParams.rightMargin = margins.rightPx()
+//        layoutParams.topMargin = margins.topPx()
+//        layoutParams.bottomMargin = margins.bottomPx()
+//
+//        tableRow.layoutParams = layoutParams
+//
+//        tableRow.gravity        = Gravity.CENTER_VERTICAL
+//
+//        val viewId = Util.generateViewId()
+//        this.viewId = viewId
+//        tableRow.id = viewId
+//
+//        val padding = tableWidget.format().rowFormat().textFormat().elementFormat().padding()
+//        tableRow.setPadding(padding.leftPx(),
+//                            padding.topPx(),
+//                            padding.rightPx(),
+//                            padding.bottomPx())
+//
+//        val bgColor = colorOrBlack(
+//                          tableWidget.format().rowFormat().textFormat().elementFormat().backgroundColorTheme(),
+//                          entityId)
+//        tableRow.setBackgroundColor(bgColor)
+//        this.backgroundColor = bgColor
+//
+//        val rowElementFormat = tableWidget.format().rowFormat().textFormat().elementFormat()
+//        tableRow.addView(editRowButtonView(false, rowElementFormat, entityId, context))
+//
+//
+//        return tableRow //.tableRow(sheetUIContext.context)
+//    }
 
 
 
 }
 
 
-class TableRowWidgetView(val tableWidgetRow : TableWidgetRow,
-                         val tableWidget : TableWidget,
-                         val rowIndex : Int,
-                         val entityId : EntityId,
-                         context : Context) : TableRow(context)
+
+class TableWidgetRowUI(val row : TableWidgetRow,
+                       val tableWidget : TableWidget,
+                       val entityId : EntityId,
+                       val context : Context)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
 
-    var clickTime : Long = 0
-    var CLICK_DURATION = 500
 
-
-    override fun onInterceptTouchEvent(ev: MotionEvent?) : Boolean
+    fun view() : TableRow
     {
-        if (ev != null)
-        {
-            //Log.d("***TABLEWIDGETROW", ev.action.toString())
-            when (ev.action)
+        val tableRow = this.rowView()
+
+        row.cells().forEachIndexed { columnIndex, cell ->
+
+            val column = tableWidget.columns().getOrNull(columnIndex)
+
+            when (cell)
             {
-                MotionEvent.ACTION_DOWN ->
-                {
-                    clickTime = System.currentTimeMillis()
-                    SheetActivityGlobal.setLongPressRunnable(Runnable {
-                        tableWidgetRow.openEditor(tableWidget, rowIndex, entityId, context)
-                    })
-                    //Log.d("***TABLEROW", "action down")
-                }
-                MotionEvent.ACTION_UP ->
-                {
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                    //Log.d("***TABLEROW", "action up")
-//                    val upTime = System.currentTimeMillis()
-//                    if ((upTime - clickTime) > CLICK_DURATION) {
-//                        tableWidgetRow.openEditor(tableWidget, rowIndex, sheetUIContext)
-//                        Log.d("***TABLEROW", "on long click")
-//                    }
-                }
-                MotionEvent.ACTION_OUTSIDE ->
-                {
-                    //SheetActivityGlobal.touchHandler.removeCallbacks(runnable)
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                }
-                MotionEvent.ACTION_SCROLL ->
-                {
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                }
-                MotionEvent.ACTION_CANCEL ->
-                {
-                    //SheetActivityGlobal.touchHandler.removeCallbacks(runnable)
-                    SheetActivityGlobal.cancelLongPressRunnable()
-                }
+                is TableWidgetBooleanCell -> this.addBooleanCell(cell, tableRow, column)
+                is TableWidgetImageCell   -> this.addImageCell(cell, tableRow, column)
+                is TableWidgetNumberCell  -> this.addNumberCell(cell, tableRow, column)
+                is TableWidgetTextCell    -> this.addTextCell(cell, tableRow, column)
             }
         }
-        return false
+
+        return tableRow
     }
 
 
-}
+    private fun rowView() : TableRow
+    {
+        val tableRow                = TableRowBuilder()
+        val rowFormat               = tableWidget.format().rowFormat()
 
+        tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT
+        tableRow.height             = TableLayout.LayoutParams.MATCH_PARENT
 
-fun editRowButtonView(isPlaceholder : Boolean,
-                      rowFormat : ElementFormat,
-                      entityId : EntityId,
-                      context : Context) : LinearLayout
-{
-    // (1) Declarations
-    // -------------------------------------------------------------------------------------
+        tableRow.marginSpacing      = rowFormat.textFormat().elementFormat().margins()
+        tableRow.paddingSpacing     = rowFormat.textFormat().elementFormat().padding()
 
-    val layout              = LinearLayoutBuilder()
-    val icon                = ImageViewBuilder()
+        tableRow.gravity            = Gravity.CENTER_VERTICAL
 
-    // (2) Layout
-    // -------------------------------------------------------------------------------------
+        tableRow.backgroundColor    = colorOrBlack(rowFormat.textFormat().elementFormat().backgroundColorTheme(), entityId)
 
-    layout.id               = R.id.table_row_edit_button
-
-    layout.layoutType       = LayoutType.TABLE_ROW
-    layout.widthDp          = 20
-    layout.height           = TableRow.LayoutParams.WRAP_CONTENT
-
-    layout.onClick          = View.OnClickListener {
+        return tableRow.tableRow(context)
     }
 
-    layout.visibility       = View.GONE
 
-    layout.gravity          = Gravity.CENTER_VERTICAL
-    layout.layoutGravity    = Gravity.CENTER_VERTICAL
-
-    layout.margin.rightDp   = rowFormat.margins().rightDp()
-
-    layout.child(icon)
-
-    // (3) Icon
-    // -------------------------------------------------------------------------------------
-
-    icon.widthDp            = 18
-    icon.heightDp           = 18
-
-    if (!isPlaceholder)
-        icon.image              = R.drawable.icon_vertical_ellipsis
-
-    icon.layoutGravity      = Gravity.CENTER
-
-    val colorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
-    icon.color              = colorOrBlack(colorTheme, entityId)
+    private fun addBooleanCell(cell : TableWidgetBooleanCell,
+                               row : TableRow,
+                               column : TableWidgetColumn?)
+    {
+        if (column != null)
+        {
+            when (column)
+            {
+                is TableWidgetBooleanColumn ->
+                {
+                    row.addView(cell.view(column, entityId, context))
+                }
+                else -> ApplicationLog.error(
+                        CellTypeDoesNotMatchColumnType(TableWidgetCellType.BOOLEAN,
+                                column.type()))
+            }
+        }
+    }
 
 
-    return layout.linearLayout(context)
+    private fun addImageCell(cell : TableWidgetImageCell,
+                             row : TableRow,
+                             column : TableWidgetColumn?)
+    {
+        if (column != null)
+        {
+            when (column)
+            {
+                is TableWidgetImageColumn ->
+                {
+                    row.addView(cell.view(column, entityId, context))
+                }
+                else -> ApplicationLog.error(
+                        CellTypeDoesNotMatchColumnType(TableWidgetCellType.IMAGE,
+                                column.type()))
+            }
+        }
+    }
+
+
+    private fun addNumberCell(cell : TableWidgetNumberCell,
+                              row : TableRow,
+                              column : TableWidgetColumn?)
+    {
+        if (column != null)
+        {
+            when (column)
+            {
+                is TableWidgetNumberColumn ->
+                {
+                    row.addView(cell.view(column, tableWidget.widgetId(), entityId, context))
+                }
+                else -> ApplicationLog.error(
+                        CellTypeDoesNotMatchColumnType(TableWidgetCellType.NUMBER,
+                                column.type()))
+            }
+        }
+    }
+
+
+    private fun addTextCell(cell : TableWidgetTextCell,
+                            row : TableRow,
+                            column : TableWidgetColumn?)
+    {
+        if (column != null)
+        {
+            when (column)
+            {
+                is TableWidgetTextColumn ->
+                {
+                    row.addView(cell.view(column, tableWidget.widgetId(), entityId, context))
+                }
+                else -> ApplicationLog.error(
+                        CellTypeDoesNotMatchColumnType(TableWidgetCellType.TEXT,
+                                column.type()))
+            }
+        }
+    }
+
+
+    private fun editRowButtonView(isPlaceholder : Boolean) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.id               = R.id.table_row_edit_button
+
+        layout.layoutType       = LayoutType.TABLE_ROW
+        layout.widthDp          = 20
+        layout.height           = TableRow.LayoutParams.WRAP_CONTENT
+
+        layout.onClick          = View.OnClickListener {
+        }
+
+        layout.visibility       = View.GONE
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+        layout.layoutGravity    = Gravity.CENTER_VERTICAL
+
+//        layout.margin.rightDp   = rowFormat.margins().rightDp()
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 18
+        icon.heightDp           = 18
+
+        if (!isPlaceholder)
+            icon.image              = R.drawable.icon_vertical_ellipsis
+
+        icon.layoutGravity      = Gravity.CENTER
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+        icon.color              = colorOrBlack(colorTheme, entityId)
+
+        return layout.linearLayout(context)
+    }
+
+
+
 }
 
 

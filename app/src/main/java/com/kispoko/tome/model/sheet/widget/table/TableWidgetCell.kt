@@ -23,10 +23,12 @@ import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.book.BookReference
+import com.kispoko.tome.model.engine.value.ValueId
 import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.Action
 import com.kispoko.tome.model.sheet.widget.TableWidget
+import com.kispoko.tome.model.sheet.widget.WidgetId
 import com.kispoko.tome.model.sheet.widget.table.cell.*
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.CellVariableUndefined
@@ -227,11 +229,10 @@ data class TableWidgetBooleanCell(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(rowFormat : TableWidgetRowFormat,
-             column : TableWidgetBooleanColumn,
+    fun view(column : TableWidgetBooleanColumn,
              entityId : EntityId,
              context : Context) : View
-        = BooleanCellView.view(this, rowFormat, column, this.format(), entityId, context)
+        = BooleanCellView.view(this, column, entityId, context)
 
 }
 
@@ -326,8 +327,8 @@ data class TableWidgetImageCell(private val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(entityId : EntityId,
-             column : TableWidgetImageColumn,
+    fun view(column : TableWidgetImageColumn,
+             entityId : EntityId,
              context : Context) : View
         = ImageCellUI(this, column, entityId, context).view()
 
@@ -548,18 +549,14 @@ data class TableWidgetNumberCell(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(row : TableWidgetRow,
-             column : TableWidgetNumberColumn,
-             rowIndex : Int,
-             tableWidget : TableWidget,
+    fun view(column : TableWidgetNumberColumn,
+             tableWidgetId : WidgetId,
              entityId : EntityId,
              context : Context) : View
     {
         val viewBuilder = NumberCellViewBuilder(this,
-                                                row,
                                                 column,
-                                                rowIndex,
-                                                tableWidget,
+                                                tableWidgetId,
                                                 entityId,
                                                 context)
         this.column = column
@@ -575,7 +572,7 @@ data class TableWidgetNumberCell(override val id : UUID,
  */
 data class TableWidgetTextCell(override val id : UUID,
                                val format : TextCellFormat,
-                               val variableValue : TextVariableValue,
+                               var variableValue : TextVariableValue,
                                val action : Maybe<Action>,
                                var variableId : VariableId?)
                                 : TableWidgetCell(), ProdType
@@ -588,6 +585,8 @@ data class TableWidgetTextCell(override val id : UUID,
     var viewId : Int? = null
 
     var namespace : VariableNamespace? = null
+
+    var valueId : ValueId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -738,16 +737,14 @@ data class TableWidgetTextCell(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(rowFormat : TableWidgetRowFormat,
-             column : TableWidgetTextColumn,
-             rowIndex : Int,
-             tableWidget : TableWidget,
+    fun view(column : TableWidgetTextColumn,
+             tableWidgetId : WidgetId,
              entityId : EntityId,
              context : Context) : View
     {
         val viewBuilder = TextCellUI(this,
                                      column,
-                                     tableWidget,
+                                     tableWidgetId,
                                      entityId,
                                      context)
         return viewBuilder.view()

@@ -321,6 +321,20 @@ sealed class PointsBarStyle : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object SetCounter : PointsBarStyle()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "set_counter" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("set_counter")
+
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -337,6 +351,7 @@ sealed class PointsBarStyle : ToDocument, SQLSerializable, Serializable
                 "opposite_labels" -> effValue<ValueError,PointsBarStyle>(
                                         PointsBarStyle.OppositeLabels)
                 "counter"         -> effValue<ValueError,PointsBarStyle>(PointsBarStyle.Counter)
+                "set_counter"     -> effValue<ValueError,PointsBarStyle>(PointsBarStyle.SetCounter)
                 else              -> effError<ValueError,PointsBarStyle>(
                                     UnexpectedValue("PointsBarStyle", doc.text, doc.path))
             }
@@ -778,6 +793,10 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             {
                 contentLayout.addView(this.counterBarView())
             }
+            is PointsBarStyle.SetCounter ->
+            {
+                contentLayout.addView(this.counterBarView())
+            }
             is PointsBarStyle.None ->
             {
             }
@@ -1185,6 +1204,10 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // COUNTER VIEW
+    // -----------------------------------------------------------------------------------------
+
     private fun counterBarView() : LinearLayout
     {
         val layout          = this.counterBarViewLayout()
@@ -1407,14 +1430,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         current.paddingSpacing      = textFormat.elementFormat().padding()
         current.marginSpacing       = textFormat.elementFormat().margins()
 
-//        current.gravity             = Gravity.BOTTOM
-
-//        current.addRule(RelativeLayout.ALIGN_PARENT_START)
-//        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
-
-//        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-//        current.addRule(RelativeLayout.ALIGN_BASELINE)
-
         return current.textView(context)
     }
 
@@ -1445,11 +1460,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         limit.paddingSpacing        = textFormat.elementFormat().padding()
         limit.marginSpacing         = textFormat.elementFormat().margins()
 
-//        limit.addRule(RelativeLayout.ALIGN_PARENT_END)
-
-//        limit.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
-//        limit.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-
         return limit.textView(context)
     }
 
@@ -1479,11 +1489,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         label.paddingSpacing        = textFormat.elementFormat().padding()
         label.marginSpacing         = textFormat.elementFormat().margins()
-//
-//        label.addRule(RelativeLayout.ALIGN_PARENT_END)
-//        label.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
-
-//        label.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
         return label.textView(context)
     }
@@ -1552,15 +1557,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
         current.paddingSpacing      = textFormat.elementFormat().padding()
         current.marginSpacing       = textFormat.elementFormat().margins()
 
-//        current.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
-//                                        textFormat.elementFormat().verticalAlignment().gravityConstant()
-
-//        current.addRule(RelativeLayout.ALIGN_PARENT_START)
-//        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
-
-//        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-//        current.addRule(RelativeLayout.ALIGN_BASELINE)
-
         return current.textView(context)
     }
 
@@ -1590,10 +1586,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         limit.paddingSpacing        = textFormat.elementFormat().padding()
         limit.marginSpacing         = textFormat.elementFormat().margins()
-
-//        limit.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
-//                                    textFormat.elementFormat().verticalAlignment().gravityConstant()
-
 
         return limit.textView(context)
     }
@@ -1625,15 +1617,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         label.paddingSpacing        = textFormat.elementFormat().padding()
         label.marginSpacing         = textFormat.elementFormat().margins()
-//
-
-//        label.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
-//                                        textFormat.elementFormat().verticalAlignment().gravityConstant()
-
-//        label.layoutGravity         = Gravity.BOTTOM
-//
-//        label.gravity       = textFormat.elementFormat().alignment().gravityConstant() or
-//                                textFormat.elementFormat().verticalAlignment().gravityConstant()
 
         return label.textView(context)
     }
@@ -1663,15 +1646,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         current.paddingSpacing      = textFormat.elementFormat().padding()
         current.marginSpacing       = textFormat.elementFormat().margins()
-
-//        current.layoutGravity       = textFormat.elementFormat().alignment().gravityConstant() or
-//                textFormat.elementFormat().verticalAlignment().gravityConstant()
-
-
-//        current.addRule(RelativeLayout.ALIGN_PARENT_START)
-//        current.addRule(textFormat.elementFormat().verticalAlignment().relativeLayoutRule())
-
-//        current.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 
         return current.textView(context)
     }
