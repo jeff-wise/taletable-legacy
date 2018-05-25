@@ -1512,6 +1512,76 @@ types:
       presence: required
       description: >
         A description of the category and the common traits that its mechanics share.
+- type: primitive_type
+  primitive_type:
+    name: tag
+    label: Tag
+    description: Tag
+    group: Tag
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: sum_type
+  sum_type:
+    name: tag_query
+    label: 'Tag Query'
+    description: Tag query.
+    group: Tag
+    cases: 
+    - type: tag_query_tag 
+      description: Tag
+    - type: tag_query_and
+      description: And
+    - type: tag_query_or
+      description: And
+    - type: tag_query_all
+      description: And
+- type: product_type
+  product_type:
+    name: tag_query_and
+    label: 'Tag Query: And'
+    description: Tag query and.
+    group: Tag
+    fields:
+    - name: tags
+      type: 
+        type: custom_coll_type
+        custom_coll_type: tag
+      presence: required
+      description: Tag
+- type: product_type
+  product_type:
+    name: tag_query_or
+    label: 'Tag Query: Or'
+    description: Tag query or.
+    group: Tag
+    fields:
+    - name: tags
+      type: 
+        type: custom_coll_type
+        custom_coll_type: tag
+      presence: required
+      description: Tag
+- type: product_type
+  product_type:
+    name: tag_query_tag
+    label: 'Tag Query: Tag'
+    description: Tag query tag.
+    group: Tag
+    fields:
+    - name: tag
+      type: 
+        type: custom_type
+        custom_type: tag
+      presence: required
+      description: Tag
+- type: symbol_type
+  symbol_type:
+    name: tag_query_all
+    label: 'Tag Query: All'
+    description: Tag query all
+    group: 'Tag'
+    symbol: 'tag_query_all'
 - type: sum_type
   sum_type:
     name: variable
@@ -2035,7 +2105,7 @@ types:
 - type: sum_type
   sum_type:
     name: constraint_text_list
-    label: Text ListConstraint
+    label: Text List Constraint
     description: A text list constraint.
     group: 'Constraint'
     cases: 

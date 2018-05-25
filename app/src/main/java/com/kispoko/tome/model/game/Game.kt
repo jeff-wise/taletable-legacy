@@ -3,6 +3,7 @@ package com.kispoko.tome.model.game
 
 
 import com.kispoko.culebra.*
+import com.kispoko.tome.R.string.group
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -10,6 +11,10 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.engine.Engine
+import com.kispoko.tome.model.engine.tag.Tag
+import com.kispoko.tome.model.engine.tag.TagQuery
+import com.kispoko.tome.model.engine.tag.TagQueryAnd
+import com.kispoko.tome.model.engine.tag.TagQueryTag
 import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.group.GroupId
@@ -47,6 +52,19 @@ data class Game(override val id : UUID,
     private val groupById : MutableMap<GroupId,Group> =
                                groups.associateBy { it.id }
                                     as MutableMap<GroupId,Group>
+
+    private val groupsWithTag : MutableMap<Tag,MutableList<Group>> = mutableMapOf()
+
+
+    init {
+        groups.forEach { group ->
+            group.tags().forEach { tag ->
+                if (!groupsWithTag.containsKey(tag))
+                    groupsWithTag[tag] = mutableListOf()
+                groupsWithTag[tag]!!.add(group)
+            }
+        }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -125,6 +143,16 @@ data class Game(override val id : UUID,
             Just(_group)
         else
             Nothing()
+    }
+
+
+    fun groups(tagQuery : TagQuery) : List<Group> = when (tagQuery)
+    {
+        is TagQueryTag ->
+        {
+            groupsWithTag[tagQuery.tag] ?: listOf()
+        }
+        else -> listOf()
     }
 
 

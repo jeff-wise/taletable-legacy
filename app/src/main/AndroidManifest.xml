@@ -85,6 +85,10 @@
             android:label="Summation"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
+            android:name=".activity.sheet.group.GroupListActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name="com.kispoko.tome.activity.entity.engine.value.ValueActivity"
             android:label="Value"
             android:theme="@style/AppTheme.NoActionBar"/>

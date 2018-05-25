@@ -43,3 +43,47 @@ summaries:
   main_entity_id:
     type: sheet
     sheet: character_casmey_level_1
+- session_id: "6f6f148c-19e1-4ec1-bb42-49170b0e3402"
+  session_name: Sanson Alavidril
+  info:
+    summary: >-
+      A precocious young wizard, Sanson hungers for the power to change the world for the better. After
+      the unexpected death
+    description: >-
+      A precocious young wizard, Sanson hungers for the power to change the world for the better. After
+      the unexpected death of his younger sister, he started to wonder how so much tragedy can befall
+      the world when the power of magic to do good is so great? He studies hard with the singular purpose
+      to wield magic with such power and finesse to shape the world to his own morality. The cost of his
+      focus are often things unaffected by magic such as friendships, health, and learned wisdom.
+    primary_tag: 'Level 1'
+    secondary_tags:
+    - Human
+    - Wizard
+  game_id: magic_of_heroes
+  loaders:
+  - type: official
+    official:
+      type: sheet
+      sheet:
+        sheet_id: character_casmey_level_1
+        game_id: magic_of_heroes
+  - type: official
+    official:
+      type: campaign
+      campaign:
+        campaign_id: isara
+        game_id: magic_of_heroes
+  - type: official
+    official:
+      type: game
+      game:
+        game_id: magic_of_heroes
+  - type: official
+    official:
+      type: book
+      book:
+        book_id: core_rules
+        game_id: magic_of_heroes
+  main_entity_id:
+    type: sheet
+    sheet: character_sanson_level_1

@@ -15,7 +15,6 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.cell
 import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
@@ -34,14 +33,15 @@ import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.engine.procedure.Procedure
 import com.kispoko.tome.model.engine.procedure.ProcedureId
 import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
+import com.kispoko.tome.model.engine.tag.Tag
+import com.kispoko.tome.model.engine.tag.TagQuery
+import com.kispoko.tome.model.engine.tag.TagQueryAll
 import com.kispoko.tome.model.engine.value.Value
 import com.kispoko.tome.model.engine.value.ValueReference
-import com.kispoko.tome.model.engine.value.ValueSetBase
 import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.group.GroupReference
-import com.kispoko.tome.model.sheet.group.groups
 import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Icon
@@ -59,7 +59,7 @@ import maybe.*
 import maybe.Nothing
 import java.io.Serializable
 import java.util.*
-import kotlin.text.Typography.paragraph
+
 
 
 /**
@@ -1023,7 +1023,9 @@ data class ExpanderWidget(val widgetId : WidgetId,
  */
 data class WidgetGroup(val widgetId : WidgetId,
                        val format : GroupWidgetFormat,
-                       val groupReferences : List<GroupReference>) : Widget()
+                       val groupReferences : List<GroupReference>,
+                       val titleVariableId : Maybe<VariableId>,
+                       val groupQuery : TagQuery) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -1036,15 +1038,6 @@ data class WidgetGroup(val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : GroupWidgetFormat,
-//                groupReferences : List<GroupReference>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               groupReferences)
-//
 
     companion object : Factory<Widget>
     {
@@ -1064,7 +1057,16 @@ data class WidgetGroup(val widgetId : WidgetId,
                       // Group References
                       doc.list("group_references") ap { docList ->
                           docList.map { GroupReference.fromDocument(it) }
-                      })
+                      },
+                      // Title Variable Id
+                      split(doc.maybeAt("title_variable_id"),
+                            effValue<ValueError,Maybe<VariableId>>(Nothing()),
+                            { apply(::Just, VariableId.fromDocument(it)) }),
+                      // Group Query
+                      split(doc.maybeAt("group_query"),
+                            effValue<ValueError,TagQuery>(TagQueryAll()),
+                            { TagQuery.fromDocument(it) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -1090,6 +1092,23 @@ data class WidgetGroup(val widgetId : WidgetId,
 
 
     fun groupReferences() : List<GroupReference> = this.groupReferences
+
+
+    fun groupQuery() : TagQuery = this.groupQuery
+
+
+    // -----------------------------------------------------------------------------------------
+    // TITLE
+    // -----------------------------------------------------------------------------------------
+
+    fun title(entityId : EntityId) : Maybe<String> =
+        this.titleVariableId ap {
+            val value = textVariable(it, entityId).apply { it.value(entityId) }
+            when (value) {
+                is Val -> value.value
+                else    -> Nothing()
+            }
+        }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1140,7 +1159,6 @@ data class WidgetGroup(val widgetId : WidgetId,
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
         this.groups(entityId).forEach {
-//            Log.d("****GROUP WIDGET", "initializing group: ${it.id}")
             it.onSheetComponentActive(entityId, context)
         }
     }
@@ -1478,7 +1496,6 @@ data class ListWidget(val widgetId : WidgetId,
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
             rootView.findViewById<LinearLayout>(layoutViewId)?.let {
-                Log.d("***WIDGET", "update list widget view")
                 ListWidgetUI(this, entityId, context).updateView(it)
             }
         }
@@ -2763,7 +2780,6 @@ data class RollWidget(val widgetId : WidgetId,
 
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
-        Log.d("***WIDGET", "updating roll widget view")
         val layoutId = this.layoutId
         if (layoutId != null)
         {
@@ -3055,7 +3071,6 @@ data class StoryWidget(val widgetId : WidgetId,
                 when (variable) {
                     is NumberVariable ->
                     {
-                        Log.d("***WIDGET", "updating number part: $partUpdate")
                         variable.updateValue(partUpdate.newNumber, entityId)
                     }
                 }
@@ -3438,13 +3453,9 @@ data class TableWidget(private val widgetId : WidgetId,
             }
         }
 
-        Log.d("***WIDGET", "row value by id: ${rowByValueId.keys}")
-
         for (value in values)
         {
             val valueIdString = value.valueId().value
-
-            Log.d("***WIDGET", "value id string")
 
             if (rowByValueId.containsKey(valueIdString))
             {
@@ -3463,7 +3474,6 @@ data class TableWidget(private val widgetId : WidgetId,
             }
             else
             {
-                Log.d("***WIDGET", "default row for value: ${value.valueString()}")
                 val defaultRow = this.defaultTableRow(value.valueString())
                 rows.add(defaultRow)
             }

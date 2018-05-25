@@ -474,6 +474,43 @@ variables:
       text_list_literal:
       - light_armor_leather
       - shield
+- type: variable_text_list
+  variable_text_list:
+    id: inventory_weapons
+    label: 'Inventory: Weapons'
+    description: 'The weapons that the character is carrying.'
+    value_set_id: weapons
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - rapier
+      - dagger
+- type: variable_text_list
+  variable_text_list:
+    id: inventory_backpack
+    label: 'Inventory: Backpack'
+    description: 'General adventuring gear.'
+    value_set_id: adventuring_gear
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - bedroll
+      - mess_kit
+      - tinderbox
+      - torch
+      - rations_1_day
+      - waterskin
+      - rope_hempen_50_foot
 - type: variable_number
   variable_number:
     id: proficiency_bonus
@@ -1298,7 +1335,7 @@ variables:
     description: Melee Attacks Label
     value:
       type: text_literal
-      text_literal: 'my melee attacks'
+      text_literal: 'Melee Attacks'
 - type: variable_text
   variable_text:
     id: number_of_attacks_label
@@ -1330,7 +1367,7 @@ variables:
     description: Ranged Attacks Label
     value:
       type: text_literal
-      text_literal: 'my ranged attacks'
+      text_literal: 'Ranged Attacks'
 - type: variable_text
   variable_text:
     id: actions_label
@@ -6741,8 +6778,6 @@ sections:
       element_format:
         background_color_theme:
           theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_11
           - theme_id: light
             color_id: light_grey_7
         padding:
@@ -6753,16 +6788,89 @@ sections:
           padding:
             top: 10
             bottom: 15
-            left: 6
-            right: 6
       rows:
       - widgets:
         - type: widget_group
           widget_group:
-#            id: attacks
+            format:
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                padding:
+                  right: 8
+                  left: 8
+                  bottom: 8
+                  top: 8
+              groups_format:
+                margins:
+                  left: 6
+                  right: 6
+              title_format:
+                size: 18
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+            title_variable_id: melee_attacks_label
             group_references:
             - type: group_id
               group_id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
+            - type: group_id
+              group_id: '4b8954d1-41b5-4a01-9426-a7d9b3c118f1'
+    - format:
+        element_format:
+          padding:
+            top: 10
+            bottom: 15
+      rows:
+      - widgets:
+        - type: widget_group
+          widget_group:
+            format:
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                padding:
+                  right: 8
+                  left: 8
+                  bottom: 8
+                  top: 8
+              groups_format:
+                margins:
+                  left: 6
+                  right: 6
+              title_format:
+                size: 18
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+            title_variable_id: ranged_attacks_label
+            group_references:
+            - type: group_id
+              group_id: '197df758-949d-49c3-a61a-630b335d819c'
+            - type: group_id
+              group_id: '9bafa2f5-e56b-431f-9a18-7458baec64ae'
   - name: Spells
     format:
       element_format:
@@ -13282,6 +13390,7 @@ sections:
           widget_table:
 #            id: weapons
             title_variable_id: weapon_table_label
+            primary_column_index: 1
             book_reference:
               type: book_reference_section
               book_reference_section:
@@ -13366,6 +13475,7 @@ sections:
                 name: Name
                 variable_prefix: weapon
                 defines_namespace: true
+                column_variable_id: inventory_weapons
                 default_value:
                   type: value_set_id
                   value_set_id: weapons
@@ -13383,7 +13493,7 @@ sections:
                         - theme_id: light
                           color_id: dark_grey_12
                       font_style: regular
-                      size: 16
+                      size: 17
                     width: 3
             - type: table_widget_number_column
               table_widget_number_column:
@@ -13441,14 +13551,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: weapons
-                      value_id:
-                        type: text_literal
-                        text_literal: rapier
+                    type: text_literal
+                    text_literal: rapier
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13463,14 +13567,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: weapons
-                      value_id:
-                        type: text_literal
-                        text_literal: dagger
+                    type: text_literal
+                    text_literal: dagger
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13854,8 +13952,8 @@ sections:
       - widgets:
         - type: widget_table
           widget_table:
-#            id: backpack
             title_variable_id: backpack_table_label
+            primary_column_index: 1
             format:
               title_bar_format:
                 background_color_theme:
@@ -13928,6 +14026,7 @@ sections:
                 name: Name
                 variable_prefix: backpack_item
                 defines_namespace: true
+                column_variable_id: inventory_backpack
                 default_value:
                   type: value_set_id
                   value_set_id: adventuring_gear
@@ -13973,14 +14072,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: bedroll
+                    type: text_literal
+                    text_literal: bedroll
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13990,14 +14083,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: mess_kit
+                    type: text_literal
+                    text_literal: mess_kit
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -14007,14 +14094,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: tinderbox
+                    type: text_literal
+                    text_literal: tinderbox
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -14024,14 +14105,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: torch
+                    type: text_literal
+                    text_literal: torch
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -14041,14 +14116,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: rations_1_day
+                    type: text_literal
+                    text_literal: rations_1_day
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -14058,14 +14127,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: waterskin
+                    type: text_literal
+                    text_literal: waterskin
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -14075,14 +14138,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: rope_hempen_50_foot
+                    type: text_literal
+                    text_literal: rope_hempen_50_foot
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:

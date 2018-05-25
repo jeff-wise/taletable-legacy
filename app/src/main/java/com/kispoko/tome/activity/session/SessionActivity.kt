@@ -316,7 +316,7 @@ class SessionUI(val session : Session,
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.padding.topDp        = 10f
         layout.padding.bottomDp     = 10f
@@ -427,7 +427,6 @@ class SessionUI(val session : Session,
         // -------------------------------------------------------------------------------------
 
         val layout              = LinearLayoutBuilder()
-        val icon                = ImageViewBuilder()
         val label               = TextViewBuilder()
 
         // (2) Layout
@@ -440,34 +439,19 @@ class SessionUI(val session : Session,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
+        layout.backgroundColor  = Color.WHITE
+
         layout.margin.topDp     = 12f
-        layout.margin.bottomDp  = 2f
-        layout.margin.leftDp    = 6f
+        layout.margin.bottomDp  = 1f
 
-        layout //.child(icon)
-              .child(label)
+        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
-        // (3 A) Icon
-        // -------------------------------------------------------------------------------------
+        layout.padding.leftDp   = 6f
+        layout.padding.rightDp  = 6f
+        layout.padding.topDp    = 6f
+        layout.padding.bottomDp = 6f
 
-        icon.widthDp            = 16
-        icon.heightDp           = 16
-
-        when (labelString.toLowerCase())
-        {
-            "sheet"    -> icon.image = R.drawable.icon_document
-            "campaign" -> icon.image = R.drawable.icon_adventure
-            "game"     -> icon.image = R.drawable.icon_dice_roll
-            "book"     -> icon.image = R.drawable.icon_book
-        }
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
-        icon.color          = theme.colorOrBlack(iconColorTheme)
-
-        icon.margin.rightDp = 4f
-
+        layout.child(label)
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
@@ -475,10 +459,10 @@ class SessionUI(val session : Session,
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.text              = "${labelString}s".toUpperCase()
+        label.text              = "${labelString}s"
 
         label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Bold,
+                                                TextFontStyle.Medium,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -486,7 +470,7 @@ class SessionUI(val session : Session,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
         label.color             = theme.colorOrBlack(colorTheme)
 
-        label.sizeSp            = 13f
+        label.sizeSp            = 16f
 
         return layout.linearLayout(context)
     }

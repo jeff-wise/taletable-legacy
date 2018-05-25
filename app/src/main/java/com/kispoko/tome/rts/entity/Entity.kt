@@ -28,13 +28,13 @@ import com.kispoko.tome.model.engine.program.ProgramId
 import com.kispoko.tome.model.engine.reference.TextReference
 import com.kispoko.tome.model.engine.summation.Summation
 import com.kispoko.tome.model.engine.summation.SummationId
+import com.kispoko.tome.model.engine.tag.TagQuery
 import com.kispoko.tome.model.engine.task.Task
 import com.kispoko.tome.model.engine.value.*
 import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.model.sheet.group.Group
-import com.kispoko.tome.model.sheet.group.GroupId
+import com.kispoko.tome.model.sheet.group.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeId
@@ -288,15 +288,52 @@ fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group> = when (e
 {
     is EntitySheetId ->
     {
-//        Log.d("***ENTITY", "getting group with id")
         sheet(entityId.sheetId)   ap {
         campaign(it.campaignId()) ap {
         game(it.gameId())         ap {
-//            Log.d("***ENTITY", "got game")
             it.groupWithId(groupId)
         } } }
     }
     else -> Nothing()
+}
+
+
+/**
+ * Group By Tag
+ */
+fun groups(tagQuery : TagQuery, entityId : EntityId) : List<Group> = when (entityId)
+{
+    is EntitySheetId ->
+    {
+        val game = sheet(entityId.sheetId)
+                     .apply { campaign(it.campaignId()) }
+                     .apply { game(it.gameId()) }
+        when (game) {
+            is Just    -> game.value.groups(tagQuery)
+            is Nothing -> listOf()
+        }
+    }
+    else -> listOf()
+}
+
+
+fun groups(groupReferences : List<GroupReference>, entityId : EntityId) : List<Group>
+{
+    val groups : MutableList<Group> = mutableListOf()
+
+    groupReferences.forEach {
+        when (it) {
+            is GroupReferenceLiteral -> groups.add(it.group)
+            is GroupReferenceId -> {
+                Log.d("***GROUP", "group reference id: ${it.groupId}")
+                groupWithId(it.groupId, entityId).doMaybe {
+                    groups.add(it)
+                }
+            }
+        }
+    }
+
+    return groups
 }
 
 

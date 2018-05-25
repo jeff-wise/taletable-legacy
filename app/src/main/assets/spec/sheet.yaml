@@ -417,6 +417,18 @@ types:
         custom_type: group_id
       presence: optional
       description: The group id.
+    - name: name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The name.
+    - name: summary
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The summary.
     - name: format
       type: 
         type: custom_type
@@ -425,6 +437,12 @@ types:
       description: >
         The group formatting options. If no value is given, then the default options 
         will be used.
+    - name: tags
+      type: 
+        type: custom_coll_type
+        custom_coll_type: tag
+      presence: optional
+      description: Tags
     - name: rows
       type: 
         type: custom_coll_type
@@ -987,6 +1005,12 @@ types:
         custom_coll_type: group_reference
       presence: required
       description: Group references.
+    - name: title_variable_id
+      type:
+        type: custom_type
+        custom_type: variable_id
+      presence: optional
+      description: The title variable id.
 - type: product_type
   product_type:
     name: group_widget_format
@@ -1008,6 +1032,30 @@ types:
         prim_type: string
       presence: optional
       description: The view type.
+    - name: title_bar_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The title bar format.
+    - name: title_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The title bar format.
+    - name: edit_button_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: The title bar format.
+    - name: groups_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: The groups format.
 - type: product_type
   product_type:
     name: widget_image

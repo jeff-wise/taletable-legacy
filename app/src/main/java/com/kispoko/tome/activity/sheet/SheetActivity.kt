@@ -653,6 +653,8 @@ class MainTabBarUI(val sheetId : SheetId,
 
         layout.setOnClickListener(onClick)
 
+        layout.addView(this.buttonBottomBorderView())
+
         return layout
     }
 
@@ -667,8 +669,9 @@ class MainTabBarUI(val sheetId : SheetId,
 
         layout.gravity          = Gravity.CENTER
 
+        layout.orientation      = LinearLayout.VERTICAL
+
         layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
 
         return layout.linearLayout(context)
     }
@@ -681,7 +684,7 @@ class MainTabBarUI(val sheetId : SheetId,
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.text                  = context.getString(labelId).toUpperCase()
+        label.text                  = context.getString(labelId) // .toUpperCase()
 
         label.gravity               = Gravity.CENTER
 
@@ -692,6 +695,25 @@ class MainTabBarUI(val sheetId : SheetId,
         label.sizeSp                 = 14f
 
         return label.textView(context)
+    }
+
+
+    private fun buttonBottomBorderView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
+
+        layout.margin.topDp = 8f
+
+        return layout.linearLayout(context)
     }
 
 
@@ -726,69 +748,4 @@ class MainTabBarUI(val sheetId : SheetId,
     }
 
 }
-
-
-
-//
-//    fun showTableEditor(tableWidgetRow : TableWidgetRow,
-//                        updateTarget : UpdateTarget,
-//                        sheetContext : SheetContext)
-//    {
-//
-//        val sheetUIContext = SheetUIContext(sheetContext, this)
-//        activeTableRow?.onEditorClose(sheetUIContext)
-//
-//        val toolbarView = this.findViewById(R.id.sheet_toolbar) as FrameLayout
-//        toolbarView.visibility = View.VISIBLE
-//        val tableActionBarBuilder = TableActionBarViewBuilder(updateTarget, sheetUIContext)
-//        this.toolbarView = toolbarView
-//        this.activeTableRow = tableWidgetRow
-//
-//        toolbarView.removeAllViews()
-//        toolbarView.addView(tableActionBarBuilder.view())
-//
-//        val viewPager = this.viewPager
-//        viewPager?.setPadding(0, 0, 0, Util.dpToPixel(130f))
-//    }
-
-
-//    override fun hideActionBar()
-//    {
-//        this.toolbarView?.visibility = View.GONE
-//
-//        val viewPager = this.viewPager
-//        //viewPager?.setPadding(0, 0, 0, 0)
-//        this.viewPager?.setPadding(0, 0, 0, Util.dpToPixel(60f))
-//
-//        SheetManager.currentSheetContext() apDo {
-//            val sheetUIContext = SheetUIContext(it, this)
-//            this.activeTableRow?.onEditorClose(sheetUIContext)
-//            this.activeTableRow = null
-//        }
-//    }
-
-
-//    fun showTableEditor(updateTarget : UpdateTarget, sheetContext : SheetContext)
-//    {
-//        this.bottomNavigation?.visibility = View.GONE
-//
-//        val tableActionBarBuilder = TableActionBarViewBuilder(updateTarget,
-//                                                              SheetUIContext(sheetContext, this))
-//
-//        this.bottomSheet?.removeAllViews()
-//        this.bottomSheet?.addView(tableActionBarBuilder.view())
-//
-//        this.bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-//
-//        this.fab?.setOnClickListener {
-//            when (updateTarget)
-//            {
-//                is UpdateTargetInsertTableRow ->
-//                {
-////                    val dialog = AddTableRowDialog.newInstance(updateTarget, sheetContext)
-////                    dialog.show(supportFragmentManager, "")
-//                }
-//            }
-//        }
-//    }
 

@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
@@ -18,10 +17,10 @@ import com.kispoko.tome.lib.orm.RowValue2
 import com.kispoko.tome.lib.orm.schema.MaybeProdValue
 import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.model.engine.tag.Tag
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
-import com.kispoko.tome.rts.entity.groupWithId
 import com.kispoko.tome.rts.entity.sheet.SheetComponent
 import com.kispoko.tome.util.Util
 import effect.*
@@ -40,9 +39,12 @@ import java.util.*
  * Group
  */
 data class Group(val id : GroupId,
+                 private val name : GroupName,
+                 private val summary : GroupSummary,
                  private val format : GroupFormat,
                  private var index : Int,
-                 private val rows : MutableList<GroupRow>)
+                 private val rows : MutableList<GroupRow>,
+                 private val tags : List<Tag>)
                   : ToDocument, SheetComponent, Comparable<Group>, Serializable
 {
 
@@ -50,13 +52,19 @@ data class Group(val id : GroupId,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(format : GroupFormat,
+    constructor(name : GroupName,
+                summary : GroupSummary,
+                format : GroupFormat,
                 index : Int,
-                rows : List<GroupRow>)
+                rows : List<GroupRow>,
+                tags : List<Tag>)
         : this(GroupId(UUID.randomUUID()),
+               name,
+               summary,
                format,
                index,
-               rows.toMutableList())
+               rows.toMutableList(),
+               tags)
 
 
     companion object
@@ -70,17 +78,29 @@ data class Group(val id : GroupId,
                       split(doc.maybeAt("id"),
                             effValue(GroupId(UUID.randomUUID())),
                             { GroupId.fromDocument(it) }),
+                      // Group Name
+                      split(doc.maybeText("name"),
+                            effValue(GroupName("")),
+                            { effValue(GroupName(it)) }),
+                      // Group Summary
+                      split(doc.maybeText("summary"),
+                            effValue(GroupSummary("")),
+                            { effValue(GroupSummary(it)) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(GroupFormat.default()),
                             { GroupFormat.fromDocument(it)}),
                       // Index
                       effValue(index),
-                      // Groups
+                      // Rows
                       doc.list("rows") ap { docList ->
-                          docList.mapIndexed {
-                              itemDoc, itemIndex -> GroupRow.fromDocument(itemDoc, itemIndex) }
-                      })
+                          docList.mapIndexed { itemDoc, itemIndex -> GroupRow.fromDocument(itemDoc, itemIndex) }
+                      },
+                      // Tags
+                      split(doc.maybeList("tags"),
+                            effValue(listOf()),
+                             { it.map { Tag.fromDocument(it) } })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -101,6 +121,12 @@ data class Group(val id : GroupId,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun name() : GroupName = this.name
+
+
+    fun summary() : GroupSummary = this.summary
+
+
     fun format() : GroupFormat = this.format
 
 
@@ -108,6 +134,9 @@ data class Group(val id : GroupId,
 
 
     fun rows() : List<GroupRow> = this.rows
+
+
+    fun tags() : List<Tag> = this.tags
 
 
     // SHEET COMPONENT
@@ -131,6 +160,64 @@ data class Group(val id : GroupId,
     // -----------------------------------------------------------------------------------------
 
     fun view(entityId : EntityId, context : Context) = groupView(this, entityId, context)
+
+}
+
+
+/**
+ * Group Name
+ */
+data class GroupName(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<GroupName>
+    {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<GroupName> = when (doc)
+        {
+            is DocText -> effValue(GroupName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
+
+/**
+ * Group Summary
+ */
+data class GroupSummary(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<GroupSummary>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupSummary> = when (doc)
+        {
+            is DocText -> effValue(GroupSummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 }
 
@@ -204,27 +291,6 @@ data class GroupReferenceId(val groupId : GroupId) : GroupReference()
 
     override fun toDocument() = DocText(this.groupId.value.toString()).withCase("group_id")
 
-}
-
-
-
-fun groups(groupReferences : List<GroupReference>, entityId : EntityId) : List<Group>
-{
-    val groups : MutableList<Group> = mutableListOf()
-
-    groupReferences.forEach {
-        when (it) {
-            is GroupReferenceLiteral -> groups.add(it.group)
-            is GroupReferenceId      -> {
-                Log.d("***GROUP", "group reference id: ${it.groupId}")
-                groupWithId(it.groupId, entityId).doMaybe {
-                    groups.add(it)
-                }
-            }
-        }
-    }
-
-    return groups
 }
 
 

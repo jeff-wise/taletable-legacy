@@ -121,3 +121,18 @@ val uiColors = UIColors(
 
 
 val officialThemeLight = Theme(ThemeId.Light, palette, uiColors)
+
+
+val appUIColors = UIColors(
+        ColorId.Theme("white"),
+        ColorId.Theme("dark_grey_12"),
+        ColorId.Theme("dark_grey_12"),
+        ColorId.Theme("white"),
+        ColorId.Theme("dark_grey_16"),
+        ColorId.Theme("dark_grey_10"),
+        ColorId.Theme("dark_grey_16"),
+        ColorId.Theme("dark_grey_8"),
+        ColorId.Theme("light_grey_10"))
+
+
+val officialAppThemeLight = Theme(ThemeId.Light, palette, appUIColors)

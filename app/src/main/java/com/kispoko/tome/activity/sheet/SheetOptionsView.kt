@@ -16,6 +16,15 @@ import com.kispoko.tome.model.theme.official.officialThemeLight
 
 
 
+// app options
+// session
+// > load
+// > new
+// updates
+// upgrades
+// donate
+
+
 /**
  * Sheet Options UI (Sidebar)
  */

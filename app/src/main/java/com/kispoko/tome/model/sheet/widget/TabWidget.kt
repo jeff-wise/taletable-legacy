@@ -16,13 +16,13 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.group.GroupReference
-import com.kispoko.tome.model.sheet.group.groups
 import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.ElementFormat
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.groups
 import com.kispoko.tome.rts.entity.sheetOrError
 import com.kispoko.tome.util.Util
 import effect.*
