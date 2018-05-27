@@ -172,7 +172,7 @@
             android:src="@drawable/ic_fab_add"
             app:layout_anchor="@id/view_pager"
             app:layout_anchorGravity="bottom|end"
-            app:backgroundTint="@color/light_theme_light_blue"
+            app:backgroundTint="@color/light_theme_light_blue_tint_3"
             app:rippleColor="#FFF" />
 
 

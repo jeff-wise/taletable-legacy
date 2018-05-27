@@ -17,7 +17,6 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.engine.EngineValueNumber
 import com.kispoko.tome.model.engine.dice.DiceRoll
 import com.kispoko.tome.model.engine.dice.RollModifier
 import com.kispoko.tome.model.engine.dice.RollSummary
@@ -80,8 +79,8 @@ class AdderDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.adderState = arguments.getSerializable("adder_state") as AdderState
-        this.entityId   = arguments.getSerializable("entity_id") as EntityId
+        this.adderState = arguments?.getSerializable("adder_state") as AdderState
+        this.entityId   = arguments?.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -113,14 +112,15 @@ class AdderDialog : DialogFragment()
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val adderState = this.adderState
         val entityId = this.entityId
+        val context = this.context
 
-        return if (adderState != null && entityId != null)
+        return if (adderState != null && entityId != null && context != null)
         {
             val adderEditorView = AdderEditorViewBuilder(adderState,
                                                          this,

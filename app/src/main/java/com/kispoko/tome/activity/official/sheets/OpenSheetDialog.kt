@@ -74,8 +74,8 @@ class OpenSheetDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.sheetName = arguments.getString("sheet_name")
-        this.sheetId   = arguments.getSerializable("sheet_id") as SheetId
+        this.sheetName = arguments?.getString("sheet_name")
+        this.sheetId   = arguments?.getSerializable("sheet_id") as SheetId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -89,23 +89,26 @@ class OpenSheetDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val sheetName = this.sheetName
-        val sheetId = this.sheetId
+        val sheetId   = this.sheetId
+        val context   = this.context
 
-        return if (sheetName != null && sheetId != null)
+        return if (sheetName != null && sheetId != null && context != null)
         {
             val viewBuilder = OpenSheetViewBuilder(sheetName,
                                                    sheetId,

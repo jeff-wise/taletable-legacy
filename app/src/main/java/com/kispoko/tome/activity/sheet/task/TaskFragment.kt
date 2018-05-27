@@ -54,14 +54,11 @@ class TaskFragment : Fragment()
     {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null) {
-            this.sheetId = arguments.getSerializable("sheet_id") as SheetId
-
-        }
+        this.sheetId = arguments?.getSerializable("sheet_id") as SheetId
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {

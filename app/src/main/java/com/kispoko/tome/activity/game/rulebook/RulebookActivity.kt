@@ -20,7 +20,6 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import br.tiagohm.markdownview.css.InternalStyleSheet
 import com.kispoko.tome.R
 import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog

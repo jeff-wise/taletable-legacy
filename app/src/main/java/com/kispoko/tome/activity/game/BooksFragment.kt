@@ -71,21 +71,20 @@ class BooksFragment : Fragment()
     {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null)
-        {
-            this.gameId = arguments.getSerializable("game_id") as GameId
-            this.themeId = arguments.getSerializable("theme_id") as ThemeId
-        }
+        this.gameId = arguments?.getSerializable("game_id") as GameId
+        this.themeId = arguments?.getSerializable("theme_id") as ThemeId
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?) : View?
     {
         val gameId = this.gameId
         val themeId = this.themeId
-        return if (gameId != null && themeId != null)
+        val context = this.context
+
+        return if (gameId != null && themeId != null && context != null)
         {
             val game = GameManager.gameWithId(gameId)
             when (game) {

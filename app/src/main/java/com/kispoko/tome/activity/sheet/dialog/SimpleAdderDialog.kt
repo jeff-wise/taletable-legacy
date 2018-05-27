@@ -79,9 +79,9 @@ class SimpleAdderDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.title               = arguments.getString("title")
-        this.numberUpdateRequest = arguments.getSerializable("number_update_request") as NumberUpdateRequest
-        this.entityId            = arguments.getSerializable("entity_id") as EntityId
+        this.title               = arguments?.getString("title")
+        this.numberUpdateRequest = arguments?.getSerializable("number_update_request") as NumberUpdateRequest
+        this.entityId            = arguments?.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -96,24 +96,27 @@ class SimpleAdderDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val entityId = this.entityId
-        val title           = this.title
-        val updateRequest   = this.numberUpdateRequest
+        val entityId      = this.entityId
+        val title         = this.title
+        val updateRequest = this.numberUpdateRequest
+        val context       = this.context
 
-        return if (entityId != null && title != null && updateRequest != null)
+        return if (entityId != null && title != null && updateRequest != null && context != null)
         {
             val viewBuilder = SimpleAdderViewBuilder(updateRequest,
                                                      title,

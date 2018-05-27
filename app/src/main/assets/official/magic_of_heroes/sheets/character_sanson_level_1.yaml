@@ -6822,6 +6822,10 @@ sections:
                 size: 16
                 font_style: medium
             title_variable_id: melee_attacks_label
+            group_query:
+              type: tag_query_tag
+              tag_query_tag:
+                tag: weapon
             group_references:
             - type: group_id
               group_id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'

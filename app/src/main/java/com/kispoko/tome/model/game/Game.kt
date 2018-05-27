@@ -3,7 +3,6 @@ package com.kispoko.tome.model.game
 
 
 import com.kispoko.culebra.*
-import com.kispoko.tome.R.string.group
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLBlob
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
@@ -13,7 +12,6 @@ import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.model.engine.tag.Tag
 import com.kispoko.tome.model.engine.tag.TagQuery
-import com.kispoko.tome.model.engine.tag.TagQueryAnd
 import com.kispoko.tome.model.engine.tag.TagQueryTag
 import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
@@ -57,13 +55,7 @@ data class Game(override val id : UUID,
 
 
     init {
-        groups.forEach { group ->
-            group.tags().forEach { tag ->
-                if (!groupsWithTag.containsKey(tag))
-                    groupsWithTag[tag] = mutableListOf()
-                groupsWithTag[tag]!!.add(group)
-            }
-        }
+        indexGroups(groups)
     }
 
 
@@ -162,6 +154,20 @@ data class Game(override val id : UUID,
 
         groups.forEach {
             this.groupById.put(it.id, it)
+        }
+
+        this.indexGroups(groups)
+    }
+
+
+    private fun indexGroups(groups : List<Group>)
+    {
+        groups.forEach { group ->
+            group.tags().forEach { tag ->
+                if (!groupsWithTag.containsKey(tag))
+                    groupsWithTag[tag] = mutableListOf()
+                groupsWithTag[tag]!!.add(group)
+            }
         }
     }
 

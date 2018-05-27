@@ -74,8 +74,8 @@ class ProcedureUpdateDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.invocation = arguments.getSerializable("invocation") as ProcedureInvocation
-        this.entityId   = arguments.getSerializable("entity_id") as EntityId
+        this.invocation = arguments?.getSerializable("invocation") as ProcedureInvocation
+        this.entityId   = arguments?.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -89,23 +89,26 @@ class ProcedureUpdateDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val invocation = this.invocation
         val entityId   = this.entityId
+        val context    = this.context
 
-        return if (invocation != null && entityId != null)
+        return if (invocation != null && entityId != null && context != null)
         {
             val procedureUpdateUI = ProcedureUpdateUI(invocation, this, entityId, context)
             procedureUpdateUI.view()

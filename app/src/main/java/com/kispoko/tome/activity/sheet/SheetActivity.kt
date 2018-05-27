@@ -692,7 +692,7 @@ class MainTabBarUI(val sheetId : SheetId,
                                                     TextFontStyle.SemiBold,
                                                     context)
 
-        label.sizeSp                 = 14f
+        label.sizeSp                 = 16f
 
         return label.textView(context)
     }

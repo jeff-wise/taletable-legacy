@@ -1,6 +1,6 @@
 groups:
 - id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
-  name: 'Weapon: Rapier'
+  name: 'Rapier'
   summary: 'A rapier'
   tags:
   - weapon
@@ -696,7 +696,7 @@ groups:
                               false_text: 'Strength'
                               true_text: 'Dexterity'
 - id: '4b8954d1-41b5-4a01-9426-a7d9b3c118f1'
-  name: 'Weapon: Dagger'
+  name: 'Dagger'
   summary: 'A dagger'
   tags:
   - weapon
@@ -794,7 +794,7 @@ groups:
                 height: 28
         groups:
 - id: '9bafa2f5-e56b-431f-9a18-7458baec64ae'
-  name: 'Weapon: Dagger (thrown)'
+  name: 'Dagger (thrown)'
   summary: 'A thrown dagger.'
   tags:
   - weapon
@@ -892,7 +892,7 @@ groups:
                 height: 28
         groups:
 - id: '197df758-949d-49c3-a61a-630b335d819c'
-  name: 'Weapon: Light Crossbow'
+  name: 'Light Crossbow'
   summary: 'A light crossbow.'
   tags:
   - weapon

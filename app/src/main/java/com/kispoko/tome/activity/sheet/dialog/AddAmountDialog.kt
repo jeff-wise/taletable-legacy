@@ -76,10 +76,10 @@ class AddAmountDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.operation  = arguments.getSerializable("operation") as AddOperation
-        this.title      = arguments.getString("title")
-        this.adderState = arguments.getSerializable("adder_state") as AdderState
-        this.entityId   = arguments.getSerializable("entity_id") as EntityId
+        this.operation  = arguments?.getSerializable("operation") as AddOperation
+        this.title      = arguments?.getString("title")
+        this.adderState = arguments?.getSerializable("adder_state") as AdderState
+        this.entityId   = arguments?.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -109,7 +109,7 @@ class AddAmountDialog : DialogFragment()
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
@@ -117,8 +117,9 @@ class AddAmountDialog : DialogFragment()
         val operation = this.operation
         val adderState = this.adderState
         val entityId = this.entityId
+        val context = this.context
 
-        return if (title != null && entityId != null && adderState != null && operation != null)
+        return if (title != null && entityId != null && adderState != null && operation != null && context != null)
         {
             val viewBuilder = AddAmountEditorViewBuilder(operation,
                                                          title,

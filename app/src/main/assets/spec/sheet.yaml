@@ -1011,6 +1011,12 @@ types:
         custom_type: variable_id
       presence: optional
       description: The title variable id.
+    - name: group_query
+      type: 
+        type: custom_type
+        custom_type: tag_query
+      presence: optional
+      description: Group query.
 - type: product_type
   product_type:
     name: group_widget_format

@@ -76,9 +76,9 @@ class AddDiceDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.operation  = arguments.getSerializable("operation") as DiceOperation
-        this.adderState = arguments.getSerializable("adder_state") as AdderState
-        this.entityId   = arguments.getSerializable("entity_id") as EntityId
+        this.operation  = arguments?.getSerializable("operation") as DiceOperation
+        this.adderState = arguments?.getSerializable("adder_state") as AdderState
+        this.entityId   = arguments?.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -107,15 +107,16 @@ class AddDiceDialog : DialogFragment()
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val operation = this.operation
         val adderState = this.adderState
         val entityId = this.entityId
+        val context = this.context
 
-        return if (operation != null && adderState != null && entityId != null)
+        return if (operation != null && adderState != null && entityId != null && context != null)
         {
             val viewBuilder = DiceViewBuilder(operation, adderState, this, entityId, context)
             viewBuilder.view()

@@ -74,8 +74,8 @@ class TableDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
-        this.entityId     = arguments.getSerializable("entity_id") as EntityId
+        this.updateTarget = arguments?.getSerializable("update_target") as UpdateTarget
+        this.entityId     = arguments?.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -99,7 +99,7 @@ class TableDialog : DialogFragment()
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
@@ -107,7 +107,9 @@ class TableDialog : DialogFragment()
 
         val updateTarget = this.updateTarget
         val entityId = this.entityId
-        if (updateTarget != null && entityId != null)
+        val context = this.context
+
+        if (updateTarget != null && entityId != null && context != null)
         {
             val viewBuilder = TableDialogViewBuilder(updateTarget, this, entityId, context)
             return viewBuilder.view()

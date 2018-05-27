@@ -96,11 +96,11 @@ class ValueChooserDialogFragment : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.valueSetId      = arguments.getSerializable("value_set_id") as ValueSetId
-        this.valueIds        = arguments.getSerializable("value_ids") as List<ValueId>
-        this.selectedValueId = arguments.getSerializable("selected_value_id") as ValueId?
-        this.updateTarget    = arguments.getSerializable("update_target") as UpdateTarget
-        this.entityId        = arguments.getSerializable("entity_id") as EntityId
+        this.valueSetId      = arguments?.getSerializable("value_set_id") as ValueSetId
+        this.valueIds        = arguments?.getSerializable("value_ids") as List<ValueId>
+        this.selectedValueId = arguments?.getSerializable("selected_value_id") as ValueId?
+        this.updateTarget    = arguments?.getSerializable("update_target") as UpdateTarget
+        this.entityId        = arguments?.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -115,24 +115,27 @@ class ValueChooserDialogFragment : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
-        val entityId = this.entityId
-        val valueSetId = this.valueSetId
+        val entityId     = this.entityId
+        val valueSetId   = this.valueSetId
         val updateTarget = this.updateTarget
+        val context      = this.context
 
-        if (entityId != null && valueSetId != null && updateTarget != null)
+        if (entityId != null && valueSetId != null && updateTarget != null && context != null)
         {
             val valueSet = valueSet(valueSetId, entityId)
             return when (valueSet) {
@@ -987,8 +990,6 @@ class ValueViewHolder(itemView : View, val entityId : EntityId, val context : Co
 }
 
 
-
-
 // ---------------------------------------------------------------------------------------------
 // HEADER VIEW HOLDER
 // ---------------------------------------------------------------------------------------------
@@ -1031,7 +1032,7 @@ data class ValueDividerItemDecoration(val entityId : EntityId,
                                       val context : Context) : RecyclerView.ItemDecoration()
 {
 
-    val dividerDrawable : Drawable =
+    val dividerDrawable : Drawable? =
             ContextCompat.getDrawable(context, R.drawable.divider_choose_value)
 
     init {
@@ -1040,7 +1041,7 @@ data class ValueDividerItemDecoration(val entityId : EntityId,
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
         val color = colorOrBlack(colorTheme, entityId)
-        dividerDrawable.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+        dividerDrawable?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
     }
 
     override fun onDrawOver(c : Canvas, parent : RecyclerView, state : RecyclerView.State)
@@ -1055,10 +1056,10 @@ data class ValueDividerItemDecoration(val entityId : EntityId,
             val params = child.layoutParams as RecyclerView.LayoutParams
 
             val top    = child.bottom + params.bottomMargin
-            val bottom = top + dividerDrawable.intrinsicHeight
+            val bottom = top + (dividerDrawable?.intrinsicHeight ?: 0)
 
-            dividerDrawable.setBounds(left, top, right, bottom)
-            dividerDrawable.draw(c)
+            dividerDrawable?.setBounds(left, top, right, bottom)
+            dividerDrawable?.draw(c)
         }
     }
 

@@ -469,7 +469,7 @@ class TableWidgetUI(val tableWidget : TableWidget,
 
                 val dividerColor = colorOrBlack(bottomBorder.value.colorTheme(), entityId)
 
-                dividerDrawable.colorFilter =
+                dividerDrawable?.colorFilter =
                         PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
                 layout.divider = dividerDrawable
             }

@@ -86,9 +86,9 @@ class SummationDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.summation       = arguments.getSerializable("summationWithId") as Summation
-        this.summmationLabel = arguments.getString("summation_label")
-        this.entityId        = arguments.getSerializable("entity_id") as EntityId
+        this.summation       = arguments?.getSerializable("summationWithId") as Summation
+        this.summmationLabel = arguments?.getString("summation_label")
+        this.entityId        = arguments?.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -103,24 +103,27 @@ class SummationDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val summation      = this.summation
         val summationLabel = this.summmationLabel
         val entityId       = this.entityId
+        val context        = this.context
 
-        return if (summation != null && summationLabel != null && entityId != null) {
+        return if (summation != null && summationLabel != null && entityId != null && context != null) {
             val viewBuilder = SummationViewBuilder(summation,
                     summationLabel,
                     this,

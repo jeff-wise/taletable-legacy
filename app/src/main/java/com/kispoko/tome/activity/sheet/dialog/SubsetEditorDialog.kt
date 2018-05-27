@@ -95,11 +95,11 @@ class SubsetEditorDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.valueSetId    = arguments.getSerializable("value_set_id") as ValueSetId
-        this.setVariableId = arguments.getSerializable("set_variable_id") as Maybe<VariableId>
-        this.currentValues = arguments.getSerializable("current_values") as List<ValueId>
-        this.updateTarget  = arguments.getSerializable("update_target") as UpdateTarget
-        this.entityId      = arguments.getSerializable("entity_id") as EntityId
+        this.valueSetId    = arguments?.getSerializable("value_set_id") as ValueSetId
+        this.setVariableId = arguments?.getSerializable("set_variable_id") as Maybe<VariableId>
+        this.currentValues = arguments?.getSerializable("current_values") as List<ValueId>
+        this.updateTarget  = arguments?.getSerializable("update_target") as UpdateTarget
+        this.entityId      = arguments?.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -113,24 +113,27 @@ class SubsetEditorDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val entityId = this.entityId
         val valueSetId = this.valueSetId
         val updateTarget = this.updateTarget
+        val context = this.context
 
-        if (entityId != null && valueSetId != null && updateTarget != null)
+        if (entityId != null && valueSetId != null && updateTarget != null && context != null)
         {
             val valueSet = valueSet(valueSetId, entityId)
 

@@ -54,7 +54,7 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
             this.pages[position].nameString()
 
 
-    override fun getItemPosition(obj : Any?) : Int
+    override fun getItemPosition(obj : Any) : Int
     {
         return if (this.pages.contains(obj))
             this.pages.indexOf(obj)
@@ -116,13 +116,13 @@ class PageFragment : Fragment()
 
         if (arguments != null)
         {
-            this.page    = arguments.getSerializable("page") as Page
-            this.sheetId = arguments.getSerializable("sheet_id") as SheetId
+            this.page    = arguments?.getSerializable("page") as Page
+            this.sheetId = arguments?.getSerializable("sheet_id") as SheetId
         }
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
@@ -143,8 +143,9 @@ class PageFragment : Fragment()
 //        }
 
         val sheetId = this.sheetId
+        val context = this.context
 
-        if (sheetId != null)
+        if (sheetId != null && context != null)
             fragmentView.addView(this.page?.view(EntitySheetId(sheetId), context))
 
         return fragmentView

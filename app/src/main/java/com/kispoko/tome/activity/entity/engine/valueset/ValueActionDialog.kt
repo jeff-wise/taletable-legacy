@@ -73,8 +73,8 @@ class ValueActionDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.valueReference = arguments.getSerializable("value_reference") as ValueReference
-        this.gameId         = arguments.getSerializable("game_id") as GameId
+        this.valueReference = arguments?.getSerializable("value_reference") as ValueReference
+        this.gameId         = arguments?.getSerializable("game_id") as GameId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -88,22 +88,26 @@ class ValueActionDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val valueReference = this.valueReference
         val gameId = this.gameId
-        if (valueReference != null && gameId != null)
+        val context = this.context
+
+        if (valueReference != null && gameId != null && context != null)
         {
             val viewBuilder = ValueActionViewBuilder(valueReference,
                                                      gameId,

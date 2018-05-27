@@ -83,10 +83,10 @@ class TextEditorDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.title          = arguments.getString("title")
-        this.text           = arguments.getString("text")
-        this.updateTarget   = arguments.getSerializable("update_target") as UpdateTarget?
-        this.entityId       = arguments.getSerializable("entity_id") as EntityId
+        this.title          = arguments?.getString("title")
+        this.text           = arguments?.getString("text")
+        this.updateTarget   = arguments?.getSerializable("update_target") as UpdateTarget?
+        this.entityId       = arguments?.getSerializable("entity_id") as EntityId
 
 
         // (2) Initialize UI
@@ -101,16 +101,18 @@ class TextEditorDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
@@ -118,8 +120,9 @@ class TextEditorDialog : DialogFragment()
         val text         = this.text
         val entityId     = this.entityId
         val updateTarget = this.updateTarget
+        val context      = this.context
 
-        return if (title != null && text != null && entityId != null && updateTarget != null)
+        return if (title != null && text != null && entityId != null && updateTarget != null && context != null)
         {
             val viewBuilder = TextEditorViewBuilder(title,
                                                     text,

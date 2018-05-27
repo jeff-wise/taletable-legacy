@@ -64,20 +64,18 @@ class GameNavigationFragment : Fragment()
     {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null)
-        {
-            this.themeId = arguments.getSerializable("theme_id") as ThemeId
-        }
+        this.themeId = arguments?.getSerializable("theme_id") as ThemeId
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val themeId = this.themeId
+        val context = this.context
 
-        if (themeId != null)
+        if (themeId != null && context != null)
             return this.view(themeId, context)
         else
         return null

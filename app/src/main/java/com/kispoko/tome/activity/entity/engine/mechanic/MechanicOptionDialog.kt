@@ -84,8 +84,8 @@ class MechanicOptionDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.mechanicId = arguments.getSerializable("mechanic_id") as MechanicId
-        this.entityId   = arguments.getSerializable("entity_id") as EntityId
+        this.mechanicId = arguments?.getSerializable("mechanic_id") as MechanicId
+        this.entityId   = arguments?.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -99,23 +99,26 @@ class MechanicOptionDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         return dialog
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val mechanicId = this.mechanicId
         val entityId = this.entityId
+        val context = this.context
 
-        if (entityId != null && mechanicId != null)
+        if (entityId != null && mechanicId != null && context != null)
         {
             val mechanic = mechanic(mechanicId, entityId)
 

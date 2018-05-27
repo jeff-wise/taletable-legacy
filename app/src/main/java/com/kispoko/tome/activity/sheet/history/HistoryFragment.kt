@@ -9,12 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.activity.sheet.task.TaskFragment
-import com.kispoko.tome.activity.sheet.task.TaskUI
 import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.model.theme.official.officialThemeLight
-import com.kispoko.tome.rts.entity.EntitySheetId
 
 
 
@@ -63,7 +58,7 @@ class HistoryFragment : Fragment()
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {

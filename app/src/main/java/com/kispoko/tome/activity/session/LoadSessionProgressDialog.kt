@@ -81,8 +81,8 @@ class LoadSessionProgressDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.sessionLoader = arguments.getSerializable("session_loader") as SessionLoader
-        this.name          = arguments.getString("name")
+        this.sessionLoader = arguments?.getSerializable("session_loader") as SessionLoader
+        this.name          = arguments?.getString("name")
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -96,10 +96,12 @@ class LoadSessionProgressDialog : DialogFragment()
 
         dialog.setContentView(dialogLayout)
 
-        val width  = context.resources.getDimension(R.dimen.action_dialog_width)
+        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        dialog.window.setLayout(width.toInt(), height)
+        width?.let {
+            dialog.window.setLayout(width.toInt(), height)
+        }
 
         dialog.setCancelable(false)
         dialog.setCanceledOnTouchOutside(false)
@@ -108,13 +110,14 @@ class LoadSessionProgressDialog : DialogFragment()
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val sessionLoader = this.sessionLoader
+        val context       = this.context
 
-        return if (sessionLoader != null)
+        return if (sessionLoader != null && context != null)
         {
             val sessionLoaderUI = SessionLoaderUI(sessionLoader,
                                                   this,

@@ -85,10 +85,10 @@ class NumberEditorDialog : DialogFragment()
         // (1) Read State
         // -------------------------------------------------------------------------------------
 
-        this.currentValue = arguments.getDouble("current_value")
-        this.title        = arguments.getString("title")
-        this.updateTarget = arguments.getSerializable("update_target") as UpdateTarget
-        this.entityId     = arguments.getSerializable("entity_id") as EntityId
+        this.currentValue = arguments?.getDouble("current_value")
+        this.title        = arguments?.getString("title")
+        this.updateTarget = arguments?.getSerializable("update_target") as UpdateTarget
+        this.entityId     = arguments?.getSerializable("entity_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -119,15 +119,16 @@ class NumberEditorDialog : DialogFragment()
     }
 
 
-    override fun onCreateView(inflater : LayoutInflater?,
+    override fun onCreateView(inflater : LayoutInflater,
                               container : ViewGroup?,
                               savedInstanceState : Bundle?) : View?
     {
         val currentValue = this.currentValue
         val updateTarget = this.updateTarget
         val entityId     = this.entityId
+        val context      = this.context
 
-        return if (currentValue != null && updateTarget != null && entityId != null)
+        return if (currentValue != null && updateTarget != null && entityId != null && context != null)
         {
             val viewBuilder = NumberEditorViewBuilder(currentValue,
                                                       this.title,
