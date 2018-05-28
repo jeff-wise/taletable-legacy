@@ -2074,7 +2074,7 @@ sections:
         background_color_theme:
           theme_color_ids:
           - theme_id: light
-            color_id: light_grey_7
+            color_id: light_grey_8
         padding:
           bottom: 60
     groups:
@@ -6825,7 +6825,7 @@ sections:
             group_query:
               type: tag_query_tag
               tag_query_tag:
-                tag: weapon
+                tag: melee_weapon
             group_references:
             - type: group_id
               group_id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'

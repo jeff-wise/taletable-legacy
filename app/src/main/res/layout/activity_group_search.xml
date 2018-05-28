@@ -79,17 +79,18 @@
                 </LinearLayout>
 
 
-                <!--<android.support.design.widget.FloatingActionButton-->
-                    <!--android:id="@+id/fab"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_margin="16dp"-->
-                    <!--android:clickable="true"-->
-                    <!--android:src="@drawable/ic_fab_add"-->
-                    <!--app:layout_anchor="@id/content"-->
-                    <!--app:layout_anchorGravity="bottom|end"-->
-                    <!--app:backgroundTint="@color/light_theme_light_blue_tint_3"-->
-                    <!--app:rippleColor="#FFF" />-->
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_fab_check"
+                    app:layout_anchor="@id/content"
+                    app:layout_anchorGravity="bottom|end"
+                    app:backgroundTint="@color/light_theme_light_blue_tint_3"
+                    app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>
 

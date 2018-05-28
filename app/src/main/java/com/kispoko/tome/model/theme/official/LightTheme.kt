@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.theme.official
 
 
+import com.kispoko.tome.R.string.name
 import com.kispoko.tome.model.theme.*
 
 
@@ -95,6 +96,7 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("light_blue_70"), "#B21887C0"),
         ThemeColor(ColorId.Theme("light_blue_60"), "#991887C0"),
         ThemeColor(ColorId.Theme("light_blue_50"), "#801887C0"),
+        ThemeColor(ColorId.Theme("light_blue_tint_3"), "#469FCD"),
         ThemeColor(ColorId.Theme("light_blue_tint_7"), "#A3CFE6"),
         ThemeColor(ColorId.Theme("light_blue_tint_8"), "#BADBEC"),
         ThemeColor(ColorId.Theme("purple"), "#9161C0"),

@@ -24,7 +24,7 @@ import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RFACLabelItem
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloatingActionContentLabelList
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout
-
+import com.wangjie.rapidfloatingactionbutton.util.RFABTextUtil.dip2px
 
 
 /**
@@ -36,6 +36,8 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
+
+    private var rfabHelper : RapidFloatingActionHelper? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -65,6 +67,8 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
         }
 
         this.applyTheme(officialAppThemeLight)
+
+        this.initializeFAB()
 
         this.initializeView()
     }
@@ -149,62 +153,49 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
 
         val items = mutableListOf<RFACLabelItem<Int>>()
         items.add(RFACLabelItem<Int>()
-                .setLabel("Github: wangjiegulu")
-//                .setResId(R.mipmap.ico_test_d)
-                .setIconNormalColor(-0x27bceb)
-                .setIconPressedColor(-0x40c9f4)
-                .setWrapper(0)
-        )
-        items.add(RFACLabelItem<Int>()
-                .setLabel("tiantian.china.2@gmail.com")
-//                .setResId(R.mipmap.ico_test_c)
-                .setIconNormalColor(-0xb1cbd2)
-                .setIconPressedColor(-0xc1d8dd)
-                .setLabelColor(Color.WHITE)
-                .setLabelSizeSp(14)
-//                .setLabelBackgroundDrawable(ABShape.generateCornerShapeDrawable(-0x56000000, ABTextUtil.dip2px(context, 4)))
-                .setWrapper(1)
-        )
-        items.add(RFACLabelItem<Int>()
-                .setLabel("WangJie")
-//                .setResId(R.mipmap.ico_test_b)
-                .setIconNormalColor(-0xfa9100)
+                .setLabel("Open Session")
+                .setResId(R.drawable.ic_fab_open)
+                .setIconNormalColor(Color.parseColor("#469FCD"))
                 .setIconPressedColor(-0xf2acfe)
-                .setLabelColor(-0xfa9100)
+                .setLabelColor(Color.parseColor("#1887C0"))
                 .setWrapper(2)
         )
         items.add(RFACLabelItem<Int>()
-                .setLabel("Compose")
-//                .setResId(R.mipmap.ico_test_a)
-                .setIconNormalColor(-0xd7ca6d)
+                .setLabel("New Session")
+                .setResId(R.drawable.ic_fab_add)
+                .setIconNormalColor(Color.parseColor("#58C480"))
                 .setIconPressedColor(-0xe5dc82)
-                .setLabelColor(-0xd7ca6d)
+                .setLabelColor(Color.parseColor("#45BD72"))
                 .setWrapper(3)
         )
         rfaContent
                 .setItems(items.toList())
-//                .setIconShadowRadius(ABTextUtil.dip2px(context, 5))
+                .setIconShadowRadius(Util.dpToPixel(5f))
                 .setIconShadowColor(-0x777778)
-//                .setIconShadowDy(ABTextUtil.dip2px(context, 5))
+                .setIconShadowRadius(Util.dpToPixel(5f))
 
         val fabLayout = this.findViewById<RapidFloatingActionLayout>(R.id.fab_layout)
         val fabView = this.findViewById<RapidFloatingActionButton>(R.id.fab)
 
-        val rfabHelper = RapidFloatingActionHelper(
-                            this,
-                            fabLayout,
-                            fabView,
-                            rfaContent
-        ).build()
+        this.rfabHelper = RapidFloatingActionHelper(this,
+                                                    fabLayout,
+                                                    fabView,
+                                                    rfaContent
+                                                    ).build()
 
     }
 
 
-    override fun onRFACItemIconClick(position: Int, item: RFACLabelItem<Any>?) {
+
+    override fun onRFACItemIconClick(position : Int, item : RFACLabelItem<Any>?)
+    {
+        this.rfabHelper?.toggleContent()
     }
 
 
-    override fun onRFACItemLabelClick(position: Int, item: RFACLabelItem<Any>?) {
+    override fun onRFACItemLabelClick(position : Int, item : RFACLabelItem<Any>?)
+    {
+        this.rfabHelper?.toggleContent()
     }
 
 }

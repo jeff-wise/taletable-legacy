@@ -109,9 +109,11 @@
     <item name="group_list_item_name" type="id"/>
     <item name="group_list_item_summary" type="id"/>
 
+    <item name="group_search_result_layout" type="id"/>
     <item name="group_search_result_name" type="id"/>
     <item name="group_search_result_summary" type="id"/>
     <item name="group_search_result_header" type="id"/>
+    <item name="group_search_result_selected_icon" type="id"/>
 
     <!-- GROUP ROW LIST ITEM -->
     <item name="group_row_list_item_layout" type="id"/>
