@@ -32,6 +32,7 @@ import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
@@ -107,6 +108,7 @@ class SheetActivity : AppCompatActivity()
 
     private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
+
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
     // -----------------------------------------------------------------------------------------
@@ -137,15 +139,13 @@ class SheetActivity : AppCompatActivity()
         // (4) Configure UI
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar("Character Sheet")
+        this.configureToolbar("Character Sheet", TextFontStyle.Medium, 17f)
 
         this.initializeViews()
 
         this.initializeSidebars()
 
         this.initializeFAB()
-
-//        this.initializeBottomNavigation()
 
         // (5) Initialize Sheet
         // -------------------------------------------------------------------------------------
@@ -533,7 +533,7 @@ class MainTabBarUI(val sheetId : SheetId,
 
     val bgNormalColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
 
 
     val bgSelectedColorTheme = ColorTheme(setOf(
@@ -689,7 +689,7 @@ class MainTabBarUI(val sheetId : SheetId,
         label.gravity               = Gravity.CENTER
 
         label.font                  = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.SemiBold,
+                                                    TextFontStyle.Medium,
                                                     context)
 
         label.sizeSp                 = 16f
@@ -730,7 +730,7 @@ class MainTabBarUI(val sheetId : SheetId,
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
 
-        count.color             = theme.colorOrBlack(indexColorTheme)
+        count.color                 = theme.colorOrBlack(indexColorTheme)
 
         count.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Bold,

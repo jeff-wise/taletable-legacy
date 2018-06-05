@@ -159,6 +159,10 @@
             <!--</intent-filter>-->
         </activity>
         <activity
+            android:name=".activity.session.NewSessionActivity"
+            android:label="Open Session"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activity.session.SessionActivity"
             android:label="Official Sheets"
             android:theme="@style/AppTheme.NoActionBar" />

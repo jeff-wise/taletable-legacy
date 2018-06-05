@@ -3,6 +3,7 @@ package com.kispoko.tome.rts.session
 
 
 import android.content.Context
+import android.util.Log
 import com.kispoko.culebra.*
 import com.kispoko.tome.db.saveSession
 import com.kispoko.tome.lib.Factory
@@ -10,12 +11,11 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.official.officialManifestPath
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
-import effect.apply
+import effect.*
 import com.kispoko.tome.rts.entity.sheet as entitySheet
-import effect.effError
-import effect.effValue
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -27,6 +27,8 @@ import lulo.value.ValueParser
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
+import maybe.maybe
+import java.io.IOException
 import java.io.Serializable
 import java.util.*
 
@@ -59,7 +61,7 @@ fun newSession(loader : SessionLoader,
         Session.load(loader, context)
     }.await()
 
-    sessionById.put(loader.sessionId, loadedSession)
+    sessionById[loader.sessionId] = loadedSession
 
     activeSessionId = Just(loader.sessionId)
 
@@ -79,6 +81,7 @@ fun session(sessionId : SessionId) : Maybe<Session>
 }
 
 
+
 /**
  * Session
  */
@@ -86,6 +89,7 @@ data class Session(val sessionId : SessionId,
                    val sessionName : SessionName,
                    val sessionInfo : SessionInfo,
                    val gameId : GameId,
+                   val entityKindId : EntityKindId,
                    val timeLastUsed : Calendar,
                    val entityIds : MutableSet<EntityId>,
                    val mainEntityId : EntityId) : Serializable
@@ -125,6 +129,7 @@ data class Session(val sessionId : SessionId,
                            loader.sessionName,
                            loader.sessionInfo,
                            loader.gameId,
+                           loader.entityKindId,
                            date,
                            entityIds,
                            loader.mainEntityId)
@@ -177,6 +182,7 @@ data class Session(val sessionId : SessionId,
                       this.sessionName,
                       this.sessionInfo,
                       this.gameId,
+                      this.entityKindId,
                       Just(this.timeLastUsed),
                       this.entityRecords().map { it.entity().entityLoader() },
                       this.mainEntityId)
@@ -424,6 +430,7 @@ data class SessionTag(val value : String) : ToDocument, SQLSerializable, Seriali
 
 data class SessionInfo(val sessionSummary : SessionSummary,
                        val sessionDescription : SessionDescription,
+                       val tagline : String,
                        val primaryTag : SessionTag,
                        val secondaryTags : List<SessionTag>) : Serializable
 {
@@ -440,6 +447,8 @@ data class SessionInfo(val sessionSummary : SessionSummary,
                           yamlValue.at("summary") ap { SessionSummary.fromYaml(it) },
                           // Description
                           yamlValue.at("description") ap { SessionDescription.fromYaml(it) },
+                          // Tagline
+                          yamlValue.text("tagline"),
                           // Primary Tag
                           yamlValue.at("primary_tag") ap { SessionTag.fromYaml(it) },
                           // Secondary Attributes
@@ -459,10 +468,15 @@ data class SessionLoader(val sessionId : SessionId,
                          val sessionName : SessionName,
                          val sessionInfo : SessionInfo,
                          val gameId : GameId,
+                         val entityKindId : EntityKindId,
                          val timeLastUsed : Maybe<Calendar>,
                          val entityLoaders : List<EntityLoader>,
                          val mainEntityId : EntityId) : Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -480,6 +494,8 @@ data class SessionLoader(val sessionId : SessionId,
                           yamlValue.at("info") ap { SessionInfo.fromYaml(it) },
                           // Game Id
                           yamlValue.at("game_id") ap { GameId.fromYaml(it) },
+                          // Main Entity Kind Id
+                          yamlValue.at("main_entity_kind_id") ap { EntityKindId.fromYaml(it) },
                           // Time Last Used
                           effValue(Nothing()),
                           // Entity Loaders
@@ -493,11 +509,68 @@ data class SessionLoader(val sessionId : SessionId,
             }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    fun entityLoadersByType() : Map<EntityType,List<EntityLoader>>
+    {
+        val loaderByType : MutableMap<EntityType,MutableList<EntityLoader>> = mutableMapOf()
+
+        loaderByType[EntityTypeSheet] = mutableListOf()
+        loaderByType[EntityTypeCampaign] = mutableListOf()
+        loaderByType[EntityTypeGame] = mutableListOf()
+        loaderByType[EntityTypeBook] = mutableListOf()
+
+        this.entityLoaders.forEach {
+            when (it) {
+                is EntityLoaderOfficial -> {
+                    when (it) {
+                        is OfficialSheetLoader -> loaderByType[EntityTypeSheet]?.add(it)
+                        is OfficialCampaignLoader -> loaderByType[EntityTypeCampaign]?.add(it)
+                        is OfficialGameLoader -> loaderByType[EntityTypeGame]?.add(it)
+                        is OfficialBookLoader -> loaderByType[EntityTypeBook]?.add(it)
+                    }
+                }
+            }
+        }
+
+        return loaderByType
+    }
+
 }
 
 
 data class SessionManifest(val summaries : List<SessionLoader>)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    private val loadersBySessionId : MutableMap<SessionId,SessionLoader> =
+            summaries.associateBy { it.sessionId }
+                    as MutableMap<SessionId,SessionLoader>
+
+    private val loadersByEntityId : MutableMap<EntityKindId,MutableList<SessionLoader>> = mutableMapOf()
+
+
+
+    init {
+
+        summaries.forEach { loader ->
+            val kindId = loader.entityKindId
+            if (!loadersByEntityId.containsKey(kindId))
+                loadersByEntityId[kindId] = mutableListOf()
+            loadersByEntityId[kindId]!!.add(loader)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -516,8 +589,73 @@ data class SessionManifest(val summaries : List<SessionLoader>)
             }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    fun sessionLoader(sessionId : SessionId) : Maybe<SessionLoader> =
+            maybe(this.loadersBySessionId[sessionId])
+
+
+    fun sessionLoaders(entityKindId : EntityKindId) : List<SessionLoader> =
+            this.loadersByEntityId[entityKindId] ?: listOf()
+
+
 }
 
 
+// ---------------------------------------------------------------------------------------------
+// OFFICIAL SESSION
+// ---------------------------------------------------------------------------------------------
 
+
+val sessionManifestCache : MutableMap<GameId,SessionManifest> = mutableMapOf()
+
+
+/**
+ * Get an official session.
+ */
+fun officialSession(gameId : GameId, sessionId : SessionId, context : Context) : Maybe<SessionLoader> =
+    sessionManifest(gameId, context).apply { manifest ->
+        Log.d("***SESSION", "found session manifest")
+        manifest.sessionLoader(sessionId)
+    }
+
+
+fun sessionManifest(gameId : GameId, context : Context) : Maybe<SessionManifest>
+{
+    val cachedManifest = sessionManifestCache[gameId]
+
+    if (cachedManifest != null)
+    {
+        return Just(cachedManifest)
+    }
+    else
+    {
+        val filePath = "official/${gameId.value}/session_manifest.yaml"
+
+
+        val fileInputStream = try {
+            context.assets?.open(filePath)
+        }
+        catch (e : IOException) {
+            null
+        }
+
+        return maybe(fileInputStream).apply {
+            val manifestParser : YamlParser<SessionManifest> = parseYaml(it, SessionManifest.Companion::fromYaml)
+            when (manifestParser) {
+                is Val -> {
+                    sessionManifestCache[gameId] = manifestParser.value
+                    Just(manifestParser.value)
+                }
+                is Err -> {
+                    Nothing<SessionManifest>()
+                }
+            }
+        }
+    }
+
+}
 

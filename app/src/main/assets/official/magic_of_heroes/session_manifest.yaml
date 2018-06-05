@@ -15,7 +15,6 @@ summaries:
     secondary_tags:
     - Human
     - Rogue
-    entity_kind: 'Player Character'
     tagline: '1st Level Human Rogue'
   game_id: magic_of_heroes
   loaders:
@@ -23,25 +22,30 @@ summaries:
     official:
       type: sheet
       sheet:
+        name: Casmey Dalseya
         sheet_id: character_casmey_level_1
         game_id: magic_of_heroes
   - type: official
     official:
       type: campaign
       campaign:
+        name: Isara
         campaign_id: isara
         game_id: magic_of_heroes
   - type: official
     official:
       type: game
       game:
+        name: The Magic of Heroes
         game_id: magic_of_heroes
   - type: official
     official:
       type: book
       book:
+        name: Core Rules
         book_id: core_rules
         game_id: magic_of_heroes
+  main_entity_kind_id: player_character
   main_entity_id:
     type: sheet
     sheet: character_casmey_level_1
@@ -61,7 +65,6 @@ summaries:
     secondary_tags:
     - Human
     - Wizard
-    entity_kind: 'Player Character'
     tagline: '1st Level Human Wizard'
   game_id: magic_of_heroes
   loaders:
@@ -69,25 +72,30 @@ summaries:
     official:
       type: sheet
       sheet:
+        name: Sanson Alavidril
         sheet_id: character_casmey_level_1
         game_id: magic_of_heroes
   - type: official
     official:
       type: campaign
       campaign:
+        name: Isara
         campaign_id: isara
         game_id: magic_of_heroes
   - type: official
     official:
       type: game
       game:
+        name: The Magic of Heroes
         game_id: magic_of_heroes
   - type: official
     official:
       type: book
       book:
+        name: Core Rules
         book_id: core_rules
         game_id: magic_of_heroes
+  main_entity_kind_id: player_character
   main_entity_id:
     type: sheet
     sheet: character_sanson_level_1

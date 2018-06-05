@@ -69,27 +69,32 @@ class TestSessionActivity : AppCompatActivity()
 
         val context = this
         launch(UI) {
-            val sheetLoader = OfficialSheetLoader(sheetId,
+            val sheetLoader = OfficialSheetLoader("Sheet Name",
+                                                  sheetId,
                                                   GameId("magic_of_heroes"))
 
-            val campaignLoader = OfficialCampaignLoader(CampaignId("isara"),
+            val campaignLoader = OfficialCampaignLoader("Campaign Name",
+                                                        CampaignId("isara"),
                                                         GameId("magic_of_heroes"))
 
-            val gameLoader = OfficialGameLoader(GameId("magic_of_heroes"))
+            val gameLoader = OfficialGameLoader("Game Name", GameId("magic_of_heroes"))
 
-            val coreRulebookLoader = OfficialBookLoader(BookId("core_rules"),
+            val coreRulebookLoader = OfficialBookLoader("Book Name",
+                                                        BookId("core_rules"),
                                                         GameId("magic_of_heroes"))
 
             val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
 
             val sessionInfo = SessionInfo(SessionSummary(""),
                                           SessionDescription(""),
+                                          "1st Level Human Fighter",
                                           SessionTag("Level 1"),
                                           listOf(SessionTag("Human"), SessionTag("Fighter")))
             val sessionLoader = SessionLoader(SessionId(UUID.randomUUID()),
                                               SessionName("Casmey Dalseya"),
                                               sessionInfo,
                                               GameId("magic_of_heroes"),
+                                              EntityKindId("player_character"),
                                               Nothing(),
                                               loaders,
                                               EntitySheetId(SheetId("character_casmey_level_1")))

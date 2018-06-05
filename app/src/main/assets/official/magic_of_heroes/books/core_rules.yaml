@@ -2193,7 +2193,7 @@ content:
                   color_id: light_grey_20
                 - theme_id: light
                   color_id: dark_grey_14
-              size: 19
+              size: 18
               font_style: medium
             widget_format:
               width: 2
@@ -2213,7 +2213,7 @@ content:
                 theme_color_ids:
                 - theme_id: light
                   color_id: dark_grey_14
-              size: 19
+              size: 18
               font_style: medium
             widget_format:
               width: 1
@@ -2233,7 +2233,7 @@ content:
                 theme_color_ids:
                 - theme_id: light
                   color_id: dark_grey_14
-              size: 19
+              size: 18
               font_style: medium
             widget_format:
               width: 1

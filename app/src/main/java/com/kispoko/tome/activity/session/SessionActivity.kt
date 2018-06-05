@@ -2,7 +2,6 @@
 package com.kispoko.tome.activity.session
 
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -62,7 +61,7 @@ class SessionActivity : AppCompatActivity()
 
         this.configureToolbar(getString(R.string.session))
 
-        this.applyTheme(officialThemeLight)
+        this.applyTheme(com.kispoko.tome.model.theme.official.officialAppThemeLight)
 
         this.initializeView()
     }
@@ -107,8 +106,14 @@ class SessionActivity : AppCompatActivity()
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+//            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+
+            val statusBarColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+            window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
         }
+
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
@@ -444,7 +449,7 @@ class SessionUI(val session : Session,
         layout.margin.topDp     = 12f
         layout.margin.bottomDp  = 1f
 
-        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+        layout.corners          = Corners(2.0, 2.0, 0.0, 0.0)
 
         layout.padding.leftDp   = 6f
         layout.padding.rightDp  = 6f

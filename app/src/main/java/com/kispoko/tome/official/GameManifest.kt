@@ -3,11 +3,21 @@ package com.kispoko.tome.official
 
 
 import com.kispoko.culebra.*
+import com.kispoko.tome.model.engine.mechanic.MechanicCategory
+import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
+import com.kispoko.tome.model.engine.value.ValueSet
+import com.kispoko.tome.model.engine.value.ValueSetId
+import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.rts.entity.Entity
 import com.kispoko.tome.rts.entity.EntityKind
+import com.kispoko.tome.rts.entity.EntityKindId
+import com.kispoko.tome.rts.session.SessionId
 import effect.apply
 import effect.effValue
 import effect.split
+import maybe.Maybe
+import maybe.maybe
 import java.io.Serializable
 
 
@@ -21,6 +31,19 @@ import java.io.Serializable
  */
 data class GameManifest(val gameSummaries : List<GameSummary>)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private val summaryById : MutableMap<GameId,GameSummary> =
+                                    gameSummaries.associateBy { it.gameId }
+                                            as MutableMap<GameId,GameSummary>
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -39,6 +62,13 @@ data class GameManifest(val gameSummaries : List<GameSummary>)
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    fun game(gameId : GameId) : GameSummary? = this.summaryById[gameId]
+
 }
 
 
@@ -48,8 +78,22 @@ data class GameSummary(val gameId : GameId,
                        val genre : String,
                        val players : Int,
                        val likes : Int,
+                       val defaultSessionId : SessionId,
                        val entityKinds : List<EntityKind>) : Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    private val entityKindById : MutableMap<EntityKindId,EntityKind> =
+                        entityKinds.associateBy { it.id }
+                                as MutableMap<EntityKindId,EntityKind>
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -72,6 +116,8 @@ data class GameSummary(val gameId : GameId,
                       yamlValue.integer("players"),
                       // Likes
                       yamlValue.integer("likes"),
+                      // Default Session Id
+                      yamlValue.at("default_session_id") ap { SessionId.fromYaml(it) },
                       // Entity Kinds
                       split(yamlValue.maybeArray("entity_kinds"),
                             effValue(listOf()),
@@ -82,6 +128,15 @@ data class GameSummary(val gameId : GameId,
         }
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    fun entityKind(entityKindId : EntityKindId) : Maybe<EntityKind> =
+            maybe(this.entityKindById[entityKindId])
+
 
 }
 

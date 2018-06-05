@@ -50,6 +50,20 @@ class CellVariableUndefined(val cellId : UUID) : SheetError()
     override fun logMessage(): String = userMessage()
 }
 
+/**
+ * The theme does not have a color with the given id.
+ */
+class CellDoesNotHaveBookReference(val cellId : UUID) : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            Sheet Error: Cell Variable Is Undefined
+                Cell Id: $cellId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
 
 /**
  * The theme does not have a color with the given id.

@@ -17,7 +17,7 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.theme.*
-import com.kispoko.tome.model.theme.official.officialThemeLight
+import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.rts.entity.book
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
@@ -76,9 +76,10 @@ class BookActivity : AppCompatActivity()
         this.currentBook?.let {
             this.configureToolbar(it.bookInfo.title().value)
 
-            ThemeManager.theme(it.settings().themeId()) apDo {
-                this.applyTheme(it)
-            }
+//            ThemeManager.theme(it.settings().themeId()) apDo {
+//                this.applyTheme(it)
+//            }
+            this.applyTheme(com.kispoko.tome.model.theme.official.officialAppThemeLight)
         }
 
         val currentBookReference = this.currentBookReference
@@ -114,7 +115,12 @@ class BookActivity : AppCompatActivity()
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+//            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+
+            val statusBarColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+            window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
         }
 
         // TOOLBAR
@@ -152,7 +158,7 @@ class BookActivity : AppCompatActivity()
             {
                 is BookReferenceBook ->
                 {
-                    val bookUI = BookUI(book, this, officialThemeLight)
+                    val bookUI = BookUI(book, this, officialAppThemeLight)
                     contentView.removeAllViews()
                     contentView.addView(bookUI.view())
 
@@ -162,7 +168,7 @@ class BookActivity : AppCompatActivity()
                 is BookReferenceChapter ->
                 {
                     book.chapter(bookReference.chapterId).doMaybe { chapter ->
-                        val chapterUI = ChapterUI(chapter, book, this, officialThemeLight)
+                        val chapterUI = ChapterUI(chapter, book, this, officialAppThemeLight)
                         contentView.removeAllViews()
                         contentView.addView(chapterUI.view())
 
@@ -172,7 +178,7 @@ class BookActivity : AppCompatActivity()
                 is BookReferenceSection ->
                 {
                     book.section(bookReference.chapterId(), bookReference.sectionId()).doMaybe { section ->
-                        val sectionUI = SectionUI(section, book, bookReference.chapterId(), this, officialThemeLight)
+                        val sectionUI = SectionUI(section, book, bookReference.chapterId(), this, officialAppThemeLight)
                         contentView.removeAllViews()
                         contentView.addView(sectionUI.view())
 
@@ -182,7 +188,7 @@ class BookActivity : AppCompatActivity()
                 is BookReferenceSubsection ->
                 {
                     book.subsection(bookReference.chapterId(), bookReference.sectionId(), bookReference.subsectionId()).doMaybe { subsection ->
-                        val subsectionUI = SubsectionUI(subsection, book, this, officialThemeLight)
+                        val subsectionUI = SubsectionUI(subsection, book, this, officialAppThemeLight)
                         contentView.removeAllViews()
                         contentView.addView(subsectionUI.view())
 

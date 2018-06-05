@@ -21,7 +21,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/white"
+                android:background="@color/dark_theme_primary_88"
                 app:contentInsetStart="0dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
@@ -30,21 +30,22 @@
                     android:layout_height="wrap_content">
 
                     <ImageButton
-                        android:id="@+id/toolbar_main_button"
+                        android:id="@+id/toolbar_close_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="15dp"
                         android:layout_centerVertical="true"
                         android:background="#00000000"
-                        android:src="@drawable/ic_toolbar_sheet_app_menu"
+                        android:src="@drawable/ic_toolbar_close"
                         android:tint="@color/dark_theme_primary_15" />
 
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_gravity="center"
-                        android:textSize="18sp"
-                        android:textColor="@color/dark_theme_primary_15"
+                        android:textSize="17.5sp"
+                        android:textColor="@color/light_theme_dark_grey_18"
+                        android:text="@string/new_session"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
@@ -65,68 +66,50 @@
 
             </android.support.v7.widget.Toolbar>
 
-
             <android.support.design.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:id="@+id/content"
-                    android:orientation="vertical"
+
+                <ScrollView
+                    android:id="@+id/content_scroll_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/light_theme_light_grey_8">
-                </LinearLayout>
+                    android:orientation="vertical"
+                    android:background="@color/light_theme_light_grey_7">
 
+                    <LinearLayout
+                        android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+
+                </ScrollView>
 
                 <!--<android.support.design.widget.FloatingActionButton-->
-                    <!--android:id="@+id/fab"-->
+                    <!--android:id="@+id/run_procedure_button"-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
                     <!--android:layout_margin="16dp"-->
                     <!--android:clickable="true"-->
-                    <!--android:src="@drawable/ic_fab_add"-->
-                    <!--app:layout_anchor="@id/content"-->
-                    <!--app:layout_anchorGravity="bottom|end"-->
-                    <!--app:backgroundTint="@color/light_theme_green"-->
+                    <!--android:src="@drawable/ic_fab_check"-->
+                    <!--app:layout_anchor="@id/content_scroll_view"-->
+                    <!--app:layout_anchorGravity="bottom|right"-->
+                    <!--app:backgroundTint="@color/dark_theme_light_green_13"-->
                     <!--app:rippleColor="#FFF" />-->
 
-
-
-                <com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout
-                    xmlns:rfal="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/fab_layout"
+                <LinearLayout
+                    android:id="@+id/footer"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    rfal:rfal_frame_color="#ffffff"
-                    rfal:rfal_frame_alpha="0.7">
-
-                    <com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton
-                        xmlns:rfab="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/fab"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:padding="8dp"
-                        rfab:rfab_size="normal"
-                        rfab:rfab_drawable="@drawable/ic_fab_forward"
-                        rfab:rfab_color_normal="#3A3A3A"
-                        rfab:rfab_color_pressed="#263238"
-                        rfab:rfab_shadow_radius="7dp"
-                        rfab:rfab_shadow_color="#999999"
-                        rfab:rfab_shadow_dx="0dp"
-                        rfab:rfab_shadow_dy="5dp"
-                        />
-
-                </com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout>
-
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom" >
+                </LinearLayout>
 
             </android.support.design.widget.CoordinatorLayout>
 
-        </LinearLayout>
+       </LinearLayout>
 
     </RelativeLayout>
 

@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.theme.official
 
 
-import com.kispoko.tome.R.string.name
 import com.kispoko.tome.model.theme.*
 
 
@@ -96,6 +95,8 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("light_blue_70"), "#B21887C0"),
         ThemeColor(ColorId.Theme("light_blue_60"), "#991887C0"),
         ThemeColor(ColorId.Theme("light_blue_50"), "#801887C0"),
+        ThemeColor(ColorId.Theme("light_blue_shade_1"), "#167AAD"),
+        ThemeColor(ColorId.Theme("light_blue_shade_2"), "#136C9A"),
         ThemeColor(ColorId.Theme("light_blue_tint_3"), "#469FCD"),
         ThemeColor(ColorId.Theme("light_blue_tint_7"), "#A3CFE6"),
         ThemeColor(ColorId.Theme("light_blue_tint_8"), "#BADBEC"),
@@ -105,19 +106,31 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("purple_70"), "#B29161C0"),
         ThemeColor(ColorId.Theme("purple_60"), "#999161C0"),
         ThemeColor(ColorId.Theme("purple_50"), "#809161C0"),
-        ThemeColor(ColorId.Theme("transparent"), "#00FFFFFF")
+        ThemeColor(ColorId.Theme("transparent"), "#00FFFFFF"),
+        ThemeColor(ColorId.Theme("transparent_80"), "#33FFFFFF"),
+        ThemeColor(ColorId.Theme("transparent_70"), "#4DFFFFFF"),
+        ThemeColor(ColorId.Theme("transparent_50"), "#7FFFFFFF"),
+        ThemeColor(ColorId.Theme("transparent_30"), "#B3FFFFFF"),
+        ThemeColor(ColorId.Theme("transparent_20"), "#CCFFFFFF")
 )
 
 
 
 val uiColors = UIColors(
-        ColorId.Theme("dark_grey_10"),
+        // Toolbar Background
+        ColorId.Theme("dark_grey_8"),
+        // Toolbar Icons
         ColorId.Theme("white"),
+        // Toolbar Title
         ColorId.Theme("white"),
+        // Tab Bar Background
         ColorId.Theme("white"),
+        // Tab Text Normal
         ColorId.Theme("dark_grey_16"),
-        ColorId.Theme("dark_grey_10"),
-        ColorId.Theme("dark_grey_16"),
+        // Tab Text Selected
+        ColorId.Theme("light_blue"),
+        // Tab Underline
+        ColorId.Theme("light_blue"),
         ColorId.Theme("dark_grey_8"),
         ColorId.Theme("light_grey_10"))
 

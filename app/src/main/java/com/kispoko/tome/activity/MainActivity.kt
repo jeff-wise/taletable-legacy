@@ -158,8 +158,6 @@ class MainUI(val theme : Theme,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
-//        layout.backgroundBitmapPath = "images/logo/splash.png"
-
         return layout.relativeLayout(context)
     }
 

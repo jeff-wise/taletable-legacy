@@ -79,6 +79,8 @@ class CardUI(val book : Book,
     {
         val layout = this.headerViewLayout()
 
+        layout.addView(this.headerBorderView())
+
         layout.addView(this.headerTextView())
 
         layout.addView(this.headerBorderView())

@@ -4,8 +4,6 @@ package com.kispoko.tome.rts.entity
 
 import android.content.Context
 import com.kispoko.culebra.*
-import com.kispoko.tome.R.string.group
-import com.kispoko.tome.R.string.label
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.app.assetInputStream
 import com.kispoko.tome.load.*
@@ -14,7 +12,6 @@ import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.rts.entity.OfficialSheetLoader.Companion.fromYaml
 import effect.Err
 import effect.Val
 import effect.apply
@@ -221,7 +218,7 @@ data class EntityLoadResult(val entityId : EntityId, val fromCache : Boolean)
 // ENTITY LOADER
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityLoader() : Serializable
+sealed class EntityLoader(open val name : String) : Serializable
 {
     companion object
     {
@@ -247,19 +244,19 @@ sealed class EntityLoader() : Serializable
 // ENTITY LOADER > UNKNOWN
 // ---------------------------------------------------------------------------------------------
 
-class EntityLoaderUnknown() : EntityLoader()
+class EntityLoaderUnknown() : EntityLoader("")
 
 
 // ENTITY LOADER > SAVED
 // ---------------------------------------------------------------------------------------------
 
-data class EntityLoaderSaved(val rowId : Long) : EntityLoader()
+data class EntityLoaderSaved(val rowId : Long) : EntityLoader("")
 
 
 // ENTITY LOADER > OFFICIAL
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityLoaderOfficial : EntityLoader()
+sealed class EntityLoaderOfficial(override val name : String) : EntityLoader(name)
 {
     abstract fun filePath() : String
 
@@ -287,8 +284,9 @@ sealed class EntityLoaderOfficial : EntityLoader()
 }
 
 
-data class OfficialSheetLoader(val sheetId : SheetId,
-                               val gameId : GameId) : EntityLoaderOfficial()
+data class OfficialSheetLoader(override val name : String,
+                               val sheetId : SheetId,
+                               val gameId : GameId) : EntityLoaderOfficial(name)
 {
 
     override fun filePath() : String =
@@ -303,6 +301,8 @@ data class OfficialSheetLoader(val sheetId : SheetId,
             is YamlDict ->
             {
                 apply(::OfficialSheetLoader,
+                      // Name
+                      yamlValue.text("name"),
                       // Sheet Id
                       yamlValue.at("sheet_id") ap { SheetId.fromYaml(it) },
                       // Game Id
@@ -316,8 +316,9 @@ data class OfficialSheetLoader(val sheetId : SheetId,
 }
 
 
-data class OfficialCampaignLoader(val campaignId : CampaignId,
-                                  val gameId : GameId) : EntityLoaderOfficial()
+data class OfficialCampaignLoader(override val name : String,
+                                  val campaignId : CampaignId,
+                                  val gameId : GameId) : EntityLoaderOfficial(name)
 {
 
     override fun filePath() : String =
@@ -332,6 +333,8 @@ data class OfficialCampaignLoader(val campaignId : CampaignId,
             is YamlDict ->
             {
                 apply(::OfficialCampaignLoader,
+                      // Name
+                      yamlValue.text("name"),
                       // Campaign Id
                       yamlValue.at("campaign_id") ap { CampaignId.fromYaml(it) },
                       // Game Id
@@ -346,8 +349,13 @@ data class OfficialCampaignLoader(val campaignId : CampaignId,
 }
 
 
-data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
+data class OfficialGameLoader(override val name: String,
+                              val gameId : GameId) : EntityLoaderOfficial(name)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
 
     override fun filePath() : String =
         "official/" + gameId.value +
@@ -358,6 +366,10 @@ data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
             "official/" + gameId.value + "/indexes/group/weapons.yaml"
 
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object
     {
         fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityLoaderOfficial> = when (yamlValue)
@@ -365,6 +377,8 @@ data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
             is YamlDict ->
             {
                 apply(::OfficialGameLoader,
+                      // Name
+                      yamlValue.text("name"),
                       // Game Id
                       yamlValue.at("game_id") ap { GameId.fromYaml(it) })
             }
@@ -376,15 +390,24 @@ data class OfficialGameLoader(val gameId : GameId) : EntityLoaderOfficial()
 }
 
 
-data class OfficialBookLoader(val bookId : BookId,
+data class OfficialBookLoader(override val name : String,
+                              val bookId : BookId,
                               val gameId : GameId)
-                               : EntityLoaderOfficial()
+                               : EntityLoaderOfficial(name)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
 
     override fun filePath() : String =
         "official/" + gameId.value +
         "/books/" + bookId.value +  ".yaml"
 
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -393,6 +416,8 @@ data class OfficialBookLoader(val bookId : BookId,
             is YamlDict ->
             {
                 apply(::OfficialBookLoader,
+                      // Name
+                      yamlValue.text("name"),
                       // Book Id
                       yamlValue.at("book_id") ap { BookId.fromYaml(it) },
                       // Game Id

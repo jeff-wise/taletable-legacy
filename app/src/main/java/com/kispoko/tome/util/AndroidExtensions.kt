@@ -31,7 +31,9 @@ import kotlinx.coroutines.experimental.launch
  */
 
 
-fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle? = null)
+fun AppCompatActivity.configureToolbar(title : String,
+                                       fontStyle : TextFontStyle? = null,
+                                       textSize : Float? = null)
 {
     // (1) Configure Action Bar
     // -------------------------------------------------------------------------------------
@@ -60,6 +62,9 @@ fun AppCompatActivity.configureToolbar(title : String, fontStyle : TextFontStyle
     }
 
     titleView.text      = trimmedTitle
+
+    if (textSize != null)
+        titleView.textSize      = textSize
 
     //titleView.setTextColor(SheetManager)
 

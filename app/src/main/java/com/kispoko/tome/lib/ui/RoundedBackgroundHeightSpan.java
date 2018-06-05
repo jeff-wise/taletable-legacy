@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.text.style.LineHeightSpan;
 import android.text.style.ReplacementSpan;
+import android.util.Log;
 
 import com.kispoko.tome.model.sheet.style.IconSize;
 import com.kispoko.tome.util.Util;
@@ -137,8 +138,12 @@ public class RoundedBackgroundHeightSpan extends ReplacementSpan implements Line
     @Override
     public void chooseHeight(CharSequence charSequence, int i, int i1, int i2, int i3, Paint.FontMetricsInt fontMetricsInt)
     {
+//        Log.d("***ROUNDED BG", "choose height: line spacing: " + Integer.toString(this.lineSpacing));
         fontMetricsInt.bottom = this.lineSpacing;
         fontMetricsInt.descent = this.lineSpacing;
+
+//        fontMetricsInt.bottom = 15;
+//        fontMetricsInt.descent = 15;
     }
 
 

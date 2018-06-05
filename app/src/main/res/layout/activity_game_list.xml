@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/dark_theme_primary_88"
+                app:contentInsetStart="0dp"
+                android:elevation="1dp"
+                android:theme="@style/AppTheme.NoActionBar" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageButton
+                            android:id="@+id/toolbar_back_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_centerVertical="true"
+                            android:background="#00000000"
+                            android:src="@drawable/ic_toolbar_back"
+                            android:tint="@color/dark_theme_primary_15" />
+
+                        <TextView
+                            android:id="@+id/toolbar_title"
+                            android:layout_gravity="center"
+                            android:textSize="18sp"
+                            android:textColor="@color/dark_theme_primary_15"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <ImageButton
+                            android:id="@+id/toolbar_options_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#00000000"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="15dp"
+                            android:src="@drawable/ic_toolbar_options"
+                            android:tint="@color/dark_theme_primary_15" />
+
+                    </RelativeLayout>
+
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="1dp"-->
+                        <!--android:orientation="vertical"-->
+                        <!--android:background="@color/light_theme_light_grey_10">-->
+                    <!--</LinearLayout>-->
+
+                </LinearLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/content"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/light_theme_light_grey_8">
+                </LinearLayout>
+
+
+                <!--<android.support.design.widget.FloatingActionButton-->
+                    <!--android:id="@+id/fab"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_margin="16dp"-->
+                    <!--android:clickable="true"-->
+                    <!--android:src="@drawable/ic_fab_add"-->
+                    <!--app:layout_anchor="@id/content"-->
+                    <!--app:layout_anchorGravity="bottom|end"-->
+                    <!--app:backgroundTint="@color/light_theme_light_blue_tint_3"-->
+                    <!--app:rippleColor="#FFF" />-->
+
+
+            </android.support.design.widget.CoordinatorLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v4.widget.DrawerLayout>

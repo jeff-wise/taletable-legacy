@@ -5,6 +5,7 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -13,6 +14,7 @@ import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.book.BookActivity
 import com.kispoko.tome.activity.sheet.dialog.openTextVariableEditorDialog
 import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.AppSheetError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
@@ -23,13 +25,13 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.book.BookReference
+import com.kispoko.tome.model.engine.value.ValueReference
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.widget.TableWidget
 import com.kispoko.tome.model.sheet.widget.WidgetId
 import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
-import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.Util
 import effect.*
@@ -183,8 +185,29 @@ class TextCellUI(val cell : TableWidgetTextCell,
 
         layout.setOnLongClickListener {
 
-            val bookReference = cell.variable(entityId).apply {
+            var bookReference : Eff<AppError,Identity,Maybe<BookReference>> =
+                    effError(AppSheetError(CellDoesNotHaveBookReference(cell.id)))
+
+            bookReference = cell.variable(entityId).apply {
                 effValue<AppError,Maybe<BookReference>>(it.bookReference(entityId))
+            }
+
+            Log.d("***TEXT CELL", "book reference: ${bookReference}")
+
+            // This is interesting...
+            // TODO need more functions to do parts of this.
+            column.columnVariableId().doMaybe { colVarId ->
+                textListVariable(colVarId, entityId).apDo { colVar ->
+                    colVar.valueSetId().doMaybe { valueSetId ->
+                        valueSet(valueSetId, entityId).apDo {
+                            cell.valueId?.let { valueId ->
+                                value(ValueReference(valueSetId, valueId), entityId).apDo { value ->
+                                    bookReference = effValue(value.bookReference)
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             bookReference.apDo { maybeBookRef ->

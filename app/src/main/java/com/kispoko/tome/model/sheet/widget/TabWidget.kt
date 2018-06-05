@@ -4,6 +4,7 @@ package com.kispoko.tome.model.sheet.widget
 
 import android.content.Context
 import android.support.design.widget.TabLayout
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -482,6 +483,8 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
     private var currentTabIndex : Int = 0
 
+    private val tabViewMap : MutableMap<Int,List<View>> = mutableMapOf()
+
 
     // -----------------------------------------------------------------------------------------
     // METHODS
@@ -489,15 +492,41 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
     fun showTab(index : Int)
     {
+        Log.d("***TAB WIDGET", "show tab index: $index")
+
         if (index >= 0 && index < tabWidget.tabs().size)
         {
-            val groups = tabWidget.tabs()[index].groups(entityId)
 
-            contentViewLayout?.removeAllViews()
-
-            groups.forEach {
-                contentViewLayout?.addView(it.view(entityId, context))
+            this.tabViewMap[currentTabIndex]?.let { views ->
+                Log.d("***TAB WIDGET", "removing views: ${views.size}")
+                views.forEach { it.visibility = View.GONE }
             }
+
+            if (this.tabViewMap.containsKey(index))
+            {
+                Log.d("***TAB WIDGET", "view map contains index: $index")
+                this.tabViewMap[index]!!.forEach { it.visibility = View.VISIBLE }
+            }
+            else
+            {
+                Log.d("***TAB WIDGET", "view map DOES NOT contain index: $index")
+                val views : MutableList<View> = mutableListOf()
+
+                val groups = tabWidget.tabs()[index].groups(entityId)
+                groups.forEach {
+                    val view = it.view(entityId, context)
+                    views.add(view)
+                }
+
+                views.forEach {
+                    contentViewLayout?.addView(it)
+                }
+
+                this.tabViewMap[index] = views
+            }
+
+
+            this.currentTabIndex = index
         }
     }
 
@@ -518,11 +547,13 @@ class TabWidgetUI(val tabWidget : WidgetTab,
         this.contentViewLayout = contentViewLayout
         layout.addView(contentViewLayout)
 
-        tabWidget.tabAtIndex(0).doMaybe {
-            it.groups(entityId).forEach {
-                contentViewLayout.addView(it.view(entityId, context))
-            }
-        }
+//        tabWidget.tabAtIndex(0).doMaybe {
+//            it.groups(entityId).forEach {
+//                contentViewLayout.addView(it.view(entityId, context))
+//            }
+//        }
+
+        this.showTab(0)
 
         return layout
     }

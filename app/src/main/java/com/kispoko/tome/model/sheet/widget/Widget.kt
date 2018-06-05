@@ -3419,7 +3419,13 @@ data class TableWidget(private val widgetId : WidgetId,
     }
 
 
-    fun rowsInSet(values : List<Value>) : List<TableWidgetRow>
+    private fun valueSetId(entityId : EntityId) : AppEff<Maybe<ValueSetId>> =
+        this.rowSetVariable(entityId).apply {
+            effValue<AppError,Maybe<ValueSetId>>(it.valueSetId())
+        }
+
+
+    fun rowsInSet(values : List<Value>, valueSetId : Maybe<ValueSetId>) : List<TableWidgetRow>
     {
         val rows : MutableList<TableWidgetRow> = mutableListOf()
 
@@ -3465,7 +3471,16 @@ data class TableWidget(private val widgetId : WidgetId,
                         when (cell) {
                             is TableWidgetTextCell -> {
                                 cell.valueId = value.valueId()
-                                cell.variableValue = TextVariableLiteralValue(value.valueString())
+
+                                when (valueSetId) {
+                                    is Just -> {
+                                        val valueReference = ValueReference(valueSetId.value, value.valueId())
+                                        cell.variableValue = TextVariableValueValue(valueReference)
+                                    }
+                                    is Nothing -> {
+                                        cell.variableValue = TextVariableLiteralValue(value.valueString())
+                                    }
+                                }
                             }
                         }
                     }
@@ -3784,13 +3799,14 @@ data class TableWidget(private val widgetId : WidgetId,
 
     fun dynamicRows(entityId : EntityId) : List<TableWidgetRow>
     {
-        val rowSetVariable = this.rowSetVariable(entityId)
-        return when (rowSetVariable)
+        val rowSetVariableEff = this.rowSetVariable(entityId)
+        return when (rowSetVariableEff)
         {
             is Val ->
             {
-                val setValues = rowSetVariable.value.values(entityId)
-                this.rowsInSet(setValues)
+                val rowSetVariable = rowSetVariableEff.value
+                val setValues = rowSetVariable.values(entityId)
+                this.rowsInSet(setValues, rowSetVariable.valueSetId())
             }
             is Err ->
             {

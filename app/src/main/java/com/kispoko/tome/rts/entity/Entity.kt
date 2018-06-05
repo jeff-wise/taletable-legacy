@@ -5,7 +5,6 @@ package com.kispoko.tome.rts.entity
 import android.graphics.Color
 import android.util.Log
 import com.kispoko.culebra.*
-import com.kispoko.tome.R.string.tasks
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookId
@@ -41,7 +40,7 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.entity.engine.TextReferenceIsNull
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.rts.entity.theme.ThemeManager
-import com.kispoko.tome.rts.session.SessionTag
+import com.kispoko.tome.rts.session.SessionDescription
 import effect.*
 import maybe.Just
 import maybe.Maybe
@@ -925,7 +924,7 @@ object EntityTypeBook : EntityType()
 // Entity Kind
 // ---------------------------------------------------------------------------------------------
 
-data class EntityKind(val id : String,
+data class EntityKind(val id : EntityKindId,
                       val name : String,
                       val description : String) : Serializable
 {
@@ -938,7 +937,7 @@ data class EntityKind(val id : String,
             {
                 apply(::EntityKind,
                       // Id
-                      yamlValue.text("id"),
+                      yamlValue.at("id") ap { EntityKindId.fromYaml(it) },
                       // Name
                       yamlValue.text("name"),
                       // Description
@@ -947,6 +946,25 @@ data class EntityKind(val id : String,
             }
             else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
         }
+    }
+
+}
+
+
+data class EntityKindId(val value : String) : EntityId()
+{
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityKindId> =
+            when (yamlValue)
+            {
+                is YamlText -> effValue(EntityKindId(yamlValue.text))
+                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                         yamlType(yamlValue),
+                                                         yamlValue.path))
+            }
+
     }
 
 }

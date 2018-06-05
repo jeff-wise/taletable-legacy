@@ -4,6 +4,8 @@
 
     <item name="widget_label" type="id"/>
 
+    <item name="progress_bar" type="id"/>
+
     <!-- COMPONENTS -->
     <item name="text_component_edit_text" type="id"/>
     <item name="document_component_edit_text" type="id"/>

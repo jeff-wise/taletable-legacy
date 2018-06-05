@@ -20,12 +20,13 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.official.GameManifest
 import com.kispoko.tome.official.GameSummary
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.util.configureToolbar
 import java.io.Serializable
@@ -56,7 +57,7 @@ class GamesListActivity : AppCompatActivity()
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
 
-        setContentView(R.layout.activity_official_games)
+        setContentView(R.layout.activity_game_list)
 
         // (2) Read Parameters
         // -------------------------------------------------------------------------------------
@@ -67,9 +68,11 @@ class GamesListActivity : AppCompatActivity()
         // (3) Initialize UI
         // -------------------------------------------------------------------------------------
 
-        this.initializeToolbarView(officialThemeLight)
+//        this.initializeToolbarView(officialAppThemeLight)
 
-        this.applyTheme(officialThemeLight)
+        this.configureToolbar(getString(R.string.games))
+
+        this.applyTheme(officialAppThemeLight)
 
         val gameManifest = OfficialManager.gameManifest(this)
         val gameAction = this.gameAction
@@ -124,32 +127,35 @@ class GamesListActivity : AppCompatActivity()
         {
             val window = this.window
 
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+            val statusBarColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+            window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
         }
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
-//        val toolbar = findViewById(R.id.toolbar) as Toolbar
-//
-//        // Toolbar > Background
-//        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
-//
-//        // Toolbar > Icons
-//        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
-//
-//        val menuLeftButton = this.findViewById(R.id.toolbar_back_button) as ImageButton
-//        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-//
-//        val menuRightButton = this.findViewById(R.id.toolbar_options_button) as ImageButton
-//        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-//
-//        // TITLE
-//        // -------------------------------------------------------------------------------------
-//        val titleView = this.findViewById(R.id.toolbar_title) as TextView
-//        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
+
+        // Toolbar > Background
+        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
+
+        // Toolbar > Icons
+        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
+
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
+        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
+        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        // TITLE
+        // -------------------------------------------------------------------------------------
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
+        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
     }
 
 }
@@ -241,7 +247,7 @@ class GamesListUI(val gameManifest: GameManifest,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
         scrollView.backgroundColor  = theme.colorOrBlack(colorTheme)
 
         return scrollView.scrollView(context)
@@ -270,8 +276,8 @@ class GamesListUI(val gameManifest: GameManifest,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.leftDp   = 6f
-        layout.padding.rightDp  = 6f
+        layout.padding.leftDp   = 4f
+        layout.padding.rightDp  = 4f
 
         return layout.linearLayout(context)
     }
@@ -308,21 +314,24 @@ class GamesListUI(val gameManifest: GameManifest,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.topDp     = 8f
+        layout.margin.topDp     = 4f
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
 
-        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.onClick          = View.OnClickListener {
-            when (this.gameAction)
-            {
-                is GameActionNewSession -> this.openNewSessionActivity(gameSummary)
-                is GameActionLoadSession -> this.openLoadSessionActivity(gameSummary)
-            }
+//            when (this.gameAction)
+//            {
+//                is GameActionNewSession -> this.openNewSessionActivity(gameSummary)
+//                is GameActionLoadSession -> this.openLoadSessionActivity(gameSummary)
+//            }
+
+            Router.send(NewSessionMessageGame(gameSummary.gameId))
+            activity.finish()
         }
 
         return layout.linearLayout(context)
@@ -340,14 +349,14 @@ class GamesListUI(val gameManifest: GameManifest,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         header.color        = theme.colorOrBlack(colorTheme)
 
         header.font         = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Medium,
+                                            TextFontStyle.Bold,
                                             context)
 
-        header.sizeSp       = 20f
+        header.sizeSp       = 18f
 
         return header.textView(context)
     }
@@ -364,7 +373,7 @@ class GamesListUI(val gameManifest: GameManifest,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         description.color        = theme.colorOrBlack(colorTheme)
 
         description.font         = Font.typeface(TextFont.default(),
@@ -420,19 +429,19 @@ class GamesListUI(val gameManifest: GameManifest,
 //        layout.addView(this.gameGenreView(gameSummary.genre))
 
         val genre = gameSummary.genre
-        when (genre)
-        {
-            "Fantasy" -> {
-                layout.addView(this.infoView(R.drawable.icon_castle, genre, usersColorTheme))
-            }
-
-            "Sci-Fi" -> {
-                layout.addView(this.infoView(R.drawable.icon_planet, genre, usersColorTheme))
-            }
-            "Mixed-Bag" -> {
-                layout.addView(this.infoView(R.drawable.icon_magic_lamp, genre, usersColorTheme))
-            }
-        }
+//        when (genre)
+//        {
+//            "Fantasy" -> {
+//                layout.addView(this.infoView(R.drawable.icon_castle, genre, usersColorTheme))
+//            }
+//
+//            "Sci-Fi" -> {
+//                layout.addView(this.infoView(R.drawable.icon_planet, genre, usersColorTheme))
+//            }
+//            "Mixed-Bag" -> {
+//                layout.addView(this.infoView(R.drawable.icon_magic_lamp, genre, usersColorTheme))
+//            }
+//        }
 
         // Players
         layout.addView(this.infoView(R.drawable.icon_account, gameSummary.players.toString(), usersColorTheme))

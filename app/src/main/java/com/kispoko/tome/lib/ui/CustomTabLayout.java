@@ -20,7 +20,7 @@ public class CustomTabLayout extends TabLayout
     private Typeface mTypeface;
 
     private TextFont textFont = TextFont.Cabin.INSTANCE;
-    private TextFontStyle textFontStyle = TextFontStyle.Bold.INSTANCE;
+    private TextFontStyle textFontStyle = TextFontStyle.Medium.INSTANCE;
 
     public CustomTabLayout(Context context)
     {
@@ -67,7 +67,9 @@ public class CustomTabLayout extends TabLayout
         for (int i = 0; i < tabChildCount; i++) {
             View tabViewChild = tabView.getChildAt(i);
             if (tabViewChild instanceof TextView) {
-                ((TextView) tabViewChild).setTypeface(mTypeface, Typeface.NORMAL);
+                TextView tabTextView = (TextView) tabViewChild;
+                tabTextView.setTypeface(mTypeface, Typeface.NORMAL);
+//                tabTextView.setText(tabTextView.getText().toString().toLowerCase());
             }
         }
     }

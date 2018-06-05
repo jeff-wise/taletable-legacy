@@ -32,6 +32,7 @@ import com.kispoko.tome.official.officialManifestPath
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.session.SessionLoader
 import com.kispoko.tome.rts.session.SessionManifest
+import com.kispoko.tome.rts.session.sessionManifest
 import com.kispoko.tome.util.Util
 import effect.Err
 import effect.Val
@@ -138,22 +139,29 @@ class SessionListActivity : AppCompatActivity()
 
         if (gameId != null && entityTypeId != null)
         {
-            val filePath = officialManifestPath(gameId, entityTypeId)
-            // TODO why does this crash on fail?
-            val manifestParser = parseYaml(assets.open(filePath), SessionManifest.Companion::fromYaml)
-
-            when (manifestParser)
-            {
-                is Val -> {
-                    val sessionLoaders = manifestParser.value.summaries
-                    val sessionListUI = SessionListUI(sessionLoaders, officialThemeLight, this)
-                    content?.addView(sessionListUI.view())
-
-                }
-                is Err -> {
-                    ApplicationLog.error(AppYamlError(manifestParser.error))
-                }
+            sessionManifest(gameId, this).doMaybe {
+                val sessionLoaders = it.sessionLoaders(entityTypeId)
+                val sessionListUI = SessionListUI(sessionLoaders, officialThemeLight, this)
+                content?.addView(sessionListUI.view())
             }
+
+//            val filePath = officialManifestPath(gameId, entityTypeId)
+//            // TODO why does this crash on fail?
+//            val manifestParser = parseYaml(assets.open(filePath), SessionManifest.Companion::fromYaml)
+//
+//            when (manifestParser)
+//            {
+//                is Val -> {
+//                    val sessionLoaders = manifestParser.value.summaries
+//                    val sessionListUI = SessionListUI(sessionLoaders, officialThemeLight, this)
+//                    content?.addView(sessionListUI.view())
+//
+//                }
+//                is Err -> {
+//                    ApplicationLog.error(AppYamlError(manifestParser.error))
+//                }
+//            }
+
         }
 
     }

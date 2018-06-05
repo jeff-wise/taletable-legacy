@@ -96,6 +96,7 @@
                         android:background="@color/white"
                         app:tabGravity="fill"
                         app:tabMode="scrollable"
+                        app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
                         app:tabTextColor="@color/dark_blue_hl_8"
                         app:tabSelectedTextColor="@color/dark_blue_hlx_5"
                         app:tabIndicatorColor="@color/dark_blue_hl_1" />
@@ -169,10 +170,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:clickable="true"
+            app:borderWidth="0dp"
+            app:elevation="10dp"
             android:src="@drawable/ic_fab_add"
             app:layout_anchor="@id/view_pager"
             app:layout_anchorGravity="bottom|end"
-            app:backgroundTint="@color/light_theme_light_blue_tint_3"
+            app:backgroundTint="@color/light_theme_dark_grey_10"
             app:rippleColor="#FFF" />
 
 

@@ -164,7 +164,6 @@ class GroupListActivity : AppCompatActivity()
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-
             val statusBarColorTheme = ColorTheme(setOf(
                     ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
                     ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))

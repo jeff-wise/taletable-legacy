@@ -8,6 +8,7 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.app.assetInputStream
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.campaign.Campaign
+import com.kispoko.tome.model.feed.Feed
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.group.GroupIndex
@@ -39,6 +40,7 @@ object TomeDoc
     var cachedThemeSchema       : Schema? = null
     var cachedBookSchema        : Schema? = null
     var cachedGroupIndexSchema  : Schema? = null
+    var cachedFeedSchema        : Schema? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -335,6 +337,49 @@ object TomeDoc
     }
 
 
+    // Load > Feed
+    // -----------------------------------------------------------------------------------------
+
+    fun loadFeed(inputStream : InputStream,
+                 feedName : String,
+                 context : Context) : DocLoader<Feed>
+    {
+        // LET...
+        val templateFileString : DocLoader<String> =
+            effValue(inputStream.bufferedReader().use { it.readText() })
+
+        fun templateDocument(templateString : String,
+                             feedSchema : Schema,
+                             engineSchema : Schema,
+                             sheetSchema : Schema) : DocLoader<SchemaDoc>
+        {
+            val docParse = feedSchema.parseDocument(templateString, listOf(engineSchema, sheetSchema))
+            return when (docParse) {
+                is Val -> effValue(docParse.value)
+                is Err -> effError(DocumentParseError("Feed for $feedName", "feed", docParse.error))
+            }
+        }
+
+        fun feedFromDocument(specDoc : SchemaDoc) : DocLoader<Feed>
+        {
+            val feedParse = Feed.fromDocument(specDoc)
+            return when (feedParse)
+            {
+                is Val -> effValue(feedParse.value)
+                is Err -> effError(ValueParseError("Feed for $feedName", feedParse.error))
+            }
+        }
+
+        // DO...
+        return templateFileString
+               .applyWith(::templateDocument,
+                          feedSchemaLoader(context),
+                          engineSchemaLoader(context),
+                          sheetSchemaLoader(context))
+               .apply(::feedFromDocument)
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // SCHEMAS
     // -----------------------------------------------------------------------------------------
@@ -603,6 +648,45 @@ object TomeDoc
             effValue(schema)
         else
             effError(SchemaIsNull("group_index"))
+    }
+
+
+
+    // Schemas > Group Index
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Get the Group Index specification (Lulo). If it is null, try to load it.
+     */
+    fun feedSchema(context : Context) : Schema?
+    {
+        if (cachedFeedSchema == null)
+        {
+            val schemaLoader = loadLuloSchema("feed", context)
+            when (schemaLoader)
+            {
+                is Val -> {
+                    cachedFeedSchema = schemaLoader.value
+                    ApplicationLog.event(SchemaLoaded("feed"))
+                }
+                is Err -> ApplicationLog.error(schemaLoader.error)
+            }
+        }
+
+        return cachedFeedSchema
+    }
+
+
+    /**
+     * Get the specification in the loader context.
+     */
+    fun feedSchemaLoader(context : Context) : DocLoader<Schema>
+    {
+        val schema = feedSchema(context)
+        return if (schema != null)
+            effValue(schema)
+        else
+            effError(SchemaIsNull("feed"))
     }
 
 }

@@ -75,7 +75,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/light_theme_light_grey_7">
+                    android:background="@color/light_theme_light_grey_8">
                 </LinearLayout>
 
 
@@ -88,7 +88,7 @@
                     android:src="@drawable/ic_fab_add"
                     app:layout_anchor="@id/content"
                     app:layout_anchorGravity="bottom|end"
-                    app:backgroundTint="@color/light_theme_green"
+                    app:backgroundTint="@color/light_theme_light_blue_tint_3"
                     app:rippleColor="#FFF" />
 
 

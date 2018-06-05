@@ -2,21 +2,39 @@
 package com.kispoko.tome.activity
 
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.groups
+import com.kispoko.tome.activity.session.NewSessionActivity
+import com.kispoko.tome.activity.sheet.group.GroupListItemRecyclerViewAdapter
+import com.kispoko.tome.activity.sheet.group.GroupListItemViewHolder
+import com.kispoko.tome.activity.sheet.group.SwipeAndDragHelper
+import com.kispoko.tome.activity.sheet.group.groupItemView
+import com.kispoko.tome.lib.ui.RecyclerViewBuilder
+import com.kispoko.tome.model.sheet.group.GroupReference
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
+import com.kispoko.tome.rts.entity.EntityId
+import com.kispoko.tome.rts.entity.colorOrBlack
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton
@@ -24,7 +42,32 @@ import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RFACLabelItem
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloatingActionContentLabelList
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout
-import com.wangjie.rapidfloatingactionbutton.util.RFABTextUtil.dip2px
+
+
+
+// pinned
+// news
+// welcome to tome beta
+// > still prototype, schedule
+// > content still being added, no licensed content yet
+// > about Tome / plan
+// > FAQ
+//
+// support app, donate
+//
+// core rulebook quick link
+//
+// random creature
+//
+// random character sheet
+//
+// player quote / moment
+//
+// survey
+//
+// random spell
+//
+// random weapon
 
 
 /**
@@ -62,7 +105,7 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
         this.configureToolbar(getString(R.string.tome))
 
         this.findViewById<TextView>(R.id.toolbar_title)?.let { titleTextView ->
-            titleTextView.textSize = Util.spToPx(7.5f, this).toFloat()
+            titleTextView.textSize = Util.spToPx(7.2f, this).toFloat()
 
         }
 
@@ -164,7 +207,7 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
                 .setLabel("New Session")
                 .setResId(R.drawable.ic_fab_add)
                 .setIconNormalColor(Color.parseColor("#58C480"))
-                .setIconPressedColor(-0xe5dc82)
+                .setIconPressedColor(Color.parseColor("#6ACA8E"))
                 .setLabelColor(Color.parseColor("#45BD72"))
                 .setWrapper(3)
         )
@@ -190,12 +233,32 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
     override fun onRFACItemIconClick(position : Int, item : RFACLabelItem<Any>?)
     {
         this.rfabHelper?.toggleContent()
+
+        when (position) {
+            1 -> this.newSession()
+        }
     }
 
 
     override fun onRFACItemLabelClick(position : Int, item : RFACLabelItem<Any>?)
     {
         this.rfabHelper?.toggleContent()
+
+        when (position) {
+            1 -> this.newSession()
+        }
+    }
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // SESSIONS
+    // -----------------------------------------------------------------------------------------
+
+    private fun newSession()
+    {
+        val intent = Intent(this, NewSessionActivity::class.java)
+        this.startActivity(intent)
     }
 
 }
@@ -206,4 +269,157 @@ class FeedUI(val theme : Theme,
 {
 
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    val context = activity
+
+
+    // -----------------------------------------------------------------------------------------
+    // METHODS
+    // -----------------------------------------------------------------------------------------
+
+    private fun feedAdapter()
+    {
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
+
+    fun view() : View = recyclerView()
+
+
+    private fun recyclerView() : RecyclerView
+    {
+        val recyclerView                = RecyclerViewBuilder()
+
+        recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT
+        recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT
+
+        recyclerView.layoutManager      = LinearLayoutManager(context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
+        recyclerView.backgroundColor    = theme.colorOrBlack(colorTheme)
+
+        recyclerView.adapter            = this.feedAdapter()
+
+        return recyclerView.recyclerView(context)
+    }
+
+
 }
+
+
+
+
+class FeedRecyclerViewAdapater(val theme : Theme,
+                               val context : Context)
+                                : RecyclerView.Adapter<GroupListItemViewHolder>(), SwipeAndDragHelper.ActionCompletionContract
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var touchHelper : ItemTouchHelper? = null
+
+
+    // -------------------------------------------------------------------------------------
+    // RECYCLER VIEW ADAPTER API
+    // -------------------------------------------------------------------------------------
+
+    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : GroupListItemViewHolder
+    {
+        val itemView = groupItemView(theme, context)
+        return GroupListItemViewHolder(itemView, entityId, context)
+    }
+
+
+    override fun onBindViewHolder(viewHolder : GroupListItemViewHolder, position : Int)
+    {
+        val group = this.groups[position]
+
+        viewHolder.setNameText(group.name().value)
+        viewHolder.setSummaryText(group.summary().value)
+    }
+
+
+    override fun getItemCount() : Int = this.groups.size
+
+
+    // Swipe and Drag
+    // -----------------------------------------------------------------------------------------
+
+    override fun onViewMoved(oldPosition : Int, newPosition : Int)
+    {
+        Log.d("***GROUP LIST", "on view moved")
+        val otherGroup = groups.get(oldPosition)
+        groups.removeAt(oldPosition)
+        groups.add(newPosition, otherGroup)
+        notifyItemMoved(oldPosition, newPosition)
+    }
+
+    override fun onViewSwiped(position : Int)
+    {
+        groups.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+}
+
+
+
+
+/**
+ * Group List Item View Holder
+ */
+class GroupListItemViewHolder(itemView : View,
+                              val entityId: EntityId,
+                              val context : Context)
+                : RecyclerView.ViewHolder(itemView)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var layout      : LinearLayout? = null
+    var nameView    : TextView?  = null
+    var summaryView : TextView?  = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.layout      = itemView.findViewById(R.id.group_list_item_layout)
+        this.nameView    = itemView.findViewById(R.id.group_list_item_name)
+        this.summaryView = itemView.findViewById(R.id.group_list_item_summary)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW HOLDER
+    // -----------------------------------------------------------------------------------------
+
+    fun setNameText(nameString : String)
+    {
+        this.nameView?.text = nameString
+    }
+
+
+    fun setSummaryText(summaryString : String)
+    {
+        this.summaryView?.text = summaryString
+    }
+
+}
+

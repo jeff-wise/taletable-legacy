@@ -43,20 +43,20 @@ object OfficialManager
 
     fun gameManifest(context : Context) : GameManifest?
     {
-        if (gameManifest == null)
+        return if (gameManifest == null)
         {
             val manifest = loadGameManifest(context)
             when (manifest) {
-                is Val -> return manifest.value
+                is Val -> manifest.value
                 is Err -> {
                     ApplicationLog.error(manifest.error)
-                    return null
+                    null
                 }
             }
         }
         else
         {
-            return null
+            null
         }
     }
 
@@ -71,8 +71,8 @@ object OfficialManager
         return when (gameManifestParser)
         {
             is Val -> effValue(gameManifestParser.value)
-            is Err -> effError<AppError, GameManifest>(AppOfficialError(
-                    GameManifestParseError(gameManifestParser.error.toString())))
+            is Err -> effError(AppOfficialError(
+                          GameManifestParseError(gameManifestParser.error.toString())))
         }
     }
 
