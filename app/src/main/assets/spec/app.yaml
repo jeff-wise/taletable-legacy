@@ -1,0 +1,59 @@
+
+---
+
+version: '0.7'
+metadata:
+  name: App
+  authors:
+  - name: 'Jeff Wise'
+description:
+  overview: The application.
+root_type: app_action
+types:
+- type: sum_type
+  sum_type:
+    name: app_action
+    label: Application Action
+    description: An application action.
+    group: 'App Action'
+    cases:
+    - type: app_action_open_session
+      description: Open session.
+    - type: app_action_open_news_article
+      description: Open news article.
+- type: product_type
+  product_type: 
+    name: app_action_open_news_article
+    label: 'App Action: Open News Article'
+    description: Open a news article.
+    group: 'App Action'
+    fields:
+    - name: news_article_id
+      type:
+        type: custom_type
+        custom_type: news_article_id
+      presence: required
+      description: The game id.
+- type: product_type
+  product_type: 
+    name: app_action_open_session
+    label: 'App Action: Open Session'
+    description: Open a session.
+    group: 'App Action'
+    fields:
+    - name: session_id
+      type:
+        type: custom_type
+        custom_type: session_id
+      presence: required
+      description: The game id.
+- type: primitive_type
+  primitive_type:
+    name: news_article_id
+    label: News Article Id
+    description: The news article identifier.
+    group: News
+    base_type:
+      type: prim_type
+      prim_type: string
+constraints:

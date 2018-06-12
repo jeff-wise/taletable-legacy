@@ -1,0 +1,88 @@
+
+---
+
+version: '0.7'
+metadata:
+  name: Feed
+  authors:
+  - name: 'Jeff Wise'
+description:
+  overview: A feed.
+root_type: feed
+types:
+- type: product_type
+  product_type: 
+    name: feed  
+    label: Feed
+    description: A feed.
+    group: Feed
+    fields:
+    - name: settigns
+      type:
+        type: custom_type
+        custom_type: feed_settings
+      presence: optional
+      description: The settings.
+    - name: cards
+      type:
+        type: custom_coll_type
+        custom_coll_type: card
+      presence: required
+      description: The cards.
+    - name: variables
+      type:
+        type: custom_coll_type
+        custom_coll_type: variable
+      presence: optional
+      description: The state.
+    - name: groups
+      type:
+        type: custom_coll_type
+        custom_coll_type: group
+      presence: optional
+      description: The state.
+- type: product_type
+  product_type: 
+    name: feed_settings  
+    label: Feed Settings
+    description: The feed settings.
+    group: Feed
+    fields:
+    - name: theme_id
+      type:
+        type: custom_type
+        custom_type: theme_id
+      presence: optional
+      description: The color theme id.
+- type: product_type
+  product_type: 
+    name: card  
+    label: Card
+    description: A card.
+    group: Feed
+    fields:
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The card title.
+    - name: is_pinned
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      description: True if the card is pinned.
+    - name: app_action
+      type:
+        type: custom_type
+        custom_type: app_action
+      presence: optional
+      description: App action.
+    - name: group_references
+      type:
+        type: custom_coll_type
+        custom_coll_type: group_reference
+      presence: required
+      description: The group references.
+constraints:

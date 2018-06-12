@@ -3,7 +3,6 @@ package com.kispoko.tome.rts.entity
 
 
 import android.graphics.Color
-import android.util.Log
 import com.kispoko.culebra.*
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.book.Book
@@ -31,6 +30,7 @@ import com.kispoko.tome.model.engine.tag.TagQuery
 import com.kispoko.tome.model.engine.task.Task
 import com.kispoko.tome.model.engine.value.*
 import com.kispoko.tome.model.engine.variable.*
+import com.kispoko.tome.model.feed.Feed
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.*
@@ -40,7 +40,6 @@ import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.rts.entity.engine.TextReferenceIsNull
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.rts.entity.theme.ThemeManager
-import com.kispoko.tome.rts.session.SessionDescription
 import effect.*
 import maybe.Just
 import maybe.Maybe
@@ -170,6 +169,18 @@ fun book(bookId : BookId) : Maybe<Book>
 }
 
 
+fun feed(feedId : EntityFeedId) : Maybe<Feed>
+{
+    val record = entityRecordById[feedId]
+    return when (record) {
+        is EntityFeedRecord -> {
+            Just(record.feed)
+        }
+        else -> Nothing()
+    }
+}
+
+
 // Add
 // ---------------------------------------------------------------------------------------------
 
@@ -215,6 +226,20 @@ fun addBook(book : Book)
 
     entityRecordById.put(entityId, bookRecord)
 }
+
+
+fun addFeed(feed : Feed)
+{
+    val entityState = EntityState(feed.entityId(), mutableListOf(), mutableListOf())
+    val bookRecord = EntityFeedRecord(feed, entityState, Just(feed.settings().themeId()))
+
+    feed.variables().forEach {
+        entityState.addVariable(it)
+    }
+
+    entityRecordById[feed.entityId()] = bookRecord
+}
+
 
 
 // ---------------------------------------------------------------------------------------------
@@ -293,6 +318,12 @@ fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group> = when (e
             it.groupWithId(groupId)
         } } }
     }
+    is EntityFeedId ->
+    {
+        feed(entityId) ap {
+            it.groupWithId(groupId)
+        }
+    }
     else -> Nothing()
 }
 
@@ -324,7 +355,6 @@ fun groups(groupReferences : List<GroupReference>, entityId : EntityId) : List<G
         when (it) {
             is GroupReferenceLiteral -> groups.add(it.group)
             is GroupReferenceId -> {
-                Log.d("***GROUP", "group reference id: ${it.groupId}")
                 groupWithId(it.groupId, entityId).doMaybe {
                     groups.add(it)
                 }
@@ -889,6 +919,10 @@ data class EntityBookId(val bookId : BookId) : EntityId()
 
 }
 
+data class EntityFeedId(val id : UUID) : EntityId()
+{
+    override fun toString() = id.toString()
+}
 
 // Entity Type
 // ---------------------------------------------------------------------------------------------
@@ -1036,6 +1070,18 @@ data class EntityBookRecord(val book : Book,
 
 }
 
+
+data class EntityFeedRecord(val feed : Feed,
+                            override val engineState : EntityState,
+                            override val themeId : Maybe<ThemeId>)
+                             : EntityRecord(engineState, themeId)
+{
+
+    override val entityType = EntityTypeBook
+
+    override fun entity() = this.feed
+
+}
 
 
 sealed class EntitySource

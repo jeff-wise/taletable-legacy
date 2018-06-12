@@ -72,6 +72,8 @@
     <string name="about_games">Learn About Games</string>
     <string name="create_new_game">Create New Game</string>
 
+    <string name="pinned">Pinned</string>
+
     <string name="edit_mode">Edit Mode</string>
     <string name="edit_rules">Edit Rules</string>
     <string name="save_sheet">Save Sheet</string>

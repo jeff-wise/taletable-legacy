@@ -321,6 +321,11 @@
     <item name="points_bar_limit" type="id"/>
     <item name="points_bar_slash" type="id"/>
 
+    <item name="card_pinned_layout" type="id"/>
+    <item name="card_title" type="id"/>
+    <item name="card_groups_layout" type="id"/>
+    <item name="card_read_more_button" type="id"/>
+
 
     <item name="top_element" type="id"/>
 

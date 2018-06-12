@@ -11,7 +11,6 @@ import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.official.officialManifestPath
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
 import effect.*

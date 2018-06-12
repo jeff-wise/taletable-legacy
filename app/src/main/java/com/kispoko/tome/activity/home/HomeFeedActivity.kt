@@ -1,8 +1,7 @@
 
-package com.kispoko.tome.activity
+package com.kispoko.tome.activity.home
 
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -10,31 +9,22 @@ import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.groups
+import com.kispoko.tome.activity.entity.feed.FeedUI
 import com.kispoko.tome.activity.session.NewSessionActivity
-import com.kispoko.tome.activity.sheet.group.GroupListItemRecyclerViewAdapter
-import com.kispoko.tome.activity.sheet.group.GroupListItemViewHolder
-import com.kispoko.tome.activity.sheet.group.SwipeAndDragHelper
-import com.kispoko.tome.activity.sheet.group.groupItemView
-import com.kispoko.tome.lib.ui.RecyclerViewBuilder
-import com.kispoko.tome.model.sheet.group.GroupReference
+import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.app.assetInputStream
+import com.kispoko.tome.load.TomeDoc
+import com.kispoko.tome.model.feed.Feed
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
-import com.kispoko.tome.rts.entity.EntityId
-import com.kispoko.tome.rts.entity.colorOrBlack
+import com.kispoko.tome.rts.entity.addFeed
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton
@@ -42,7 +32,9 @@ import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RFACLabelItem
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloatingActionContentLabelList
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout
-
+import effect.Err
+import effect.Val
+import java.io.IOException
 
 
 // pinned
@@ -68,6 +60,8 @@ import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout
 // random spell
 //
 // random weapon
+//
+// random rule
 
 
 /**
@@ -131,7 +125,10 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
     private fun initializeView()
     {
         val contentView = this.findViewById<LinearLayout>(R.id.content)
-
+        val feed = this.feed()
+        addFeed(feed)
+        val feedUI = FeedUI(feed, officialAppThemeLight, this)
+        contentView?.addView(feedUI.view())
     }
 
 
@@ -250,7 +247,6 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
     }
 
 
-
     // -----------------------------------------------------------------------------------------
     // SESSIONS
     // -----------------------------------------------------------------------------------------
@@ -261,165 +257,42 @@ class FeedActivity : AppCompatActivity(), RapidFloatingActionContentLabelList.On
         this.startActivity(intent)
     }
 
-}
-
-
-class FeedUI(val theme : Theme,
-             val activity : AppCompatActivity)
-{
 
 
     // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // FEED
     // -----------------------------------------------------------------------------------------
 
-    val context = activity
-
-
-    // -----------------------------------------------------------------------------------------
-    // METHODS
-    // -----------------------------------------------------------------------------------------
-
-    private fun feedAdapter()
+    private fun feed() : Feed
     {
-
+        return newsFeed() ?: Feed.empty()
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // VIEWS
-    // -----------------------------------------------------------------------------------------
-
-    fun view() : View = recyclerView()
-
-
-    private fun recyclerView() : RecyclerView
+    private fun newsFeed() : Feed?
     {
-        val recyclerView                = RecyclerViewBuilder()
+        return try {
+            val feedLoader = assetInputStream(this, "feed/news.yaml")
+                               .apply { TomeDoc.loadFeed(it, "Home Feed", this) }
 
-        recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT
-        recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT
-
-        recyclerView.layoutManager      = LinearLayoutManager(context)
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
-        recyclerView.backgroundColor    = theme.colorOrBlack(colorTheme)
-
-        recyclerView.adapter            = this.feedAdapter()
-
-        return recyclerView.recyclerView(context)
+            when (feedLoader)
+            {
+                is Val -> {
+                    feedLoader.value
+                }
+                is Err -> {
+                    ApplicationLog.error(feedLoader.error)
+                    null
+                }
+            }
+        }
+        catch (e : IOException) {
+            Log.d("***FEED ACTIVITY", "io exception loading news feed")
+            null
+        }
     }
 
 
 }
 
-
-
-
-class FeedRecyclerViewAdapater(val theme : Theme,
-                               val context : Context)
-                                : RecyclerView.Adapter<GroupListItemViewHolder>(), SwipeAndDragHelper.ActionCompletionContract
-{
-
-    // -----------------------------------------------------------------------------------------
-    // PROPERTIES
-    // -----------------------------------------------------------------------------------------
-
-    var touchHelper : ItemTouchHelper? = null
-
-
-    // -------------------------------------------------------------------------------------
-    // RECYCLER VIEW ADAPTER API
-    // -------------------------------------------------------------------------------------
-
-    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : GroupListItemViewHolder
-    {
-        val itemView = groupItemView(theme, context)
-        return GroupListItemViewHolder(itemView, entityId, context)
-    }
-
-
-    override fun onBindViewHolder(viewHolder : GroupListItemViewHolder, position : Int)
-    {
-        val group = this.groups[position]
-
-        viewHolder.setNameText(group.name().value)
-        viewHolder.setSummaryText(group.summary().value)
-    }
-
-
-    override fun getItemCount() : Int = this.groups.size
-
-
-    // Swipe and Drag
-    // -----------------------------------------------------------------------------------------
-
-    override fun onViewMoved(oldPosition : Int, newPosition : Int)
-    {
-        Log.d("***GROUP LIST", "on view moved")
-        val otherGroup = groups.get(oldPosition)
-        groups.removeAt(oldPosition)
-        groups.add(newPosition, otherGroup)
-        notifyItemMoved(oldPosition, newPosition)
-    }
-
-    override fun onViewSwiped(position : Int)
-    {
-        groups.removeAt(position)
-        notifyItemRemoved(position)
-    }
-
-}
-
-
-
-
-/**
- * Group List Item View Holder
- */
-class GroupListItemViewHolder(itemView : View,
-                              val entityId: EntityId,
-                              val context : Context)
-                : RecyclerView.ViewHolder(itemView)
-{
-
-    // -----------------------------------------------------------------------------------------
-    // PROPERTIES
-    // -----------------------------------------------------------------------------------------
-
-    var layout      : LinearLayout? = null
-    var nameView    : TextView?  = null
-    var summaryView : TextView?  = null
-
-
-    // -----------------------------------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------------------------------
-
-    init
-    {
-        this.layout      = itemView.findViewById(R.id.group_list_item_layout)
-        this.nameView    = itemView.findViewById(R.id.group_list_item_name)
-        this.summaryView = itemView.findViewById(R.id.group_list_item_summary)
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // VIEW HOLDER
-    // -----------------------------------------------------------------------------------------
-
-    fun setNameText(nameString : String)
-    {
-        this.nameView?.text = nameString
-    }
-
-
-    fun setSummaryText(summaryString : String)
-    {
-        this.summaryView?.text = summaryString
-    }
-
-}
 

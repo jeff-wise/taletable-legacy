@@ -41,6 +41,7 @@ object TomeDoc
     var cachedBookSchema        : Schema? = null
     var cachedGroupIndexSchema  : Schema? = null
     var cachedFeedSchema        : Schema? = null
+    var cachedAppSchema         : Schema? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -350,10 +351,12 @@ object TomeDoc
 
         fun templateDocument(templateString : String,
                              feedSchema : Schema,
+                             appSchema : Schema,
+                             themeSchema : Schema,
                              engineSchema : Schema,
                              sheetSchema : Schema) : DocLoader<SchemaDoc>
         {
-            val docParse = feedSchema.parseDocument(templateString, listOf(engineSchema, sheetSchema))
+            val docParse = feedSchema.parseDocument(templateString, listOf(engineSchema, appSchema, sheetSchema, themeSchema))
             return when (docParse) {
                 is Val -> effValue(docParse.value)
                 is Err -> effError(DocumentParseError("Feed for $feedName", "feed", docParse.error))
@@ -374,6 +377,8 @@ object TomeDoc
         return templateFileString
                .applyWith(::templateDocument,
                           feedSchemaLoader(context),
+                          appSchemaLoader(context),
+                          themeSchemaLoader(context),
                           engineSchemaLoader(context),
                           sheetSchemaLoader(context))
                .apply(::feedFromDocument)
@@ -651,8 +656,7 @@ object TomeDoc
     }
 
 
-
-    // Schemas > Group Index
+    // Schemas > Feed
     // -----------------------------------------------------------------------------------------
 
     /**
@@ -688,6 +692,45 @@ object TomeDoc
         else
             effError(SchemaIsNull("feed"))
     }
+
+
+    // Schemas > App
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Get the App Schema. If it is null, try to load it.
+     */
+    fun appSchema(context : Context) : Schema?
+    {
+        if (cachedAppSchema == null)
+        {
+            val schemaLoader = loadLuloSchema("app", context)
+            when (schemaLoader)
+            {
+                is Val -> {
+                    cachedAppSchema = schemaLoader.value
+                    ApplicationLog.event(SchemaLoaded("app"))
+                }
+                is Err -> ApplicationLog.error(schemaLoader.error)
+            }
+        }
+
+        return cachedAppSchema
+    }
+
+
+    /**
+     * Get the schema in the loader context.
+     */
+    fun appSchemaLoader(context : Context) : DocLoader<Schema>
+    {
+        val schema = appSchema(context)
+        return if (schema != null)
+            effValue(schema)
+        else
+            effError(SchemaIsNull("app"))
+    }
+
 
 }
 

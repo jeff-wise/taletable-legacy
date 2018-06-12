@@ -1,0 +1,103 @@
+variables:
+- type: variable_text
+  variable_text:
+    id: news_tome_beta_header
+    label: 'News: Tome Beta Header'
+    description: 'News: Tome Beta Header'
+    value:
+      type: text_literal
+      text_literal: 'Welcome to the Tome Beta!'
+- type: variable_text
+  variable_text:
+    id: news_tome_beta_description
+    label: 'News: Tome Beta Description'
+    description: 'News: Tome Beta Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Tome is a platform for playing and creating tabletop RPGs. It is fully interactive and
+        customizable. The application is currently a very early, unstable release. Most of the basic functionality
+        is being tested, and large amounts of content are still missing.
+groups:
+- id: '4075d450-9693-4fab-ad1a-7f788cc5616a'
+  name: 'Feed News: Tome Beta'
+  summary: 'Feed News: Tome Beta'
+  tags:
+  - feed
+  format:
+    element_format:
+      margins:
+        top: 6
+      padding:
+        top: 6
+        bottom: 8
+    border:
+      top:
+        color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: light_grey_4
+        thickness: 1
+#      bottom:
+#        color_theme:
+#          theme_color_ids:
+#          - theme_id: light
+#            color_id: light_grey_4
+#        thickness: 1
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          left: 8
+          right: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font_style: regular
+            size: 22
+            element_format:
+              horizontal_alignment: left
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: news_tome_beta_header
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          left: 8
+          right: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font_style: regular
+            size: 16.5
+            element_format:
+              horizontal_alignment: left
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: news_tome_beta_description
+cards:
+- title: News
+  is_pinned: true
+  app_action:
+    type: app_action_open_news_article
+    app_action_open_news_article:
+      news_article_id: '046c24b3-e490-474b-8185-61e26c13be85'
+  group_references:
+  - type: group_id
+    group_id: '4075d450-9693-4fab-ad1a-7f788cc5616a'
