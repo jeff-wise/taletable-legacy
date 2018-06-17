@@ -374,6 +374,13 @@ data class GroupRowFormat(override val id : UUID,
                border)
 
 
+    constructor(elementFormat : ElementFormat)
+        : this(UUID.randomUUID(),
+               elementFormat,
+               GroupRowHasColumns(false),
+               Nothing())
+
+
     companion object : Factory<GroupRowFormat>
     {
 

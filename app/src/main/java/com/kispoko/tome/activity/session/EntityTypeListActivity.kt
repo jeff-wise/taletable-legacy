@@ -5,27 +5,28 @@ package com.kispoko.tome.activity.session
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
 import com.kispoko.tome.R
-import com.kispoko.tome.lib.ui.Font
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.lib.ui.ScrollViewBuilder
-import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.model.theme.official.officialThemeLight
-import com.kispoko.tome.official.GameSummary
 import com.kispoko.tome.rts.entity.EntityKind
+import com.kispoko.tome.rts.official.OfficialManager
+import com.kispoko.tome.util.configureToolbar
 
 
 
@@ -39,7 +40,7 @@ class EntityTypeListActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameSummary : GameSummary? = null
+    private var gameId : GameId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -58,17 +59,17 @@ class EntityTypeListActivity : AppCompatActivity()
         // (2) Read Parameters
         // -------------------------------------------------------------------------------------
 
-        if (this.intent.hasExtra("game_summary"))
-            this.gameSummary = this.intent.getSerializableExtra("game_summary") as GameSummary
+        if (this.intent.hasExtra("game_id"))
+            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
 
         // (3) Initialize Views
         // -------------------------------------------------------------------------------------
 
         // Toolbar
-        this.initializeToolbarView(officialThemeLight)
+        this.configureToolbar(getString(R.string.choose_a_session))
 
         // Theme
-        this.applyTheme(officialThemeLight)
+        this.applyTheme(officialAppThemeLight)
 
         // Entity Kind List
         this.initializeContentView()
@@ -82,47 +83,36 @@ class EntityTypeListActivity : AppCompatActivity()
     }
 
 
+    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?)
+    {
+//        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 2) //matches the result code passed from B
+        {
+            if (resultCode == 1) {
+                this.finish()
+            }
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // UI
     // -----------------------------------------------------------------------------------------
-
-    private fun initializeToolbarView(theme : Theme)
-    {
-        // Back label text
-        val backLabelView = this.findViewById<TextView>(R.id.toolbar_back_label)
-        backLabelView.typeface = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
-        backLabelView.text     = getString(R.string.back_to_games)
-
-        val backLabelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_15"))))
-        backLabelView.setTextColor(theme.colorOrBlack(backLabelColorTheme))
-
-        // Back button
-        val backButton = this.findViewById<LinearLayout>(R.id.toolbar_back_button)
-        backButton?.setOnClickListener {
-            this.finish()
-        }
-
-        // Breadcrumbs
-        val breadcrumbsLayout = this.findViewById<LinearLayout>(R.id.breadcrumbs)
-
-        val breadcrumbs : MutableList<String> = mutableListOf()
-        this.gameSummary?.let { breadcrumbs.add(it.name) }
-        breadcrumbs.add(getString(R.string.what_are_you_looking_for))
-
-        val breadcrumbsUI = SessionBreadcrumbsUI(breadcrumbs, true, officialThemeLight, this)
-        breadcrumbsLayout?.addView(breadcrumbsUI.view())
-    }
-
 
     private fun initializeContentView()
     {
         val content = this.findViewById<LinearLayout>(R.id.content)
 
-        this.gameSummary?.let {
-            val entityKindListUI = EntityKindListUI(it, officialThemeLight, this)
-            content?.addView(entityKindListUI.view())
+        this.gameId?.let { gameId ->
+            val gameSummary = OfficialManager.gameManifest(this)?.game(gameId)
+            if (gameSummary != null) {
+                val entityKindListUI = EntityKindListUI(gameSummary.entityKinds,
+                                                        gameId,
+                                                        officialThemeLight,
+                                                        this)
+                content?.addView(entityKindListUI.view())
+            }
         }
     }
 
@@ -140,8 +130,32 @@ class EntityTypeListActivity : AppCompatActivity()
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+            val statusBarColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+            window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
         }
+
+        // TOOLBAR
+        // -------------------------------------------------------------------------------------
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
+
+        // Toolbar > Background
+        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
+
+        // Toolbar > Icons
+        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
+
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
+        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
+        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        // TITLE
+        // -------------------------------------------------------------------------------------
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
+        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
     }
 
@@ -149,7 +163,8 @@ class EntityTypeListActivity : AppCompatActivity()
 
 
 
-class EntityKindListUI(val gameSummary : GameSummary,
+class EntityKindListUI(val entityKinds : List<EntityKind>,
+                       val gameId : GameId,
                        val theme : Theme,
                        val context : Context)
 {
@@ -177,7 +192,7 @@ class EntityKindListUI(val gameSummary : GameSummary,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
         scrollView.backgroundColor  = theme.colorOrBlack(colorTheme)
 
         return scrollView.scrollView(context)
@@ -189,7 +204,7 @@ class EntityKindListUI(val gameSummary : GameSummary,
     {
         val layout          = this.entityListViewLayout()
 
-        gameSummary.entityKinds.forEach {
+        entityKinds.forEach {
             layout.addView(this.entityKindView(it))
         }
 
@@ -218,10 +233,13 @@ class EntityKindListUI(val gameSummary : GameSummary,
         val layout          = this.entityKindViewLayout(entityKind)
 
         // Name
-        layout.addView(this.entityKindHeaderView(entityKind.name))
+        layout.addView(this.entityKindHeaderView(entityKind.namePlural))
 
         // Description
         layout.addView(this.entityKindDescriptionView(entityKind.description))
+
+        // Footer
+        layout.addView(this.entityKindFooterView(entityKind))
 
         return layout
     }
@@ -238,7 +256,7 @@ class EntityKindListUI(val gameSummary : GameSummary,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.topDp     = 8f
+        layout.margin.topDp     = 4f
 
         layout.padding.topDp    = 8f
         layout.padding.bottomDp = 8f
@@ -250,9 +268,9 @@ class EntityKindListUI(val gameSummary : GameSummary,
         layout.onClick          = View.OnClickListener {
             val activity = context as AppCompatActivity
             val intent = Intent(activity, SessionListActivity::class.java)
-            intent.putExtra("game_summary", gameSummary)
+            intent.putExtra("game_id", gameId)
             intent.putExtra("entity_kind", entityKind)
-            activity.startActivity(intent)
+            activity.startActivityForResult(intent, 2)
         }
 
         return layout.linearLayout(context)
@@ -270,14 +288,14 @@ class EntityKindListUI(val gameSummary : GameSummary,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         header.color        = theme.colorOrBlack(colorTheme)
 
         header.font         = Font.typeface(TextFont.default(),
                                             TextFontStyle.Medium,
                                             context)
 
-        header.sizeSp       = 20f
+        header.sizeSp       = 19f
 
         return header.textView(context)
     }
@@ -294,18 +312,75 @@ class EntityKindListUI(val gameSummary : GameSummary,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         description.color        = theme.colorOrBlack(colorTheme)
 
         description.font         = Font.typeface(TextFont.default(),
                                                  TextFontStyle.Regular,
                                                  context)
 
-        description.sizeSp       = 17f
+        description.sizeSp       = 16.5f
 
-        description.margin.topDp = 4f
+//        description.margin.topDp = 4f
 
         return description.textView(context)
+    }
+
+
+    private fun entityKindFooterView(entityKind : EntityKind) : RelativeLayout
+    {
+        val layout = this.entityKindFooterViewLayout()
+
+        layout.addView(this.viewSessionsButtonView("View ${entityKind.shortNamePlural}"))
+
+        return layout
+    }
+
+
+    private fun entityKindFooterViewLayout() : RelativeLayout
+    {
+        val layout                      = RelativeLayoutBuilder()
+
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation              = LinearLayout.HORIZONTAL
+
+        layout.margin.rightDp           = 8f
+        layout.margin.leftDp            = 8f
+
+        return layout.relativeLayout(context)
+    }
+
+
+    private fun viewSessionsButtonView(labelString : String) : TextView
+    {
+        val buttonView                  = TextViewBuilder()
+
+        buttonView.layoutType           = LayoutType.RELATIVE
+        buttonView.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+        buttonView.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        buttonView.addRule(RelativeLayout.ALIGN_PARENT_END)
+
+        buttonView.margin.topDp         = 10f
+        buttonView.margin.bottomDp      = 4f
+//        buttonView.margin.rightDp       = 8f
+
+        buttonView.text                 = labelString.toUpperCase()
+
+        buttonView.font                 = Font.typeface(TextFont.default(),
+                                                        TextFontStyle.SemiBold,
+                                                        context)
+
+        val nameColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+        buttonView.color                = theme.colorOrBlack(nameColorTheme)
+
+        buttonView.sizeSp               = 15f
+
+        return buttonView.textView(context)
     }
 
 

@@ -4,38 +4,38 @@ package com.kispoko.tome.activity.session
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.*
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.kispoko.culebra.parseYaml
 import com.kispoko.tome.R
-import com.kispoko.tome.app.AppYamlError
-import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.IconSize
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.model.theme.official.officialThemeLight
-import com.kispoko.tome.official.GameSummary
-import com.kispoko.tome.official.officialManifestPath
+import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
 import com.kispoko.tome.rts.session.SessionLoader
-import com.kispoko.tome.rts.session.SessionManifest
 import com.kispoko.tome.rts.session.sessionManifest
 import com.kispoko.tome.util.Util
-import effect.Err
-import effect.Val
+import com.kispoko.tome.util.configureToolbar
 
 
 
@@ -49,7 +49,7 @@ class SessionListActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameSummary : GameSummary? = null
+    private var gameId     : GameId? = null
     private var entityKind : EntityKind? = null
 
 
@@ -69,8 +69,8 @@ class SessionListActivity : AppCompatActivity()
         // (2) Read Parameters
         // -------------------------------------------------------------------------------------
 
-        if (this.intent.hasExtra("game_summary"))
-            this.gameSummary = this.intent.getSerializableExtra("game_summary") as GameSummary
+        if (this.intent.hasExtra("game_id"))
+            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
 
         if (this.intent.hasExtra("entity_kind"))
             this.entityKind = this.intent.getSerializableExtra("entity_kind") as EntityKind
@@ -79,10 +79,10 @@ class SessionListActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         // Toolbar
-        this.initializeToolbarView(officialThemeLight)
+        this.configureToolbar(getString(R.string.choose_a_session))
 
         // Theme
-        this.applyTheme(officialThemeLight)
+        this.applyTheme(officialAppThemeLight)
 
         // Session List
         this.initializeSessionList()
@@ -100,41 +100,11 @@ class SessionListActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeToolbarView(theme : Theme)
-    {
-        // Back label text
-        val backLabelView = this.findViewById<TextView>(R.id.toolbar_back_label)
-        backLabelView.typeface = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
-        backLabelView.text     = getString(R.string.back_to_game_items)
-
-        val backLabelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_15"))))
-        backLabelView.setTextColor(theme.colorOrBlack(backLabelColorTheme))
-
-        // Back button
-        val backButton = this.findViewById<LinearLayout>(R.id.toolbar_back_button)
-        backButton?.setOnClickListener {
-            this.finish()
-        }
-
-        // Breadcrumbs
-        val breadcrumbsLayout = this.findViewById<LinearLayout>(R.id.breadcrumbs)
-
-        val breadcrumbs : MutableList<String> = mutableListOf()
-        this.gameSummary?.let { breadcrumbs.add(it.name) }
-        this.entityKind?.let { breadcrumbs.add(it.name) }
-
-        val breadcrumbsUI = SessionBreadcrumbsUI(breadcrumbs, false, officialThemeLight, this)
-        breadcrumbsLayout?.addView(breadcrumbsUI.view())
-    }
-
-
     private fun initializeSessionList()
     {
         val content = this.findViewById<LinearLayout>(R.id.content)
 
-        val gameId = this.gameSummary?.gameId
+        val gameId = this.gameId
         val entityTypeId = this.entityKind?.id
 
         if (gameId != null && entityTypeId != null)
@@ -144,28 +114,9 @@ class SessionListActivity : AppCompatActivity()
                 val sessionListUI = SessionListUI(sessionLoaders, officialThemeLight, this)
                 content?.addView(sessionListUI.view())
             }
-
-//            val filePath = officialManifestPath(gameId, entityTypeId)
-//            // TODO why does this crash on fail?
-//            val manifestParser = parseYaml(assets.open(filePath), SessionManifest.Companion::fromYaml)
-//
-//            when (manifestParser)
-//            {
-//                is Val -> {
-//                    val sessionLoaders = manifestParser.value.summaries
-//                    val sessionListUI = SessionListUI(sessionLoaders, officialThemeLight, this)
-//                    content?.addView(sessionListUI.view())
-//
-//                }
-//                is Err -> {
-//                    ApplicationLog.error(AppYamlError(manifestParser.error))
-//                }
-//            }
-
         }
 
     }
-
 
     private fun applyTheme(theme : Theme)
     {
@@ -180,9 +131,36 @@ class SessionListActivity : AppCompatActivity()
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+            val statusBarColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+            window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
         }
+
+        // TOOLBAR
+        // -------------------------------------------------------------------------------------
+        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
+
+        // Toolbar > Background
+        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
+
+        // Toolbar > Icons
+        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
+
+        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
+        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
+        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        // TITLE
+        // -------------------------------------------------------------------------------------
+        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
+        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
+
     }
+
+
 
 }
 
@@ -234,8 +212,8 @@ class SessionListUI(val sessionSummaryList : List<SessionLoader>,
 
         recyclerView.padding.leftDp     = 6f
         recyclerView.padding.rightDp    = 6f
-        recyclerView.padding.bottomDp   = 60f
 
+        recyclerView.padding.bottomDp   = 60f
         recyclerView.clipToPadding      = false
 
         return recyclerView.recyclerView(context)
@@ -383,9 +361,13 @@ class SessionListUI(val sessionSummaryList : List<SessionLoader>,
 //                                                  Calendar.getInstance(),
 //                                                  loaders,
 //                                                  EntitySheetId(SheetId(sheetId)))
-                val dialog = LoadSessionProgressDialog.newInstance(sessionLoader,
-                                                                   "Session Name")
-                dialog.show(activity.supportFragmentManager, "")
+//                val dialog = LoadSessionProgressDialog.newInstance(sessionLoader,
+//                                                                   "Session Name")
+//                dialog.show(activity.supportFragmentManager, "")
+
+                Router.send(NewSessionMessageSession(sessionLoader.sessionId))
+                activity.setResult(1)
+                activity.finish()
             }
 
         }
@@ -437,7 +419,7 @@ class SessionSummaryItem(val theme : Theme, val context : Context)
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.margin.topDp     = 10f
+        layout.margin.topDp     = 4f
 
     //        val colorTheme = ColorTheme(setOf(
     //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
@@ -447,9 +429,9 @@ class SessionSummaryItem(val theme : Theme, val context : Context)
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.padding.topDp    = 6f
-        layout.padding.bottomDp    = 6f
-        layout.padding.leftDp    = 6f
-        layout.padding.rightDp    = 6f
+        layout.padding.bottomDp = 6f
+        layout.padding.leftDp   = 6f
+        layout.padding.rightDp  = 6f
 
         return layout.linearLayout(context)
     }
@@ -696,7 +678,7 @@ class SessionSummaryItem(val theme : Theme, val context : Context)
                                       R.id.session_summary_info_button))
 
         // OPEN
-        layout.addView(openButtonView(context.getString(R.string.open).toUpperCase(),
+        layout.addView(openButtonView(context.getString(R.string.select).toUpperCase(),
                                       R.id.session_summary_open_button))
 
         return layout

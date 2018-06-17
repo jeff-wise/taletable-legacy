@@ -5,7 +5,6 @@ package com.kispoko.tome.model.sheet.style
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue8
 import com.kispoko.tome.lib.orm.RowValue9
 import com.kispoko.tome.lib.orm.schema.PrimValue
 import com.kispoko.tome.model.theme.ColorTheme
@@ -215,5 +214,133 @@ data class ElementFormat(override val id : UUID,
                   PrimValue(this.corners),
                   PrimValue(this.alignment),
                   PrimValue(this.verticalAlignment))
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    // UPDATE > Margins
+    // -----------------------------------------------------------------------------------------
+
+    fun withTopMargin(topMargin : Double) : ElementFormat
+    {
+        val newMargins = Spacing(topMargin,
+                                 this.margins.right,
+                                 this.margins.bottom,
+                                 this.margins.left)
+
+        return ElementFormat(this.position,
+                             this.height,
+                             this.width,
+                             this.padding,
+                             newMargins,
+                             this.backgroundColorTheme,
+                             this.corners,
+                             this.border,
+                             this.alignment,
+                             this.verticalAlignment)
+    }
+
+
+    fun withRightMargin(rightMargin : Double) : ElementFormat
+    {
+        val newMargins = Spacing(this.margins.top,
+                                 rightMargin,
+                                 this.margins.bottom,
+                                 this.margins.left)
+
+        return ElementFormat(this.position,
+                             this.height,
+                             this.width,
+                             this.padding,
+                             newMargins,
+                             this.backgroundColorTheme,
+                             this.corners,
+                             this.border,
+                             this.alignment,
+                             this.verticalAlignment)
+    }
+
+
+    fun withLeftMargin(leftMargin : Double) : ElementFormat
+    {
+        val newMargins = Spacing(this.margins.top,
+                                 this.margins.right,
+                                 this.margins.bottom,
+                                 leftMargin)
+
+        return ElementFormat(this.position,
+                             this.height,
+                             this.width,
+                             this.padding,
+                             newMargins,
+                             this.backgroundColorTheme,
+                             this.corners,
+                             this.border,
+                             this.alignment,
+                             this.verticalAlignment)
+    }
+
+
+    // UPDATE > Padding
+    // -----------------------------------------------------------------------------------------
+
+    fun withTopPadding(topPadding : Double) : ElementFormat
+    {
+        val newPadding = Spacing(topPadding,
+                                 this.padding.right,
+                                 this.padding.bottom,
+                                 this.padding.left)
+
+        return ElementFormat(this.position,
+                             this.height,
+                             this.width,
+                             newPadding,
+                             this.margins,
+                             this.backgroundColorTheme,
+                             this.corners,
+                             this.border,
+                             this.alignment,
+                             this.verticalAlignment)
+    }
+
+
+    fun withBottomPadding(bottomPadding : Double) : ElementFormat
+    {
+        val newPadding = Spacing(this.padding.top,
+                                 this.padding.right,
+                                 bottomPadding,
+                                 this.padding.left)
+
+        return ElementFormat(this.position,
+                             this.height,
+                             this.width,
+                             newPadding,
+                             this.margins,
+                             this.backgroundColorTheme,
+                             this.corners,
+                             this.border,
+                             this.alignment,
+                             this.verticalAlignment)
+    }
+
+
+    // UPDATE > Horizontal Alignment
+    // -----------------------------------------------------------------------------------------
+
+    fun withHorizontalAlignment(alignment : Alignment) : ElementFormat
+    {
+        return ElementFormat(this.position,
+                             this.height,
+                             this.width,
+                             this.padding,
+                             this.margins,
+                             this.backgroundColorTheme,
+                             this.corners,
+                             this.border,
+                             alignment,
+                             this.verticalAlignment)
+    }
 
 }

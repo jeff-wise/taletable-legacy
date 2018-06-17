@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -29,15 +28,19 @@ import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityLoader
 import com.kispoko.tome.rts.entity.EntityType
 import com.kispoko.tome.rts.official.OfficialManager
-import com.kispoko.tome.rts.session.SessionId
-import com.kispoko.tome.rts.session.SessionLoader
-import com.kispoko.tome.rts.session.officialSession
+import com.kispoko.tome.rts.session.*
 import com.kispoko.tome.util.configureToolbar
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import maybe.maybe
-
+import android.view.animation.DecelerateInterpolator
+import android.animation.ObjectAnimator
+import android.util.Log
+import com.kispoko.tome.activity.sheet.SheetActivity
+import com.kispoko.tome.rts.entity.EntitySheetId
+import com.kispoko.tome.rts.entity.sheet.MessageSheet
+import io.reactivex.disposables.CompositeDisposable
 
 
 /**
@@ -58,6 +61,8 @@ class NewSessionActivity : AppCompatActivity()
 
 
     private var newSessionUI : NewSessionUI? = null
+
+    private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
 
     // -----------------------------------------------------------------------------------------
@@ -99,6 +104,14 @@ class NewSessionActivity : AppCompatActivity()
     }
 
 
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        this.messageListenerDisposable.clear()
+    }
+
+
+
     // -----------------------------------------------------------------------------------------
     // UI
     // -----------------------------------------------------------------------------------------
@@ -107,16 +120,16 @@ class NewSessionActivity : AppCompatActivity()
     {
         this.step = step
 
-        val newSessionUI = NewSessionUI(this.step,
-                                         gameId,
-                                         maybeSessionId,
-                                         officialAppThemeLight,
-                                         this)
-        this.newSessionUI = newSessionUI
+        if (this.newSessionUI == null) {
+            this.newSessionUI = NewSessionUI(step,
+                                             gameId,
+                                             maybeSessionId,
+                                             officialAppThemeLight,
+                                             this)
+        }
 
-        newSessionUI.render()
-
-
+        newSessionUI?.setStep(step)
+        newSessionUI?.render()
     }
 
 
@@ -164,8 +177,13 @@ class NewSessionActivity : AppCompatActivity()
 
     private fun initializeListeners()
     {
-        Router.listen(NewSessionMessage::class.java)
-              .subscribe(this::onMessage)
+        val newSessionMessageDisposable = Router.listen(NewSessionMessage::class.java)
+                                                .subscribe(this::onMessage)
+        this.messageListenerDisposable.add(newSessionMessageDisposable)
+
+        val sessionMessageDisposable = Router.listen(MessageSessionLoad::class.java)
+                                             .subscribe(this::onSessionLoadMessage)
+        this.messageListenerDisposable.add(sessionMessageDisposable)
     }
 
 
@@ -177,10 +195,29 @@ class NewSessionActivity : AppCompatActivity()
             {
                 this.newSessionUI?.updateGame(message.gameId)
             }
-            is NewSessionMessageSession -> { }
+            is NewSessionMessageSession ->
+            {
+                this.newSessionUI?.updateSession(message.sessionId)
+            }
         }
     }
 
+
+    private fun onSessionLoadMessage(message : MessageSessionLoad)
+    {
+        when (message)
+        {
+            is MessageSessionEntityLoaded ->
+            {
+                this.newSessionUI?.updateLoadProgress(message.update)
+            }
+            is MessageSessionLoaded ->
+            {
+                this.newSessionUI?.startSession(message.sessionId)
+
+            }
+        }
+    }
 
 }
 
@@ -200,7 +237,7 @@ data class NewSessionMessageSession(val sessionId : SessionId) : NewSessionMessa
 // UI
 // ---------------------------------------------------------------------------------------------
 
-class NewSessionUI(private val step : Int,
+class NewSessionUI(private var step : Int,
                    private var gameId : GameId,
                    private var sessionId : Maybe<SessionId>,
                    private val theme : Theme,
@@ -211,18 +248,26 @@ class NewSessionUI(private val step : Int,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+
     val context = newSessionActivity
 
     fun gameSummary() : Maybe<GameSummary> =
         maybe(OfficialManager.gameManifest(context)?.game(this.gameId))
 
 
+
+
     private fun sessionLoader() : Maybe<SessionLoader>
     {
         val sessionId = this.sessionId
+        Log.d("***NEW SESSION ACTIVITY", "session loader: $sessionId")
         return when (sessionId) {
-            is Just    -> officialSession(this.gameId, sessionId.value, context)
-            is Nothing -> gameSummary().apply { officialSession(this.gameId, it.defaultSessionId, context) }
+            is Just    -> {
+                officialSession(this.gameId, sessionId.value, context)
+            }
+            is Nothing -> {
+                gameSummary().apply { officialSession(this.gameId, it.defaultSessionId, context) }
+            }
         }
     }
 
@@ -241,9 +286,22 @@ class NewSessionUI(private val step : Int,
     }
 
 
+    // PROPERTIES > Views
+    // -----------------------------------------------------------------------------------------
+
+    private var progressBar : ProgressBar? = null
+    private var openButtonLabelView : TextView? = null
+
+
     // -----------------------------------------------------------------------------------------
     // METHODS
     // -----------------------------------------------------------------------------------------
+
+    fun setStep(step : Int)
+    {
+        this.step = step
+    }
+
 
     fun render()
     {
@@ -270,6 +328,45 @@ class NewSessionUI(private val step : Int,
     }
 
 
+    fun updateSession(sessionId : SessionId)
+    {
+        this.sessionId = Just(sessionId)
+
+        Log.d("***NEW SESSION ACTIVITY", "update session id: ${this.sessionId}")
+
+        this.render()
+    }
+
+
+    fun updateLoadProgress(sessionLoadUpdate : SessionLoadUpdate)
+    {
+        this.progressBar?.let { bar ->
+            val updateAmount = bar.progress + (72 / sessionLoadUpdate.totalEntities)
+            bar.progress = updateAmount
+        }
+    }
+
+
+    fun startSession(sessionId : SessionId)
+    {
+        this.sessionLoader().doMaybe {
+            if (it.sessionId == sessionId)
+            {
+                val mainEntityId = it.mainEntityId
+                when (mainEntityId)
+                {
+                    is EntitySheetId -> {
+                        val activity = context as AppCompatActivity
+                        val intent = Intent(activity, SheetActivity::class.java)
+                        intent.putExtra("sheet_id", mainEntityId.sheetId)
+                        activity.startActivity(intent)
+                    }
+                }
+            }
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // VIEWS
     // -----------------------------------------------------------------------------------------
@@ -291,7 +388,7 @@ class NewSessionUI(private val step : Int,
             }
             2 ->
             {
-                layout.addView(this.titleView(2, context.getString(R.string.what_do_you_need)))
+                layout.addView(this.titleView(2, context.getString(R.string.what_are_you_playing_with)))
 
                 layout.addView(this.chooseButtonView(R.string.select_session))
                 layout.addView(this.selectionView())
@@ -333,7 +430,7 @@ class NewSessionUI(private val step : Int,
 
         val layout              = LinearLayoutBuilder()
         val stepView            = TextViewBuilder()
-        val labelView               = TextViewBuilder()
+        val labelView           = TextViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
@@ -355,8 +452,8 @@ class NewSessionUI(private val step : Int,
         layout.padding.bottomDp = 12f
 
         layout.margin.topDp     = 2f
-        layout.margin.rightDp   = 6f
-        layout.margin.leftDp    = 6f
+//        layout.margin.rightDp   = 6f
+//        layout.margin.leftDp    = 6f
 
         layout.child(stepView)
               .child(labelView)
@@ -376,7 +473,7 @@ class NewSessionUI(private val step : Int,
         stepView.color                 = Color.WHITE
 
         stepView.font                  = Font.typeface(TextFont.default(),
-                                                       TextFontStyle.Bold,
+                                                       TextFontStyle.SemiBold,
                                                        context)
 
         stepView.text                  = step.toString()
@@ -397,12 +494,12 @@ class NewSessionUI(private val step : Int,
         labelView.text              = titleString
 
         labelView.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
-                                                context)
+                                                    TextFontStyle.SemiBold,
+                                                    context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_11"))))
 
         labelView.color             = theme.colorOrBlack(labelColorTheme)
 
@@ -428,7 +525,7 @@ class NewSessionUI(private val step : Int,
                 layout.addView(this.gameDescriptionView())
             }
             2 -> {
-                layout.addView(this.entityKindView())
+//                layout.addView(this.entityKindView())
                 layout.addView(this.sessionNameView())
                 layout.addView(this.sessionDescriptionView())
             }
@@ -472,6 +569,12 @@ class NewSessionUI(private val step : Int,
                 {
                     val intent = Intent(newSessionActivity, GamesListActivity::class.java)
                     intent.putExtra("game_action", GameActionLoadSession)
+                    newSessionActivity.startActivity(intent)
+                }
+                2 ->
+                {
+                    val intent = Intent(newSessionActivity, EntityTypeListActivity::class.java)
+                    intent.putExtra("game_id", this.gameId)
                     newSessionActivity.startActivity(intent)
                 }
             }
@@ -650,7 +753,6 @@ class NewSessionUI(private val step : Int,
 
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
-        layout.padding.topDp    = 4f
 
         layout.child(name)
 
@@ -889,8 +991,8 @@ class NewSessionUI(private val step : Int,
 
         layout.padding.leftDp   = 10f
         layout.padding.rightDp  = 10f
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
+        layout.padding.topDp    = 10f
+        layout.padding.bottomDp = 10f
 
         layout.onClick          = onClick
 
@@ -1220,20 +1322,30 @@ class NewSessionUI(private val step : Int,
         layout.addView(contentLayout)
 
         val progressBar = this.openSessionProgressBar()
+        this.progressBar = progressBar
         contentLayout.addView(progressBar)
 
-        progressBar.progress = 30
+        progressBar.progress = 0
 
         val labelView = this.openSessionButtonLabelView()
-
-//        val labelLayoutParams = labelView.layoutParams as RelativeLayout.LayoutParams
-//        labelLayoutParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.progress_bar)
-//        labelLayoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.progress_bar)
-//        labelLayoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.progress_bar)
-//        labelLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.progress_bar)
-//        labelView.layoutParams = labelLayoutParams
+        this.openButtonLabelView = labelView
 
         contentLayout.addView(labelView)
+
+        layout.setOnClickListener {
+            this.sessionLoader().doMaybe {
+
+                val animation = ObjectAnimator.ofInt(progressBar, "progress", 30)
+                animation.duration = 1000
+                animation.interpolator = DecelerateInterpolator()
+                animation.start()
+
+                labelView.text = "Loading\u2026"
+
+                newSession(it, context)
+            }
+        }
+
 
         return layout
     }
@@ -1320,6 +1432,7 @@ class NewSessionUI(private val step : Int,
     {
         val layout = this.entityLoadersViewLayout()
 
+        Log.d("***NEW SESSION ACTVITY", "entity loaders session is: ${this.sessionId}")
         this.sessionLoader().doMaybe {
             it.entityLoadersByType().entries.forEach { (entityType, loaders) ->
                 layout.addView(this.entityLoaderCategoryView(entityType, loaders))
@@ -1342,6 +1455,7 @@ class NewSessionUI(private val step : Int,
         layout.margin.leftDp    = 6f
         layout.margin.rightDp   = 6f
 
+        layout.margin.topDp     = 20f
 
         return layout.linearLayout(context)
     }

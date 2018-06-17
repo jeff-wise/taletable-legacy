@@ -46,6 +46,14 @@ data class WidgetFormat(override val id : UUID,
                column,
                elmentFormat)
 
+
+    constructor(elementFormat : ElementFormat)
+        : this(UUID.randomUUID(),
+               WidgetWidth.default(),
+               RowColumn.default(),
+               elementFormat)
+
+
     companion object : Factory<WidgetFormat>
     {
 

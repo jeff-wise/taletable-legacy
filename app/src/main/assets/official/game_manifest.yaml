@@ -9,20 +9,35 @@ summaries:
   entity_kinds:
   - id: player_character
     name: "Player Character"
+    name_plural: 'Player Characters'
+    short_name: 'PC'
+    short_name_plural: 'PCs'
     description: "Ready-to-play character sheets for all classes and levels, ranging from simple, concise
                   templates for new players to complex designs for player verterans. "
   - id: campaign
     name: "Campaign"
+    name_plural: 'Campaigns'
+    short_name: 'Campaign'
+    short_name_plural: 'Campaigns'
     description: "A series of adventures and/or a world, possibly with a set of setting specific rules and data."
   - id: book
     name: "Book"
+    name_plural: 'Books'
+    short_name: 'Book'
+    short_name_plural: 'Books'
     description: "Rulebooks, campaign setting guides, creature compendiums, short stories, etc\u2026"
   - id: generic_npc
     name: "Generic Non-player Character"
+    name_plural: "Generic Non-player Characters"
+    short_name: 'Generic NPC'
+    short_name_plural: 'Generic NPCs'
     description: "Character templates controlled by the GM that can be reused for random
                    encounters or large groups of enemies."
   - id: named_npc
     name: "Named Non-player Character"
+    name_plural: "Named Non-player Characters"
+    short_name: 'Named NPC'
+    short_name_plural: 'Named NPCs'
     description: "Named or famous non-player characters with distinctive personalities, roles, and abilities."
 - game_id: 5e_srd
   name: '5e SRD'

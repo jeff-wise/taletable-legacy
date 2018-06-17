@@ -73,6 +73,12 @@ types:
         prim_type: boolean
       presence: optional
       description: True if the card is pinned.
+    - name: action_label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The name of the card action.
     - name: app_action
       type:
         type: custom_type

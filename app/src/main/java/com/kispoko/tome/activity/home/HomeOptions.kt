@@ -38,7 +38,15 @@ class HomeOptionsUI(val theme : Theme,
 
         // News / Updates
         val newsOnClick = View.OnClickListener {  }
-        layout.addView(this.buttonView(R.drawable.icon_announcement, R.string.news_slash_updates, newsOnClick))
+        layout.addView(this.buttonView(R.drawable.icon_rss_feed, R.string.news_slash_updates, newsOnClick))
+
+        // Feedback
+        val feedbackOnClick = View.OnClickListener {  }
+        layout.addView(this.buttonView(R.drawable.icon_announcement, R.string.feedback, feedbackOnClick))
+
+        // Upgrades
+        val upgradesOnClick = View.OnClickListener {  }
+        layout.addView(this.buttonView(R.drawable.icon_monetization, R.string.upgrades, upgradesOnClick))
 
         return layout
     }
@@ -52,6 +60,8 @@ class HomeOptionsUI(val theme : Theme,
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.VERTICAL
+
+        layout.padding.topDp    = 40f
 
         return layout.linearLayout(context)
     }
@@ -92,17 +102,18 @@ class HomeOptionsUI(val theme : Theme,
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp        = 19
-        icon.heightDp       = 19
+        icon.widthDp            = 21
+        icon.heightDp           = 21
 
-        icon.image          = iconId
+        icon.image              = iconId
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
-        icon.color          = theme.colorOrBlack(iconColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
 
-        icon.margin.rightDp = 16f
+        icon.margin.rightDp     = 18f
+        icon.margin.topDp       = 1f
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
@@ -114,7 +125,7 @@ class HomeOptionsUI(val theme : Theme,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         label.color             = theme.colorOrBlack(colorTheme)
 
         label.font              = Font.typeface(TextFont.default(),

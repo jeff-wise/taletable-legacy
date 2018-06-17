@@ -98,8 +98,8 @@
                     android:id="@+id/fab_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    rfal:rfal_frame_color="#ffffff"
-                    rfal:rfal_frame_alpha="0.7">
+                    rfal:rfal_frame_color="#F3F3F3"
+                    rfal:rfal_frame_alpha="0.8">
 
                     <com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton
                         xmlns:rfab="http://schemas.android.com/apk/res-auto"
@@ -129,5 +129,13 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/left_nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white" />
+
 
 </android.support.v4.widget.DrawerLayout>

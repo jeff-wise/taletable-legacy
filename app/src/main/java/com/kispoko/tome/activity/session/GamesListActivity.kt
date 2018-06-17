@@ -89,34 +89,6 @@ class GamesListActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeToolbarView(theme : Theme)
-    {
-        // Back label text
-        val backLabelView = this.findViewById<TextView>(R.id.toolbar_back_label)
-        backLabelView.typeface = Font.typeface(TextFont.default(), TextFontStyle.default(), this)
-        backLabelView.text     = getString(R.string.back_to_home)
-
-        val backLabelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_15"))))
-        backLabelView.setTextColor(theme.colorOrBlack(backLabelColorTheme))
-
-        // Back button
-        val backButton = this.findViewById<LinearLayout>(R.id.toolbar_back_button)
-        backButton?.setOnClickListener {
-            this.finish()
-        }
-
-        // Breadcrumbs
-        val breadcrumbsLayout = this.findViewById<LinearLayout>(R.id.breadcrumbs)
-        val breadcrumbsUI = SessionBreadcrumbsUI(listOf(getString(R.string.which_game_do_you_play)),
-                                                 true,
-                                                 officialThemeLight,
-                                                 this)
-        breadcrumbsLayout?.addView(breadcrumbsUI.view())
-    }
-
-
     private fun applyTheme(theme : Theme)
     {
         val uiColors = theme.uiColors()
@@ -176,55 +148,6 @@ class GamesListUI(val gameManifest: GameManifest,
 
 
     // -----------------------------------------------------------------------------------------
-    // METHODS
-    // -----------------------------------------------------------------------------------------
-
-    private fun openNewSessionActivity(gameSummary : GameSummary)
-    {
-        val intent = Intent(activity, EntityTypeListActivity::class.java)
-        intent.putExtra("game_summary", gameSummary)
-        activity.startActivity(intent)
-    }
-//        when (gameSummary.gameId.value)
-//        {
-//            "magic_of_heroes" -> {
-//                val intent = Intent(activity, OpenHeroesSessionActivity::class.java)
-//                intent.putExtra("game_id", gameSummary.gameId)
-//                activity.startActivity(intent)
-//            }
-//            "5e_srd" -> {
-//                val intent = Intent(activity, OpenFifthEdSRDSessionActivity::class.java)
-//                intent.putExtra("game_id", gameSummary.gameId)
-//                activity.startActivity(intent)
-//            }
-//            "pathfinder_srd" -> {
-//                val intent = Intent(activity, OpenPathfinderOneSRDSessionActivity::class.java)
-//                intent.putExtra("game_id", gameSummary.gameId)
-//                activity.startActivity(intent)
-//            }
-//            "starfinder_srd" -> {
-//                val intent = Intent(activity, OpenStarfinderSRDSessionActivity::class.java)
-//                intent.putExtra("game_id", gameSummary.gameId)
-//                activity.startActivity(intent)
-//            }
-//            "magic_carnival" -> {
-//                val intent = Intent(activity, OpenMagicCarnivalSessionActivity::class.java)
-//                intent.putExtra("game_id", gameSummary.gameId)
-//                activity.startActivity(intent)
-//            }
-//            else -> { }
-//        }
-
-
-    private fun openLoadSessionActivity(gameSummary : GameSummary)
-    {
-        val intent = Intent(activity, EntityTypeListActivity::class.java)
-        intent.putExtra("game_summary", gameSummary)
-        activity.startActivity(intent)
-    }
-
-
-    // -----------------------------------------------------------------------------------------
     // VIEWS
     // -----------------------------------------------------------------------------------------
 
@@ -276,8 +199,8 @@ class GamesListUI(val gameManifest: GameManifest,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.leftDp   = 4f
-        layout.padding.rightDp  = 4f
+        layout.padding.leftDp   = 6f
+        layout.padding.rightDp  = 6f
 
         return layout.linearLayout(context)
     }
@@ -324,12 +247,6 @@ class GamesListUI(val gameManifest: GameManifest,
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.onClick          = View.OnClickListener {
-//            when (this.gameAction)
-//            {
-//                is GameActionNewSession -> this.openNewSessionActivity(gameSummary)
-//                is GameActionLoadSession -> this.openLoadSessionActivity(gameSummary)
-//            }
-
             Router.send(NewSessionMessageGame(gameSummary.gameId))
             activity.finish()
         }

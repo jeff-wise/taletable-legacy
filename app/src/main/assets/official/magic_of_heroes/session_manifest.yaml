@@ -73,7 +73,7 @@ summaries:
       type: sheet
       sheet:
         name: Sanson Alavidril
-        sheet_id: character_casmey_level_1
+        sheet_id: character_sanson_level_1
         game_id: magic_of_heroes
   - type: official
     official:

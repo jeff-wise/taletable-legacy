@@ -960,6 +960,9 @@ object EntityTypeBook : EntityType()
 
 data class EntityKind(val id : EntityKindId,
                       val name : String,
+                      val namePlural : String,
+                      val shortName : String,
+                      val shortNamePlural : String,
                       val description : String) : Serializable
 {
 
@@ -974,6 +977,12 @@ data class EntityKind(val id : EntityKindId,
                       yamlValue.at("id") ap { EntityKindId.fromYaml(it) },
                       // Name
                       yamlValue.text("name"),
+                      // Name Plural
+                      yamlValue.text("name_plural"),
+                      // Short Name
+                      yamlValue.text("short_name"),
+                      // Short Name Plural
+                      yamlValue.text("short_name_plural"),
                       // Description
                       yamlValue.text("description")
                       )

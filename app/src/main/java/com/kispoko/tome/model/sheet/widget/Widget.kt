@@ -3988,19 +3988,14 @@ data class TextWidget(val widgetId : WidgetId,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-//    constructor(widgetId: WidgetId,
-//                format : TextWidgetFormat,
-//                valueVariableId : VariableId,
-//                bookReference : Maybe<BookReference>,
-//                primaryActionWidgetId : Maybe<WidgetId>,
-//                secondaryActionWigdetId : Maybe<WidgetId>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               valueVariableId,
-//               bookReference,
-//               primaryActionWidgetId,
-//               secondaryActionWigdetId)
+    constructor(format : TextWidgetFormat,
+                valueVariableId : VariableId)
+        : this(WidgetId(UUID.randomUUID()),
+               format,
+               valueVariableId,
+               Nothing(),
+               Nothing(),
+               Nothing())
 
 
     companion object : Factory<TextWidget>

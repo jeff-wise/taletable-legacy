@@ -98,6 +98,7 @@ cards:
     type: app_action_open_news_article
     app_action_open_news_article:
       news_article_id: '046c24b3-e490-474b-8185-61e26c13be85'
+  action_label: 'Read More'
   group_references:
   - type: group_id
     group_id: '4075d450-9693-4fab-ad1a-7f788cc5616a'

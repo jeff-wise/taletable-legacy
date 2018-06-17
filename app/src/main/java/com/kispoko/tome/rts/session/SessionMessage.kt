@@ -19,5 +19,9 @@ import java.io.Serializable
 //data class SessionMessageOfficialGameLoaded(val gameId : GameId) : Serializable
 
 
+sealed class MessageSessionLoad : Serializable
 
-data class MessageSessionLoaded(val sessionId : SessionId) : Serializable
+
+data class MessageSessionLoaded(val sessionId : SessionId) : MessageSessionLoad()
+
+data class MessageSessionEntityLoaded(val update : SessionLoadUpdate) : MessageSessionLoad()

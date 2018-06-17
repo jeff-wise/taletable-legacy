@@ -1189,6 +1189,17 @@ data class TextVariable(override val id : UUID,
                variableValue)
 
 
+    constructor(variableId : VariableId,
+                variableValue : TextVariableValue)
+        : this(UUID.randomUUID(),
+               variableId,
+               VariableLabel(""),
+               VariableDescription(""),
+               mutableListOf(),
+               Nothing(),
+               variableValue)
+
+
     companion object : Factory<TextVariable>
     {
         override fun fromDocument(doc : SchemaDoc) : ValueParser<TextVariable> = when (doc)

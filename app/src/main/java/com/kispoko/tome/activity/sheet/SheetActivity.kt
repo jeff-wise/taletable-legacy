@@ -207,7 +207,7 @@ class SheetActivity : AppCompatActivity()
     private fun initializeListeners()
     {
         val disposable = Router.listen(MessageSheet::class.java)
-                                .subscribe(this::onMessage)
+                               .subscribe(this::onMessage)
         this.messageListenerDisposable.add(disposable)
     }
 

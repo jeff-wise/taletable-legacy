@@ -25,6 +25,7 @@ import com.kispoko.tome.model.theme.*
 import maybe.Just
 
 
+
 class FeedUI(val feed : Feed,
              val theme : Theme,
              val activity : AppCompatActivity)
@@ -66,6 +67,9 @@ class FeedUI(val feed : Feed,
 
         recyclerView.adapter            = FeedRecyclerViewAdapater(feed, this, theme, context)
 
+        recyclerView.padding.bottomDp   = 80f
+        recyclerView.clipToPadding      = false
+
         return recyclerView.recyclerView(context)
     }
 
@@ -103,8 +107,8 @@ class FeedUI(val feed : Feed,
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
-        layout.margin.leftDp    = 4f
-        layout.margin.rightDp   = 4f
+        layout.margin.leftDp    = 6f
+        layout.margin.rightDp   = 6f
         layout.margin.topDp     = 4f
 
         layout.padding.topDp    = 6f
@@ -270,7 +274,7 @@ class FeedUI(val feed : Feed,
         view.margin.bottomDp    = 4f
         view.margin.rightDp     = 8f
 
-        view.text               = context.getString(R.string.read_more).toUpperCase()
+//        view.text               = context.getString(R.string.read_more).toUpperCase()
 
         view.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.SemiBold,
@@ -330,7 +334,13 @@ class FeedRecyclerViewAdapater(private val feed : Feed,
         viewHolder.addGroupViews(groupViews)
 
         when (card.appAction()) {
-            is Just -> viewHolder.showReadMoreButton()
+            is Just -> {
+                val actionLabel = card.actionLabel()
+                when (actionLabel) {
+                    is Just    -> viewHolder.showReadMoreButton(actionLabel.value.value.toUpperCase())
+                    is Nothing -> viewHolder.showReadMoreButton("READ MORE")
+                }
+            }
         }
     }
 
@@ -418,9 +428,10 @@ class CardViewHolder(itemView : View,
     }
 
 
-    fun showReadMoreButton()
+    fun showReadMoreButton(label : String)
     {
         this.readMoreButtonView?.visibility = View.VISIBLE
+        this.readMoreButtonView?.text = label
     }
 
 }

@@ -28,8 +28,8 @@ import java.util.*
  */
 data class Feed(override val id : UUID,
                 private val settings : FeedSettings,
-                private val cards : List<Card>,
-                private val variables : List<Variable>,
+                private val cards : MutableList<Card>,
+                private val variables : MutableList<Variable>,
                 private val groups : List<Group>)
                  : Entity, ToDocument, Serializable
 {
@@ -62,12 +62,12 @@ data class Feed(override val id : UUID,
                             { FeedSettings.fromDocument(it) }),
                       // Cards
                       doc.list("cards") ap { docList ->
-                          docList.map { Card.fromDocument(it) }
+                          docList.mapMut { Card.fromDocument(it) }
                       },
                       // Variables
                       split(doc.maybeList("variables"),
-                            effValue(listOf()),
-                            { it.map { Variable.fromDocument(it) } }),
+                            effValue(mutableListOf()),
+                            { it.mapMut { Variable.fromDocument(it) } }),
                       // Groups
                       split(doc.maybeList("groups"),
                             effValue(mutableListOf()),
@@ -80,8 +80,8 @@ data class Feed(override val id : UUID,
 
         fun empty() : Feed = Feed(UUID.randomUUID(),
                                   FeedSettings(ThemeId.Light),
-                                  listOf(),
-                                  listOf(),
+                                  mutableListOf(),
+                                  mutableListOf(),
                                   listOf())
 
     }
@@ -141,7 +141,36 @@ data class Feed(override val id : UUID,
             Nothing()
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // VARIABLES
+    // -----------------------------------------------------------------------------------------
+
+    fun addVariable(variable : Variable)
+    {
+        this.variables.add(variable)
+        addVariable(variable, this.entityId())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CARDS
+    // -----------------------------------------------------------------------------------------
+
+    fun appendCard(cardItem : CardItem)
+    {
+        cardItem.variables.forEach {
+            this.addVariable(it)
+        }
+
+        this.cards.add(cardItem.card)
+    }
+
 }
+
+
+
+data class CardItem(val card : Card, val variables : List<Variable>)
 
 
 /**

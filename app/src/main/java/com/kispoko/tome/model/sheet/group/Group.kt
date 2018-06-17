@@ -67,6 +67,18 @@ data class Group(val id : GroupId,
                tags)
 
 
+    constructor(format : GroupFormat,
+                rows : List<GroupRow>)
+        : this(GroupId(UUID.randomUUID()),
+               GroupName(""),
+               GroupSummary(""),
+               format,
+               0,
+               rows.toMutableList(),
+               listOf())
+
+
+
     companion object
     {
         fun fromDocument(doc : SchemaDoc, index : Int) : ValueParser<Group> = when (doc)

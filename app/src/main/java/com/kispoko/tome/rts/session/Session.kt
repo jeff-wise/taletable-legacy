@@ -105,10 +105,15 @@ data class Session(val sessionId : SessionId,
         {
             val entityLoadResults : MutableSet<EntityLoadResult> = mutableSetOf()
 
-            loader.entityLoaders.forEach {
-                val entityLoadResult = async(CommonPool) { loadEntity(it, context) }.await()
+            val numberOfLoaders = loader.entityLoaders.size
+            loader.entityLoaders.forEachIndexed { index, entityLoader ->
+                val entityLoadResult = async(CommonPool) { loadEntity(entityLoader, context) }.await()
                 when (entityLoadResult) {
-                    is Just -> entityLoadResults.add(entityLoadResult.value)
+                    is Just -> {
+                        Log.d("***SESSION", "loaded: $entityLoadResult")
+                        Router.send(MessageSessionEntityLoaded(SessionLoadUpdate(index + 1, numberOfLoaders)))
+                        entityLoadResults.add(entityLoadResult.value)
+                    }
                 }
             }
 
@@ -187,6 +192,10 @@ data class Session(val sessionId : SessionId,
                       this.mainEntityId)
 
 }
+
+
+data class SessionLoadUpdate(val entityLoadNumber : Int,
+                             val totalEntities : Int) : Serializable
 
 
 /**
@@ -617,7 +626,6 @@ val sessionManifestCache : MutableMap<GameId,SessionManifest> = mutableMapOf()
  */
 fun officialSession(gameId : GameId, sessionId : SessionId, context : Context) : Maybe<SessionLoader> =
     sessionManifest(gameId, context).apply { manifest ->
-        Log.d("***SESSION", "found session manifest")
         manifest.sessionLoader(sessionId)
     }
 

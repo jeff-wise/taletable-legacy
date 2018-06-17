@@ -55,6 +55,23 @@ data class TextWidgetFormat(override val id : UUID,
                valueFormat)
 
 
+    constructor(widgetFormat : WidgetFormat,
+                valueFormat : TextFormat)
+        : this(UUID.randomUUID(),
+               widgetFormat,
+               TextFormat.default(),
+               TextFormat.default(),
+               valueFormat)
+
+
+    constructor(valueFormat : TextFormat)
+        : this(UUID.randomUUID(),
+               WidgetFormat.default(),
+               TextFormat.default(),
+               TextFormat.default(),
+               valueFormat)
+
+
     companion object : Factory<TextWidgetFormat>
     {
 

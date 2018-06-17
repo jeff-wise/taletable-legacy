@@ -28,6 +28,7 @@ import java.io.Serializable
 data class Card(private val title : CardTitle,
                 private val isPinned : CardIsPinned,
                 private val appAction : Maybe<AppAction>,
+                private val actionLabel : Maybe<CardActionLabel>,
                 private val groupReferences : List<GroupReference>)
                  : ToDocument, Serializable
 {
@@ -51,6 +52,10 @@ data class Card(private val title : CardTitle,
                       split(doc.maybeAt("app_action"),
                             effValue<ValueError,Maybe<AppAction>>(Nothing()),
                             { effect.apply(::Just, AppAction.fromDocument(it)) }  ),
+                      // Action Label
+                      split(doc.maybeAt("action_label"),
+                            effValue<ValueError,Maybe<CardActionLabel>>(Nothing()),
+                            { effect.apply(::Just, CardActionLabel.fromDocument(it)) }  ),
                       // Group References
                       doc.list("group_references") ap { docList ->
                           docList.map { GroupReference.fromDocument(it) }
@@ -85,6 +90,9 @@ data class Card(private val title : CardTitle,
 
 
     fun appAction() : Maybe<AppAction> = this.appAction
+
+
+    fun actionLabel() : Maybe<CardActionLabel> = this.actionLabel
 
 
     // -----------------------------------------------------------------------------------------
@@ -156,3 +164,30 @@ data class CardIsPinned(val value : Boolean) : ToDocument, java.io.Serializable
 }
 
 
+/**
+ * Card Button Label
+ */
+data class CardActionLabel(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<CardActionLabel>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<CardActionLabel> = when (doc)
+        {
+            is DocText -> effValue(CardActionLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}

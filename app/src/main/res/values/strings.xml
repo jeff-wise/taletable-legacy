@@ -61,6 +61,7 @@
 
     <string name="what_game_do_you_play">What game do you play?</string>
     <string name="what_do_you_need">What do you need?</string>
+    <string name="what_are_you_playing_with">What are you playing with?</string>
     <string name="review_new_session">Review New Session</string>
     <string name="create_session">Create Session</string>
     <string name="choose_game">Choose a Game</string>
@@ -79,6 +80,11 @@
     <string name="save_sheet">Save Sheet</string>
     <string name="edit_state">Edit State</string>
     <string name="view_only">View Only</string>
+
+    <string name="feedback">Feedback</string>
+    <string name="session_type">Session Type</string>
+    <string name="choose_a_session">Choose a Session</string>
+    <string name="select">Select</string>
 
     <string name="save_a_copy_of_sheet">Save a Copy of This Sheet</string>
     <string name="save_sheet_copy">Save Copy of Sheet</string>

@@ -23,7 +23,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/dark_theme_primary_88"
                 app:contentInsetStart="0dp"
-                android:elevation="1dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <LinearLayout

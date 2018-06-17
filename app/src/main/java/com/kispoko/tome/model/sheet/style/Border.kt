@@ -18,6 +18,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Nothing
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
@@ -81,6 +82,10 @@ data class Border(override val id : UUID,
 
 
         fun default() = Border(Nothing(), Nothing(), Nothing(), Nothing())
+
+
+        fun top(topEdge : BorderEdge) : Border =
+                Border(Just(topEdge), Nothing(), Nothing(), Nothing())
 
     }
 

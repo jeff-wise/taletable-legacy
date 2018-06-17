@@ -249,6 +249,22 @@ data class TextFormat(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // MODIFY
+    // -----------------------------------------------------------------------------------------
+
+    fun withColorTheme(newColorTheme : ColorTheme) : TextFormat =
+        this.copy(colorTheme = newColorTheme)
+
+    fun withFontStyle(newFontStyle : TextFontStyle) : TextFormat =
+            this.copy(fontStyle = newFontStyle)
+
+    fun withSize(newSize : TextSize) : TextFormat =
+            this.copy(size = newSize)
+
+    fun withElementFormat(newElementFormat : ElementFormat) : TextFormat =
+            this.copy(elementFormat = newElementFormat)
+
 }
 
 
