@@ -464,6 +464,21 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object Kaushan : TextFont()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "kaushan "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("kaushan")
+
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -477,6 +492,7 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
                 "cabin"        -> effValue<ValueError,TextFont>(TextFont.Cabin)
                 "fira_sans"    -> effValue<ValueError,TextFont>(TextFont.FiraSans)
                 "merriweather" -> effValue<ValueError,TextFont>(TextFont.Merriweather)
+                "kaushan"      -> effValue<ValueError,TextFont>(TextFont.Kaushan)
                 else           -> effError<ValueError,TextFont>(
                                       UnexpectedValue("TextFont", doc.text, doc.path))
             }

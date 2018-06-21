@@ -37,6 +37,8 @@ object Font
     private val merriweatherBoldItalicFilePath  = "fonts/Merriweather-BoldItalic.ttf"
     private val merriweatherLightFilePath       = "fonts/Merriweather-Light.ttf"
 
+    private val kaushanRegularFilePath          = "fonts/KaushanScript-Regular.ttf"
+
 
     // -----------------------------------------------------------------------------------------
     // CACHED FONTS
@@ -82,6 +84,8 @@ object Font
                 is TextFontStyle.Italic     -> getTypeface(merriweatherItalicFilePath, context)
                 is TextFontStyle.BoldItalic -> getTypeface(merriweatherBoldItalicFilePath, context)
             }
+            is TextFont.Kaushan             -> getTypeface(kaushanRegularFilePath, context)
+
         }
 
 

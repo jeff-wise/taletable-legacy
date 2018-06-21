@@ -61,7 +61,7 @@ groups:
               - theme_id: light
                 color_id: dark_grey_8
             font_style: regular
-            size: 22
+            size: 20
             element_format:
               horizontal_alignment: left
           widget_format:

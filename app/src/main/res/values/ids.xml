@@ -326,6 +326,8 @@
     <item name="card_groups_layout" type="id"/>
     <item name="card_read_more_button" type="id"/>
 
+    <item name="session_record_last_used" type="id"/>
+    <item name="session_record_name" type="id"/>
 
     <item name="top_element" type="id"/>
 

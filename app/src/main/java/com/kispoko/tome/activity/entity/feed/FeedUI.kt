@@ -4,6 +4,7 @@ package com.kispoko.tome.activity.entity.feed
 
 import android.content.Context
 import android.graphics.Color
+import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -28,7 +29,7 @@ import maybe.Just
 
 class FeedUI(val feed : Feed,
              val theme : Theme,
-             val activity : AppCompatActivity)
+             val activity : FragmentActivity)
 {
 
 
@@ -105,7 +106,7 @@ class FeedUI(val feed : Feed,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
         layout.margin.leftDp    = 6f
         layout.margin.rightDp   = 6f
@@ -256,38 +257,75 @@ class FeedUI(val feed : Feed,
     }
 
 
-    private fun cardReadMoreButtonView() : TextView
+    private fun cardReadMoreButtonView() : LinearLayout
     {
-        val view                = TextViewBuilder()
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
 
-        view.id                 = R.id.card_read_more_button
+        val layout                  = LinearLayoutBuilder()
+        val labelView               = TextViewBuilder()
+        val iconView                = ImageViewBuilder()
 
-        view.layoutType         = LayoutType.RELATIVE
-        view.width              = RelativeLayout.LayoutParams.WRAP_CONTENT
-        view.height             = RelativeLayout.LayoutParams.WRAP_CONTENT
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
 
-        view.addRule(RelativeLayout.ALIGN_PARENT_END)
 
-        view.visibility         = View.GONE
+        layout.layoutType           = LayoutType.RELATIVE
+        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-        view.margin.topDp       = 10f
-        view.margin.bottomDp    = 4f
-        view.margin.rightDp     = 8f
+        layout.gravity              = Gravity.CENTER_VERTICAL
 
-//        view.text               = context.getString(R.string.read_more).toUpperCase()
+        layout.margin.topDp         = 10f
+        layout.margin.bottomDp      = 4f
+        layout.margin.rightDp       = 2f
 
-        view.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.SemiBold,
-                                                context)
+        layout.padding.topDp        = 4f
+        layout.padding.bottomDp     = 4f
+        layout.padding.leftDp       = 8f
+        layout.padding.rightDp      = 8f
 
-        val nameColorTheme = ColorTheme(setOf(
+        layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
+
+        val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        view.color              = theme.colorOrBlack(nameColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_85"))))
+        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
 
-        view.sizeSp             = 15f
+        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
 
-        return view.textView(context)
+        layout.child(labelView)
+                .child(iconView)
+
+        // (3 A) Label
+        // -------------------------------------------------------------------------------------
+
+        labelView.id                = R.id.card_read_more_button
+
+        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        labelView.font              = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.SemiBold,
+                                                    context)
+
+        labelView.color             = Color.WHITE
+
+        labelView.sizeSp            = 14f
+
+        labelView.margin.rightDp    = 3f
+
+        // (3 B) Icon
+        // -------------------------------------------------------------------------------------
+
+        iconView.widthDp            = 16
+        iconView.heightDp           = 16
+
+        iconView.image              = R.drawable.icon_arrow_right
+
+        iconView.color              = Color.WHITE
+
+        return layout.linearLayout(context)
     }
 
 

@@ -39,8 +39,8 @@ import android.animation.ObjectAnimator
 import android.util.Log
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.rts.entity.EntitySheetId
-import com.kispoko.tome.rts.entity.sheet.MessageSheet
 import io.reactivex.disposables.CompositeDisposable
+
 
 
 /**
@@ -159,7 +159,8 @@ class NewSessionActivity : AppCompatActivity()
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
 
         // Toolbar > Background
-        toolbar.setBackgroundColor(theme.colorOrBlack(toolbarBgColorTheme))
+//        toolbar.setBackgroundColor(theme.colorOrBlack(toolbarBgColorTheme))
+        toolbar.setBackgroundColor(Color.WHITE)
 
         // Toolbar > Icons
         val toolbarIconColorTheme = ColorTheme(setOf(
@@ -451,7 +452,7 @@ class NewSessionUI(private var step : Int,
         layout.padding.topDp    = 12f
         layout.padding.bottomDp = 12f
 
-        layout.margin.topDp     = 2f
+        layout.margin.topDp     = 1f
 //        layout.margin.rightDp   = 6f
 //        layout.margin.leftDp    = 6f
 
@@ -890,7 +891,7 @@ class NewSessionUI(private var step : Int,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         iconView.color              = theme.colorOrBlack(iconColorTheme)
 
         iconView.margin.leftDp      = 4f
@@ -910,7 +911,7 @@ class NewSessionUI(private var step : Int,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         labelView.color                 = theme.colorOrBlack(labelColorTheme)
 
         labelView.sizeSp                = 16.5f

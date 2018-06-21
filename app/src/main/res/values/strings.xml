@@ -85,11 +85,17 @@
     <string name="session_type">Session Type</string>
     <string name="choose_a_session">Choose a Session</string>
     <string name="select">Select</string>
+    <string name="my_feed">My Feed</string>
 
     <string name="save_a_copy_of_sheet">Save a Copy of This Sheet</string>
     <string name="save_sheet_copy">Save Copy of Sheet</string>
 
     <string name="share">Share</string>
+
+    <string name="no_sessions_message">
+        No previous sessions found.
+    </string>
+    <string name="featured_sessions_header">Featured Sessions</string>
 
     <string name="export_to_file">Export to File</string>
 

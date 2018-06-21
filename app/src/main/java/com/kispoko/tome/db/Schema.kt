@@ -306,15 +306,15 @@ typealias DB_ChapterButtonFormatValue =
 // DICE ROLL
 // ---------------------------------------------------------------------------------------------
 
-val diceRollTable = Table3("dice_roll",
-                           "quantities",
-                           "modifiers",
-                           "roll_name")
-
-typealias DB_DiceRollValue =
-    RowValue3<PrimValue<DiceQuantitySet>,
-              CollValue<RollModifier>,
-              MaybePrimValue<DiceRollName>>
+//val diceRollTable = Table3("dice_roll",
+//                           "quantities",
+//                           "modifiers",
+//                           "roll_name")
+//
+//typealias DB_DiceRollValue =
+//    RowValue3<PrimValue<DiceQuantitySet>,
+//              CollValue<RollModifier>,
+//              MaybePrimValue<DiceRollName>>
 
 
 // DICE ROLL GROUP
@@ -446,23 +446,23 @@ typealias DB_InvocationValue =
 
 // GAME
 // ---------------------------------------------------------------------------------------------
-
-val gameTable =
-    Table6("game",
-           "game_id",
-           "name",
-           "summary",
-           "authors",
-           "engine",
-           "book_ids")
-
-typealias DB_GameValue =
-    RowValue6<PrimValue<GameId>,
-              PrimValue<GameName>,
-              PrimValue<GameSummary>,
-              CollValue<Author>,
-              ProdValue<Engine>,
-              PrimValue<GameBookIds>>
+//
+//val gameTable =
+//    Table6("game",
+//           "game_id",
+//           "name",
+//           "summary",
+//           "authors",
+//           "engine",
+//           "book_ids")
+//
+//typealias DB_GameValue =
+//    RowValue6<PrimValue<GameId>,
+//              PrimValue<GameName>,
+//              PrimValue<GameSummary>,
+//              CollValue<Author>,
+//              ProdValue<Engine>,
+//              PrimValue<GameBookIds>>
 
 
 // GROUP
@@ -833,16 +833,16 @@ typealias DB_SheetValue =
 
 // STATEMENT
 // ---------------------------------------------------------------------------------------------
-
-val statementTable =
-    Table7("statement",
-           "binding_name",
-           "function_id",
-           "parameter_1",
-           "parameter_2",
-           "parameter_3",
-           "parameter_4",
-           "parameter_5")
+//
+//val statementTable =
+//    Table7("statement",
+//           "binding_name",
+//           "function_id",
+//           "parameter_1",
+//           "parameter_2",
+//           "parameter_3",
+//           "parameter_4",
+//           "parameter_5")
 
 //typealias DB_StatementValue =
 //    RowValue7<PrimValue<StatementBindingName>,
@@ -870,41 +870,41 @@ typealias DB_SummationValue =
 // TERM: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-val summationTermNumberTable =
-    Table2("summation_term_number",
-           "term_name",
-           "value_reference")
-
-typealias DB_SummationTermNumberValue =
-    RowValue2<MaybePrimValue<TermName>,
-             SumValue<NumberReference>>
+//val summationTermNumberTable =
+//    Table2("summation_term_number",
+//           "term_name",
+//           "value_reference")
+//
+//typealias DB_SummationTermNumberValue =
+//    RowValue2<MaybePrimValue<TermName>,
+//             SumValue<NumberReference>>
 
 // TERM: LINEAR COMBINATION
 // ---------------------------------------------------------------------------------------------
 
-val summationTermLinearCombinationTable =
-    Table5("summation_term_linear_combination",
-           "term_name",
-           "variable_tag",
-           "value_relation",
-           "weight_relation",
-           "filter_relation")
-
-typealias DB_SummationTermLinearCombinationValue =
-    RowValue5<MaybePrimValue<TermName>,
-              PrimValue<VariableTag>,
-              MaybePrimValue<VariableRelation>,
-              MaybePrimValue<VariableRelation>,
-              MaybePrimValue<VariableRelation>>
+//val summationTermLinearCombinationTable =
+//    Table5("summation_term_linear_combination",
+//           "term_name",
+//           "variable_tag",
+//           "value_relation",
+//           "weight_relation",
+//           "filter_relation")
+//
+//typealias DB_SummationTermLinearCombinationValue =
+//    RowValue5<MaybePrimValue<TermName>,
+//              PrimValue<VariableTag>,
+//              MaybePrimValue<VariableRelation>,
+//              MaybePrimValue<VariableRelation>,
+//              MaybePrimValue<VariableRelation>>
 
 
 // TERM: DICE ROLL
 // ---------------------------------------------------------------------------------------------
 
-val summationTermDiceRollTable =
-    Table2("summation_term_dice_roll",
-            "term_name",
-            "value_reference")
+//val summationTermDiceRollTable =
+//    Table2("summation_term_dice_roll",
+//            "term_name",
+//            "value_reference")
 
 //typealias DB_SummationTermDiceRollValue =
 //    RowValue2<MaybePrimValue<TermName>>
@@ -914,18 +914,18 @@ val summationTermDiceRollTable =
 // TERM: CONDITIONAL
 // ---------------------------------------------------------------------------------------------
 
-val summationTermConditionalTable =
-    Table4("summation_term_conditional",
-           "term_name",
-           "conditional_reference",
-           "true_reference",
-           "false_reference")
-
-typealias DB_SummationTermConditionalValue =
-    RowValue4<MaybePrimValue<TermName>,
-              SumValue<BooleanReference>,
-              SumValue<NumberReference>,
-              SumValue<NumberReference>>
+//val summationTermConditionalTable =
+//    Table4("summation_term_conditional",
+//           "term_name",
+//           "conditional_reference",
+//           "true_reference",
+//           "false_reference")
+//
+//typealias DB_SummationTermConditionalValue =
+//    RowValue4<MaybePrimValue<TermName>,
+//              SumValue<BooleanReference>,
+//              SumValue<NumberReference>,
+//              SumValue<NumberReference>>
 
 
 // TEXT FORMAT
@@ -1055,18 +1055,18 @@ typealias DB_UIColorsValue =
 // WIDGET: ACTION
 // ---------------------------------------------------------------------------------------------
 
-val widgetActionTable =
-    Table4("widget_action",
-           "widget_id",
-           "format",
-           "procedure_id",
-           "description")
-
-typealias DB_WidgetActionValue =
-    RowValue4<PrimValue<WidgetId>,
-              ProdValue<ActionWidgetFormat>,
-              PrimValue<ProcedureId>,
-              MaybePrimValue<ActionWidgetDescription>>
+//val widgetActionTable =
+//    Table4("widget_action",
+//           "widget_id",
+//           "format",
+//           "procedure_id",
+//           "description")
+//
+//typealias DB_WidgetActionValue =
+//    RowValue4<PrimValue<WidgetId>,
+//              ProdValue<ActionWidgetFormat>,
+//              PrimValue<ProcedureId>,
+//              MaybePrimValue<ActionWidgetDescription>>
 
 
 // WIDGET: ACTION > FORMAT
@@ -1091,39 +1091,39 @@ typealias DB_WidgetActionFormatValue =
 // WIDGET: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-val widgetBooleanTable =
-    Table2("widget_boolean",
-           "widget_id",
-           "value_variables_reference")
-
-typealias DB_WidgetBooleanValue =
-    RowValue2<PrimValue<WidgetId>,
-              PrimValue<VariableReference>>
-
+//val widgetBooleanTable =
+//    Table2("widget_boolean",
+//           "widget_id",
+//           "value_variables_reference")
+//
+//typealias DB_WidgetBooleanValue =
+//    RowValue2<PrimValue<WidgetId>,
+//              PrimValue<VariableReference>>
+//
 
 // WIDGET: BOOLEAN > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetBooleanFormatTable =
-    Table8("widget_boolean_format",
-           "widget_format",
-           "view_type",
-           "true_format",
-           "false_format",
-           "true_text",
-           "false_text",
-           "true_icon",
-           "false_icon")
-
-typealias DB_WidgetBooleanFormatValue =
-    RowValue8<ProdValue<WidgetFormat>,
-              PrimValue<BooleanWidgetViewType>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              PrimValue<TrueText>,
-              PrimValue<FalseText>,
-              MaybeProdValue<Icon>,
-              MaybeProdValue<Icon>>
+//val widgetBooleanFormatTable =
+//    Table8("widget_boolean_format",
+//           "widget_format",
+//           "view_type",
+//           "true_format",
+//           "false_format",
+//           "true_text",
+//           "false_text",
+//           "true_icon",
+//           "false_icon")
+//
+//typealias DB_WidgetBooleanFormatValue =
+//    RowValue8<ProdValue<WidgetFormat>,
+//              PrimValue<BooleanWidgetViewType>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              PrimValue<TrueText>,
+//              PrimValue<FalseText>,
+//              MaybeProdValue<Icon>,
+//              MaybeProdValue<Icon>>
 
 // WIDGET: EXPANDER
 // ---------------------------------------------------------------------------------------------
@@ -1144,42 +1144,42 @@ typealias DB_WidgetBooleanFormatValue =
 // WIDGET: EXPANDER > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetExpanderFormatTable =
-    Table8("widget_expander_format",
-           "widget_format",
-           "view_type",
-           "header_open_format",
-           "header_closed_format",
-           "header_label_open_format",
-           "header_label_closed_format",
-           "header_icon_open_format",
-           "header_icon_closed_format")
-
-
-typealias DB_WidgetExpanderFormatValue =
-    RowValue8<ProdValue<WidgetFormat>,
-              PrimValue<ExpanderWidgetViewType>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>>
+//val widgetExpanderFormatTable =
+//    Table8("widget_expander_format",
+//           "widget_format",
+//           "view_type",
+//           "header_open_format",
+//           "header_closed_format",
+//           "header_label_open_format",
+//           "header_label_closed_format",
+//           "header_icon_open_format",
+//           "header_icon_closed_format")
+//
+//
+//typealias DB_WidgetExpanderFormatValue =
+//    RowValue8<ProdValue<WidgetFormat>,
+//              PrimValue<ExpanderWidgetViewType>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>>
 
 
 // WIDGET: IMAGE
 // ---------------------------------------------------------------------------------------------
 
-val widgetImageTable =
-    Table3("widget_image",
-           "widget_id",
-           "format",
-           "official_images")
-
-typealias DB_WidgetImageValue =
-    RowValue3<PrimValue<WidgetId>,
-              ProdValue<ImageWidgetFormat>,
-              PrimValue<OfficialImageIdList>>
+//val widgetImageTable =
+//    Table3("widget_image",
+//           "widget_id",
+//           "format",
+//           "official_images")
+//
+//typealias DB_WidgetImageValue =
+//    RowValue3<PrimValue<WidgetId>,
+//              ProdValue<ImageWidgetFormat>,
+//              PrimValue<OfficialImageIdList>>
 
 
 // WIDGET: IMAGE FORMAT

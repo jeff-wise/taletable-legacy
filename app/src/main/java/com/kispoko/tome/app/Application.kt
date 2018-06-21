@@ -27,6 +27,9 @@ object ApplicationLog
             is EventTypeLoad -> {
                 Log.d("***TOME LOG", event.debugMessage())
             }
+            is EventTypeDatabase -> {
+                Log.d("***TOME LOG", event.debugMessage())
+            }
         }
     }
 

@@ -42,7 +42,7 @@ data class AppDBEvent(val dbEvent : DatabaseEvent) : AppEvent()
 
     override fun logMessage() : String = "Database Event: " + dbEvent.logMessage()
 
-    override fun eventType() = EventTypeOther
+    override fun eventType() = EventTypeDatabase
 }
 
 

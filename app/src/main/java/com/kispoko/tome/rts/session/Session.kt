@@ -64,7 +64,7 @@ fun newSession(loader : SessionLoader,
 
     activeSessionId = Just(loader.sessionId)
 
-    saveSession(loadedSession, context)
+    saveSession(loadedSession.record(), context)
 
     Router.send(MessageSessionLoaded(loader.sessionId))
 }
@@ -191,11 +191,27 @@ data class Session(val sessionId : SessionId,
                       this.entityRecords().map { it.entity().entityLoader() },
                       this.mainEntityId)
 
+
+    // -----------------------------------------------------------------------------------------
+    // RECORD
+    // -----------------------------------------------------------------------------------------
+
+    fun record() = SessionRecord(this.sessionId,
+                                 this.sessionName,
+                                 Calendar.getInstance(),
+                                 this.loader())
+
 }
 
 
 data class SessionLoadUpdate(val entityLoadNumber : Int,
                              val totalEntities : Int) : Serializable
+
+
+data class SessionRecord(val sessionId : SessionId,
+                         val sessionName : SessionName,
+                         val lastUsed : Calendar,
+                         val loader : SessionLoader?) : Serializable
 
 
 /**
