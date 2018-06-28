@@ -386,7 +386,7 @@ object ValueSetSummaryView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         header.color                = ThemeManager.color(themeId, headerColorTheme)
 
-        header.font                 = Font.typeface(TextFont.FiraSans,
+        header.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -407,7 +407,7 @@ object ValueSetSummaryView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         description.color           = ThemeManager.color(themeId, descriptionColorTheme)
 
-        description.font            = Font.typeface(TextFont.FiraSans,
+        description.font            = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -433,7 +433,7 @@ object ValueSetSummaryView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         count.color                 = ThemeManager.color(themeId, colorTheme)
 
-        count.font                  = Font.typeface(TextFont.FiraSans,
+        count.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 

@@ -260,7 +260,7 @@ class ValueActionViewBuilder(val valueReference : ValueReference,
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.font                  = Font.typeface(TextFont.FiraSans,
+        label.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 

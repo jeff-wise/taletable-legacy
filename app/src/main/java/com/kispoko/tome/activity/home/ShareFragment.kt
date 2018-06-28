@@ -25,9 +25,9 @@ class ShareFragment : Fragment()
 
     companion object
     {
-        fun newInstance() : PlayFragment
+        fun newInstance() : ShareFragment
         {
-            val fragment = PlayFragment()
+            val fragment = ShareFragment()
 
 //            val args = Bundle()
 //            args.putSerializable("sheet_id", sheetId)

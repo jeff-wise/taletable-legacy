@@ -43,7 +43,7 @@ public class UI
 
         if (titleView != null)
         {
-            titleView.setTypeface(Font.INSTANCE.typeface(TextFont.FiraSans.INSTANCE,
+            titleView.setTypeface(Font.INSTANCE.typeface(TextFont.RobotoCondensed.INSTANCE,
                                                          TextFontStyle.Regular.INSTANCE,
                                                          activity));
             titleView.setText(title);

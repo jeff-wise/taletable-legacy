@@ -26,7 +26,6 @@ import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.official.GameSummary
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityLoader
-import com.kispoko.tome.rts.entity.EntityType
 import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.session.*
 import com.kispoko.tome.util.configureToolbar
@@ -87,7 +86,7 @@ class NewSessionActivity : AppCompatActivity()
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.new_session))
+        this.configureToolbar(getString(R.string.new_session), TextFontStyle.Regular)
 
         this.applyTheme(com.kispoko.tome.model.theme.official.officialAppThemeLight)
 
@@ -165,7 +164,7 @@ class NewSessionActivity : AppCompatActivity()
         // Toolbar > Icons
         val toolbarIconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
 
         val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_close_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(theme.colorOrBlack(toolbarIconColorTheme), PorterDuff.Mode.SRC_IN)
@@ -307,17 +306,17 @@ class NewSessionUI(private var step : Int,
     fun render()
     {
         val contentView = newSessionActivity.findViewById<LinearLayout>(R.id.content)
-        val footerView = newSessionActivity.findViewById<LinearLayout>(R.id.footer)
+//        val footerView = newSessionActivity.findViewById<LinearLayout>(R.id.footer)
 
         contentView?.removeAllViews()
         contentView?.let {
             it.addView(this.view())
         }
 
-        footerView?.removeAllViews()
-        footerView?.let {
-            it.addView(this.footerView())
-        }
+//        footerView?.removeAllViews()
+//        footerView?.let {
+//            it.addView(this.footerView())
+//        }
     }
 
 
@@ -376,33 +375,13 @@ class NewSessionUI(private var step : Int,
     {
         val layout = this.openSessionViewLayout()
 
-        when (step)
-        {
-            1 ->
-            {
-                layout.addView(this.titleView(1, context.getString(R.string.what_game_do_you_play)))
+        layout.addView(this.stepView(1, R.string.game))
 
-                layout.addView(this.chooseButtonView(R.string.select_game))
-                layout.addView(this.selectionView())
+        layout.addView(this.stepView(2, R.string.session))
 
-                layout.addView(this.miscGameButtonsView())
-            }
-            2 ->
-            {
-                layout.addView(this.titleView(2, context.getString(R.string.what_are_you_playing_with)))
+        layout.addView(this.stepView(3, R.string.review))
 
-                layout.addView(this.chooseButtonView(R.string.select_session))
-                layout.addView(this.selectionView())
-            }
-            3 ->
-            {
-                layout.addView(this.titleView(3, context.getString(R.string.review_new_session)))
-
-                layout.addView(this.entityLoadersView())
-            }
-        }
-
-
+//        layout.addView(this.openSessionButtonView())
 
         return layout
     }
@@ -417,14 +396,104 @@ class NewSessionUI(private var step : Int,
 
         layout.orientation      = LinearLayout.VERTICAL
 
+        layout.padding.topDp    = 4f
+
         return layout.linearLayout(context)
     }
+
+
+    private fun stepView(step : Int, labelId : Int) : LinearLayout
+    {
+        val layout = this.stepViewLayout()
+
+        layout.addView(this.titleView(step, context.getString(labelId)))
+
+        when (step)
+        {
+            1 -> {
+                val gameName = this.gameSummary().toNullable()?.name ?: ""
+                layout.addView(this.descriptionView(R.string.choose_game_description))
+                layout.addView(this.selectionView(gameName))
+//                layout.addView(this.chooseButtonView(1, R.string.select))
+            }
+            2 -> {
+                val sessionName = this.sessionLoader().toNullable()?.sessionName?.value ?: ""
+                layout.addView(this.descriptionView(R.string.choose_session_description))
+                layout.addView(this.selectionView(sessionName))
+//                layout.addView(this.chooseButtonView(2, R.string.select))
+            }
+            3 -> {
+                layout.addView(this.descriptionView(R.string.this_session_contains))
+                layout.addView(this.entityLoadersView())
+                layout.addView(this.openSessionButtonView())
+            }
+        }
+
+
+//        layout.addView(this.selectionView(step))
+
+        return layout
+    }
+
+
+    private fun stepViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.margin.leftDp    = 4f
+        layout.margin.rightDp   = 4f
+        layout.margin.topDp     = 2f
+
+        layout.padding.leftDp   = 11f
+        layout.padding.rightDp  = 8f
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp = 14f
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
+
+        return layout.linearLayout(context)
+    }
+
 
 
     // VIEWS > Title
     // -----------------------------------------------------------------------------------------
 
-    private fun titleView(step : Int, titleString : String) : LinearLayout
+    private fun titleView(step : Int, title : String) : RelativeLayout
+    {
+        val layout = this.titleViewLayout()
+
+        // Label
+        layout.addView(this.titleTextView(step, title))
+
+        // Choose Button
+//        layout.addView(this.chooseButtonView(step, R.string.choose))
+
+        return layout
+    }
+
+
+    private fun titleViewLayout() : RelativeLayout
+    {
+        val layout              = RelativeLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        return layout.relativeLayout(context)
+    }
+
+
+    private fun titleTextView(step : Int, titleString : String) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -436,25 +505,16 @@ class NewSessionUI(private var step : Int,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.gravity          = Gravity.CENTER_VERTICAL
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.MATCH_PARENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.backgroundColor  = Color.WHITE
+        layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
-
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-        layout.padding.topDp    = 12f
-        layout.padding.bottomDp = 12f
-
-        layout.margin.topDp     = 1f
-//        layout.margin.rightDp   = 6f
-//        layout.margin.leftDp    = 6f
+        layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
 
         layout.child(stepView)
               .child(labelView)
@@ -467,10 +527,6 @@ class NewSessionUI(private var step : Int,
 
         stepView.backgroundResource    = R.drawable.bg_session_step
 
-//        val indexColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
-
         stepView.color                 = Color.WHITE
 
         stepView.font                  = Font.typeface(TextFont.default(),
@@ -481,10 +537,11 @@ class NewSessionUI(private var step : Int,
 
         stepView.gravity               = Gravity.CENTER
 
-        stepView.sizeSp                = 17.5f
+        stepView.sizeSp                = 16f
 
-        stepView.margin.rightDp        = 8f
-        stepView.padding.bottomDp      = 1f
+        stepView.margin.rightDp        = 13f
+
+        stepView.padding.bottomDp       = 1f
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
@@ -495,341 +552,52 @@ class NewSessionUI(private var step : Int,
         labelView.text              = titleString
 
         labelView.font              = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.SemiBold,
-                                                    context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_11"))))
-
-        labelView.color             = theme.colorOrBlack(labelColorTheme)
-
-        labelView.sizeSp            = 20f
-
-        labelView.padding.bottomDp  = 1f
-
-        return layout.linearLayout(context)
-    }
-
-
-    // VIEWS > Choose Game View
-    // -----------------------------------------------------------------------------------------
-
-    private fun selectionView() : LinearLayout
-    {
-        val layout = this.selectionViewLayout()
-
-        when (this.step)
-        {
-            1 -> {
-                layout.addView(this.gameNameView())
-                layout.addView(this.gameDescriptionView())
-            }
-            2 -> {
-//                layout.addView(this.entityKindView())
-                layout.addView(this.sessionNameView())
-                layout.addView(this.sessionDescriptionView())
-            }
-        }
-
-        return layout
-    }
-
-
-    private fun selectionViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        layout.margin.topDp     = 1f
-        layout.margin.leftDp    = 6f
-        layout.margin.rightDp   = 6f
-
-        when (this.step)
-        {
-            1 -> {
-                layout.padding.topDp    = 10f
-                layout.padding.bottomDp = 10f
-            }
-            2 -> {
-                layout.padding.topDp    = 8f
-                layout.padding.bottomDp = 8f
-            }
-        }
-
-
-        layout.onClick          = View.OnClickListener {
-            when (this.step)
-            {
-                // Choose the game
-                1 ->
-                {
-                    val intent = Intent(newSessionActivity, GamesListActivity::class.java)
-                    intent.putExtra("game_action", GameActionLoadSession)
-                    newSessionActivity.startActivity(intent)
-                }
-                2 ->
-                {
-                    val intent = Intent(newSessionActivity, EntityTypeListActivity::class.java)
-                    intent.putExtra("game_id", this.gameId)
-                    newSessionActivity.startActivity(intent)
-                }
-            }
-        }
-
-        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_90"))))
-        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun gameNameView() : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val name                = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-
-        layout.child(name)
-
-        // (4) Label
-        // -------------------------------------------------------------------------------------
-
-        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        name.text               = this.gameSummary().toNullable()?.name
-
-        name.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Bold,
-                                                context)
-
-        name.color              = Color.WHITE
-
-        name.sizeSp             = 19f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun gameDescriptionView() : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val descriptionView     = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-
-        layout.child(descriptionView)
-
-        // (4) Label
-        // -------------------------------------------------------------------------------------
-
-        descriptionView.width           = LinearLayout.LayoutParams.WRAP_CONTENT
-        descriptionView.height          = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        descriptionView.text            = this.gameSummary().toNullable()?.name
-
-        descriptionView.font            = Font.typeface(TextFont.default(),
-                                                        TextFontStyle.Regular,
-                                                        context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        descriptionView.color           = theme.colorOrBlack(labelColorTheme)
-
-        descriptionView.sizeSp          = 16f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun entityKindView() : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val kindView            = TextViewBuilder()
-        val borderView          = LinearLayoutBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        layout.child(kindView)
-              .child(borderView)
-
-        // (3) Kind
-        // -------------------------------------------------------------------------------------
-
-        kindView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        kindView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        kindView.padding.leftDp   = 8f
-        kindView.padding.rightDp  = 8f
-
-        kindView.text               = this.entityKindName()
-
-        kindView.font               = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
-        val kindColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
-        kindView.color              = theme.colorOrBlack(kindColorTheme)
-
-        kindView.sizeSp             = 14f
-
-        // (4) Border
-        // -------------------------------------------------------------------------------------
-
-        borderView.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        borderView.heightDp             = 1
-
-        val borderColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("transparent_80"))))
-        borderView.backgroundColor      = theme.colorOrBlack(borderColorTheme)
-
-        borderView.margin.topDp         = 6f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun sessionNameView() : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val name                = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-
-        layout.child(name)
-
-        // (4) Label
-        // -------------------------------------------------------------------------------------
-
-        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        this.sessionLoader().doMaybe {
-            name.text           = it.sessionName.value
-        }
-
-        name.font               = Font.typeface(TextFont.default(),
-                                                 TextFontStyle.SemiBold,
-                                                 context)
-
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-//        name.color              = theme.colorOrBlack(labelColorTheme)
-        name.color              = Color.WHITE
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
 
-        name.sizeSp             = 20f
+        labelView.color             = theme.colorOrBlack(labelColorTheme)
+
+        labelView.sizeSp            = 21f
+
+        labelView.padding.bottomDp  = 2f
 
         return layout.linearLayout(context)
     }
 
 
-    private fun sessionDescriptionView() : LinearLayout
+    private fun descriptionView(descriptionStringId : Int) : TextView
     {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
+        val view                = TextViewBuilder()
 
-        val layout              = LinearLayoutBuilder()
-        val descriptionView     = TextViewBuilder()
+        view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
+        view.margin.leftDp      = 38f
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.textId             = descriptionStringId
 
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-
-        layout.child(descriptionView)
-
-        // (4) Label
-        // -------------------------------------------------------------------------------------
-
-        descriptionView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        descriptionView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        this.sessionLoader().doMaybe {
-            descriptionView.text           = it.sessionInfo.tagline
-        }
-
-        descriptionView.font               = Font.typeface(TextFont.default(),
-                                                           TextFontStyle.Regular,
-                                                           context)
+        view.font               = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Regular,
+                                                context)
 
         val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
-        descriptionView.color              = theme.colorOrBlack(colorTheme)
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+        view.color              = theme.colorOrBlack(colorTheme)
 
-        descriptionView.sizeSp             = 17f
+        view.sizeSp             = 17f
 
-        return layout.linearLayout(context)
+        view.margin.bottomDp    = 6f
+
+        return view.textView(context)
     }
 
 
-    private fun chooseButtonView(labelId : Int) : LinearLayout
+    private fun chooseButtonView(step : Int, labelId : Int) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -841,32 +609,29 @@ class NewSessionUI(private var step : Int,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.MATCH_PARENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-//        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
-        layout.backgroundColor  = Color.WHITE
-
-        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
-
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.margin.topDp     = 20f
-        layout.margin.leftDp    = 6f
-        layout.margin.rightDp   = 6f
+        layout.margin.rightDp   = 8f
+        layout.margin.topDp     = 8f
+        layout.margin.leftDp    = 38f
+//
+//        layout.padding.topDp    = 4f
+//        layout.padding.bottomDp    = 4f
+//        layout.padding.leftDp    = 6f
+//        layout.padding.rightDp    = 6f
 
-        layout.padding.leftDp   = 12f
-        layout.padding.rightDp  = 12f
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
+//        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
 
         layout.onClick          = View.OnClickListener {
-            when (this.step)
+            when (step)
             {
                 // Choose the game
                 1 ->
@@ -878,8 +643,13 @@ class NewSessionUI(private var step : Int,
             }
         }
 
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+//        layout.backgroundColor   = theme.colorOrBlack(bgColorTheme)
+
         layout.child(labelView)
-              .child(iconView)
+//              .child(iconView)
 
         // (3) Icon
         // -------------------------------------------------------------------------------------
@@ -891,7 +661,7 @@ class NewSessionUI(private var step : Int,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_green"))))
         iconView.color              = theme.colorOrBlack(iconColorTheme)
 
         iconView.margin.leftDp      = 4f
@@ -903,18 +673,18 @@ class NewSessionUI(private var step : Int,
         labelView.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
         labelView.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        labelView.textId                = labelId
+        labelView.text                  = context.getString(labelId).toUpperCase()
 
         labelView.font                  = Font.typeface(TextFont.default(),
-                                                        TextFontStyle.Medium,
+                                                        TextFontStyle.Bold,
                                                         context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         labelView.color                 = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp                = 16.5f
+        labelView.sizeSp                = 15f
 
         labelView.padding.bottomDp      = 1f
 
@@ -922,48 +692,107 @@ class NewSessionUI(private var step : Int,
     }
 
 
-    private fun miscGameButtonsView() : LinearLayout
+    // VIEWS > Choose Game View
+    // -----------------------------------------------------------------------------------------
+
+//    private fun selectionView(step : Int) : LinearLayout
+//    {
+//        val layout = this.selectionViewLayout(step)
+//
+//        when (step)
+//        {
+//            1 -> {
+//                layout.addView(this.gameSelectionView())
+//            }
+//            2 -> {
+//                layout.addView(this.sessionNameView())
+//            }
+//        }
+//
+//        return layout
+//    }
+//
+//
+//    private fun selectionViewLayout(step : Int) : LinearLayout
+//    {
+//        val layout              = LinearLayoutBuilder()
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation      = LinearLayout.VERTICAL
+//
+//        layout.margin.topDp     = 6f
+//
+//        layout.onClick          = View.OnClickListener {
+//            when (step)
+//            {
+//                // Choose the game
+//                1 ->
+//                {
+//                    val intent = Intent(newSessionActivity, GamesListActivity::class.java)
+//                    intent.putExtra("game_action", GameActionLoadSession)
+//                    newSessionActivity.startActivity(intent)
+//                }
+//                2 ->
+//                {
+//                    val intent = Intent(newSessionActivity, EntityTypeListActivity::class.java)
+//                    intent.putExtra("game_id", this.gameId)
+//                    newSessionActivity.startActivity(intent)
+//                }
+//            }
+//        }
+//
+//        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
+//
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_3"))))
+//        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+//
+//        return layout.linearLayout(context)
+//    }
+
+
+    private fun selectionView(value : String) : TextView
     {
-        val layout = this.miscButtonsViewLayout()
+        val name                = TextViewBuilder()
 
-        val randomGameOnClick = View.OnClickListener {  }
-        layout.addView(this.miscButtonView(R.drawable.icon_die,
-                                           R.string.choose_random_game,
-                                           randomGameOnClick))
+        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val createGameOnClick = View.OnClickListener {  }
-        layout.addView(this.miscButtonView(R.drawable.icon_plus_sign,
-                                           R.string.create_new_game,
-                                           createGameOnClick, 25))
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_1"))))
+        name.backgroundColor    = theme.colorOrBlack(bgColorTheme)
 
-        val aboutGamesOnClick = View.OnClickListener {  }
-        layout.addView(this.miscButtonView(R.drawable.icon_info_outline,
-                                           R.string.about_games,
-                                           aboutGamesOnClick, 22))
+        name.padding.leftDp     = 10f
+        name.padding.rightDp    = 10f
+        name.padding.topDp      = 4f
+        name.padding.bottomDp   = 4f
 
-        return layout
+        name.elevation          = 4
+
+        name.margin.leftDp      = 38f
+
+        name.corners            = Corners(3.0, 3.0, 3.0, 3.0)
+
+        name.text               = value
+
+        name.font               = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Medium,
+                                                context)
+
+        name.color              = Color.WHITE
+
+        name.sizeSp             = 17f
+
+
+        return name.textView(context)
     }
 
 
-    private fun miscButtonsViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        layout.margin.topDp     = 30f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun miscButtonView(iconId : Int,
-                               labelId : Int,
-                               onClick : View.OnClickListener,
-                               iconSize : Int? = 24) : LinearLayout
+    private fun loadButtonView() : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -975,340 +804,64 @@ class NewSessionUI(private var step : Int,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.backgroundColor  = Color.WHITE
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 8f
 
-        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
+        layout.margin.leftDp    = 4f
+        layout.margin.rightDp   = 4f
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
+        layout.backgroundColor  = Color.TRANSPARENT
+
+        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
+
         layout.margin.topDp     = 2f
-        layout.margin.leftDp    = 6f
-        layout.margin.rightDp   = 6f
-
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 10f
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
-
-        layout.onClick          = onClick
 
         layout.child(iconView)
               .child(labelView)
 
-        // (3) Icon
+        // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        iconView.widthDp            = iconSize
-        iconView.heightDp           = iconSize
+        iconView.widthDp        = 20
+        iconView.heightDp       = 20
 
-        iconView.image              = iconId
+        iconView.image          = R.drawable.icon_open_in_window
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-        iconView.color              = theme.colorOrBlack(iconColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+        iconView.color          = theme.colorOrBlack(iconColorTheme)
 
-        iconView.margin.rightDp     = 6f
+        iconView.margin.leftDp  = 10f
+        iconView.margin.rightDp = 10f
 
-        // (4) Label
+//        iconView.padding.topDp      = 2.5f
+
+        // (3 B) Label
         // -------------------------------------------------------------------------------------
 
-        labelView.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
-        labelView.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        labelView.textId                = labelId
+        labelView.textId            = R.string.open_session
 
-        labelView.font                  = Font.typeface(TextFont.default(),
-                                                        TextFontStyle.Medium,
-                                                        context)
+        labelView.font              = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.Medium,
+                                                    context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
-        labelView.color                 = theme.colorOrBlack(labelColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+        labelView.color             = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp                = 18f
-
-        labelView.padding.bottomDp      = 1f
-
-        return layout.linearLayout(context)
-    }
-
-
-    // VIEWS > Footer
-    // -----------------------------------------------------------------------------------------
-
-    fun footerView() : LinearLayout
-    {
-        val layout = this.footerViewLayout()
-
-        layout.addView(this.footerTopBorderView())
-
-        layout.addView(this.footerMainView())
-
-        return layout
-    }
-
-
-    private fun footerViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.backgroundColor  = Color.WHITE
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun footerTopBorderView() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp         = 1
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
-        layout.backgroundColor  = theme.colorOrBlack(colorTheme)
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun footerMainView() : LinearLayout
-    {
-        val layout = this.footerMainViewLayout()
-
-        layout.addView(this.previousButtonView())
-
-        when (this.step) {
-            3    -> {
-                layout.addView(this.openSessionButtonView())
-//                val progressBar = this.openSessionProgressBar()
-//                layout.addView(progressBar)
-//                progressBar.progress = 30
-            }
-            else -> layout.addView(this.nextButtonView())
-        }
-
-        return layout
-    }
-
-
-    private fun footerMainViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.padding.topDp    = 4f
-        layout.padding.bottomDp = 4f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun previousButtonView() : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val buttonLayout        = LinearLayoutBuilder()
-
-        val icon                = ImageViewBuilder()
-        val label               = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = 0
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight           = 1f
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.gravity          = Gravity.CENTER
-
-        layout.onClick          = View.OnClickListener {
-            when (step)
-            {
-                1 -> { }
-                2 -> newSessionActivity.setStep(1, this.gameId, Nothing())
-                3 -> newSessionActivity.setStep(2, this.gameId, Nothing())
-            }
-        }
-
-        when (this.step) {
-            1    -> { }
-            else -> layout.child(buttonLayout)
-        }
-
-        // (3) Button Layout
-        // -------------------------------------------------------------------------------------
-
-        buttonLayout.width              = LinearLayout.LayoutParams.MATCH_PARENT
-        buttonLayout.heightDp           = 40
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_90"))))
-        buttonLayout.backgroundColor    = Color.WHITE
-
-        buttonLayout.padding.topDp      = 6f
-        buttonLayout.padding.bottomDp   = 6f
-
-        buttonLayout.margin.leftDp      = 12f
-        buttonLayout.margin.rightDp     = 12f
-
-        buttonLayout.gravity            = Gravity.CENTER
-
-        buttonLayout.corners            = Corners(2.0, 2.0, 2.0, 2.0)
-
-        buttonLayout.child(icon)
-                    .child(label)
-
-        // (4 A) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp            = 28
-        icon.heightDp           = 28
-
-        icon.image              = R.drawable.icon_chevron_left
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        icon.color              = theme.colorOrBlack(iconColorTheme)
-
-        icon.padding.topDp      = 2.5f
-
-        // (4 B) Label
-        // -------------------------------------------------------------------------------------
-
-        label.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.text               = "${context.getString(R.string.previous)}   "
-
-        label.font               = Font.typeface(TextFont.default(),
-                                                 TextFontStyle.Medium,
-                                                 context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        label.color              = theme.colorOrBlack(labelColorTheme)
-
-        label.sizeSp             = 19f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun nextButtonView() : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val buttonLayout        = LinearLayoutBuilder()
-
-        val icon                = ImageViewBuilder()
-        val label               = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width            = 0
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight           = 1f
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.gravity          = Gravity.CENTER
-
-        layout.onClick          = View.OnClickListener {
-            when (step)
-            {
-                1 -> newSessionActivity.setStep(2, this.gameId, Nothing())
-                2 -> newSessionActivity.setStep(3, this.gameId, Nothing())
-            }
-        }
-
-        layout.child(buttonLayout)
-
-        // (3) Button Layout
-        // -------------------------------------------------------------------------------------
-
-        buttonLayout.width              = LinearLayout.LayoutParams.MATCH_PARENT
-        buttonLayout.heightDp           = 40
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_90"))))
-        buttonLayout.backgroundColor    = theme.colorOrBlack(bgColorTheme)
-
-        buttonLayout.padding.topDp      = 6f
-        buttonLayout.padding.bottomDp   = 6f
-
-        buttonLayout.margin.leftDp      = 12f
-        buttonLayout.margin.rightDp     = 12f
-
-        buttonLayout.gravity            = Gravity.CENTER
-
-        buttonLayout.corners            = Corners(2.0, 2.0, 2.0, 2.0)
-
-        buttonLayout.child(label)
-                    .child(icon)
-
-        // (4 A) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp            = 28
-        icon.heightDp           = 28
-
-        icon.image              = R.drawable.icon_chevron_right
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        icon.color              = Color.WHITE
-
-        icon.padding.topDp      = 2.5f
-
-        // (4 B) Label
-        // -------------------------------------------------------------------------------------
-
-        label.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.text               = "   ${context.getString(R.string.next)}"
-
-        label.font               = Font.typeface(TextFont.default(),
-                                                 TextFontStyle.Medium,
-                                                 context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
-        label.color              = Color.WHITE
-
-        label.sizeSp             = 19f
+        labelView.sizeSp            = 21f
 
         return layout.linearLayout(context)
     }
@@ -1356,11 +909,16 @@ class NewSessionUI(private var step : Int,
     {
         val layout              = LinearLayoutBuilder()
 
-        layout.width            = 0
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight           = 1f
 
         layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.margin.leftDp    = 38f
+
+        layout.margin.topDp     = 8f
+
+        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
         return layout.linearLayout(context)
     }
@@ -1388,9 +946,6 @@ class NewSessionUI(private var step : Int,
         bar.widthDp             = RelativeLayout.LayoutParams.MATCH_PARENT
         bar.heightDp            = 40
 
-        bar.margin.leftDp       = 12f
-        bar.margin.rightDp      = 12f
-
         bar.progressDrawableId  = R.drawable.progress_bar_load_session
 
         val bgColorTheme = ColorTheme(setOf(
@@ -1410,9 +965,12 @@ class NewSessionUI(private var step : Int,
         label.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
         label.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-        label.addRule(RelativeLayout.CENTER_IN_PARENT)
+        label.addRule(RelativeLayout.ALIGN_PARENT_START)
+        label.addRule(RelativeLayout.CENTER_VERTICAL)
 
-        label.text              = "   ${context.getString(R.string.open).toUpperCase()}"
+        label.margin.leftDp     = 6f
+
+        label.textId            = R.string.start_new_session
 
         label.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Medium,
@@ -1435,8 +993,8 @@ class NewSessionUI(private var step : Int,
 
         Log.d("***NEW SESSION ACTVITY", "entity loaders session is: ${this.sessionId}")
         this.sessionLoader().doMaybe {
-            it.entityLoadersByType().entries.forEach { (entityType, loaders) ->
-                layout.addView(this.entityLoaderCategoryView(entityType, loaders))
+            it.entityLoaders.forEach {
+                layout.addView(this.entityLoaderView(it))
             }
         }
 
@@ -1453,75 +1011,9 @@ class NewSessionUI(private var step : Int,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.margin.leftDp    = 6f
-        layout.margin.rightDp   = 6f
-
-        layout.margin.topDp     = 20f
+        layout.margin.leftDp    = 38f
 
         return layout.linearLayout(context)
-    }
-
-
-    private fun entityLoaderCategoryView(entityType : EntityType,
-                                         loaders : List<EntityLoader>) : LinearLayout
-    {
-        val layout = this.entityLoaderCategoryViewLayout()
-
-        layout.addView(this.entityLoaderCategoryHeaderView(entityType.toString()))
-
-        loaders.forEach {
-            layout.addView(this.entityLoaderView(it))
-        }
-
-        return layout
-    }
-
-
-    private fun entityLoaderCategoryViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        layout.backgroundColor  = Color.WHITE
-
-        layout.margin.topDp     = 2f
-
-        layout.padding.leftDp   = 6f
-        layout.padding.rightDp  = 6f
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun entityLoaderCategoryHeaderView(headerString : String) : TextView
-    {
-        val headerView                  = TextViewBuilder()
-
-        headerView.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        headerView.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        headerView.text                 = "${headerString}s"
-
-        headerView.font                 = Font.typeface(TextFont.default(),
-                                                        TextFontStyle.Regular,
-                                                        context)
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
-        headerView.color                = theme.colorOrBlack(colorTheme)
-
-        headerView.sizeSp               = 15f
-
-        headerView.margin.bottomDp      = 6f
-
-        return headerView.textView(context)
     }
 
 
@@ -1529,8 +1021,11 @@ class NewSessionUI(private var step : Int,
     {
         val layout = this.entityLoaderViewLayout()
 
+        // Category
+        layout.addView(this.entityLoaderCategoryView(entityLoader.category))
+
         // Name
-        layout.addView(this.entityLoadNameView(entityLoader.name))
+        layout.addView(this.entityLoaderNameView(entityLoader.name))
 
         return layout
     }
@@ -1547,45 +1042,78 @@ class NewSessionUI(private var step : Int,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        return layout.linearLayout(context)
-    }
-
-
-    private fun entityLoadStatusLayout() : LinearLayout
-    {
-        val layout          = LinearLayoutBuilder()
-
-        layout.widthDp      = 17
-        layout.heightDp     = 17
-
-        layout.margin.leftDp = 12f
-        layout.margin.rightDp = 12f
+        layout.margin.bottomDp  = 2f
 
         return layout.linearLayout(context)
     }
 
 
-    private fun entityLoadNameView(label : String) : TextView
+    private fun entityLoaderCategoryView(category : String) : TextView
     {
-        val nameView                  = TextViewBuilder()
+        val view                = TextViewBuilder()
 
-        nameView.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        nameView.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        nameView.text                 = label
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+        view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
 
-        nameView.font                 = Font.typeface(TextFont.default(),
-                                                      TextFontStyle.Medium,
-                                                      context)
+        view.padding.leftDp     = 8f
+        view.padding.rightDp    = 8f
+        view.padding.topDp      = 6f
+        view.padding.bottomDp   = 6f
+
+        view.corners            = Corners(3.0, 0.0, 0.0, 3.0)
+
+        view.text               = category
+
+        view.font               = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Medium,
+                                                context)
+
+        view.color                = Color.WHITE
+
+        view.sizeSp               = 17f
+
+        return view.textView(context)
+    }
+
+
+    private fun entityLoaderNameView(label : String) : TextView
+    {
+        val view                = TextViewBuilder()
+
+        view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+        view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
+
+        view.corners            = Corners(0.0, 3.0, 3.0, 0.0)
+
+        view.padding.leftDp     = 8f
+        view.padding.rightDp    = 8f
+        view.padding.topDp      = 6f
+        view.padding.bottomDp   = 6f
+
+        view.text               = label
+
+        view.font               = Font.typeface(TextFont.default(),
+                                                TextFontStyle.Medium,
+                                                context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        nameView.color                = theme.colorOrBlack(colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+        view.color                = theme.colorOrBlack(colorTheme)
 
-        nameView.sizeSp               = 18f
+        view.sizeSp               = 17f
 
-        return nameView.textView(context)
+        return view.textView(context)
     }
 
 }

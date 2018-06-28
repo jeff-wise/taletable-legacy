@@ -283,7 +283,7 @@ object OpenCampaignSummaryView
         header.width            = LinearLayout.LayoutParams.WRAP_CONTENT
         header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        header.font             = Font.typeface(TextFont.FiraSans,
+        header.font             = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -308,7 +308,7 @@ object OpenCampaignSummaryView
         summary.width           = LinearLayout.LayoutParams.WRAP_CONTENT
         summary.height          = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        summary.font            = Font.typeface(TextFont.FiraSans,
+        summary.font            = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 

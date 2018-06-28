@@ -20,13 +20,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.view.*
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.session.NewSessionActivity
-import com.kispoko.tome.lib.ui.CustomTabLayout
-import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
@@ -138,13 +135,23 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
                 override fun onTabSelected(tab : TabLayout.Tab) {
                     super.onTabSelected(tab)
                     val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_light_blue)
-                    tab.icon?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+
+                    val iconView = tab.customView?.findViewById<ImageView>(R.id.tab_icon)
+                    iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+
+                    val labelView = tab.customView?.findViewById<TextView>(R.id.tab_label)
+                    labelView?.setTextColor(tabIconColor)
                 }
 
                 override fun onTabUnselected(tab : TabLayout.Tab) {
                     super.onTabUnselected(tab)
                     val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_dark_grey_18)
-                    tab.icon?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+
+                    val iconView = tab.customView?.findViewById<ImageView>(R.id.tab_icon)
+                    iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+
+                    val labelView = tab.customView?.findViewById<TextView>(R.id.tab_label)
+                    labelView?.setTextColor(tabIconColor)
                 }
 
                 override fun onTabReselected(tab : TabLayout.Tab) {
@@ -154,12 +161,18 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
         tabLayout?.setupWithViewPager(viewPager)
 
-        tabLayout.getTabAt(0)?.setIcon(R.drawable.icon_home)
-        tabLayout.getTabAt(1)?.setIcon(R.drawable.icon_die_dots)
-        tabLayout.getTabAt(2)?.setIcon(R.drawable.icon_users)
+        tabLayout.getTabAt(0)?.customView = tabView(R.drawable.icon_home, 18, R.string.home, officialAppThemeLight)
+        tabLayout.getTabAt(1)?.customView = tabView(R.drawable.icon_die_dots, 17, R.string.play, officialAppThemeLight)
+        tabLayout.getTabAt(2)?.customView = tabView(R.drawable.icon_users, 17, R.string.share, officialAppThemeLight)
 
+
+        val tab = tabLayout.getTabAt(0)
         val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_light_blue)
-        tabLayout.getTabAt(0)?.icon?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+        val iconView = tab?.customView?.findViewById<ImageView>(R.id.tab_icon)
+        iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+
+        val labelView = tab?.customView?.findViewById<TextView>(R.id.tab_label)
+        labelView?.setTextColor(tabIconColor)
 
     }
 
@@ -339,6 +352,81 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // TAB VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun tabView(iconId : Int,
+                        iconSize : Int,
+                        labelId : Int,
+                        theme : Theme) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val iconView                = ImageViewBuilder()
+        val labelView               = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.gravity              = Gravity.CENTER_VERTICAL
+
+
+        layout.backgroundColor      = Color.WHITE
+
+        layout.child(iconView)
+              .child(labelView)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        iconView.id                 = R.id.tab_icon
+
+        iconView.widthDp            = iconSize
+        iconView.heightDp           = iconSize
+
+        iconView.image              = iconId
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        iconView.color              = theme.colorOrBlack(iconColorTheme)
+
+        iconView.margin.rightDp     = 4f
+
+        iconView.padding.topDp      = 1f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        labelView.id                = R.id.tab_label
+
+        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        labelView.text              = getString(labelId).toUpperCase()
+
+        labelView.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Regular,
+                                                    this)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        labelView.color             = theme.colorOrBlack(labelColorTheme)
+
+        labelView.sizeSp            = 17.5f
+
+        return layout.linearLayout(this)
+    }
+
 
 }
 
@@ -355,8 +443,8 @@ class HomeTabLayout(context : Context, attrs : AttributeSet) : TabLayout(context
 
         val tabChildCount = tabView.childCount
 
-        val typeFace = Font.typeface(TextFont.default(),
-                                     TextFontStyle.SemiBold,
+        val typeFace = Font.typeface(TextFont.RobotoCondensed,
+                                     TextFontStyle.Regular,
                                      context)
 
         for (i in 0..tabChildCount)

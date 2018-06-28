@@ -435,7 +435,7 @@ class FunctionItemViewBuilder(val themeId : ThemeId, val context : Context)
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         header.color                = ThemeManager.color(themeId, colorTheme)
 
-        header.font                 = Font.typeface(TextFont.FiraSans,
+        header.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -461,7 +461,7 @@ class FunctionItemViewBuilder(val themeId : ThemeId, val context : Context)
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         description.color               = ThemeManager.color(themeId, colorTheme)
 
-        description.font                = Font.typeface(TextFont.FiraSans,
+        description.font                = Font.typeface(TextFont.default(),
                                                         TextFontStyle.Regular,
                                                         context)
 
@@ -543,7 +543,7 @@ class FunctionItemViewBuilder(val themeId : ThemeId, val context : Context)
                             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         type.color              = ThemeManager.color(themeId, colorTheme)
 
-        type.font               = Font.typeface(TextFont.FiraSans,
+        type.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -594,7 +594,7 @@ class FunctionItemViewBuilder(val themeId : ThemeId, val context : Context)
                             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         type.color              = ThemeManager.color(themeId, textColorTheme)
 
-        type.font               = Font.typeface(TextFont.FiraSans,
+        type.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 

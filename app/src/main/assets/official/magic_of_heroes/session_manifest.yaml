@@ -23,6 +23,7 @@ summaries:
       type: sheet
       sheet:
         name: Casmey Dalseya
+        category: PC
         sheet_id: character_casmey_level_1
         game_id: magic_of_heroes
   - type: official
@@ -30,6 +31,7 @@ summaries:
       type: campaign
       campaign:
         name: Isara
+        category: Setting
         campaign_id: isara
         game_id: magic_of_heroes
   - type: official
@@ -37,12 +39,14 @@ summaries:
       type: game
       game:
         name: The Magic of Heroes
+        category: Game
         game_id: magic_of_heroes
   - type: official
     official:
       type: book
       book:
         name: Core Rules
+        category: Book
         book_id: core_rules
         game_id: magic_of_heroes
   main_entity_kind_id: player_character
@@ -73,6 +77,7 @@ summaries:
       type: sheet
       sheet:
         name: Sanson Alavidril
+        category: PC
         sheet_id: character_sanson_level_1
         game_id: magic_of_heroes
   - type: official
@@ -80,6 +85,7 @@ summaries:
       type: campaign
       campaign:
         name: Isara
+        category: Setting
         campaign_id: isara
         game_id: magic_of_heroes
   - type: official
@@ -87,12 +93,14 @@ summaries:
       type: game
       game:
         name: The Magic of Heroes
+        category: Game
         game_id: magic_of_heroes
   - type: official
     official:
       type: book
       book:
         name: Core Rules
+        category: Book
         book_id: core_rules
         game_id: magic_of_heroes
   main_entity_kind_id: player_character

@@ -7,19 +7,17 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
-import com.kispoko.tome.R.string.session
+import android.util.Log
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.entityRecord
-import com.kispoko.tome.rts.session.Session
-import com.kispoko.tome.rts.session.SessionRecord
-import com.kispoko.tome.rts.session.activeSession
+import com.kispoko.tome.rts.session.*
 import effect.effError
 import effect.effValue
 import maybe.Just
 import org.apache.commons.lang3.SerializationUtils
-
+import java.util.*
 
 
 object Schema
@@ -149,6 +147,7 @@ fun saveEntity(entityId : EntityId, name : String, context : Context) : AppEff<L
 
                     val endNS = System.nanoTime()
 
+                    Log.d("***DATABASE", "new row id: $newRowId")
                     ApplicationLog.event(AppDBEvent(DatabaseEntitySaved(entityId, (endNS - startNS))))
 
                     effValue(newRowId)
@@ -190,7 +189,9 @@ fun saveSession(sessionRecord : SessionRecord, context : Context) : AppEff<Long>
         val startNS = System.nanoTime()
 
         // Insert the new row, returning the primary key value of the new row
-        val newRowId = db.insert(Schema.EntityTable.TABLE_NAME, null, values)
+        val newRowId = db.insert(Schema.SessionTable.TABLE_NAME, null, values)
+
+        Log.d("***DATABASE", "save session: new row id: $newRowId")
 
         val endNS = System.nanoTime()
 
@@ -210,30 +211,51 @@ fun loadSessionList(context : Context) : List<SessionRecord>
 
     val db = DatabaseManager(context).readableDatabase
 
-//    val projection = arrayOf(BaseColumns._ID,
-//                             Schema.SessionTable.COLUMN_NAME_SESSION_ID,
-//                             Schema.SessionTable.COLUMN_NAME_SESSION_NAME,
-//            )
-//
-//// Filter results WHERE "title" = 'My Title'
-//    val selection = "${FeedEntry.COLUMN_NAME_TITLE} = ?"
-//    val selectionArgs = arrayOf("My Title")
-//
-//// How you want the results sorted in the resulting Cursor
-//    val sortOrder = "${FeedEntry.COLUMN_NAME_SUBTITLE} DESC"
-//
-//    val cursor = db.query(
-//            FeedEntry.TABLE_NAME,   // The table to query
-//            projection,             // The array of columns to return (pass null to get all)
-//            selection,              // The columns for the WHERE clause
-//            selectionArgs,          // The values for the WHERE clause
-//            null,                   // don't group the rows
-//            null,                   // don't filter by row groups
-//            sortOrder               // The sort order
-//    )
+    val projection = arrayOf(BaseColumns._ID,
+                             Schema.SessionTable.COLUMN_NAME_SESSION_ID,
+                             Schema.SessionTable.COLUMN_NAME_SESSION_NAME,
+                             Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED,
+                             Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB)
+
+    val sortOrder = "datetime(${Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED}) DESC"
+
+    val cursor = db.query(
+            Schema.SessionTable.TABLE_NAME, // The table to query
+            projection,                     // The array of columns to return (pass null to get all)
+            null,                             // The columns for the WHERE clause
+            arrayOf(),                      // The values for the WHERE clause
+            null,                           // don't group the rows
+            null,                           // don't filter by row groups
+            sortOrder)                      // The sort order
 
 
-    return listOf()
+    Log.d("***DATABASE", "cursor: $cursor")
+
+
+    val records : MutableList<SessionRecord> = mutableListOf()
+
+    with(cursor) {
+        while (moveToNext()) {
+
+            val sessionId = SessionId.fromString(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_ID)))
+            val sessionName = SessionName(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_NAME)))
+
+            val lastUsed = Calendar.getInstance()
+            lastUsed.timeInMillis = getLong(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED))
+
+            val loader = SerializationUtils.deserialize<SessionLoader>(
+                             getBlob(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB)))
+
+            Log.d("***DATABASE", "found session: $sessionName")
+
+            if (sessionId != null) {
+                val sessionRecord = SessionRecord(sessionId, sessionName, lastUsed, loader)
+                records.add(sessionRecord)
+            }
+        }
+    }
+
+    return records
 }
 
 
@@ -246,3 +268,4 @@ fun saveCurrentSession(context : Context)
         }
     }
 }
+

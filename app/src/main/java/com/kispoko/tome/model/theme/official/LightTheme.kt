@@ -71,6 +71,7 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("green_tint_5"), "#A2DEB9"),
         ThemeColor(ColorId.Theme("green_tint_6"), "#B5E5C7"),
         ThemeColor(ColorId.Theme("green_tint_7"), "#C7EBD5"),
+        ThemeColor(ColorId.Theme("green_shade_1"), "#3EAA67"),
         ThemeColor(ColorId.Theme("green_90"), "#E645BD72"),
         ThemeColor(ColorId.Theme("green_80"), "#C445BD72"),
         ThemeColor(ColorId.Theme("green_70"), "#B245BD72"),

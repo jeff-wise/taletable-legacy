@@ -175,7 +175,7 @@ class SummationActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         val titleView = this.findViewById<TextView>(R.id.title)
-        titleView.typeface = Font.typeface(TextFont.FiraSans, TextFontStyle.Regular, this)
+        titleView.typeface = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
@@ -382,7 +382,7 @@ class SummationEditorUI(val summation : Summation,
 
         header.text                 = termName
 
-        header.font                 = Font.typeface(TextFont.FiraSans,
+        header.font                 = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -485,7 +485,7 @@ class SummationEditorUI(val summation : Summation,
 
         name.text                       = nameString
 
-        name.font                       = Font.typeface(TextFont.FiraSans,
+        name.font                       = Font.typeface(TextFont.default(),
                                                         TextFontStyle.Regular,
                                                         context)
 
@@ -508,7 +508,7 @@ class SummationEditorUI(val summation : Summation,
 
         value.text                      = valueString
 
-        value.font                      = Font.typeface(TextFont.FiraSans,
+        value.font                      = Font.typeface(TextFont.default(),
                                                         TextFontStyle.Bold,
                                                         context)
 

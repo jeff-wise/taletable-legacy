@@ -256,6 +256,9 @@ data class TextFormat(override val id : UUID,
     fun withColorTheme(newColorTheme : ColorTheme) : TextFormat =
         this.copy(colorTheme = newColorTheme)
 
+    fun withFont(newFont : TextFont) : TextFormat =
+            this.copy(font = newFont)
+
     fun withFontStyle(newFontStyle : TextFontStyle) : TextFormat =
             this.copy(fontStyle = newFontStyle)
 
@@ -434,17 +437,17 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
     }
 
 
-    object FiraSans : TextFont()
+    object RobotoCondensed : TextFont()
     {
         // SQL SERIALIZABLE
         // -------------------------------------------------------------------------------------
 
-        override fun asSQLValue() = SQLText({ "fira_sans "})
+        override fun asSQLValue() = SQLText({ "roboto_condensed "})
 
         // TO DOCUMENT
         // -------------------------------------------------------------------------------------
 
-        override fun toDocument() = DocText("fira_sans")
+        override fun toDocument() = DocText("roboto_condensed")
 
     }
 
@@ -489,11 +492,11 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "cabin"        -> effValue<ValueError,TextFont>(TextFont.Cabin)
-                "fira_sans"    -> effValue<ValueError,TextFont>(TextFont.FiraSans)
-                "merriweather" -> effValue<ValueError,TextFont>(TextFont.Merriweather)
-                "kaushan"      -> effValue<ValueError,TextFont>(TextFont.Kaushan)
-                else           -> effError<ValueError,TextFont>(
+                "cabin"             -> effValue<ValueError,TextFont>(TextFont.Cabin)
+                "roboto_condensed"  -> effValue<ValueError,TextFont>(TextFont.RobotoCondensed)
+                "merriweather"      -> effValue<ValueError,TextFont>(TextFont.Merriweather)
+                "kaushan"           -> effValue<ValueError,TextFont>(TextFont.Kaushan)
+                else                -> effError<ValueError,TextFont>(
                                       UnexpectedValue("TextFont", doc.text, doc.path))
             }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))

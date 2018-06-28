@@ -123,7 +123,7 @@ object Form
 
         label.textId            = labelId
 
-        label.font              = Font.typeface(TextFont.FiraSans,
+        label.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -210,7 +210,7 @@ object Form
 
         label.text              = labelString
 
-        label.font              = Font.typeface(TextFont.FiraSans,
+        label.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -236,7 +236,7 @@ object Form
 
         value.text              = valueString
 
-        value.font              = Font.typeface(TextFont.FiraSans,
+        value.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -347,7 +347,7 @@ object Form
 
         name.text               = nameString
 
-        name.font               = Font.typeface(TextFont.FiraSans,
+        name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -448,7 +448,7 @@ object Form
 
         name.text               = nameString
 
-        name.font               = Font.typeface(TextFont.FiraSans,
+        name.font               = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 

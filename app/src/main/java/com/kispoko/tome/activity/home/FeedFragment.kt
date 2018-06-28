@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.home
 
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.feed.FeedUI
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.app.assetInputStream
@@ -88,8 +90,13 @@ class FeedFragment : Fragment()
 //            val contentView = homeActivity.findViewById<LinearLayout>(R.id.content)
             val feed = this.feed(homeActivity)
             addFeed(feed)
+
+            val tabDivider = homeActivity.findViewById<LinearLayout>(R.id.tab_divider)
+            tabDivider?.setBackgroundColor(Color.parseColor("#DDDDDD"))
+
             val feedUI = FeedUI(feed, officialAppThemeLight, homeActivity)
             feedUI.view()
+
         }
         else
         {
@@ -162,7 +169,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(20f))
+                   .withSize(TextSize(19f))
+                   .withFont(TextFont.RobotoCondensed)
+                   .withFontStyle(TextFontStyle.Bold)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
                 TextWidgetFormat(
@@ -174,7 +183,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(16.5f))
+                   .withSize(TextSize(17f))
+                    .withFont(TextFont.RobotoCondensed)
+                    .withFontStyle(TextFontStyle.Regular)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val descriptionTextWidgetFormat =
                     TextWidgetFormat(
@@ -241,7 +252,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(20f))
+                   .withSize(TextSize(19f))
+                   .withFont(TextFont.RobotoCondensed)
+                   .withFontStyle(TextFontStyle.Bold)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
                 TextWidgetFormat(
@@ -253,7 +266,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(16.5f))
+                   .withSize(TextSize(17f))
+                   .withFont(TextFont.RobotoCondensed)
+                   .withFontStyle(TextFontStyle.Regular)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val descriptionTextWidgetFormat =
                     TextWidgetFormat(

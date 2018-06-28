@@ -239,6 +239,7 @@ data class SessionId(val value : UUID) : ToDocument, SQLSerializable, Serializab
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
 
+
         fun fromYaml(yamlValue : YamlValue) : YamlParser<SessionId> =
             when (yamlValue)
             {
@@ -247,6 +248,17 @@ data class SessionId(val value : UUID) : ToDocument, SQLSerializable, Serializab
                                                          yamlType(yamlValue),
                                                          yamlValue.path))
             }
+
+
+        fun fromString(uuidString : String) : SessionId?
+        {
+            return try {
+                SessionId(UUID.fromString(uuidString))
+            }
+            catch (e : IllegalArgumentException) {
+                null
+            }
+        }
     }
 
 

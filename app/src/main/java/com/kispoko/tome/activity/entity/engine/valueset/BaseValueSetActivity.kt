@@ -226,7 +226,7 @@ class BaseValueSetActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         val titleView = this.findViewById<TextView>(R.id.title)
-        titleView.typeface = Font.typeface(TextFont.FiraSans, TextFontStyle.Regular, this)
+        titleView.typeface = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
@@ -432,7 +432,7 @@ object ValueSummaryView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         value.color                 = ThemeManager.color(themeId, colorTheme)
 
-        value.font                  = Font.typeface(TextFont.FiraSans,
+        value.font                  = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -456,7 +456,7 @@ object ValueSummaryView
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         desc.color                  = ThemeManager.color(themeId, colorTheme)
 
-        desc.font                   = Font.typeface(TextFont.FiraSans,
+        desc.font                   = Font.typeface(TextFont.default(),
                                                     TextFontStyle.Regular,
                                                     context)
 

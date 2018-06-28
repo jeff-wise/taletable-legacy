@@ -1914,7 +1914,7 @@ sections:
         background_color_theme:
           theme_color_ids:
           - theme_id: light
-            color_id: light_grey_7
+            color_id: light_grey_8
         padding:
           bottom: 60
     groups:
@@ -1927,18 +1927,16 @@ sections:
           corners:
             top_right_radius: 2
             top_left_radius: 2
-            bottom_left_radius: 2
-            bottom_right_radius: 2
+            bottom_left_radius: 0
+            bottom_right_radius: 0
           margins:
             left: 6
             right: 6
             top: 6
-            bottom: 6
           padding:
             left: 8
             right: 8
             top: 10
-            bottom: 10
       rows:
       - format:
           element_format:
@@ -1946,7 +1944,6 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-#            id: name_label
             format:
               value_format:
                 color_theme:
@@ -1956,7 +1953,7 @@ sections:
                   - theme_id: light
                     color_id: dark_grey_18
                 size: 14
-                font_style: semi_bold
+                font_style: regular
               widget_format:
                 element_format:
                   horizontal_alignment: left
@@ -1966,7 +1963,6 @@ sections:
       - widgets:
         - type: widget_story
           widget_story:
-#            id: name
             format:
               widget_format:
                 element_format:
@@ -1985,8 +1981,8 @@ sections:
                       color_id: light_blue_8
                     - theme_id: light
                       color_id: light_blue
-                  font_style: semi_bold
-                  size: 24
+                  font_style: medium
+                  size: 26
     - format:
         element_format:
           background_color_theme:
@@ -1994,8 +1990,8 @@ sections:
             - theme_id: light
               color_id: white
           corners:
-            top_right_radius: 2
-            top_left_radius: 2
+            top_right_radius: 0
+            top_left_radius: 0
             bottom_left_radius: 2
             bottom_right_radius: 2
           margins:
@@ -2008,217 +2004,279 @@ sections:
               left: 8
               right: 8
               bottom: 10
-              top: 4
         widgets:
-        - type: widget_story
-          widget_story:
-#            id: summary
+        - type: widget_tab
+          widget_tab:
             format:
-              line_spacing: 6
-              line_height: 34
-              widget_format:
-                element_format:
-                  horizontal_alignment: left
-                  width:
-                    type: width_justify
-                    width_justify: justify
-            story:
-            - type: story_part_span
-              story_part_span:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 18
-                text: 'In some lands they call me Cass. In others, they call me "Hey! Someone
-                       stop her! She''s getting away!". I''m a '
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  size: 17.5
-            - type: story_part_variable
-              story_part_variable:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 10
-                variable_id: race
-                text_format:
-                  element_format:
-                    background_color_theme:
+              tab_bar_format:
+                border:
+                  bottom:
+                    color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_blue_90
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
-                    - theme_id: light
-                      color_id: white
-                  size: 17.5
-            - type: story_part_span
-              story_part_span:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 12
-                text: ' born in the mess they call the City of Second Chances. Since I was a little girl, I performed alongside my
-                        father in the Endless Carnival. But on my 16th birthday, my life fell apart. I became a '
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_18
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  size: 17.5
-            - type: story_part_variable
-              story_part_variable:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 10
-                variable_id: class
-                text_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_blue_90
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
-                    - theme_id: light
-                      color_id: white
-                  size: 17.5
-            - type: story_part_span
-              story_part_span:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 12
-                text: ' pirate on a sleek schooner called The Shark''s Fin. Through rough seas and
-                        low tides I earned a formidable reputation for only a '
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_18
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  size: 17.5
-            - type: story_part_variable
-              story_part_variable:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 10
-                numeric_editor_type: simple
-                variable_id: age
-                text_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_18
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
-                    - theme_id: light
-                      color_id: white
-                  size: 17.5
-            - type: story_part_span
-              story_part_span:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 12
-                text: ' year old girl. I am often recognized for my '
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_14
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  size: 17.5
-            - type: story_part_variable
-              story_part_variable:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 10
-                variable_id: eye_color
-                text_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_18
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
-                    - theme_id: light
-                      color_id: white
-                  size: 17.5
-            - type: story_part_span
-              story_part_span:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 12
-                text: ' eyes and curly '
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_14
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  size: 17.5
-            - type: story_part_variable
-              story_part_variable:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 10
-                variable_id: hair_color
-                text_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_18
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_8
-                    - theme_id: light
-                      color_id: white
-                  size: 17.5
-            - type: story_part_span
-              story_part_span:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 12
-                text: ' hair, as well as for a few posters that may or may not say '
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_14
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  size: 17.5
-            - type: story_part_span
-              story_part_span:
-                format:
-                  highlight_skew: 0.68
-                  highlight_corner_radius: 12
-                text: 'WANTED.'
-                text_format:
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_grey_14
-                    - theme_id: light
-                      color_id: dark_grey_12
-                  font_style: bold_italic
-                  size: 16.5
+                        color_id: light_grey_7
+                    thickness: 1
+              selected_tab_format:
+                font_style: medium
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              unselected_tab_format:
+                font_style: medium
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+              tab_format:
+                underline_thickness: 2
+                underline_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_18
+            tabs:
+            - name: Long Story
+              group_references:
+              - type: group
+                group:
+                  rows:
+                  - widgets:
+                    - type: widget_story
+                      widget_story:
+                        format:
+                          line_spacing: 2
+                          line_height: 32
+                          widget_format:
+                            element_format:
+                              horizontal_alignment: left
+                              width:
+                                type: width_justify
+                                width_justify: justify
+                        story:
+                        - type: story_part_span
+                          story_part_span:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 18
+                            text: 'In some lands they call me Cass. In others, they call me "Hey! Someone
+                                   stop her! She''s getting away!". I''m a '
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: dark_grey_12
+                              size: 17.5
+                        - type: story_part_variable
+                          story_part_variable:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 10
+                            variable_id: race
+                            text_format:
+                              element_format:
+                                background_color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: light_blue_90
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_blue_8
+                                - theme_id: light
+                                  color_id: white
+                              size: 17.5
+                        - type: story_part_span
+                          story_part_span:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 12
+                            text: ' born in the mess they call the City of Second Chances. Since I was a little girl, I performed alongside my
+                                    father in the Endless Carnival. But on my 16th birthday, my life fell apart. I became a '
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_grey_18
+                                - theme_id: light
+                                  color_id: dark_grey_12
+                              size: 17.5
+                        - type: story_part_variable
+                          story_part_variable:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 10
+                            variable_id: class
+                            text_format:
+                              element_format:
+                                background_color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: light_blue_90
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_blue_8
+                                - theme_id: light
+                                  color_id: white
+                              size: 17.5
+                        - type: story_part_span
+                          story_part_span:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 12
+                            text: ' pirate on a sleek schooner called The Shark''s Fin. Through rough seas and
+                                    low tides I earned a formidable reputation for only a '
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_grey_18
+                                - theme_id: light
+                                  color_id: dark_grey_12
+                              size: 17.5
+                        - type: story_part_variable
+                          story_part_variable:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 10
+                            numeric_editor_type: simple
+                            variable_id: age
+                            text_format:
+                              element_format:
+                                background_color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: light_grey_18
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_blue_8
+                                - theme_id: light
+                                  color_id: white
+                              size: 17.5
+                        - type: story_part_span
+                          story_part_span:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 12
+                            text: ' year old girl. I am often recognized for my '
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_grey_14
+                                - theme_id: light
+                                  color_id: dark_grey_12
+                              size: 17.5
+                        - type: story_part_variable
+                          story_part_variable:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 10
+                            variable_id: eye_color
+                            text_format:
+                              element_format:
+                                background_color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: light_grey_18
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_blue_8
+                                - theme_id: light
+                                  color_id: white
+                              size: 17.5
+                        - type: story_part_span
+                          story_part_span:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 12
+                            text: ' eyes and curly '
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_grey_14
+                                - theme_id: light
+                                  color_id: dark_grey_12
+                              size: 17.5
+                        - type: story_part_variable
+                          story_part_variable:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 10
+                            variable_id: hair_color
+                            text_format:
+                              element_format:
+                                background_color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: light_grey_18
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_blue_8
+                                - theme_id: light
+                                  color_id: white
+                              size: 17.5
+                        - type: story_part_span
+                          story_part_span:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 12
+                            text: ' hair, as well as for a few posters that may or may not say '
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_grey_14
+                                - theme_id: light
+                                  color_id: dark_grey_12
+                              size: 17.5
+                        - type: story_part_span
+                          story_part_span:
+                            format:
+                              highlight_skew: 0.68
+                              highlight_corner_radius: 12
+                            text: 'WANTED.'
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_grey_14
+                                - theme_id: light
+                                  color_id: dark_grey_12
+                              font_style: bold_italic
+                              size: 16.5
+            - name: Short Story
+              group_references:
+              - type: group
+                group:
+                  rows:
+                  - widgets:
+                    - type: widget_story
+                      widget_story:
+                        format:
+                          widget_format:
+                            element_format:
+                              horizontal_alignment: left
+                              width:
+                                type: width_justify
+                                width_justify: justify
+                        story:
+                        - type: story_part_variable
+                          story_part_variable:
+                            variable_id: name
+                            text_format:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: dark
+                                  color_id: light_blue_8
+                                - theme_id: light
+                                  color_id: light_blue
+                              font_style: semi_bold
+                              size: 20
     - format:
         element_format:
           padding:

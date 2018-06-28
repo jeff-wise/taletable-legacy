@@ -172,7 +172,7 @@ class FeedUI(val feed : Feed,
 
         labelView.textId             = R.string.pinned
 
-        labelView.font               = Font.typeface(TextFont.default(),
+        labelView.font               = Font.typeface(TextFont.RobotoCondensed,
                                                      TextFontStyle.Regular,
                                                      context)
 
@@ -201,7 +201,7 @@ class FeedUI(val feed : Feed,
         titleView.margin.leftDp     = 8f
         titleView.margin.rightDp    = 8f
 
-        titleView.font              = Font.typeface(TextFont.default(),
+        titleView.font              = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Medium,
                                                     context)
 
@@ -295,7 +295,7 @@ class FeedUI(val feed : Feed,
         layout.addRule(RelativeLayout.ALIGN_PARENT_END)
 
         layout.child(labelView)
-                .child(iconView)
+        //        .child(iconView)
 
         // (3 A) Label
         // -------------------------------------------------------------------------------------
@@ -305,7 +305,7 @@ class FeedUI(val feed : Feed,
         labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        labelView.font              = Font.typeface(TextFont.default(),
+        labelView.font              = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.SemiBold,
                                                     context)
 

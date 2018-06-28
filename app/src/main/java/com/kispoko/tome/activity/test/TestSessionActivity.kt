@@ -70,16 +70,19 @@ class TestSessionActivity : AppCompatActivity()
         val context = this
         launch(UI) {
             val sheetLoader = OfficialSheetLoader("Sheet Name",
+                                                  "PC",
                                                   sheetId,
                                                   GameId("magic_of_heroes"))
 
             val campaignLoader = OfficialCampaignLoader("Campaign Name",
+                                                        "Setting",
                                                         CampaignId("isara"),
                                                         GameId("magic_of_heroes"))
 
-            val gameLoader = OfficialGameLoader("Game Name", GameId("magic_of_heroes"))
+            val gameLoader = OfficialGameLoader("Game Name", "Game", GameId("magic_of_heroes"))
 
             val coreRulebookLoader = OfficialBookLoader("Book Name",
+                                                        "Book",
                                                         BookId("core_rules"),
                                                         GameId("magic_of_heroes"))
 

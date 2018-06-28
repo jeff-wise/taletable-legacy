@@ -20,8 +20,8 @@ data class HomePagerAdapter(val fragmentManager : FragmentManager)
     {
         0    -> FeedFragment.newInstance()
         1    -> PlayFragment.newInstance()
-        2    -> PlayFragment.newInstance()
-        else -> PlayFragment.newInstance()
+        2    -> ShareFragment.newInstance()
+        else -> ShareFragment.newInstance()
     }
 
 

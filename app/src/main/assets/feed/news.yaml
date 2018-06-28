@@ -60,8 +60,9 @@ groups:
               theme_color_ids:
               - theme_id: light
                 color_id: dark_grey_8
-            font_style: regular
-            size: 20
+            font_style: bold
+            font: roboto_condensed
+            size: 19
             element_format:
               horizontal_alignment: left
           widget_format:
@@ -82,9 +83,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_8
+                color_id: dark_grey_10
             font_style: regular
-            size: 16.5
+            font: roboto_condensed
+            size: 17
             element_format:
               horizontal_alignment: left
           widget_format:

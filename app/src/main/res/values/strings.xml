@@ -63,8 +63,10 @@
     <string name="what_do_you_need">What do you need?</string>
     <string name="what_are_you_playing_with">What are you playing with?</string>
     <string name="review_new_session">Review New Session</string>
+    <string name="review">Review</string>
     <string name="create_session">Create Session</string>
-    <string name="choose_game">Choose a Game</string>
+    <string name="start_new_session">Start New Session</string>
+    <string name="choose_game">Choose Game</string>
     <string name="select_game">Choose Your Game</string>
     <string name="select_session">Choose a Session</string>
     <string name="i_am_playing">I am playing&#8230;</string>
@@ -72,6 +74,9 @@
     <string name="choose_random_game">Choose a Random Game</string>
     <string name="about_games">Learn About Games</string>
     <string name="create_new_game">Create New Game</string>
+    <string name="choose_game_description">What tabletop RPG are you playing?</string>
+    <string name="choose_session_description">Characters, monsters, adventures\u2026</string>
+    <string name="this_session_contains">This session contains\u2026</string>
 
     <string name="pinned">Pinned</string>
 
@@ -93,11 +98,14 @@
     <string name="share">Share</string>
 
     <string name="no_sessions_message">
-        No previous sessions found.
+        You do not have any saved sessions.
     </string>
     <string name="featured_sessions_header">Featured Sessions</string>
 
     <string name="export_to_file">Export to File</string>
+    <string name="saved_sessions">Saved Sessions</string>
+    <string name="home">Home</string>
+    <string name="play">Play</string>
 
     <string name="sheet_name">Sheet Name</string>
 

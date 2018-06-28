@@ -1042,7 +1042,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         sign.color             = colorOrBlack(signColorTheme, entityId)
 
-        sign.font              = Font.typeface(TextFont.FiraSans,
+        sign.font              = Font.typeface(TextFont.default(),
                                                TextFontStyle.Regular,
                                                context)
 
@@ -1124,7 +1124,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         label.color             = colorOrBlack(textColorTheme, entityId)
 
-        label.font              = Font.typeface(TextFont.FiraSans,
+        label.font              = Font.typeface(TextFont.default(),
                                                 TextFontStyle.Regular,
                                                 context)
 

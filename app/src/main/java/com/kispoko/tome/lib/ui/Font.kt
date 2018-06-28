@@ -25,11 +25,11 @@ object Font
     private val cabinItalicFilePath             = "fonts/Cabin-Italic.ttf"
     private val cabinBoldItalicFilePath         = "fonts/Cabin-BoldItalic.ttf"
 
-    private val firaSansRegularFilePath         = "fonts/FiraSans-Regular.ttf"
-    private val firaSansBoldFilePath            = "fonts/FiraSans-Bold.ttf"
-    private val firaSansItalicFilePath          = "fonts/FiraSans-Italic.ttf"
-    private val firaSansBoldItalicFilePath      = "fonts/FiraSans-BoldItalic.ttf"
-    private val firaSansLightFilePath           = "fonts/FiraSans-Light.ttf"
+    private val robotoCondensedLightFilePath        = "fonts/RobotoCondensed-Light.ttf"
+    private val robotoCondensedRegularFilePath      = "fonts/RobotoCondensed-Regular.ttf"
+    private val robotoCondensedBoldFilePath         = "fonts/RobotoCondensed-Bold.ttf"
+    private val robotoCondensedItalicFilePath       = "fonts/RobotoCondensed-Italic.ttf"
+    private val robotoCondensedBoldItalicFilePath   = "fonts/RobotoCondensed-BoldItalic.ttf"
 
     private val merriweatherRegularFilePath     = "fonts/Merriweather-Regular.ttf"
     private val merriweatherBoldFilePath        = "fonts/Merriweather-Bold.ttf"
@@ -64,15 +64,15 @@ object Font
                 is TextFontStyle.Italic     -> getTypeface(cabinItalicFilePath, context)
                 is TextFontStyle.Light      -> getTypeface(cabinRegularFilePath, context)
             }
-            is TextFont.FiraSans -> when (fontStyle)
+            is TextFont.RobotoCondensed -> when (fontStyle)
             {
-                is TextFontStyle.Regular    -> getTypeface(firaSansRegularFilePath, context)
-                is TextFontStyle.Medium     -> getTypeface(firaSansRegularFilePath, context)
-                is TextFontStyle.SemiBold   -> getTypeface(firaSansRegularFilePath, context)
-                is TextFontStyle.Bold       -> getTypeface(firaSansBoldFilePath, context)
-                is TextFontStyle.Italic     -> getTypeface(firaSansItalicFilePath, context)
-                is TextFontStyle.BoldItalic -> getTypeface(firaSansBoldItalicFilePath, context)
-                is TextFontStyle.Light      -> getTypeface(firaSansLightFilePath, context)
+                is TextFontStyle.Regular    -> getTypeface(robotoCondensedRegularFilePath, context)
+                is TextFontStyle.Medium     -> getTypeface(robotoCondensedRegularFilePath, context)
+                is TextFontStyle.SemiBold   -> getTypeface(robotoCondensedBoldFilePath, context)
+                is TextFontStyle.Bold       -> getTypeface(robotoCondensedBoldFilePath, context)
+                is TextFontStyle.Italic     -> getTypeface(robotoCondensedBoldItalicFilePath, context)
+                is TextFontStyle.BoldItalic -> getTypeface(robotoCondensedItalicFilePath, context)
+                is TextFontStyle.Light      -> getTypeface(robotoCondensedLightFilePath, context)
             }
             is TextFont.Merriweather -> when (fontStyle)
             {
@@ -93,10 +93,10 @@ object Font
     {
         val typeface = this.robotoRegular
 
-        if (typeface == null)
-            return Typeface.createFromAsset(context.assets, filepath)
+        return if (typeface == null)
+            Typeface.createFromAsset(context.assets, filepath)
         else
-            return typeface
+            typeface
     }
 
 

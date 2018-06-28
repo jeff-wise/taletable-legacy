@@ -42,12 +42,13 @@
 
                     <TextView
                         android:id="@+id/toolbar_title"
-                        android:layout_gravity="center"
-                        android:textSize="17.5sp"
-                        android:textColor="@color/light_theme_dark_grey_18"
+                        android:layout_gravity="start"
+                        android:textSize="19sp"
+                        android:textColor="@color/light_theme_dark_grey_16"
                         android:text="@string/new_session"
-                        android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="13dp"
+                        android:layout_toRightOf="@id/toolbar_close_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -59,6 +60,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="15dp"
+                        android:paddingTop="2dp"
                         android:src="@drawable/ic_toolbar_options"
                         android:tint="@color/dark_theme_primary_15" />
 
@@ -76,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:background="@color/light_theme_light_grey_7">
+                    android:background="@color/light_theme_light_grey_9">
 
                     <LinearLayout
                         android:id="@+id/content"

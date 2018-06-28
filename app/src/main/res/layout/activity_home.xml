@@ -89,6 +89,7 @@
                         app:tabIndicatorColor="@color/dark_blue_hl_1" />
 
                     <LinearLayout
+                        android:id="@+id/tab_divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="#BBBBBB">
