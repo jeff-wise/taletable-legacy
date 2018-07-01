@@ -49,7 +49,7 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name=".activity.home.FeedActivity"
+            android:name=".activity.home.HomeActivity"
             android:label="Tome"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>

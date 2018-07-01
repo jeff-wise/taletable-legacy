@@ -2,22 +2,20 @@
 package com.kispoko.tome.activity.home
 
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import android.view.animation.DecelerateInterpolator
+import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.session.NewSessionActivity
 import com.kispoko.tome.db.loadSessionList
@@ -27,7 +25,9 @@ import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
+import com.kispoko.tome.rts.session.SessionLoader
 import com.kispoko.tome.rts.session.SessionRecord
+import com.kispoko.tome.rts.session.newSession
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -74,7 +74,7 @@ class PlayFragment : Fragment()
                               savedInstanceState: Bundle?): View?
     {
         val homeActivity = activity
-        return if (homeActivity != null)
+        return if (homeActivity is HomeActivity)
         {
             val playUI = PlayUI(officialAppThemeLight, homeActivity)
             playUI.view()
@@ -90,7 +90,7 @@ class PlayFragment : Fragment()
 
 
 class PlayUI(val theme : Theme,
-             val activity : FragmentActivity)
+             val activity : HomeActivity)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -99,10 +99,36 @@ class PlayUI(val theme : Theme,
 
     val context = activity
 
+    var savedSessionView : ViewGroup? = null
+
+    var sessionRecords : List<SessionRecord> = listOf()
+
+
     // -----------------------------------------------------------------------------------------
     // METHODS
     // -----------------------------------------------------------------------------------------
 
+    fun showSessionCard(sessionRecord : SessionRecord)
+    {
+        this.savedSessionView?.removeAllViews()
+        this.savedSessionView?.addView(this.loadSessionView(sessionRecord))
+
+        val navView = activity.findViewById<LinearLayout>(R.id.sub_toolbar)
+        navView.removeAllViews()
+
+        navView.addView(this.savedSessionBackButtonView())
+    }
+
+
+    fun showSessionList()
+    {
+        this.savedSessionView?.removeAllViews()
+        this.savedSessionView?.addView(this.savedSessionListRecyclerView(this.sessionRecords))
+
+        val navView = activity.findViewById<LinearLayout>(R.id.sub_toolbar)
+        navView.removeAllViews()
+        navView.addView(this.savedSessionListHeaderView())
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -114,14 +140,18 @@ class PlayUI(val theme : Theme,
         val sessions = loadSessionList(context)
 
         return if (sessions.isEmpty()) {
-
             noSessionsView()
         }
         else {
-            val tabDivider = activity.findViewById<LinearLayout>(R.id.tab_divider)
-            tabDivider?.setBackgroundColor(Color.parseColor("#E8E8E8"))
+            this.sessionRecords = sessions
+            activity.hasSavedSessions = true
 
-            savedSessionListView(sessions)
+//            val tabDivider = activity.findViewById<LinearLayout>(R.id.tab_divider)
+//            tabDivider?.setBackgroundColor(Color.parseColor("#E8E8E8"))
+
+            val _savedSessionView = savedSessionView(sessions)
+            this.savedSessionView = _savedSessionView
+            _savedSessionView
         }
     }
 
@@ -567,11 +597,11 @@ class PlayUI(val theme : Theme,
     // VIEWS > Saved Sessions
     // -----------------------------------------------------------------------------------------
 
-    private fun savedSessionListView(sessionRecords : List<SessionRecord>) : LinearLayout
+    private fun savedSessionView(sessionRecords : List<SessionRecord>) : LinearLayout
     {
         val layout = this.savedSessionListViewLayout()
 
-        layout.addView(this.savedSessionListHeaderView())
+//        layout.addView(this.savedSessionListHeaderView())
 
         layout.addView(this.savedSessionListRecyclerView(sessionRecords))
 
@@ -592,62 +622,17 @@ class PlayUI(val theme : Theme,
     }
 
 
-    private fun savedSessionListHeaderView() : LinearLayout
+    fun savedSessionListHeaderView() : RelativeLayout
     {
-        val layout = this.savedSessionListHeaderViewMainLayout()
-
-        layout.addView(this.savedSessionListHeaderContentView())
-
-        layout.addView(this.savedSessionListHeaderBottomBorderView())
-
-        return layout
-    }
-
-
-    private fun savedSessionListHeaderViewMainLayout() : LinearLayout
-    {
-        val layout                  = LinearLayoutBuilder()
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation          = LinearLayout.VERTICAL
-
-        layout.backgroundColor      = Color.WHITE
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun savedSessionListHeaderBottomBorderView() : LinearLayout
-    {
-        val layout                  = LinearLayoutBuilder()
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.heightDp             = 1
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_10"))))
-        layout.backgroundColor      = theme.colorOrBlack(colorTheme)
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun savedSessionListHeaderContentView() : ViewGroup
-    {
-        val layout = this.savedSessionListHeaderContentViewLayout()
+        val layout = this.savedSessionListHeaderViewLayout()
 
         layout.addView(this.savedSessionListHeaderNavView())
 
-        layout.addView(this.savedSessionListNewSessionButtonView())
-
         return layout
     }
 
 
-    private fun savedSessionListHeaderContentViewLayout() : RelativeLayout
+    private fun savedSessionListHeaderViewLayout() : RelativeLayout
     {
         val layout                  = RelativeLayoutBuilder()
 
@@ -656,11 +641,6 @@ class PlayUI(val theme : Theme,
 
         layout.padding.leftDp       = 10f
         layout.padding.rightDp      = 10f
-
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
-//        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
 
         return layout.relativeLayout(context)
     }
@@ -711,16 +691,16 @@ class PlayUI(val theme : Theme,
 
         val nameColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         view.color              = theme.colorOrBlack(nameColorTheme)
 
-        view.sizeSp             = 18f
+        view.sizeSp             = 16f
 
         return view.textView(context)
     }
 
 
-    private fun savedSessionListNewSessionButtonView() : LinearLayout
+    private fun savedSessionBackButtonView() : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -732,32 +712,16 @@ class PlayUI(val theme : Theme,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.layoutType           = LayoutType.RELATIVE
-        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
-        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
-
-        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
-        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.heightDp             = 46
 
         layout.orientation          = LinearLayout.HORIZONTAL
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.corners              = Corners(4.0, 4.0, 4.0, 4.0)
-
-//        layout.padding.leftDp       = 4f
-//        layout.padding.rightDp      = 7f
-//        layout.padding.topDp        = 4f
-//        layout.padding.bottomDp     = 4f
-//
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
-        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
-
-        layout.backgroundColor      = Color.WHITE
-
-        layout.margin.bottomDp      = 2f
+        layout.onClick              = View.OnClickListener {
+            this.showSessionList()
+        }
 
         layout.child(iconView)
               .child(labelView)
@@ -765,17 +729,172 @@ class PlayUI(val theme : Theme,
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        iconView.widthDp            = 18
-        iconView.heightDp           = 18
+        iconView.widthDp            = 22
+        iconView.heightDp           = 22
 
-        iconView.image              = R.drawable.icon_plus_sign
+        iconView.image              = R.drawable.icon_chevron_left
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
         iconView.color              = theme.colorOrBlack(iconColorTheme)
 
-        iconView.margin.rightDp     = 2f
+//        iconView.margin.rightDp     = 2f
+
+        // (3 B) Label
+        // -------------------------------------------------------------------------------------
+
+        labelView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        labelView.textId             = R.string.back_to_session_list
+
+        labelView.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                     TextFontStyle.Regular,
+                                                     context)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        labelView.color              = theme.colorOrBlack(labelColorTheme)
+
+        labelView.sizeSp             = 16f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun loadSessionView(sessionRecord : SessionRecord) : LinearLayout
+    {
+        val layout = this.loadSessionViewLayout()
+
+        layout.addView(this.savedSessionCardView(sessionRecord))
+
+        sessionRecord.loader?.let {
+            layout.addView(this.openSessionButtonView(it))
+        }
+
+        return layout
+    }
+
+
+    private fun loadSessionViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+
+    private fun savedSessionCardView(sessionRecord : SessionRecord) : LinearLayout
+    {
+        val layout = this.savedSessionCardViewLayout()
+
+        layout.addView(this.savedSessionCardHeaderView(sessionRecord))
+
+        layout.addView(this.savedSessionCardDescriptionView(sessionRecord.sessionDescription.value))
+
+        return layout
+    }
+
+
+    private fun savedSessionCardViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.backgroundColor      = Color.WHITE
+
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
+
+        layout.padding.topDp        = 12f
+        layout.padding.bottomDp     = 12f
+        layout.padding.leftDp       = 8f
+        layout.padding.rightDp      = 8f
+
+        layout.margin.leftDp        = 4f
+        layout.margin.rightDp       = 4f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun savedSessionCardHeaderView(sessionRecord : SessionRecord) : LinearLayout
+    {
+        val layout = this.savedSessionCardHeaderViewLayout()
+
+        layout.addView(this.savedSessionCardAddImageButtonView())
+
+        layout.addView(this.savedSessionCardInfoView(sessionRecord))
+
+        return layout
+    }
+
+
+    private fun savedSessionCardHeaderViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun savedSessionCardAddImageButtonView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val iconView                = ImageViewBuilder()
+        val labelView               = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.widthDp              = 70
+        layout.heightDp             = 70
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.gravity              = Gravity.CENTER
+
+        layout.corners              = Corners(4.0, 4.0, 4.0, 4.0)
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+
+        layout.child(iconView)
+//              .child(labelView)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        iconView.widthDp            = 22
+        iconView.heightDp           = 22
+
+        iconView.image              = R.drawable.icon_add_photo
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+        iconView.color              = theme.colorOrBlack(iconColorTheme)
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
@@ -794,11 +913,217 @@ class PlayUI(val theme : Theme,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         labelView.color              = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp             = 18f
+        labelView.sizeSp             = 16f
 
         labelView.padding.bottomDp   = 2f
 
         return layout.linearLayout(context)
+    }
+
+
+    private fun savedSessionCardInfoView(sessionRecord : SessionRecord) : LinearLayout
+    {
+        val layout = this.savedSessionCardInfoViewLayout()
+
+        layout.addView(this.savedSessionCardNameView(sessionRecord.sessionName.value))
+
+        layout.addView(this.savedSessionCardSummaryView(sessionRecord.sessionTagline))
+
+        return layout
+    }
+
+
+    private fun savedSessionCardInfoViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.margin.leftDp        = 8f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun savedSessionCardNameView(name : String) : TextView
+    {
+        val view                = TextViewBuilder()
+
+        view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        view.text               = name
+
+        view.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
+                                                context)
+
+        val nameColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        view.color              = theme.colorOrBlack(nameColorTheme)
+
+        view.sizeSp             = 20f
+
+        return view.textView(context)
+    }
+
+
+    private fun savedSessionCardSummaryView(summary : String) : TextView
+    {
+        val view                = TextViewBuilder()
+
+        view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        view.text               = summary
+
+        view.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
+                                                context)
+
+        val nameColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+        view.color              = theme.colorOrBlack(nameColorTheme)
+
+        view.sizeSp             = 17f
+
+        return view.textView(context)
+    }
+
+
+    private fun savedSessionCardDescriptionView(description : String) : TextView
+    {
+        val view                = TextViewBuilder()
+
+        view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        view.margin.topDp       = 6f
+
+        view.text               = description
+
+        view.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
+                                                context)
+
+        val nameColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        view.color              = theme.colorOrBlack(nameColorTheme)
+
+        view.sizeSp             = 16f
+
+        return view.textView(context)
+    }
+
+
+    // VIEWS > Open Button
+    // -----------------------------------------------------------------------------------------
+
+    private fun openSessionButtonView(sessionLoader : SessionLoader) : LinearLayout
+    {
+        val layout = this.openSessionButtonViewLayout()
+
+        val labelView = this.openSessionButtonLabelView()
+        layout.addView(labelView)
+
+        val progressBar = this.openSessionProgressBar()
+        layout.addView(progressBar)
+        progressBar.progress = 0
+
+        layout.setOnClickListener {
+            val animation = ObjectAnimator.ofInt(progressBar, "progress", 30)
+            animation.duration = 1000
+            animation.interpolator = DecelerateInterpolator()
+            animation.start()
+
+            labelView.text = "Loading\u2026"
+
+            newSession(sessionLoader, context)
+        }
+
+
+        return layout
+    }
+
+
+    private fun openSessionButtonViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.margin.topDp     = 2f
+        layout.margin.leftDp    = 4f
+        layout.margin.rightDp   = 4f
+
+        return layout.linearLayout(context)
+    }
+
+    private fun openSessionButtonContentViewLayout() : RelativeLayout
+    {
+        val layout              = RelativeLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        return layout.relativeLayout(context)
+    }
+
+
+    private fun openSessionProgressBar() : ProgressBar
+    {
+        val bar                 = ProgressBarBuilder()
+
+        bar.id                  = R.id.progress_bar
+
+        bar.widthDp             = LinearLayout.LayoutParams.MATCH_PARENT
+        bar.heightDp            = 6
+
+        bar.progressDrawableId  = R.drawable.progress_bar_load_session_2
+
+        return bar.progressBar(context)
+    }
+
+
+    private fun openSessionButtonLabelView() : TextView
+    {
+        val label               = TextViewBuilder()
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.margin.topDp      = 14f
+        label.margin.bottomDp   = 14f
+
+        label.layoutGravity     = Gravity.CENTER
+
+        label.text              = context.getString(R.string.load_session).toUpperCase()
+
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
+                                                context)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+        label.color             = theme.colorOrBlack(labelColorTheme)
+
+        label.sizeSp            = 17f
+
+        return label.textView(context)
     }
 
 
@@ -818,7 +1143,7 @@ class PlayUI(val theme : Theme,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
         recyclerView.backgroundColor    = theme.colorOrBlack(colorTheme)
 
-        recyclerView.adapter            = SavedSessionsRecyclerViewAdapater(sessionRecords, theme, context)
+        recyclerView.adapter            = SavedSessionsRecyclerViewAdapater(sessionRecords, this, theme, context)
 
         recyclerView.padding.bottomDp   = 80f
         recyclerView.clipToPadding      = false
@@ -831,6 +1156,7 @@ class PlayUI(val theme : Theme,
 
 
 class SavedSessionsRecyclerViewAdapater(private val records : List<SessionRecord>,
+                                        private val playUI : PlayUI,
                                         private val theme : Theme,
                                         private val context : Context)
                                          : RecyclerView.Adapter<SessionRecordViewHolder>()
@@ -858,6 +1184,10 @@ class SavedSessionsRecyclerViewAdapater(private val records : List<SessionRecord
 
         viewHolder.setDate(record.lastUsed)
         viewHolder.setNameText(record.sessionName.value)
+
+        viewHolder.setOnClick(View.OnClickListener {
+            playUI.showSessionCard(record)
+        })
     }
 
 
@@ -880,7 +1210,7 @@ class SessionRecordViewHolder(itemView : View,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var layout      : LinearLayout?  = null
+    var layout      : ViewGroup?  = null
     var dateView    : TextView?  = null
     var nameView    : TextView?  = null
 
@@ -900,6 +1230,12 @@ class SessionRecordViewHolder(itemView : View,
     // -----------------------------------------------------------------------------------------
     // METHODS
     // -----------------------------------------------------------------------------------------
+
+    fun setOnClick(onClick : View.OnClickListener)
+    {
+        this.layout?.setOnClickListener(onClick)
+    }
+
 
     fun setNameText(name : String)
     {
@@ -937,6 +1273,8 @@ object SessionRecordView
     private fun viewLayout(context : Context) : RelativeLayout
     {
         val layout              = RelativeLayoutBuilder()
+
+        layout.id               = R.id.session_record_layout
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT

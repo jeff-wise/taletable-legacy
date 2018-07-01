@@ -198,6 +198,8 @@ data class Session(val sessionId : SessionId,
 
     fun record() = SessionRecord(this.sessionId,
                                  this.sessionName,
+                                 this.sessionInfo.tagline,
+                                 this.sessionInfo.sessionDescription,
                                  Calendar.getInstance(),
                                  this.loader())
 
@@ -210,6 +212,8 @@ data class SessionLoadUpdate(val entityLoadNumber : Int,
 
 data class SessionRecord(val sessionId : SessionId,
                          val sessionName : SessionName,
+                         val sessionTagline : String,
+                         val sessionDescription : SessionDescription,
                          val lastUsed : Calendar,
                          val loader : SessionLoader?) : Serializable
 

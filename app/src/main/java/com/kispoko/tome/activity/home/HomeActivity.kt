@@ -10,6 +10,7 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
@@ -19,17 +20,26 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.session.NewSessionActivity
+import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
+import com.kispoko.tome.router.Router
+import com.kispoko.tome.rts.entity.EntitySheetId
+import com.kispoko.tome.rts.session.MessageSessionEntityLoaded
+import com.kispoko.tome.rts.session.MessageSessionLoad
+import com.kispoko.tome.rts.session.MessageSessionLoaded
+import com.kispoko.tome.rts.session.SessionLoader
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper
+import io.reactivex.disposables.CompositeDisposable
 
 // pinned
 // news
@@ -62,7 +72,7 @@ import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper
 /**
  * Feed Activity
  */
-class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList.OnRapidFloatingActionContentLabelListListener<Any>
+class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList.OnRapidFloatingActionContentLabelListListener<Any>
 {
 
     // -----------------------------------------------------------------------------------------
@@ -70,6 +80,13 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
     // -----------------------------------------------------------------------------------------
 
     private var rfabHelper : RapidFloatingActionHelper? = null
+
+
+    var hasSavedSessions : Boolean = false
+
+    var selectedSessionLoader : SessionLoader? = null
+
+    private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
 
     // -----------------------------------------------------------------------------------------
@@ -91,11 +108,11 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.tome), TextFontStyle.Medium)
+        this.configureToolbar(getString(R.string.tale_table), TextFontStyle.Medium)
 
         this.findViewById<TextView>(R.id.toolbar_title)?.let { titleTextView ->
 //            titleTextView.text     = " tome "
-            titleTextView.textSize = Util.spToPx(6.8f, this).toFloat()
+            titleTextView.textSize = Util.spToPx(6.2f, this).toFloat()
 //            titleTextView.typeface = Font.typeface(TextFont.Kaushan, TextFontStyle.Regular, this)
         }
 
@@ -107,7 +124,10 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
 //        this.initializeView()
 
+        this.initializeListeners()
+
         this.initializeViewPager()
+
     }
 
 
@@ -115,6 +135,62 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
     {
         menuInflater.inflate(R.menu.empty, menu)
         return true
+    }
+
+
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        this.messageListenerDisposable.clear()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MESSAGING
+    // -----------------------------------------------------------------------------------------
+
+    private fun initializeListeners()
+    {
+//        val newSessionMessageDisposable = Router.listen(NewSessionMessage::class.java)
+//                                                .subscribe(this::onMessage)
+//        this.messageListenerDisposable.add(newSessionMessageDisposable)
+
+        val sessionMessageDisposable = Router.listen(MessageSessionLoad::class.java)
+                                             .subscribe(this::onSessionLoadMessage)
+        this.messageListenerDisposable.add(sessionMessageDisposable)
+    }
+
+
+    private fun onSessionLoadMessage(message : MessageSessionLoad)
+    {
+        when (message)
+        {
+            is MessageSessionEntityLoaded ->
+            {
+                Log.d("***HOME ACTIVITY", "entity loaded message")
+                val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
+                progressBar?.let { bar ->
+                    Log.d("***HOME ACTIVITY", "updatin progress bar")
+                    val updateAmount = bar.progress + (72 / message.update.totalEntities)
+                    bar.progress = updateAmount
+                }
+            }
+            is MessageSessionLoaded ->
+            {
+                this.selectedSessionLoader?.let {
+                    val mainEntityId = it.mainEntityId
+                    when (mainEntityId)
+                    {
+                        is EntitySheetId -> {
+                            val intent = Intent(this, SheetActivity::class.java)
+                            intent.putExtra("sheet_id", mainEntityId.sheetId)
+                            startActivity(intent)
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
 
@@ -131,6 +207,8 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
 
         val context = this
+
+
         tabLayout.addOnTabSelectedListener(object : TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
                 override fun onTabSelected(tab : TabLayout.Tab) {
                     super.onTabSelected(tab)
@@ -161,9 +239,9 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
         tabLayout?.setupWithViewPager(viewPager)
 
-        tabLayout.getTabAt(0)?.customView = tabView(R.drawable.icon_home, 18, R.string.home, officialAppThemeLight)
-        tabLayout.getTabAt(1)?.customView = tabView(R.drawable.icon_die_dots, 17, R.string.play, officialAppThemeLight)
-        tabLayout.getTabAt(2)?.customView = tabView(R.drawable.icon_users, 17, R.string.share, officialAppThemeLight)
+        tabLayout.getTabAt(0)?.customView = tabView(R.drawable.icon_house, 19, R.string.home, officialAppThemeLight)
+        tabLayout.getTabAt(1)?.customView = tabView(R.drawable.icon_die, 19, R.string.play, officialAppThemeLight)
+        tabLayout.getTabAt(2)?.customView = tabView(R.drawable.icon_group, 22, R.string.share, officialAppThemeLight)
 
 
         val tab = tabLayout.getTabAt(0)
@@ -173,6 +251,62 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
         val labelView = tab?.customView?.findViewById<TextView>(R.id.tab_label)
         labelView?.setTextColor(tabIconColor)
+
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        val subToolbar = findViewById<LinearLayout>(R.id.sub_toolbar)
+        val tabDivider = findViewById<LinearLayout>(R.id.tab_divider)
+
+        val playUI = PlayUI(officialAppThemeLight, context)
+        subToolbar?.addView(playUI.savedSessionListHeaderView())
+
+        fab.setOnClickListener {
+            val intent = Intent(this, NewSessionActivity::class.java)
+            startActivity(intent)
+        }
+
+        fab.hide()
+
+        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            override fun onPageScrolled(position : Int, positionOffset : Float, positionOffsetPixels : Int) {
+            }
+
+            override fun onPageSelected(position : Int)
+            {
+                when (position)
+                {
+                    0 -> {
+                        subToolbar?.visibility = View.GONE
+                        tabDivider?.visibility = View.GONE
+                        fab?.hide()
+                    }
+                    1 -> {
+                        if (hasSavedSessions)
+                        {
+                            subToolbar?.visibility = View.VISIBLE
+                            tabDivider?.visibility = View.VISIBLE
+
+                            fab?.show()
+                        }
+                        else {
+                            fab?.hide()
+                            subToolbar?.visibility = View.GONE
+                            tabDivider?.visibility = View.GONE
+                        }
+                    }
+                    else -> {
+                        subToolbar?.visibility = View.GONE
+                        tabDivider?.visibility = View.GONE
+                        fab?.hide()
+                    }
+                }
+            }
+
+
+            override fun onPageScrollStateChanged(state : Int) {
+
+            }
+    });
 
     }
 
@@ -422,7 +556,7 @@ class FeedActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         labelView.color             = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp            = 17.5f
+        labelView.sizeSp            = 17f
 
         return layout.linearLayout(this)
     }

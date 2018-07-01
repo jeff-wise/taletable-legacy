@@ -204,7 +204,10 @@ public class ProgressBarBuilder implements ViewBuilder
 //            progressBar.setProgressDrawable(ContextCompat.getDrawable(context, this.progressDrawableId));
 //        }
 
-        progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_bar_load_session));
+        if (this.progressDrawableId != null)
+        {
+            progressBar.setProgressDrawable(ContextCompat.getDrawable(context, this.progressDrawableId));
+        }
 
         // > Background Resource
         // --------------------------------------------------------------------------------------

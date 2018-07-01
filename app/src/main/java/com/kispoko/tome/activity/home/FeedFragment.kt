@@ -91,8 +91,8 @@ class FeedFragment : Fragment()
             val feed = this.feed(homeActivity)
             addFeed(feed)
 
-            val tabDivider = homeActivity.findViewById<LinearLayout>(R.id.tab_divider)
-            tabDivider?.setBackgroundColor(Color.parseColor("#DDDDDD"))
+//            val tabDivider = homeActivity.findViewById<LinearLayout>(R.id.tab_divider)
+//            tabDivider?.setBackgroundColor(Color.parseColor("#DDDDDD"))
 
             val feedUI = FeedUI(feed, officialAppThemeLight, homeActivity)
             feedUI.view()

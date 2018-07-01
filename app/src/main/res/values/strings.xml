@@ -15,6 +15,8 @@
     <string name="groups">Groups</string>
     <string name="feed">Feed</string>
     <string name="tome">Tome</string>
+    <string name="tale_table">Tale Table</string>
+    <string name="back_to_session_list">Back to Session List</string>
 
     <string name="later">Later</string>
     <string name="_do">Do</string>

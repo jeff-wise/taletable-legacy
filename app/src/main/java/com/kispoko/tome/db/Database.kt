@@ -28,6 +28,8 @@ object Schema
         const val TABLE_NAME                        = "session"
         const val COLUMN_NAME_SESSION_ID            = "session_id"
         const val COLUMN_NAME_SESSION_NAME          = "session_name"
+        const val COLUMN_NAME_SESSION_TAGLINE       = "session_tagline"
+        const val COLUMN_NAME_SESSION_DESCRIPTION   = "session_description"
         const val COLUMN_NAME_GAME_ID               = "game_id"
         const val COLUMN_NAME_TYPE                  = "session_type"
         const val COLUMN_NAME_SESSION_LAST_USED     = "last_used_time"
@@ -58,6 +60,8 @@ private val createSessionTableSQL =
         "${BaseColumns._ID} INTEGER PRIMARY KEY," +
         "${Schema.SessionTable.COLUMN_NAME_SESSION_ID} TEXT," +
         "${Schema.SessionTable.COLUMN_NAME_SESSION_NAME} TEXT," +
+        "${Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE} TEXT," +
+        "${Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION} TEXT," +
         "${Schema.SessionTable.COLUMN_NAME_GAME_ID} TEXT," +
         "${Schema.SessionTable.COLUMN_NAME_TYPE} TEXT," +
         "${Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED} INTEGER," +
@@ -182,6 +186,8 @@ fun saveSession(sessionRecord : SessionRecord, context : Context) : AppEff<Long>
         val values = ContentValues().apply {
             put(Schema.SessionTable.COLUMN_NAME_SESSION_ID, sessionRecord.sessionId.value.toString())
             put(Schema.SessionTable.COLUMN_NAME_SESSION_NAME, sessionRecord.sessionName.value)
+            put(Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE, sessionRecord.sessionTagline)
+            put(Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION, sessionRecord.sessionDescription.value)
             put(Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED, System.currentTimeMillis())
             put(Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB, sessionBlob)
         }
@@ -214,6 +220,8 @@ fun loadSessionList(context : Context) : List<SessionRecord>
     val projection = arrayOf(BaseColumns._ID,
                              Schema.SessionTable.COLUMN_NAME_SESSION_ID,
                              Schema.SessionTable.COLUMN_NAME_SESSION_NAME,
+                             Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE,
+                             Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION,
                              Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED,
                              Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB)
 
@@ -239,6 +247,8 @@ fun loadSessionList(context : Context) : List<SessionRecord>
 
             val sessionId = SessionId.fromString(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_ID)))
             val sessionName = SessionName(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_NAME)))
+            val sessionTagline = getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE))
+            val sessionDescription = SessionDescription(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION)))
 
             val lastUsed = Calendar.getInstance()
             lastUsed.timeInMillis = getLong(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED))
@@ -249,7 +259,12 @@ fun loadSessionList(context : Context) : List<SessionRecord>
             Log.d("***DATABASE", "found session: $sessionName")
 
             if (sessionId != null) {
-                val sessionRecord = SessionRecord(sessionId, sessionName, lastUsed, loader)
+                val sessionRecord = SessionRecord(sessionId,
+                                                  sessionName,
+                                                  sessionTagline,
+                                                  sessionDescription,
+                                                  lastUsed,
+                                                  loader)
                 records.add(sessionRecord)
             }
         }
