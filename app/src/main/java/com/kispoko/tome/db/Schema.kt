@@ -6,8 +6,6 @@ import com.kispoko.tome.lib.orm.*
 import com.kispoko.tome.lib.orm.schema.*
 import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.campaign.CampaignId
-import com.kispoko.tome.model.campaign.CampaignName
-import com.kispoko.tome.model.campaign.CampaignSummary
 import com.kispoko.tome.model.game.*
 import com.kispoko.tome.model.engine.*
 import com.kispoko.tome.model.engine.dice.*
@@ -17,17 +15,12 @@ import com.kispoko.tome.model.engine.mechanic.*
 import com.kispoko.tome.model.engine.message.*
 import com.kispoko.tome.model.engine.procedure.*
 import com.kispoko.tome.model.engine.program.*
-import com.kispoko.tome.model.engine.reference.BooleanReference
-import com.kispoko.tome.model.engine.reference.NumberReference
 import com.kispoko.tome.model.engine.summation.Summation
 import com.kispoko.tome.model.engine.summation.SummationId
 import com.kispoko.tome.model.engine.summation.SummationName
-import com.kispoko.tome.model.engine.summation.term.TermName
 import com.kispoko.tome.model.engine.value.*
 import com.kispoko.tome.model.engine.variable.*
-import com.kispoko.tome.model.engine.constraint.ConstraintNumber
 import com.kispoko.tome.model.sheet.Settings
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.SheetName
 import com.kispoko.tome.model.sheet.SheetSummary
 import com.kispoko.tome.model.sheet.group.*
@@ -46,6 +39,7 @@ import com.kispoko.tome.model.sheet.widget.table.cell.TextCellFormat
 import com.kispoko.tome.model.sheet.widget.table.column.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.user.UserName
+
 
 
 //*********************************************************************************************//
@@ -101,13 +95,13 @@ val bookTable =
            "chapters")
 
 
-typealias DB_BookValue =
-    RowValue6<PrimValue<BookId>,
-              ProdValue<BookInfo>,
-              ProdValue<BookSettings>,
-              ProdValue<Engine>,
-              CollValue<Variable>,
-              CollValue<BookChapter>>
+//typealias DB_BookValue =
+//    RowValue6<PrimValue<BookId>,
+//              ProdValue<BookInfo>,
+//              ProdValue<BookSettings>,
+//              ProdValue<Engine>,
+//              CollValue<Variable>,
+//              CollValue<BookChapter>>
 
 
 // BOOK FORMAT
@@ -245,11 +239,11 @@ val bookReferenceTable =
            "section_id",
            "subsection_id")
 
-typealias DB_BookReferenceValue =
-    RowValue4<PrimValue<BookId>,
-              PrimValue<BookChapterId>,
-              MaybePrimValue<BookSectionId>,
-              MaybePrimValue<BookSubsectionId>>
+//typealias DB_BookReferenceValue =
+//    RowValue4<PrimValue<BookId>,
+//              PrimValue<BookChapterId>,
+//              MaybePrimValue<BookSectionId>,
+//              MaybePrimValue<BookSubsectionId>>
 
 
 // BORDER
@@ -271,19 +265,19 @@ typealias DB_BorderValue =
 // CAMPAIGN
 // ---------------------------------------------------------------------------------------------
 
-val campaignTable = Table5("campaign",
-                           "campaign_id",
-                           "engine",
-                           "name",
-                           "summary",
-                           "game_id")
-
-typealias DB_CampaignValue =
-    RowValue5<PrimValue<CampaignId>,
-              ProdValue<Engine>,
-              PrimValue<CampaignName>,
-              PrimValue<CampaignSummary>,
-              PrimValue<GameId>>
+//val campaignTable = Table5("campaign",
+//                           "campaign_id",
+//                           "engine",
+//                           "name",
+//                           "summary",
+//                           "game_id")
+//
+//typealias DB_CampaignValue =
+//    RowValue5<PrimValue<CampaignId>,
+//              ProdValue<Engine>,
+//              PrimValue<CampaignName>,
+//              PrimValue<CampaignSummary>,
+//              PrimValue<GameId>>
 
 
 // CHAPTER BUTTON FORMAT
@@ -822,13 +816,13 @@ val sheetTable =
            "variables",
            "settings")
 
-typealias DB_SheetValue =
-    RowValue6<PrimValue<SheetId>,
-              PrimValue<CampaignId>,
-              CollValue<Section>,
-              ProdValue<Engine>,
-              CollValue<Variable>,
-              ProdValue<Settings>>
+//typealias DB_SheetValue =
+//    RowValue6<PrimValue<SheetId>,
+//              PrimValue<CampaignId>,
+//              CollValue<Section>,
+//              ProdValue<Engine>,
+//              CollValue<Variable>,
+//              ProdValue<Settings>>
 
 
 // STATEMENT

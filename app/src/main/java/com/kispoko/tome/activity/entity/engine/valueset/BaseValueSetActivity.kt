@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.entity.engine.valueset
 
 
 import android.content.Context
+import android.content.Entity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -23,13 +24,13 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.value.Value
 import com.kispoko.tome.model.engine.value.ValueSetBase
 import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.SimpleDividerItemDecoration
@@ -50,7 +51,7 @@ class BaseValueSetActivity : AppCompatActivity()
     // -----------------------------------------------------------------------------------------
 
     private var valueSetId   : ValueSetId? = null
-    private var gameId : GameId? = null
+    private var gameId : EntityId? = null
 
     private var valueSet : ValueSetBase? = null
 
@@ -79,7 +80,7 @@ class BaseValueSetActivity : AppCompatActivity()
             this.valueSetId = this.intent.getSerializableExtra("value_set_id") as ValueSetId
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
         // (3) Lookup Value Set
         // -------------------------------------------------------------------------------------
@@ -136,7 +137,7 @@ class BaseValueSetActivity : AppCompatActivity()
     // -----------------------------------------------------------------------------------------
 
     private fun initializeValueListView(valueSet : ValueSetBase,
-                                        gameId : GameId)
+                                        gameId : EntityId)
     {
         val recyclerView = this.findViewById<RecyclerView>(R.id.value_list_view)
 
@@ -261,7 +262,7 @@ class BaseValueSetActivity : AppCompatActivity()
 
 class ValueRecyclerViewAdapter(var values : List<Value>,
                                val themeId : ThemeId,
-                               val gameId : GameId,
+                               val gameId : EntityId,
                                val activity : AppCompatActivity)
                                : RecyclerView.Adapter<ValueSummaryViewHolder>()
 {

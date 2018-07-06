@@ -3,7 +3,6 @@ package com.kispoko.tome.rts.entity.theme
 
 
 import com.kispoko.tome.app.ApplicationError
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ThemeId
 

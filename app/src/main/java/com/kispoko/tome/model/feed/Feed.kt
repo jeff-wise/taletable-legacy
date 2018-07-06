@@ -26,7 +26,7 @@ import java.util.*
 /**
  * Feed
  */
-data class Feed(override val id : UUID,
+data class Feed(private val feedId : EntityId,
                 private val settings : FeedSettings,
                 private val cards : MutableList<Card>,
                 private val variables : MutableList<Variable>,
@@ -54,8 +54,8 @@ data class Feed(override val id : UUID,
             is DocDict ->
             {
                 apply(::Feed,
-                      // Id
-                      effValue(UUID.randomUUID()),
+                      // Feed Id
+                      doc.at("id") ap { EntityId.fromDocument(it) },
                       // Settings
                       split(doc.maybeAt("settings"),
                             effValue(FeedSettings.default()),
@@ -78,7 +78,7 @@ data class Feed(override val id : UUID,
         }
 
 
-        fun empty() : Feed = Feed(UUID.randomUUID(),
+        fun empty() : Feed = Feed(EntityId(UUID.randomUUID()),
                                   FeedSettings(ThemeId.Light),
                                   mutableListOf(),
                                   mutableListOf(),
@@ -122,10 +122,7 @@ data class Feed(override val id : UUID,
     override fun summary() = ""
 
 
-    override fun entityLoader() = EntityLoaderUnknown()
-
-
-    override fun entityId() = EntityFeedId(this.id)
+    override fun entityId() = this.feedId
 
 
     // -----------------------------------------------------------------------------------------

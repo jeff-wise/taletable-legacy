@@ -12,10 +12,6 @@
                 android:angle="270"
                 />
 
-            <corners
-                android:radius="2dp" >
-            </corners>
-
         </shape>
     </item>
 
@@ -45,9 +41,6 @@
                     android:angle="270"
                     />
 
-                <corners
-                    android:radius="2dp" >
-                </corners>
 
             </shape>
         </clip>

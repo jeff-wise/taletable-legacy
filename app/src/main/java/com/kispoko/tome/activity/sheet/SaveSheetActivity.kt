@@ -17,18 +17,17 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.value
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.engine.variable.VariableId
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialThemeLight
-import com.kispoko.tome.rts.entity.EntitySheetId
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.textVariable
 import com.kispoko.tome.util.configureToolbar
 import maybe.Just
+
 
 
 /**
@@ -41,7 +40,7 @@ class SaveSheetActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var sheetId : SheetId? = null
+    private var sheetId : EntityId? = null
 
     private var fab : FloatingActionButton? = null
 
@@ -63,7 +62,7 @@ class SaveSheetActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         if (this.intent.hasExtra("sheet_id"))
-            this.sheetId = this.intent.getSerializableExtra("sheet_id") as SheetId
+            this.sheetId = this.intent.getSerializableExtra("sheet_id") as EntityId
 
         // (3) Initialize Views
         // -------------------------------------------------------------------------------------
@@ -154,7 +153,7 @@ class SaveSheetActivity : AppCompatActivity()
 }
 
 
-class SaveSheetUI(val sheetId : SheetId,
+class SaveSheetUI(val sheetId : EntityId,
                   val theme : Theme,
                   val context : Context)
 {
@@ -346,8 +345,8 @@ class SaveSheetUI(val sheetId : SheetId,
         value.padding.leftDp        = 8f
         value.padding.rightDp       = 8f
 
-        textVariable(VariableId("name"), EntitySheetId(sheetId)) apDo { textVar ->
-        textVar.value(EntitySheetId(sheetId))                    apDo { maybeName ->
+        textVariable(VariableId("name"), sheetId) apDo { textVar ->
+        textVar.value(sheetId)                    apDo { maybeName ->
             when (maybeName) {
                 is Just    -> value.text = maybeName.value
                 is Nothing -> value.text = "Sheet Name"

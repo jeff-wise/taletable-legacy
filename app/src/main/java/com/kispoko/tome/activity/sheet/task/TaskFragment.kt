@@ -10,9 +10,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.official.officialThemeLight
-import com.kispoko.tome.rts.entity.EntitySheetId
+import com.kispoko.tome.rts.entity.EntityId
 
 
 
@@ -24,7 +23,7 @@ class TaskFragment : Fragment()
     // -----------------------------------------------------------------------------------------
 
     // Must be used from a sheet activity
-    var sheetId : SheetId? = null
+    var sheetId : EntityId? = null
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -32,7 +31,7 @@ class TaskFragment : Fragment()
 
     companion object
     {
-        fun newInstance(sheetId : SheetId?) : TaskFragment
+        fun newInstance(sheetId : EntityId?) : TaskFragment
         {
             val taskFragment = TaskFragment()
 
@@ -54,7 +53,7 @@ class TaskFragment : Fragment()
     {
         super.onCreate(savedInstanceState)
 
-        this.sheetId = arguments?.getSerializable("sheet_id") as SheetId
+        this.sheetId = arguments?.getSerializable("sheet_id") as EntityId
     }
 
 
@@ -67,7 +66,7 @@ class TaskFragment : Fragment()
 
         this.sheetId?.let {
             val sheetActivity = context as SheetActivity
-            val taskUI = TaskUI(EntitySheetId(it), officialThemeLight, sheetActivity)
+            val taskUI = TaskUI(it, officialThemeLight, sheetActivity)
             fragmentView.addView(taskUI.view())
         }
 

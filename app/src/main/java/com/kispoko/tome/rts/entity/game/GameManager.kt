@@ -7,6 +7,7 @@ import com.kispoko.tome.app.AppGameError
 import com.kispoko.tome.model.game.*
 import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.official.*
+import com.kispoko.tome.rts.entity.EntityId
 import effect.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -29,7 +30,7 @@ object GameManager
 
     private val game = "game"
 
-    private val session : MutableMap<GameId,GameRecord> = hashMapOf()
+    private val session : MutableMap<EntityId,GameRecord> = hashMapOf()
 
 
     // -----------------------------------------------------------------------------------------
@@ -54,14 +55,14 @@ object GameManager
     fun openGames() : List<Game> = this.session.values.map { it.game() }
 
 
-    fun gameWithId(gameId : GameId) : AppEff<Game> =
+    fun gameWithId(gameId : EntityId) : AppEff<Game> =
             note(this.session[gameId]?.game(),
                     AppGameError(GameDoesNotExist(gameId)))
 
     // Engine
     // -----------------------------------------------------------------------------------------
 
-    fun engine(gameId : GameId) : AppEff<Engine> =
+    fun engine(gameId : EntityId) : AppEff<Engine> =
             note(this.session[gameId]?.game()?.engine(),
                  AppGameError(GameDoesNotExist(gameId)))
 

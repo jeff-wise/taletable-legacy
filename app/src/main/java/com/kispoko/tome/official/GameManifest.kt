@@ -2,28 +2,71 @@
 package com.kispoko.tome.official
 
 
+import android.content.Context
 import com.kispoko.culebra.*
-import com.kispoko.tome.model.engine.mechanic.MechanicCategory
-import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
-import com.kispoko.tome.model.engine.value.ValueSet
-import com.kispoko.tome.model.engine.value.ValueSetId
-import com.kispoko.tome.model.game.Game
-import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.rts.entity.Entity
+import com.kispoko.tome.ApplicationAssets
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppOfficialError
+import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.EntityKind
 import com.kispoko.tome.rts.entity.EntityKindId
 import com.kispoko.tome.rts.session.SessionId
-import effect.apply
-import effect.effValue
-import effect.split
+import effect.*
 import maybe.Maybe
 import maybe.maybe
+import org.yaml.snakeyaml.Yaml
 import java.io.Serializable
 
 
 
 // ---------------------------------------------------------------------------------------------
-// Game Manifest
+// | FUNCTIONS
+// ---------------------------------------------------------------------------------------------
+
+
+private var gameManifest: GameManifest? = null
+
+
+// -----------------------------------------------------------------------------------------
+// GAME MANIFEST
+// -----------------------------------------------------------------------------------------
+
+fun gameManifest(context : Context): GameManifest? {
+    return if (gameManifest == null) {
+        val manifest = loadGameManifest(context)
+        when (manifest) {
+            is Val -> manifest.value
+            is Err -> {
+                ApplicationLog.error(manifest.error)
+                null
+            }
+        }
+    } else {
+        null
+    }
+}
+
+
+private fun loadGameManifest(context : Context) : AppEff<GameManifest>
+{
+    val manifestFilePath = ApplicationAssets.officialDirectoryPath + "/game_manifest.yaml"
+
+    val gameManifestParser = parseYaml(context.assets.open(manifestFilePath),
+            GameManifest.Companion::fromYaml)
+
+    return when (gameManifestParser) {
+        is Val -> {
+            effValue(gameManifestParser.value)
+        }
+        is Err -> effError(AppOfficialError(
+                    GameManifestParseError(gameManifestParser.error.toString())))
+    }
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// | DATA TYPES
 // ---------------------------------------------------------------------------------------------
 
 /**
@@ -33,16 +76,16 @@ data class GameManifest(val gameSummaries : List<GameSummary>)
 {
 
     // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // | Properties
     // -----------------------------------------------------------------------------------------
 
-    private val summaryById : MutableMap<GameId,GameSummary> =
+    private val summaryById : MutableMap<EntityId,GameSummary> =
                                     gameSummaries.associateBy { it.gameId }
-                                            as MutableMap<GameId,GameSummary>
+                                            as MutableMap<EntityId,GameSummary>
 
 
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | Constructors
     // -----------------------------------------------------------------------------------------
 
     companion object
@@ -67,12 +110,13 @@ data class GameManifest(val gameSummaries : List<GameSummary>)
     // METHODS
     // -----------------------------------------------------------------------------------------
 
-    fun game(gameId : GameId) : GameSummary? = this.summaryById[gameId]
+    fun game(gameId : EntityId) : GameSummary? = this.summaryById[gameId]
 
 }
 
 
-data class GameSummary(val gameId : GameId,
+data class GameSummary(val gameId : EntityId,
+                       val path : String,
                        val name : String,
                        val description : String,
                        val genre : String,
@@ -103,9 +147,9 @@ data class GameSummary(val gameId : GameId,
             {
                 apply(::GameSummary,
                       // Game Id
-                      yamlValue.text("game_id") ap {
-                          effValue<YamlParseError,GameId>(GameId(it))
-                      },
+                      yamlValue.at("game_id") ap { EntityId.fromYaml(it) },
+                      // Path
+                      yamlValue.text("path"),
                       // Name
                       yamlValue.text("name"),
                       // Description

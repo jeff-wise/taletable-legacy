@@ -17,15 +17,15 @@ import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.model.theme.official.officialThemeLight
+import com.kispoko.tome.official.gameManifest
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.EntityKind
-import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.util.configureToolbar
 
 
@@ -40,7 +40,7 @@ class EntityTypeListActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameId : GameId? = null
+    private var gameId : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ class EntityTypeListActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
         // (3) Initialize Views
         // -------------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ class EntityTypeListActivity : AppCompatActivity()
         val content = this.findViewById<LinearLayout>(R.id.content)
 
         this.gameId?.let { gameId ->
-            val gameSummary = OfficialManager.gameManifest(this)?.game(gameId)
+            val gameSummary = gameManifest(this)?.game(gameId)
             if (gameSummary != null) {
                 val entityKindListUI = EntityKindListUI(gameSummary.entityKinds,
                                                         gameId,
@@ -164,7 +164,7 @@ class EntityTypeListActivity : AppCompatActivity()
 
 
 class EntityKindListUI(val entityKinds : List<EntityKind>,
-                       val gameId : GameId,
+                       val gameId : EntityId,
                        val theme : Theme,
                        val context : Context)
 {

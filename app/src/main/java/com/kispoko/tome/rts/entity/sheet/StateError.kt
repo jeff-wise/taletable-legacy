@@ -5,7 +5,6 @@ package com.kispoko.tome.rts.entity.sheet
 import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.engine.reference.NumberReference
 import com.kispoko.tome.model.engine.variable.*
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.entity.EntityId
 
 

@@ -17,7 +17,12 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.engine.EngineValueText
+import com.kispoko.tome.model.engine.value.ValueId
 import com.kispoko.tome.model.engine.variable.VariableId
+import com.kispoko.tome.model.entity.StoryWidgetUpdateTextPart
+import com.kispoko.tome.model.entity.StoryWidgetUpdateTextValuePart
+import com.kispoko.tome.model.entity.TextWidgetUpdateSetText
+import com.kispoko.tome.model.entity.WidgetUpdateStoryWidget
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -492,6 +497,11 @@ class TextEditorViewBuilder(val title : String,
                 {
                     is UpdateTargetStoryWidgetPart ->
                     {
+                        val storyWidgetUpdate = StoryWidgetUpdateTextPart(
+                                                    updateTarget.storyWidgetId,
+                                                    updateTarget.partIndex,
+                                                    currentValue)
+                        Router.send(MessageSheetUpdate(storyWidgetUpdate))
                     }
                     is UpdateTargetTextWidget ->
                     {

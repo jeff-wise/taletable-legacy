@@ -17,7 +17,6 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -25,7 +24,9 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.theme.ThemeManager
+
 
 
 /**
@@ -39,7 +40,7 @@ class OpenSheetDialog : DialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var sheetName : String? = null
-    private var sheetId : SheetId? = null
+    private var sheetId : EntityId? = null
 
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Light)
@@ -51,7 +52,7 @@ class OpenSheetDialog : DialogFragment()
 
     companion object
     {
-        fun newInstance(sheetName : String, sheetId : SheetId) : OpenSheetDialog
+        fun newInstance(sheetName : String, sheetId : EntityId) : OpenSheetDialog
         {
             val dialog = OpenSheetDialog()
 
@@ -75,7 +76,7 @@ class OpenSheetDialog : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.sheetName = arguments?.getString("sheet_name")
-        this.sheetId   = arguments?.getSerializable("sheet_id") as SheetId
+        this.sheetId   = arguments?.getSerializable("sheet_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -143,7 +144,7 @@ class OpenSheetDialog : DialogFragment()
 
 
 class OpenSheetViewBuilder(val sheetName : String,
-                           val sheetId : SheetId,
+                           val sheetId : EntityId,
                            val themeId : ThemeId,
                            val context : Context)
 {

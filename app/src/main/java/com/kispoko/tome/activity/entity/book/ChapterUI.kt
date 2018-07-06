@@ -11,14 +11,12 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.book.Book
-import com.kispoko.tome.model.book.BookChapter
-import com.kispoko.tome.model.book.BookContent
+import com.kispoko.tome.model.book.*
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
-
+import kotlin.text.Typography.section
 
 
 class ChapterUI(val chapter : BookChapter,
@@ -174,7 +172,7 @@ class ChapterUI(val chapter : BookChapter,
         val layout = this.sectionListViewLayout()
 
         chapter.sections().forEach {
-            layout.addView(this.sectionSummaryView(it.title().value))
+            layout.addView(this.sectionSummaryView(it))
         }
 
         return layout
@@ -194,11 +192,11 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-    private fun sectionSummaryView(summaryString : String) : ViewGroup
+    private fun sectionSummaryView(section : BookSection) : ViewGroup
     {
-        val layout = this.sectionSummaryViewLayout()
+        val layout = this.sectionSummaryViewLayout(section.sectionId)
 
-        layout.addView(this.sectionSummaryTextView(summaryString))
+        layout.addView(this.sectionSummaryTextView(section.title().value))
 
         layout.addView(this.sectionSummaryIconView())
 
@@ -206,7 +204,7 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-    private fun sectionSummaryViewLayout() : RelativeLayout
+    private fun sectionSummaryViewLayout(sectionId : BookSectionId) : RelativeLayout
     {
         val layout                  = RelativeLayoutBuilder()
 
@@ -225,6 +223,14 @@ class ChapterUI(val chapter : BookChapter,
         layout.padding.rightDp      = 8f
 
         layout.margin.topDp         = 1f
+
+        layout.onClick              = View.OnClickListener {
+            val sectionReference = BookReferenceSection(book.entityId(),
+                                                        this.chapter.chapterId,
+                                                        sectionId)
+            bookActivity.setCurrentBookReference(sectionReference)
+        }
+
 
         return layout.relativeLayout(context)
 

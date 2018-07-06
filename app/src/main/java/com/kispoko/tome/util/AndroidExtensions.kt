@@ -32,6 +32,7 @@ import kotlinx.coroutines.experimental.launch
 
 
 fun AppCompatActivity.configureToolbar(title : String,
+                                       font : TextFont? = null,
                                        fontStyle : TextFontStyle? = null,
                                        textSize : Float? = null)
 {
@@ -49,10 +50,13 @@ fun AppCompatActivity.configureToolbar(title : String,
 
     val titleView = this.findViewById<TextView>(R.id.toolbar_title)
 
-    if (fontStyle != null)
-        titleView.typeface  = Font.typeface(TextFont.default(), fontStyle, this)
+
+    if (font != null && fontStyle != null)
+        titleView.typeface  = Font.typeface(font, fontStyle, this)
+    else if (font != null)
+        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
     else
-        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Medium, this)
+        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
 
     val trimmedTitle = if (title.length >= 25) {
         title.substring(0, 25).plus("\u2026")

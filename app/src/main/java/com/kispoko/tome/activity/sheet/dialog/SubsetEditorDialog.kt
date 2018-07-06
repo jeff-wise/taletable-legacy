@@ -20,6 +20,8 @@ import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.engine.value.*
 import com.kispoko.tome.model.engine.variable.TextListVariable
 import com.kispoko.tome.model.engine.variable.VariableId
+import com.kispoko.tome.model.entity.ListWidgetUpdateSetCurrentValue
+import com.kispoko.tome.model.entity.TableWidgetUpdateSubset
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle

@@ -16,43 +16,18 @@ summaries:
     - Human
     - Rogue
     tagline: '1st Level Human Rogue'
-  game_id: magic_of_heroes
-  loaders:
-  - type: official
-    official:
-      type: sheet
-      sheet:
-        name: Casmey Dalseya
-        category: PC
-        sheet_id: character_casmey_level_1
-        game_id: magic_of_heroes
-  - type: official
-    official:
-      type: campaign
-      campaign:
-        name: Isara
-        category: Setting
-        campaign_id: isara
-        game_id: magic_of_heroes
-  - type: official
-    official:
-      type: game
-      game:
-        name: The Magic of Heroes
-        category: Game
-        game_id: magic_of_heroes
-  - type: official
-    official:
-      type: book
-      book:
-        name: Core Rules
-        category: Book
-        book_id: core_rules
-        game_id: magic_of_heroes
+  game_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
+  entity_ids:
+  # PC - Casmey
+  - 'ff30a874-976b-4fce-b1c9-618c0d839330'
+  # Campaign - Isara
+  - 'cccb2da0-f6e5-4ea1-acee-6469942cfb3b'
+  # Game - Magic of Heroes
+  - '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
+  # Book - Core Rules
+  - '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
   main_entity_kind_id: player_character
-  main_entity_id:
-    type: sheet
-    sheet: character_casmey_level_1
+  main_entity_id: 'ff30a874-976b-4fce-b1c9-618c0d839330'
 - session_id: "6f6f148c-19e1-4ec1-bb42-49170b0e3402"
   session_name: Sanson Alavidril
   info:
@@ -70,40 +45,15 @@ summaries:
     - Human
     - Wizard
     tagline: '1st Level Human Wizard'
-  game_id: magic_of_heroes
-  loaders:
-  - type: official
-    official:
-      type: sheet
-      sheet:
-        name: Sanson Alavidril
-        category: PC
-        sheet_id: character_sanson_level_1
-        game_id: magic_of_heroes
-  - type: official
-    official:
-      type: campaign
-      campaign:
-        name: Isara
-        category: Setting
-        campaign_id: isara
-        game_id: magic_of_heroes
-  - type: official
-    official:
-      type: game
-      game:
-        name: The Magic of Heroes
-        category: Game
-        game_id: magic_of_heroes
-  - type: official
-    official:
-      type: book
-      book:
-        name: Core Rules
-        category: Book
-        book_id: core_rules
-        game_id: magic_of_heroes
+  game_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
+  entity_ids:
+  # PC - Sanson
+  - '41aaaa67-8277-462c-8e33-a06da8ad930f'
+  # Campaign - Isara
+  - 'cccb2da0-f6e5-4ea1-acee-6469942cfb3b'
+  # Game - Magic of Heroes
+  - '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
+  # Book - Core Rules
+  - '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
   main_entity_kind_id: player_character
-  main_entity_id:
-    type: sheet
-    sheet: character_sanson_level_1
+  main_entity_id: '41aaaa67-8277-462c-8e33-a06da8ad930f'

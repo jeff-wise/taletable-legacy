@@ -33,13 +33,13 @@ import com.kispoko.tome.model.engine.mechanic.MechanicCategoryReference
 import com.kispoko.tome.model.engine.procedure.Procedure
 import com.kispoko.tome.model.engine.procedure.ProcedureId
 import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
-import com.kispoko.tome.model.engine.tag.Tag
 import com.kispoko.tome.model.engine.tag.TagQuery
 import com.kispoko.tome.model.engine.tag.TagQueryAll
 import com.kispoko.tome.model.engine.value.Value
 import com.kispoko.tome.model.engine.value.ValueReference
 import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.engine.variable.*
+import com.kispoko.tome.model.entity.*
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.group.GroupReference
 import com.kispoko.tome.model.sheet.style.BorderEdge
@@ -100,8 +100,6 @@ sealed class Widget : ToDocument, SheetComponent, Serializable
                                             as ValueParser<Widget>
                     "widget_number"   -> NumberWidget.fromDocument(doc)
                                             as ValueParser<Widget>
-//                    "widget_option"   -> OptionWidget.fromDocument(doc)
-//                                            as ValueParser<Widget>
                     "widget_points"   -> PointsWidget.fromDocument(doc)
                                             as ValueParser<Widget>
                     "widget_quote"    -> QuoteWidget.fromDocument(doc)
@@ -822,21 +820,22 @@ data class BooleanWidget(private val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
 
     fun update(booleanWidgetUpdate : WidgetUpdateBooleanWidget,
-               entityId: EntityId,
-               rootView : View,
+               entityId : EntityId,
+               rootView : View?,
                context : Context)
     {
-        return when (booleanWidgetUpdate)
+        when (booleanWidgetUpdate)
         {
             is BooleanWidgetUpdateToggle ->
             {
                 this.toggleValues(entityId)
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(it, entityId, context) }
+
             }
             is BooleanWidgetUpdateSetValue ->
             {
                 this.updateValues(booleanWidgetUpdate.newValue, entityId)
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(it, entityId, context) }
             }
         }
     }
@@ -1453,19 +1452,19 @@ data class ListWidget(val widgetId : WidgetId,
 
     fun update(listWidgetUpdate : WidgetUpdateListWidget,
                entityId : EntityId,
-               rootView : View,
+               rootView : View?,
                context : Context) =
         when (listWidgetUpdate)
         {
             is ListWidgetUpdateSetCurrentValue ->
             {
                 this.updateCurrentValue(listWidgetUpdate.newCurrentValue, entityId)
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(rootView, entityId, context) }
             }
             is ListWidgetUpdateAddValue ->
             {
                 this.updateAddValue(listWidgetUpdate.newValue, entityId)
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(rootView, entityId, context) }
             }
         }
 
@@ -2016,7 +2015,7 @@ data class NumberWidget(val widgetId : WidgetId,
 
     fun update(update : WidgetUpdateNumberWidget,
                entityId: EntityId,
-               rootView : View,
+               rootView : View?,
                context : Context) =
         when (update)
         {
@@ -2025,7 +2024,7 @@ data class NumberWidget(val widgetId : WidgetId,
                 val newValue = EngineValueNumber(update.newValue)
                 updateVariable(this.valueVariableId(), newValue, entityId)
 
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(rootView, entityId, context) }
             }
         }
 
@@ -2396,14 +2395,14 @@ data class PointsWidget(val widgetId : WidgetId,
 
     fun update(pointsWidgetUpdate : WidgetUpdatePointsWidget,
                entityId : EntityId,
-               rootView : View,
+               rootView : View?,
                context : Context) =
         when (pointsWidgetUpdate)
         {
             is PointsWidgetUpdateSetCurrentValue ->
             {
                 this.updateCurrentValue(pointsWidgetUpdate.newCurrentValue, entityId)
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(rootView, entityId, context) }
             }
         }
 
@@ -3042,7 +3041,7 @@ data class StoryWidget(val widgetId : WidgetId,
 
     fun update(storyWidgetUpdate : WidgetUpdateStoryWidget,
                entityId : EntityId,
-               rootView : View,
+               rootView : View?,
                context : Context)
     {
         when (storyWidgetUpdate)
@@ -3050,6 +3049,8 @@ data class StoryWidget(val widgetId : WidgetId,
             is StoryWidgetUpdateNumberPart -> {
                 this.updateNumberPart(storyWidgetUpdate, rootView, entityId, context)
             }
+            is StoryWidgetUpdateTextPart ->
+                this.updateTextPart(storyWidgetUpdate, rootView, entityId, context)
             is StoryWidgetUpdateTextValuePart ->
                 this.updateTextValuePart(storyWidgetUpdate, rootView, entityId, context)
         }
@@ -3057,7 +3058,7 @@ data class StoryWidget(val widgetId : WidgetId,
 
 
     private fun updateNumberPart(partUpdate : StoryWidgetUpdateNumberPart,
-                                 rootView : View,
+                                 rootView : View?,
                                  entityId : EntityId,
                                  context : Context)
     {
@@ -3075,14 +3076,39 @@ data class StoryWidget(val widgetId : WidgetId,
                     }
                 }
 
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(rootView, entityId, context) }
+            }
+        }
+    }
+
+
+    private fun updateTextPart(partUpdate : StoryWidgetUpdateTextPart,
+                               rootView : View?,
+                               entityId : EntityId,
+                               context : Context)
+    {
+        val part = this.story()[partUpdate.partIndex]
+        when (part)
+        {
+            is StoryPartVariable ->
+            {
+                // Update Value
+                val variable = part.partVariable(entityId)
+                when (variable) {
+                    is TextVariable ->
+                    {
+                        variable.updateValue(partUpdate.newValue, entityId)
+                    }
+                }
+
+                rootView?.let { this.updateView(rootView, entityId, context) }
             }
         }
     }
 
 
     private fun updateTextValuePart(partUpdate : StoryWidgetUpdateTextValuePart,
-                                    rootView : View,
+                                    rootView : View?,
                                     entityId : EntityId,
                                     context : Context)
     {
@@ -3104,7 +3130,7 @@ data class StoryWidget(val widgetId : WidgetId,
                     }
                 }
 
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(rootView, entityId, context) }
             }
         }
     }
@@ -3518,13 +3544,13 @@ data class TableWidget(private val widgetId : WidgetId,
 
     fun update(tableWidgetUpdate : WidgetUpdateTableWidget,
                entityId : EntityId,
-               rootView : View,
+               rootView : View?,
                context : Context) =
         when (tableWidgetUpdate)
         {
             is TableWidgetUpdateSetNumberCell ->
             {
-                this.updateNumberCellView(tableWidgetUpdate, rootView)
+                rootView?.let { this.updateNumberCellView(tableWidgetUpdate, it) }
                 this.updateNumberCellValue(tableWidgetUpdate, entityId)
             }
             is TableWidgetUpdateSetTextCellValue ->
@@ -3535,11 +3561,15 @@ data class TableWidget(private val widgetId : WidgetId,
             }
             is TableWidgetUpdateInsertRowBefore ->
             {
-                this.addRow(tableWidgetUpdate.selectedRow, rootView, entityId, context)
+                rootView?.let {
+                    this.addRow(tableWidgetUpdate.selectedRow, rootView, entityId, context)
+                }
             }
             is TableWidgetUpdateInsertRowAfter ->
             {
-                this.addRow(tableWidgetUpdate.selectedRow + 1, rootView, entityId, context)
+                rootView?.let {
+                    this.addRow(tableWidgetUpdate.selectedRow + 1, rootView, entityId, context)
+                }
             }
             is TableWidgetUpdateSubset ->
             {
@@ -3552,7 +3582,7 @@ data class TableWidget(private val widgetId : WidgetId,
                 this.removeTableFromState(entityId)
                 this.addTableToState(entityId, context)
 
-                this.updateView(rootView, entityId, context)
+                rootView?.let { this.updateView(rootView, entityId, context) }
             }
         }
 
@@ -3589,7 +3619,7 @@ data class TableWidget(private val widgetId : WidgetId,
 
 
     private fun updateTextCellValueValue(cellUpdate : TableWidgetUpdateSetTextCellValue,
-                                         rootView : View,
+                                         rootView : View?,
                                          entityId : EntityId)
     {
         val cell = this.textCellById[cellUpdate.cellId]
@@ -3614,7 +3644,7 @@ data class TableWidget(private val widgetId : WidgetId,
 
         // Update View
         cell?.viewId?.let {
-            val textView = rootView.findViewById<TextView>(it)
+            val textView = rootView?.findViewById<TextView>(it)
             textView?.text = newValue
         }
     }
@@ -4119,14 +4149,17 @@ data class TextWidget(val widgetId : WidgetId,
 
     fun update(update : WidgetUpdateTextWidget,
                entityId : EntityId,
-               rootView : View,
+               rootView : View?,
                context : Context) =
         when (update)
         {
             is TextWidgetUpdateSetText ->
             {
                 this.updateValue(update.newText, entityId)
-                this.updateView(rootView, entityId, context)
+
+                rootView?.let {
+                    this.updateView(rootView, entityId, context)
+                }
             }
         }
 

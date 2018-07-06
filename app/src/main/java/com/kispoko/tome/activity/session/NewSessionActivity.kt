@@ -17,7 +17,6 @@ import android.view.WindowManager
 import android.widget.*
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -25,8 +24,6 @@ import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.official.GameSummary
 import com.kispoko.tome.router.Router
-import com.kispoko.tome.rts.entity.EntityLoader
-import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.rts.session.*
 import com.kispoko.tome.util.configureToolbar
 import maybe.Just
@@ -37,8 +34,12 @@ import android.view.animation.DecelerateInterpolator
 import android.animation.ObjectAnimator
 import android.util.Log
 import com.kispoko.tome.activity.sheet.SheetActivity
-import com.kispoko.tome.rts.entity.EntitySheetId
+import com.kispoko.tome.model.entity.entityManifest
+import com.kispoko.tome.model.session.sessionManifest
+import com.kispoko.tome.official.gameManifest
+import com.kispoko.tome.rts.entity.EntityId
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 
 
 
@@ -56,7 +57,7 @@ class NewSessionActivity : AppCompatActivity()
 
     private var step : Int = 1
 
-    private val defaultGameId = GameId("magic_of_heroes")
+    private val defaultGameId = EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839"))
 
 
     private var newSessionUI : NewSessionUI? = null
@@ -86,7 +87,7 @@ class NewSessionActivity : AppCompatActivity()
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.new_session), TextFontStyle.Regular)
+        this.configureToolbar(getString(R.string.new_session), TextFont.RobotoCondensed, TextFontStyle.Regular)
 
         this.applyTheme(com.kispoko.tome.model.theme.official.officialAppThemeLight)
 
@@ -115,7 +116,7 @@ class NewSessionActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    fun setStep(step : Int, gameId : GameId, maybeSessionId : Maybe<SessionId>)
+    fun setStep(step : Int, gameId : EntityId, maybeSessionId : Maybe<SessionId>)
     {
         this.step = step
 
@@ -228,7 +229,7 @@ class NewSessionActivity : AppCompatActivity()
 
 sealed class NewSessionMessage
 
-data class NewSessionMessageGame(val gameId : GameId) : NewSessionMessage()
+data class NewSessionMessageGame(val gameId : EntityId) : NewSessionMessage()
 
 data class NewSessionMessageSession(val sessionId : SessionId) : NewSessionMessage()
 
@@ -238,7 +239,7 @@ data class NewSessionMessageSession(val sessionId : SessionId) : NewSessionMessa
 // ---------------------------------------------------------------------------------------------
 
 class NewSessionUI(private var step : Int,
-                   private var gameId : GameId,
+                   private var gameId : EntityId,
                    private var sessionId : Maybe<SessionId>,
                    private val theme : Theme,
                    private val newSessionActivity : NewSessionActivity)
@@ -248,42 +249,41 @@ class NewSessionUI(private var step : Int,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-
     val context = newSessionActivity
 
     fun gameSummary() : Maybe<GameSummary> =
-        maybe(OfficialManager.gameManifest(context)?.game(this.gameId))
+        maybe(gameManifest(context)?.game(this.gameId))
 
 
-
-
-    private fun sessionLoader() : Maybe<SessionLoader>
+    private fun sessionLoader() : Maybe<Session>
     {
         val sessionId = this.sessionId
         Log.d("***NEW SESSION ACTIVITY", "session loader: $sessionId")
         return when (sessionId) {
             is Just    -> {
-                officialSession(this.gameId, sessionId.value, context)
+                sessionManifest(context).apply { it.session(sessionId.value) }
             }
             is Nothing -> {
-                gameSummary().apply { officialSession(this.gameId, it.defaultSessionId, context) }
+                gameSummary().apply { gameSummary ->
+                    sessionManifest(context).apply { it.session(gameSummary.defaultSessionId) }
+                }
             }
         }
     }
 
 
-    private fun entityKindName() : String
-    {
-        val maybeName = this.gameSummary().apply { gameSummary ->
-                        this.sessionLoader().apply { sessionLoader ->
-                        gameSummary.entityKind(sessionLoader.entityKindId).apply {
-                            Just(it.name)
-                         } } }
-        return when (maybeName) {
-            is Just    -> maybeName.value
-            is Nothing -> ""
-        }
-    }
+//    private fun entityKindName() : String
+//    {
+//        val maybeName = this.gameSummary().apply { gameSummary ->
+//                        this.sessionLoader().apply { sessionLoader ->
+//                        gameSummary.entityKind(sessionLoader.entityKindId).apply {
+//                            Just(it.name)
+//                         } } }
+//        return when (maybeName) {
+//            is Just    -> maybeName.value
+//            is Nothing -> ""
+//        }
+//    }
 
 
     // PROPERTIES > Views
@@ -320,7 +320,7 @@ class NewSessionUI(private var step : Int,
     }
 
 
-    fun updateGame(gameId : GameId)
+    fun updateGame(gameId : EntityId)
     {
         this.gameId = gameId
 
@@ -353,15 +353,10 @@ class NewSessionUI(private var step : Int,
             if (it.sessionId == sessionId)
             {
                 val mainEntityId = it.mainEntityId
-                when (mainEntityId)
-                {
-                    is EntitySheetId -> {
-                        val activity = context as AppCompatActivity
-                        val intent = Intent(activity, SheetActivity::class.java)
-                        intent.putExtra("sheet_id", mainEntityId.sheetId)
-                        activity.startActivity(intent)
-                    }
-                }
+                val activity = context as AppCompatActivity
+                val intent = Intent(activity, SheetActivity::class.java)
+                intent.putExtra("sheet_id", mainEntityId)
+                activity.startActivity(intent)
             }
         }
     }
@@ -396,7 +391,7 @@ class NewSessionUI(private var step : Int,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.topDp    = 4f
+        layout.padding.bottomDp = 20f
 
         return layout.linearLayout(context)
     }
@@ -414,10 +409,15 @@ class NewSessionUI(private var step : Int,
                 val gameName = this.gameSummary().toNullable()?.name ?: ""
                 layout.addView(this.descriptionView(R.string.choose_game_description))
                 layout.addView(this.selectionView(gameName))
-//                layout.addView(this.chooseButtonView(1, R.string.select))
             }
             2 -> {
                 val sessionName = this.sessionLoader().toNullable()?.sessionName?.value ?: ""
+                val sessionLoader = this.sessionLoader()
+                when (sessionLoader) {
+                    is Nothing -> {
+                        Log.d("***NEW SESSION ACTIVITY", "session loader is null")
+                    }
+                }
                 layout.addView(this.descriptionView(R.string.choose_session_description))
                 layout.addView(this.selectionView(sessionName))
 //                layout.addView(this.chooseButtonView(2, R.string.select))
@@ -425,7 +425,7 @@ class NewSessionUI(private var step : Int,
             3 -> {
                 layout.addView(this.descriptionView(R.string.this_session_contains))
                 layout.addView(this.entityLoadersView())
-                layout.addView(this.openSessionButtonView())
+                layout.addView(this.loadView())
             }
         }
 
@@ -445,16 +445,21 @@ class NewSessionUI(private var step : Int,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.margin.leftDp    = 4f
-        layout.margin.rightDp   = 4f
-        layout.margin.topDp     = 2f
+//        layout.margin.leftDp    = 4f
+//        layout.margin.rightDp   = 4f
+        layout.margin.topDp     = 1f
 
-        layout.padding.leftDp   = 11f
+        layout.padding.leftDp   = 9f
         layout.padding.rightDp  = 8f
-        layout.padding.topDp    = 12f
-        layout.padding.bottomDp = 14f
+//        layout.padding.topDp    = 14f
+//        layout.padding.bottomDp = 16f
 
-        layout.backgroundColor  = Color.WHITE
+//        layout.backgroundColor  = Color.WHITE
+
+        val bglColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_9"))))
+        layout.backgroundColor  = theme.colorOrBlack(bglColorTheme)
 
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
@@ -511,6 +516,8 @@ class NewSessionUI(private var step : Int,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
+        layout.margin.leftDp    = 3f
+
         layout.gravity          = Gravity.CENTER_VERTICAL
 
         layout.addRule(RelativeLayout.ALIGN_PARENT_START)
@@ -529,7 +536,7 @@ class NewSessionUI(private var step : Int,
 
         stepView.color                 = Color.WHITE
 
-        stepView.font                  = Font.typeface(TextFont.default(),
+        stepView.font                  = Font.typeface(TextFont.RobotoCondensed,
                                                        TextFontStyle.SemiBold,
                                                        context)
 
@@ -539,31 +546,36 @@ class NewSessionUI(private var step : Int,
 
         stepView.sizeSp                = 16f
 
-        stepView.margin.rightDp        = 13f
+        stepView.margin.rightDp        = 10f
 
         stepView.padding.bottomDp       = 1f
+        stepView.margin.topDp          = 5f
 
         // (3 B) Label
         // -------------------------------------------------------------------------------------
 
-        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.width             = LinearLayout.LayoutParams.MATCH_PARENT
         labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
         labelView.text              = titleString
 
-        labelView.font              = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.Regular,
+        labelView.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Bold,
                                                     context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
 
         labelView.color             = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp            = 21f
+        labelView.sizeSp            = 19f
 
         labelView.padding.bottomDp  = 2f
+        labelView.padding.topDp     = 12f
+        labelView.padding.leftDp    = 10f
+
+        labelView.backgroundColor   = Color.WHITE
 
         return layout.linearLayout(context)
     }
@@ -573,14 +585,17 @@ class NewSessionUI(private var step : Int,
     {
         val view                = TextViewBuilder()
 
-        view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        view.width              = LinearLayout.LayoutParams.MATCH_PARENT
         view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        view.margin.leftDp      = 38f
+        view.backgroundColor   = Color.WHITE
+
+        view.margin.leftDp      = 37f
+        view.padding.leftDp     = 10f
 
         view.textId             = descriptionStringId
 
-        view.font               = Font.typeface(TextFont.default(),
+        view.font               = Font.typeface(TextFont.RobotoCondensed,
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -591,105 +606,105 @@ class NewSessionUI(private var step : Int,
 
         view.sizeSp             = 17f
 
-        view.margin.bottomDp    = 6f
+        view.padding.bottomDp   = 12f
 
         return view.textView(context)
     }
 
 
-    private fun chooseButtonView(step : Int, labelId : Int) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout              = LinearLayoutBuilder()
-        val iconView            = ImageViewBuilder()
-        val labelView           = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.layoutType       = LayoutType.RELATIVE
-        layout.width            = RelativeLayout.LayoutParams.MATCH_PARENT
-        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.gravity          = Gravity.CENTER_VERTICAL
-
-        layout.margin.rightDp   = 8f
-        layout.margin.topDp     = 8f
-        layout.margin.leftDp    = 38f
+//    private fun chooseButtonView(step : Int, labelId : Int) : LinearLayout
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
 //
-//        layout.padding.topDp    = 4f
-//        layout.padding.bottomDp    = 4f
-//        layout.padding.leftDp    = 6f
-//        layout.padding.rightDp    = 6f
-
-//        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
-
-        layout.addRule(RelativeLayout.CENTER_VERTICAL)
-
-        layout.onClick          = View.OnClickListener {
-            when (step)
-            {
-                // Choose the game
-                1 ->
-                {
-                    val intent = Intent(newSessionActivity, GamesListActivity::class.java)
-                    intent.putExtra("game_action", GameActionLoadSession)
-                    newSessionActivity.startActivity(intent)
-                }
-            }
-        }
-
-//        val bgColorTheme = ColorTheme(setOf(
+//        val layout              = LinearLayoutBuilder()
+//        val iconView            = ImageViewBuilder()
+//        val labelView           = TextViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.layoutType       = LayoutType.RELATIVE
+//        layout.width            = RelativeLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation      = LinearLayout.HORIZONTAL
+//
+//        layout.gravity          = Gravity.CENTER_VERTICAL
+//
+//        layout.margin.rightDp   = 8f
+//        layout.margin.topDp     = 8f
+//        layout.margin.leftDp    = 42f
+////
+////        layout.padding.topDp    = 4f
+////        layout.padding.bottomDp    = 4f
+////        layout.padding.leftDp    = 6f
+////        layout.padding.rightDp    = 6f
+//
+////        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+//
+//        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+//
+//        layout.onClick          = View.OnClickListener {
+//            when (step)
+//            {
+//                // Choose the game
+//                1 ->
+//                {
+//                    val intent = Intent(newSessionActivity, GamesListActivity::class.java)
+//                    intent.putExtra("game_action", GameActionLoadSession)
+//                    newSessionActivity.startActivity(intent)
+//                }
+//            }
+//        }
+//
+////        val bgColorTheme = ColorTheme(setOf(
+////                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+////                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+////        layout.backgroundColor   = theme.colorOrBlack(bgColorTheme)
+//
+//        layout.child(labelView)
+////              .child(iconView)
+//
+//        // (3) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        iconView.widthDp            = 24
+//        iconView.heightDp           = 24
+//
+//        iconView.image              = R.drawable.icon_arrow_right
+//
+//        val iconColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
-//        layout.backgroundColor   = theme.colorOrBlack(bgColorTheme)
-
-        layout.child(labelView)
-//              .child(iconView)
-
-        // (3) Icon
-        // -------------------------------------------------------------------------------------
-
-        iconView.widthDp            = 24
-        iconView.heightDp           = 24
-
-        iconView.image              = R.drawable.icon_arrow_right
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_green"))))
-        iconView.color              = theme.colorOrBlack(iconColorTheme)
-
-        iconView.margin.leftDp      = 4f
-        iconView.padding.topDp      = 2f
-
-        // (4) Label
-        // -------------------------------------------------------------------------------------
-
-        labelView.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
-        labelView.height                = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        labelView.text                  = context.getString(labelId).toUpperCase()
-
-        labelView.font                  = Font.typeface(TextFont.default(),
-                                                        TextFontStyle.Bold,
-                                                        context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
-        labelView.color                 = theme.colorOrBlack(labelColorTheme)
-
-        labelView.sizeSp                = 15f
-
-        labelView.padding.bottomDp      = 1f
-
-        return layout.linearLayout(context)
-    }
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_green"))))
+//        iconView.color              = theme.colorOrBlack(iconColorTheme)
+//
+//        iconView.margin.leftDp      = 4f
+//        iconView.padding.topDp      = 2f
+//
+//        // (4) Label
+//        // -------------------------------------------------------------------------------------
+//
+//        labelView.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+//        labelView.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        labelView.text                  = context.getString(labelId).toUpperCase()
+//
+//        labelView.font                  = Font.typeface(TextFont.RobotoCondensed,
+//                                                        TextFontStyle.Bold,
+//                                                        context)
+//
+//        val labelColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+//        labelView.color                 = theme.colorOrBlack(labelColorTheme)
+//
+//        labelView.sizeSp                = 15f
+//
+//        labelView.padding.bottomDp      = 1f
+//
+//        return layout.linearLayout(context)
+//    }
 
 
     // VIEWS > Choose Game View
@@ -754,7 +769,100 @@ class NewSessionUI(private var step : Int,
 //    }
 
 
-    private fun selectionView(value : String) : TextView
+    private fun selectionView(value : String) : LinearLayout
+    {
+        val layout = this.selectionViewLayout()
+
+        layout.addView(this.selectionIconView())
+
+        layout.addView(this.selectionButtonView(value))
+
+        return layout
+    }
+
+
+    private fun selectionViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun selectionIconView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.leftDp    = 1f
+        layout.margin.topDp     = 1f
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 27
+        icon.heightDp           = 27
+
+        icon.image              = R.drawable.icon_question_filled
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_90"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun selectionButtonView(value : String) : LinearLayout
+    {
+        val layout = this.selectionButtonViewLayout()
+
+        layout.addView(this.selectionButtonMainView(value))
+
+        return layout
+    }
+
+
+    private fun selectionButtonViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.margin.leftDp    = 9f
+
+        layout.padding.bottomDp = 14f
+        layout.padding.topDp    = 14f
+        layout.padding.leftDp   = 10f
+        layout.padding.rightDp  = 8f
+
+        return layout.linearLayout(context)
+    }
+
+
+
+    private fun selectionButtonMainView(value : String) : TextView
     {
         val name                = TextViewBuilder()
 
@@ -766,102 +874,92 @@ class NewSessionUI(private var step : Int,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_1"))))
         name.backgroundColor    = theme.colorOrBlack(bgColorTheme)
 
-        name.padding.leftDp     = 10f
+        name.padding.leftDp     = 8f
         name.padding.rightDp    = 10f
-        name.padding.topDp      = 4f
-        name.padding.bottomDp   = 4f
+        name.padding.topDp      = 6f
+        name.padding.bottomDp   = 6f
 
-        name.elevation          = 4
+        name.corners            = Corners(1.0, 1.0, 1.0, 1.0)
 
-        name.margin.leftDp      = 38f
-
-        name.corners            = Corners(3.0, 3.0, 3.0, 3.0)
+        name.elevation          = 6
 
         name.text               = value
 
-        name.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        name.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
+        val textColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+//        name.color              = theme.colorOrBlack(textColorTheme)
         name.color              = Color.WHITE
 
         name.sizeSp             = 17f
-
 
         return name.textView(context)
     }
 
 
-    private fun loadButtonView() : LinearLayout
+    private fun loadView() : LinearLayout
     {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
+        val layout = this.loadViewLayout()
 
+        layout.addView(this.loadIconView())
+
+        layout.addView(this.openSessionButtonView())
+
+        return layout
+    }
+
+
+    private fun loadViewLayout() : LinearLayout
+    {
         val layout              = LinearLayoutBuilder()
-        val iconView            = ImageViewBuilder()
-        val labelView           = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
-
-        layout.margin.leftDp    = 4f
-        layout.margin.rightDp   = 4f
-
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.backgroundColor  = Color.TRANSPARENT
+        layout.margin.topDp     = 1f
 
-        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
+        return layout.linearLayout(context)
+    }
 
-        layout.margin.topDp     = 2f
 
-        layout.child(iconView)
-              .child(labelView)
-
-        // (3 A) Icon
+    private fun loadIconView() : LinearLayout
+    {
+        // (1) Declarations
         // -------------------------------------------------------------------------------------
 
-        iconView.widthDp        = 20
-        iconView.heightDp       = 20
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
 
-        iconView.image          = R.drawable.icon_open_in_window
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.leftDp    = 2f
+        layout.margin.topDp     = 1f
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 27
+        icon.heightDp           = 27
+
+        icon.image              = R.drawable.icon_publish
 
         val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
-        iconView.color          = theme.colorOrBlack(iconColorTheme)
-
-        iconView.margin.leftDp  = 10f
-        iconView.margin.rightDp = 10f
-
-//        iconView.padding.topDp      = 2.5f
-
-        // (3 B) Label
-        // -------------------------------------------------------------------------------------
-
-        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        labelView.textId            = R.string.open_session
-
-        labelView.font              = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.Medium,
-                                                    context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
-        labelView.color             = theme.colorOrBlack(labelColorTheme)
-
-        labelView.sizeSp            = 21f
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_90"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
 
         return layout.linearLayout(context)
     }
@@ -896,7 +994,7 @@ class NewSessionUI(private var step : Int,
 
                 labelView.text = "Loading\u2026"
 
-                newSession(it, context)
+                openSession(it, context)
             }
         }
 
@@ -914,11 +1012,9 @@ class NewSessionUI(private var step : Int,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        layout.margin.leftDp    = 38f
+        layout.margin.leftDp    = 8f
 
-        layout.margin.topDp     = 8f
-
-        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
+        layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
         return layout.linearLayout(context)
     }
@@ -968,12 +1064,12 @@ class NewSessionUI(private var step : Int,
         label.addRule(RelativeLayout.ALIGN_PARENT_START)
         label.addRule(RelativeLayout.CENTER_VERTICAL)
 
-        label.margin.leftDp     = 6f
+        label.margin.leftDp     = 10f
 
         label.textId            = R.string.start_new_session
 
-        label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
                                                 context)
 
         val labelColorTheme = ColorTheme(setOf(
@@ -981,7 +1077,7 @@ class NewSessionUI(private var step : Int,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         label.color             = Color.WHITE
 
-        label.sizeSp            = 18f
+        label.sizeSp            = 17f
 
         return label.textView(context)
     }
@@ -992,11 +1088,14 @@ class NewSessionUI(private var step : Int,
         val layout = this.entityLoadersViewLayout()
 
         Log.d("***NEW SESSION ACTVITY", "entity loaders session is: ${this.sessionId}")
-        this.sessionLoader().doMaybe {
-            it.entityLoaders.forEach {
-                layout.addView(this.entityLoaderView(it))
+        this.sessionLoader().doMaybe { sessionLoader ->
+        entityManifest(context).doMaybe { manifest ->
+            sessionLoader.entityIds.forEach { entityId ->
+                manifest.persistedEntity(entityId).doMaybe { persistedEntity ->
+                    layout.addView(this.entityLoaderView(persistedEntity.category, persistedEntity.name))
+                }
             }
-        }
+        } }
 
         return layout
     }
@@ -1011,21 +1110,28 @@ class NewSessionUI(private var step : Int,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.margin.leftDp    = 38f
+        layout.margin.leftDp    = 37f
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp  = 12f
+        layout.padding.leftDp  = 10f
+        layout.padding.rightDp  = 8f
 
         return layout.linearLayout(context)
     }
 
 
-    private fun entityLoaderView(entityLoader : EntityLoader) : LinearLayout
+    private fun entityLoaderView(category : String, name : String) : LinearLayout
     {
         val layout = this.entityLoaderViewLayout()
 
         // Category
-        layout.addView(this.entityLoaderCategoryView(entityLoader.category))
+        layout.addView(this.entityLoaderCategoryView(category))
 
         // Name
-        layout.addView(this.entityLoaderNameView(entityLoader.name))
+        layout.addView(this.entityLoaderNameView(name))
 
         return layout
     }
@@ -1042,7 +1148,7 @@ class NewSessionUI(private var step : Int,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.margin.bottomDp  = 2f
+        layout.margin.bottomDp  = 1f
 
         return layout.linearLayout(context)
     }
@@ -1062,15 +1168,15 @@ class NewSessionUI(private var step : Int,
 
         view.padding.leftDp     = 8f
         view.padding.rightDp    = 8f
-        view.padding.topDp      = 6f
-        view.padding.bottomDp   = 6f
+        view.padding.topDp      = 7f
+        view.padding.bottomDp   = 7f
 
-        view.corners            = Corners(3.0, 0.0, 0.0, 3.0)
+        view.corners            = Corners(1.0, 0.0, 0.0, 1.0)
 
         view.text               = category
 
-        view.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        view.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
         view.color                = Color.WHITE
@@ -1093,22 +1199,22 @@ class NewSessionUI(private var step : Int,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
         view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
 
-        view.corners            = Corners(0.0, 3.0, 3.0, 0.0)
+        view.corners            = Corners(0.0, 1.0, 1.0, 0.0)
 
         view.padding.leftDp     = 8f
         view.padding.rightDp    = 8f
-        view.padding.topDp      = 6f
-        view.padding.bottomDp   = 6f
+        view.padding.topDp      = 7f
+        view.padding.bottomDp   = 7f
 
         view.text               = label
 
-        view.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        view.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         view.color                = theme.colorOrBlack(colorTheme)
 
         view.sizeSp               = 17f

@@ -2,12 +2,9 @@
 package com.kispoko.tome.rts.entity.theme
 
 
-import android.content.Context
 import com.kispoko.tome.app.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialThemeLight
-import com.kispoko.tome.official.OfficialTheme
-import com.kispoko.tome.rts.official.OfficialManager
 import effect.*
 import lulo.schema.Schema
 

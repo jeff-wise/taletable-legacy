@@ -2,23 +2,19 @@
 package com.kispoko.tome.activity.sheet.page
 
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.PagerAdapter
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import com.kispoko.tome.activity.sheet.SheetActivityGlobal
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.page.Page
-import com.kispoko.tome.rts.entity.EntitySheetId
+import com.kispoko.tome.rts.entity.EntityId
 
 
 
@@ -36,7 +32,7 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
     // -----------------------------------------------------------------------------------------
 
     private var pages   : List<Page> = listOf()
-    private var sheetId : SheetId?   = null
+    private var sheetId : EntityId?   = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -67,7 +63,7 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun setPages(pages : List<Page>, sheetId : SheetId)
+    fun setPages(pages : List<Page>, sheetId : EntityId)
     {
         this.pages = pages
         this.sheetId = sheetId
@@ -83,7 +79,7 @@ class PageFragment : Fragment()
 {
 
     var page    : Page?    = null
-    var sheetId : SheetId? = null
+    var sheetId : EntityId? = null
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -91,7 +87,7 @@ class PageFragment : Fragment()
 
     companion object
     {
-        fun newInstance(page : Page, sheetId : SheetId?) : PageFragment
+        fun newInstance(page : Page, sheetId : EntityId?) : PageFragment
         {
             val pageFragment = PageFragment()
 
@@ -117,7 +113,7 @@ class PageFragment : Fragment()
         if (arguments != null)
         {
             this.page    = arguments?.getSerializable("page") as Page
-            this.sheetId = arguments?.getSerializable("sheet_id") as SheetId
+            this.sheetId = arguments?.getSerializable("sheet_id") as EntityId
         }
     }
 
@@ -146,7 +142,7 @@ class PageFragment : Fragment()
         val context = this.context
 
         if (sheetId != null && context != null)
-            fragmentView.addView(this.page?.view(EntitySheetId(sheetId), context))
+            fragmentView.addView(this.page?.view(sheetId, context))
 
         return fragmentView
     }

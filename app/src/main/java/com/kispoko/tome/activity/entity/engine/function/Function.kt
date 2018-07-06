@@ -3,6 +3,7 @@ package com.kispoko.tome.activity.entity.engine.function
 
 
 import android.content.Context
+import android.content.Entity
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
@@ -21,10 +22,10 @@ import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Form
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.function.Function
 import com.kispoko.tome.model.engine.function.FunctionId
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
@@ -44,7 +45,7 @@ class FunctionActivity : AppCompatActivity()
     // -----------------------------------------------------------------------------------------
 
     private var functionId  : FunctionId? = null
-    private var gameId      : GameId?     = null
+    private var gameId      : EntityId?     = null
 
     private var function    : Function? = null
 
@@ -71,7 +72,7 @@ class FunctionActivity : AppCompatActivity()
             this.functionId = this.intent.getSerializableExtra("function_id") as FunctionId
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
         // (3) Lookup Function
         // -------------------------------------------------------------------------------------

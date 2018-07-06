@@ -3,11 +3,9 @@ package com.kispoko.tome.activity.game
 
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +15,6 @@ import android.widget.ScrollView
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.game.Game
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
@@ -25,6 +22,7 @@ import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.Err
@@ -39,7 +37,7 @@ class BooksFragment : Fragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameId : GameId? = null
+    private var gameId : EntityId? = null
     private var themeId : ThemeId? = null
 
 
@@ -49,7 +47,7 @@ class BooksFragment : Fragment()
 
     companion object
     {
-        fun newInstance(gameId : GameId, themeId : ThemeId) : BooksFragment
+        fun newInstance(gameId : EntityId, themeId : ThemeId) : BooksFragment
         {
             val fragment = BooksFragment()
 
@@ -71,7 +69,7 @@ class BooksFragment : Fragment()
     {
         super.onCreate(savedInstanceState)
 
-        this.gameId = arguments?.getSerializable("game_id") as GameId
+        this.gameId = arguments?.getSerializable("game_id") as EntityId
         this.themeId = arguments?.getSerializable("theme_id") as ThemeId
     }
 

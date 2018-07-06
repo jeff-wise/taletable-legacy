@@ -429,7 +429,7 @@ class BookUI(val book : Book,
         layout.addView(this.chapterSummaryIconView())
 
         layout.setOnClickListener {
-            val chapterReference = BookReferenceChapter(book.bookId(), chapter.chapterId())
+            val chapterReference = BookReferenceChapter(book.entityId(), chapter.chapterId())
             bookActivity.setCurrentBookReference(chapterReference)
         }
 

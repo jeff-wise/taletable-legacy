@@ -2,9 +2,7 @@
 package com.kispoko.tome.model.engine.task
 
 
-import android.util.Log
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.model.engine.EngineValue
 import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.engine.constraint.Constraint
 import com.kispoko.tome.model.engine.variable.VariableReference
@@ -48,7 +46,8 @@ data class Task(val title : TaskTitle,
                       // Description
                       doc.at("description") ap { TaskDescription.fromDocument(it) },
                       // Trigger
-                      doc.at("trigger") ap { TaskTrigger.fromDocument(it) },
+//                      doc.at("trigger") ap { TaskTrigger.fromDocument(it) },
+                      effValue(TaskTriggerOr(listOf())),
                       // Action
                       doc.at("action") ap { TaskAction.fromDocument(it) }
                       )
@@ -146,7 +145,7 @@ data class TaskDescription(val value : String) : ToDocument, Serializable
 
 
 
-sealed class TaskAction
+sealed class TaskAction : Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -170,7 +169,7 @@ sealed class TaskAction
  * Task Action: Toggle Booleans
  */
 data class TaskActionToggleVariables(val variableIds : List<VariableId>)
-                                     : TaskAction(), ToDocument, Serializable
+                                     : TaskAction(), ToDocument
 {
 
     // -----------------------------------------------------------------------------------------
@@ -213,7 +212,7 @@ data class TaskActionToggleVariables(val variableIds : List<VariableId>)
 
 
 
-sealed class TaskTrigger
+sealed class TaskTrigger : Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -249,7 +248,7 @@ sealed class TaskTrigger
  */
 data class TaskTriggerState(val variableReference : VariableReference,
                             val constraint : Constraint)
-                             : TaskTrigger(), ToDocument, Serializable
+                             : TaskTrigger(), ToDocument
 {
 
     // -----------------------------------------------------------------------------------------
@@ -317,8 +316,10 @@ data class TaskTriggerState(val variableReference : VariableReference,
  * Task Trigger: And
  */
 data class TaskTriggerAnd(val triggers : List<TaskTrigger>)
-                        : TaskTrigger(), ToDocument, Serializable
+                        : TaskTrigger(), ToDocument
 {
+
+//    private val serialVersionUID = 6529685098267757690L
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -380,20 +381,20 @@ data class TaskTriggerAnd(val triggers : List<TaskTrigger>)
  * Task Trigger: Or
  */
 data class TaskTriggerOr(val triggers : List<TaskTrigger>)
-                        : TaskTrigger(), ToDocument, Serializable
+                        : TaskTrigger(), ToDocument
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<TaskTriggerAnd>
+    companion object : Factory<TaskTriggerOr>
     {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<TaskTriggerAnd> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TaskTriggerOr> = when (doc)
         {
             is DocDict ->
             {
-                effect.apply(::TaskTriggerAnd,
+                effect.apply(::TaskTriggerOr,
                       // Triggers
                       doc.list("triggers") ap { it.map { TaskTrigger.fromDocument(it) } }
                       )

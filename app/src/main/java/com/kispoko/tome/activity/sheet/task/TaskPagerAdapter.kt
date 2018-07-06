@@ -5,11 +5,11 @@ package com.kispoko.tome.activity.sheet.task
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.rts.entity.EntityId
 
 
 
-data class TaskPagerAdapter(val fragmentManager : FragmentManager, val sheetId : SheetId)
+data class TaskPagerAdapter(val fragmentManager : FragmentManager, val sheetId : EntityId)
                         : FragmentStatePagerAdapter(fragmentManager)
 {
 

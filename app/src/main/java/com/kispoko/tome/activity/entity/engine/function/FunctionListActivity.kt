@@ -25,10 +25,10 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.function.Function
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.SimpleDividerItemDecoration
@@ -49,7 +49,7 @@ class FunctionListActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameId : GameId? = null
+    private var gameId : EntityId? = null
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Dark)
 
@@ -71,7 +71,7 @@ class FunctionListActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
 
         // (3) Initialize Views
@@ -119,7 +119,7 @@ class FunctionListActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeFunctionListView(functions : List<Function>, gameId : GameId)
+    private fun initializeFunctionListView(functions : List<Function>, gameId : EntityId)
     {
         val recyclerView = this.findViewById<RecyclerView>(R.id.function_list_view)
 
@@ -201,7 +201,7 @@ class FunctionListActivity : AppCompatActivity()
  * Function List RecyclerView Adapter
  */
 class FunctionRecyclerViewAdapter(val functions : List<Function>,
-                                  val gameId : GameId,
+                                  val gameId : EntityId,
                                   val themeId : ThemeId,
                                   val activity : AppCompatActivity)
                                    : RecyclerView.Adapter<FunctionViewHolder>()

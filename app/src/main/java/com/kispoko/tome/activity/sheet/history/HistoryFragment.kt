@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.rts.entity.EntityId
 
 
 
@@ -21,7 +21,7 @@ class HistoryFragment : Fragment()
     // -----------------------------------------------------------------------------------------
 
     // Must be used from a sheet activity
-    var sheetId : SheetId? = null
+    var sheetId : EntityId? = null
 
 
     // -----------------------------------------------------------------------------------------

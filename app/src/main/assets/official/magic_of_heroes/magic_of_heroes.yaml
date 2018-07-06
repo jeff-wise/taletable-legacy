@@ -1,4 +1,4 @@
-id: magic_of_heroes
+id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
 game_info:
   name: 'The Magic of Heroes'
   summary: 'A 5e-based fantasy game with a focus on magic systems and events of epic and mythical scale.'
@@ -1054,7 +1054,7 @@ engine:
           book_reference:
             type: book_reference_content
             book_reference_content:
-              book_id: core_rules
+              book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
               content_id: race_humans
           variables:
           - type: variable_boolean
@@ -1790,7 +1790,7 @@ engine:
           book_reference:
             type: book_reference_content
             book_reference_content:
-              book_id: core_rules
+              book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
               content_id: weapon_rapier
           variables:
           - type: variable_number
@@ -2489,7 +2489,7 @@ engine:
           book_reference:
             type: book_reference_content
             book_reference_content:
-              book_id: core_rules
+              book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
               content_id: gear_bedroll
           variables:
           - type: variable_number
@@ -3985,7 +3985,7 @@ engine:
           book_reference:
             type: book_reference_content
             book_reference_content:
-              book_id: core_rules
+              book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
               content_id: armor_leather
           variables:
           - type: variable_number
@@ -7451,4 +7451,4 @@ engine:
             type: variable_id
             variable_id: intelligence_modifier
 book_ids:
-- 'core_rules'
+- '7140ca5a-a5ce-4a37-95c8-519c7de3c040'

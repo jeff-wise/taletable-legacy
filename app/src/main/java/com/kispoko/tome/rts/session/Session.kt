@@ -5,12 +5,11 @@ package com.kispoko.tome.rts.session
 import android.content.Context
 import android.util.Log
 import com.kispoko.culebra.*
-import com.kispoko.tome.db.saveSession
+import com.kispoko.tome.db.writeSession
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
 import effect.*
@@ -26,8 +25,6 @@ import lulo.value.ValueParser
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
-import maybe.maybe
-import java.io.IOException
 import java.io.Serializable
 import java.util.*
 
@@ -53,20 +50,20 @@ fun activeSession() : Maybe<Session> = activeSessionId ap {
 }
 
 
-fun newSession(loader : SessionLoader,
-               context : Context) = launch(UI)
+fun openSession(session : Session,
+                context : Context) = launch(UI)
 {
-    val loadedSession = async(CommonPool) {
-        Session.load(loader, context)
+    async(CommonPool) {
+        activateSession(session, context)
     }.await()
 
-    sessionById[loader.sessionId] = loadedSession
+    sessionById[session.sessionId] = session
 
-    activeSessionId = Just(loader.sessionId)
+    activeSessionId = Just(session.sessionId)
 
-    saveSession(loadedSession.record(), context)
+    writeSession(session, context)
 
-    Router.send(MessageSessionLoaded(loader.sessionId))
+    Router.send(MessageSessionLoaded(session.sessionId))
 }
 
 
@@ -80,6 +77,39 @@ fun session(sessionId : SessionId) : Maybe<Session>
 }
 
 
+suspend fun activateSession(loader : Session, context : Context)
+{
+    val entityLoadResults : MutableSet<EntityLoadResult> = mutableSetOf()
+
+    val numberOfLoaders = loader.entityIds.size
+    loader.entityIds.forEachIndexed { index, entityId ->
+
+        val entityLoadResult = async(CommonPool) {
+            loadEntity(entityId, context)
+        }.await()
+
+        entityLoadResult.doMaybe {
+            Log.d("***SESSION", "loaded: $entityLoadResult")
+            Router.send(MessageSessionEntityLoaded(SessionLoadUpdate(index + 1, numberOfLoaders)))
+            entityLoadResults.add(it)
+        }
+    }
+
+    entityLoadResults.forEach {
+        if (!it.fromCache)
+            initialize(it.entityId)
+    }
+
+//    val entityIds = entityLoadResults.map { it.entityId }.toMutableSet()
+//
+//    val date = when (loader.timeLastUsed) {
+//        is Just    -> loader.timeLastUsed.value
+//        is Nothing -> Calendar.getInstance()
+//    }
+
+}
+
+
 
 /**
  * Session
@@ -87,77 +117,50 @@ fun session(sessionId : SessionId) : Maybe<Session>
 data class Session(val sessionId : SessionId,
                    val sessionName : SessionName,
                    val sessionInfo : SessionInfo,
-                   val gameId : GameId,
-                   val entityKindId : EntityKindId,
-                   val timeLastUsed : Calendar,
-                   val entityIds : MutableSet<EntityId>,
+                   val gameId : EntityId,
+                   val timeLastUsed : Maybe<Calendar>,
+                   val entityIds : List<EntityId>,
                    val mainEntityId : EntityId) : Serializable
 {
 
     // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // | CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     companion object
     {
-        suspend fun load(loader : SessionLoader,
-                         context : Context) : Session
-        {
-            val entityLoadResults : MutableSet<EntityLoadResult> = mutableSetOf()
-
-            val numberOfLoaders = loader.entityLoaders.size
-            loader.entityLoaders.forEachIndexed { index, entityLoader ->
-                val entityLoadResult = async(CommonPool) { loadEntity(entityLoader, context) }.await()
-                when (entityLoadResult) {
-                    is Just -> {
-                        Log.d("***SESSION", "loaded: $entityLoadResult")
-                        Router.send(MessageSessionEntityLoaded(SessionLoadUpdate(index + 1, numberOfLoaders)))
-                        entityLoadResults.add(entityLoadResult.value)
-                    }
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<Session> =
+            when (yamlValue)
+            {
+                is YamlDict ->
+                {
+                    apply(::Session,
+                          // Session Id
+                          yamlValue.at("session_id") ap { SessionId.fromYaml(it) },
+                          // Session Name
+                          yamlValue.at("session_name") ap { SessionName.fromYaml(it) },
+                          // Session Info
+                          yamlValue.at("info") ap { SessionInfo.fromYaml(it) },
+                          // Game Id
+                          yamlValue.at("game_id") ap { EntityId.fromYaml(it) },
+                          // Time Last Used
+                          effValue<YamlParseError,Maybe<Calendar>>(Just(Calendar.getInstance())),
+                          // Entity Ids
+                          yamlValue.array("entity_ids") ap {
+                              it.mapApply { EntityId.fromYaml(it) }},
+                          // Main Entity Id
+                          yamlValue.at("main_entity_id") ap { EntityId.fromYaml(it) }
+                          )
                 }
+                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
             }
-
-            entityLoadResults.forEach {
-                if (!it.fromCache)
-                    initialize(it.entityId)
-            }
-
-            val entityIds = entityLoadResults.map { it.entityId }.toMutableSet()
-
-            val date = when (loader.timeLastUsed) {
-                is Just    -> loader.timeLastUsed.value
-                is Nothing -> Calendar.getInstance()
-            }
-
-            return Session(loader.sessionId,
-                           loader.sessionName,
-                           loader.sessionInfo,
-                           loader.gameId,
-                           loader.entityKindId,
-                           date,
-                           entityIds,
-                           loader.mainEntityId)
-        }
     }
+
 
 
     // -----------------------------------------------------------------------------------------
     // ENTITIES
     // -----------------------------------------------------------------------------------------
-
-    fun entityRecords() : List<EntityRecord>
-    {
-        val records : MutableList<EntityRecord> = mutableListOf()
-
-        this.entityIds.forEach {
-            entityRecord(it) apDo {
-                records.add(it)
-            }
-        }
-
-        return records
-    }
-
 
     fun entityRecordsByType() : Map<String,List<Entity>>
     {
@@ -176,33 +179,6 @@ data class Session(val sessionId : SessionId,
         return recordByType
     }
 
-
-    // -----------------------------------------------------------------------------------------
-    // LOADER
-    // -----------------------------------------------------------------------------------------
-
-    fun loader() : SessionLoader =
-        SessionLoader(this.sessionId,
-                      this.sessionName,
-                      this.sessionInfo,
-                      this.gameId,
-                      this.entityKindId,
-                      Just(this.timeLastUsed),
-                      this.entityRecords().map { it.entity().entityLoader() },
-                      this.mainEntityId)
-
-
-    // -----------------------------------------------------------------------------------------
-    // RECORD
-    // -----------------------------------------------------------------------------------------
-
-    fun record() = SessionRecord(this.sessionId,
-                                 this.sessionName,
-                                 this.sessionInfo.tagline,
-                                 this.sessionInfo.sessionDescription,
-                                 Calendar.getInstance(),
-                                 this.loader())
-
 }
 
 
@@ -210,13 +186,13 @@ data class SessionLoadUpdate(val entityLoadNumber : Int,
                              val totalEntities : Int) : Serializable
 
 
-data class SessionRecord(val sessionId : SessionId,
-                         val sessionName : SessionName,
-                         val sessionTagline : String,
-                         val sessionDescription : SessionDescription,
-                         val lastUsed : Calendar,
-                         val loader : SessionLoader?) : Serializable
-
+//data class SessionRecord(val sessionId : SessionId,
+//                         val sessionName : SessionName,
+//                         val sessionTagline : String,
+//                         val sessionDescription : SessionDescription,
+//                         val lastUsed : Calendar,
+//                         val loader : SessionLoader?) : Serializable
+//
 
 /**
  * Session Id
@@ -503,198 +479,82 @@ data class SessionInfo(val sessionSummary : SessionSummary,
 }
 
 
-
-data class SessionLoader(val sessionId : SessionId,
-                         val sessionName : SessionName,
-                         val sessionInfo : SessionInfo,
-                         val gameId : GameId,
-                         val entityKindId : EntityKindId,
-                         val timeLastUsed : Maybe<Calendar>,
-                         val entityLoaders : List<EntityLoader>,
-                         val mainEntityId : EntityId) : Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<SessionLoader> =
-            when (yamlValue)
-            {
-                is YamlDict ->
-                {
-                    apply(::SessionLoader,
-                          // Session Id
-                          yamlValue.at("session_id") ap { SessionId.fromYaml(it) },
-                          // Session Name
-                          yamlValue.at("session_name") ap { SessionName.fromYaml(it) },
-                          // Session Info
-                          yamlValue.at("info") ap { SessionInfo.fromYaml(it) },
-                          // Game Id
-                          yamlValue.at("game_id") ap { GameId.fromYaml(it) },
-                          // Main Entity Kind Id
-                          yamlValue.at("main_entity_kind_id") ap { EntityKindId.fromYaml(it) },
-                          // Time Last Used
-                          effValue(Nothing()),
-                          // Entity Loaders
-                          yamlValue.array("loaders") ap {
-                              it.mapApply { EntityLoader.fromYaml(it) }},
-                          // Main Entity Id
-                          yamlValue.at("main_entity_id") ap { EntityId.fromYaml(it) }
-                          )
-                }
-                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
-            }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // METHODS
-    // -----------------------------------------------------------------------------------------
-
-    fun entityLoadersByType() : Map<EntityType,List<EntityLoader>>
-    {
-        val loaderByType : MutableMap<EntityType,MutableList<EntityLoader>> = mutableMapOf()
-
-        loaderByType[EntityTypeSheet] = mutableListOf()
-        loaderByType[EntityTypeCampaign] = mutableListOf()
-        loaderByType[EntityTypeGame] = mutableListOf()
-        loaderByType[EntityTypeBook] = mutableListOf()
-
-        this.entityLoaders.forEach {
-            when (it) {
-                is EntityLoaderOfficial -> {
-                    when (it) {
-                        is OfficialSheetLoader -> loaderByType[EntityTypeSheet]?.add(it)
-                        is OfficialCampaignLoader -> loaderByType[EntityTypeCampaign]?.add(it)
-                        is OfficialGameLoader -> loaderByType[EntityTypeGame]?.add(it)
-                        is OfficialBookLoader -> loaderByType[EntityTypeBook]?.add(it)
-                    }
-                }
-            }
-        }
-
-        return loaderByType
-    }
-
-}
-
-
-data class SessionManifest(val summaries : List<SessionLoader>)
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    private val loadersBySessionId : MutableMap<SessionId,SessionLoader> =
-            summaries.associateBy { it.sessionId }
-                    as MutableMap<SessionId,SessionLoader>
-
-    private val loadersByEntityId : MutableMap<EntityKindId,MutableList<SessionLoader>> = mutableMapOf()
-
-
-
-    init {
-
-        summaries.forEach { loader ->
-            val kindId = loader.entityKindId
-            if (!loadersByEntityId.containsKey(kindId))
-                loadersByEntityId[kindId] = mutableListOf()
-            loadersByEntityId[kindId]!!.add(loader)
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<SessionManifest> =
-            when (yamlValue)
-            {
-                is YamlDict ->
-                {
-                    apply(::SessionManifest,
-                          // Summaries
-                          yamlValue.array("summaries") ap {
-                              it.mapApply { SessionLoader.fromYaml(it) }}
-                    )
-                }
-                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
-            }
-    }
+//
+//data class SessionLoader(val sessionId : SessionId,
+//                         val sessionName : SessionName,
+//                         val sessionInfo : SessionInfo,
+//                         val gameId : EntityId,
+//                         val entityKindId : EntityKindId,
+//                         val timeLastUsed : Maybe<Calendar>,
+//                         val entityIds : List<EntityId>,
+//                         val mainEntityId : EntityId) : Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object
+//    {
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<SessionLoader> =
+//            when (yamlValue)
+//            {
+//                is YamlDict ->
+//                {
+//                    apply(::SessionLoader,
+//                          // Session Id
+//                          yamlValue.at("session_id") ap { SessionId.fromYaml(it) },
+//                          // Session Name
+//                          yamlValue.at("session_name") ap { SessionName.fromYaml(it) },
+//                          // Session Info
+//                          yamlValue.at("info") ap { SessionInfo.fromYaml(it) },
+//                          // Game Id
+//                          yamlValue.at("game_id") ap { EntityId.fromYaml(it) },
+//                          // Main Entity Kind Id
+//                          yamlValue.at("main_entity_kind_id") ap { EntityKindId.fromYaml(it) },
+//                          // Time Last Used
+//                          effValue(Nothing()),
+//                          // Entity Loaders
+//                          yamlValue.array("entity_ids") ap {
+//                              it.mapApply { EntityId.fromYaml(it) }},
+//                          // Main Entity Id
+//                          yamlValue.at("main_entity_id") ap { EntityId.fromYaml(it) }
+//                          )
+//                }
+//                else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+//            }
+//    }
 
 
     // -----------------------------------------------------------------------------------------
     // METHODS
     // -----------------------------------------------------------------------------------------
 
-    fun sessionLoader(sessionId : SessionId) : Maybe<SessionLoader> =
-            maybe(this.loadersBySessionId[sessionId])
+//    fun entityLoadersByType() : Map<EntityType,List<EntityLoader>>
+//    {
+//        val loaderByType : MutableMap<EntityType,MutableList<EntityLoader>> = mutableMapOf()
+//
+//        loaderByType[EntityTypeSheet] = mutableListOf()
+//        loaderByType[EntityTypeCampaign] = mutableListOf()
+//        loaderByType[EntityTypeGame] = mutableListOf()
+//        loaderByType[EntityTypeBook] = mutableListOf()
+//
+//        this.entityLoaders.forEach {
+//            when (it) {
+//                is EntityLoaderOfficial -> {
+//                    when (it) {
+//                        is OfficialSheetLoader -> loaderByType[EntityTypeSheet]?.add(it)
+//                        is OfficialCampaignLoader -> loaderByType[EntityTypeCampaign]?.add(it)
+//                        is OfficialGameLoader -> loaderByType[EntityTypeGame]?.add(it)
+//                        is OfficialBookLoader -> loaderByType[EntityTypeBook]?.add(it)
+//                    }
+//                }
+//            }
+//        }
+//
+//        return loaderByType
+//    }
 
+// }
 
-    fun sessionLoaders(entityKindId : EntityKindId) : List<SessionLoader> =
-            this.loadersByEntityId[entityKindId] ?: listOf()
-
-
-}
-
-
-// ---------------------------------------------------------------------------------------------
-// OFFICIAL SESSION
-// ---------------------------------------------------------------------------------------------
-
-
-val sessionManifestCache : MutableMap<GameId,SessionManifest> = mutableMapOf()
-
-
-/**
- * Get an official session.
- */
-fun officialSession(gameId : GameId, sessionId : SessionId, context : Context) : Maybe<SessionLoader> =
-    sessionManifest(gameId, context).apply { manifest ->
-        manifest.sessionLoader(sessionId)
-    }
-
-
-fun sessionManifest(gameId : GameId, context : Context) : Maybe<SessionManifest>
-{
-    val cachedManifest = sessionManifestCache[gameId]
-
-    if (cachedManifest != null)
-    {
-        return Just(cachedManifest)
-    }
-    else
-    {
-        val filePath = "official/${gameId.value}/session_manifest.yaml"
-
-
-        val fileInputStream = try {
-            context.assets?.open(filePath)
-        }
-        catch (e : IOException) {
-            null
-        }
-
-        return maybe(fileInputStream).apply {
-            val manifestParser : YamlParser<SessionManifest> = parseYaml(it, SessionManifest.Companion::fromYaml)
-            when (manifestParser) {
-                is Val -> {
-                    sessionManifestCache[gameId] = manifestParser.value
-                    Just(manifestParser.value)
-                }
-                is Err -> {
-                    Nothing<SessionManifest>()
-                }
-            }
-        }
-    }
-
-}
 

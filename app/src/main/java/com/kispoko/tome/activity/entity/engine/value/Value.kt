@@ -21,13 +21,13 @@ import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Form
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.value.Value
 import com.kispoko.tome.model.engine.value.ValueReference
 import com.kispoko.tome.model.engine.value.ValueSet
 import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -46,7 +46,7 @@ class ValueActivity : AppCompatActivity()
     // -----------------------------------------------------------------------------------------
 
     private var isNewValue     : Boolean = false
-    private var gameId         : GameId?     = null
+    private var gameId         : EntityId?     = null
 
     private var valueReference : ValueReference? = null
 
@@ -73,7 +73,7 @@ class ValueActivity : AppCompatActivity()
             this.isNewValue = this.intent.getBooleanExtra("is_new_value", false)
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
         if (this.isNewValue)
         {

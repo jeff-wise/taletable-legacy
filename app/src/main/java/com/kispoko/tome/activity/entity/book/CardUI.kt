@@ -4,27 +4,22 @@ package com.kispoko.tome.activity.entity.book
 
 import android.content.Context
 import android.graphics.Color
-import android.net.LinkAddress
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import com.kispoko.tome.R.string.name
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.ScrollViewBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.book.Book
 import com.kispoko.tome.model.book.BookContent
-import com.kispoko.tome.model.sheet.style.BorderEdge
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
-import com.kispoko.tome.rts.entity.EntityBookId
-import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 
 
@@ -38,7 +33,7 @@ class CardUI(val book : Book,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    val entityId = EntityBookId(this.book.bookId)
+    val entityId = book.entityId()
 
 
     // -----------------------------------------------------------------------------------------

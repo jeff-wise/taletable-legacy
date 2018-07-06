@@ -48,17 +48,18 @@ object TomeDoc
     // LOAD
     // -----------------------------------------------------------------------------------------
 
+    fun templateFileString(filepath : String, context : Context) : DocLoader<String> =
+        assetInputStream(context, "official/$filepath").apply {
+            effValue<DocLoadError,String>(it.bufferedReader().use { it.readText() })
+        }
+
+
     // Load > Sheet
     // -----------------------------------------------------------------------------------------
 
-    fun loadSheet(inputStream : InputStream,
-                  sheetName : String,
+    fun loadSheet(filepath : String,
                   context : Context) : DocLoader<Sheet>
     {
-        // LET...
-        val templateFileString : DocLoader<String> =
-            effValue(inputStream.bufferedReader().use { it.readText() })
-
         fun templateDocument(templateString : String,
                              sheetSchema : Schema,
                              campaignSchema : Schema,
@@ -72,7 +73,7 @@ object TomeDoc
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
-                is Err -> effError(DocumentParseError(sheetName, "sheet", docParse.error))
+                is Err -> effError(DocumentParseError(filepath, "sheet", docParse.error))
             }
         }
 
@@ -82,13 +83,12 @@ object TomeDoc
             return when (sheetParse)
             {
                 is Val -> effValue(sheetParse.value)
-                is Err -> effError(ValueParseError(sheetName,
-                                                          sheetParse.error))
+                is Err -> effError(ValueParseError(filepath, sheetParse.error))
             }
         }
 
         // DO...
-        val schemaDoc = templateFileString ap { fileString ->
+        val schemaDoc = templateFileString(filepath, context) ap { fileString ->
                         sheetSchemaLoader(context) ap { sheetSchema ->
                         campaignSchemaLoader(context) ap { campaignSchema ->
                         gameSchemaLoader(context) ap { gameSchema ->
@@ -104,12 +104,9 @@ object TomeDoc
     // Load > Campaign
     // -----------------------------------------------------------------------------------------
 
-    fun loadCampaign(inputStream : InputStream,
-                     campaignName : String,
+    fun loadCampaign(filepath : String,
                      context : Context) : DocLoader<Campaign>
     {
-        val templateFileString : DocLoader<String> =
-                effValue(inputStream.bufferedReader().use { it.readText() })
 
         fun templateDocument(templateString : String,
                              campaignSpec : Schema,
@@ -121,9 +118,7 @@ object TomeDoc
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
-                is Err -> effError(DocumentParseError(campaignName,
-                                                             "campaign",
-                                                             docParse.error))
+                is Err -> effError(DocumentParseError(filepath, "campaign", docParse.error))
             }
         }
 
@@ -133,13 +128,12 @@ object TomeDoc
             return when (sheetParse)
             {
                 is Val -> effValue(sheetParse.value)
-                is Err -> effError(ValueParseError(campaignName,
-                                                          sheetParse.error))
+                is Err -> effError(ValueParseError(filepath, sheetParse.error))
             }
         }
 
         // DO...
-        return templateFileString
+        return templateFileString(filepath, context)
                .applyWith(::templateDocument,
                           campaignSchemaLoader(context),
                           engineSchemaLoader(context),
@@ -151,14 +145,9 @@ object TomeDoc
     // Load > Game
     // -----------------------------------------------------------------------------------------
 
-    fun loadGame(inputStream : InputStream,
-                 gameName : String,
+    fun loadGame(filepath : String,
                  context : Context) : DocLoader<Game>
     {
-        // LET...
-        val templateFileString : DocLoader<String> =
-                effValue(inputStream.bufferedReader().use { it.readText() })
-
         fun templateDocument(templateString : String,
                              gameSchema : Schema,
                              engineSchema : Schema,
@@ -170,9 +159,7 @@ object TomeDoc
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
-                is Err -> effError(DocumentParseError(gameName,
-                                                             "game",
-                                                             docParse.error))
+                is Err -> effError(DocumentParseError(filepath, "game", docParse.error))
             }
         }
 
@@ -182,13 +169,12 @@ object TomeDoc
             return when (gameParse)
             {
                 is Val -> effValue(gameParse.value)
-                is Err -> effError(ValueParseError(gameName,
-                                                          gameParse.error))
+                is Err -> effError(ValueParseError(filepath, gameParse.error))
             }
         }
 
         // DO...
-        return templateFileString
+        return templateFileString(filepath, context)
                .applyWith(::templateDocument,
                           gameSchemaLoader(context),
                           engineSchemaLoader(context),
@@ -202,38 +188,31 @@ object TomeDoc
     // Load > Theme
     // -----------------------------------------------------------------------------------------
 
-    fun loadTheme(inputStream : InputStream,
-                  themeName : String,
+    fun loadTheme(filepath : String,
                   context : Context) : DocLoader<Theme>
     {
-        // LET...
-        val templateFileString : DocLoader<String> =
-                effValue(inputStream.bufferedReader().use { it.readText() })
-
         fun templateDocument(templateString : String, gameSpec : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = gameSpec.parseDocument(templateString, listOf())
-            when (docParse)
+            return when (docParse)
             {
-                is Val -> return effValue(docParse.value)
-                is Err -> return effError(DocumentParseError(themeName,
-                                                             "theme",
-                                                             docParse.error))
+                is Val -> effValue(docParse.value)
+                is Err -> effError(DocumentParseError(filepath, "theme", docParse.error))
             }
         }
 
         fun themeFromDocument(specDoc : SchemaDoc) : DocLoader<Theme>
         {
             val themeParser = Theme.fromDocument(specDoc)
-            when (themeParser)
+            return when (themeParser)
             {
-                is Val -> return effValue(themeParser.value)
-                is Err -> return effError(ValueParseError(themeName, themeParser.error))
+                is Val -> effValue(themeParser.value)
+                is Err -> effError(ValueParseError(filepath, themeParser.error))
             }
         }
 
         // DO...
-        return templateFileString
+        return templateFileString(filepath, context)
                .applyWith(::templateDocument,
                           themeSchemaLoader(context))
                .apply(::themeFromDocument)
@@ -243,14 +222,8 @@ object TomeDoc
     // Load > Book
     // -----------------------------------------------------------------------------------------
 
-    fun loadBook(inputStream : InputStream,
-                 bookName : String,
-                 context : Context) : DocLoader<Book>
+    fun loadBook(filepath : String, context : Context) : DocLoader<Book>
     {
-        // LET...
-        val templateFileString : DocLoader<String> =
-            effValue(inputStream.bufferedReader().use { it.readText() })
-
         fun templateDocument(templateString : String,
                              bookSchema : Schema,
                              engineSchema : Schema,
@@ -263,7 +236,7 @@ object TomeDoc
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
-                is Err -> effError(DocumentParseError(bookName, "book", docParse.error))
+                is Err -> effError(DocumentParseError(filepath, "book", docParse.error))
             }
         }
 
@@ -273,12 +246,12 @@ object TomeDoc
             return when (bookParse)
             {
                 is Val -> effValue(bookParse.value)
-                is Err -> effError(ValueParseError(bookName, bookParse.error))
+                is Err -> effError(ValueParseError(filepath, bookParse.error))
             }
         }
 
         // DO...
-        return templateFileString
+        return templateFileString(filepath, context)
                .applyWith(::templateDocument,
                           bookSchemaLoader(context),
                           engineSchemaLoader(context),
@@ -292,14 +265,9 @@ object TomeDoc
     // Load > Group Index
     // -----------------------------------------------------------------------------------------
 
-    fun loadGroupIndex(inputStream : InputStream,
-                       gameName : String,
+    fun loadGroupIndex(filepath : String,
                        context : Context) : DocLoader<GroupIndex>
     {
-        // LET...
-        val templateFileString : DocLoader<String> =
-            effValue(inputStream.bufferedReader().use { it.readText() })
-
         fun templateDocument(templateString : String,
                              groupIndexSchema : Schema,
                              themeSchema : Schema,
@@ -312,7 +280,7 @@ object TomeDoc
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
-                is Err -> effError(DocumentParseError("Group Index for $gameName", "group_index", docParse.error))
+                is Err -> effError(DocumentParseError("Group Index for $filepath", "group_index", docParse.error))
             }
         }
 
@@ -322,12 +290,12 @@ object TomeDoc
             return when (groupIndexParse)
             {
                 is Val -> effValue(groupIndexParse.value)
-                is Err -> effError(ValueParseError("Group Index for $gameName", groupIndexParse.error))
+                is Err -> effError(ValueParseError("Group Index for $filepath", groupIndexParse.error))
             }
         }
 
         // DO...
-        return templateFileString
+        return templateFileString(filepath, context)
                .applyWith(::templateDocument,
                           groupIndexSchemaLoader(context),
                           themeSchemaLoader(context),
@@ -341,13 +309,9 @@ object TomeDoc
     // Load > Feed
     // -----------------------------------------------------------------------------------------
 
-    fun loadFeed(inputStream : InputStream,
-                 feedName : String,
+    fun loadFeed(filepath : String,
                  context : Context) : DocLoader<Feed>
     {
-        // LET...
-        val templateFileString : DocLoader<String> =
-            effValue(inputStream.bufferedReader().use { it.readText() })
 
         fun templateDocument(templateString : String,
                              feedSchema : Schema,
@@ -359,7 +323,7 @@ object TomeDoc
             val docParse = feedSchema.parseDocument(templateString, listOf(engineSchema, appSchema, sheetSchema, themeSchema))
             return when (docParse) {
                 is Val -> effValue(docParse.value)
-                is Err -> effError(DocumentParseError("Feed for $feedName", "feed", docParse.error))
+                is Err -> effError(DocumentParseError("Feed at $filepath", "official/feed", docParse.error))
             }
         }
 
@@ -369,12 +333,12 @@ object TomeDoc
             return when (feedParse)
             {
                 is Val -> effValue(feedParse.value)
-                is Err -> effError(ValueParseError("Feed for $feedName", feedParse.error))
+                is Err -> effError(ValueParseError("Feed at $filepath", feedParse.error))
             }
         }
 
         // DO...
-        return templateFileString
+        return templateFileString(filepath, context)
                .applyWith(::templateDocument,
                           feedSchemaLoader(context),
                           appSchemaLoader(context),
@@ -690,7 +654,7 @@ object TomeDoc
         return if (schema != null)
             effValue(schema)
         else
-            effError(SchemaIsNull("feed"))
+            effError(SchemaIsNull("official/feed"))
     }
 
 

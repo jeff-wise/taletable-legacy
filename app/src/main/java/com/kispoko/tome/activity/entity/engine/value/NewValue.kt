@@ -21,12 +21,12 @@ import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.Form
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.value.Value
 import com.kispoko.tome.model.engine.value.ValueSet
 import com.kispoko.tome.model.engine.value.ValueSetId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
@@ -45,7 +45,7 @@ class NewValueActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameId     : GameId?     = null
+    private var gameId     : EntityId?   = null
     private var valueSetId : ValueSetId? = null
 
     private var valueSet   : ValueSet?   = null
@@ -71,7 +71,7 @@ class NewValueActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
         if (this.intent.hasExtra("value_set_id"))
             this.valueSetId = this.intent.getSerializableExtra("value_set_id") as ValueSetId

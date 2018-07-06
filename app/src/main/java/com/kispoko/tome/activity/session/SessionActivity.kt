@@ -59,7 +59,10 @@ class SessionActivity : AppCompatActivity()
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.session))
+        this.configureToolbar(getString(R.string.session),
+                              TextFont.RobotoCondensed,
+                              TextFontStyle.Regular,
+                              18f)
 
         this.applyTheme(com.kispoko.tome.model.theme.official.officialAppThemeLight)
 
@@ -212,8 +215,8 @@ class SessionUI(val session : Session,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.margin.leftDp    = 6f
-        layout.margin.rightDp   = 6f
+        layout.margin.leftDp    = 2f
+        layout.margin.rightDp   = 2f
 
         layout.padding.bottomDp = 72f
 
@@ -238,13 +241,13 @@ class SessionUI(val session : Session,
 
         layout.addView(this.entityNameView(entity.name()))
 
-        layout.addView(this.entityNextIconView())
+//        layout.addView(this.entityNextIconView())
 
         layout.setOnClickListener {
             when (entity) {
                 is Book -> {
                     val intent = Intent(sessionActivity, BookActivity::class.java)
-                    val bookReference = BookReferenceBook(entity.bookId())
+                    val bookReference = BookReferenceBook(entity.entityId())
                     intent.putExtra("book_reference", bookReference)
                     sessionActivity.startActivity(intent)
                 }
@@ -269,16 +272,16 @@ class SessionUI(val session : Session,
 
         name.text               = nameString
 
-        name.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        name.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         name.color              = theme.colorOrBlack(colorTheme)
 
-        name.sizeSp             = 20f
+        name.sizeSp             = 19f
 
         return name.textView(context)
     }
@@ -363,7 +366,7 @@ class SessionUI(val session : Session,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
         icon.color          = theme.colorOrBlack(iconColorTheme)
 
         return layout.linearLayout(context)
@@ -409,7 +412,7 @@ class SessionUI(val session : Session,
 
         button.text                 = label
 
-        button.font                 = Font.typeface(TextFont.default(),
+        button.font                 = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Bold,
                                                     context)
 
@@ -446,15 +449,14 @@ class SessionUI(val session : Session,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.margin.topDp     = 12f
-        layout.margin.bottomDp  = 1f
+        layout.margin.topDp     = 2f
+//        layout.margin.bottomDp  = 1f
 
         layout.corners          = Corners(2.0, 2.0, 0.0, 0.0)
 
         layout.padding.leftDp   = 6f
         layout.padding.rightDp  = 6f
-        layout.padding.topDp    = 6f
-        layout.padding.bottomDp = 6f
+        layout.padding.topDp    = 10f
 
         layout.child(label)
 
@@ -466,8 +468,8 @@ class SessionUI(val session : Session,
 
         label.text              = "${labelString}s"
 
-        label.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(

@@ -27,12 +27,7 @@ import com.kispoko.tome.activity.session.SessionActivity
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
 import com.kispoko.tome.activity.sheet.task.TaskPagerAdapter
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.engine.variable.TextVariable
-import com.kispoko.tome.model.engine.variable.Variable
-import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.Sheet
-import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
@@ -40,7 +35,6 @@ import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
-import com.kispoko.tome.rts.entity.VariableChangeListener
 import com.kispoko.tome.rts.entity.sheet.*
 import com.kispoko.tome.util.configureToolbar
 import maybe.Just
@@ -87,7 +81,7 @@ class SheetActivity : AppCompatActivity()
     // STATE > Sheet
     // -----------------------------------------------------------------------------------------
 
-    var sheetId : SheetId? = null
+    var sheetId : EntityId? = null
 
 
     // STATE > Views
@@ -126,10 +120,10 @@ class SheetActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         if (this.intent.hasExtra("sheet_id"))
-            this.sheetId = this.intent.getSerializableExtra("sheet_id") as SheetId
+            this.sheetId = this.intent.getSerializableExtra("sheet_id") as EntityId
 
         if (savedInstanceState != null)
-            this.sheetId = savedInstanceState.getSerializable("sheet_id") as SheetId
+            this.sheetId = savedInstanceState.getSerializable("sheet_id") as EntityId
 
         // (3) Initialize Listeners
         // -------------------------------------------------------------------------------------
@@ -139,7 +133,7 @@ class SheetActivity : AppCompatActivity()
         // (4) Configure UI
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar("Character Sheet", TextFontStyle.Medium, 17f)
+        this.configureToolbar("Character Sheet", TextFont.Cabin, TextFontStyle.Medium, 17f)
 
         this.initializeViews()
 
@@ -217,19 +211,15 @@ class SheetActivity : AppCompatActivity()
         val sheetId = this.sheetId
         val viewPager = this.viewPager
 
-        Log.d("***SHEET ACT", "on message")
-
         if (sheetId != null)
         {
             when (message)
             {
                 is MessageSheetUpdate ->
                 {
-                    Log.d("***SHEET ACT", "sheet update")
                     if (viewPager != null) {
                         sheetOrError(sheetId) apDo {
-                            Log.d("***SHEET ACT", "update sheet")
-                            it.update(message.update, viewPager, this)
+                            it.updateAndSave(message.update, viewPager, this)
                         }
                     }
                 }
@@ -241,7 +231,7 @@ class SheetActivity : AppCompatActivity()
                         {
                             val dialog = ProcedureUpdateDialog.newInstance(
                                                         message.procedureInvocation,
-                                                        EntitySheetId(sheetId))
+                                                        sheetId)
                             dialog.show(supportFragmentManager, "")
                         }
                     }
@@ -431,10 +421,7 @@ class SheetActivity : AppCompatActivity()
      */
     fun setSheetActive(sheet : Sheet)
     {
-        val sheetId = sheet.sheetId()
-        val entityId = EntitySheetId(sheetId)
-
-        sheet.onActive(entityId, this)
+        sheet.onActive(sheet.entityId(), this)
 
         // TODO why?
         val coordinatorLayout = this.findViewById<CoordinatorLayout>(R.id.coordinator_layout)
@@ -460,12 +447,12 @@ class SheetActivity : AppCompatActivity()
         // Ensure toolbar updates value when name changes
         // -------------------------------------------------------------------------------------
 
-        val updateToolbarOnNameChange = VariableChangeListener(
-                { updateToolbar(it, sheet.sheetId()) },
-                {})
-        addVariableChangeListener(VariableId("name"),
-                                    updateToolbarOnNameChange,
-                                    entityId)
+//        val updateToolbarOnNameChange = VariableChangeListener(
+//                { updateToolbar(it, sheet.entityId()) },
+//                {})
+//        addVariableChangeListener(VariableId("name"),
+//                                    updateToolbarOnNameChange,
+//                                    sheet.entityId())
 
         this.renderSheet(sheet)
     }
@@ -479,7 +466,7 @@ class SheetActivity : AppCompatActivity()
 
         val section = sheet.sections().firstOrNull()
         if (section != null) {
-            pagePagerAdatper().setPages(section.pages(), sheet.sheetId())
+            pagePagerAdatper().setPages(section.pages(), sheet.entityId())
         }
 
         val end = System.currentTimeMillis()
@@ -488,40 +475,16 @@ class SheetActivity : AppCompatActivity()
     }
 
 
-    private fun updateToolbar(variable : Variable, sheetId : SheetId)
-    {
-        when (variable)
-        {
-            is TextVariable ->
-            {
-//                val mText = variable.variableValue().value(EntitySheetId(sheetId))
-//                when (mText)
-//                {
-//                    is Val -> {
-//                        val text = mText.value
-//                        when (text) {
-//                            is Just -> this.configureToolbar(text.value)
-//                        }
-//                    }
-//                    is Err -> ApplicationLog.error(mText.error)
-//                }
-            }
-        }
-    }
-
 }
 
 
 
-class MainTabBarUI(val sheetId : SheetId,
+class MainTabBarUI(val sheetId : EntityId,
                    val theme : Theme,
                    val sheetActivity : SheetActivity)
 {
 
     val context = sheetActivity
-
-    val entityId = EntitySheetId(sheetId)
-
 
     var pagesTabLayoutView   : LinearLayout? = null
     var pagesTabTextView     : TextView? = null
@@ -709,7 +672,7 @@ class MainTabBarUI(val sheetId : SheetId,
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
+        layout.backgroundColor  = colorOrBlack(colorTheme, sheetId)
 
         layout.margin.topDp = 8f
 

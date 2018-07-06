@@ -24,6 +24,16 @@
         </activity>
 
         <activity
+            android:name=".activity.home.HomeActivity"
+            android:label="Tome"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="com.kispoko.tome.activity.entity.engine.valueset.ValueSetsActivity"
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -48,15 +58,7 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity
-            android:name=".activity.home.HomeActivity"
-            android:label="Tome"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+
         <activity
             android:name=".activity.sheet.SaveSheetActivity"
             android:label="Save Sheet"

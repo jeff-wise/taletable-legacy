@@ -22,7 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.session.sessionManifest
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.IconSize
 import com.kispoko.tome.model.sheet.style.TextFont
@@ -32,8 +32,7 @@ import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
-import com.kispoko.tome.rts.session.SessionLoader
-import com.kispoko.tome.rts.session.sessionManifest
+import com.kispoko.tome.rts.session.Session
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 
@@ -49,7 +48,7 @@ class SessionListActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameId     : GameId? = null
+    private var gameId     : EntityId? = null
     private var entityKind : EntityKind? = null
 
 
@@ -70,7 +69,7 @@ class SessionListActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
         if (this.intent.hasExtra("entity_kind"))
             this.entityKind = this.intent.getSerializableExtra("entity_kind") as EntityKind
@@ -109,9 +108,9 @@ class SessionListActivity : AppCompatActivity()
 
         if (gameId != null && entityTypeId != null)
         {
-            sessionManifest(gameId, this).doMaybe {
-                val sessionLoaders = it.sessionLoaders(entityTypeId)
-                val sessionListUI = SessionListUI(sessionLoaders, officialThemeLight, this)
+            sessionManifest(this).doMaybe {
+//                val sessionLoaders = it.sessionLoaders(entityTypeId)
+                val sessionListUI = SessionListUI(it.summaries, officialThemeLight, this)
                 content?.addView(sessionListUI.view())
             }
         }
@@ -165,7 +164,7 @@ class SessionListActivity : AppCompatActivity()
 }
 
 
-class SessionListUI(val sessionSummaryList : List<SessionLoader>,
+class SessionListUI(val sessions : List<Session>,
                     val theme : Theme,
                     val context : Context)
 {
@@ -206,7 +205,7 @@ class SessionListUI(val sessionSummaryList : List<SessionLoader>,
 
         recyclerView.layoutManager      = LinearLayoutManager(context)
 
-        recyclerView.adapter            = SessionRecyclerViewAdapter(sessionSummaryList,
+        recyclerView.adapter            = SessionRecyclerViewAdapter(sessions,
                                                                      theme,
                                                                      context)
 
@@ -224,7 +223,7 @@ class SessionListUI(val sessionSummaryList : List<SessionLoader>,
     // RECYCLER VIEW ADPATER
     // -----------------------------------------------------------------------------------------
 
-    class SessionRecyclerViewAdapter(val summaries : List<SessionLoader>,
+    class SessionRecyclerViewAdapter(val summaries : List<Session>,
                                      val theme : Theme,
                                      val context : Context)
             : RecyclerView.Adapter<SummaryItemViewHolder>()
@@ -308,7 +307,7 @@ class SessionListUI(val sessionSummaryList : List<SessionLoader>,
         }
 
 
-        fun updateView(sessionLoader : SessionLoader)
+        fun updateView(sessionLoader : Session)
         {
             val sessionSummaryItem = SessionSummaryItem(theme, context)
 
@@ -332,44 +331,13 @@ class SessionListUI(val sessionSummaryList : List<SessionLoader>,
 
 
 
-        private fun configureOpenButton(sessionLoader : SessionLoader, activity : AppCompatActivity)
+        private fun configureOpenButton(sessionLoader : Session, activity : AppCompatActivity)
         {
-//            val sheetLoader = OfficialSheetLoader("Casmey",
-//                                                  SheetId(sheetId),
-//                                                  CampaignId("isara"),
-//                                                  GameId("magic_of_heroes"))
-//
-//            val campaignLoader = OfficialCampaignLoader("Isara",
-//                                                        CampaignId("isara"),
-//                                                        GameId("magic_of_heroes"))
-//
-//            val gameLoader = OfficialGameLoader("Magic of Heroes", GameId("magic_of_heroes"))
-//
-//            val coreRulebookLoader = OfficialBookLoader("Core Rules",
-//                                                        BookId("core_rules"),
-//                                                        GameId("magic_of_heroes"))
-//
-
-
-//            val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
-
             this.openButtonView?.setOnClickListener {
-//                val sessionLoader = SessionLoader(SessionId(UUID.randomUUID()),
-//                                                  SessionName(""),
-//                                                  Nothing(),
-//                                                  GameId("magic_of_heroes"),
-//                                                  Calendar.getInstance(),
-//                                                  loaders,
-//                                                  EntitySheetId(SheetId(sheetId)))
-//                val dialog = LoadSessionProgressDialog.newInstance(sessionLoader,
-//                                                                   "Session Name")
-//                dialog.show(activity.supportFragmentManager, "")
-
                 Router.send(NewSessionMessageSession(sessionLoader.sessionId))
                 activity.setResult(1)
                 activity.finish()
             }
-
         }
 
     }

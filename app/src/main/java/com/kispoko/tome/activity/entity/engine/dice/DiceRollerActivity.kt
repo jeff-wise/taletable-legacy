@@ -93,7 +93,9 @@ class DiceRollerActivity : AppCompatActivity()
         val entityId = this.entityId
 
         // Toolbar
-        this.configureToolbar(getString(R.string.dice_roller), TextFontStyle.Medium)
+        this.configureToolbar(getString(R.string.dice_roller),
+                              TextFont.RobotoCondensed,
+                              TextFontStyle.Regular)
 
         // Theme
         if (entityId != null)

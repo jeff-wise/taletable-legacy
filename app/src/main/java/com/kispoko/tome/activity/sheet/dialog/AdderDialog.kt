@@ -21,6 +21,10 @@ import com.kispoko.tome.model.engine.dice.DiceRoll
 import com.kispoko.tome.model.engine.dice.RollModifier
 import com.kispoko.tome.model.engine.dice.RollSummary
 import com.kispoko.tome.model.engine.variable.VariableId
+import com.kispoko.tome.model.entity.NumberWidgetUpdateValue
+import com.kispoko.tome.model.entity.PointsWidgetUpdateSetCurrentValue
+import com.kispoko.tome.model.entity.StoryWidgetUpdateNumberPart
+import com.kispoko.tome.model.entity.TableWidgetUpdateSetNumberCell
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme

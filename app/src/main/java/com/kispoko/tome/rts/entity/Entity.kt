@@ -3,14 +3,13 @@ package com.kispoko.tome.rts.entity
 
 
 import android.graphics.Color
+import android.util.Log
 import com.kispoko.culebra.*
 import com.kispoko.tome.app.*
+import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.model.book.Book
-import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.Campaign
-import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.Game
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.model.engine.EngineValue
 import com.kispoko.tome.model.engine.function.Function
@@ -32,7 +31,6 @@ import com.kispoko.tome.model.engine.value.*
 import com.kispoko.tome.model.engine.variable.*
 import com.kispoko.tome.model.feed.Feed
 import com.kispoko.tome.model.sheet.Sheet
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
@@ -41,6 +39,10 @@ import com.kispoko.tome.rts.entity.engine.TextReferenceIsNull
 import com.kispoko.tome.rts.entity.sheet.SheetData
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.*
+import lulo.document.*
+import lulo.value.UnexpectedType
+import lulo.value.ValueError
+import lulo.value.ValueParser
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
@@ -70,18 +72,18 @@ fun entityRecord(entityId : EntityId) : AppEff<EntityRecord> =
         effError(AppEntityError(EntityDoesNotExist(entityId)))
 
 
-fun entitySheetRecord(sheetId : SheetId) : AppEff<EntitySheetRecord> =
-    entityRecord(EntitySheetId(sheetId)) apply {
-        when (it) {
-            is EntitySheetRecord -> effValue(it)
-            else                 -> {
-                effError<AppError,EntitySheetRecord>(AppEntityError(
-                        EntityIsUnexpectedType(EntitySheetId(sheetId),
-                                               EntityTypeSheet,
-                                               it.entityType)))
-            }
-        }
-    }
+//fun entitySheetRecord(sheetId : SheetId) : AppEff<EntitySheetRecord> =
+//    entityRecord(EntitySheetId(sheetId)) apply {
+//        when (it) {
+//            is EntitySheetRecord -> effValue(it)
+//            else                 -> {
+//                effError<AppError,EntitySheetRecord>(AppEntityError(
+//                        EntityIsUnexpectedType(EntitySheetId(sheetId),
+//                                               EntityTypeSheet,
+//                                               it.entityType)))
+//            }
+//        }
+//    }
 
 
 // ---------------------------------------------------------------------------------------------
@@ -91,9 +93,9 @@ fun entitySheetRecord(sheetId : SheetId) : AppEff<EntitySheetRecord> =
 // GET > Sheet
 // ---------------------------------------------------------------------------------------------
 
-fun sheet(sheetId : SheetId) : Maybe<Sheet>
+fun sheet(entityId : EntityId) : Maybe<Sheet>
 {
-    val entityState = entityRecordById.get(EntitySheetId(sheetId))
+    val entityState = entityRecordById[entityId]
     return when (entityState) {
         is EntitySheetRecord -> {
             Just(entityState.sheet)
@@ -103,13 +105,9 @@ fun sheet(sheetId : SheetId) : Maybe<Sheet>
 }
 
 
-fun sheetOrError(sheetId : SheetId) : AppEff<Sheet> =
-        sheetOrError(EntitySheetId(sheetId))
-
-
 fun sheetOrError(entityId : EntityId) : AppEff<Sheet>
 {
-    val record = entityRecordById.get(entityId)
+    val record = entityRecordById[entityId]
     return if (record != null) {
         when (record) {
             is EntitySheetRecord -> effValue(record.sheet)
@@ -129,9 +127,9 @@ fun sheetOrError(entityId : EntityId) : AppEff<Sheet>
 // GET > Campaign
 // ---------------------------------------------------------------------------------------------
 
-fun campaign(campaignId : CampaignId) : Maybe<Campaign>
+fun campaign(entityId : EntityId) : Maybe<Campaign>
 {
-    val entityState = entityRecordById.get(EntityCampaignId(campaignId))
+    val entityState = entityRecordById[entityId]
     return when (entityState) {
         is EntityCampaignRecord -> {
             Just(entityState.campaign)
@@ -141,9 +139,9 @@ fun campaign(campaignId : CampaignId) : Maybe<Campaign>
 }
 
 
-fun game(gameId : GameId) : Maybe<Game>
+fun game(entityId : EntityId) : Maybe<Game>
 {
-    val entityState = entityRecordById.get(EntityGameId(gameId))
+    val entityState = entityRecordById[entityId]
     return when (entityState) {
         is EntityGameRecord -> {
             Just(entityState.game)
@@ -153,13 +151,13 @@ fun game(gameId : GameId) : Maybe<Game>
 }
 
 
-fun game(campaignId : CampaignId) : Maybe<Game> =
-    campaign(campaignId).apply { game(it.gameId) }
+fun campaignGame(campaignId : EntityId) : Maybe<Game> =
+    campaign(campaignId).apply { game(it.gameId()) }
 
 
-fun book(bookId : BookId) : Maybe<Book>
+fun book(bookId : EntityId) : Maybe<Book>
 {
-    val entityState = entityRecordById.get(EntityBookId(bookId))
+    val entityState = entityRecordById[bookId]
     return when (entityState) {
         is EntityBookRecord -> {
             Just(entityState.book)
@@ -169,7 +167,7 @@ fun book(bookId : BookId) : Maybe<Book>
 }
 
 
-fun feed(feedId : EntityFeedId) : Maybe<Feed>
+fun feed(feedId : EntityId) : Maybe<Feed>
 {
     val record = entityRecordById[feedId]
     return when (record) {
@@ -184,47 +182,64 @@ fun feed(feedId : EntityFeedId) : Maybe<Feed>
 // Add
 // ---------------------------------------------------------------------------------------------
 
+fun addEntity(entity : Entity)
+{
+    when (entity)
+    {
+        is Sheet    -> addSheet(entity)
+        is Campaign -> addCampaign(entity)
+        is Game     -> addGame(entity)
+        is Book     -> addBook(entity)
+        is Feed     -> addFeed(entity)
+    }
+}
+
+
 fun addSheet(sheet : Sheet)
 {
-    val entityId = EntitySheetId(sheet.sheetId())
-    val engineState = EntityState(entityId, mutableListOf(), mutableListOf())
+    val engineState = EntityState(sheet.entityId(), mutableListOf(), mutableListOf())
     val sheetRecord = EntitySheetRecord(sheet, engineState, Just(sheet.settings().themeId()))
 
-    entityRecordById.put(entityId, sheetRecord)
+    entityRecordById[sheet.entityId()] = sheetRecord
+
+    Log.d("***ENTITY", "Added sheet: ${sheet.name()}")
 }
 
 
 fun addCampaign(campaign : Campaign)
 {
-    val entityId = EntityCampaignId(campaign.campaignId())
-    val engineState = EntityState(entityId, mutableListOf(), mutableListOf())
+    val engineState = EntityState(campaign.entityId(), mutableListOf(), mutableListOf())
     val campaignRecord = EntityCampaignRecord(campaign, engineState, Nothing())
 
-    entityRecordById.put(entityId, campaignRecord)
+    entityRecordById[campaign.entityId()] = campaignRecord
+
+    Log.d("***ENTITY", "Added campaign: ${campaign.name()}")
 }
 
 
 fun addGame(game : Game)
 {
-    val entityId = EntityGameId(game.gameId())
-    val engineState = EntityState(entityId, mutableListOf(), mutableListOf())
+    val engineState = EntityState(game.entityId(), mutableListOf(), mutableListOf())
     val gameRecord = EntityGameRecord(game, engineState, Nothing())
 
-    entityRecordById.put(entityId, gameRecord)
+    entityRecordById[game.entityId()] = gameRecord
+
+    Log.d("***ENTITY", "Added game: ${game.name()}")
 }
 
 
 fun addBook(book : Book)
 {
-    val entityId = EntityBookId(book.bookId())
-    val entityState = EntityState(entityId, mutableListOf(), mutableListOf())
+    val entityState = EntityState(book.entityId(), mutableListOf(), mutableListOf())
     val bookRecord = EntityBookRecord(book, entityState, Just(book.settings().themeId()))
 
     book.variables().forEach {
         entityState.addVariable(it)
     }
 
-    entityRecordById.put(entityId, bookRecord)
+    entityRecordById[book.entityId()] = bookRecord
+
+    Log.d("***ENTITY", "Added book: ${book.name()}")
 }
 
 
@@ -238,6 +253,8 @@ fun addFeed(feed : Feed)
     }
 
     entityRecordById[feed.entityId()] = bookRecord
+
+    Log.d("***ENTITY", "Added feed: ${feed.name()}")
 }
 
 
@@ -246,17 +263,20 @@ fun addFeed(feed : Feed)
 // INITIALIZE
 // ---------------------------------------------------------------------------------------------
 
-fun initialize(entityId : EntityId) = when (entityId)
+fun initialize(entityId : EntityId)
 {
-    is EntitySheetId -> initializeSheet(entityId.sheetId)
-    else -> { }
+    entityRecord(entityId) apDo { record ->
+        when (record) {
+            is EntitySheetRecord -> {
+                initializeSheet(record.sheet.entityId())
+            }
+        }
+    }
 }
 
 
-fun initializeSheet(sheetId : SheetId)
+fun initializeSheet(entityId : EntityId)
 {
-    val entityId = EntitySheetId(sheetId)
-
     entityEngineState(entityId) apDo { entityState ->
         mechanics(entityId) apDo { mechanicSet ->
             entityState.setMechanics(mechanicSet.toList())
@@ -275,76 +295,97 @@ fun initializeSheet(sheetId : SheetId)
 /**
  * Engine
  */
-fun entityEngines(entityId : EntityId) : AppEff<List<Engine>> = when (entityId)
+fun entityEngines(entityId : EntityId) : AppEff<List<Engine>>
 {
-    is EntitySheetId ->
-    {
-        val engines : MutableList<Engine> = mutableListOf()
-        val maybeSheet = sheet(entityId.sheetId)
-        when (maybeSheet) {
+    val engines : MutableList<Engine> = mutableListOf()
+
+    sheet(entityId).doMaybe { sheet ->
+        engines.add(sheet.engine())
+        val maybeCampaign = campaign(sheet.campaignId())
+        when (maybeCampaign) {
             is Just -> {
-                val sheet = maybeSheet.value
-                engines.add(sheet.engine())
-                val maybeCampaign = campaign(sheet.campaignId())
-                when (maybeCampaign) {
-                    is Just -> {
-                        val campaign = maybeCampaign.value
-                        engines.add(campaign.engine())
-                        val maybeGame = game(campaign.gameId())
-                        when (maybeGame) {
-                            is Just -> engines.add(maybeGame.value.engine())
-                        }
-                    }
+                val campaign = maybeCampaign.value
+                engines.add(campaign.engine())
+                val maybeGame = game(campaign.gameId())
+                when (maybeGame) {
+                    is Just -> engines.add(maybeGame.value.engine())
                 }
             }
         }
-
-        effValue(engines)
     }
-    else -> effValue(listOf())
+
+    return effValue(engines)
 }
 
 
 /**
  * Group With Id
  */
-fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group> = when (entityId)
+fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group>
 {
-    is EntitySheetId ->
+    val recordEff = entityRecord(entityId)
+
+    return when (recordEff)
     {
-        sheet(entityId.sheetId)   ap {
-        campaign(it.campaignId()) ap {
-        game(it.gameId())         ap {
-            it.groupWithId(groupId)
-        } } }
-    }
-    is EntityFeedId ->
-    {
-        feed(entityId) ap {
-            it.groupWithId(groupId)
+        is Val ->
+        {
+            val record = recordEff.value
+            when (record)
+            {
+                is EntitySheetRecord -> {
+                    sheet(record.sheet.entityId()) ap {
+                        campaign(it.campaignId()) ap {
+                            game(it.gameId()) ap {
+                                it.groupWithId(groupId)
+                            }
+                        }
+                    }
+                }
+                is EntityFeedRecord -> {
+                    feed(record.feed.entityId()) ap {
+                        it.groupWithId(groupId)
+                    }
+                }
+                else -> Nothing()
+            }
         }
+        is Err -> Nothing()
     }
-    else -> Nothing()
+
 }
 
 
 /**
  * Group By Tag
  */
-fun groups(tagQuery : TagQuery, entityId : EntityId) : List<Group> = when (entityId)
+fun groups(tagQuery : TagQuery, entityId : EntityId) : List<Group>
 {
-    is EntitySheetId ->
+    val recordEff = entityRecord(entityId)
+
+    return when (recordEff)
     {
-        val game = sheet(entityId.sheetId)
-                     .apply { campaign(it.campaignId()) }
-                     .apply { game(it.gameId()) }
-        when (game) {
-            is Just    -> game.value.groups(tagQuery)
-            is Nothing -> listOf()
+        is Val ->
+        {
+            val record = recordEff.value
+            when (record)
+            {
+                is EntitySheetRecord ->
+                {
+                    val game = sheet(record.sheet.entityId())
+                                 .apply { campaign(it.campaignId()) }
+                                 .apply { game(it.gameId()) }
+                    when (game) {
+                        is Just    -> game.value.groups(tagQuery)
+                        is Nothing -> listOf()
+                    }
+                }
+                else -> listOf()
+            }
         }
+        is Err -> listOf()
     }
-    else -> listOf()
 }
+
 
 
 fun groups(groupReferences : List<GroupReference>, entityId : EntityId) : List<Group>
@@ -832,102 +873,195 @@ fun colorOrBlack(colorId : ColorId, entityId : EntityId) : Int
 // Entity Id
 // ---------------------------------------------------------------------------------------------
 
-sealed class EntityId : Serializable
+//sealed class EntityId : Serializable
+//{
+//    companion object
+//    {
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityId> = when (yamlValue)
+//        {
+//            is YamlDict ->
+//            {
+//                yamlValue.text("type") apply {
+//                    when (it) {
+//                        "sheet"    -> yamlValue.at("sheet").apply(EntitySheetId.Companion::fromYaml) as YamlParser<EntityId>
+//                        "campaign" -> yamlValue.at("campaign").apply(EntityCampaignId.Companion::fromYaml) as YamlParser<EntityId>
+//                        "game"     -> yamlValue.at("game").apply(EntityGameId.Companion::fromYaml) as YamlParser<EntityId>
+//                        "book"     -> yamlValue.at("book").apply(EntityBookId.Companion::fromYaml) as YamlParser<EntityId>
+//                        else       -> effError<YamlParseError,EntityId>(
+//                                        UnexpectedStringValue(it, yamlValue.path))
+//                    }
+//                }
+//            }
+//            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+//        }
+//    }
+//
+//}
+//
+//
+//data class EntitySheetId(val sheetId : SheetId) : EntityId()
+//{
+//    override fun toString() = sheetId.value
+//
+//    companion object
+//    {
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntitySheetId> =
+//            apply(::EntitySheetId, SheetId.fromYaml(yamlValue))
+//    }
+//
+//}
+//
+//
+//data class EntityCampaignId(val campaignId : CampaignId) : EntityId()
+//{
+//    override fun toString() = campaignId.value
+//
+//    companion object
+//    {
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityCampaignId> =
+//            apply(::EntityCampaignId, CampaignId.fromYaml(yamlValue))
+//    }
+//
+//}
+//
+//data class EntityGameId(val gameId : GameId) : EntityId()
+//{
+//    override fun toString() = gameId.value
+//
+//    companion object
+//    {
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityGameId> =
+//            apply(::EntityGameId, GameId.fromYaml(yamlValue))
+//    }
+//
+//}
+//
+//data class EntityThemeId(val themeId : ThemeId) : EntityId()
+//{
+//    override fun toString() = themeId.toString()
+//
+////    companion object
+////    {
+////        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityThemeId> =
+////            apply(::EntityThemeId, ThemeId.fromYaml(yamlValue))
+////    }
+//
+//}
+//
+//data class EntityBookId(val bookId : BookId) : EntityId()
+//{
+//    override fun toString() = bookId.value
+//
+//    companion object
+//    {
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityBookId> =
+//            apply(::EntityBookId, BookId.fromYaml(yamlValue))
+//    }
+//
+//}
+//
+//data class EntityFeedId(val id : UUID) : EntityId()
+//{
+//    override fun toString() = id.toString()
+//}
+
+
+data class EntityId(val value : UUID) : ToDocument, Serializable
 {
-    companion object
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<EntityId>
     {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityId> = when (yamlValue)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<EntityId> = when (doc)
         {
-            is YamlDict ->
-            {
-                yamlValue.text("type") apply {
-                    when (it) {
-                        "sheet"    -> yamlValue.at("sheet").apply(EntitySheetId.Companion::fromYaml) as YamlParser<EntityId>
-                        "campaign" -> yamlValue.at("campaign").apply(EntityCampaignId.Companion::fromYaml) as YamlParser<EntityId>
-                        "game"     -> yamlValue.at("game").apply(EntityGameId.Companion::fromYaml) as YamlParser<EntityId>
-                        "book"     -> yamlValue.at("book").apply(EntityBookId.Companion::fromYaml) as YamlParser<EntityId>
-                        else       -> effError<YamlParseError,EntityId>(
-                                        UnexpectedStringValue(it, yamlValue.path))
-                    }
+            is DocText -> {
+                try {
+                    effValue<ValueError,EntityId>(EntityId(UUID.fromString(doc.text)))
+                }
+                catch (e : IllegalArgumentException) {
+                    effError<ValueError,EntityId>(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
                 }
             }
-            else        -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue), yamlValue.path))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityId> =
+            when (yamlValue)
+            {
+                is YamlText ->
+                {
+                    try {
+                        effValue<YamlParseError,EntityId>(EntityId(UUID.fromString(yamlValue.text)))
+                    }
+                    catch (e : IllegalArgumentException) {
+                        error(UnexpectedTypeFound(YamlType.TEXT, yamlType(yamlValue), yamlValue.path))
+                    }
+                }
+                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                         yamlType(yamlValue),
+                                                         yamlValue.path))
+            }
+
+        fun fromString(uuidString : String) : EntityId?
+        {
+            return try {
+                EntityId(UUID.fromString(uuidString))
+            }
+            catch (e : IllegalArgumentException) {
+                null
+            }
         }
     }
 
-}
 
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
 
-data class EntitySheetId(val sheetId : SheetId) : EntityId()
-{
-    override fun toString() = sheetId.value
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntitySheetId> =
-            apply(::EntitySheetId, SheetId.fromYaml(yamlValue))
-    }
+    override fun toDocument() = DocText(this.value.toString())
 
 }
 
-
-data class EntityCampaignId(val campaignId : CampaignId) : EntityId()
-{
-    override fun toString() = campaignId.value
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityCampaignId> =
-            apply(::EntityCampaignId, CampaignId.fromYaml(yamlValue))
-    }
-
-}
-
-data class EntityGameId(val gameId : GameId) : EntityId()
-{
-    override fun toString() = gameId.value
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityGameId> =
-            apply(::EntityGameId, GameId.fromYaml(yamlValue))
-    }
-
-}
-
-data class EntityThemeId(val themeId : ThemeId) : EntityId()
-{
-    override fun toString() = themeId.toString()
-
-//    companion object
-//    {
-//        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityThemeId> =
-//            apply(::EntityThemeId, ThemeId.fromYaml(yamlValue))
-//    }
-
-}
-
-data class EntityBookId(val bookId : BookId) : EntityId()
-{
-    override fun toString() = bookId.value
-
-    companion object
-    {
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityBookId> =
-            apply(::EntityBookId, BookId.fromYaml(yamlValue))
-    }
-
-}
-
-data class EntityFeedId(val id : UUID) : EntityId()
-{
-    override fun toString() = id.toString()
-}
 
 // Entity Type
 // ---------------------------------------------------------------------------------------------
 
 sealed class EntityType
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityType> = when (yamlValue)
+        {
+            is YamlText ->
+            {
+                when (yamlValue.text)
+                {
+                    "sheet"     -> effValue<YamlParseError,EntityType>(EntityTypeSheet)
+                    "campaign"  -> effValue<YamlParseError,EntityType>(EntityTypeCampaign)
+                    "game"      -> effValue<YamlParseError,EntityType>(EntityTypeGame)
+                    "theme"     -> effValue<YamlParseError,EntityType>(EntityTypeTheme)
+                    "book"      -> effValue<YamlParseError,EntityType>(EntityTypeBook)
+                    else        -> error(UnexpectedStringValue(yamlValue.text, yamlValue.path))
+                }
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                     yamlType(yamlValue),
+                                                     yamlValue.path))
+        }
+
+
+    }
+
+}
 
 object EntityTypeSheet : EntityType()
 {
@@ -994,7 +1128,7 @@ data class EntityKind(val id : EntityKindId,
 }
 
 
-data class EntityKindId(val value : String) : EntityId()
+data class EntityKindId(val value : String) : Serializable
 {
 
     companion object
@@ -1013,7 +1147,6 @@ data class EntityKindId(val value : String) : EntityId()
 }
 
 
-
 // Entity State
 // ---------------------------------------------------------------------------------------------
 
@@ -1025,7 +1158,6 @@ sealed class EntityRecord(open val engineState : EntityState,
     abstract fun entity() : Entity
 
 }
-
 
 
 data class EntitySheetRecord(val sheet : Sheet,
@@ -1105,10 +1237,42 @@ data class EntitySourceLocal(val rowId : Long) : EntitySource()
 
 interface Entity : Serializable
 {
-    val id : UUID
+//    val id : UUID
     fun entityId() : EntityId
     fun name() : String
     fun summary() : String
-    fun entityLoader() : EntityLoader
 }
 
+
+
+
+sealed class EntityIndexType
+{
+
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<EntityIndexType> = when (yamlValue)
+        {
+            is YamlText ->
+            {
+                when (yamlValue.text)
+                {
+                    "group" -> effValue<YamlParseError,EntityIndexType>(EntityIndexTypeGroup())
+                    else    -> error(UnexpectedStringValue(yamlValue.text, yamlValue.path))
+                }
+            }
+            else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+                                                     yamlType(yamlValue),
+                                                     yamlValue.path))
+        }
+
+
+    }
+
+}
+
+
+class EntityIndexTypeGroup : EntityIndexType()

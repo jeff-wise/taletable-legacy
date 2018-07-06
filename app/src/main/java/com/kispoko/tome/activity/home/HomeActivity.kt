@@ -31,11 +31,7 @@ import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.router.Router
-import com.kispoko.tome.rts.entity.EntitySheetId
-import com.kispoko.tome.rts.session.MessageSessionEntityLoaded
-import com.kispoko.tome.rts.session.MessageSessionLoad
-import com.kispoko.tome.rts.session.MessageSessionLoaded
-import com.kispoko.tome.rts.session.SessionLoader
+import com.kispoko.tome.rts.session.*
 import com.kispoko.tome.util.Util
 import com.kispoko.tome.util.configureToolbar
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper
@@ -84,7 +80,7 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
     var hasSavedSessions : Boolean = false
 
-    var selectedSessionLoader : SessionLoader? = null
+    var selectedSession : Session? = null
 
     private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
@@ -108,7 +104,7 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.tale_table), TextFontStyle.Medium)
+        this.configureToolbar(getString(R.string.tale_table), TextFont.Cabin, TextFontStyle.Medium)
 
         this.findViewById<TextView>(R.id.toolbar_title)?.let { titleTextView ->
 //            titleTextView.text     = " tome "
@@ -167,28 +163,20 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
         {
             is MessageSessionEntityLoaded ->
             {
-                Log.d("***HOME ACTIVITY", "entity loaded message")
                 val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
                 progressBar?.let { bar ->
-                    Log.d("***HOME ACTIVITY", "updatin progress bar")
                     val updateAmount = bar.progress + (72 / message.update.totalEntities)
                     bar.progress = updateAmount
                 }
             }
             is MessageSessionLoaded ->
             {
-                this.selectedSessionLoader?.let {
+                this.selectedSession?.let {
                     val mainEntityId = it.mainEntityId
-                    when (mainEntityId)
-                    {
-                        is EntitySheetId -> {
-                            val intent = Intent(this, SheetActivity::class.java)
-                            intent.putExtra("sheet_id", mainEntityId.sheetId)
-                            startActivity(intent)
-                        }
-                    }
+                    val intent = Intent(this, SheetActivity::class.java)
+                    intent.putExtra("sheet_id", mainEntityId)
+                    startActivity(intent)
                 }
-
             }
         }
     }
@@ -460,7 +448,7 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 //        this.rfabHelper?.toggleContent()
 //
 //        when (position) {
-//            1 -> this.newSession()
+//            1 -> this.openSession()
 //        }
 //    }
 //
@@ -470,7 +458,7 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 //        this.rfabHelper?.toggleContent()
 //
 //        when (position) {
-//            1 -> this.newSession()
+//            1 -> this.openSession()
 //        }
 //    }
 //

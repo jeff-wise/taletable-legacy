@@ -116,7 +116,7 @@ class RunProcedureActivity : NumberUpdater, AppCompatActivity()
 
 
         // > Toolbar
-        this.configureToolbar(getString(R.string.perform_action), TextFontStyle.Medium)
+        this.configureToolbar(getString(R.string.perform_action), TextFont.RobotoCondensed, TextFontStyle.Medium)
 
         val statusBarColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),

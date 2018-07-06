@@ -172,7 +172,7 @@
             android:clickable="true"
             app:borderWidth="0dp"
             app:elevation="10dp"
-            android:src="@drawable/ic_fab_add"
+            android:src="@drawable/ic_fab_session"
             app:layout_anchor="@id/view_pager"
             app:layout_anchorGravity="bottom|end"
             app:backgroundTint="@color/light_theme_dark_grey_10"

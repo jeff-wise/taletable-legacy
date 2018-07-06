@@ -5,24 +5,15 @@ package com.kispoko.tome.model.sheet
 import android.content.Context
 import android.util.Log
 import android.view.View
-import com.kispoko.culebra.*
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppSheetError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.db.*
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue6
-import com.kispoko.tome.lib.orm.schema.CollValue
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
-import com.kispoko.tome.lib.orm.sql.SQLSerializable
-import com.kispoko.tome.lib.orm.sql.SQLText
-import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.engine.variable.VariableId
+import com.kispoko.tome.model.entity.*
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.sheet.widget.*
@@ -44,16 +35,22 @@ import java.util.*
 /**
  * Sheet
  */
-data class Sheet(override val id : UUID,
-                 private var sheetId : SheetId,
-                 private var campaignId : CampaignId,
+data class Sheet(private var sheetId : EntityId,
+                 private var campaignId : EntityId,
                  private var sections : MutableList<Section>,
                  private var engine : Engine,
                  private var variables : MutableList<Variable>,
-                 private var settings : Settings,
-                 private var entitySource : EntityLoader)
-                  : Entity, ProdType, ToDocument, Serializable
+                 private var settings : Settings)
+                  : Entity, ToDocument, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var isSavable : Boolean = true
+    private var isSaved : Boolean = false
+
 
     // -----------------------------------------------------------------------------------------
     // INDEXES
@@ -112,22 +109,6 @@ data class Sheet(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(sheetId : SheetId,
-                campaignId : CampaignId,
-                sections : List<Section>,
-                engine : Engine,
-                variables : List<Variable>,
-                settings : Settings)
-        : this(UUID.randomUUID(),
-               sheetId,
-               campaignId,
-               sections.toMutableList(),
-               engine,
-               variables.toMutableList(),
-               settings,
-               EntityLoaderUnknown())
-
-
     companion object : Factory<Sheet>
     {
         override fun fromDocument(doc : SchemaDoc) : ValueParser<Sheet> = when (doc)
@@ -136,9 +117,9 @@ data class Sheet(override val id : UUID,
             {
                 apply(::Sheet,
                       // Sheet Id
-                      doc.at("id") ap { SheetId.fromDocument(it) },
+                      doc.at("id") ap { EntityId.fromDocument(it) },
                       // Campaign Id
-                      doc.at("campaign_id") ap { CampaignId.fromDocument(it) },
+                      doc.at("campaign_id") ap { EntityId.fromDocument(it) },
                       // Section List
                       doc.list("sections") ap { docList ->
                           docList.mapMut { Section.fromDocument(it) }
@@ -164,10 +145,7 @@ data class Sheet(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun sheetId() : SheetId = this.sheetId
-
-
-    fun campaignId() : CampaignId = this.campaignId
+    fun campaignId() : EntityId = this.campaignId
 
 
     fun sections() : List<Section> = this.sections
@@ -200,29 +178,7 @@ data class Sheet(override val id : UUID,
     override fun summary() : String = this.settings.sheetSummary()
 
 
-    override fun entityLoader() = this.entitySource
-
-
-    override fun entityId() = EntitySheetId(this.sheetId)
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_SheetValue =
-            RowValue6(sheetTable, PrimValue(sheetId),
-                                  PrimValue(campaignId),
-                                  CollValue(sections),
-                                  ProdValue(engine),
-                                  CollValue(variables),
-                                  ProdValue(settings))
+    override fun entityId() = this.sheetId
 
 
     // -----------------------------------------------------------------------------------------
@@ -230,7 +186,6 @@ data class Sheet(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "id" to this.sheetId().toDocument(),
         "campaign_id" to this.campaignId().toDocument(),
         "sections" to DocList(this.sections().map { it.toDocument() }),
         "variables" to DocList(this.variables().map { it.toDocument() }),
@@ -317,55 +272,63 @@ data class Sheet(override val id : UUID,
     // UPDATE
     // -----------------------------------------------------------------------------------------
 
-    fun update(sheetUpdate : SheetUpdate,
-               rootView : View,
+    fun update(entityUpdate : EntityUpdate,
+               rootView : View?,
                context : Context)
     {
-        // Update sheet
+        when (entityUpdate) {
+            is EntityUpdateSheet -> this.update(entityUpdate, rootView, context)
+        }
+    }
+
+
+    fun updateAndSave(sheetUpdate : EntityUpdateSheet,
+                      rootView : View?,
+                      context : Context)
+    {
+        this.update(sheetUpdate, rootView, context)
+
+        // Save update
+        if (this.isSavable) {
+            launch(UI) {
+                saveSheetUpdate(sheetUpdate, context)
+            }
+        }
+    }
+
+
+    fun update(sheetUpdate : EntityUpdateSheet,
+               rootView: View?,
+               context : Context)
+    {
         when (sheetUpdate) {
             is SheetUpdateWidget -> this.updateWidget(sheetUpdate, rootView, context)
         }
+    }
 
-        // Save update
-//        launch(UI) {
-//            saveSheetUpdate(sheetUpdate, context)
+
+    fun saveSheetUpdate(sheetUpdate : EntityUpdateSheet, context : Context)
+    {
+        if (!this.isSaved) {
+            writeEntity(this.entityId(), context)
+            this.isSaved = true
+        }
+
+        writeEntityUpdate(this.entityId(), sheetUpdate, context)
+
+//        val rowId = async(CommonPool) { writeEntity(entityId(), context) }.await()
+//        when (rowId)
+//        {
+//            is Val ->
+//            is Err -> ApplicationLog.error(rowId.error)
 //        }
     }
 
 
-
-    suspend fun saveSheetUpdate(sheetUpdate : SheetUpdate, context : Context)
-    {
-        when (this.entitySource)
-        {
-            is EntityLoaderSaved ->
-            {
-                saveUpdate(this.entityId(), context)
-            }
-            else -> {
-                val rowId = async(CommonPool) { saveEntity(entityId(), name(), context) }.await()
-                when (rowId) {
-                    is Val -> {
-                        this.entitySource = EntityLoaderSaved(rowId.value)
-
-                        saveUpdate(this.entityId(), context)
-
-                        saveCurrentSession(context)
-                    }
-                    is Err -> ApplicationLog.error(rowId.error)
-                }
-            }
-        }
-
-    }
-
-
     fun updateWidget(widgetUpdate : SheetUpdateWidget,
-                     rootView : View,
+                     rootView : View?,
                      context : Context)
     {
-        val entityId = EntitySheetId(this.sheetId())
-
         Log.d("***SHEET", "update widget")
 
         when (widgetUpdate)
@@ -381,7 +344,7 @@ data class Sheet(override val id : UUID,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is BooleanWidget -> {
-                            it.update(widgetUpdate, entityId, rootView, context)
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }
                 }
@@ -391,7 +354,7 @@ data class Sheet(override val id : UUID,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is NumberWidget -> {
-                            it.update(widgetUpdate, entityId, rootView, context)
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }
                 }
@@ -401,7 +364,7 @@ data class Sheet(override val id : UUID,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is ListWidget -> {
-                            it.update(widgetUpdate, entityId, rootView, context)
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }
                 }
@@ -411,7 +374,7 @@ data class Sheet(override val id : UUID,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is PointsWidget -> {
-                            it.update(widgetUpdate, entityId, rootView, context)
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }
                 }
@@ -421,7 +384,7 @@ data class Sheet(override val id : UUID,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is StoryWidget -> {
-                            it.update(widgetUpdate, entityId, rootView, context)
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }
                 }
@@ -431,7 +394,7 @@ data class Sheet(override val id : UUID,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is TableWidget -> {
-                            it.update(widgetUpdate, entityId, rootView, context)
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }
                 }
@@ -441,7 +404,7 @@ data class Sheet(override val id : UUID,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is TextWidget -> {
-                            it.update(widgetUpdate, entityId, rootView, context)
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }
                 }
@@ -458,47 +421,47 @@ data class Sheet(override val id : UUID,
 /**
  * Sheet Id
  */
-data class SheetId(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<SheetId>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<SheetId> = when (doc)
-        {
-            is DocText -> effValue(SheetId(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<SheetId> =
-            when (yamlValue)
-            {
-                is YamlText -> effValue(SheetId(yamlValue.text))
-                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
-                                                         yamlType(yamlValue),
-                                                         yamlValue.path))
-            }
-
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLText({this.value})
-
-}
-
-
+//data class SheetId(val value : String) : ToDocument, SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<SheetId>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<SheetId> = when (doc)
+//        {
+//            is DocText -> effValue(SheetId(doc.text))
+//            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+//        }
+//
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<SheetId> =
+//            when (yamlValue)
+//            {
+//                is YamlText -> effValue(SheetId(yamlValue.text))
+//                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+//                                                         yamlType(yamlValue),
+//                                                         yamlValue.path))
+//            }
+//
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocText(this.value)
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue() : SQLValue = SQLText({this.value})
+//
+//}
+//
+//
 

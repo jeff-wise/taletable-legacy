@@ -17,17 +17,17 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import com.kispoko.tome.R
+import com.kispoko.tome.R.string.session
 import com.kispoko.tome.activity.session.NewSessionActivity
-import com.kispoko.tome.db.loadSessionList
+import com.kispoko.tome.db.readSessionList
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.model.theme.official.officialAppThemeLight
-import com.kispoko.tome.rts.session.SessionLoader
-import com.kispoko.tome.rts.session.SessionRecord
-import com.kispoko.tome.rts.session.newSession
+import com.kispoko.tome.rts.session.Session
+import com.kispoko.tome.rts.session.openSession
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -101,14 +101,14 @@ class PlayUI(val theme : Theme,
 
     var savedSessionView : ViewGroup? = null
 
-    var sessionRecords : List<SessionRecord> = listOf()
+    var sessionRecords : List<Session> = listOf()
 
 
     // -----------------------------------------------------------------------------------------
     // METHODS
     // -----------------------------------------------------------------------------------------
 
-    fun showSessionCard(sessionRecord : SessionRecord)
+    fun showSessionCard(sessionRecord : Session)
     {
         this.savedSessionView?.removeAllViews()
         this.savedSessionView?.addView(this.loadSessionView(sessionRecord))
@@ -137,7 +137,7 @@ class PlayUI(val theme : Theme,
 
     fun view() : View
     {
-        val sessions = loadSessionList(context)
+        val sessions = readSessionList(context)
 
         return if (sessions.isEmpty()) {
             noSessionsView()
@@ -597,7 +597,7 @@ class PlayUI(val theme : Theme,
     // VIEWS > Saved Sessions
     // -----------------------------------------------------------------------------------------
 
-    private fun savedSessionView(sessionRecords : List<SessionRecord>) : LinearLayout
+    private fun savedSessionView(sessionRecords : List<Session>) : LinearLayout
     {
         val layout = this.savedSessionListViewLayout()
 
@@ -764,15 +764,13 @@ class PlayUI(val theme : Theme,
     }
 
 
-    private fun loadSessionView(sessionRecord : SessionRecord) : LinearLayout
+    private fun loadSessionView(session : Session) : LinearLayout
     {
         val layout = this.loadSessionViewLayout()
 
-        layout.addView(this.savedSessionCardView(sessionRecord))
+        layout.addView(this.savedSessionCardView(session))
 
-        sessionRecord.loader?.let {
-            layout.addView(this.openSessionButtonView(it))
-        }
+        layout.addView(this.openSessionButtonView(session))
 
         return layout
     }
@@ -792,13 +790,13 @@ class PlayUI(val theme : Theme,
 
 
 
-    private fun savedSessionCardView(sessionRecord : SessionRecord) : LinearLayout
+    private fun savedSessionCardView(sessionRecord : Session) : LinearLayout
     {
         val layout = this.savedSessionCardViewLayout()
 
         layout.addView(this.savedSessionCardHeaderView(sessionRecord))
 
-        layout.addView(this.savedSessionCardDescriptionView(sessionRecord.sessionDescription.value))
+        layout.addView(this.savedSessionCardDescriptionView(sessionRecord.sessionInfo.sessionDescription.value))
 
         return layout
     }
@@ -829,13 +827,13 @@ class PlayUI(val theme : Theme,
     }
 
 
-    private fun savedSessionCardHeaderView(sessionRecord : SessionRecord) : LinearLayout
+    private fun savedSessionCardHeaderView(session : Session) : LinearLayout
     {
         val layout = this.savedSessionCardHeaderViewLayout()
 
         layout.addView(this.savedSessionCardAddImageButtonView())
 
-        layout.addView(this.savedSessionCardInfoView(sessionRecord))
+        layout.addView(this.savedSessionCardInfoView(session))
 
         return layout
     }
@@ -921,13 +919,13 @@ class PlayUI(val theme : Theme,
     }
 
 
-    private fun savedSessionCardInfoView(sessionRecord : SessionRecord) : LinearLayout
+    private fun savedSessionCardInfoView(session : Session) : LinearLayout
     {
         val layout = this.savedSessionCardInfoViewLayout()
 
-        layout.addView(this.savedSessionCardNameView(sessionRecord.sessionName.value))
+        layout.addView(this.savedSessionCardNameView(session.sessionName.value))
 
-        layout.addView(this.savedSessionCardSummaryView(sessionRecord.sessionTagline))
+        layout.addView(this.savedSessionCardSummaryView(session.sessionInfo.tagline))
 
         return layout
     }
@@ -1025,7 +1023,7 @@ class PlayUI(val theme : Theme,
     // VIEWS > Open Button
     // -----------------------------------------------------------------------------------------
 
-    private fun openSessionButtonView(sessionLoader : SessionLoader) : LinearLayout
+    private fun openSessionButtonView(session : Session) : LinearLayout
     {
         val layout = this.openSessionButtonViewLayout()
 
@@ -1044,7 +1042,9 @@ class PlayUI(val theme : Theme,
 
             labelView.text = "Loading\u2026"
 
-            newSession(sessionLoader, context)
+            activity.selectedSession = session
+
+            openSession(session, context)
         }
 
 
@@ -1129,7 +1129,7 @@ class PlayUI(val theme : Theme,
 
 
 
-    private fun savedSessionListRecyclerView(sessionRecords : List<SessionRecord>) : RecyclerView
+    private fun savedSessionListRecyclerView(sessionRecords : List<Session>) : RecyclerView
     {
         val recyclerView                = RecyclerViewBuilder()
 
@@ -1155,7 +1155,7 @@ class PlayUI(val theme : Theme,
 }
 
 
-class SavedSessionsRecyclerViewAdapater(private val records : List<SessionRecord>,
+class SavedSessionsRecyclerViewAdapater(private val records : List<Session>,
                                         private val playUI : PlayUI,
                                         private val theme : Theme,
                                         private val context : Context)
@@ -1182,7 +1182,9 @@ class SavedSessionsRecyclerViewAdapater(private val records : List<SessionRecord
     {
         val record = this.records[position]
 
-        viewHolder.setDate(record.lastUsed)
+        record.timeLastUsed.doMaybe {
+            viewHolder.setDate(it)
+        }
         viewHolder.setNameText(record.sessionName.value)
 
         viewHolder.setOnClick(View.OnClickListener {

@@ -1,9 +1,9 @@
-id: character_casmey_level_1
+id: '41aaaa67-8277-462c-8e33-a06da8ad930f'
 campaign_id: isara
 settings:
   theme_id: light
-  sheet_name: 'Casmey Dalseya'
-  sheet_summary: 'Level 1 Human Rogue - A swashbuckling heroine with a quick wit and a quicker sword.'
+  sheet_name: 'Sanson Alvarion'
+  sheet_summary: 'Level 1 Human Wizard - A young hotshot wizard with a head full of knowledge and heart full of naivety.'
 engine:
   value_sets:
   mechanics:
@@ -178,7 +178,7 @@ variables:
     description: Name
     value:
       type: text_literal
-      text_literal: 'Casmey Dalseya'
+      text_literal: 'Sanson Alvarian'
 - type: variable_text
   variable_text:
     id: race
@@ -206,7 +206,7 @@ variables:
           text_literal: classes
         value_id:
           type: text_literal
-          text_literal: rogue
+          text_literal: wizard
 - type: variable_text
   variable_text:
     id: deity
@@ -288,7 +288,7 @@ variables:
     description: Age
     value:
       type: number_literal
-      number_literal: 21
+      number_literal: 17
 - type: variable_text
   variable_text:
     id: eye_color
@@ -296,7 +296,7 @@ variables:
     description: Eye Color
     value:
       type: text_literal
-      text_literal: green
+      text_literal: brown
 - type: variable_text
   variable_text:
     id: hair_color
@@ -351,6 +351,166 @@ variables:
       type: text_list_literal
       text_list_literal:
       - normal
+- type: variable_text_list
+  variable_text_list:
+    id: spellbook_level_one_spells
+    label: 'Spellbook: 1st Level Spells'
+    description: 'Spellbook: 1st Level Spells'
+    value_set_id: spells_wizard_level_one
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - color_spray
+      - disguise_self
+      - detect_magic
+      - grease
+      - mage_armor
+      - magic_missile
+      - silent_image
+- type: variable_text
+  variable_text:
+    id: spellbook_level_one_spells_label
+    label: 'Spellbook: 1st Level Spells Label'
+    description: 'Spellbook: 1st Level Spells Label'
+    value:
+      type: text_literal
+      text_literal: '1st Level Spells'
+- type: variable_text_list
+  variable_text_list:
+    id: prepared_spells
+    label: 'Prepared Spells'
+    description: 'Prepared spells'
+    value_set_id: spells_wizard
+    set_variable_id: spellbook_level_one_spells
+    constraint:
+      type: constraint_and
+      constraint_and:
+        constraints:
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_is_set
+            constraint_text_list_is_set: constraint_text_list_is_set
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_max_size
+            constraint_text_list_max_size:
+              max_size:
+                type: variable_reference
+                variable_reference:
+                  type: variable_id
+                  variable_id: max_prepared_spells
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - grease
+      - magic_missile
+- type: variable_text
+  variable_text:
+    id: prepared_spells_label
+    label: 'Prepared Spells Label'
+    description: 'Prepared Spells Label'
+    value:
+      type: text_literal
+      text_literal: 'Prepared Spells'
+- type: variable_number
+  variable_number:
+    id: max_prepared_spells
+    label: Maximum Prepared Spells
+    description: Maximum Prepared Spells
+    value:
+      type: summation_id
+      summation_id: max_prepared_spells
+- type: variable_text
+  variable_text:
+    id: level_one_spell_slots_label
+    label: '1st Level Spell Slots'
+    description: '1st Level Spell Slots'
+    value:
+      type: text_literal
+      text_literal: '1st Level Spell Slots'
+- type: variable_text_list
+  variable_text_list:
+    id: level_one_spell_slots
+    label: '1st Level Spell Slots'
+    description: '1st level spell slots.'
+    value_set_id: spells_wizard
+    set_variable_id: prepared_spells
+    constraint:
+      type: constraint_and
+      constraint_and:
+        constraints:
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_max_size
+            constraint_text_list_max_size:
+              max_size:
+                type: number_literal
+                number_literal: 2
+        - type: constraint_text_list
+          constraint_text_list:
+            type: constraint_text_list_is_set
+            constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+- type: variable_text_list
+  variable_text_list:
+    id: inventory_armor
+    label: 'Inventory: Armor'
+    description: 'The armor that the character is carrying.'
+    value_set_id: armor_and_shields
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - light_armor_leather
+      - shield
+- type: variable_text_list
+  variable_text_list:
+    id: inventory_weapons
+    label: 'Inventory: Weapons'
+    description: 'The weapons that the character is carrying.'
+    value_set_id: weapons
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - rapier
+      - dagger
+- type: variable_text_list
+  variable_text_list:
+    id: inventory_backpack
+    label: 'Inventory: Backpack'
+    description: 'General adventuring gear.'
+    value_set_id: adventuring_gear
+    constraint:
+      type: constraint_text_list
+      constraint_text_list:
+        type: constraint_text_list_is_set
+        constraint_text_list_is_set: constraint_text_list_is_set
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - bedroll
+      - mess_kit
+      - tinderbox
+      - torch
+      - rations_1_day
+      - waterskin
+      - rope_hempen_50_foot
 - type: variable_number
   variable_number:
     id: proficiency_bonus
@@ -376,7 +536,7 @@ variables:
     description: Base Strength
     value:
       type: number_literal
-      number_literal: 13
+      number_literal: 10
 - type: variable_number
   variable_number:
     id: strength
@@ -426,7 +586,7 @@ variables:
     description: Base Dexterity
     value:
       type: number_literal
-      number_literal: 15
+      number_literal: 14
 - type: variable_number
   variable_number:
     id: dexterity
@@ -460,7 +620,7 @@ variables:
     description: Base Constitution
     value:
       type: number_literal
-      number_literal: 12
+      number_literal: 13
 - type: variable_number
   variable_number:
     id: constitution
@@ -494,7 +654,7 @@ variables:
     description: Base Intelligence
     value:
       type: number_literal
-      number_literal: 12
+      number_literal: 15
 - type: variable_number
   variable_number:
     id: intelligence
@@ -528,7 +688,7 @@ variables:
     description: Base Wisdom
     value:
       type: number_literal
-      number_literal: 9
+      number_literal: 8
 - type: variable_number
   variable_number:
     id: wisdom
@@ -1175,7 +1335,7 @@ variables:
     description: Melee Attacks Label
     value:
       type: text_literal
-      text_literal: 'my melee attacks'
+      text_literal: 'Melee Attacks'
 - type: variable_text
   variable_text:
     id: number_of_attacks_label
@@ -1207,7 +1367,7 @@ variables:
     description: Ranged Attacks Label
     value:
       type: text_literal
-      text_literal: 'my ranged attacks'
+      text_literal: 'Ranged Attacks'
 - type: variable_text
   variable_text:
     id: actions_label
@@ -2277,6 +2437,7 @@ sections:
                                   color_id: light_blue
                               font_style: semi_bold
                               size: 20
+
     - format:
         element_format:
           padding:
@@ -2576,10 +2737,8 @@ sections:
                 element_format:
                   background_color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: dark_grey_4
                     - theme_id: light
-                      color_id: purple_90
+                      color_id: dark_grey_18
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
@@ -2616,7 +2775,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 50
+                  height: 48
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2644,7 +2803,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 50
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2667,7 +2826,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 50
+                  height: 48
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2696,11 +2855,11 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: purple_90
+                      color_id: dark_grey_18
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 50
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2733,7 +2892,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 48
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2761,7 +2920,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2784,7 +2943,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 48
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2813,11 +2972,11 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: purple_90
+                      color_id: dark_grey_18
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 48
                   padding:
                     left: 14
                     right: 14
@@ -2850,7 +3009,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 52
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -2878,7 +3037,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 52
                   padding:
                     left: 14
                     right: 14
@@ -2901,7 +3060,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 52
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -2930,11 +3089,11 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: purple_90
+                      color_id: dark_grey_18
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 52
                   padding:
                     left: 14
                     right: 14
@@ -3047,7 +3206,7 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: purple_90
+                      color_id: dark_grey_18
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
@@ -3084,7 +3243,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 50
+                  height: 46
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3112,7 +3271,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 50
+                  height: 46
                   padding:
                     left: 14
                     right: 14
@@ -3135,7 +3294,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 50
+                  height: 46
                   margins:
                     left: 4
                   horizontal_alignment: left
@@ -3164,11 +3323,11 @@ sections:
                     - theme_id: dark
                       color_id: dark_grey_4
                     - theme_id: light
-                      color_id: purple_90
+                      color_id: dark_grey_18
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 50
+                  height: 46
                   padding:
                     left: 14
                     right: 14
@@ -4181,7 +4340,7 @@ sections:
           - theme_id: dark
             color_id: dark_grey_11
           - theme_id: light
-            color_id: light_grey_7
+            color_id: light_grey_8
         padding:
           bottom: 70
     groups:
@@ -6676,10 +6835,8 @@ sections:
       element_format:
         background_color_theme:
           theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_11
           - theme_id: light
-            color_id: light_grey_7
+            color_id: light_grey_8
         padding:
           bottom: 70
     groups:
@@ -6688,16 +6845,317 @@ sections:
           padding:
             top: 10
             bottom: 15
-            left: 6
-            right: 6
       rows:
       - widgets:
         - type: widget_group
           widget_group:
-#            id: attacks
+            format:
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                padding:
+                  right: 8
+                  left: 8
+                  bottom: 8
+                  top: 8
+              groups_format:
+                margins:
+                  left: 6
+                  right: 6
+              title_format:
+                size: 18
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+            title_variable_id: melee_attacks_label
+            group_query:
+              type: tag_query_tag
+              tag_query_tag:
+                tag: melee_weapon
             group_references:
             - type: group_id
               group_id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
+            - type: group_id
+              group_id: '4b8954d1-41b5-4a01-9426-a7d9b3c118f1'
+    - format:
+        element_format:
+          padding:
+            top: 10
+            bottom: 15
+      rows:
+      - widgets:
+        - type: widget_group
+          widget_group:
+            format:
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                padding:
+                  right: 8
+                  left: 8
+                  bottom: 8
+                  top: 8
+              groups_format:
+                margins:
+                  left: 6
+                  right: 6
+              title_format:
+                size: 18
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+            title_variable_id: ranged_attacks_label
+            group_references:
+            - type: group_id
+              group_id: '197df758-949d-49c3-a61a-630b335d819c'
+            - type: group_id
+              group_id: '9bafa2f5-e56b-431f-9a18-7458baec64ae'
+  - name: Spells
+    format:
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_11
+          - theme_id: light
+            color_id: light_grey_8
+        padding:
+          bottom: 70
+    groups:
+    - format:
+        element_format:
+          margins:
+            top: 8
+            left: 6
+            right: 6
+      rows:
+      - widgets:
+        - type: widget_list
+          widget_list:
+            values_variable_id: level_one_spell_slots
+            title_variable_id: level_one_spell_slots_label
+            format:
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_grey_3
+                  corners:
+                    top_left_radius: 1
+                    top_right_radius: 1
+                    bottom_right_radius: 1
+                    bottom_left_radius: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+                  width:
+                    type: width_justify
+                    width_justify: justify
+              view_type: pool
+              default_item_text: 'Empty Slot'
+              title_bar_format:
+                padding:
+                  right: 4
+                  bottom: 8
+              title_format:
+                size: 18
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+              item_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    right: 6
+                  padding:
+                    top: 8
+                    bottom: 8
+                    left: 10
+                    right: 10
+                    right: 6
+                size: 17
+                font_style: medium
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_blue
+              item_inactive_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                    bottom_left_radius: 2
+                  margins:
+                    right: 6
+                  padding:
+                    top: 8
+                    bottom: 8
+                    left: 10
+                    right: 10
+                size: 17
+                font_style: medium
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_18
+    - rows:
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_7
+            margins:
+              top: 12
+        widgets:
+        - type: widget_list
+          widget_list:
+            format:
+              widget_format:
+                element_format:
+                  margins:
+                    left: 6
+                    right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
+              view_type: rows_simple_editor
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  top_left_radius: 1
+                  top_right_radius: 1
+                padding:
+                  left: 8
+                  right: 12
+                  top: 8
+              title_format:
+                size: 18
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_14
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+              constraint_format:
+                message:
+                  template: '$$$ spells prepared'
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_2
+                    padding:
+                      left: 8
+                      right: 8
+                      bottom: 6
+                      top: 4
+                  size: 16
+                  font_style: regular
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: dark_grey_16
+                fail_text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_grey_2
+                    padding:
+                      left: 8
+                      right: 8
+                      bottom: 6
+                      top: 4
+                  size: 16
+                  font_style: semi_bold
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: red
+              item_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_8
+                size: 18
+                font_style: medium
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  border:
+                    top:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: light_grey_5
+                      thickness: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+            values_variable_id: prepared_spells
+            title_variable_id: prepared_spells_label
   - name: Abilities
     format:
       element_format:
@@ -12794,12 +13252,20 @@ sections:
         - type: widget_table
           widget_table:
             title_variable_id: armor_table_label
+            primary_column_index: 1
             format:
               widget_format:
                 element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_grey_10
                   margins:
                     left: 6
                     right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
               title_bar_format:
                 background_color_theme:
                   theme_color_ids:
@@ -12869,6 +13335,7 @@ sections:
                 name: Name
                 variable_prefix: armor
                 defines_namespace: true
+                column_variable_id: inventory_armor
                 default_value:
                   type: value_set_id
                   value_set_id: armor_and_shields
@@ -12946,14 +13413,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: armor_and_shields
-                      value_id:
-                        type: text_literal
-                        text_literal: leather
+                    type: text_literal
+                    text_literal: light_armor_leather
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -12968,14 +13429,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: armor_and_shields
-                      value_id:
-                        type: text_literal
-                        text_literal: shield
+                    type: text_literal
+                    text_literal: shield
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -12996,6 +13451,7 @@ sections:
           widget_table:
 #            id: weapons
             title_variable_id: weapon_table_label
+            primary_column_index: 1
             book_reference:
               type: book_reference_section
               book_reference_section:
@@ -13008,6 +13464,9 @@ sections:
                   margins:
                     left: 6
                     right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
               title_bar_format:
                 background_color_theme:
                   theme_color_ids:
@@ -13077,6 +13536,7 @@ sections:
                 name: Name
                 variable_prefix: weapon
                 defines_namespace: true
+                column_variable_id: inventory_weapons
                 default_value:
                   type: value_set_id
                   value_set_id: weapons
@@ -13094,7 +13554,7 @@ sections:
                         - theme_id: light
                           color_id: dark_grey_12
                       font_style: regular
-                      size: 16
+                      size: 17
                     width: 3
             - type: table_widget_number_column
               table_widget_number_column:
@@ -13152,14 +13612,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: weapons
-                      value_id:
-                        type: text_literal
-                        text_literal: rapier
+                    type: text_literal
+                    text_literal: rapier
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13174,14 +13628,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: weapons
-                      value_id:
-                        type: text_literal
-                        text_literal: dagger
+                    type: text_literal
+                    text_literal: dagger
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13565,8 +14013,8 @@ sections:
       - widgets:
         - type: widget_table
           widget_table:
-#            id: backpack
             title_variable_id: backpack_table_label
+            primary_column_index: 1
             format:
               title_bar_format:
                 background_color_theme:
@@ -13639,6 +14087,7 @@ sections:
                 name: Name
                 variable_prefix: backpack_item
                 defines_namespace: true
+                column_variable_id: inventory_backpack
                 default_value:
                   type: value_set_id
                   value_set_id: adventuring_gear
@@ -13684,14 +14133,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: bedroll
+                    type: text_literal
+                    text_literal: bedroll
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13701,14 +14144,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: mess_kit
+                    type: text_literal
+                    text_literal: mess_kit
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13718,14 +14155,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: tinderbox
+                    type: text_literal
+                    text_literal: tinderbox
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13735,14 +14166,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: torch
+                    type: text_literal
+                    text_literal: torch
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13752,14 +14177,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: rations_1_day
+                    type: text_literal
+                    text_literal: rations_1_day
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13769,14 +14188,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: waterskin
+                    type: text_literal
+                    text_literal: waterskin
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13786,14 +14199,8 @@ sections:
               - type: table_widget_text_cell
                 table_widget_text_cell:
                   variable_value:
-                    type: value_reference
-                    value_reference:
-                      value_set_id:
-                        type: text_literal
-                        text_literal: adventuring_gear
-                      value_id:
-                        type: text_literal
-                        text_literal: rope_hempen_50_foot
+                    type: text_literal
+                    text_literal: rope_hempen_50_foot
               - type: table_widget_number_cell
                 table_widget_number_cell:
                   variable_value:
@@ -13889,6 +14296,95 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 20
+  - name: Spellbook
+    format:
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_11
+          - theme_id: light
+            color_id: light_grey_7
+        padding:
+          bottom: 70
+    groups:
+    - rows:
+      - format:
+          element_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: dark_grey_11
+              - theme_id: light
+                color_id: light_grey_7
+            margins:
+              top: 8
+        widgets:
+        - type: widget_list
+          widget_list:
+            format:
+              widget_format:
+                element_format:
+                  margins:
+                    left: 6
+                    right: 6
+                  width:
+                    type: width_justify
+                    width_justify: justify
+              view_type: rows_simple_editor
+              title_bar_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  top_left_radius: 2
+                  top_right_radius: 2
+                padding:
+                  left: 8
+                  right: 12
+                  top: 16
+                  bottom: 4
+              title_format:
+                size: 17
+                font_style: semi_bold
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_16
+              edit_button_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_22
+                size: 16
+                font_style: medium
+              item_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 19
+                font_style: medium
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  border:
+                    top:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: light_grey_5
+                      thickness: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+            values_variable_id: spellbook_level_one_spells
+            title_variable_id: spellbook_level_one_spells_label
   - name: Features
     format:
       element_format:
@@ -14182,75 +14678,7 @@ sections:
                     color_id: light_grey_26
                   - theme_id: light
                     color_id: white
-  - name: Background
-    format:
-      element_format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_10
-          - theme_id: light
-            color_id: white
-    groups:
-    - format:
-        element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: dark
-              color_id: dark_grey_10
-            - theme_id: light
-              color_id: white
-          padding:
-            left: 10
-            right: 10
-            top: 15
-            bottom: 15
-      rows:
-#      - widgets:
-#        - type: widget_text
-#          widget_text:
-#            id: story_label
-#            format:
-#              value_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: dark
-#                    color_id: light_grey_20
-#                  - theme_id: light
-#                    color_id: light_blue_90
-#                size: 28
-#                font_style: light
-#              widget_format:
-#                element_format:
-#                  horizontal_alignment: left
-#            value_variable_id: story_label
-#      - format:
-#          element_format:
-#              margins:
-#                top: 10
-#        widgets:
-#        - type: widget_text
-#          widget_text:
-#            id: story_part_1
-#            format:
-#              value_format:
-#                element_format:
-#                  horizontal_alignment: left
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: dark
-#                    color_id: light_grey_20
-#                  - theme_id: light
-#                    color_id: dark_grey_12
-#                size: 18
-#              widget_format:
-#                element_format:
-#                  corners:
-#                    top_left_radius: 1
-#                    top_right_radius: 1
-#                    bottom_right_radius: 1
-#                    bottom_left_radius: 1
-#            value_variable_id: story_part_1
+
 - name: Adventure
   icon: adventure
   pages:

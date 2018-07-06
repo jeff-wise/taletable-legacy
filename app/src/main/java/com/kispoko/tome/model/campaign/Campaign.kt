@@ -3,19 +3,11 @@ package com.kispoko.tome.model.campaign
 
 
 import com.kispoko.culebra.*
-import com.kispoko.tome.db.DB_CampaignValue
-import com.kispoko.tome.db.campaignTable
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.orm.ProdType
-import com.kispoko.tome.lib.orm.RowValue5
-import com.kispoko.tome.lib.orm.schema.PrimValue
-import com.kispoko.tome.lib.orm.schema.ProdValue
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.Engine
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.entity.*
 import effect.apply
 import effect.effError
@@ -24,40 +16,23 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Campaign
  */
-data class Campaign(override val id : UUID,
-                    val campaignId : CampaignId,
+data class Campaign(val campaignId : EntityId,
                     val engine : Engine,
                     val campaignName : CampaignName,
                     val campaignSummary : CampaignSummary,
-                    val gameId : GameId,
-                    val entityLoader : EntityLoader)
-                     : Entity, ProdType, Serializable
+                    val gameId : EntityId)
+                     : Entity, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(campaignId : CampaignId,
-                engine : Engine,
-                campaignName : CampaignName,
-                campaignSummary : CampaignSummary,
-                gameId : GameId)
-        : this(UUID.randomUUID(),
-               campaignId,
-               engine,
-               campaignName,
-               campaignSummary,
-               gameId,
-               EntityLoaderUnknown())
-
 
     companion object : Factory<Campaign>
     {
@@ -67,7 +42,7 @@ data class Campaign(override val id : UUID,
             {
                 apply(::Campaign,
                       // Campaign Id
-                      doc.at("id") ap { CampaignId.fromDocument(it) },
+                      doc.at("id") ap { EntityId.fromDocument(it) },
                       // Engine
                       doc.at("engine") ap { Engine.fromDocument(it) },
                       // Campaign Name
@@ -75,7 +50,7 @@ data class Campaign(override val id : UUID,
                       // Campaign Summary
                       doc.at("campaign_summary") ap { CampaignSummary.fromDocument(it) },
                       // Game Id
-                      doc.at("game_id") ap { GameId.fromDocument(it) }
+                      doc.at("game_id") ap { EntityId.fromDocument(it) }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -87,9 +62,6 @@ data class Campaign(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun campaignId() : CampaignId = this.campaignId
-
-
     fun engine() : Engine = this.engine
 
 
@@ -99,25 +71,7 @@ data class Campaign(override val id : UUID,
     fun campaignSummary() : String = this.campaignSummary.value
 
 
-    fun gameId() : GameId = this.gameId
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_CampaignValue =
-        RowValue5(campaignTable, PrimValue(campaignId),
-                                 ProdValue(this.engine),
-                                 PrimValue(campaignName),
-                                 PrimValue(campaignSummary),
-                                 PrimValue(gameId))
+    fun gameId() : EntityId = this.gameId
 
 
     // -----------------------------------------------------------------------------------------
@@ -130,10 +84,7 @@ data class Campaign(override val id : UUID,
     override fun summary() = this.campaignSummary()
 
 
-    override fun entityLoader() = this.entityLoader
-
-
-    override fun entityId() = EntityCampaignId(this.campaignId)
+    override fun entityId() = this.campaignId
 
 }
 

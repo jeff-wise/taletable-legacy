@@ -37,8 +37,7 @@ import java.util.*
 /**
  * Book
  */
-data class Book(override val id : UUID,
-                val bookId : BookId,
+data class Book(val bookId : EntityId,
                 val bookInfo : BookInfo,
                 val settings : BookSettings,
                 val engine : Engine,
@@ -46,8 +45,7 @@ data class Book(override val id : UUID,
                 val introduction : List<BookContentId>,
                 val conclusion : List<BookContentId>,
                 val chapters : MutableList<BookChapter>,
-                val content : List<BookContent>,
-                var entityLoader : EntityLoader)
+                val content : List<BookContent>)
                  : ToDocument, Entity, Serializable
 {
 
@@ -76,20 +74,8 @@ data class Book(override val id : UUID,
             is DocDict ->
             {
                 apply(::Book,
-                      // Entity Id
-                      split(doc.maybeText("id"),
-                            effValue(UUID.randomUUID()),
-                            { uuidString ->
-                                try {
-                                    effValue(UUID.fromString(uuidString))
-                                }
-                                catch (e : IllegalArgumentException) {
-                                    effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-                                }
-                            }
-                            ),
                       // Book Id
-                      doc.at("book_id") apply { BookId.fromDocument(it) },
+                      doc.at("book_id") apply { EntityId.fromDocument(it) },
                       // Book Info
                       doc.at("book_info") apply { BookInfo.fromDocument(it) },
                       // Book Settings
@@ -115,9 +101,7 @@ data class Book(override val id : UUID,
                       // Content
                       split(doc.maybeList("content"),
                             effValue(listOf()),
-                            { it.map { BookContent.fromDocument(it) } }),
-                      // Entity Loader
-                      effValue(EntityLoaderUnknown())
+                            { it.map { BookContent.fromDocument(it) } })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -141,9 +125,6 @@ data class Book(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------
-
-    fun bookId() : BookId = this.bookId
-
 
     fun bookInfo() : BookInfo = this.bookInfo
 
@@ -176,10 +157,7 @@ data class Book(override val id : UUID,
     override fun summary() = this.bookInfo.summary.value
 
 
-    override fun entityLoader() = this.entityLoader
-
-
-    override fun entityId() = EntityBookId(this.bookId)
+    override fun entityId() = this.bookId
 
 
     // -----------------------------------------------------------------------------------------
@@ -258,47 +236,47 @@ data class Book(override val id : UUID,
 /**
  * Rulebook Id
  */
-data class BookId(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<BookId>
-    {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookId> = when (doc)
-        {
-            is DocText -> effValue(BookId(doc.text))
-            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<BookId> =
-            when (yamlValue)
-            {
-                is YamlText -> effValue(BookId(yamlValue.text))
-                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
-                                                         yamlType(yamlValue),
-                                                         yamlValue.path))
-            }
-
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLText({ this.value })
-
-}
+//data class BookId(val value : String) : ToDocument, SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<BookId>
+//    {
+//        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookId> = when (doc)
+//        {
+//            is DocText -> effValue(BookId(doc.text))
+//            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+//        }
+//
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<BookId> =
+//            when (yamlValue)
+//            {
+//                is YamlText -> effValue(BookId(yamlValue.text))
+//                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+//                                                         yamlType(yamlValue),
+//                                                         yamlValue.path))
+//            }
+//
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocText(this.value)
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+//
+//}
 
 
 /**

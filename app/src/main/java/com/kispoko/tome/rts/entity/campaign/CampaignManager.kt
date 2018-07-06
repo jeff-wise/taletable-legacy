@@ -6,6 +6,7 @@ import com.kispoko.tome.app.AppCampaignError
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
+import com.kispoko.tome.rts.entity.EntityId
 import effect.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -27,7 +28,7 @@ object CampaignManager
 
     private val campaign = "campaign"
 
-    private val session : MutableMap<CampaignId,CampaignRecord> = mutableMapOf()
+    private val session : MutableMap<EntityId,CampaignRecord> = mutableMapOf()
 
 
 
@@ -38,7 +39,7 @@ object CampaignManager
     fun addCampaignToSession(campaign : Campaign, isSaved : Boolean)
     {
         val campaignRecord = CampaignRecord(campaign)
-        this.session.put(campaign.campaignId(), campaignRecord)
+        this.session[campaign.entityId()] = campaignRecord
 
         // Save if needed
         if (!isSaved)
@@ -49,9 +50,9 @@ object CampaignManager
     fun openCampaigns() : List<Campaign> = this.session.values.map { it.campaign() }
 
 
-    fun campaignWithId(campaignId : CampaignId) : AppEff<Campaign> =
-        note(this.session[campaignId]?.campaign(),
-             AppCampaignError(CampaignDoesNotExist(campaignId)))
+//    fun campaignWithId(campaignId : CampaignId) : AppEff<Campaign> =
+//        note(this.session[campaignId]?.campaign(),
+//             AppCampaignError(CampaignDoesNotExist(campaignId)))
 
 }
 

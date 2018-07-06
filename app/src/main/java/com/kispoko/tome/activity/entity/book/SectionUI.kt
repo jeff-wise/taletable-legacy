@@ -278,7 +278,7 @@ class SectionUI(val section : BookSection,
         layout.addView(this.subsectionSummaryIconView())
 
         layout.setOnClickListener {
-            val subsectionReference = BookReferenceSubsection(book.bookId(),
+            val subsectionReference = BookReferenceSubsection(book.entityId(),
                                                               chapterId,
                                                               section.sectionId(),
                                                               subsection.subsectionId())

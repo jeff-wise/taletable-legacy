@@ -18,13 +18,13 @@ import android.widget.TextView
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.Engine
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import effect.Err
@@ -42,7 +42,7 @@ class EngineFragment : Fragment()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameId  : GameId? = null
+    private var gameId  : EntityId? = null
     private var themeId : ThemeId? = null
 
     // -----------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ class EngineFragment : Fragment()
 
     companion object
     {
-        fun newInstance(gameId : GameId, themeId : ThemeId) : EngineFragment
+        fun newInstance(gameId : EntityId, themeId : ThemeId) : EngineFragment
         {
             val fragment = EngineFragment()
 
@@ -73,7 +73,7 @@ class EngineFragment : Fragment()
     {
         super.onCreate(savedInstanceState)
 
-        this.gameId  = arguments?.getSerializable("game_id") as GameId
+        this.gameId  = arguments?.getSerializable("game_id") as EntityId
         this.themeId = arguments?.getSerializable("theme_id") as ThemeId
     }
 

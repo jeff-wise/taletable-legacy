@@ -97,3 +97,6 @@ is scoped, so have to see how everything relates within a scope.
 use interfaces to avoid encapsulation.
 
 can hide details with interfaces. don't need extra layers or constraints that are less flexible
+
+
+2 types of abstraction. encapsulation and generalization. 2nd is good because it keeps you from over constrainging your code.

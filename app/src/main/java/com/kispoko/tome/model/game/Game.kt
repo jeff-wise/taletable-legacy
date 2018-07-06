@@ -26,20 +26,17 @@ import maybe.Maybe
 import maybe.Nothing
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Game
  */
-data class Game(override val id : UUID,
-                val gameId : GameId,
+data class Game(val gameId : EntityId,
                 val gameInfo : GameInfo,
                 val engine : Engine,
                 val variables : MutableList<Variable>,
-                val groups : MutableList<Group>,
-                var entityLoader : EntityLoader)
+                val groups : MutableList<Group>)
                  : ToDocument, Entity, Serializable
 {
 
@@ -70,9 +67,8 @@ data class Game(override val id : UUID,
             is DocDict ->
             {
                 apply(::Game,
-                      effValue(UUID.randomUUID()),
                       // Game Id
-                      doc.at("id") apply { GameId.fromDocument(it) },
+                      doc.at("id") apply { EntityId.fromDocument(it) },
                       // Game Info
                       doc.at("game_info") apply { GameInfo.fromDocument(it) },
                       // Engine
@@ -84,9 +80,7 @@ data class Game(override val id : UUID,
                       // Groups
                       split(doc.maybeList("groups"),
                             effValue(mutableListOf()),
-                            { it.mapIndexed { d, i -> Group.fromDocument(d,i) }} ),
-                      // Entity Loader
-                      effValue(EntityLoaderUnknown())
+                            { it.mapIndexed { d, i -> Group.fromDocument(d,i) }} )
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -109,7 +103,7 @@ data class Game(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun gameId() : GameId = this.gameId
+    fun gameId() : EntityId = this.gameId
 
 
     fun gameInfo() : GameInfo = this.gameInfo
@@ -182,17 +176,8 @@ data class Game(override val id : UUID,
     override fun summary() = this.gameInfo.summary().value
 
 
-    override fun entityLoader() = this.entityLoader
+    override fun entityId() = this.gameId
 
-
-    override fun entityId() = EntityGameId(this.gameId)
-
-
-    // -----------------------------------------------------------------------------------------
-    // API
-    // -----------------------------------------------------------------------------------------
-
-//    fun rulebookWithId(rulebookId : BookId) : Book? = this.rulebookById[rulebookId]
 
 }
 
@@ -200,62 +185,62 @@ data class Game(override val id : UUID,
 /**
  * Game Id
  */
-data class GameId(val value : String) : ToDocument, SQLSerializable, Serializable
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<GameId>
-    {
-        override fun fromDocument(doc: SchemaDoc): ValueParser<GameId> = when (doc)
-        {
-            is DocText -> effValue(GameId(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-
-        fun fromYaml(yamlValue : YamlValue) : YamlParser<GameId> =
-            when (yamlValue)
-            {
-                is YamlText -> effValue(GameId(yamlValue.text))
-                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
-                                                         yamlType(yamlValue),
-                                                         yamlValue.path))
-            }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun toDocument() = DocText(this.value)
-
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLText({this.value})
-
-}
+//data class GameId(val value : String) : ToDocument, SQLSerializable, Serializable
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object : Factory<GameId>
+//    {
+//        override fun fromDocument(doc: SchemaDoc): ValueParser<GameId> = when (doc)
+//        {
+//            is DocText -> effValue(GameId(doc.text))
+//            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+//        }
+//
+//        fun fromYaml(yamlValue : YamlValue) : YamlParser<GameId> =
+//            when (yamlValue)
+//            {
+//                is YamlText -> effValue(GameId(yamlValue.text))
+//                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
+//                                                         yamlType(yamlValue),
+//                                                         yamlValue.path))
+//            }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // TO DOCUMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun toDocument() = DocText(this.value)
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue() : SQLValue = SQLText({this.value})
+//
+//}
 
 
 /**
  * Game Book Ids
  */
-data class GameBookIds(val bookIds : List<BookId>) : SQLSerializable, Serializable
-{
-    // TODO find way to not need this auxilary data type
-
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
-    // -----------------------------------------------------------------------------------------
-
-    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
-
-}
+//data class GameBookIds(val bookIds : List<BookId>) : SQLSerializable, Serializable
+//{
+//    // TODO find way to not need this auxilary data type
+//
+//    // -----------------------------------------------------------------------------------------
+//    // SQL SERIALIZABLE
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+//
+//}
 
 
 /**
@@ -264,7 +249,7 @@ data class GameBookIds(val bookIds : List<BookId>) : SQLSerializable, Serializab
 data class GameInfo(val name : GameName,
                     val summary : GameSummary,
                     val authors : MutableList<Author>,
-                    val bookIds : List<BookId>)
+                    val bookIds : List<EntityId>)
                      : ToDocument, Serializable
 {
 
@@ -284,7 +269,7 @@ data class GameInfo(val name : GameName,
                       // Book Ids
                       split(doc.maybeList("book_ids"),
                             effValue(mutableListOf()),
-                            { it.map { BookId.fromDocument(it) } })
+                            { it.map { EntityId.fromDocument(it) } })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -317,7 +302,7 @@ data class GameInfo(val name : GameName,
     fun authors() : List<Author> = this.authors
 
 
-    fun bookIds() : List<BookId> = this.bookIds
+//    fun bookIds() : List<BookId> = this.bookIds
 
 }
 

@@ -14,11 +14,10 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.style.TextFont
 import com.kispoko.tome.model.sheet.style.TextFontStyle
 import com.kispoko.tome.model.theme.UIColors
-import com.kispoko.tome.rts.entity.EntitySheetId
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
 
 
@@ -27,15 +26,13 @@ import com.kispoko.tome.rts.entity.colorOrBlack
  * Bottom Navigation View Builder
  */
 class BottomNavigationViewBuilder(val uiColors : UIColors,
-                                  val sheetId : SheetId,
+                                  val sheetId : EntityId,
                                   val context : Context)
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
-
-    val entityId = EntitySheetId(sheetId)
 
 
     // -----------------------------------------------------------------------------------------
@@ -80,7 +77,7 @@ class BottomNavigationViewBuilder(val uiColors : UIColors,
         layout.orientation      = LinearLayout.HORIZONTAL
 
         val bgColorId = this.uiColors.bottomBarBackgroundColorId()
-        layout.backgroundColor  = colorOrBlack(bgColorId, entityId)
+        layout.backgroundColor  = colorOrBlack(bgColorId, sheetId)
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
@@ -102,7 +99,7 @@ class BottomNavigationViewBuilder(val uiColors : UIColors,
         val label       = TextViewBuilder()
         val icon        = ImageViewBuilder()
 
-        val navColor    = colorOrBlack(this.uiColors.bottomBarNavColorId(), entityId)
+        val navColor    = colorOrBlack(this.uiColors.bottomBarNavColorId(), sheetId)
 
         // (2) Layout
         // -------------------------------------------------------------------------------------

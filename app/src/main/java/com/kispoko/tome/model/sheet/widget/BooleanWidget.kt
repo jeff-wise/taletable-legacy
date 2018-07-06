@@ -16,13 +16,13 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.entity.BooleanWidgetUpdateSetValue
+import com.kispoko.tome.model.entity.BooleanWidgetUpdateToggle
 import com.kispoko.tome.model.sheet.style.Icon
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.colorOrBlack
-import com.kispoko.tome.rts.entity.sheet.BooleanWidgetUpdateSetValue
-import com.kispoko.tome.rts.entity.sheet.BooleanWidgetUpdateToggle
 import com.kispoko.tome.rts.entity.sheet.MessageSheetUpdate
 import com.kispoko.tome.util.Util
 import effect.*
@@ -35,7 +35,6 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
@@ -58,27 +57,6 @@ data class BooleanWidgetFormat(val widgetFormat : WidgetFormat,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetFormat : WidgetFormat,
-//                viewType : BooleanWidgetViewType,
-//                trueFormat : TextFormat,
-//                falseFormat : TextFormat,
-//                leftToggleFormat: TextFormat,
-//                rightToggleFormat: TextFormat,
-//                trueText : TrueText,
-//                falseText : FalseText,
-//                trueIcon : Maybe<Icon>,
-//                falseIcon : Maybe<Icon>)
-//        : this(UUID.randomUUID(),
-//               widgetFormat,
-//               viewType,
-//               trueFormat,
-//               falseFormat,
-//               trueText,
-//               falseText,
-//               trueIcon,
-//               falseIcon)
-
 
     companion object : Factory<BooleanWidgetFormat>
     {

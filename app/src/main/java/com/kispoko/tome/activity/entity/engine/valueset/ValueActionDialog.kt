@@ -16,13 +16,13 @@ import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.ImageViewBuilder
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.engine.value.ValueReference
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.ThemeColorId
 import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 
 
@@ -38,7 +38,7 @@ class ValueActionDialog : DialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var valueReference : ValueReference? = null
-    private var gameId : GameId? = null
+    private var gameId : EntityId? = null
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Dark)
 
@@ -50,7 +50,7 @@ class ValueActionDialog : DialogFragment()
     companion object
     {
         fun newInstance(valueReference : ValueReference,
-                        gameId : GameId) : ValueActionDialog
+                        gameId : EntityId) : ValueActionDialog
         {
             val dialog = ValueActionDialog()
 
@@ -74,7 +74,7 @@ class ValueActionDialog : DialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.valueReference = arguments?.getSerializable("value_reference") as ValueReference
-        this.gameId         = arguments?.getSerializable("game_id") as GameId
+        this.gameId         = arguments?.getSerializable("game_id") as EntityId
 
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ class ValueActionDialog : DialogFragment()
 // ---------------------------------------------------------------------------------------------
 
 class ValueActionViewBuilder(val valueReference : ValueReference,
-                             val gameId : GameId,
+                             val gameId : EntityId,
                              val themeId : ThemeId,
                              val context : Context,
                              val dialog : DialogFragment)

@@ -3,7 +3,6 @@ package com.kispoko.tome.activity.session
 
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -26,8 +25,8 @@ import com.kispoko.tome.model.theme.official.officialAppThemeLight
 import com.kispoko.tome.model.theme.official.officialThemeLight
 import com.kispoko.tome.official.GameManifest
 import com.kispoko.tome.official.GameSummary
+import com.kispoko.tome.official.gameManifest
 import com.kispoko.tome.router.Router
-import com.kispoko.tome.rts.official.OfficialManager
 import com.kispoko.tome.util.configureToolbar
 import java.io.Serializable
 
@@ -74,7 +73,7 @@ class GamesListActivity : AppCompatActivity()
 
         this.applyTheme(officialAppThemeLight)
 
-        val gameManifest = OfficialManager.gameManifest(this)
+        val gameManifest = gameManifest(this)
         val gameAction = this.gameAction
         if (gameManifest != null && gameAction != null)
         {

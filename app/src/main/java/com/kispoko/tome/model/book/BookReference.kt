@@ -3,6 +3,7 @@ package com.kispoko.tome.model.book
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.rts.entity.EntityId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -12,7 +13,7 @@ import java.io.Serializable
 
 
 
-sealed class BookReference(open val bookId : BookId) : ToDocument, Serializable
+sealed class BookReference(open val bookId : EntityId) : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ sealed class BookReference(open val bookId : BookId) : ToDocument, Serializable
 /**
  * Book Reference Content
  */
-data class BookReferenceContent(override val bookId : BookId,
+data class BookReferenceContent(override val bookId : EntityId,
                                 val contentId : BookContentId) : BookReference(bookId)
 {
 
@@ -55,7 +56,7 @@ data class BookReferenceContent(override val bookId : BookId,
             {
                 apply(::BookReferenceContent,
                       // Book Id
-                      doc.at("book_id") apply { BookId.fromDocument(it) },
+                      doc.at("book_id") apply { EntityId.fromDocument(it) },
                       // Book Content 1Id
                       doc.at("content_id") apply { BookContentId.fromDocument(it) }
                      )
@@ -78,7 +79,8 @@ data class BookReferenceContent(override val bookId : BookId,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun bookId() : BookId = this.bookId
+    fun bookId() : EntityId = this.bookId
+
 
     fun contentId() : BookContentId = this.contentId
 
@@ -88,7 +90,7 @@ data class BookReferenceContent(override val bookId : BookId,
 /**
  * Book Reference Main
  */
-data class BookReferenceBook(override val bookId : BookId) : BookReference(bookId)
+data class BookReferenceBook(override val bookId : EntityId) : BookReference(bookId)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -103,7 +105,7 @@ data class BookReferenceBook(override val bookId : BookId) : BookReference(bookI
             {
                 apply(::BookReferenceBook,
                       // Book Id
-                      doc.at("book_id") apply { BookId.fromDocument(it) }
+                      doc.at("book_id") apply { EntityId.fromDocument(it) }
                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -124,7 +126,7 @@ data class BookReferenceBook(override val bookId : BookId) : BookReference(bookI
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun bookId() : BookId = this.bookId
+    fun bookId() : EntityId = this.bookId
 
 }
 
@@ -133,7 +135,7 @@ data class BookReferenceBook(override val bookId : BookId) : BookReference(bookI
 /**
  * Book Reference Chapter
  */
-data class BookReferenceChapter(override val bookId : BookId,
+data class BookReferenceChapter(override val bookId : EntityId,
                                 val chapterId : BookChapterId) : BookReference(bookId)
 {
 
@@ -149,7 +151,7 @@ data class BookReferenceChapter(override val bookId : BookId,
             {
                 apply(::BookReferenceChapter,
                       // Book Id
-                      doc.at("book_id") apply { BookId.fromDocument(it) },
+                      doc.at("book_id") apply { EntityId.fromDocument(it) },
                       // Book Chapter Id
                       doc.at("chapter_id") apply { BookChapterId.fromDocument(it) }
                      )
@@ -173,7 +175,7 @@ data class BookReferenceChapter(override val bookId : BookId,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun bookId() : BookId = this.bookId
+    fun bookId() : EntityId = this.bookId
 
 
     fun chapterId() : BookChapterId = this.chapterId
@@ -184,7 +186,7 @@ data class BookReferenceChapter(override val bookId : BookId,
 /**
  * Book Reference Section
  */
-data class BookReferenceSection(override val bookId : BookId,
+data class BookReferenceSection(override val bookId : EntityId,
                                 val chapterId : BookChapterId,
                                 val sectionId : BookSectionId) : BookReference(bookId)
 {
@@ -201,7 +203,7 @@ data class BookReferenceSection(override val bookId : BookId,
             {
                 apply(::BookReferenceSection,
                       // Book Id
-                      doc.at("book_id") apply { BookId.fromDocument(it) },
+                      doc.at("book_id") apply { EntityId.fromDocument(it) },
                       // Chapter Id
                       doc.at("chapter_id") apply { BookChapterId.fromDocument(it) },
                       // Section Id
@@ -228,9 +230,11 @@ data class BookReferenceSection(override val bookId : BookId,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun bookId() : BookId = this.bookId
+    fun bookId() : EntityId = this.bookId
+
 
     fun chapterId() : BookChapterId = this.chapterId
+
 
     fun sectionId() : BookSectionId = this.sectionId
 
@@ -240,7 +244,7 @@ data class BookReferenceSection(override val bookId : BookId,
 /**
  * Book Reference Subsection
  */
-data class BookReferenceSubsection(override val bookId : BookId,
+data class BookReferenceSubsection(override val bookId : EntityId,
                                    val chapterId : BookChapterId,
                                    val sectionId : BookSectionId,
                                    val subsectionId : BookSubsectionId) : BookReference(bookId)
@@ -258,7 +262,7 @@ data class BookReferenceSubsection(override val bookId : BookId,
             {
                 apply(::BookReferenceSubsection,
                       // Book Id
-                      doc.at("book_id") apply { BookId.fromDocument(it) },
+                      doc.at("book_id") apply { EntityId.fromDocument(it) },
                       // Chapter Id
                       doc.at("chapter_id") apply { BookChapterId.fromDocument(it) },
                       // Section Id
@@ -288,11 +292,14 @@ data class BookReferenceSubsection(override val bookId : BookId,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun bookId() : BookId = this.bookId
+    fun bookId() : EntityId = this.bookId
+
 
     fun chapterId() : BookChapterId = this.chapterId
 
+
     fun sectionId() : BookSectionId = this.sectionId
+
 
     fun subsectionId() : BookSubsectionId = this.subsectionId
 

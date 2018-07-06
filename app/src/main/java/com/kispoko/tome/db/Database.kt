@@ -9,15 +9,20 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import android.util.Log
 import com.kispoko.tome.app.*
+import com.kispoko.tome.model.entity.EntityUpdate
 import com.kispoko.tome.model.sheet.Sheet
+import com.kispoko.tome.rts.entity.Entity
 import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.entityRecord
 import com.kispoko.tome.rts.session.*
 import effect.effError
 import effect.effValue
 import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import org.apache.commons.lang3.SerializationUtils
 import java.util.*
+
 
 
 object Schema
@@ -27,11 +32,6 @@ object Schema
     {
         const val TABLE_NAME                        = "session"
         const val COLUMN_NAME_SESSION_ID            = "session_id"
-        const val COLUMN_NAME_SESSION_NAME          = "session_name"
-        const val COLUMN_NAME_SESSION_TAGLINE       = "session_tagline"
-        const val COLUMN_NAME_SESSION_DESCRIPTION   = "session_description"
-        const val COLUMN_NAME_GAME_ID               = "game_id"
-        const val COLUMN_NAME_TYPE                  = "session_type"
         const val COLUMN_NAME_SESSION_LAST_USED     = "last_used_time"
         const val COLUMN_NAME_SESSION_LOADER_BLOB   = "session_blob"
     }
@@ -59,11 +59,6 @@ private val createSessionTableSQL =
     "CREATE TABLE ${Schema.SessionTable.TABLE_NAME} (" +
         "${BaseColumns._ID} INTEGER PRIMARY KEY," +
         "${Schema.SessionTable.COLUMN_NAME_SESSION_ID} TEXT," +
-        "${Schema.SessionTable.COLUMN_NAME_SESSION_NAME} TEXT," +
-        "${Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE} TEXT," +
-        "${Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION} TEXT," +
-        "${Schema.SessionTable.COLUMN_NAME_GAME_ID} TEXT," +
-        "${Schema.SessionTable.COLUMN_NAME_TYPE} TEXT," +
         "${Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED} INTEGER," +
         "${Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB} BLOB)"
 
@@ -76,6 +71,9 @@ private val createEntityTableSQL =
         "${Schema.EntityTable.COLUMN_NAME_ENTITY_TYPE} TEXT," +
         "${Schema.EntityTable.COLUMN_NAME_ENTITY_BLOB} BLOB)"
 
+private val createEntityTableIndexes =
+    "CREATE INDEX entity_id_idx ON ${Schema.EntityTable.TABLE_NAME}(${Schema.EntityTable.COLUMN_NAME_ENTITY_ID});"
+
 
 private val createEntityUpdateTableSQL =
     "CREATE TABLE ${Schema.EntityUpdateTable.TABLE_NAME} (" +
@@ -83,7 +81,8 @@ private val createEntityUpdateTableSQL =
         "${Schema.EntityUpdateTable.COLUMN_NAME_ENTITY_ID} TEXT," +
         "${Schema.EntityUpdateTable.COLUMN_NAME_UPDATE} BLOB)"
 
-//    "CREATE INDEX entity_id_index ON ${Schema.EntityUpdateTable.TABLE_NAME}(${Schema.EntityUpdateTable.COLUMN_NAME_ENTITY_ID})"
+private val createEntityUpdateTableIndexes =
+        "CREATE INDEX entity_update_id_idx ON ${Schema.EntityUpdateTable.TABLE_NAME}(${Schema.EntityUpdateTable.COLUMN_NAME_ENTITY_ID});"
 
 
 private val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${Schema.EntityTable.TABLE_NAME}"
@@ -97,8 +96,12 @@ class DatabaseManager(context: Context)
     override fun onCreate(db : SQLiteDatabase)
     {
         db.execSQL(createSessionTableSQL)
+
         db.execSQL(createEntityTableSQL)
+        db.execSQL(createEntityTableIndexes)
+
         db.execSQL(createEntityUpdateTableSQL)
+        db.execSQL(createEntityUpdateTableIndexes)
     }
 
     override fun onUpgrade(db : SQLiteDatabase, oldVersion : Int, newVersion : Int)
@@ -124,13 +127,13 @@ class DatabaseManager(context: Context)
 }
 
 
-fun saveEntity(entityId : EntityId, name : String, context : Context) : AppEff<Long> =
-    entityRecord(entityId) ap {
+fun writeEntity(entityId : EntityId, context : Context) : AppEff<Long> =
+    entityRecord(entityId) ap { entityRecord ->
         val db = DatabaseManager(context).writableDatabase
 
         if (db != null)
         {
-            val entity = it.entity()
+            val entity = entityRecord.entity()
             when (entity)
             {
                 is Sheet -> {
@@ -138,8 +141,8 @@ fun saveEntity(entityId : EntityId, name : String, context : Context) : AppEff<L
 
                     // Create a new map of values, where column names are the keys
                     val values = ContentValues().apply {
-                        put(Schema.EntityTable.COLUMN_NAME_NAME, name)
-                        put(Schema.EntityTable.COLUMN_NAME_ENTITY_TYPE, it.entityType.toString())
+                        put(Schema.EntityTable.COLUMN_NAME_NAME, entity.name())
+                        put(Schema.EntityTable.COLUMN_NAME_ENTITY_TYPE, entityRecord.entityType.toString())
                         put(Schema.EntityTable.COLUMN_NAME_ENTITY_ID, entityId.toString())
                         put(Schema.EntityTable.COLUMN_NAME_ENTITY_BLOB, sheetBinary)
                     }
@@ -151,7 +154,7 @@ fun saveEntity(entityId : EntityId, name : String, context : Context) : AppEff<L
 
                     val endNS = System.nanoTime()
 
-                    Log.d("***DATABASE", "new row id: $newRowId")
+                    Log.d("***DATABASE", "new entity row id: $newRowId")
                     ApplicationLog.event(AppDBEvent(DatabaseEntitySaved(entityId, (endNS - startNS))))
 
                     effValue(newRowId)
@@ -171,23 +174,161 @@ fun saveEntity(entityId : EntityId, name : String, context : Context) : AppEff<L
 
 
 
-fun saveUpdate(entityId : EntityId, context : Context) { }
+fun readEntity(entityId : EntityId, context : Context) : Maybe<Entity>
+{
+
+    val db = DatabaseManager(context).readableDatabase
+
+    val projection = arrayOf(BaseColumns._ID,
+                             Schema.EntityTable.COLUMN_NAME_NAME,
+                             Schema.EntityTable.COLUMN_NAME_ENTITY_ID,
+                             Schema.EntityTable.COLUMN_NAME_ENTITY_TYPE,
+                             Schema.EntityTable.COLUMN_NAME_ENTITY_BLOB)
+
+    val selection = "${Schema.EntityTable.COLUMN_NAME_ENTITY_ID} = ?"
+    val selectionArgs = arrayOf(entityId.toString())
+
+    val cursor = db.query(
+            Schema.EntityTable.TABLE_NAME, // The table to query
+            projection,                     // The array of columns to return (pass null to get all)
+            selection,                      // The columns for the WHERE clause
+            selectionArgs,                  // The values for the WHERE clause
+            null,                           // don't group the rows
+            null,                           // don't filter by row groups
+            null)                           // The sort order
+
+    Log.d("***DATABASE", "Read Entity")
+
+    val entities : MutableList<Entity> = mutableListOf()
+
+    with(cursor) {
+        while (moveToNext()) {
+
+//            val entityId   = EntityId.fromString(getString(getColumnIndexOrThrow(Schema.EntityTable.COLUMN_NAME_ENTITY_ID)))
+            val entityName = getString(getColumnIndexOrThrow(Schema.EntityTable.COLUMN_NAME_NAME))
+//            val entityType = SessionName(getString(getColumnIndexOrThrow(Schema.EntityTable.COLUMN_NAME_ENTITY_TYPE)))
+
+            val entity = SerializationUtils.deserialize<Entity>(
+                                getBlob(getColumnIndexOrThrow(Schema.EntityTable.COLUMN_NAME_ENTITY_BLOB)))
+//            val lastUsed = Calendar.getInstance()
+//            lastUsed.timeInMillis = getLong(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED))
+
+            entities.add(entity)
+        }
+    }
+
+    var result : Maybe<Entity> = Nothing()
+
+    entities.firstOrNull()?.let { entity ->
+
+        result = Just(entity)
+
+        Log.d("***DATABASE", "found entity: ${entity.name()}")
+
+        val updates = readEntityUpdates(entityId, context)
+        Log.d("***DATABASE", "entity updates: $updates")
+        when (entity)
+        {
+            is Sheet -> {
+                Log.d("***DATABASE", "entity is sheet")
+                updates.forEach {
+                    Log.d("***DATABASE", "applying entity update")
+                    entity.update(it, null, context)
+                }
+            }
+        }
+    }
+
+    return result
+}
 
 
-fun saveSession(sessionRecord : SessionRecord, context : Context) : AppEff<Long>
+fun readEntityUpdates(entityId : EntityId, context : Context) : List<EntityUpdate>
+{
+
+    val db = DatabaseManager(context).readableDatabase
+
+    val projection = arrayOf(BaseColumns._ID,
+                             Schema.EntityUpdateTable.COLUMN_NAME_UPDATE)
+
+    val selection = "${Schema.EntityUpdateTable.COLUMN_NAME_ENTITY_ID} = ?"
+    val selectionArgs = arrayOf(entityId.toString())
+
+    val cursor = db.query(
+            Schema.EntityUpdateTable.TABLE_NAME, // The table to query
+            projection,                     // The array of columns to return (pass null to get all)
+            selection,                      // The columns for the WHERE clause
+            selectionArgs,                  // The values for the WHERE clause
+            null,                           // don't group the rows
+            null,                           // don't filter by row groups
+            null)                           // The sort order
+
+
+    val updates : MutableList<EntityUpdate> = mutableListOf()
+
+    with(cursor) {
+        while (moveToNext()) {
+
+            val entityUpdate = SerializationUtils.deserialize<EntityUpdate>(
+                                 getBlob(getColumnIndexOrThrow(Schema.EntityUpdateTable.COLUMN_NAME_UPDATE)))
+            updates.add(entityUpdate)
+        }
+    }
+
+    return updates
+}
+
+
+
+
+fun writeEntityUpdate(entityId : EntityId,
+                      entityUpdate : EntityUpdate,
+                      context : Context) : AppEff<Long>
 {
     val db = DatabaseManager(context).writableDatabase
 
     return if (db != null)
     {
-        val sessionBlob = SerializationUtils.serialize(sessionRecord.loader)
+        val entityUpdateBlob = SerializationUtils.serialize(entityUpdate)
 
         // Create a new map of values, where column names are the keys
         val values = ContentValues().apply {
-            put(Schema.SessionTable.COLUMN_NAME_SESSION_ID, sessionRecord.sessionId.value.toString())
-            put(Schema.SessionTable.COLUMN_NAME_SESSION_NAME, sessionRecord.sessionName.value)
-            put(Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE, sessionRecord.sessionTagline)
-            put(Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION, sessionRecord.sessionDescription.value)
+            put(Schema.EntityUpdateTable.COLUMN_NAME_ENTITY_ID, entityId.toString())
+            put(Schema.EntityUpdateTable.COLUMN_NAME_UPDATE, entityUpdateBlob)
+        }
+
+        val startNS = System.nanoTime()
+
+        // Insert the new row, returning the primary key value of the new row
+        val newRowId = db.insert(Schema.EntityUpdateTable.TABLE_NAME, null, values)
+
+        Log.d("***DATABASE", "save entity update: $entityUpdate, row id: $newRowId")
+
+        val endNS = System.nanoTime()
+
+//        ApplicationLog.event(AppDBEvent(DatabaseSessionSaved(session.sessionId, (endNS - startNS))))
+
+        effValue(newRowId)
+    }
+    else
+    {
+        effError(AppDBError(CouldNotAccessDatabase()))
+    }
+
+}
+
+
+fun writeSession(session : Session, context : Context) : AppEff<Long>
+{
+    val db = DatabaseManager(context).writableDatabase
+
+    return if (db != null)
+    {
+        val sessionBlob = SerializationUtils.serialize(session)
+
+        // Create a new map of values, where column names are the keys
+        val values = ContentValues().apply {
+            put(Schema.SessionTable.COLUMN_NAME_SESSION_ID, session.sessionId.value.toString())
             put(Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED, System.currentTimeMillis())
             put(Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB, sessionBlob)
         }
@@ -201,7 +342,7 @@ fun saveSession(sessionRecord : SessionRecord, context : Context) : AppEff<Long>
 
         val endNS = System.nanoTime()
 
-        ApplicationLog.event(AppDBEvent(DatabaseSessionSaved(sessionRecord.sessionId, (endNS - startNS))))
+        ApplicationLog.event(AppDBEvent(DatabaseSessionSaved(session.sessionId, (endNS - startNS))))
 
         effValue(newRowId)
     }
@@ -212,16 +353,13 @@ fun saveSession(sessionRecord : SessionRecord, context : Context) : AppEff<Long>
 }
 
 
-fun loadSessionList(context : Context) : List<SessionRecord>
+fun readSessionList(context : Context) : List<Session>
 {
 
     val db = DatabaseManager(context).readableDatabase
 
     val projection = arrayOf(BaseColumns._ID,
                              Schema.SessionTable.COLUMN_NAME_SESSION_ID,
-                             Schema.SessionTable.COLUMN_NAME_SESSION_NAME,
-                             Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE,
-                             Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION,
                              Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED,
                              Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB)
 
@@ -230,7 +368,7 @@ fun loadSessionList(context : Context) : List<SessionRecord>
     val cursor = db.query(
             Schema.SessionTable.TABLE_NAME, // The table to query
             projection,                     // The array of columns to return (pass null to get all)
-            null,                             // The columns for the WHERE clause
+            null,                           // The columns for the WHERE clause
             arrayOf(),                      // The values for the WHERE clause
             null,                           // don't group the rows
             null,                           // don't filter by row groups
@@ -240,33 +378,25 @@ fun loadSessionList(context : Context) : List<SessionRecord>
     Log.d("***DATABASE", "cursor: $cursor")
 
 
-    val records : MutableList<SessionRecord> = mutableListOf()
+    val records : MutableList<Session> = mutableListOf()
 
     with(cursor) {
         while (moveToNext()) {
 
-            val sessionId = SessionId.fromString(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_ID)))
-            val sessionName = SessionName(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_NAME)))
-            val sessionTagline = getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE))
-            val sessionDescription = SessionDescription(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION)))
+            // val sessionId = SessionId.fromString(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_ID)))
+            // val sessionName = SessionName(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_NAME)))
+            // val sessionTagline = getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_TAGLINE))
+            // val sessionDescription = SessionDescription(getString(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_DESCRIPTION)))
 
             val lastUsed = Calendar.getInstance()
             lastUsed.timeInMillis = getLong(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_LAST_USED))
 
-            val loader = SerializationUtils.deserialize<SessionLoader>(
+            val session = SerializationUtils.deserialize<Session>(
                              getBlob(getColumnIndexOrThrow(Schema.SessionTable.COLUMN_NAME_SESSION_LOADER_BLOB)))
 
-            Log.d("***DATABASE", "found session: $sessionName")
+            // Log.d("***DATABASE", "found session: $sessionName")
 
-            if (sessionId != null) {
-                val sessionRecord = SessionRecord(sessionId,
-                                                  sessionName,
-                                                  sessionTagline,
-                                                  sessionDescription,
-                                                  lastUsed,
-                                                  loader)
-                records.add(sessionRecord)
-            }
+            records.add(session)
         }
     }
 
@@ -279,7 +409,7 @@ fun saveCurrentSession(context : Context)
     val maybeSession = activeSession()
     when (maybeSession) {
         is Just -> {
-            saveSession(maybeSession.value.record(), context)
+            writeSession(maybeSession.value, context)
         }
     }
 }

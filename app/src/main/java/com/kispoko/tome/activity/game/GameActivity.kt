@@ -22,9 +22,9 @@ import com.kispoko.tome.app.AppSettings
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.model.game.Game
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.model.theme.UIColors
+import com.kispoko.tome.rts.entity.EntityId
 import com.kispoko.tome.rts.entity.game.GameManager
 import com.kispoko.tome.rts.entity.theme.ThemeManager
 import com.kispoko.tome.util.configureToolbar
@@ -43,7 +43,7 @@ class GameActivity : AppCompatActivity()
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var gameId : GameId? = null
+    private var gameId : EntityId? = null
     private var game : Game? = null
 
     private val appSettings : AppSettings = AppSettings(ThemeId.Light)
@@ -66,7 +66,7 @@ class GameActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         if (this.intent.hasExtra("game_id"))
-            this.gameId = this.intent.getSerializableExtra("game_id") as GameId
+            this.gameId = this.intent.getSerializableExtra("game_id") as EntityId
 
         // >> Load Game
         val gameId = this.gameId
@@ -79,7 +79,7 @@ class GameActivity : AppCompatActivity()
         }
 
         if (savedInstanceState != null) {
-            this.gameId = savedInstanceState.getSerializable("game_id") as GameId
+            this.gameId = savedInstanceState.getSerializable("game_id") as EntityId
         }
 
 
@@ -221,9 +221,9 @@ class GamePagerAdapter(fragmentManager : FragmentManager,
     override fun getItem(position : Int) : Fragment =
         when (position)
         {
-            0    -> BooksFragment.newInstance(this.game.gameId, this.appThemeId)
-            1    -> EngineFragment.newInstance(this.game.gameId, this.appThemeId)
-            else -> EngineFragment.newInstance(this.game.gameId, this.appThemeId)
+            0    -> BooksFragment.newInstance(this.game.entityId(), this.appThemeId)
+            1    -> EngineFragment.newInstance(this.game.entityId(), this.appThemeId)
+            else -> EngineFragment.newInstance(this.game.entityId(), this.appThemeId)
         }
 
 

@@ -17,6 +17,12 @@ types:
     description: A feed.
     group: Feed
     fields:
+    - name: id
+      type:
+        type: custom_type
+        custom_type: feed_id
+      presence: required
+      description: The feed id.
     - name: settigns
       type:
         type: custom_type
@@ -41,6 +47,15 @@ types:
         custom_coll_type: group
       presence: optional
       description: The state.
+- type: primitive_type
+  primitive_type:
+    name: feed_id
+    label: Feed Id
+    description: Feed Identifier
+    group: Feed
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: product_type
   product_type: 
     name: feed_settings  

@@ -3,19 +3,14 @@ package com.kispoko.tome.activity.home
 
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import com.kispoko.tome.R
 import com.kispoko.tome.activity.entity.feed.FeedUI
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.app.assetInputStream
 import com.kispoko.tome.load.TomeDoc
 import com.kispoko.tome.model.AppActionOpenSession
 import com.kispoko.tome.model.engine.variable.TextVariable
@@ -23,7 +18,6 @@ import com.kispoko.tome.model.engine.variable.TextVariableLiteralValue
 import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.engine.variable.VariableId
 import com.kispoko.tome.model.feed.*
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.*
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.sheet.widget.TextWidget
@@ -141,8 +135,7 @@ class FeedFragment : Fragment()
     private fun newsFeed(context : Context) : Feed?
     {
         return try {
-            val feedLoader = assetInputStream(context, "feed/news.yaml")
-                               .apply { TomeDoc.loadFeed(it, "Home Feed", context) }
+            val feedLoader = TomeDoc.loadFeed("feed/news.yaml", context)
 
             when (feedLoader)
             {

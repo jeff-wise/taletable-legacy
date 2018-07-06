@@ -8,10 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import com.kispoko.tome.R
 import com.kispoko.tome.activity.sheet.SheetActivity
 import com.kispoko.tome.app.AppSettings
-import com.kispoko.tome.model.book.BookId
 import com.kispoko.tome.model.campaign.CampaignId
-import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.ThemeId
 import com.kispoko.tome.router.Router
 import com.kispoko.tome.rts.entity.*
@@ -41,7 +38,7 @@ class TestSessionActivity : AppCompatActivity()
 
 
 //    private val sheetId = SheetId("creature_brown_bear")
-    private val sheetId = SheetId("character_sanson_level_1")
+    private val sheetId = EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330"))
 
 
     // -----------------------------------------------------------------------------------------
@@ -69,40 +66,29 @@ class TestSessionActivity : AppCompatActivity()
 
         val context = this
         launch(UI) {
-            val sheetLoader = OfficialSheetLoader("Sheet Name",
-                                                  "PC",
-                                                  sheetId,
-                                                  GameId("magic_of_heroes"))
 
-            val campaignLoader = OfficialCampaignLoader("Campaign Name",
-                                                        "Setting",
-                                                        CampaignId("isara"),
-                                                        GameId("magic_of_heroes"))
-
-            val gameLoader = OfficialGameLoader("Game Name", "Game", GameId("magic_of_heroes"))
-
-            val coreRulebookLoader = OfficialBookLoader("Book Name",
-                                                        "Book",
-                                                        BookId("core_rules"),
-                                                        GameId("magic_of_heroes"))
-
-            val loaders = listOf(sheetLoader, campaignLoader, gameLoader, coreRulebookLoader)
+            val entityIds = listOf(
+                    EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330")),
+                    EntityId(UUID.fromString("cccb2da0-f6e5-4ea1-acee-6469942cfb3b")),
+                    EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839")),
+                    EntityId(UUID.fromString("7140ca5a-a5ce-4a37-95c8-519c7de3c040"))
+                    )
 
             val sessionInfo = SessionInfo(SessionSummary(""),
                                           SessionDescription(""),
                                           "1st Level Human Fighter",
                                           SessionTag("Level 1"),
                                           listOf(SessionTag("Human"), SessionTag("Fighter")))
-            val sessionLoader = SessionLoader(SessionId(UUID.randomUUID()),
+            val sessionLoader = Session(SessionId(UUID.randomUUID()),
                                               SessionName("Casmey Dalseya"),
                                               sessionInfo,
-                                              GameId("magic_of_heroes"),
-                                              EntityKindId("player_character"),
+                                              EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839")),
+                                              //EntityKindId("player_character"),
                                               Nothing(),
-                                              loaders,
-                                              EntitySheetId(SheetId("character_casmey_level_1")))
+                                              entityIds,
+                                              EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330")))
 
-            newSession(sessionLoader, context)
+            openSession(sessionLoader, context)
         }
 
     }

@@ -29,6 +29,10 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.ui.*
 import com.kispoko.tome.model.engine.reference.TextReferenceLiteral
 import com.kispoko.tome.model.engine.value.*
+import com.kispoko.tome.model.entity.ListWidgetUpdateAddValue
+import com.kispoko.tome.model.entity.StoryWidgetUpdateTextValuePart
+import com.kispoko.tome.model.entity.TableWidgetUpdateSetTextCellValue
+import com.kispoko.tome.model.entity.TextWidgetUpdateSetText
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
