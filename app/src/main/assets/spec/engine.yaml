@@ -2657,6 +2657,18 @@ types:
         prim_type: string
       presence: required
       description: Task description.
+    - name: action_name
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Task action name.
+    - name: action_description
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Task action description.
     - name: action
       type: 
         type: custom_type

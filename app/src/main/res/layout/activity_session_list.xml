@@ -51,8 +51,8 @@
                         <TextView
                             android:id="@+id/toolbar_title"
                             android:layout_gravity="center"
-                            android:textSize="18sp"
-                            android:textColor="@color/dark_theme_primary_15"
+                            android:textSize="19sp"
+                            android:textColor="@color/light_theme_dark_grey_12"
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/light_theme_light_grey_7">
+                    android:background="@color/light_theme_light_blue_grey_9">
                 </LinearLayout>
 
                 <!--<android.support.design.widget.FloatingActionButton-->

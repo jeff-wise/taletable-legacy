@@ -23,6 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/dark_theme_primary_88"
                 app:contentInsetStart="0dp"
+                android:elevation="3dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <RelativeLayout
@@ -44,7 +45,7 @@
                         android:id="@+id/toolbar_title"
                         android:layout_gravity="center"
                         android:textSize="18sp"
-                        android:textColor="@color/dark_theme_primary_15"
+                        android:textColor="@color/light_theme_dark_grey_14"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
@@ -75,7 +76,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/light_theme_light_grey_8">
+                    android:background="@color/light_theme_light_blue_grey_9">
                 </LinearLayout>
 
 
@@ -88,7 +89,7 @@
                     android:src="@drawable/ic_fab_add"
                     app:layout_anchor="@id/content"
                     app:layout_anchorGravity="bottom|end"
-                    app:backgroundTint="@color/light_theme_light_blue_tint_3"
+                    app:backgroundTint="@color/light_theme_dark_grey_10"
                     app:rippleColor="#FFF" />
 
 

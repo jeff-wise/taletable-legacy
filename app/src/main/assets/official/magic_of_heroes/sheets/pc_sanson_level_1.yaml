@@ -1,5 +1,5 @@
 id: '41aaaa67-8277-462c-8e33-a06da8ad930f'
-campaign_id: isara
+campaign_id: 'cccb2da0-f6e5-4ea1-acee-6469942cfb3b'
 settings:
   theme_id: light
   sheet_name: 'Sanson Alvarion'
@@ -13455,7 +13455,7 @@ sections:
             book_reference:
               type: book_reference_section
               book_reference_section:
-                book_id: core_rules
+                book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
                 chapter_id: equipment
                 section_id: weapons
             format:

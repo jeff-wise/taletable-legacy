@@ -22,7 +22,10 @@ persisted_entities:
   indexes:
   - entity_id: '48175796-51a8-4ed4-a446-3cf5eeccee12'
     index_type: group
-    path: 'magic_of_heroes/indexes/group/weapons.yaml'
+    path: 'magic_of_heroes/indexes/weapon_groups.yaml'
+  - entity_id: 'dc8367de-1e5c-45ed-9002-96612b034e2c'
+    index_type: variable
+    path: 'magic_of_heroes/indexes/weapon_variables.yaml'
 - entity_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
   entity_type: book
   name: 'Core Rules'

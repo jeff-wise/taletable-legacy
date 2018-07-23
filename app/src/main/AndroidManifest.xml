@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kispoko.tome">
+    package="com.taletable.android">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
         android:name="android.support.multidex.MultiDexApplication"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
@@ -15,18 +15,8 @@
 
         <activity
             android:name=".activity.test.TestSessionActivity"
-            android:label="Open Sheet"
+            android:label="Tale Table"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-
-        <activity
-            android:name=".activity.home.HomeActivity"
-            android:label="Tome"
-            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,7 +24,17 @@
         </activity>
 
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.valueset.ValueSetsActivity"
+            android:name=".activity.home.HomeActivity"
+            android:label="Tale Table"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".activity.entity.engine.valueset.ValueSetsActivity"
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -49,22 +49,13 @@
             android:name=".activity.entity.book.BookActivity"
             android:label="Book"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.MainActivity"
-            android:label="Tome"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
 
         <activity
             android:name=".activity.sheet.SaveSheetActivity"
             android:label="Save Sheet"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.valueset.BaseValueSetActivity"
+            android:name=".activity.entity.engine.valueset.BaseValueSetActivity"
             android:label="Base Value Set"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -72,27 +63,27 @@
             android:label="Table Editor"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.function.FunctionEditorActivity"
+            android:name=".activity.entity.engine.function.FunctionEditorActivity"
             android:label="Function"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.dice.DiceRollerActivity"
+            android:name=".activity.entity.engine.dice.DiceRollerActivity"
             android:label="Dice Roller"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.function.FunctionActivity"
+            android:name=".activity.entity.engine.function.FunctionActivity"
             android:label="Function"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.function.FunctionListActivity"
+            android:name=".activity.entity.engine.function.FunctionListActivity"
             android:label="Functions"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.summation.SummationActivity"
+            android:name=".activity.entity.engine.summation.SummationActivity"
             android:label="Summation"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
@@ -104,47 +95,12 @@
             android:label="Search Groups"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.value.ValueActivity"
+            android:name=".activity.entity.engine.value.ValueActivity"
             android:label="Value"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.kispoko.tome.activity.entity.engine.program.ProgramEditorActivity"
-            android:label="Program"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="com.kispoko.tome.activity.entity.engine.variable.TextVariableActivity"
-            android:label="Text Variable"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="com.kispoko.tome.activity.entity.engine.variable.NumberVariableActivity"
-            android:label="Number Variable"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="com.kispoko.tome.activity.entity.engine.variable.DiceVariableActivity"
-            android:label="Dice Variable"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".activity.game.GameActivity"
             android:label="Game"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="com.kispoko.tome.activity.entity.engine.variable.VariableReferenceActivity"
-            android:label="Variable Reference Editor"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="com.kispoko.tome.activity.entity.engine.function.TuplesEditorActivity"
-            android:label="Tuples Editor"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="com.kispoko.tome.activity.entity.engine.program.StatementsEditorActivity"
-            android:label="Program Statements Editor"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
