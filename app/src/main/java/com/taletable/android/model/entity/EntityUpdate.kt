@@ -3,6 +3,7 @@ package com.taletable.android.model.entity
 
 
 import com.taletable.android.model.engine.value.ValueId
+import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.model.sheet.widget.WidgetId
 import java.io.Serializable
 import java.util.*
@@ -44,6 +45,18 @@ data class BooleanWidgetUpdateToggle(override val widgetId : WidgetId) : WidgetU
 
 data class BooleanWidgetUpdateSetValue(override val widgetId : WidgetId,
                                        val newValue : Boolean) : WidgetUpdateBooleanWidget(widgetId)
+
+
+// | Sheet Update > Widget Update > Group Widget
+// ---------------------------------------------------------------------------------------------
+
+sealed class WidgetUpdateGroupWidget(override val widgetId : WidgetId) : SheetUpdateWidget(widgetId)
+
+data class GroupWidgetUpdateSetReferences(
+        override val widgetId : WidgetId,
+        val newReferenceList : List<GroupReference>) : WidgetUpdateGroupWidget(widgetId)
+
+
 
 // | Sheet Update > Widget Update > List Widget
 // ---------------------------------------------------------------------------------------------

@@ -315,8 +315,8 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
         // (1) Declarations
         // -------------------------------------------------------------------------------------
 
-        val layout  = LinearLayoutBuilder()
-        val icon    = ImageViewBuilder()
+        val layout       = LinearLayoutBuilder()
+        val labelView    = TextViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
@@ -343,18 +343,23 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
         layout.onClick = View.OnClickListener {
         }
 
-        layout.child(icon)
+        layout.child(labelView)
 
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp        = 22
-        icon.heightDp       = 22
+        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        icon.image          = R.drawable.icon_check_bold
+        labelView.color             = Color.WHITE
 
-        icon.color          = Color.WHITE
+        labelView.text              = context.getString(R.string.done).toUpperCase()
 
+        labelView.font              = Font.typeface(TextFont.Cabin,
+                                                    TextFontStyle.Bold,
+                                                    context)
+
+        labelView.sizeSp            = 16f
 
         return layout.linearLayout(context)
     }

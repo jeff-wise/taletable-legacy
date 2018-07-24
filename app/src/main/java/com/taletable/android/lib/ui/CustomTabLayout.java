@@ -68,6 +68,7 @@ public class CustomTabLayout extends TabLayout
             View tabViewChild = tabView.getChildAt(i);
             if (tabViewChild instanceof TextView) {
                 TextView tabTextView = (TextView) tabViewChild;
+                tabTextView.setAllCaps(false);
                 tabTextView.setTypeface(mTypeface, Typeface.NORMAL);
 //                tabTextView.setText(tabTextView.getText().toString().toLowerCase());
             }

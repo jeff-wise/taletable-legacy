@@ -66,16 +66,16 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 18
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_label_closed_format:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 18
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_open_icon:
             icon_type: chevron_down
             icon_format:
@@ -115,7 +115,7 @@ groups:
                     color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: dark_grey_14
+                        color_id: dark_grey_12
                   unselected_tab_format:
                     font_style: medium
                     color_theme:
@@ -765,16 +765,16 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 18
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_label_closed_format:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 18
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_open_icon:
             icon_type: chevron_down
             icon_format:
@@ -865,16 +865,16 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 19
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_label_closed_format:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 19
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_open_icon:
             icon_type: chevron_down
             icon_format:
@@ -1963,16 +1963,16 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 19
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_label_closed_format:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font_style: medium
-            size: 19
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
           header_open_icon:
             icon_type: chevron_down
             icon_format:

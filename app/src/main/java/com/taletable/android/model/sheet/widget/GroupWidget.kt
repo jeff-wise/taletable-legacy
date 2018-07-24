@@ -26,6 +26,8 @@ import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
+import com.taletable.android.rts.entity.sheet.UpdateTargetGroupWidget
+import com.taletable.android.util.Util
 import effect.effError
 import effect.effValue
 import effect.split
@@ -208,7 +210,10 @@ class GroupWidgetUI(val groupWidget : WidgetGroup,
             layout.addView(this.titleBarView(it))
         }
 
-        layout.addView(this.groupsView())
+        val contentLayout = this.contentLayout()
+        contentLayout.addView(this.groupsView())
+
+        layout.addView(contentLayout)
 
         return layout
     }
@@ -230,7 +235,22 @@ class GroupWidgetUI(val groupWidget : WidgetGroup,
     // VIEWS > Groups View
     // -----------------------------------------------------------------------------------------
 
-    private fun groupsView() : LinearLayout
+    fun contentLayout() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        val layoutId = Util.generateViewId()
+        groupWidget.contentLayoutId = layoutId
+        layout.id  = layoutId
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        return layout.linearLayout(context)
+    }
+
+
+    fun groupsView() : LinearLayout
     {
         val layout = this.groupsViewLayout()
 
@@ -351,6 +371,7 @@ class GroupWidgetUI(val groupWidget : WidgetGroup,
             intent.putExtra("title", titleString)
             intent.putExtra("tag_query", groupWidget.groupQuery())
             intent.putExtra("entity_id", entityId)
+            intent.putExtra("update_target", UpdateTargetGroupWidget(groupWidget.widgetId))
             activity.startActivity(intent)
         }
 

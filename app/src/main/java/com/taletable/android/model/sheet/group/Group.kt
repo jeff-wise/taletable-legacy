@@ -278,6 +278,12 @@ sealed class GroupReference : ToDocument, Serializable
             }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GROUP ID
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun groupId() : GroupId
 }
 
 
@@ -303,6 +309,9 @@ data class GroupReferenceId(val groupId : GroupId) : GroupReference()
 
     override fun toDocument() = DocText(this.groupId.value.toString()).withCase("group_id")
 
+
+    override fun groupId() = this.groupId
+
 }
 
 
@@ -320,6 +329,8 @@ data class GroupReferenceLiteral(val group : Group) : GroupReference()
     override fun toDocument() = this.group.toDocument()
                                     .withCase("group")
 
+
+    override fun groupId() = this.group.id
 }
 
 

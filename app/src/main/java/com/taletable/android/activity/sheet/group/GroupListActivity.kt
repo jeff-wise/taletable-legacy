@@ -33,6 +33,13 @@ import com.taletable.android.rts.entity.groups
 import com.taletable.android.util.configureToolbar
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
+import com.taletable.android.model.entity.GroupWidgetUpdateSetReferences
+import com.taletable.android.model.entity.WidgetUpdateGroupWidget
+import com.taletable.android.model.sheet.group.GroupId
+import com.taletable.android.router.Router
+import com.taletable.android.rts.entity.sheet.MessageSheetUpdate
+import com.taletable.android.rts.entity.sheet.UpdateTarget
+import com.taletable.android.rts.entity.sheet.UpdateTargetGroupWidget
 
 
 /**
@@ -48,7 +55,10 @@ class GroupListActivity : AppCompatActivity()
     private var groupRefs : List<GroupReference> = listOf()
     private var title     : String?              = null
     private var tagQuery  : TagQuery?            = null
-    private var entityId  : EntityId?            = null
+    private var entityId     : EntityId?         = null
+    private var updateTarget : UpdateTarget?     = null
+
+    private var newGroupReferenceList : List<GroupReference>? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -78,6 +88,9 @@ class GroupListActivity : AppCompatActivity()
 
         if (this.intent.hasExtra("entity_id"))
             this.entityId = this.intent.getSerializableExtra("entity_id") as EntityId
+
+        if (this.intent.hasExtra("update_target"))
+            this.updateTarget = this.intent.getSerializableExtra("update_target") as UpdateTarget
 
         // (3) Configure View
         // -------------------------------------------------------------------------------------
@@ -233,6 +246,22 @@ class GroupListActivity : AppCompatActivity()
         layout.padding.topDp        = 6f
         layout.padding.bottomDp     = 6f
 
+        layout.onClick              = View.OnClickListener {
+            this.newGroupReferenceList?.let { refList ->
+                val updateTarget = this.updateTarget
+                when (updateTarget)
+                {
+                    is UpdateTargetGroupWidget ->
+                    {
+                        val update = GroupWidgetUpdateSetReferences(updateTarget.groupWidgetId, refList)
+                        Router.send(MessageSheetUpdate(update))
+                    }
+                }
+            }
+
+            finish()
+        }
+
         layout.child(labelView)
 
         // (3) Label
@@ -254,6 +283,35 @@ class GroupListActivity : AppCompatActivity()
         return layout.linearLayout(this)
     }
 
+
+
+    fun updateGroupReferenceList(updatedGroupIds : List<GroupId>)
+    {
+        val originalGroupIdList = this.groupRefs.map { it.groupId() }
+
+        val newGroupIdList = this.newGroupReferenceList?.let { it.map { it.groupId() } }
+
+        val isUnique = if (newGroupIdList != null)
+                           newGroupIdList != updatedGroupIds
+                       else
+                           originalGroupIdList != updatedGroupIds
+
+        if (isUnique)
+        {
+            val groupRefById  : MutableMap<GroupId,GroupReference> =
+                                    this.groupRefs.associateBy { it.groupId() }
+                                            as MutableMap<GroupId,GroupReference>
+
+            val newGroupRefList : MutableList<GroupReference> = mutableListOf()
+
+            updatedGroupIds.forEach {
+                groupRefById.get(it)?.let { newGroupRefList.add(it) }
+            }
+
+            this.newGroupReferenceList = newGroupRefList
+        }
+
+    }
 
 }
 
@@ -278,8 +336,6 @@ fun groupListRecyclerView(groupRefs : List<GroupReference>,
     recyclerView.backgroundColor    = colorOrBlack(colorTheme, entityId)
 
     recyclerView.adapter            = adapter
-
-    recyclerView.padding.topDp      = 2f
 
     return recyclerView.recyclerView(context)
 }
@@ -489,7 +545,7 @@ private fun groupItemOptionIconView(theme : Theme, context : Context) : LinearLa
 class GroupListItemRecyclerViewAdapter(val groups : MutableList<Group>,
                                        val theme : Theme,
                                        val entityId : EntityId,
-                                       val context : Context)
+                                       val groupListActivity : GroupListActivity)
                      : RecyclerView.Adapter<GroupListItemViewHolder>(), SwipeAndDragHelper.ActionCompletionContract
 {
 
@@ -499,6 +555,7 @@ class GroupListItemRecyclerViewAdapter(val groups : MutableList<Group>,
 
     var touchHelper : ItemTouchHelper? = null
 
+    val context = groupListActivity
 
     // -------------------------------------------------------------------------------------
     // RECYCLER VIEW ADAPTER API
@@ -533,6 +590,8 @@ class GroupListItemRecyclerViewAdapter(val groups : MutableList<Group>,
         groups.removeAt(oldPosition)
         groups.add(newPosition, otherGroup)
         notifyItemMoved(oldPosition, newPosition)
+
+        groupListActivity.updateGroupReferenceList(groups.map { it.id })
     }
 
     override fun onViewSwiped(position : Int)

@@ -345,6 +345,14 @@ variables:
       text_literal: 'Casmey Dalseya'
 - type: variable_text
   variable_text:
+    id: catchphrase
+    label: Catchphrase
+    description: Catchphrase
+    value:
+      type: text_literal
+      text_literal: "I may steal your heart\u2026and all of your gold too."
+- type: variable_text
+  variable_text:
     id: race
     label: Race
     description: Race
@@ -700,7 +708,7 @@ variables:
     description: Base Strength
     value:
       type: number_literal
-      number_literal: 10
+      number_literal: 13
 - type: variable_number
   variable_number:
     id: strength
@@ -750,7 +758,7 @@ variables:
     description: Base Dexterity
     value:
       type: number_literal
-      number_literal: 14
+      number_literal: 15
 - type: variable_number
   variable_number:
     id: dexterity
@@ -784,7 +792,7 @@ variables:
     description: Base Constitution
     value:
       type: number_literal
-      number_literal: 13
+      number_literal: 12
 - type: variable_number
   variable_number:
     id: constitution
@@ -818,7 +826,7 @@ variables:
     description: Base Intelligence
     value:
       type: number_literal
-      number_literal: 15
+      number_literal: 12
 - type: variable_number
   variable_number:
     id: intelligence
@@ -852,7 +860,7 @@ variables:
     description: Base Wisdom
     value:
       type: number_literal
-      number_literal: 8
+      number_literal: 9
 - type: variable_number
   variable_number:
     id: wisdom
@@ -929,6 +937,46 @@ variables:
     value:
       type: text_literal
       text_literal: 'AC'
+- type: variable_text
+  variable_text:
+    id: race_label
+    label: Race Label
+    description: Race Label
+    value:
+      type: text_literal
+      text_literal: 'Race'
+- type: variable_text
+  variable_text:
+    id: class_label
+    label: Class Label
+    description: Class Label
+    value:
+      type: text_literal
+      text_literal: 'Class'
+- type: variable_text
+  variable_text:
+    id: age_label
+    label: Age Label
+    description: Age Label
+    value:
+      type: text_literal
+      text_literal: 'Age'
+- type: variable_text
+  variable_text:
+    id: eye_color_label
+    label: Eye Color Label
+    description: Eye Color Label
+    value:
+      type: text_literal
+      text_literal: 'Eyes'
+- type: variable_text
+  variable_text:
+    id: hair_color_label
+    label: Hair Color Label
+    description: Hair Color Label
+    value:
+      type: text_literal
+      text_literal: 'Hair'
 - type: variable_text
   variable_text:
     id: speed_label
@@ -1356,6 +1404,14 @@ variables:
     value:
       type: text_literal
       text_literal: 'level'
+- type: variable_text
+  variable_text:
+    id: overview_label
+    label: Overview Label
+    description: Overview Label
+    value:
+      type: text_literal
+      text_literal: 'My overview'
 - type: variable_text
   variable_text:
     id: xp_label
@@ -2244,6 +2300,33 @@ sections:
     groups:
     - format:
         element_format:
+          margins:
+            bottom: 6
+            left: 6
+            top: 6
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 16
+                font_style: regular
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: overview_label
+    - format:
+        element_format:
           background_color_theme:
             theme_color_ids:
             - theme_id: light
@@ -2256,34 +2339,11 @@ sections:
           margins:
             left: 6
             right: 6
-            top: 6
           padding:
             left: 8
             right: 8
             top: 10
       rows:
-      - format:
-          element_format:
-            horizontal_alignment: left
-        widgets:
-#        - type: widget_text
-#          widget_text:
-#            format:
-#              value_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: dark
-#                    color_id: light_grey_20
-#                  - theme_id: light
-#                    color_id: dark_grey_18
-#                size: 14
-#                font_style: regular
-#              widget_format:
-#                element_format:
-#                  horizontal_alignment: left
-#                  margins:
-#                    bottom: 0
-#            value_variable_id: name_label
       - widgets:
         - type: widget_story
           widget_story:
@@ -2305,8 +2365,30 @@ sections:
                       color_id: light_blue_8
                     - theme_id: light
                       color_id: light_blue
-                  font_style: medium
-                  size: 26
+                  font_style: semi_bold
+                  size: 22
+      - format:
+          element_format:
+            horizontal_alignment: left
+            padding:
+              top: 2
+        widgets:
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_20
+                size: 16
+                font_style: regular
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: catchphrase
     - format:
         element_format:
           background_color_theme:
@@ -2321,13 +2403,12 @@ sections:
           margins:
             left: 6
             right: 6
+            bottom: 12
       rows:
       - format:
           element_format:
             padding:
-              left: 8
-              right: 8
-              bottom: 10
+              bottom: 0
         widgets:
         - type: widget_tab
           widget_tab:
@@ -2338,20 +2419,22 @@ sections:
                     color_theme:
                       theme_color_ids:
                       - theme_id: light
-                        color_id: light_grey_7
+                        color_id: light_blue_grey_9
                     thickness: 1
               selected_tab_format:
-                font_style: medium
+                font_style: semi_bold
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
                     color_id: dark_grey_14
+                size: 17
               unselected_tab_format:
-                font_style: medium
+                font_style: semi_bold
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
                     color_id: dark_grey_22
+                size: 17
               tab_format:
                 underline_thickness: 2
                 underline_color_theme:
@@ -2359,16 +2442,360 @@ sections:
                   - theme_id: light
                     color_id: dark_grey_18
             tabs:
+            - name: Short Story
+              group_references:
+              - type: group
+                group:
+                  rows:
+                  - format:
+                      border:
+                        bottom:
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: light_blue_grey_6
+                          thickness: 1
+                      element_format:
+                        background_color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        horizontal_alignment: left
+                        padding:
+                          left: 8
+                          right: 8
+                          top: 12
+                          bottom: 12
+                    widgets:
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          widget_format:
+                            element_format:
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                              height: 40
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_grey_5
+                              corners:
+                                bottom_left_radius: 2
+                                top_left_radius: 2
+                              padding:
+                                left: 8
+                                right: 8
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: dark_grey_10
+                            font_style: semi_bold
+                            size: 17
+                        value_variable_id: race_label
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: light_grey_1
+                            font_style: medium
+                            size: 17
+                          widget_format:
+                            element_format:
+                              corners:
+                                top_right_radius: 2
+                                bottom_right_radius: 2
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_tint_1
+                              height: 40
+                              horizontal_alignment: left
+                              padding:
+                                left: 8
+                                right: 8
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                        value_variable_id: race
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          widget_format:
+                            element_format:
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                              height: 40
+                              margins:
+                                left: 12
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_grey_5
+                              corners:
+                                bottom_left_radius: 2
+                                top_left_radius: 2
+                              padding:
+                                left: 8
+                                right: 8
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: dark_grey_10
+                            font_style: semi_bold
+                            size: 17
+                        value_variable_id: class_label
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: light_grey_1
+                            font_style: medium
+                            size: 17
+                          widget_format:
+                            element_format:
+                              corners:
+                                top_right_radius: 2
+                                bottom_right_radius: 2
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_tint_1
+                              height: 40
+                              horizontal_alignment: left
+                              padding:
+                                left: 8
+                                right: 8
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                        value_variable_id: class
+                  - format:
+                      element_format:
+                        background_color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: white
+                        horizontal_alignment: left
+                        padding:
+                          left: 8
+                          right: 8
+                          top: 12
+                          bottom: 12
+                    widgets:
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          widget_format:
+                            element_format:
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                              height: 40
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_grey_5
+                              corners:
+                                bottom_left_radius: 2
+                                top_left_radius: 2
+                              padding:
+                                left: 8
+                                right: 8
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: dark_grey_10
+                            font_style: semi_bold
+                            size: 17
+                        value_variable_id: age_label
+                    - type: widget_number
+                      widget_number:
+                        format:
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: light_grey_1
+                            font_style: medium
+                            size: 17
+                          widget_format:
+                            element_format:
+                              corners:
+                                top_right_radius: 2
+                                bottom_right_radius: 2
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_tint_1
+                              height: 40
+                              horizontal_alignment: left
+                              padding:
+                                left: 8
+                                right: 8
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                        value_variable_id: age
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          widget_format:
+                            element_format:
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                              height: 40
+                              margins:
+                                left: 12
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_grey_5
+                              corners:
+                                bottom_left_radius: 2
+                                top_left_radius: 2
+                              padding:
+                                left: 8
+                                right: 8
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: dark_grey_10
+                            font_style: semi_bold
+                            size: 17
+                        value_variable_id: eye_color_label
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: light_grey_1
+                            font_style: medium
+                            size: 17
+                          widget_format:
+                            element_format:
+                              corners:
+                                top_right_radius: 2
+                                bottom_right_radius: 2
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_tint_1
+                              height: 40
+                              horizontal_alignment: left
+                              padding:
+                                left: 8
+                                right: 8
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                        value_variable_id: eye_color
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          widget_format:
+                            element_format:
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                              height: 40
+                              margins:
+                                left: 12
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_grey_5
+                              corners:
+                                bottom_left_radius: 2
+                                top_left_radius: 2
+                              padding:
+                                left: 8
+                                right: 8
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: dark_grey_10
+                            font_style: semi_bold
+                            size: 17
+                        value_variable_id: hair_color_label
+                    - type: widget_text
+                      widget_text:
+                        format:
+                          value_format:
+                            color_theme:
+                              theme_color_ids:
+                              - theme_id: dark
+                                color_id: light_grey_20
+                              - theme_id: light
+                                color_id: light_grey_1
+                            font_style: medium
+                            size: 17
+                          widget_format:
+                            element_format:
+                              corners:
+                                top_right_radius: 2
+                                bottom_right_radius: 2
+                              background_color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_blue_tint_1
+                              height: 40
+                              horizontal_alignment: left
+                              padding:
+                                left: 8
+                                right: 8
+                              width:
+                                type: width_wrap
+                                width_wrap: wrap
+                        value_variable_id: hair_color
             - name: Long Story
               group_references:
               - type: group
                 group:
+                  format:
+                    element_format:
+                      padding:
+                        left: 8
+                        right: 8
                   rows:
                   - widgets:
                     - type: widget_story
                       widget_story:
                         format:
-                          line_spacing: 2
+                          line_spacing: 6
                           line_height: 32
                           widget_format:
                             element_format:
@@ -2574,213 +3001,20 @@ sections:
                               font_style: bold_italic
                               size: 16.5
 
-            - name: Short Story
-              group_references:
-              - type: group
-                group:
-                  rows:
-                  - widgets:
-                    - type: widget_story
-                      widget_story:
-                        format:
-                          line_spacing: 14
-                          line_height: 32
-                          widget_format:
-                            element_format:
-                              horizontal_alignment: left
-                              padding:
-                                top: 8
-                                bottom: 6
-                              width:
-                                type: width_justify
-                                width_justify: justify
-                        story:
-                        - type: story_part_span
-                          story_part_span:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 12
-                            text: 'I am a'
-                            text_format:
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_grey_18
-                                - theme_id: light
-                                  color_id: dark_grey_12
-                              size: 17.5
-                        - type: story_part_variable
-                          story_part_variable:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 10
-                            variable_id: race
-                            text_format:
-                              element_format:
-                                background_color_theme:
-                                  theme_color_ids:
-                                  - theme_id: light
-                                    color_id: light_blue_90
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_blue_8
-                                - theme_id: light
-                                  color_id: white
-                              size: 17.5
-                        - type: story_part_span
-                          story_part_span:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 12
-                            text: ' '
-                            text_format:
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_grey_18
-                                - theme_id: light
-                                  color_id: dark_grey_12
-                              size: 17.5
-                        - type: story_part_variable
-                          story_part_variable:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 10
-                            variable_id: class
-                            text_format:
-                              element_format:
-                                background_color_theme:
-                                  theme_color_ids:
-                                  - theme_id: light
-                                    color_id: light_blue_90
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_blue_8
-                                - theme_id: light
-                                  color_id: white
-                              size: 17.5
-                        - type: story_part_span
-                          story_part_span:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 12
-                            text: '. I am '
-                            text_format:
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_grey_14
-                                - theme_id: light
-                                  color_id: dark_grey_12
-                              size: 17.5
-                        - type: story_part_variable
-                          story_part_variable:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 10
-                            numeric_editor_type: simple
-                            variable_id: age
-                            text_format:
-                              element_format:
-                                background_color_theme:
-                                  theme_color_ids:
-                                  - theme_id: light
-                                    color_id: light_blue_grey_16
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_blue_8
-                                - theme_id: light
-                                  color_id: white
-                              size: 17.5
-                        - type: story_part_span
-                          story_part_span:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 12
-                            text: ' years old. I have'
-                            text_format:
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_grey_14
-                                - theme_id: light
-                                  color_id: dark_grey_12
-                              size: 17.5
-                        - type: story_part_variable
-                          story_part_variable:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 10
-                            variable_id: eye_color
-                            text_format:
-                              element_format:
-                                background_color_theme:
-                                  theme_color_ids:
-                                  - theme_id: light
-                                    color_id: light_blue_grey_16
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_blue_8
-                                - theme_id: light
-                                  color_id: white
-                              size: 17.5
-                        - type: story_part_span
-                          story_part_span:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 12
-                            text: ' eyes and'
-                            text_format:
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_grey_14
-                                - theme_id: light
-                                  color_id: dark_grey_12
-                              size: 17.5
-                        - type: story_part_variable
-                          story_part_variable:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 10
-                            variable_id: hair_color
-                            text_format:
-                              element_format:
-                                background_color_theme:
-                                  theme_color_ids:
-                                  - theme_id: light
-                                    color_id: light_blue_grey_16
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_blue_8
-                                - theme_id: light
-                                  color_id: white
-                              size: 17.5
-                        - type: story_part_span
-                          story_part_span:
-                            format:
-                              highlight_skew: 0.68
-                              highlight_corner_radius: 12
-                            text: ' hair.'
-                            text_format:
-                              color_theme:
-                                theme_color_ids:
-                                - theme_id: dark
-                                  color_id: light_grey_14
-                                - theme_id: light
-                                  color_id: dark_grey_12
-                              size: 17.5
     - format:
+        border:
+          top:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_14
+            thickness: 2
         element_format:
           padding:
-            top: 6
+            top: 8
             left: 6
             right: 6
+            bottom: 12
       rows:
       - format:
           element_format:
@@ -2790,7 +3024,6 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-#            id: xp_label
             format:
               value_format:
                 color_theme:
@@ -2798,7 +3031,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_18
+                    color_id: dark_grey_16
                 size: 16
                 font_style: regular
               widget_format:
@@ -2811,7 +3044,6 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-#            id: level_label
             format:
               value_format:
                 color_theme:
@@ -2831,7 +3063,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 46
+                  height: 42
                   padding:
                     left: 10
                     right: 10
@@ -2853,7 +3085,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 42
                   padding:
                     left: 20
                     right: 20
@@ -2880,14 +3112,13 @@ sections:
             margins:
               top: 6
             padding:
-              top: 15
-              bottom: 15
+              top: 10
+              bottom: 12
               left: 8
               right: 8
         widgets:
         - type: widget_points
           widget_points:
-#            id: current_xp
             label: Experience Points
             format:
               limit_text_format:
@@ -2948,12 +3179,19 @@ sections:
             limit_value_variable_id: target_xp
             current_value_variable_id: current_xp
     - format:
+        border:
+          top:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_14
+            thickness: 2
         element_format:
           padding:
             left: 6
             right: 6
             bottom: 6
-            top: 6
+            top: 8
       rows:
       - format:
           element_format:
@@ -2969,7 +3207,7 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_18
+                    color_id: dark_grey_16
                 size: 16
                 font_style: regular
               widget_format:
@@ -2997,7 +3235,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 44
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3025,7 +3263,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 44
                   padding:
                     left: 14
                     right: 14
@@ -3048,7 +3286,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -3079,7 +3317,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 44
                   padding:
                     left: 14
                     right: 14
@@ -3112,7 +3350,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 48
+                  height: 44
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3140,7 +3378,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 48
+                  height: 44
                   padding:
                     left: 14
                     right: 14
@@ -3163,7 +3401,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 48
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -3196,7 +3434,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 48
+                  height: 44
                   padding:
                     left: 14
                     right: 14
@@ -3229,7 +3467,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 48
+                  height: 40
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3257,7 +3495,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 48
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -3280,7 +3518,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 48
+                  height: 40
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -3313,7 +3551,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 48
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -3346,7 +3584,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 52
+                  height: 40
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3374,7 +3612,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 52
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -3397,7 +3635,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 52
+                  height: 40
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -3430,7 +3668,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 52
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -3463,7 +3701,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 44
+                  height: 40
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3491,7 +3729,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 44
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -3514,7 +3752,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 44
+                  height: 40
                   horizontal_alignment: left
                   margins:
                     left: 4
@@ -3547,7 +3785,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 44
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -3580,7 +3818,7 @@ sections:
                 size: 18
               widget_format:
                 element_format:
-                  height: 46
+                  height: 40
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
@@ -3608,7 +3846,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: light_blue_90
-                  height: 46
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -3631,7 +3869,7 @@ sections:
                       color_id: dark_grey_4
                     - theme_id: light
                       color_id: white
-                  height: 46
+                  height: 40
                   margins:
                     left: 4
                   horizontal_alignment: left
@@ -3664,7 +3902,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 40
                   padding:
                     left: 14
                     right: 14
@@ -7181,7 +7419,7 @@ sections:
         element_format:
           padding:
             top: 10
-            bottom: 10
+            bottom: 15
       rows:
       - widgets:
         - type: widget_group
@@ -7229,11 +7467,11 @@ sections:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_blue_grey_11
+                color_id: light_blue_grey_12
             thickness: 1
         element_format:
           padding:
-            top: 10
+            top: 5
             bottom: 15
       rows:
       - widgets:
@@ -13330,12 +13568,12 @@ sections:
                   top: 16
                   bottom: 4
               title_format:
-                size: 18
-                font_style: semi_bold
+                size: 17
+                font_style: bold
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_10
               edit_button_format:
                 color_theme:
                   theme_color_ids:
@@ -13403,7 +13641,7 @@ sections:
                           color_id: light_grey_5
                         - theme_id: light
                           color_id: dark_grey_12
-                      font_style: regular
+                      font_style: medium
                       size: 16
                     width: 3
             - type: table_widget_number_column
@@ -13531,12 +13769,12 @@ sections:
                   top: 16
                   bottom: 4
               title_format:
-                size: 18
-                font_style: semi_bold
+                size: 17
+                font_style: bold
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_10
               edit_button_format:
                 color_theme:
                   theme_color_ids:
@@ -13603,8 +13841,8 @@ sections:
                           color_id: light_grey_5
                         - theme_id: light
                           color_id: dark_grey_12
-                      font_style: regular
-                      size: 17
+                      font_style: medium
+                      size: 16
                     width: 3
             - type: table_widget_number_column
               table_widget_number_column:
@@ -13748,7 +13986,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 46
+                  height: 40
                   padding:
                     left: 10
                     right: 10
@@ -13771,7 +14009,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 46
+                  height: 40
                   padding:
                     left: 16
                     right: 16
@@ -13813,7 +14051,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 48
+                  height: 40
                   padding:
                     left: 10
                     right: 10
@@ -13836,7 +14074,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 48
+                  height: 40
                   padding:
                     left: 16
                     right: 16
@@ -13878,7 +14116,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 50
+                  height: 44
                   padding:
                     left: 10
                     right: 10
@@ -13901,7 +14139,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 50
+                  height: 44
                   padding:
                     left: 16
                     right: 16
@@ -13944,7 +14182,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 44
+                  height: 40
                   padding:
                     left: 10
                     right: 10
@@ -13967,7 +14205,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 44
+                  height: 40
                   padding:
                     left: 16
                     right: 16
@@ -14009,7 +14247,7 @@ sections:
                   corners:
                     top_left_radius: 2
                     bottom_left_radius: 2
-                  height: 44
+                  height: 40
                   padding:
                     left: 10
                     right: 10
@@ -14032,7 +14270,7 @@ sections:
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
-                  height: 44
+                  height: 40
                   padding:
                     left: 16
                     right: 16
@@ -14080,12 +14318,12 @@ sections:
                   top: 16
                   bottom: 4
               title_format:
-                size: 18
-                font_style: semi_bold
+                size: 17
+                font_style: bold
                 color_theme:
                   theme_color_ids:
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_10
               edit_button_format:
                 color_theme:
                   theme_color_ids:
@@ -14154,7 +14392,7 @@ sections:
                           color_id: light_grey_5
                         - theme_id: light
                           color_id: dark_grey_12
-                      font_style: regular
+                      font_style: medium
                       size: 16
                     width: 3.5
             - type: table_widget_number_column
@@ -14264,7 +14502,10 @@ sections:
             left: 6
             right: 6
       rows:
-      - widgets:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
         - type: widget_text
           widget_text:
 #            id: encumbrance_label

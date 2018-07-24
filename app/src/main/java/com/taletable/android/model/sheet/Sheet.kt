@@ -358,6 +358,16 @@ data class Sheet(private var sheetId : EntityId,
                     }
                 }
             }
+            is WidgetUpdateGroupWidget ->
+            {
+                this.widget(widgetUpdate.widgetId) apDo {
+                    when (it) {
+                        is WidgetGroup -> {
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
+                        }
+                    }
+                }
+            }
             is WidgetUpdateListWidget ->
             {
                 this.widget(widgetUpdate.widgetId) apDo {

@@ -663,9 +663,18 @@ class TabWidgetUI(val tabWidget : WidgetTab,
                                         selectedTextFormat.font(),
                                         selectedTextFormat.fontStyle())
 
-        tabWidget.tabs().forEach {
-            tabLayout.addTab(tabLayout.newTab().setText(it.tabName.value))
+        tabWidget.tabs().forEachIndexed { index, tab ->
+            val newTab = tabLayout.newTab()
+
+            if (index == 0)
+                newTab.customView = tabTextView(tab.tabName().value, true)
+            else
+                newTab.customView = tabTextView(tab.tabName().value, false)
+
+            tabLayout.addTab(newTab)
         }
+
+        tabLayout.tabMode
 
         tabLayout.setTabTextColors(
                 colorOrBlack(unselectedTextFormat.colorTheme(), entityId),
@@ -682,17 +691,28 @@ class TabWidgetUI(val tabWidget : WidgetTab,
             override fun onTabReselected(tab: TabLayout.Tab?) { }
 
             override fun onTabSelected(tab : TabLayout.Tab?) {
+
+
                 if (tab != null) {
                     val pos = tab.position
                     if (pos >= 0 && pos < tabWidget.tabs().size)
+                    {
                         showTab(pos)
+
+                        val tabTextView = tab?.customView as TextView?
+                        tabTextView?.setTextColor(colorOrBlack(selectedTextFormat.colorTheme(), entityId))
+                    }
                 }
                 else {
                     showTab(0)
                 }
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) { }
+            override fun onTabUnselected(tab: TabLayout.Tab?)
+            {
+                val tabTextView = tab?.customView as TextView?
+                tabTextView?.setTextColor(colorOrBlack(unselectedTextFormat.colorTheme(), entityId))
+            }
         })
 
         return tabLayout
@@ -783,5 +803,36 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
         return label.textView(context)
     }
+
+//
+//    private fun customTabTextView(labelString : String) : TextView
+//    {
+//        val label               = TextViewBuilder()
+//
+//        val format =    if (isSelected)
+//                            tabWidget.format().selectedTabFormat()
+//                        else
+//                            tabWidget.format().unselectedTabFormat()
+//
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        label.text              = labelString
+//
+//        label.color             = colorOrBlack(format.colorTheme(), entityId)
+//
+//        label.sizeSp            = format.sizeSp()
+//
+//        label.font              = Font.typeface(format.font(),
+//                                                format.fontStyle(),
+//                                                context)
+//
+//        label.paddingSpacing    = format.elementFormat().padding()
+//        label.marginSpacing     = format.elementFormat().margins()
+//
+//        return label.textView(context)
+//    }
+
 
 }

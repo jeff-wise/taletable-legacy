@@ -1014,7 +1014,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
  */
 data class WidgetGroup(val widgetId : WidgetId,
                        val format : GroupWidgetFormat,
-                       val groupReferences : List<GroupReference>,
+                       var groupReferences : List<GroupReference>,
                        val titleVariableId : Maybe<VariableId>,
                        val groupQuery : TagQuery) : Widget()
 {
@@ -1025,6 +1025,7 @@ data class WidgetGroup(val widgetId : WidgetId,
 
     private var groupsCache : Maybe<List<Group>> = Nothing()
 
+    var contentLayoutId : Int? = null
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -1151,6 +1152,36 @@ data class WidgetGroup(val widgetId : WidgetId,
     {
         this.groups(entityId).forEach {
             it.onSheetComponentActive(entityId, context)
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // UPDATE
+    // -----------------------------------------------------------------------------------------
+
+    fun update(groupWidgetUpdate : WidgetUpdateGroupWidget,
+               entityId : EntityId,
+               rootView : View?,
+               context : Context) =
+        when (groupWidgetUpdate)
+        {
+            is GroupWidgetUpdateSetReferences ->
+            {
+                this.groupReferences = groupWidgetUpdate.newReferenceList
+                rootView?.let { this.updateContentView(rootView, entityId, context) }
+            }
+        }
+
+
+    private fun updateContentView(rootView : View?, entityId : EntityId, context : Context)
+    {
+        this.contentLayoutId?.let { layoutId ->
+            val layout = rootView?.findViewById<LinearLayout>(layoutId)
+            layout?.let {
+                it.removeAllViews()
+                it.addView(GroupWidgetUI(this, entityId, context).groupsView())
+            }
         }
     }
 
